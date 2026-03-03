@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
+        <title>@yield('title', config('app.name', 'Yalla Spare'))</title>
+
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+        <script>
+            (function () {
+                const storedTheme = localStorage.getItem('admin-theme');
+                if (storedTheme === 'dark') {
+                    document.documentElement.classList.add('dark');
+                } else if (storedTheme === 'light') {
+                    document.documentElement.classList.remove('dark');
+                }
+            })();
+        </script>
+    </head>
+    <body class="min-h-screen bg-white text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100">
+        <header class="h-16 border-b border-slate-200/60 bg-white dark:border-slate-800/60 dark:bg-slate-950">
+            <div class="mx-auto flex h-full w-full max-w-6xl items-center justify-between px-6">
+                <a
+                    href="{{ route('admin.dashboard') }}"
+                    aria-label="Go to dashboard"
+                    class="text-sm font-semibold tracking-tight text-slate-900 transition-opacity duration-200 hover:opacity-70 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-slate-100 dark:focus-visible:ring-slate-600 dark:focus-visible:ring-offset-slate-950"
+                >
+                    Yalla Spare
+                </a>
+
+                <button
+                    type="button"
+                    onclick="history.back()"
+                    class="inline-flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-slate-600 transition-colors duration-200 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-slate-100 dark:focus-visible:ring-slate-600 dark:focus-visible:ring-offset-slate-950"
+                    aria-label="Go back"
+                >
+                    <svg class="h-4 w-4" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                        <path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                    <span>Back</span>
+                </button>
+            </div>
+        </header>
+
+        <main class="px-6 py-24">
+            <div class="mx-auto w-full max-w-5xl">
+                @yield('content')
+            </div>
+        </main>
+    </body>
+</html>

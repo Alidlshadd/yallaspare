@@ -1,0 +1,173 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .dark .admin-shell :is(input, select, textarea) {
+        background-color: var(--admin-surface);
+        color: var(--admin-text-strong);
+        border-color: var(--admin-border);
+    }
+    .dark .admin-shell :is(input, select, textarea)::placeholder {
+        color: var(--admin-text-soft);
+        opacity: 1;
+    }
+    .dark .admin-shell :is(input, select, textarea):focus {
+        border-color: #8d9bff;
+        box-shadow: 0 0 0 3px rgba(141, 155, 255, 0.25);
+        outline: none;
+    }
+    .dark .admin-shell :is(select) option {
+        background-color: var(--admin-card);
+        color: var(--admin-text-strong);
+    }
+    .dark .admin-shell :is(input, select, textarea)[disabled] {
+        background-color: var(--admin-surface-strong);
+        color: var(--admin-text-soft);
+    }
+}
+
+@layer utilities {
+    .dark .admin-shell {
+        --admin-bg: #151515;
+        --admin-surface: #1a1b1d;
+        --admin-surface-strong: #202225;
+        --admin-surface-hover: #26292e;
+        --admin-card: #1d1f22;
+        --admin-sidebar: #18191b;
+        --admin-border: #2e3136;
+        --admin-border-soft: #272a2f;
+        --admin-text: #eceff3;
+        --admin-text-strong: #f7f8fa;
+        --admin-text-muted: #cfd5de;
+        --admin-text-soft: #a6adb8;
+        --admin-shadow: 0 1px 0 rgba(255, 255, 255, 0.035), 0 20px 45px -28px rgba(0, 0, 0, 0.78);
+        --admin-shadow-soft: 0 1px 0 rgba(255, 255, 255, 0.035), 0 12px 30px -26px rgba(0, 0, 0, 0.72);
+    }
+
+    .dark .admin-shell .bg-white {
+        background-color: var(--admin-card);
+    }
+    .dark .admin-shell .bg-slate-50 {
+        background-color: var(--admin-surface);
+    }
+    .dark .admin-shell .bg-slate-900,
+    .dark .admin-shell .bg-slate-950 {
+        background-color: var(--admin-sidebar);
+    }
+    .dark .admin-shell .dark\:bg-slate-900 {
+        background-color: var(--admin-card);
+    }
+    .dark .admin-shell .dark\:bg-slate-950 {
+        background-color: var(--admin-surface);
+    }
+    .dark .admin-shell .dark\:bg-slate-900\/80 {
+        background-color: rgba(26, 27, 29, 0.88);
+    }
+    .dark .admin-shell .dark\:bg-slate-800\/60 {
+        background-color: rgba(32, 34, 37, 0.6);
+    }
+    .dark .admin-shell .border-slate-200 {
+        border-color: var(--admin-border);
+    }
+    .dark .admin-shell .dark\:border-slate-800 {
+        border-color: var(--admin-border);
+    }
+    .dark .admin-shell .dark\:border-slate-700 {
+        border-color: #34383f;
+    }
+    .dark .admin-shell .border-white\/10 {
+        border-color: var(--admin-border-soft);
+    }
+    .dark .admin-shell .text-slate-900 {
+        color: var(--admin-text-strong);
+    }
+    .dark .admin-shell .text-slate-800 {
+        color: var(--admin-text);
+    }
+    .dark .admin-shell .text-slate-700 {
+        color: var(--admin-text-muted);
+    }
+    .dark .admin-shell .text-slate-600 {
+        color: var(--admin-text-soft);
+    }
+    .dark .admin-shell .text-slate-500 {
+        color: var(--admin-text-soft);
+    }
+    .dark .admin-shell .text-slate-400 {
+        color: #9aa3b2;
+    }
+    .dark .admin-shell .dark\:text-slate-300 {
+        color: var(--admin-text-muted);
+    }
+    .dark .admin-shell .dark\:text-slate-400 {
+        color: #a6adb8;
+    }
+    .dark .admin-shell .dark\:text-slate-500 {
+        color: #9aa3b2;
+    }
+    .dark .admin-shell .shadow-sm {
+        box-shadow: var(--admin-shadow-soft);
+    }
+    .dark .admin-shell .shadow-2xl {
+        box-shadow: var(--admin-shadow);
+    }
+    .dark .admin-shell .hover\:shadow-sm:hover {
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04), 0 16px 36px -26px rgba(0, 0, 0, 0.8);
+    }
+
+    .dark .admin-shell .bg-slate-800 {
+        background-color: var(--admin-surface-strong);
+    }
+    .dark .admin-shell .hover\:bg-slate-800\/60:hover {
+        background-color: var(--admin-surface-hover);
+    }
+    .dark .admin-shell .hover\:bg-slate-900:hover {
+        background-color: var(--admin-surface-hover);
+    }
+    .dark .admin-shell .bg-slate-800\/80 {
+        background-color: rgba(32, 34, 37, 0.85);
+    }
+    .dark .admin-shell .bg-slate-800\/70 {
+        background-color: rgba(32, 34, 37, 0.75);
+    }
+    .dark .admin-shell .bg-slate-800\/60 {
+        background-color: rgba(32, 34, 37, 0.6);
+    }
+    .dark .admin-shell .dark\:hover\:bg-slate-800:hover,
+    .dark .admin-shell .dark\:hover\:bg-slate-900:hover {
+        background-color: var(--admin-surface-hover);
+    }
+
+    .dark .admin-shell .bg-indigo-600 {
+        background-color: #5c6fd8;
+    }
+    .dark .admin-shell .text-indigo-600 {
+        color: #96a3ff;
+    }
+    .dark .admin-shell .bg-emerald-500 {
+        background-color: #3ab59a;
+    }
+    .dark .admin-shell .text-emerald-500 {
+        color: #64d3b9;
+    }
+    .dark .admin-shell .text-amber-500 {
+        color: #f0be7b;
+    }
+    .dark .admin-shell .text-rose-500 {
+        color: #f09aa4;
+    }
+    .dark .admin-shell .bg-rose-900\/20 {
+        background-color: rgba(150, 70, 80, 0.18);
+    }
+    .dark .admin-shell .bg-emerald-900\/30 {
+        background-color: rgba(30, 112, 98, 0.22);
+    }
+    .dark .admin-shell .dark\:text-slate-100 {
+        color: var(--admin-text-strong);
+    }
+
+    .dark .admin-shell [class*='bg-gradient-to-'] {
+        filter: saturate(0.68) brightness(0.98);
+    }
+}

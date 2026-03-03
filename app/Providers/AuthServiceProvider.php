@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Providers;
+
+use App\Models\User;
+use App\Models\AdminActivityLog;
+use App\Policies\AdminActivityLogPolicy;
+use App\Policies\UserPolicy;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Spatie\Activitylog\Models\Activity;
+
+class AuthServiceProvider extends ServiceProvider
+{
+    /**
+     * The model to policy mappings for the application.
+     *
+     * @var array<class-string, class-string>
+     */
+    protected $policies = [
+        User::class => UserPolicy::class,
+        AdminActivityLog::class => AdminActivityLogPolicy::class,
+        Activity::class => AdminActivityLogPolicy::class,
+    ];
+
+    /**
+     * Register any authentication / authorization services.
+     */
+    public function boot(): void
+    {
+        Gate::define('manage-users', [UserPolicy::class, 'manageUsers']);
+        Gate::define('manage-dealers', [UserPolicy::class, 'manageDealers']);
+    }
+}
