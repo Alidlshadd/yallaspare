@@ -73,7 +73,7 @@ class DealerController extends Controller
             'dealer_discount' => round((float) $data['dealer_discount'], 2),
         ]);
 
-        return back()->with('success', 'Dealer updated successfully.');
+        return back()->with('success', __('Dealer updated successfully.'));
     }
 
     public function demote(User $dealer): RedirectResponse
@@ -90,6 +90,6 @@ class DealerController extends Controller
             'dealer_discount' => 0,
         ]);
 
-        return back()->with('success', 'Dealer was converted to regular user.');
+        return back()->with('success', __('Dealer was converted to regular user.'));
     }
 }

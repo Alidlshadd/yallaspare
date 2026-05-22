@@ -8,7 +8,7 @@ class UserPolicy
 {
     public function viewAny(User $authUser): bool
     {
-        return $authUser->isAdmin();
+        return $authUser->hasPermission(User::PERMISSION_USERS_VIEW);
     }
 
     public function manageUsers(User $authUser): bool

@@ -1,0 +1,195 @@
+<?php
+
+namespace App\Support;
+
+use App\Mail\OperationalNotificationMail;
+use App\Models\Order;
+use App\Models\Setting;
+use App\Models\User;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Str;
+
+class UserCommunication
+{
+    public static function sendOrderPlaced(User $user, Order $order): array
+    {
+        if (! self::shouldSendOperationalUpdates($user)) {
+            return [];
+        }
+
+        $context = [
+            'order_id' => $order->id,
+            'order_number' => $order->order_number,
+            'status' => ucfirst((string) $order->status),
+            'total' => number_format((float) $order->total_amount, (int) Setting::getValue('currency_decimals', 0)) . ' ' . (string) Setting::getValue('currency_code', 'IQD'),
+            'customer_name' => $user->name,
+        ];
+        [$subject, $message] = self::renderTemplate($user, 'order_placed', 'Order Confirmation', implode(PHP_EOL, [
+            'Your order has been placed successfully.',
+            'Order: {{order_number}}',
+            'Status: {{status}}',
+            'Total: {{total}}',
+        ]), $context);
+
+        return self::dispatch($user, 'order_placed', $subject, $message, $context);
+    }
+
+    public static function sendOrderStatusUpdated(User $user, Order $order, string $from, string $to): array
+    {
+        if (! self::shouldSendOperationalUpdates($user)) {
+            return [];
+        }
+
+        $context = [
+            'order_id' => $order->id,
+            'order_number' => $order->order_number,
+            'from' => ucfirst(str_replace('_', ' ', $from)),
+            'to' => ucfirst(str_replace('_', ' ', $to)),
+            'customer_name' => $user->name,
+        ];
+        [$subject, $message] = self::renderTemplate($user, 'order_status_updated', 'Order Status Updated', implode(PHP_EOL, [
+            'Your order status has changed.',
+            'Order: {{order_number}}',
+            'From: {{from}}',
+            'To: {{to}}',
+        ]), $context);
+
+        return self::dispatch($user, 'order_status_updated', $subject, $message, $context);
+    }
+
+    private static function shouldSendOperationalUpdates(User $user): bool
+    {
+        return (bool) ($user->notify_order_updates ?? true);
+    }
+
+    private static function dispatch(User $user, string $type, string $subject, string $message, array $context = []): array
+    {
+        $sentVia = [];
+
+        if (($user->email_notifications ?? true) && $user->email && self::sendEmail((string) $user->email, $subject, $message, $context + ['type' => $type])) {
+            $sentVia[] = 'email';
+        }
+
+        if ($user->sms_notifications && $user->phone) {
+            if (self::sendWebhook('sms_provider_webhook_url', $user->phone, $message, $context + ['type' => $type])) {
+                $sentVia[] = 'sms';
+            }
+        }
+
+        if ($user->whatsapp_notifications && $user->phone) {
+            if (self::sendWebhook('whatsapp_provider_webhook_url', $user->phone, $message, $context + ['type' => $type])) {
+                $sentVia[] = 'whatsapp';
+            }
+        }
+
+        return $sentVia;
+    }
+
+    private static function sendEmail(string $email, string $subject, string $message, array $context = []): bool
+    {
+        $mailer = self::resolveMailer();
+
+        try {
+            Mail::mailer($mailer)
+                ->to($email)
+                ->queue(new OperationalNotificationMail($subject, $message, $context));
+        } catch (\Throwable $exception) {
+            Log::error('Email notification failed', $context + [
+                'mailer' => $mailer,
+                'recipient' => $email,
+                'subject' => $subject,
+                'error' => $exception->getMessage(),
+            ]);
+
+            return false;
+        }
+
+        Log::info('Email notification dispatched', $context + [
+            'mailer' => $mailer,
+            'recipient' => $email,
+            'subject' => $subject,
+            'queued' => true,
+        ]);
+
+        return true;
+    }
+
+    private static function sendWebhook(string $settingKey, string $recipient, string $message, array $context): bool
+    {
+        $url = trim((string) Setting::getValue($settingKey, ''));
+
+        if ($url === '') {
+            Log::info(Str::before($settingKey, '_provider') . ' notification queued', $context + [
+                'recipient' => $recipient,
+                'message' => $message,
+                'transport' => 'log',
+            ]);
+
+            return true;
+        }
+
+        try {
+            Http::timeout(8)->post($url, [
+                'recipient' => $recipient,
+                'message' => $message,
+                'context' => $context,
+            ])->throw();
+
+            Log::info('Notification webhook dispatched', $context + [
+                'setting' => $settingKey,
+                'recipient' => $recipient,
+            ]);
+
+            return true;
+        } catch (\Throwable $exception) {
+            Log::error('Notification webhook failed', $context + [
+                'setting' => $settingKey,
+                'recipient' => $recipient,
+                'error' => $exception->getMessage(),
+            ]);
+
+            return false;
+        }
+    }
+
+    private static function renderTemplate(User $user, string $type, string $fallbackSubject, string $fallbackBody, array $context): array
+    {
+        $locale = in_array((string) ($user->locale_preference ?? app()->getLocale()), ['en', 'ar', 'ku'], true)
+            ? (string) ($user->locale_preference ?? app()->getLocale())
+            : 'en';
+
+        $subject = (string) Setting::getValue("notification_{$type}_{$locale}_subject", $fallbackSubject);
+        $body = (string) Setting::getValue("notification_{$type}_{$locale}_body", $fallbackBody);
+        $subject = trim($subject) !== '' ? $subject : $fallbackSubject;
+        $body = trim($body) !== '' ? $body : $fallbackBody;
+
+        foreach ($context as $key => $value) {
+            $subject = str_replace('{{' . $key . '}}', (string) $value, $subject);
+            $body = str_replace('{{' . $key . '}}', (string) $value, $body);
+        }
+
+        return [$subject, $body];
+    }
+
+    private static function resolveMailer(): string
+    {
+        $defaultMailer = (string) config('mail.default', 'log');
+        $smtpUsername = (string) config('mail.mailers.smtp.username', '');
+        $smtpPassword = (string) config('mail.mailers.smtp.password', '');
+        $smtpHost = (string) config('mail.mailers.smtp.host', '');
+
+        if ($defaultMailer === 'smtp' && (
+            $smtpUsername === ''
+            || $smtpPassword === ''
+            || $smtpHost === ''
+            || str_contains($smtpUsername, 'your-gmail-address')
+            || str_contains($smtpPassword, 'your-google-app-password')
+        )) {
+            return 'log';
+        }
+
+        return $defaultMailer;
+    }
+}

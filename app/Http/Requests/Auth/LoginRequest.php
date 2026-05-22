@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
@@ -27,7 +28,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email'],
+            'email' => ['required', 'string', 'max:255'],
             'password' => ['required', 'string'],
         ];
     }
@@ -41,7 +42,13 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
+        $login = trim((string) $this->input('email'));
+        $user = $this->userForLogin($login);
+
+        if (
+            ! $user ||
+            ! Auth::attempt(['email' => $user->email, 'password' => (string) $this->input('password')], $this->boolean('remember'))
+        ) {
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
@@ -81,5 +88,28 @@ class LoginRequest extends FormRequest
     public function throttleKey(): string
     {
         return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+    }
+
+    private function userForLogin(string $login): ?User
+    {
+        if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
+            return User::query()
+                ->where('email', $login)
+                ->first();
+        }
+
+        $normalizedPhone = $this->normalizePhone($login);
+        if ($normalizedPhone === null) {
+            return null;
+        }
+
+        return User::query()
+            ->where('phone_normalized', $normalizedPhone)
+            ->first();
+    }
+
+    private function normalizePhone(string $phone): ?string
+    {
+        return User::normalizePhone($phone);
     }
 }

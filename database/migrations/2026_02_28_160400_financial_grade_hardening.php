@@ -285,13 +285,26 @@ return new class extends Migration
             );
         }
 
-        if (Schema::hasTable('order_items') && Schema::hasTable('orders')) {
-            DB::statement(
-                "UPDATE `order_items` oi
-                 JOIN `orders` o ON o.id = oi.order_id
-                 SET oi.currency_code = o.currency_code
-                 WHERE oi.currency_code IS NULL"
-            );
+        if (
+            Schema::hasTable('order_items')
+            && Schema::hasTable('orders')
+            && Schema::hasColumn('order_items', 'currency_code')
+            && Schema::hasColumn('orders', 'currency_code')
+        ) {
+            if (DB::connection()->getDriverName() === 'sqlite') {
+                DB::statement(
+                    "UPDATE order_items
+                     SET currency_code = (SELECT orders.currency_code FROM orders WHERE orders.id = order_items.order_id)
+                     WHERE currency_code IS NULL"
+                );
+            } else {
+                DB::statement(
+                    "UPDATE `order_items` oi
+                     JOIN `orders` o ON o.id = oi.order_id
+                     SET oi.currency_code = o.currency_code
+                     WHERE oi.currency_code IS NULL"
+                );
+            }
         }
     }
 
@@ -520,6 +533,18 @@ return new class extends Migration
 
     private function indexExists(string $table, string $indexName): bool
     {
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            $indexes = DB::select("PRAGMA index_list('{$table}')");
+
+            foreach ($indexes as $index) {
+                if (($index->name ?? null) === $indexName) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         $database = Schema::getConnection()->getDatabaseName();
 
         return DB::selectOne(
@@ -535,6 +560,10 @@ return new class extends Migration
 
     private function createTriggerIfMissing(string $triggerName, string $sql): void
     {
+        if (DB::connection()->getDriverName() !== 'mysql') {
+            return;
+        }
+
         if ($this->triggerExists($triggerName)) {
             return;
         }
@@ -544,6 +573,10 @@ return new class extends Migration
 
     private function triggerExists(string $triggerName): bool
     {
+        if (DB::connection()->getDriverName() !== 'mysql') {
+            return false;
+        }
+
         $database = Schema::getConnection()->getDatabaseName();
 
         return DB::selectOne(

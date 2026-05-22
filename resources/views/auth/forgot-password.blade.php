@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>Forgot Password | {{ $systemSettings['site_name'] ?? 'YallaSpare' }}</title>
+    <title>{{ __('Forgot Password') }} | {{ $systemSettings['site_name'] ?? 'YallaSpare' }}</title>
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -16,11 +16,11 @@
         <main class="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900/90 p-6 shadow-2xl shadow-black/40 backdrop-blur sm:p-8 motion-safe:[animation:fadeIn_0.6s_ease-out] motion-safe:[@keyframes_fadeIn{0%{opacity:0;transform:translateY(12px)}100%{opacity:1;transform:translateY(0)}}] motion-safe:[animation:float_6s_ease-in-out_infinite] motion-safe:[@keyframes_float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}]">
             <header class="text-center">
                 <a href="{{ url('/') }}" class="inline-flex items-center justify-center text-3xl font-bold tracking-tight text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 rounded-md">
-                    YallaSpare
+                    {{ __('YallaSpare') }}
                 </a>
-                <p class="mt-2 text-sm font-medium text-slate-200">Reset Your Password</p>
+                <p class="mt-2 text-sm font-medium text-slate-200">{{ __('Reset Your Password') }}</p>
                 <p class="mt-2 text-sm text-slate-400">
-                    Enter your email to receive a secure password reset link.
+                    {{ __('Enter your email to receive a secure password reset link.') }}
                 </p>
             </header>
 
@@ -39,7 +39,7 @@
                         :value="old('email')"
                         required
                         autofocus
-                        placeholder="you@example.com"
+                        placeholder="{{ __('you@example.com') }}"
                     />
                     <x-input-error :messages="$errors->get('email')" class="mt-2 text-sm text-red-400" />
                 </div>
@@ -57,7 +57,7 @@
                     href="{{ route('login') }}"
                     class="text-sm text-slate-400 underline decoration-slate-600 underline-offset-4 transition hover:text-red-300 hover:decoration-red-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 rounded-sm"
                 >
-                    Back to Login
+                    {{ __('Back to Login') }}
                 </a>
             </div>
         </main>

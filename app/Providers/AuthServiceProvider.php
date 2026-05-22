@@ -28,6 +28,10 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        foreach (User::allowedPermissions() as $permission) {
+            Gate::define($permission, fn (User $user): bool => $user->hasPermission($permission));
+        }
+
         Gate::define('manage-users', [UserPolicy::class, 'manageUsers']);
         Gate::define('manage-dealers', [UserPolicy::class, 'manageDealers']);
     }

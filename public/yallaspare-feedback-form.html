@@ -1,0 +1,643 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>YallaSpare Project Feedback Form</title>
+    <style>
+        :root {
+            --ink: #0b1220;
+            --navy: #071120;
+            --blue: #0b2d62;
+            --teal: #0f766e;
+            --orange: #f59e0b;
+            --line: #cbd5e1;
+            --muted: #64748b;
+            --paper: #f8fafc;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: #dbe3ee;
+            color: var(--ink);
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        .sheet {
+            position: relative;
+            width: 210mm;
+            min-height: 297mm;
+            margin: 18px auto;
+            overflow: hidden;
+            background:
+                linear-gradient(135deg, rgba(15, 118, 110, 0.08), transparent 30%),
+                linear-gradient(315deg, rgba(245, 158, 11, 0.10), transparent 28%),
+                var(--paper);
+            box-shadow: 0 18px 50px rgba(15, 23, 42, 0.24);
+        }
+
+        .sheet::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            background-image:
+                linear-gradient(rgba(11, 45, 98, 0.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(11, 45, 98, 0.045) 1px, transparent 1px);
+            background-size: 28px 28px;
+            mask-image: linear-gradient(to bottom, black, transparent 70%);
+        }
+
+        .top-band {
+            position: relative;
+            z-index: 1;
+            min-height: 206px;
+            padding: 26px 34px 22px;
+            color: #fff;
+            background:
+                radial-gradient(circle at 84% 18%, rgba(245, 158, 11, 0.28), transparent 24%),
+                linear-gradient(135deg, #071120 0%, #0b1d35 52%, #0b2d62 100%);
+            clip-path: polygon(0 0, 100% 0, 100% 82%, 66% 96%, 0 84%);
+        }
+
+        .brand-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 22px;
+        }
+
+        .university {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            min-width: 280px;
+        }
+
+        .tiu-badge {
+            position: relative;
+            display: grid;
+            width: 72px;
+            height: 72px;
+            place-items: center;
+            border: 3px solid #fff;
+            border-radius: 50%;
+            background: radial-gradient(circle, #fff 55%, #fffbeb 56%);
+            color: #7f1d1d;
+            font-weight: 900;
+            font-size: 23px;
+            letter-spacing: -1px;
+        }
+
+        .tiu-badge::before {
+            content: "";
+            position: absolute;
+            inset: -15px;
+            z-index: -1;
+            border-radius: 50%;
+            background: repeating-conic-gradient(from 0deg, var(--orange) 0deg 6deg, transparent 6deg 12deg);
+        }
+
+        .uni-text {
+            font-family: Georgia, "Times New Roman", serif;
+            font-size: 18px;
+            font-weight: 700;
+            line-height: 1.08;
+            text-transform: uppercase;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-align: right;
+        }
+
+        .logo-mark {
+            display: grid;
+            grid-template-columns: repeat(2, 22px);
+            gap: 5px;
+            transform: rotate(30deg);
+        }
+
+        .logo-mark span {
+            width: 22px;
+            height: 22px;
+            border: 6px solid #fff;
+            border-radius: 6px;
+        }
+
+        .logo-mark span:nth-child(3) {
+            grid-column: 1 / 3;
+            justify-self: center;
+        }
+
+        .brand-name {
+            font-size: 31px;
+            font-weight: 900;
+            letter-spacing: 0;
+            line-height: 1;
+        }
+
+        .brand-tag {
+            margin-top: 4px;
+            color: var(--orange);
+            font-size: 12px;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 235px;
+            gap: 20px;
+            align-items: end;
+            margin-top: 24px;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 41px;
+            line-height: 0.96;
+            letter-spacing: 0;
+            text-transform: uppercase;
+        }
+
+        h1 span {
+            color: var(--orange);
+        }
+
+        .hero p {
+            max-width: 430px;
+            margin: 10px 0 0;
+            color: #dbeafe;
+            font-size: 14px;
+            line-height: 1.45;
+        }
+
+        .feature-strip {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+            align-self: center;
+        }
+
+        .feature-strip div {
+            border: 1px solid rgba(255, 255, 255, 0.28);
+            border-radius: 8px;
+            padding: 8px 9px;
+            color: #f8fafc;
+            font-size: 10px;
+            font-weight: 800;
+            text-align: center;
+            text-transform: uppercase;
+            background: rgba(255, 255, 255, 0.07);
+        }
+
+        .content {
+            position: relative;
+            z-index: 1;
+            padding: 0 32px 86px;
+        }
+
+        .info-card {
+            display: grid;
+            grid-template-columns: 175px 1fr;
+            gap: 18px;
+            margin-top: -18px;
+            border: 2px solid var(--blue);
+            border-radius: 12px;
+            padding: 18px 20px;
+            background: rgba(255, 255, 255, 0.96);
+            box-shadow: 0 10px 28px rgba(15, 23, 42, 0.10);
+        }
+
+        .section-title {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: var(--blue);
+            font-size: 14px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .icon-box {
+            display: grid;
+            width: 28px;
+            height: 28px;
+            place-items: center;
+            border-radius: 7px;
+            color: #fff;
+            background: var(--blue);
+            font-size: 16px;
+        }
+
+        .fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            column-gap: 22px;
+            row-gap: 11px;
+        }
+
+        .field {
+            display: flex;
+            align-items: end;
+            gap: 8px;
+            min-height: 25px;
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .field::after {
+            content: "";
+            flex: 1;
+            border-bottom: 1.6px solid #94a3b8;
+            transform: translateY(-3px);
+        }
+
+        .question-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 14px;
+            margin-top: 18px;
+        }
+
+        .question-card {
+            display: grid;
+            grid-template-columns: 48px 1fr 210px;
+            gap: 12px;
+            align-items: center;
+            min-height: 74px;
+            border: 1.5px solid var(--line);
+            border-radius: 11px;
+            padding: 12px 14px;
+            background: rgba(255, 255, 255, 0.94);
+        }
+
+        .num {
+            display: grid;
+            width: 34px;
+            height: 34px;
+            place-items: center;
+            border-radius: 8px;
+            color: #fff;
+            background: var(--orange);
+            font-size: 18px;
+            font-weight: 900;
+        }
+
+        .q-text {
+            font-size: 12px;
+            font-weight: 900;
+            line-height: 1.28;
+        }
+
+        .q-text small {
+            display: block;
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 9px;
+            font-weight: 700;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 7px;
+        }
+
+        .rate-dot {
+            display: grid;
+            width: 25px;
+            height: 25px;
+            place-items: center;
+            border: 1.7px solid #334155;
+            border-radius: 50%;
+            color: #334155;
+            font-size: 13px;
+            font-weight: 800;
+        }
+
+        .scale-labels {
+            grid-column: 3;
+            display: flex;
+            justify-content: space-between;
+            margin-top: -10px;
+            padding: 0 3px;
+            color: var(--muted);
+            font-size: 8px;
+            font-weight: 800;
+        }
+
+        .notes {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-top: 18px;
+        }
+
+        .note-card {
+            min-height: 150px;
+            border: 1.5px solid #9fb1c7;
+            border-radius: 12px;
+            padding: 15px 17px;
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .note-title {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            color: var(--navy);
+            font-size: 13px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .note-title svg {
+            width: 25px;
+            height: 25px;
+            stroke: var(--teal);
+            stroke-width: 2.2;
+            fill: none;
+        }
+
+        .prompt {
+            margin: 4px 0 15px 34px;
+            color: #334155;
+            font-size: 10px;
+            font-weight: 800;
+        }
+
+        .write-line {
+            height: 23px;
+            border-bottom: 1.4px solid #94a3b8;
+        }
+
+        .art {
+            position: absolute;
+            right: 24px;
+            bottom: 80px;
+            width: 245px;
+            height: 120px;
+            opacity: 0.22;
+        }
+
+        .footer {
+            position: absolute;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            display: grid;
+            grid-template-columns: 1fr 78px 1fr;
+            align-items: center;
+            min-height: 72px;
+            padding: 13px 34px;
+            color: #fff;
+            background: linear-gradient(90deg, #071120, #0b2d62 58%, #0f766e);
+        }
+
+        .footer-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .footer-item:last-child {
+            justify-content: flex-end;
+        }
+
+        .footer-item strong {
+            display: block;
+            color: var(--orange);
+            font-size: 12px;
+        }
+
+        .footer-center {
+            display: grid;
+            width: 58px;
+            height: 58px;
+            place-items: center;
+            justify-self: center;
+            border: 5px solid #fff;
+            border-radius: 50%;
+            background: var(--paper);
+        }
+
+        .footer-center .logo-mark {
+            transform: rotate(30deg) scale(0.56);
+        }
+
+        .footer-center .logo-mark span {
+            border-color: var(--ink);
+        }
+
+        svg.line-art {
+            width: 100%;
+            height: 100%;
+            stroke: #0b2d62;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+        }
+
+        .small-svg {
+            width: 28px;
+            height: 28px;
+            stroke: var(--orange);
+            stroke-width: 2;
+            fill: none;
+        }
+
+        @media print {
+            body {
+                background: #fff;
+            }
+
+            .sheet {
+                width: 210mm;
+                min-height: 297mm;
+                margin: 0;
+                box-shadow: none;
+            }
+
+            @page {
+                size: A4;
+                margin: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <main class="sheet">
+        <section class="top-band">
+            <div class="brand-row">
+                <div class="university">
+                    <div class="tiu-badge">TIU</div>
+                    <div class="uni-text">Tishk<br>International<br>University</div>
+                </div>
+
+                <div class="brand" aria-label="YallaSpare">
+                    <div class="logo-mark" aria-hidden="true">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <div>
+                        <div class="brand-name">YALLA SPARE</div>
+                        <div class="brand-tag">Find it. Fix it. Yalla!</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="hero">
+                <div>
+                    <h1>Project <span>Feedback</span> Form</h1>
+                    <p>Help us evaluate YallaSpare, an auto spare parts management and marketplace platform built for inventory, orders, dealers, vehicle fitment, invoices, returns, and customer shopping.</p>
+                </div>
+                <div class="feature-strip">
+                    <div>Inventory</div>
+                    <div>Orders</div>
+                    <div>Marketplace</div>
+                    <div>Dealers</div>
+                    <div>Fitment</div>
+                    <div>Invoices</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="content">
+            <div class="info-card">
+                <div class="section-title"><span class="icon-box">i</span> Your Information</div>
+                <div class="fields">
+                    <div class="field">Name:</div>
+                    <div class="field">Department / Field:</div>
+                    <div class="field">University / Organization:</div>
+                    <div class="field">Date:</div>
+                </div>
+            </div>
+
+            <div class="question-panel">
+                <div class="question-card">
+                    <div class="num">1</div>
+                    <div class="q-text">How easy is the system to use?<small>User experience and navigation</small></div>
+                    <div class="rating">
+                        <span class="rate-dot">1</span><span class="rate-dot">2</span><span class="rate-dot">3</span><span class="rate-dot">4</span><span class="rate-dot">5</span>
+                    </div>
+                    <div class="scale-labels"><span>Poor</span><span>Excellent</span></div>
+                </div>
+
+                <div class="question-card">
+                    <div class="num">2</div>
+                    <div class="q-text">How do you like the design and layout?<small>Visual style and page structure</small></div>
+                    <div class="rating">
+                        <span class="rate-dot">1</span><span class="rate-dot">2</span><span class="rate-dot">3</span><span class="rate-dot">4</span><span class="rate-dot">5</span>
+                    </div>
+                    <div class="scale-labels"><span>Poor</span><span>Excellent</span></div>
+                </div>
+
+                <div class="question-card">
+                    <div class="num">3</div>
+                    <div class="q-text">Is the product information clear?<small>Details, prices, stock, and images</small></div>
+                    <div class="rating">
+                        <span class="rate-dot">1</span><span class="rate-dot">2</span><span class="rate-dot">3</span><span class="rate-dot">4</span><span class="rate-dot">5</span>
+                    </div>
+                    <div class="scale-labels"><span>Poor</span><span>Excellent</span></div>
+                </div>
+
+                <div class="question-card">
+                    <div class="num">4</div>
+                    <div class="q-text">Do search, cart, and checkout work well?<small>Customer marketplace workflow</small></div>
+                    <div class="rating">
+                        <span class="rate-dot">1</span><span class="rate-dot">2</span><span class="rate-dot">3</span><span class="rate-dot">4</span><span class="rate-dot">5</span>
+                    </div>
+                    <div class="scale-labels"><span>Poor</span><span>Excellent</span></div>
+                </div>
+
+                <div class="question-card">
+                    <div class="num">5</div>
+                    <div class="q-text">Are inventory and order tools useful?<small>Admin, stock, invoices, returns</small></div>
+                    <div class="rating">
+                        <span class="rate-dot">1</span><span class="rate-dot">2</span><span class="rate-dot">3</span><span class="rate-dot">4</span><span class="rate-dot">5</span>
+                    </div>
+                    <div class="scale-labels"><span>Poor</span><span>Excellent</span></div>
+                </div>
+
+                <div class="question-card">
+                    <div class="num">6</div>
+                    <div class="q-text">How satisfied are you overall?<small>Final project impression</small></div>
+                    <div class="rating">
+                        <span class="rate-dot">1</span><span class="rate-dot">2</span><span class="rate-dot">3</span><span class="rate-dot">4</span><span class="rate-dot">5</span>
+                    </div>
+                    <div class="scale-labels"><span>Poor</span><span>Excellent</span></div>
+                </div>
+            </div>
+
+            <div class="notes">
+                <div class="note-card">
+                    <div class="note-title">
+                        <svg viewBox="0 0 24 24"><path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.8 2.8-3-3 2.8-2.8Z"/></svg>
+                        Suggestions
+                    </div>
+                    <div class="prompt">What can we do to improve YallaSpare?</div>
+                    <div class="write-line"></div>
+                    <div class="write-line"></div>
+                    <div class="write-line"></div>
+                </div>
+
+                <div class="note-card">
+                    <div class="note-title">
+                        <svg viewBox="0 0 24 24"><path d="M21 15a4 4 0 0 1-4 4H8l-5 3V7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4Z"/><path d="M8 9h8M8 13h5"/></svg>
+                        Additional Comments
+                    </div>
+                    <div class="prompt">Anything else you want to share?</div>
+                    <div class="write-line"></div>
+                    <div class="write-line"></div>
+                    <div class="write-line"></div>
+                </div>
+            </div>
+        </section>
+
+        <div class="art" aria-hidden="true">
+            <svg class="line-art" viewBox="0 0 360 170">
+                <circle cx="70" cy="88" r="42" stroke-width="6"/>
+                <circle cx="70" cy="88" r="20" stroke-width="5"/>
+                <circle cx="70" cy="88" r="6" stroke-width="4"/>
+                <path stroke-width="5" d="M138 118h80l22-46h-80Z"/>
+                <path stroke-width="4" d="M160 72l-18-30h94l22 30"/>
+                <path stroke-width="4" d="M232 116h74l18-33h-74Z"/>
+                <circle cx="160" cy="142" r="11" stroke-width="4"/>
+                <circle cx="270" cy="142" r="11" stroke-width="4"/>
+                <path stroke-width="4" d="M292 28l38 28M302 18l38 28M320 58l-38 60"/>
+                <path stroke-width="3" d="M24 128c30 16 73 18 108 2M8 54l26 24M22 40l26 24"/>
+                <path stroke-width="4" d="M58 48h24M48 60h44M49 116h44"/>
+            </svg>
+        </div>
+
+        <footer class="footer">
+            <div class="footer-item">
+                <svg class="small-svg" viewBox="0 0 24 24"><path d="M9 3h6l1 2h3v16H5V5h3Z"/><path d="M9 9h6M9 13h6M9 17h4"/></svg>
+                <div>Project Name:<strong>YallaSpare</strong></div>
+            </div>
+
+            <div class="footer-center">
+                <div class="logo-mark" aria-hidden="true">
+                    <span></span><span></span><span></span>
+                </div>
+            </div>
+
+            <div class="footer-item">
+                <svg class="small-svg" viewBox="0 0 24 24"><path d="m3 8 9-5 9 5-9 5Z"/><path d="M7 10v5c0 1.7 2.2 3 5 3s5-1.3 5-3v-5"/><path d="M21 8v7"/></svg>
+                <div>University:<strong>Tishk International University</strong></div>
+            </div>
+        </footer>
+    </main>
+</body>
+</html>

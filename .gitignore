@@ -17,3 +17,7 @@ yarn-error.log
 /.fleet
 /.idea
 /.vscode
+/.vagrant
+/.phpactor.json
+/storage/pail
+/storage/backups/db/*.sql

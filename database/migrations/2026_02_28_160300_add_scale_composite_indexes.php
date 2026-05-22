@@ -94,6 +94,18 @@ return new class extends Migration
             return false;
         }
 
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            $indexes = DB::select("PRAGMA index_list('{$table}')");
+
+            foreach ($indexes as $index) {
+                if (($index->name ?? null) === $indexName) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         $database = Schema::getConnection()->getDatabaseName();
 
         return DB::selectOne(

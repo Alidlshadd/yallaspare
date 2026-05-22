@@ -25,7 +25,9 @@ class Setting extends Model
             'currency_code' => 'IQD',
             'currency_symbol' => 'IQD',
             'low_stock_threshold' => (string) config('inventory.low_stock_threshold', 5),
+            'shipping_fee' => '5000',
             'site_logo' => '',
+            'site_logo_version' => '',
         ];
     }
 

@@ -7,6 +7,10 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 
 class UserController extends Controller
@@ -109,8 +113,17 @@ class UserController extends Controller
             ->latest('created_at')
             ->first();
 
+        $userReviews = $user->productReviews()
+            ->with('product:id,name_en,name_ar,name_ku,sku,slug,image')
+            ->latest('reviewed_at')
+            ->latest('id')
+            ->get();
+
         return view('admin.users.show', [
             'user' => $user,
+            'roleOptions' => User::allowedRoles(),
+            'dealerStatuses' => User::allowedDealerStatuses(),
+            'permissionGroups' => User::permissionGroups(),
             'stats' => [
                 'orders_total' => (int) $statusCounts->sum(),
                 'orders_pending' => (int) ($statusCounts['pending'] ?? 0),
@@ -122,7 +135,67 @@ class UserController extends Controller
                 'last_order_at' => $lastOrder?->created_at,
             ],
             'recentOrders' => $recentOrders,
+            'userReviews' => $userReviews,
         ]);
+    }
+
+    public function updateDetails(Request $request, User $user): RedirectResponse
+    {
+        $this->authorize('manage-users');
+
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email:rfc', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
+            'phone' => ['nullable', 'string', 'max:30', 'regex:/^[0-9+\-\s().٠-٩۰-۹]+$/u', User::uniquePhoneRule($user->id)],
+            'date_of_birth' => ['nullable', 'date', 'before:today'],
+            'role' => ['required', 'string', 'in:' . implode(',', User::allowedRoles())],
+            'permissions' => ['nullable', 'array'],
+            'permissions.*' => ['string', Rule::in(User::allowedPermissions())],
+            'dealer_status' => ['nullable', 'string', 'in:' . implode(',', User::allowedDealerStatuses())],
+            'dealer_discount' => ['nullable', 'numeric', 'min:0', 'max:100'],
+        ]);
+
+        $newRole = User::normalizeRole($data['role']);
+        $authUser = $request->user();
+
+        if ((int) $authUser->id === (int) $user->id && $newRole !== User::ROLE_SUPER_ADMIN) {
+            return back()->with('error', __('You cannot demote your own super admin account.'));
+        }
+
+        if (
+            $user->role === User::ROLE_SUPER_ADMIN &&
+            $newRole !== User::ROLE_SUPER_ADMIN &&
+            User::where('role', User::ROLE_SUPER_ADMIN)->count() <= 1
+        ) {
+            return back()->with('error', __('At least one super admin account must remain.'));
+        }
+
+        $dealerStatus = $newRole === User::ROLE_DEALER
+            ? ($data['dealer_status'] ?? User::DEALER_STATUS_INACTIVE)
+            : User::DEALER_STATUS_INACTIVE;
+
+        $dealerDiscount = $newRole === User::ROLE_DEALER
+            ? round((float) ($data['dealer_discount'] ?? 0), 2)
+            : 0;
+        $permissions = $newRole === User::ROLE_SUPER_ADMIN
+            ? null
+            : User::normalizePermissions($data['permissions'] ?? []);
+
+        $user->update([
+            'name' => trim($data['name']),
+            'email' => strtolower(trim($data['email'])),
+            'phone' => filled($data['phone'] ?? null) ? trim((string) $data['phone']) : null,
+            'date_of_birth' => $data['date_of_birth'] ?? null,
+            'role' => $newRole,
+            'permissions' => $permissions,
+            'dealer_status' => $dealerStatus,
+            'dealer_discount' => $dealerDiscount,
+            'email_verified_at' => $request->boolean('email_verified')
+                ? ($user->email_verified_at ?? now())
+                : null,
+        ]);
+
+        return back()->with('success', __('User details updated successfully.'));
     }
 
     public function updateRole(Request $request, User $user): RedirectResponse
@@ -137,7 +210,7 @@ class UserController extends Controller
         $authUser = $request->user();
 
         if ((int) $authUser->id === (int) $user->id && $newRole !== User::ROLE_SUPER_ADMIN) {
-            return back()->with('error', 'You cannot demote your own super admin account.');
+            return back()->with('error', __('You cannot demote your own super admin account.'));
         }
 
         if (
@@ -145,14 +218,31 @@ class UserController extends Controller
             $newRole !== User::ROLE_SUPER_ADMIN &&
             User::where('role', User::ROLE_SUPER_ADMIN)->count() <= 1
         ) {
-            return back()->with('error', 'At least one super admin account must remain.');
+            return back()->with('error', __('At least one super admin account must remain.'));
         }
 
         $user->update([
             'role' => $newRole,
+            'permissions' => null,
         ]);
 
-        return back()->with('success', 'User role updated successfully.');
+        return back()->with('success', __('User role updated successfully.'));
+    }
+
+    public function updatePassword(Request $request, User $user): RedirectResponse
+    {
+        $this->authorize('manage-users');
+
+        $data = $request->validate([
+            'password' => ['required', 'confirmed', Password::defaults()],
+        ]);
+
+        $user->forceFill([
+            'password' => Hash::make($data['password']),
+            'remember_token' => Str::random(60),
+        ])->save();
+
+        return back()->with('success', __('User password updated successfully.'));
     }
 
     public function destroy(Request $request, User $user): RedirectResponse
@@ -160,19 +250,19 @@ class UserController extends Controller
         $this->authorize('delete', $user);
 
         if ((int) $request->user()->id === (int) $user->id) {
-            return back()->with('error', 'You cannot delete your own account.');
+            return back()->with('error', __('You cannot delete your own account.'));
         }
 
         if ($user->role === User::ROLE_SUPER_ADMIN && User::where('role', User::ROLE_SUPER_ADMIN)->count() <= 1) {
-            return back()->with('error', 'Cannot delete the last super admin account.');
+            return back()->with('error', __('Cannot delete the last super admin account.'));
         }
 
         if ($user->orders()->exists()) {
-            return back()->with('error', 'Cannot delete users with existing orders.');
+            return back()->with('error', __('Cannot delete users with existing orders.'));
         }
 
         $user->delete();
 
-        return back()->with('success', 'User deleted successfully.');
+        return back()->with('success', __('User deleted successfully.'));
     }
 }

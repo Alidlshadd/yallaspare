@@ -34,7 +34,7 @@ class NotificationController extends Controller
                 ->where('stock_quantity', '<=', 0)
                 ->orderBy('updated_at', 'desc')
                 ->limit(5)
-                ->get(['id', 'name_en', 'stock_quantity', 'updated_at']);
+                ->get(['id', 'name_en', 'name_ar', 'name_ku', 'stock_quantity', 'updated_at']);
 
             $lowStockProducts = app(LowStockService::class)->getLowStockProducts(5);
 
@@ -48,9 +48,9 @@ class NotificationController extends Controller
             $outItems = $outOfStockProducts->map(fn ($product) => [
                 'key' => $this->makeKey('out_of_stock', $product->id, $product->updated_at?->timestamp),
                 'id' => $product->id,
-                'title' => $product->name_en,
-                'subtitle' => 'Out of stock',
-                'meta' => 'Stock: ' . $product->stock_quantity,
+                'title' => $product->name,
+                'subtitle' => __('Out of stock'),
+                'meta' => __('Stock: :count', ['count' => $product->stock_quantity]),
                 'url' => route('admin.products.index', ['low_stock' => 1]),
                 'updated_at' => optional($product->updated_at)->toIso8601String(),
             ])->values()->toArray();
@@ -58,9 +58,9 @@ class NotificationController extends Controller
             $lowItems = $lowStockProducts->map(fn ($product) => [
                 'key' => app(LowStockNotificationService::class)->makeKey($product->id),
                 'id' => $product->id,
-                'title' => $product->name_en,
-                'subtitle' => 'Low stock alert',
-                'meta' => 'Stock: ' . $product->stock_quantity,
+                'title' => $product->name,
+                'subtitle' => __('Low stock alert'),
+                'meta' => __('Stock: :count', ['count' => $product->stock_quantity]),
                 'url' => route('admin.products.index', ['low_stock' => 1]),
                 'updated_at' => optional($product->updated_at)->toIso8601String(),
             ])->values()->toArray();
@@ -69,7 +69,7 @@ class NotificationController extends Controller
                 'key' => $this->makeKey('dealer_request', $dealer->id, $dealer->updated_at?->timestamp),
                 'id' => $dealer->id,
                 'title' => $dealer->name,
-                'subtitle' => 'Dealer request pending review',
+                'subtitle' => __('Dealer request pending review'),
                 'meta' => $dealer->email,
                 'url' => route('admin.dealers.index', ['status' => 'inactive']),
                 'updated_at' => optional($dealer->updated_at)->toIso8601String(),

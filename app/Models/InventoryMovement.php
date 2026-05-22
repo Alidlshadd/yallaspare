@@ -16,6 +16,7 @@ class InventoryMovement extends Model
 
     protected $fillable = [
         'product_id',
+        'warehouse_id',
         'user_id',
         'type',
         'quantity',
@@ -23,6 +24,11 @@ class InventoryMovement extends Model
         'stock_after',
         'reference',
         'note',
+        'performed_at',
+    ];
+
+    protected $casts = [
+        'performed_at' => 'datetime',
     ];
 
     public function getActivitylogOptions(): LogOptions
@@ -41,5 +47,10 @@ class InventoryMovement extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function warehouse()
+    {
+        return $this->belongsTo(Warehouse::class);
     }
 }

@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            return;
+        }
+
         $this->createImmutableTriggers('price_histories', 'price_histories is immutable');
         $this->createImmutableTriggers('stock_transactions', 'stock_transactions is immutable');
         $this->createImmutableTriggers('audit_logs', 'audit_logs is immutable');
@@ -16,6 +20,10 @@ return new class extends Migration
 
     public function down(): void
     {
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            return;
+        }
+
         $this->dropTriggerIfExists('trg_price_histories_block_update');
         $this->dropTriggerIfExists('trg_price_histories_block_delete');
         $this->dropTriggerIfExists('trg_stock_transactions_block_update');

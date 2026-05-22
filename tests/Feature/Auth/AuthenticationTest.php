@@ -3,7 +3,6 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
-use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -28,7 +27,22 @@ class AuthenticationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(RouteServiceProvider::HOME);
+        $response->assertRedirect(route('user.shop.home'));
+    }
+
+    public function test_users_can_authenticate_with_normalized_phone(): void
+    {
+        $user = User::factory()->create([
+            'phone' => '+964 750 123 4567',
+        ]);
+
+        $response = $this->post('/login', [
+            'email' => '9647501234567',
+            'password' => 'password',
+        ]);
+
+        $this->assertAuthenticatedAs($user);
+        $response->assertRedirect(route('user.shop.home'));
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void
@@ -51,5 +65,16 @@ class AuthenticationTest extends TestCase
 
         $this->assertGuest();
         $response->assertRedirect('/');
+    }
+
+    public function test_users_cannot_logout_with_get_request(): void
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)
+            ->get('/logout')
+            ->assertStatus(405);
+
+        $this->assertAuthenticated();
     }
 }

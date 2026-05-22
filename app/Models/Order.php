@@ -14,21 +14,42 @@ class Order extends Model
     public const STATUS_SHIPPED = 'shipped';
     public const STATUS_DELIVERED = 'delivered';
     public const STATUS_CANCELLED = 'cancelled';
+    public const PAYMENT_PENDING = 'pending';
+    public const PAYMENT_PAID = 'paid';
+    public const PAYMENT_FAILED = 'failed';
+    public const PAYMENT_REFUNDED = 'refunded';
 
     protected $fillable = [
         'user_id',
         'order_number',
+        'subtotal_amount',
+        'shipping_fee',
+        'discount_amount',
+        'coupon_id',
+        'coupon_code',
+        'grand_total',
         'total_amount',
         'status',
         'payment_method',
+        'payment_status',
+        'payment_reference',
         'delivery_address',
         'delivery_city',
         'delivery_phone',
         'notes',
+        'cancellation_requested_at',
+        'cancellation_reason',
+        'archived_at',
     ];
 
     protected $casts = [
+        'subtotal_amount' => 'decimal:2',
+        'shipping_fee' => 'decimal:2',
+        'discount_amount' => 'decimal:2',
+        'grand_total' => 'decimal:2',
         'total_amount' => 'decimal:2',
+        'cancellation_requested_at' => 'datetime',
+        'archived_at' => 'datetime',
     ];
 
     public static function allowedStatuses(): array
@@ -40,6 +61,49 @@ class Order extends Model
             self::STATUS_DELIVERED,
             self::STATUS_CANCELLED,
         ];
+    }
+
+    public static function allowedPaymentStatuses(): array
+    {
+        return [
+            self::PAYMENT_PENDING,
+            self::PAYMENT_PAID,
+            self::PAYMENT_FAILED,
+            self::PAYMENT_REFUNDED,
+        ];
+    }
+
+    public static function normalizedPaymentStatus(?string $status): string
+    {
+        $normalized = strtolower(trim((string) $status));
+
+        return in_array($normalized, self::allowedPaymentStatuses(), true)
+            ? $normalized
+            : self::PAYMENT_PENDING;
+    }
+
+    public static function paymentStatusMeta(?string $status): array
+    {
+        $normalized = self::normalizedPaymentStatus($status);
+
+        return match ($normalized) {
+            self::PAYMENT_PAID => [
+                'label' => __('Paid'),
+                'class' => 'bg-emerald-100 text-emerald-800 border border-emerald-200',
+            ],
+            self::PAYMENT_FAILED => [
+                'label' => __('Failed'),
+                'class' => 'bg-rose-100 text-rose-800 border border-rose-200',
+            ],
+            self::PAYMENT_REFUNDED => [
+                'label' => __('Refunded'),
+                'class' => 'bg-slate-100 text-slate-700 border border-slate-200',
+            ],
+            default => [
+                'label' => __('Pending'),
+                'class' => 'bg-amber-100 text-amber-800 border border-amber-200',
+            ],
+        };
     }
 
     public static function workflow(): array
@@ -90,27 +154,27 @@ class Order extends Model
 
         return match ($normalized) {
             self::STATUS_PENDING => [
-                'label' => 'Pending',
+                'label' => __('Pending'),
                 'class' => 'bg-amber-100 text-amber-800 border border-amber-200',
             ],
             self::STATUS_PROCESSING => [
-                'label' => 'Processing',
+                'label' => __('Processing'),
                 'class' => 'bg-blue-100 text-blue-800 border border-blue-200',
             ],
             self::STATUS_SHIPPED => [
-                'label' => 'Shipped',
+                'label' => __('Shipped'),
                 'class' => 'bg-indigo-100 text-indigo-800 border border-indigo-200',
             ],
             self::STATUS_DELIVERED => [
-                'label' => 'Delivered',
+                'label' => __('Delivered'),
                 'class' => 'bg-emerald-100 text-emerald-800 border border-emerald-200',
             ],
             self::STATUS_CANCELLED => [
-                'label' => 'Cancelled',
+                'label' => __('Cancelled'),
                 'class' => 'bg-rose-100 text-rose-800 border border-rose-200',
             ],
             default => [
-                'label' => ucfirst(str_replace('_', ' ', $normalized)),
+                'label' => __(ucfirst(str_replace('_', ' ', $normalized))),
                 'class' => 'bg-slate-100 text-slate-700 border border-slate-200',
             ],
         };
@@ -129,5 +193,20 @@ class Order extends Model
     public function statusHistory()
     {
         return $this->hasMany(OrderStatusHistory::class)->latest('id');
+    }
+
+    public function coupon()
+    {
+        return $this->belongsTo(Coupon::class);
+    }
+
+    public function adminNotes()
+    {
+        return $this->hasMany(OrderAdminNote::class)->latest('id');
+    }
+
+    public function returnRequests()
+    {
+        return $this->hasMany(ReturnRequest::class)->latest('id');
     }
 }

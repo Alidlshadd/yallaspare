@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            return;
+        }
+
         $this->ensureRestrictDelete(
             table: 'order_items',
             constraint: 'order_items_product_id_foreign',

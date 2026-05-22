@@ -23,7 +23,7 @@ class LowStockNotificationService
             return Product::query()
                 ->lowStock()
                 ->leftJoin('admin_notification_reads as anr', function ($join) use ($userId) {
-                    $join->on('anr.notification_key', '=', DB::raw("CONCAT('low_stock:', products.id)"))
+                    $join->on('anr.notification_key', '=', DB::raw($this->notificationKeyExpression()))
                         ->where('anr.user_id', '=', $userId);
                 })
                 ->whereNull('anr.id')
@@ -38,7 +38,7 @@ class LowStockNotificationService
         return Product::query()
             ->lowStock()
             ->leftJoin('admin_notification_reads as anr', function ($join) use ($userId) {
-                $join->on('anr.notification_key', '=', DB::raw("CONCAT('low_stock:', products.id)"))
+                $join->on('anr.notification_key', '=', DB::raw($this->notificationKeyExpression()))
                     ->where('anr.user_id', '=', $userId);
             })
             ->whereNull('anr.id')
@@ -51,5 +51,14 @@ class LowStockNotificationService
                 'products.stock_quantity',
                 'products.updated_at',
             ]);
+    }
+
+    private function notificationKeyExpression(): string
+    {
+        if (DB::connection()->getDriverName() === 'mysql') {
+            return "CONCAT('low_stock:', products.id)";
+        }
+
+        return "'low_stock:' || products.id";
     }
 }

@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\LoginRequest;
+use App\Providers\RouteServiceProvider;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -29,11 +31,27 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerate();
 
         $user = $request->user();
-        $defaultRedirect = $user && $user->isAdminPanelUser()
-            ? '/admin/dashboard'
-            : '/dashboard';
 
-        return redirect()->intended($defaultRedirect);
+        if ($user && ($user->login_alerts ?? true)) {
+            $timezone = in_array($user->timezone_preference, ['Asia/Baghdad', 'UTC'], true)
+                ? $user->timezone_preference
+                : config('app.timezone', 'UTC');
+
+            $signedInAt = CarbonImmutable::now($timezone)->format('Y-m-d H:i');
+
+            $request->session()->flash('success', 'Login alert: sign-in detected at ' . $signedInAt . ' (' . $timezone . ').');
+        }
+
+        if ($user && $user->isAdminPanelUser()) {
+            return redirect()->intended('/admin/dashboard');
+        }
+
+        $intendedUrl = (string) $request->session()->get('url.intended', '');
+        if ($intendedUrl !== '' && str_starts_with($intendedUrl, url('/admin'))) {
+            $request->session()->forget('url.intended');
+        }
+
+        return redirect()->intended(route('user.shop.home'));
     }
 
     /**

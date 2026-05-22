@@ -2,8 +2,8 @@
     <x-slot name="header">
         <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div>
-                <h2 class="text-xl font-semibold text-slate-800 dark:text-slate-100">Activity Logs</h2>
-                <p class="text-sm text-slate-500 dark:text-slate-400">Super admin audit trail</p>
+                <h2 class="text-xl font-semibold text-slate-800 dark:text-slate-100">{{ __('Activity Logs') }}</h2>
+                <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Super admin audit trail') }}</p>
             </div>
             <form method="GET" action="{{ route('admin.activity-logs.index') }}" class="flex flex-wrap items-center gap-3">
                 <div class="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-600 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
@@ -13,7 +13,7 @@
                         type="text"
                         name="q"
                         value="{{ $search ?? '' }}"
-                        placeholder="Search logs..."
+                        placeholder="{{ __('Search logs...') }}"
                         class="w-56 bg-transparent outline-none placeholder:text-slate-400"
                         autocomplete="off"
                     />
@@ -47,11 +47,11 @@
             <table class="min-w-full text-sm">
                 <thead class="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
                     <tr>
-                        <th class="w-28 px-3 py-3 text-left font-semibold">Details</th>
-                        <th class="px-4 py-3 text-left font-semibold">Admin</th>
-                        <th class="px-4 py-3 text-left font-semibold">Action</th>
-                        <th class="px-4 py-3 text-left font-semibold">Subject</th>
-                        <th class="px-4 py-3 text-left font-semibold">Date</th>
+                        <th class="w-28 px-3 py-3 text-left font-semibold">{{ __('Details') }}</th>
+                        <th class="px-4 py-3 text-left font-semibold">{{ __('Admin') }}</th>
+                        <th class="px-4 py-3 text-left font-semibold">{{ __('Action') }}</th>
+                        <th class="px-4 py-3 text-left font-semibold">{{ __('Subject') }}</th>
+                        <th class="px-4 py-3 text-left font-semibold">{{ __('Date') }}</th>
                     </tr>
                 </thead>
 
@@ -104,8 +104,8 @@
                                     class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:scale-105 hover:border-slate-300 hover:text-slate-700 hover:shadow dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:text-white"
                                     @click="open = !open"
                                     :aria-expanded="open.toString()"
-                                    aria-label="Toggle log details"
-                                    title="Toggle details"
+                                    aria-label="{{ __('Toggle log details') }}"
+                                    title="{{ __('Toggle details') }}"
                                 >
                                     <span class="relative block h-4 w-4">
                                         <svg
@@ -155,7 +155,7 @@
                             <td colspan="5" class="px-4 pb-4 pt-1">
                                 <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-900/50">
                                     @if(empty($keys))
-                                        <span class="text-xs text-slate-400">No field-level changes.</span>
+                                        <span class="text-xs text-slate-400">{{ __('No field-level changes.') }}</span>
                                     @else
                                         <div class="max-h-64 space-y-1 overflow-y-auto pr-1">
                                             @foreach($keys as $key)
@@ -185,7 +185,7 @@
 
                                     <details class="group mt-3">
                                         <summary class="cursor-pointer text-xs font-semibold text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100">
-                                            View raw payload
+                                            {{ __('View raw payload') }}
                                         </summary>
                                         <div class="mt-2 max-h-64 overflow-y-auto rounded-lg border border-slate-800 bg-slate-900 p-3 text-xs leading-relaxed text-slate-100">
                                             <pre class="whitespace-pre-wrap break-words text-slate-200">{{ json_encode($props, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?: '{}' }}</pre>
@@ -199,7 +199,7 @@
                     <tbody>
                         <tr>
                             <td colspan="5" class="px-4 py-8 text-center text-slate-500 dark:text-slate-400">
-                                No activity logs found.
+                                {{ __('No activity logs found.') }}
                             </td>
                         </tr>
                     </tbody>

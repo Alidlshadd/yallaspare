@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ in_array(app()->getLocale(), ['ar', 'ku'], true) ? 'rtl' : 'ltr' }}">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,6 +16,10 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         <style>
+            html, body {
+                margin: 0;
+                padding: 0;
+            }
             .scrollbar-hide {
                 -ms-overflow-style: none;
                 scrollbar-width: none;
@@ -40,6 +44,14 @@
     </head>
     <body class="font-sans antialiased bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-slate-100">
         @if(request()->routeIs('admin.*'))
+            @php
+                $isRtl = in_array(app()->getLocale(), ['ar', 'ku'], true);
+                $adminUser = auth()->user();
+                $adminAvatarInitial = strtoupper(substr((string) ($adminUser?->name ?: 'A'), 0, 1));
+                $adminProfilePhotoUrl = !empty($adminUser?->profile_photo_path)
+                    ? asset('storage/' . ltrim((string) $adminUser->profile_photo_path, '/'))
+                    : null;
+            @endphp
             <div x-data="{ sidebarOpen: false }" class="min-h-screen admin-shell">
                 <!-- Mobile Overlay -->
                 <div
@@ -51,33 +63,38 @@
 
                 <!-- Sidebar -->
                 <aside
-                    class="fixed inset-y-0 left-0 z-40 w-64 bg-slate-900 text-slate-100 transform transition-transform duration-200 lg:translate-x-0 dark:bg-slate-900 h-screen overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-hide"
-                    :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'"
+                    class="fixed inset-y-0 {{ $isRtl ? 'right-0' : 'left-0' }} z-40 w-64 bg-slate-900 text-slate-100 transform transition-transform duration-200 lg:translate-x-0 dark:bg-slate-900 h-screen overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-hide"
+                    :class="sidebarOpen ? 'translate-x-0' : '{{ $isRtl ? 'translate-x-full' : '-translate-x-full' }}'"
                 >
-                    <div class="flex items-center gap-3 px-6 py-6 border-b border-white/10">
-                        @if(!empty($systemSettings['site_logo_url']))
-                            <div class="h-10 w-10 rounded-lg bg-slate-800 overflow-hidden flex items-center justify-center">
-                                <img src="{{ $systemSettings['site_logo_url'] }}" alt="Logo" class="h-full w-full object-cover">
-                            </div>
+                    <div class="header-logo-area border-b border-white/10 px-4">
+                        <a href="{{ route('admin.dashboard') }}" class="app-logo app-logo-dark w-full justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-white/25">
+                            <span class="inline-flex items-center gap-3 min-w-0">
+                                <x-brand-mark
+                                    :logo-url="$systemSettings['site_logo_url'] ?? null"
+                                    :brand="$systemSettings['site_name'] ?? 'YallaSpare'"
+                                    wrapper-class="app-logo-mark rounded-lg border border-white/20 bg-white/5"
+                                    img-class="h-full w-auto object-contain"
+                                    fallback-class="inline-flex h-full w-full items-center justify-center rounded-lg bg-slate-800"
+                                    fallback-text-class="text-sm font-semibold text-white"
+                                />
+                                <span class="app-logo-text truncate">{{ $systemSettings['site_name'] ?? 'YallaSpare' }}</span>
+                            </span>
+                            <span class="text-[11px] uppercase tracking-widest text-slate-400">{{ __('Admin') }}</span>
+                        </a>
+                    </div>
+                    <a href="{{ route('admin.profile.edit') }}" class="px-4 py-4 border-b border-white/10 flex items-center gap-3 transition hover:bg-slate-800/60">
+                        @if ($adminProfilePhotoUrl)
+                            <img src="{{ $adminProfilePhotoUrl }}" alt="{{ $adminUser->name }} profile photo" class="h-10 w-10 shrink-0 rounded-full border border-white/20 object-cover">
                         @else
-                            <div class="h-10 w-10 rounded-lg bg-slate-800 flex items-center justify-center">
-                                <span class="text-lg font-semibold">YS</span>
+                            <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-semibold shrink-0">
+                                {{ $adminAvatarInitial }}
                             </div>
                         @endif
-                        <div>
-                            <p class="text-sm uppercase tracking-widest text-slate-400">Admin</p>
-                            <p class="font-semibold">{{ $systemSettings['site_name'] ?? 'YallaSpare' }}</p>
+                        <div class="min-w-0">
+                            <p class="truncate text-sm font-semibold text-slate-100">{{ $adminUser->name }}</p>
+                            <p class="text-xs text-slate-400">{{ __('Profile') }}</p>
                         </div>
-                    </div>
-                    <div class="px-4 py-4 border-b border-slate-200 flex items-center gap-3 dark:border-slate-800">
-                        <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-semibold">
-                            {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                        </div>
-                        <div>
-                            <p class="text-sm font-semibold text-slate-100">{{ auth()->user()->name }}</p>
-                            <p class="text-xs text-slate-400">{{ auth()->user()->email }}</p>
-                        </div>
-                    </div>
+                    </a>
 
                     <nav class="px-4 py-6 space-y-2">
                         @php
@@ -94,44 +111,88 @@
                             <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
                                 <i class="fas fa-chart-line"></i>
                             </span>
-                            <span>Dashboard</span>
+                            <span>{{ __('Dashboard') }}</span>
                         </a>
-                        <a
-                            href="{{ route('admin.products.index') }}"
-                            class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.products.*')) }}"
-                        >
-                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
-                                <i class="fas fa-box"></i>
-                            </span>
-                            <span>Products</span>
-                        </a>
-                        <a
-                            href="{{ route('admin.categories.index') }}"
-                            class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.categories.*')) }}"
-                        >
-                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
-                                <i class="fas fa-layer-group"></i>
-                            </span>
-                            <span>Categories</span>
-                        </a>
-                        <a
-                            href="{{ route('admin.inventory.index') }}"
-                            class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.inventory.*')) }}"
-                        >
-                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
-                                <i class="fas fa-warehouse"></i>
-                            </span>
-                            <span>Inventory</span>
-                        </a>
-                        <a
-                            href="{{ route('admin.orders.index') }}"
-                            class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.orders.*')) }}"
-                        >
-                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
-                                <i class="fas fa-receipt"></i>
-                            </span>
-                            <span>Orders Management</span>
-                        </a>
+                        @can(\App\Models\User::PERMISSION_FINANCE_VIEW)
+                            <a
+                                href="{{ route('admin.revenue.index') }}"
+                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.revenue.*')) }}"
+                            >
+                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                    <i class="fas fa-sack-dollar"></i>
+                                </span>
+                                <span>{{ __('Revenue') }}</span>
+                            </a>
+                        @endcan
+                        @can(\App\Models\User::PERMISSION_PRODUCTS_MANAGE)
+                            <a
+                                href="{{ route('admin.products.index') }}"
+                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.products.*')) }}"
+                            >
+                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                    <i class="fas fa-box"></i>
+                                </span>
+                                <span>{{ __('Products') }}</span>
+                            </a>
+                            <a
+                                href="{{ route('admin.categories.index') }}"
+                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.categories.*')) }}"
+                            >
+                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                    <i class="fas fa-layer-group"></i>
+                                </span>
+                                <span>{{ __('Categories') }}</span>
+                            </a>
+                            <a
+                                href="{{ route('admin.vehicle-fitments.index') }}"
+                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.vehicle-fitments.*')) }}"
+                            >
+                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                    <i class="fas fa-car-side"></i>
+                                </span>
+                                <span>{{ __('Vehicle Finder') }}</span>
+                            </a>
+                            <a
+                                href="{{ route('admin.reviews.index') }}"
+                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.reviews.*')) }}"
+                            >
+                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                    <i class="fas fa-star"></i>
+                                </span>
+                                <span>{{ __('Customer Reviews') }}</span>
+                            </a>
+                        @endcan
+                        @can(\App\Models\User::PERMISSION_STOCK_MANAGE)
+                            <a
+                                href="{{ route('admin.inventory.index') }}"
+                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.inventory.*')) }}"
+                            >
+                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                    <i class="fas fa-warehouse"></i>
+                                </span>
+                                <span>{{ __('Inventory') }}</span>
+                            </a>
+                        @endcan
+                        @can(\App\Models\User::PERMISSION_ORDERS_MANAGE)
+                            <a
+                                href="{{ route('admin.orders.index') }}"
+                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.orders.*')) }}"
+                            >
+                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                    <i class="fas fa-receipt"></i>
+                                </span>
+                                <span>{{ __('Orders Management') }}</span>
+                            </a>
+                            <a
+                                href="{{ route('admin.returns.index') }}"
+                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.returns.*')) }}"
+                            >
+                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                    <i class="fas fa-rotate-left"></i>
+                                </span>
+                                <span>{{ __('Returns & Refunds') }}</span>
+                            </a>
+                        @endcan
                         @can('manage-dealers')
                             <a
                                 href="{{ route('admin.dealers.index') }}"
@@ -140,7 +201,7 @@
                                 <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
                                     <i class="fas fa-handshake"></i>
                                 </span>
-                                <span>Dealers</span>
+                                <span>{{ __('Dealers') }}</span>
                             </a>
                         @endcan
                         @can('viewAny', \App\Models\User::class)
@@ -151,19 +212,41 @@
                                 <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
                                     <i class="fas fa-users"></i>
                                 </span>
-                                <span>Users</span>
+                                <span>{{ __('Users') }}</span>
                             </a>
                         @endcan
-                        <a
-                            href="{{ route('admin.settings.edit') }}"
-                            class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.settings.*')) }}"
-                        >
-                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
-                                <i class="fas fa-gear"></i>
-                            </span>
-                            <span>Settings</span>
-                        </a>
-                        @if(auth()->user()->role === 'super_admin')
+                        @can(\App\Models\User::PERMISSION_FINANCE_MANAGE)
+                            <a
+                                href="{{ route('admin.discounts.edit') }}"
+                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.discounts.edit') || request()->routeIs('admin.discounts.coupons.*')) }}"
+                            >
+                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                    <i class="fas fa-tags"></i>
+                                </span>
+                                <span>{{ __('Coupon Management') }}</span>
+                            </a>
+                            <a
+                                href="{{ route('admin.discounts.rules') }}"
+                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.discounts.rules')) }}"
+                            >
+                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                    <i class="fas fa-percent"></i>
+                                </span>
+                                <span>{{ __('Discount Rules') }}</span>
+                            </a>
+                        @endcan
+                        @can(\App\Models\User::PERMISSION_SETTINGS_MANAGE)
+                            <a
+                                href="{{ route('admin.settings.edit') }}"
+                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.settings.*')) }}"
+                            >
+                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                    <i class="fas fa-gear"></i>
+                                </span>
+                                <span>{{ __('Settings') }}</span>
+                            </a>
+                        @endcan
+                        @can(\App\Models\User::PERMISSION_ACTIVITY_LOGS_VIEW)
                             <a
                                 href="{{ route('admin.activity-logs.index') }}"
                                 class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.activity-logs.*')) }}"
@@ -171,14 +254,14 @@
                                 <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
                                     <i class="fas fa-clipboard-list"></i>
                                 </span>
-                                <span>Activity Logs</span>
+                                <span>{{ __('Activity Logs') }}</span>
                             </a>
-                        @endif
+                        @endcan
                     </nav>
                 </aside>
 
                 <!-- Main Content -->
-                <div class="lg:pl-64 min-h-screen flex flex-col">
+                <div class="{{ $isRtl ? 'lg:pr-64' : 'lg:pl-64' }} min-h-screen flex flex-col">
                     <header class="sticky top-0 z-20 bg-white/90 backdrop-blur border-b border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
                         <div class="flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16">
                             <div class="flex items-center gap-3">
@@ -194,17 +277,19 @@
                                             {{ $header }}
                                         </div>
                                     @else
-                                        <div class="text-lg font-semibold text-slate-900 dark:text-slate-100">Admin Panel</div>
+                                        <div class="text-lg font-semibold text-slate-900 dark:text-slate-100">{{ __('Admin Panel') }}</div>
                                     @endif
                                 </div>
                             </div>
 
                             <div class="flex items-center gap-4">
+                                <x-language-switcher variant="light" />
+
                                 <button
                                     id="adminThemeToggle"
                                     type="button"
                                     class="inline-flex items-center justify-center h-10 w-10 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
-                                    aria-label="Toggle dark mode"
+                                    aria-label="{{ __('Toggle dark mode') }}"
                                 >
                                     <i id="adminThemeIcon" class="fas fa-moon"></i>
                                 </button>
@@ -213,12 +298,12 @@
                                         id="adminNotificationsButton"
                                         type="button"
                                         class="relative inline-flex items-center justify-center h-10 w-10 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
-                                        aria-label="Notifications"
+                                        aria-label="{{ __('Notifications') }}"
                                     >
                                         <i class="fas fa-bell"></i>
                                         <span
                                             id="adminNotificationsBadge"
-                                            class="hidden absolute -top-1 -right-1 min-w-[18px] h-[18px] px-1 rounded-full bg-red-600 text-white text-[10px] font-semibold items-center justify-center"
+                                            class="hidden absolute -top-1 {{ $isRtl ? '-left-1' : '-right-1' }} min-w-[18px] h-[18px] px-1 rounded-full bg-red-600 text-white text-[10px] font-semibold items-center justify-center"
                                         >
                                             0
                                         </span>
@@ -226,17 +311,17 @@
 
                                     <div
                                         id="adminNotificationsDropdown"
-                                        class="hidden absolute right-0 mt-2 w-[360px] max-w-[92vw] bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden z-30 dark:bg-slate-900 dark:border-slate-800 dark:shadow-black/30"
+                                        class="hidden absolute {{ $isRtl ? 'left-0' : 'right-0' }} mt-2 w-[360px] max-w-[92vw] bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden z-30 dark:bg-slate-900 dark:border-slate-800 dark:shadow-black/30"
                                     >
                                         <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between dark:border-slate-800">
-                                            <p class="text-sm font-semibold text-slate-800 dark:text-slate-100">Notifications</p>
+                                            <p class="text-sm font-semibold text-slate-800 dark:text-slate-100">{{ __('Notifications') }}</p>
                                             <div class="flex items-center gap-3">
                                                 <button
                                                     id="adminNotificationsMarkAll"
                                                     type="button"
                                                     class="text-[11px] font-semibold text-indigo-600 hover:text-indigo-700"
                                                 >
-                                                    Mark all read
+                                                    {{ __('Mark all read') }}
                                                 </button>
                                                 <span id="adminNotificationsUpdatedAt" class="text-[11px] text-slate-400 dark:text-slate-500">--</span>
                                             </div>
@@ -245,7 +330,7 @@
                                         <div class="max-h-[420px] overflow-y-auto">
                                             <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-800">
                                                 <div class="flex items-center justify-between mb-2">
-                                                    <p class="text-xs font-semibold uppercase tracking-wide text-rose-700">Out Of Stock</p>
+                                                    <p class="text-xs font-semibold uppercase tracking-wide text-rose-700">{{ __('Out Of Stock') }}</p>
                                                     <span id="adminOutOfStockCount" class="text-xs font-semibold text-rose-700">0</span>
                                                 </div>
                                                 <div id="adminOutOfStockList" class="space-y-2"></div>
@@ -253,7 +338,7 @@
 
                                             <div class="px-4 py-3 border-b border-slate-100 dark:border-slate-800">
                                                 <div class="flex items-center justify-between mb-2">
-                                                    <p class="text-xs font-semibold uppercase tracking-wide text-amber-700">Low Stock</p>
+                                                    <p class="text-xs font-semibold uppercase tracking-wide text-amber-700">{{ __('Low Stock') }}</p>
                                                     <span id="adminLowStockCount" class="text-xs font-semibold text-amber-700">0</span>
                                                 </div>
                                                 <div id="adminLowStockList" class="space-y-2"></div>
@@ -261,7 +346,7 @@
 
                                             <div class="px-4 py-3">
                                                 <div class="flex items-center justify-between mb-2">
-                                                    <p class="text-xs font-semibold uppercase tracking-wide text-indigo-700">Dealer Requests</p>
+                                                    <p class="text-xs font-semibold uppercase tracking-wide text-indigo-700">{{ __('Dealer Requests') }}</p>
                                                     <span id="adminDealerRequestCount" class="text-xs font-semibold text-indigo-700">0</span>
                                                 </div>
                                                 <div id="adminDealerRequestList" class="space-y-2"></div>
@@ -270,6 +355,20 @@
                                     </div>
                                 </div>
 
+                                <a
+                                    href="{{ route('admin.profile.edit') }}"
+                                    class="inline-flex items-center gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm text-slate-600 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                                >
+                                    @if ($adminProfilePhotoUrl)
+                                        <img src="{{ $adminProfilePhotoUrl }}" alt="{{ $adminUser->name }} profile photo" class="h-6 w-6 rounded-full object-cover">
+                                    @else
+                                        <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-indigo-600 text-xs font-semibold text-white">
+                                            {{ $adminAvatarInitial }}
+                                        </span>
+                                    @endif
+                                    <span class="hidden md:inline">{{ __('Profile') }}</span>
+                                </a>
+
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button
@@ -277,7 +376,7 @@
                                         class="inline-flex items-center gap-2 px-3 py-2 text-sm rounded-md border border-slate-200 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
                                     >
                                         <i class="fas fa-right-from-bracket"></i>
-                                        <span class="hidden sm:inline">Log Out</span>
+                                        <span class="hidden sm:inline">{{ __('Log Out') }}</span>
                                     </button>
                                 </form>
                             </div>
@@ -288,42 +387,30 @@
                         {{ $slot }}
                     </main>
 
-                    <footer class="mt-auto border-t border-slate-200/60 bg-white/80 px-6 py-4 backdrop-blur-sm dark:border-slate-700/60 dark:bg-[#070740]/80">
-                        <div class="mx-auto flex w-full max-w-7xl flex-col items-center justify-between gap-3 sm:flex-row">
-                            <p class="text-xs text-slate-600/90 dark:text-slate-300/80">
-                                &copy; {{ date('Y') }} Yalla Spare. All rights reserved.
-                            </p>
-
-                            <nav aria-label="Footer links" class="flex items-center gap-5">
-                                <a
-                                    href="{{ url('/privacy-policy') }}"
-                                    class="group relative inline-block text-xs text-slate-600/90 transition-colors duration-200 hover:text-slate-900 dark:text-slate-300/85 dark:hover:text-white"
-                                >
-                                    Privacy Policy
-                                    <span class="pointer-events-none absolute left-0 -bottom-0.5 h-px w-full origin-left scale-x-0 bg-current transition-transform duration-300 ease-out group-hover:scale-x-100"></span>
-                                </a>
-                                <a
-                                    href="{{ url('/terms') }}"
-                                    class="group relative inline-block text-xs text-slate-600/90 transition-colors duration-200 hover:text-slate-900 dark:text-slate-300/85 dark:hover:text-white"
-                                >
-                                    Terms
-                                    <span class="pointer-events-none absolute left-0 -bottom-0.5 h-px w-full origin-left scale-x-0 bg-current transition-transform duration-300 ease-out group-hover:scale-x-100"></span>
-                                </a>
-                                <a
-                                    href="{{ url('/support') }}"
-                                    class="group relative inline-block text-xs text-slate-600/90 transition-colors duration-200 hover:text-slate-900 dark:text-slate-300/85 dark:hover:text-white"
-                                >
-                                    Support
-                                    <span class="pointer-events-none absolute left-0 -bottom-0.5 h-px w-full origin-left scale-x-0 bg-current transition-transform duration-300 ease-out group-hover:scale-x-100"></span>
-                                </a>
-                            </nav>
+                    <div id="adminDangerModal" class="fixed inset-0 z-[70] hidden items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm">
+                        <div class="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_30px_80px_rgba(15,23,42,0.35)] dark:border-slate-800 dark:bg-slate-900">
+                            <div class="flex items-start gap-3">
+                                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-rose-50 text-rose-600 dark:bg-rose-900/30 dark:text-rose-300">
+                                    <i class="fas fa-triangle-exclamation"></i>
+                                </div>
+                                <div class="min-w-0 flex-1">
+                                    <h3 id="adminDangerTitle" class="text-lg font-semibold text-slate-900 dark:text-slate-100">{{ __('Delete Coupon') }}</h3>
+                                    <p id="adminDangerDescription" class="mt-1 text-sm text-slate-600 dark:text-slate-400">{{ __('This action is permanent and cannot be undone.') }}</p>
+                                </div>
+                            </div>
+                            <div class="mt-5 flex justify-end gap-2">
+                                <button type="button" id="adminDangerCancel" class="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">{{ __('Cancel') }}</button>
+                                <button type="button" id="adminDangerConfirm" class="rounded-xl bg-rose-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-rose-700">{{ __('Confirm Delete') }}</button>
+                            </div>
                         </div>
-                    </footer>
+                    </div>
                 </div>
             </div>
         @else
             <div class="min-h-screen bg-gray-100">
-                @include('layouts.navigation')
+                @unless ($hideNavigation)
+                    @include('layouts.navigation')
+                @endunless
 
                 <!-- Page Heading -->
                 @if (isset($header))
@@ -338,6 +425,8 @@
                 <main>
                     {{ $slot }}
                 </main>
+
+                @include('partials.site-footer')
             </div>
         @endif
 
@@ -380,6 +469,7 @@
                     const readEndpoint = "{{ route('admin.notifications.read') }}";
                     const readAllEndpoint = "{{ route('admin.notifications.read-all') }}";
                     const csrfToken = document.querySelector('meta[name=\"csrf-token\"]')?.getAttribute('content') || '';
+                    const markReadLabel = @json(__('Mark read'));
                     let currentKeys = [];
 
                     if (!button || !dropdown) {
@@ -405,7 +495,7 @@
                                     <p class="text-[11px] text-slate-400 dark:text-slate-500">${item.time ?? ''}</p>
                                 </div>
                                 </a>
-                                ${item.read ? '' : `<button type="button" data-key="${item.key}" class="admin-mark-read mt-2 text-[11px] font-semibold text-indigo-600 hover:text-indigo-700">Mark read</button>`}
+                                ${item.read ? '' : `<button type="button" data-key="${item.key}" class="admin-mark-read mt-2 text-[11px] font-semibold text-indigo-600 hover:text-indigo-700">${markReadLabel}</button>`}
                             </div>
                         `).join('');
                         return true;
@@ -514,7 +604,85 @@
                         fetchNotifications().then(bindMarkReadActions);
                     }, 20000);
                 })();
+
+                (function () {
+                    const modal = document.getElementById('adminDangerModal');
+                    const titleEl = document.getElementById('adminDangerTitle');
+                    const descriptionEl = document.getElementById('adminDangerDescription');
+                    const cancelBtn = document.getElementById('adminDangerCancel');
+                    const confirmBtn = document.getElementById('adminDangerConfirm');
+
+                    if (!modal || !titleEl || !descriptionEl || !cancelBtn || !confirmBtn) {
+                        return;
+                    }
+
+                    let resolver = null;
+
+                    const setVisible = (visible) => {
+                        modal.classList.toggle('hidden', !visible);
+                        modal.classList.toggle('flex', visible);
+                    };
+
+                    const resolveAndClose = (value) => {
+                        setVisible(false);
+                        if (resolver) {
+                            resolver(value);
+                            resolver = null;
+                        }
+                    };
+
+                    window.adminDangerConfirm = ({ title, description } = {}) => {
+                        titleEl.textContent = title || 'Delete Coupon';
+                        descriptionEl.textContent = description || 'This action is permanent and cannot be undone.';
+                        setVisible(true);
+
+                        return new Promise((resolve) => {
+                            resolver = resolve;
+                        });
+                    };
+
+                    cancelBtn.addEventListener('click', () => resolveAndClose(false));
+                    confirmBtn.addEventListener('click', () => resolveAndClose(true));
+                    modal.addEventListener('click', (event) => {
+                        if (event.target === modal) {
+                            resolveAndClose(false);
+                        }
+                    });
+
+                    document.addEventListener('keydown', (event) => {
+                        if (event.key === 'Escape' && !modal.classList.contains('hidden')) {
+                            resolveAndClose(false);
+                        }
+                    });
+
+                    document.addEventListener('submit', (event) => {
+                        const form = event.target instanceof HTMLFormElement ? event.target : null;
+                        if (!form || !form.matches('form[data-danger-confirm]')) {
+                            return;
+                        }
+
+                        if (form.dataset.dangerConfirmed === '1') {
+                            delete form.dataset.dangerConfirmed;
+                            return;
+                        }
+
+                        event.preventDefault();
+                        window.adminDangerConfirm({
+                            title: form.dataset.dangerTitle || 'Delete Coupon',
+                            description: form.dataset.dangerDescription || 'This action is permanent and cannot be undone.',
+                        }).then((confirmed) => {
+                            if (!confirmed) return;
+                            form.dataset.dangerConfirmed = '1';
+                            if (typeof form.requestSubmit === 'function') {
+                                form.requestSubmit();
+                            } else {
+                                form.submit();
+                            }
+                        });
+                    }, true);
+                })();
             </script>
         @endif
+        @stack('scripts')
     </body>
 </html>

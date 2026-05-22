@@ -14,6 +14,11 @@ return new class extends Migration
         }
 
         $this->ensureOrdersSoftDeletes();
+
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            return;
+        }
+
         $this->hardenOrderItemOrderFk();
         $this->hardenOrderStatusHistoryOrderFk();
         $this->ensureBlockPhysicalOrderDeleteTrigger();

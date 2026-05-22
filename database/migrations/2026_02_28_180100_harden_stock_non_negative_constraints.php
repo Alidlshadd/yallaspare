@@ -13,6 +13,11 @@ return new class extends Migration
         }
 
         $this->assertNoNegativeStockRows();
+
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            return;
+        }
+
         $this->addCheckIfMissing(
             'product_warehouse_stocks',
             'chk_pws_available_non_negative',

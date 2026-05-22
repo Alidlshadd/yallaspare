@@ -1,12 +1,12 @@
 <x-auth-split-layout
-    heading="Sign In"
+    :heading="__('Sign In')"
     form-position="right"
     enter-direction="right"
-    panel-title="Welcome Back"
-    panel-subtitle="Access the YallaSpare Management System using your authorized credentials."
-    panel-tag="Authorized Users"
+    :panel-title="__('Welcome Back')"
+    :panel-subtitle="__('Access the YallaSpare Management System using your email, phone, and password.')"
+    :panel-tag="__('Authorized Users')"
     panel-theme="login"
-    panel-button-text="Create Account"
+    :panel-button-text="__('Create Account')"
     panel-button-action="navigate"
     :panel-button-href="route('register')"
     panel-exit-direction="left"
@@ -17,17 +17,17 @@
         @csrf
 
         <div>
-            <x-input-label for="email" :value="__('Email')" class="text-sm font-medium text-slate-300" />
+            <x-input-label for="email" :value="__('Email or phone')" class="text-sm font-medium text-slate-300" />
             <x-text-input
                 id="email"
                 class="mt-2 block w-full rounded-lg border border-slate-700 bg-slate-800/90 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 transition duration-200 focus:border-red-500 focus:ring-red-500"
-                type="email"
+                type="text"
                 name="email"
                 :value="old('email')"
                 required
                 autofocus
                 autocomplete="username"
-                placeholder="you@example.com"
+                placeholder="{{ __('you@example.com or +964...') }}"
             />
             <x-input-error :messages="$errors->get('email')" class="mt-2 text-sm text-red-400" />
         </div>
@@ -41,7 +41,7 @@
                 name="password"
                 required
                 autocomplete="current-password"
-                placeholder="Enter your password"
+                placeholder="{{ __('Enter your password') }}"
             />
             <x-input-error :messages="$errors->get('password')" class="mt-2 text-sm text-red-400" />
         </div>

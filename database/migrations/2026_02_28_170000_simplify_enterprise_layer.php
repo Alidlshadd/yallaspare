@@ -39,6 +39,11 @@ return new class extends Migration
     private function dropFinancialOnlyColumns(): void
     {
         if (Schema::hasTable('price_histories')) {
+            $this->dropIndexIfExists('price_histories', 'price_histories_current_hash_idx');
+            $this->dropIndexIfExists('price_histories', 'price_histories_changed_at_idx');
+            $this->dropIndexIfExists('price_histories', 'price_histories_anomaly_date_idx');
+            $this->dropIndexIfExists('price_histories', 'price_histories_anomaly_score_date_idx');
+
             Schema::table('price_histories', function (Blueprint $table) {
                 if (Schema::hasColumn('price_histories', 'previous_hash')) {
                     $table->dropColumn('previous_hash');
@@ -56,14 +61,14 @@ return new class extends Migration
                     $table->dropColumn('anomaly_score');
                 }
             });
-
-            $this->dropIndexIfExists('price_histories', 'price_histories_current_hash_idx');
-            $this->dropIndexIfExists('price_histories', 'price_histories_changed_at_idx');
-            $this->dropIndexIfExists('price_histories', 'price_histories_anomaly_date_idx');
-            $this->dropIndexIfExists('price_histories', 'price_histories_anomaly_score_date_idx');
         }
 
         if (Schema::hasTable('stock_transactions')) {
+            $this->dropIndexIfExists('stock_transactions', 'stock_transactions_current_hash_idx');
+            $this->dropIndexIfExists('stock_transactions', 'stock_transactions_occurred_at_idx');
+            $this->dropIndexIfExists('stock_transactions', 'stock_tx_anomaly_date_idx');
+            $this->dropIndexIfExists('stock_transactions', 'stock_tx_bulk_adj_date_idx');
+
             Schema::table('stock_transactions', function (Blueprint $table) {
                 if (Schema::hasColumn('stock_transactions', 'previous_hash')) {
                     $table->dropColumn('previous_hash');
@@ -87,14 +92,12 @@ return new class extends Migration
                     $table->dropColumn('unit_cost');
                 }
             });
-
-            $this->dropIndexIfExists('stock_transactions', 'stock_transactions_current_hash_idx');
-            $this->dropIndexIfExists('stock_transactions', 'stock_transactions_occurred_at_idx');
-            $this->dropIndexIfExists('stock_transactions', 'stock_tx_anomaly_date_idx');
-            $this->dropIndexIfExists('stock_transactions', 'stock_tx_bulk_adj_date_idx');
         }
 
         if (Schema::hasTable('audit_logs')) {
+            $this->dropIndexIfExists('audit_logs', 'audit_logs_current_hash_idx');
+            $this->dropIndexIfExists('audit_logs', 'audit_logs_occurred_at_idx');
+
             Schema::table('audit_logs', function (Blueprint $table) {
                 if (Schema::hasColumn('audit_logs', 'previous_hash')) {
                     $table->dropColumn('previous_hash');
@@ -103,15 +106,19 @@ return new class extends Migration
                     $table->dropColumn('current_hash');
                 }
             });
-
-            $this->dropIndexIfExists('audit_logs', 'audit_logs_current_hash_idx');
-            $this->dropIndexIfExists('audit_logs', 'audit_logs_occurred_at_idx');
         }
 
         if (Schema::hasTable('admin_activity_logs')) {
+            $this->dropIndexIfExists('admin_activity_logs', 'admin_activity_anomaly_date_idx');
+            $this->dropIndexIfExists('admin_activity_logs', 'admin_activity_anomaly_score_date_idx');
+
             Schema::table('admin_activity_logs', function (Blueprint $table) {
                 if (Schema::hasColumn('admin_activity_logs', 'reviewed_by')) {
-                    $table->dropConstrainedForeignId('reviewed_by');
+                    if (DB::connection()->getDriverName() === 'sqlite') {
+                        $table->dropColumn('reviewed_by');
+                    } else {
+                        $table->dropConstrainedForeignId('reviewed_by');
+                    }
                 }
                 if (Schema::hasColumn('admin_activity_logs', 'reviewed_at')) {
                     $table->dropColumn('reviewed_at');
@@ -126,9 +133,6 @@ return new class extends Migration
                     $table->dropColumn('is_anomaly');
                 }
             });
-
-            $this->dropIndexIfExists('admin_activity_logs', 'admin_activity_anomaly_date_idx');
-            $this->dropIndexIfExists('admin_activity_logs', 'admin_activity_anomaly_score_date_idx');
         }
     }
 
@@ -150,6 +154,10 @@ return new class extends Migration
 
     private function triggerExists(string $triggerName): bool
     {
+        if (DB::connection()->getDriverName() !== 'mysql') {
+            return false;
+        }
+
         $database = Schema::getConnection()->getDatabaseName();
 
         return DB::selectOne(
@@ -175,6 +183,18 @@ return new class extends Migration
 
     private function indexExists(string $table, string $indexName): bool
     {
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            $indexes = DB::select("PRAGMA index_list('{$table}')");
+
+            foreach ($indexes as $index) {
+                if (($index->name ?? null) === $indexName) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         $database = Schema::getConnection()->getDatabaseName();
 
         return DB::selectOne(

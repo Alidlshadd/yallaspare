@@ -1,22 +1,41 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800">
-            Access Denied
-        </h2>
-    </x-slot>
+@php
+    $homeUrl = \Illuminate\Support\Facades\Route::has('user.shop.home') ? route('user.shop.home') : url('/');
+    $shopUrl = \Illuminate\Support\Facades\Route::has('shop.index') ? route('shop.index') : $homeUrl;
+    $contactUrl = \Illuminate\Support\Facades\Route::has('legal.contact') ? route('legal.contact') : url('/contact');
+@endphp
 
-    <div class="py-12">
-        <div class="max-w-2xl mx-auto bg-white p-6 rounded shadow">
-            <h3 class="text-lg font-semibold text-gray-900">You do not have permission to view this page.</h3>
-            <p class="text-sm text-gray-600 mt-2">
-                If you believe this is a mistake, contact an administrator.
-            </p>
-            <div class="mt-6">
-                <a href="{{ route('home') }}"
-                   class="inline-flex items-center px-4 py-2 bg-gray-800 text-white rounded hover:bg-gray-900">
-                    Go to Home
-                </a>
-            </div>
-        </div>
-    </div>
-</x-app-layout>
+@include('errors.partials.show', [
+    'errorCode' => '403',
+    'errorBadge' => 'Access Restricted',
+    'errorTitle' => 'You do not have permission to open this page.',
+    'errorDescription' => 'The request reached the server, but this destination is restricted for the current account or session.',
+    'primaryAction' => ['label' => __('Return Home'), 'url' => $homeUrl],
+    'secondaryAction' => ['label' => __('Browse Shop'), 'url' => $shopUrl],
+    'tertiaryAction' => ['label' => __('Contact Support'), 'url' => $contactUrl],
+    'metaCards' => [
+        [
+            'label' => __('Possible Cause'),
+            'title' => __('Protected account area'),
+            'description' => __('This route may require a different role, a different account, or an admin permission.'),
+        ],
+        [
+            'label' => __('Suggested Fix'),
+            'title' => __('Switch back to an allowed path'),
+            'description' => __('Return to the storefront or sign in with an account that has access to the requested page.'),
+        ],
+    ],
+    'recoverySteps' => [
+        [
+            'title' => __('Return to a public page'),
+            'description' => __('Use the home or shop routes to continue browsing without interruption.'),
+        ],
+        [
+            'title' => __('Verify the active account'),
+            'description' => __('If this page should be available, confirm that you are signed in with the correct account.'),
+        ],
+        [
+            'title' => __('Contact support if access looks wrong'),
+            'description' => __('Share the page URL and the account email so the permission issue can be reviewed.'),
+        ],
+    ],
+])

@@ -22,20 +22,20 @@ class AdminActivityLog extends Model
     public function getHumanActionAttribute(): string
     {
         return match ($this->action) {
-            'inventory.adjusted' => 'Adjusted inventory',
-            'order.status_changed' => 'Changed order status',
-            'catalog.created' => 'Created catalog',
-            'catalog.updated' => 'Updated catalog',
-            'catalog.deleted' => 'Deleted catalog',
-            'product.created' => 'Created product',
-            'product.updated' => 'Updated product',
-            'product.deleted' => 'Deleted product',
-            'user.created' => 'Created user',
-            'user.updated' => 'Updated user',
-            'user.deleted' => 'Deleted user',
-            'order.created' => 'Created order',
-            'order.updated' => 'Updated order',
-            'order.deleted' => 'Deleted order',
+            'inventory.adjusted' => __('Adjusted inventory'),
+            'order.status_changed' => __('Changed order status'),
+            'catalog.created' => __('Created catalog'),
+            'catalog.updated' => __('Updated catalog'),
+            'catalog.deleted' => __('Deleted catalog'),
+            'product.created' => __('Created product'),
+            'product.updated' => __('Updated product'),
+            'product.deleted' => __('Deleted product'),
+            'user.created' => __('Created user'),
+            'user.updated' => __('Updated user'),
+            'user.deleted' => __('Deleted user'),
+            'order.created' => __('Created order'),
+            'order.updated' => __('Updated order'),
+            'order.deleted' => __('Deleted order'),
             default => Str::of((string) $this->action)
                 ->replace(['.', '_'], ' ')
                 ->headline()
@@ -52,8 +52,8 @@ class AdminActivityLog extends Model
             $qty = $meta['quantity'] ?? null;
 
             $parts = array_filter([
-                $type ? 'Type: ' . $type : null,
-                $qty !== null ? 'Qty: ' . $qty : null,
+                $type ? __('Type: :type', ['type' => $type]) : null,
+                $qty !== null ? __('Qty: :qty', ['qty' => $qty]) : null,
             ]);
 
             return $parts ? implode(' · ', $parts) : '—';
@@ -64,8 +64,8 @@ class AdminActivityLog extends Model
             $to = $meta['to'] ?? null;
 
             $parts = array_filter([
-                $from ? 'From: ' . $from : null,
-                $to ? 'To: ' . $to : null,
+                $from ? __('From: :status', ['status' => $from]) : null,
+                $to ? __('To: :status', ['status' => $to]) : null,
             ]);
 
             return $parts ? implode(' · ', $parts) : '—';

@@ -8,6 +8,6 @@ class ActivityLogPolicy
 {
     public function viewAny(User $user): bool
     {
-        return $user->role === User::ROLE_SUPER_ADMIN;
+        return $user->hasPermission(User::PERMISSION_ACTIVITY_LOGS_VIEW);
     }
 }

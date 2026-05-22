@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\Order;
+use App\Models\ReturnRequest;
 use App\Models\User;
 use App\Models\Category;
 use App\Models\InventoryMovement;
@@ -34,7 +35,7 @@ class DashboardController extends Controller
         $cacheTtl = max((int) config('performance.dashboard_cache_ttl', 60), 15);
         $cacheBucket = $now->copy()->second(0)->format('YmdHi');
         $cacheKey = sprintf(
-            'admin:dashboard:v1:days:%d:threshold:%d:bucket:%s',
+            'admin:dashboard:v2:days:%d:threshold:%d:bucket:%s',
             $analyticsDays,
             $lowStockThreshold,
             $cacheBucket
@@ -57,13 +58,13 @@ class DashboardController extends Controller
             $lowStockCount = Product::where('stock_quantity', '<=', $lowStockThreshold)->count();
             $outOfStockCount = Product::where('stock_quantity', '<=', 0)->count();
             $lowStockProducts = Product::query()
-                ->select(['id', 'name_en', 'sku', 'stock_quantity', 'created_at'])
+                ->select(['id', 'name_en', 'name_ar', 'name_ku', 'sku', 'stock_quantity', 'created_at'])
                 ->where('stock_quantity', '<=', $lowStockThreshold)
                 ->orderBy('stock_quantity')
                 ->limit(5)
                 ->get();
             $recentProducts = Product::query()
-                ->select(['id', 'name_en', 'sku', 'stock_quantity', 'created_at'])
+                ->select(['id', 'name_en', 'name_ar', 'name_ku', 'sku', 'stock_quantity', 'created_at'])
                 ->latest()
                 ->limit(5)
                 ->get();
@@ -119,17 +120,105 @@ class DashboardController extends Controller
             $salesChangePercent = $this->percentageChange($todaySales, $yesterdaySales);
 
             $pendingOrders = Order::whereIn('status', ['pending', 'processing'])->count();
+            $unpaidOrders = Order::where('payment_status', Order::PAYMENT_PENDING)->count();
             $newCustomers = $currentMonthUsers;
+            $todayPendingOrders = Order::query()
+                ->whereNull('archived_at')
+                ->where('status', Order::STATUS_PENDING)
+                ->whereDate('created_at', $now->toDateString())
+                ->count();
+            $needsShippingOrders = Order::query()
+                ->whereNull('archived_at')
+                ->where('status', Order::STATUS_PROCESSING)
+                ->count();
+            $cancellationRequestOrders = Order::query()
+                ->whereNull('archived_at')
+                ->whereNotNull('cancellation_requested_at')
+                ->where('status', '!=', Order::STATUS_CANCELLED)
+                ->count();
+            $openReturnRequests = Schema::hasTable('return_requests')
+                ? ReturnRequest::query()
+                    ->whereIn('status', [
+                        ReturnRequest::STATUS_REQUESTED,
+                        ReturnRequest::STATUS_APPROVED,
+                        ReturnRequest::STATUS_RECEIVED,
+                    ])
+                    ->count()
+                : 0;
+            $operationsQueue = [
+                [
+                    'label' => __('Today pending orders'),
+                    'count' => $todayPendingOrders,
+                    'description' => __('New orders placed today waiting for first action.'),
+                    'tone' => 'amber',
+                    'icon' => 'fa-clock',
+                    'url' => route('admin.orders.index', ['attention' => 'today_pending']),
+                ],
+                [
+                    'label' => __('Needs shipping'),
+                    'count' => $needsShippingOrders,
+                    'description' => __('Processing orders ready to move toward shipped.'),
+                    'tone' => 'blue',
+                    'icon' => 'fa-truck',
+                    'url' => route('admin.orders.index', ['attention' => 'needs_shipping']),
+                ],
+                [
+                    'label' => __('Cancellation requests'),
+                    'count' => $cancellationRequestOrders,
+                    'description' => __('Customer cancellation requests that need review.'),
+                    'tone' => 'rose',
+                    'icon' => 'fa-ban',
+                    'url' => route('admin.orders.index', ['attention' => 'cancellation_requests']),
+                ],
+                [
+                    'label' => __('Return requests'),
+                    'count' => $openReturnRequests,
+                    'description' => __('Open return, exchange, or refund cases.'),
+                    'tone' => 'indigo',
+                    'icon' => 'fa-rotate-left',
+                    'url' => route('admin.returns.index'),
+                ],
+            ];
+            $operationOrders = Order::query()
+                ->select([
+                    'id',
+                    'user_id',
+                    'order_number',
+                    'status',
+                    'total_amount',
+                    'cancellation_requested_at',
+                    'created_at',
+                ])
+                ->with(['user:id,name'])
+                ->whereNull('archived_at')
+                ->where(function ($query) use ($now): void {
+                    $query
+                        ->where(function ($todayPending) use ($now): void {
+                            $todayPending
+                                ->where('status', Order::STATUS_PENDING)
+                                ->whereDate('created_at', $now->toDateString());
+                        })
+                        ->orWhere('status', Order::STATUS_PROCESSING)
+                        ->orWhere(function ($cancellation): void {
+                            $cancellation
+                                ->whereNotNull('cancellation_requested_at')
+                                ->where('status', '!=', Order::STATUS_CANCELLED);
+                        });
+                })
+                ->orderByRaw("CASE WHEN cancellation_requested_at IS NOT NULL THEN 0 WHEN status = 'processing' THEN 1 WHEN status = 'pending' THEN 2 ELSE 3 END")
+                ->latest('id')
+                ->limit(6)
+                ->get();
 
             $categoryData = Category::query()
-                ->select(['id', 'name_en'])
+                ->select(['id', 'name_en', 'name_ar', 'name_ku'])
                 ->withCount('products')
                 ->get();
-            $categoryNames = $categoryData->pluck('name_en')->toArray();
+            $categoryNames = $categoryData->map(fn (Category $category) => $category->name)->toArray();
             $categoryCounts = $categoryData->pluck('products_count')->toArray();
 
             $monthlyOrders = Order::select(
-                DB::raw('MONTH(created_at) as month'),
+                DB::raw($this->monthExpression('created_at') . ' as month'),
                 DB::raw('COUNT(*) as total')
             )
                 ->whereYear('created_at', $now->year)
@@ -140,7 +229,7 @@ class DashboardController extends Controller
             $monthLabels = [];
             $monthCounts = [];
             foreach ($monthlyOrders as $m) {
-                $monthLabels[] = Carbon::create()->month($m->month)->format('M');
+                $monthLabels[] = Carbon::create()->month((int) $m->month)->format('M');
                 $monthCounts[] = $m->total;
             }
 
@@ -205,11 +294,13 @@ class DashboardController extends Controller
                 ->select(
                     'products.id',
                     'products.name_en',
+                    'products.name_ar',
+                    'products.name_ku',
                     'products.image',
                     DB::raw("COALESCE(SUM(CASE WHEN orders.status <> 'cancelled' THEN order_items.quantity ELSE 0 END), 0) as total_sold"),
                     DB::raw("COALESCE(SUM(CASE WHEN orders.status <> 'cancelled' THEN order_items.subtotal ELSE 0 END), 0) as total_revenue")
                 )
-                ->groupBy('products.id', 'products.name_en', 'products.image')
+                ->groupBy('products.id', 'products.name_en', 'products.name_ar', 'products.name_ku', 'products.image')
                 ->orderByDesc('total_sold')
                 ->limit(5)
                 ->get();
@@ -225,7 +316,14 @@ class DashboardController extends Controller
                 'todaySales' => $todaySales,
                 'salesChangePercent' => $salesChangePercent,
                 'pendingOrders' => $pendingOrders,
+                'unpaidOrders' => $unpaidOrders,
                 'newCustomers' => $newCustomers,
+                'todayPendingOrders' => $todayPendingOrders,
+                'needsShippingOrders' => $needsShippingOrders,
+                'cancellationRequestOrders' => $cancellationRequestOrders,
+                'openReturnRequests' => $openReturnRequests,
+                'operationsQueue' => $operationsQueue,
+                'operationOrders' => $operationOrders,
                 'lowStockCount' => $lowStockCount,
                 'outOfStockCount' => $outOfStockCount,
                 'recentProductsCount' => $recentProductsCount,
@@ -261,7 +359,14 @@ class DashboardController extends Controller
             'todaySales' => 0.0,
             'salesChangePercent' => 0.0,
             'pendingOrders' => 0,
+            'unpaidOrders' => 0,
             'newCustomers' => 0,
+            'todayPendingOrders' => 0,
+            'needsShippingOrders' => 0,
+            'cancellationRequestOrders' => 0,
+            'openReturnRequests' => 0,
+            'operationsQueue' => [],
+            'operationOrders' => collect(),
             'lowStockCount' => 0,
             'outOfStockCount' => 0,
             'recentProductsCount' => 0,
@@ -299,7 +404,14 @@ class DashboardController extends Controller
             'todaySales',
             'salesChangePercent',
             'pendingOrders',
+            'unpaidOrders',
             'newCustomers',
+            'todayPendingOrders',
+            'needsShippingOrders',
+            'cancellationRequestOrders',
+            'openReturnRequests',
+            'operationsQueue',
+            'operationOrders',
             'lowStockThreshold',
             'lowStockCount',
             'outOfStockCount',
@@ -337,5 +449,14 @@ class DashboardController extends Controller
         }
 
         return (($current - $previous) / $previous) * 100;
+    }
+
+    private function monthExpression(string $column): string
+    {
+        if (DB::connection()->getDriverName() === 'sqlite') {
+            return "CAST(strftime('%m', {$column}) AS INTEGER)";
+        }
+
+        return "MONTH({$column})";
     }
 }

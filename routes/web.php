@@ -1,5 +1,11 @@
 <?php
 
+use App\Http\Controllers\Account\AccountAddressController;
+use App\Http\Controllers\Account\AccountOrdersController;
+use App\Http\Controllers\User\UserAccountController;
+use App\Http\Controllers\User\UserSettingsController;
+use App\Http\Controllers\User\WishlistController;
+use App\Http\Controllers\User\ShopController as UserShopController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\DashboardController;
@@ -13,10 +19,22 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\LowStockController;
 use App\Http\Controllers\Admin\AdminActivityLogController;
-use App\Http\Controllers\ShopController;
+use App\Http\Controllers\Admin\RevenueController;
+use App\Http\Controllers\Admin\ReturnRequestController;
+use App\Http\Controllers\Admin\VehicleFitmentController;
+use App\Http\Controllers\Admin\ProductReviewController as AdminProductReviewController;
+use App\Http\Controllers\Admin\DiscountCouponController;
+use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+use App\Http\Controllers\ShopController as CatalogShopController;
+use App\Http\Controllers\ProductReviewController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\LegalController;
+use App\Models\Setting;
+use App\Models\User;
+use App\Support\Branding;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,24 +43,135 @@ use App\Http\Controllers\LegalController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('user.shop.home');
 })->name('home');
-Route::get('/shop', [ShopController::class, 'index'])->name('shop.index');
+
+Route::post('/language/{locale}', function (Request $request, string $locale) {
+    abort_unless(in_array($locale, ['en', 'ar', 'ku'], true), 404);
+
+    $request->session()->put('locale', $locale);
+    app()->setLocale($locale);
+
+    return back();
+})->name('language.switch');
+Route::get('/shop', [UserShopController::class, 'shop'])->name('shop.index');
+Route::get('/categories', [UserShopController::class, 'categories'])->name('categories.index');
+Route::get('/categories/{category}', [UserShopController::class, 'category'])->name('categories.show');
+Route::get('/shop/products/{product}', [CatalogShopController::class, 'show'])->name('shop.show');
 Route::get('/privacy-policy', [LegalController::class, 'privacy'])->name('legal.privacy');
 Route::get('/terms', [LegalController::class, 'terms'])->name('legal.terms');
 Route::get('/support', [LegalController::class, 'support'])->name('legal.support');
+Route::get('/about-us', [LegalController::class, 'about'])->name('legal.about');
+Route::get('/contact', [LegalController::class, 'contact'])->name('legal.contact');
+Route::post('/contact', [LegalController::class, 'sendContact'])
+    ->middleware('throttle:6,1')
+    ->name('legal.contact.send');
+Route::get('/contact-us', function () {
+    return redirect()->route('legal.contact');
+});
+Route::get('/return-exchange', [LegalController::class, 'returnExchange'])->name('legal.return-exchange');
+Route::get('/shipping-delivery', [LegalController::class, 'shippingDelivery'])->name('legal.shipping-delivery');
+Route::get('/distance-sales-agreement', [LegalController::class, 'distanceSalesAgreement'])->name('legal.distance-sales-agreement');
+Route::get('/brand/logo', function () {
+    $logoPath = Branding::storagePathFromValue((string) Setting::getValue('site_logo', ''));
+
+    if (!Branding::isSafeLogoPath($logoPath) || !Storage::disk('public')->exists($logoPath)) {
+        abort(404);
+    }
+
+    $mimeType = Branding::safeLogoMimeType($logoPath);
+    if ($mimeType === null) {
+        abort(404);
+    }
+
+    return response()->file(
+        storage_path('app/public/' . $logoPath),
+        [
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => 'inline; filename="' . basename($logoPath) . '"',
+            'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
+            'Pragma' => 'no-cache',
+            'Expires' => '0',
+        ]
+    );
+})->name('brand.logo');
 
 Route::middleware('auth')->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart/{product}', [CartController::class, 'add'])->name('cart.add');
     Route::patch('/cart/items/{item}', [CartController::class, 'update'])->name('cart.update');
     Route::delete('/cart/items/{item}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::get('/checkout/options/{product}', [CheckoutController::class, 'options'])->name('checkout.options');
+    Route::match(['get', 'post'], '/checkout/buy-now/{product}', [CheckoutController::class, 'buyNow'])->name('checkout.buy-now');
+    Route::post('/checkout/buy-now/{product}/place', [CheckoutController::class, 'placeBuyNow'])->name('checkout.buy-now.place');
+    Route::match(['get', 'post'], '/checkout/review', [CheckoutController::class, 'review'])->name('checkout.review');
     Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+    Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
+    Route::post('/shop/products/{product}/reviews', [ProductReviewController::class, 'store'])->name('shop.reviews.store');
 });
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::view('/dashboard', 'dashboard')->name('dashboard');
+Route::middleware('auth')->prefix('account')->name('account.')->group(function () {
+    Route::get('/', function () {
+        return redirect()->route('user.account.edit');
+    })->name('index');
+    Route::get('/orders', [AccountOrdersController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order}', [AccountOrdersController::class, 'show'])->name('orders.show');
+    Route::get('/orders/{order}/invoice', [AccountOrdersController::class, 'invoice'])->name('orders.invoice');
+    Route::post('/orders/{order}/cancellation-request', [AccountOrdersController::class, 'requestCancellation'])->name('orders.cancellation-request');
+    Route::post('/orders/{order}/return-request', [AccountOrdersController::class, 'requestReturn'])->name('orders.return-request');
+    Route::get('/addresses', [AccountAddressController::class, 'index'])->name('addresses.index');
+    Route::get('/addresses/create', [AccountAddressController::class, 'create'])->name('addresses.create');
+    Route::post('/addresses', [AccountAddressController::class, 'store'])->name('addresses.store');
+    Route::get('/addresses/{address}/edit', [AccountAddressController::class, 'edit'])->name('addresses.edit');
+    Route::put('/addresses/{address}', [AccountAddressController::class, 'update'])->name('addresses.update');
+    Route::patch('/addresses/{address}/default', [AccountAddressController::class, 'setDefault'])->name('addresses.default');
+    Route::delete('/addresses/{address}', [AccountAddressController::class, 'destroy'])->name('addresses.destroy');
 });
+
+Route::prefix('user')->name('user.')->group(function () {
+    Route::get('/home', [UserShopController::class, 'home'])->name('shop.home');
+    Route::get('/shop', [UserShopController::class, 'shop'])->name('shop.index');
+});
+
+Route::middleware('auth')->prefix('user')->name('user.')->group(function () {
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist/{product}', [WishlistController::class, 'store'])->name('wishlist.store');
+    Route::delete('/wishlist/{product}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
+    Route::get('/account', [UserAccountController::class, 'edit'])->name('account.edit');
+    Route::get('/account/personal', [UserAccountController::class, 'personal'])->name('account.personal');
+    Route::get('/account/addresses', [UserAccountController::class, 'addressesPage'])->name('account.addresses');
+    Route::get('/account/security', [UserAccountController::class, 'securityPage'])->name('account.security');
+    Route::get('/account/activity', [UserAccountController::class, 'activity'])->name('account.activity');
+    Route::get('/account/actions', [UserAccountController::class, 'actions'])->name('account.actions');
+    Route::patch('/account', [UserAccountController::class, 'update'])->name('account.update');
+    Route::patch('/account/password', [UserAccountController::class, 'password'])->name('account.password');
+    Route::get('/settings', [UserSettingsController::class, 'edit'])->name('settings.edit');
+    Route::patch('/settings', [UserSettingsController::class, 'update'])->name('settings.update');
+    Route::get('/settings/appearance', [UserSettingsController::class, 'appearance'])->name('settings.appearance');
+    Route::patch('/settings/appearance', [UserSettingsController::class, 'updateAppearance'])->name('settings.appearance.update');
+    Route::get('/settings/language', [UserSettingsController::class, 'language'])->name('settings.language');
+    Route::patch('/settings/language', [UserSettingsController::class, 'updateLanguage'])->name('settings.language.update');
+    Route::get('/settings/notifications', [UserSettingsController::class, 'notifications'])->name('settings.notifications');
+    Route::patch('/settings/notifications', [UserSettingsController::class, 'updateNotifications'])->name('settings.notifications.update');
+    Route::get('/settings/security', [UserSettingsController::class, 'security'])->name('settings.security');
+    Route::patch('/settings/security', [UserSettingsController::class, 'updateSecurity'])->name('settings.security.update');
+    Route::get('/settings/communication', [UserSettingsController::class, 'communication'])->name('settings.communication');
+    Route::patch('/settings/communication', [UserSettingsController::class, 'updateCommunication'])->name('settings.communication.update');
+    Route::get('/settings/checkout', [UserSettingsController::class, 'checkout'])->name('settings.checkout');
+    Route::patch('/settings/checkout', [UserSettingsController::class, 'updateCheckout'])->name('settings.checkout.update');
+    Route::get('/settings/accessibility', [UserSettingsController::class, 'accessibility'])->name('settings.accessibility');
+    Route::patch('/settings/accessibility', [UserSettingsController::class, 'updateAccessibility'])->name('settings.accessibility.update');
+});
+
+Route::get('/dashboard', function () {
+    $user = auth()->user();
+
+    if ($user && $user->isAdminPanelUser()) {
+        return redirect()->route('admin.dashboard');
+    }
+
+    return redirect()->route('user.shop.home');
+})->name('dashboard');
 
 /*
 |--------------------------------------------------------------------------
@@ -63,32 +192,137 @@ Route::middleware(['auth', 'verified', 'admin'])
 
         // Dashboard
         Route::get('/dashboard', [DashboardController::class, 'index'])
+            ->middleware('can:' . User::PERMISSION_DASHBOARD_VIEW)
             ->name('dashboard');
+        Route::get('/profile', [AdminProfileController::class, 'edit'])
+            ->name('profile.edit');
+        Route::patch('/profile', [AdminProfileController::class, 'update'])
+            ->name('profile.update');
+        Route::get('/revenue', [RevenueController::class, 'index'])
+            ->middleware('can:' . User::PERMISSION_FINANCE_VIEW)
+            ->name('revenue.index');
+        Route::get('/discounts', [DiscountCouponController::class, 'edit'])
+            ->middleware('can:' . User::PERMISSION_FINANCE_MANAGE)
+            ->name('discounts.edit');
+        Route::get('/discounts/rules', [DiscountCouponController::class, 'rules'])
+            ->middleware('can:' . User::PERMISSION_FINANCE_MANAGE)
+            ->name('discounts.rules');
+        Route::get('/discounts/products/search', [DiscountCouponController::class, 'searchProducts'])
+            ->middleware('can:' . User::PERMISSION_FINANCE_MANAGE)
+            ->name('discounts.products.search');
+        Route::get('/discounts/coupons/create', [DiscountCouponController::class, 'createCoupon'])
+            ->middleware('can:' . User::PERMISSION_FINANCE_MANAGE)
+            ->name('discounts.coupons.create');
+        Route::put('/discounts', [DiscountCouponController::class, 'update'])
+            ->middleware('can:' . User::PERMISSION_FINANCE_MANAGE)
+            ->name('discounts.update');
+        Route::put('/discounts/rules', [DiscountCouponController::class, 'updateRules'])
+            ->middleware('can:' . User::PERMISSION_FINANCE_MANAGE)
+            ->name('discounts.update-rules');
+        Route::patch('/discounts/rules/{discount}/status', [DiscountCouponController::class, 'updateRuleStatus'])
+            ->middleware('can:' . User::PERMISSION_FINANCE_MANAGE)
+            ->name('discounts.update-rule-status');
+        Route::delete('/discounts/rules/{discount}', [DiscountCouponController::class, 'destroyRule'])
+            ->middleware('can:' . User::PERMISSION_FINANCE_MANAGE)
+            ->name('discounts.destroy-rule');
 
         // Products
-        Route::resource('products', ProductController::class)->except(['show']);
+        Route::resource('products', ProductController::class)
+            ->except(['show'])
+            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE);
         Route::post('/products/import', [ProductController::class, 'import'])
+            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
             ->name('products.import');
         Route::get('/products/export-excel', [ProductController::class, 'exportExcel'])
+            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
             ->name('products.export-excel');
+        Route::get('/products/{productIdentifier}', [ProductController::class, 'editByIdentifier'])
+            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->name('products.edit-by-identifier');
 
         // Categories
-        Route::resource('categories', CategoryController::class)->except(['show']);
+        Route::resource('categories', CategoryController::class)
+            ->except(['show'])
+            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE);
+        Route::post('/categories/import', [CategoryController::class, 'import'])
+            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->name('categories.import');
+        Route::get('/categories/export-excel', [CategoryController::class, 'exportExcel'])
+            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->name('categories.export-excel');
 
         // Orders
-        Route::resource('orders', OrderController::class)->only(['index', 'show', 'update', 'destroy']);
+        Route::resource('orders', OrderController::class)
+            ->only(['index', 'show', 'update', 'destroy'])
+            ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE);
+        Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice'])
+            ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE)
+            ->name('orders.invoice');
         Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])
+            ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE)
             ->name('orders.update-status');
+        Route::patch('/orders/{order}/payment', [OrderController::class, 'updatePayment'])
+            ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE)
+            ->name('orders.update-payment');
+        Route::post('/orders/{order}/admin-notes', [OrderController::class, 'storeAdminNote'])
+            ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE)
+            ->name('orders.admin-notes.store');
+
+        // Returns / Refunds
+        Route::get('/returns', [ReturnRequestController::class, 'index'])
+            ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE)
+            ->name('returns.index');
+        Route::patch('/returns/{return}', [ReturnRequestController::class, 'update'])
+            ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE)
+            ->name('returns.update');
+
+        // Reviews
+        Route::get('/reviews', [AdminProductReviewController::class, 'index'])
+            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->name('reviews.index');
+        Route::delete('/reviews/{review}', [AdminProductReviewController::class, 'destroy'])
+            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->name('reviews.destroy');
+
+        // Vehicle Finder
+        Route::get('/vehicle-fitments', [VehicleFitmentController::class, 'index'])
+            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->name('vehicle-fitments.index');
+        Route::post('/vehicle-fitments/brands', [VehicleFitmentController::class, 'storeBrand'])
+            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->name('vehicle-fitments.brands.store');
+        Route::post('/vehicle-fitments/models', [VehicleFitmentController::class, 'storeModel'])
+            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->name('vehicle-fitments.models.store');
+        Route::delete('/vehicle-fitments/brands/{brand}', [VehicleFitmentController::class, 'destroyBrand'])
+            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->name('vehicle-fitments.brands.destroy');
+        Route::delete('/vehicle-fitments/models/{model}', [VehicleFitmentController::class, 'destroyModel'])
+            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->name('vehicle-fitments.models.destroy');
+        Route::post('/vehicle-fitments', [VehicleFitmentController::class, 'storeFitment'])
+            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->name('vehicle-fitments.store');
+        Route::delete('/vehicle-fitments/{fitment}', [VehicleFitmentController::class, 'destroyFitment'])
+            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->name('vehicle-fitments.destroy');
 
         // Users
         Route::get('/users', [UserController::class, 'index'])
+            ->middleware('can:' . User::PERMISSION_USERS_VIEW)
             ->name('users.index');
         Route::get('/users/{user}', [UserController::class, 'show'])
             ->middleware('can:manage-users')
             ->name('users.show');
+        Route::patch('/users/{user}', [UserController::class, 'updateDetails'])
+            ->middleware('can:manage-users')
+            ->name('users.update-details');
         Route::patch('/users/{user}/role', [UserController::class, 'updateRole'])
             ->middleware('can:manage-users')
             ->name('users.update-role');
+        Route::patch('/users/{user}/password', [UserController::class, 'updatePassword'])
+            ->middleware('can:manage-users')
+            ->name('users.update-password');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])
             ->middleware('can:manage-users')
             ->name('users.destroy');
@@ -106,14 +340,18 @@ Route::middleware(['auth', 'verified', 'admin'])
 
         // Inventory Movements
         Route::get('/inventory/movements', [InventoryMovementController::class, 'index'])
+            ->middleware('can:' . User::PERMISSION_STOCK_MANAGE)
             ->name('inventory.index');
         Route::post('/inventory/movements', [InventoryMovementController::class, 'store'])
+            ->middleware('can:' . User::PERMISSION_STOCK_MANAGE)
             ->name('inventory.store');
 
         // System Settings
         Route::get('/settings', [SettingController::class, 'edit'])
+            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
             ->name('settings.edit');
         Route::put('/settings', [SettingController::class, 'update'])
+            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
             ->name('settings.update');
 
         // Notifications
@@ -130,6 +368,7 @@ Route::middleware(['auth', 'verified', 'admin'])
 
         // Activity logs
         Route::get('/activity-logs', AdminActivityLogController::class)
+            ->middleware('can:' . User::PERMISSION_ACTIVITY_LOGS_VIEW)
             ->name('activity-logs.index');
     });
 
