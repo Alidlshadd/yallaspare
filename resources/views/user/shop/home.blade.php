@@ -2,14 +2,18 @@
 
 @section('content')
     @php
-        $heroVideoPath = 'home/hero-video.mp4';
-        $heroImagePath = 'home/hero-banner.jpg';
+        $heroVideoPath = trim((string) data_get($heroSettings ?? [], 'video', '')) ?: 'home/hero-video.mp4';
+        $heroImagePath = trim((string) data_get($heroSettings ?? [], 'image', '')) ?: 'home/hero-banner.jpg';
         $heroVideoUrl = \Illuminate\Support\Facades\Storage::disk('public')->exists($heroVideoPath)
             ? asset('storage/' . $heroVideoPath)
             : null;
         $heroImageUrl = \Illuminate\Support\Facades\Storage::disk('public')->exists($heroImagePath)
             ? asset('storage/' . $heroImagePath)
             : null;
+        $heroTitle = trim((string) data_get($heroSettings ?? [], 'title', '')) ?: __('Find the right spare parts faster');
+        $heroSubtitle = trim((string) data_get($heroSettings ?? [], 'subtitle', '')) ?: __('Browse saved categories, filter by vehicle, and shop available parts from one clean catalog.');
+        $heroButtonLabel = trim((string) data_get($heroSettings ?? [], 'button_label', '')) ?: __('Shop now');
+        $heroButtonUrl = trim((string) data_get($heroSettings ?? [], 'button_url', '')) ?: route('shop.index');
     @endphp
 
     <div class="space-y-6 sm:space-y-8 lg:space-y-10">
@@ -37,16 +41,16 @@
                 <div class="absolute inset-0 flex items-center">
                     <div class="max-w-2xl px-4 py-6 sm:px-8 lg:px-10">
                         <h1 class="text-xl font-semibold tracking-[-0.03em] text-white sm:text-2xl lg:text-3xl">
-                            {{ __('Find the right spare parts faster') }}
+                            {{ $heroTitle }}
                         </h1>
                         <p class="mt-2 max-w-xl text-xs leading-5 text-slate-200 sm:mt-3 sm:text-sm sm:leading-6 lg:text-base">
-                            {{ __('Browse saved categories, filter by vehicle, and shop available parts from one clean catalog.') }}
+                            {{ $heroSubtitle }}
                         </p>
                         <a
-                            href="{{ route('shop.index') }}"
+                            href="{{ $heroButtonUrl }}"
                             class="mt-4 inline-flex items-center justify-center rounded-xl bg-white px-3.5 py-2 text-xs font-semibold text-[#070740] transition duration-200 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 sm:mt-5 sm:rounded-2xl sm:px-4 sm:py-2.5 sm:text-sm"
                         >
-                            {{ __('Shop now') }}
+                            {{ $heroButtonLabel }}
                         </a>
                     </div>
                 </div>

@@ -28,6 +28,12 @@ class Setting extends Model
             'shipping_fee' => '5000',
             'site_logo' => '',
             'site_logo_version' => '',
+            'storefront_hero_title' => 'Find the right spare parts faster',
+            'storefront_hero_subtitle' => 'Browse saved categories, filter by vehicle, and shop available parts from one clean catalog.',
+            'storefront_hero_button_label' => 'Shop now',
+            'storefront_hero_button_url' => '',
+            'storefront_hero_image' => '',
+            'storefront_hero_video' => '',
         ];
     }
 

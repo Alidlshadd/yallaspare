@@ -172,6 +172,14 @@ class ShopController extends Controller
             'hasFitmentData' => $vehicleFilters['hasFitmentData'],
             'vehicleDataMessage' => $vehicleFilters['vehicleDataMessage'],
             'currencySymbol' => (string) Setting::getValue('currency_code', 'IQD'),
+            'heroSettings' => [
+                'title' => (string) Setting::getValue('storefront_hero_title', 'Find the right spare parts faster'),
+                'subtitle' => (string) Setting::getValue('storefront_hero_subtitle', 'Browse saved categories, filter by vehicle, and shop available parts from one clean catalog.'),
+                'button_label' => (string) Setting::getValue('storefront_hero_button_label', 'Shop now'),
+                'button_url' => (string) Setting::getValue('storefront_hero_button_url', ''),
+                'image' => (string) Setting::getValue('storefront_hero_image', ''),
+                'video' => (string) Setting::getValue('storefront_hero_video', ''),
+            ],
         ]);
     }
 

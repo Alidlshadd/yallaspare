@@ -38,6 +38,28 @@ class SettingController extends Controller
             'shipping_fee' => ['required', 'numeric', 'min:0', 'max:1000000000'],
             'site_logo' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
             'remove_logo' => ['nullable', 'boolean'],
+            'storefront_hero_title' => ['required', 'string', 'max:120'],
+            'storefront_hero_subtitle' => ['required', 'string', 'max:300'],
+            'storefront_hero_button_label' => ['required', 'string', 'max:40'],
+            'storefront_hero_button_url' => [
+                'nullable',
+                'string',
+                'max:2048',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    $url = trim((string) $value);
+                    if ($url === '') {
+                        return;
+                    }
+
+                    if (preg_match('/^(javascript|data):/i', $url) === 1) {
+                        $fail(__('The storefront hero button URL is not allowed.'));
+                    }
+                },
+            ],
+            'storefront_hero_image' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
+            'storefront_hero_video' => ['nullable', 'file', 'mimes:mp4', 'max:51200'],
+            'remove_storefront_hero_image' => ['nullable', 'boolean'],
+            'remove_storefront_hero_video' => ['nullable', 'boolean'],
             'sms_provider_webhook_url' => ['nullable', 'url', 'max:2048'],
             'whatsapp_provider_webhook_url' => ['nullable', 'url', 'max:2048'],
             'notification_order_placed_en_subject' => ['nullable', 'string', 'max:160'],
@@ -98,6 +120,67 @@ class SettingController extends Controller
             }
         }
 
+        $heroImage = (string) Setting::getValue('storefront_hero_image', '');
+        $heroVideo = (string) Setting::getValue('storefront_hero_video', '');
+
+        if ($request->boolean('remove_storefront_hero_image')) {
+            $this->deleteManagedHeroMedia($heroImage);
+            $heroImage = '';
+        }
+
+        if ($request->boolean('remove_storefront_hero_video')) {
+            $this->deleteManagedHeroMedia($heroVideo);
+            $heroVideo = '';
+        }
+
+        if ($request->hasFile('storefront_hero_image')) {
+            $uploadedHeroImage = $request->file('storefront_hero_image');
+
+            if (! $uploadedHeroImage->isValid()) {
+                return back()
+                    ->withInput()
+                    ->withErrors(['storefront_hero_image' => __('Hero image upload failed. Please select a valid JPG, PNG, or WEBP file.')]);
+            }
+
+            try {
+                $storedHeroImage = str_replace('\\', '/', (string) $uploadedHeroImage->store('home/hero', 'public'));
+                if ($storedHeroImage === '' || !Storage::disk('public')->exists($storedHeroImage)) {
+                    throw new \RuntimeException(__('Stored hero image was not found after upload.'));
+                }
+
+                $this->deleteManagedHeroMedia($heroImage);
+                $heroImage = $storedHeroImage;
+            } catch (Throwable $e) {
+                return back()
+                    ->withInput()
+                    ->withErrors(['storefront_hero_image' => __('Could not save the uploaded hero image. Please try again.')]);
+            }
+        }
+
+        if ($request->hasFile('storefront_hero_video')) {
+            $uploadedHeroVideo = $request->file('storefront_hero_video');
+
+            if (! $uploadedHeroVideo->isValid()) {
+                return back()
+                    ->withInput()
+                    ->withErrors(['storefront_hero_video' => __('Hero video upload failed. Please select a valid MP4 file.')]);
+            }
+
+            try {
+                $storedHeroVideo = str_replace('\\', '/', (string) $uploadedHeroVideo->store('home/hero', 'public'));
+                if ($storedHeroVideo === '' || !Storage::disk('public')->exists($storedHeroVideo)) {
+                    throw new \RuntimeException(__('Stored hero video was not found after upload.'));
+                }
+
+                $this->deleteManagedHeroMedia($heroVideo);
+                $heroVideo = $storedHeroVideo;
+            } catch (Throwable $e) {
+                return back()
+                    ->withInput()
+                    ->withErrors(['storefront_hero_video' => __('Could not save the uploaded hero video. Please try again.')]);
+            }
+        }
+
         Setting::setMany([
             'site_name' => $data['site_name'],
             'currency_code' => strtoupper($data['currency_code']),
@@ -106,6 +189,12 @@ class SettingController extends Controller
             'shipping_fee' => (string) round((float) $data['shipping_fee'], 2),
             'site_logo' => $newLogo,
             'site_logo_version' => $logoChanged ? (string) Str::uuid() : (string) Setting::getValue('site_logo_version', ''),
+            'storefront_hero_title' => $data['storefront_hero_title'],
+            'storefront_hero_subtitle' => $data['storefront_hero_subtitle'],
+            'storefront_hero_button_label' => $data['storefront_hero_button_label'],
+            'storefront_hero_button_url' => trim((string) ($data['storefront_hero_button_url'] ?? '')),
+            'storefront_hero_image' => $heroImage,
+            'storefront_hero_video' => $heroVideo,
             'sms_provider_webhook_url' => (string) ($data['sms_provider_webhook_url'] ?? ''),
             'whatsapp_provider_webhook_url' => (string) ($data['whatsapp_provider_webhook_url'] ?? ''),
             'notification_order_placed_en_subject' => (string) ($data['notification_order_placed_en_subject'] ?? ''),
@@ -245,5 +334,14 @@ class SettingController extends Controller
     private function storeOriginalLogo(UploadedFile $uploadedLogo): string
     {
         return str_replace('\\', '/', (string) $uploadedLogo->store('settings', 'public'));
+    }
+
+    private function deleteManagedHeroMedia(string $path): void
+    {
+        $path = str_replace('\\', '/', trim($path));
+
+        if ($path !== '' && Str::startsWith($path, 'home/hero/')) {
+            Storage::disk('public')->delete($path);
+        }
     }
 }
