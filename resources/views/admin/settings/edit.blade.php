@@ -53,7 +53,7 @@
                                     <div>
                                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ __('Site Logo') }}</label>
                                         <input type="file" name="site_logo" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp" class="w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ __('Transparent PNG or WEBP recommended. JPG is supported but cannot preserve transparency. Max 8MB.') }}</p>
+                                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ __('Transparent PNG or WEBP recommended. If the uploaded logo has a white outer background, the system will try to save it as a transparent PNG. Max 8MB.') }}</p>
                                         @error('site_logo')
                                             <p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>
                                         @enderror

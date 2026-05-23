@@ -12,9 +12,9 @@
             : null;
     @endphp
 
-    <div class="space-y-8 lg:space-y-10">
-        <section class="mx-auto w-full overflow-hidden rounded-3xl border border-slate-200/80 bg-slate-950 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:shadow-black/10">
-            <div class="relative h-[280px] overflow-hidden sm:h-[320px] lg:h-[360px]">
+    <div class="space-y-6 sm:space-y-8 lg:space-y-10">
+        <section class="mx-auto w-full overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-950 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:shadow-black/10 sm:rounded-3xl">
+            <div class="relative min-h-[210px] overflow-hidden sm:min-h-[280px] lg:min-h-[360px]">
                 @if ($heroVideoUrl)
                     <video
                         class="h-full w-full object-cover"
@@ -35,16 +35,16 @@
                 <div class="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/45 to-slate-950/10"></div>
 
                 <div class="absolute inset-0 flex items-center">
-                    <div class="max-w-2xl px-5 sm:px-8 lg:px-10">
-                        <h1 class="text-2xl font-semibold tracking-[-0.03em] text-white sm:text-3xl">
+                    <div class="max-w-2xl px-4 py-6 sm:px-8 lg:px-10">
+                        <h1 class="text-xl font-semibold tracking-[-0.03em] text-white sm:text-2xl lg:text-3xl">
                             {{ __('Find the right spare parts faster') }}
                         </h1>
-                        <p class="mt-3 max-w-xl text-sm leading-6 text-slate-200 sm:text-base">
+                        <p class="mt-2 max-w-xl text-xs leading-5 text-slate-200 sm:mt-3 sm:text-sm sm:leading-6 lg:text-base">
                             {{ __('Browse saved categories, filter by vehicle, and shop available parts from one clean catalog.') }}
                         </p>
                         <a
                             href="{{ route('shop.index') }}"
-                            class="mt-5 inline-flex items-center justify-center rounded-2xl bg-white px-4 py-2.5 text-sm font-semibold text-[#070740] transition duration-200 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+                            class="mt-4 inline-flex items-center justify-center rounded-xl bg-white px-3.5 py-2 text-xs font-semibold text-[#070740] transition duration-200 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 sm:mt-5 sm:rounded-2xl sm:px-4 sm:py-2.5 sm:text-sm"
                         >
                             {{ __('Shop now') }}
                         </a>
@@ -53,16 +53,16 @@
             </div>
         </section>
 
-        <section id="vehicle-finder" class="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10">
+        <section id="vehicle-finder" class="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:rounded-3xl sm:p-6">
             <div class="flex flex-col gap-2">
-                <h2 class="text-xl font-semibold text-slate-950 dark:text-white">{{ __('Vehicle Finder') }}</h2>
-                <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Pick your vehicle once and browse matching parts faster.') }}</p>
+                <h2 class="text-lg font-semibold text-slate-950 dark:text-white sm:text-xl">{{ __('Vehicle Finder') }}</h2>
+                <p class="text-xs leading-5 text-slate-500 dark:text-slate-400 sm:text-sm">{{ __('Pick your vehicle once and browse matching parts faster.') }}</p>
             </div>
 
             <form
                 method="GET"
                 action="{{ route('shop.index') }}"
-                class="mt-6 grid grid-cols-1 gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]"
+                class="mt-4 grid grid-cols-1 gap-2.5 sm:mt-6 sm:gap-3 md:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]"
                 data-vehicle-finder
                 data-model-map='@json($modelOptionsByBrand)'
                 data-model-placeholder="{{ __('Model') }}"
@@ -72,7 +72,7 @@
                 <select
                     name="brand"
                     data-vehicle-brand
-                    class="w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-[#070740]/20 focus:ring-4 focus:ring-[#070740]/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:border-[#070740]/30 dark:focus:ring-[#070740]/10"
+                    class="w-full rounded-xl border border-slate-200/80 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-[#070740]/20 focus:ring-4 focus:ring-[#070740]/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:border-[#070740]/30 dark:focus:ring-[#070740]/10 sm:rounded-2xl sm:px-4 sm:py-3"
                 >
                     <option value="">{{ __('Brand') }}</option>
                     @foreach ($brandOptions as $option)
@@ -83,7 +83,7 @@
                 <select
                     name="model"
                     data-vehicle-model
-                    class="w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-[#070740]/20 focus:ring-4 focus:ring-[#070740]/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:border-[#070740]/30 dark:focus:ring-[#070740]/10"
+                    class="w-full rounded-xl border border-slate-200/80 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-[#070740]/20 focus:ring-4 focus:ring-[#070740]/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:border-[#070740]/30 dark:focus:ring-[#070740]/10 sm:rounded-2xl sm:px-4 sm:py-3"
                 >
                     <option value="">{{ __('Model') }}</option>
                     @foreach ($modelOptions as $option)
@@ -93,7 +93,7 @@
 
                 <select
                     name="vehicle"
-                    class="w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-[#070740]/20 focus:ring-4 focus:ring-[#070740]/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:border-[#070740]/30 dark:focus:ring-[#070740]/10"
+                    class="w-full rounded-xl border border-slate-200/80 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-[#070740]/20 focus:ring-4 focus:ring-[#070740]/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:border-[#070740]/30 dark:focus:ring-[#070740]/10 sm:rounded-2xl sm:px-4 sm:py-3"
                 >
                     <option value="">{{ __('Engine / Year') }}</option>
                     @foreach ($engineOptions as $option)
@@ -103,7 +103,7 @@
 
                 <button
                     type="submit"
-                    class="inline-flex items-center justify-center rounded-2xl bg-[#070740] px-5 py-3 text-sm font-medium text-white transition duration-200 hover:bg-[#0a0a55] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#070740]/20"
+                    class="inline-flex items-center justify-center rounded-xl bg-[#070740] px-4 py-2.5 text-sm font-medium text-white transition duration-200 hover:bg-[#0a0a55] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#070740]/20 sm:rounded-2xl sm:px-5 sm:py-3 md:col-span-2 lg:col-span-1"
                 >
                     {{ __('Find parts') }}
                 </button>
@@ -111,7 +111,7 @@
         </section>
 
         <section class="space-y-5">
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h2 class="text-xl font-semibold text-slate-950 dark:text-white">{{ __('Browse Categories') }}</h2>
                     <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('Start from the system you need and narrow down quickly.') }}</p>
@@ -124,13 +124,13 @@
                 </a>
             </div>
 
-            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-5">
                 @forelse ($categories as $category)
                     <a
                         href="{{ route('shop.index', ['category' => data_get($category, 'slug') ?: data_get($category, 'id')]) }}"
-                        class="group flex min-h-56 flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm shadow-slate-900/5 transition duration-200 hover:-translate-y-0.5 hover:border-[#070740]/20 hover:shadow-md hover:shadow-slate-900/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#070740]/20 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 dark:hover:border-[#070740]/30 dark:hover:shadow-black/20"
+                        class="group flex min-h-0 flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm shadow-slate-900/5 transition duration-200 hover:-translate-y-0.5 hover:border-[#070740]/20 hover:shadow-md hover:shadow-slate-900/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#070740]/20 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 dark:hover:border-[#070740]/30 dark:hover:shadow-black/20 sm:min-h-56 sm:rounded-3xl"
                     >
-                        <div class="flex h-36 items-center justify-center overflow-hidden bg-slate-100 p-1.5 text-[#070740] transition duration-200 group-hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:group-hover:bg-slate-700">
+                        <div class="flex h-28 items-center justify-center overflow-hidden bg-slate-100 p-1.5 text-[#070740] transition duration-200 group-hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:group-hover:bg-slate-700 sm:h-36">
                             @if (data_get($category, 'image'))
                                 <img src="{{ data_get($category, 'image') }}" alt="{{ data_get($category, 'name') }}" class="h-full w-full scale-[1.08] object-contain transition duration-300 group-hover:scale-[1.1]" loading="lazy">
                             @else

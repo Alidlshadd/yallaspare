@@ -6,11 +6,11 @@
     $asideEnterClass = $enterDirection === 'left' ? 'auth-enter-right' : 'auth-enter-left';
     $isRegisterTheme = $panelTheme === 'register';
     $tagClasses = $isRegisterTheme
-        ? 'border-amber-300/30 bg-amber-300/10 text-amber-100'
-        : 'border-sky-300/30 bg-sky-300/10 text-sky-100';
+        ? 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-300/30 dark:bg-amber-300/10 dark:text-amber-100'
+        : 'border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-300/30 dark:bg-sky-300/10 dark:text-sky-100';
     $buttonClasses = $isRegisterTheme
-        ? 'border-amber-400/40 bg-amber-300/10 text-amber-100 hover:border-amber-300/70 hover:bg-amber-300/20'
-        : 'border-sky-400/40 bg-sky-300/10 text-sky-100 hover:border-sky-300/70 hover:bg-sky-300/20';
+        ? 'border-amber-200 bg-amber-50 text-amber-700 hover:border-amber-300 hover:bg-amber-100 dark:border-amber-400/40 dark:bg-amber-300/10 dark:text-amber-100 dark:hover:border-amber-300/70 dark:hover:bg-amber-300/20'
+        : 'border-sky-200 bg-sky-50 text-sky-700 hover:border-sky-300 hover:bg-sky-100 dark:border-sky-400/40 dark:bg-sky-300/10 dark:text-sky-100 dark:hover:border-sky-300/70 dark:hover:bg-sky-300/20';
 @endphp
 
 <!DOCTYPE html>
@@ -67,21 +67,45 @@
         #auth-panel a {
             touch-action: manipulation;
         }
+
+        html:not(.dark) #auth-panel :is(label, .text-slate-300) {
+            color: #334155 !important;
+        }
+
+        html:not(.dark) #auth-panel :is(input, select, textarea) {
+            background-color: #ffffff !important;
+            border-color: #cbd5e1 !important;
+            color: #0f172a !important;
+        }
+
+        html:not(.dark) #auth-panel :is(input, select, textarea)::placeholder {
+            color: #94a3b8 !important;
+        }
+
+        html:not(.dark) #auth-panel a {
+            color: #475569 !important;
+            text-decoration-color: #cbd5e1 !important;
+        }
+
+        html:not(.dark) #auth-panel a:hover {
+            color: #dc2626 !important;
+            text-decoration-color: #f87171 !important;
+        }
     </style>
 </head>
-<body class="min-h-screen bg-slate-950 text-white antialiased selection:bg-red-600 selection:text-white">
+<body class="min-h-screen bg-slate-50 text-slate-950 antialiased selection:bg-red-600 selection:text-white dark:bg-slate-950 dark:text-white">
     <div class="fixed right-4 top-4 z-50">
-        <x-language-switcher variant="dark" />
+        <x-language-switcher />
     </div>
 
     <main class="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-8 sm:px-6 lg:px-8">
-        <div class="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top,_rgba(37,99,235,0.22),_transparent_42%),radial-gradient(circle_at_75%_80%,_rgba(220,38,38,0.14),_transparent_30%)]"></div>
+        <div class="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top,_rgba(37,99,235,0.10),_transparent_42%),radial-gradient(circle_at_75%_80%,_rgba(220,38,38,0.08),_transparent_30%)] dark:bg-[radial-gradient(circle_at_top,_rgba(37,99,235,0.22),_transparent_42%),radial-gradient(circle_at_75%_80%,_rgba(220,38,38,0.14),_transparent_30%)]"></div>
 
-        <section class="grid w-full max-w-6xl grid-cols-1 overflow-hidden rounded-3xl border border-white/10 bg-slate-900/50 shadow-2xl shadow-black/50 backdrop-blur lg:grid-cols-2">
-            <aside id="auth-aside" class="relative overflow-hidden bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 p-8 sm:p-10 lg:p-12 {{ $asideOrder }} {{ $asideEnterClass }}">
-                <div class="pointer-events-none absolute -left-10 top-10 h-40 w-40 rounded-full border border-white/10"></div>
-                <div class="pointer-events-none absolute right-12 top-20 h-24 w-24 rotate-12 rounded-lg border border-red-400/20"></div>
-                <div class="pointer-events-none absolute -bottom-10 right-0 h-52 w-52 rounded-full bg-white/5 blur-2xl"></div>
+        <section class="grid w-full max-w-6xl grid-cols-1 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl shadow-slate-900/10 backdrop-blur dark:border-white/10 dark:bg-slate-900/50 dark:shadow-black/50 lg:grid-cols-2">
+            <aside id="auth-aside" class="relative overflow-hidden bg-gradient-to-br from-white via-slate-50 to-slate-100 p-8 text-slate-950 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 dark:text-white sm:p-10 lg:p-12 {{ $asideOrder }} {{ $asideEnterClass }}">
+                <div class="pointer-events-none absolute -left-10 top-10 h-40 w-40 rounded-full border border-slate-200 dark:border-white/10"></div>
+                <div class="pointer-events-none absolute right-12 top-20 h-24 w-24 rotate-12 rounded-lg border border-red-200 dark:border-red-400/20"></div>
+                <div class="pointer-events-none absolute -bottom-10 right-0 h-52 w-52 rounded-full bg-slate-200/70 blur-2xl dark:bg-white/5"></div>
 
                 <div class="relative z-10">
                     @if ($panelTag)
@@ -89,8 +113,8 @@
                             {{ $panelTag }}
                         </span>
                     @endif
-                    <h1 class="text-4xl font-bold tracking-tight text-white sm:text-5xl">{{ $panelTitle }}</h1>
-                    <p class="mt-3 max-w-md text-sm leading-6 text-slate-300">{{ $panelSubtitle }}</p>
+                    <h1 class="text-4xl font-bold tracking-tight text-[#070740] dark:text-white sm:text-5xl">{{ $panelTitle }}</h1>
+                    <p class="mt-3 max-w-md text-sm leading-6 text-slate-600 dark:text-slate-300">{{ $panelSubtitle }}</p>
 
                     @if ($panelButtonText)
                         @if ($panelButtonAction === 'submit')
@@ -120,9 +144,9 @@
                 </div>
             </aside>
 
-            <div class="flex items-center bg-slate-950/75 p-6 sm:p-8 lg:p-10 {{ $formOrder }}">
-                <div id="auth-panel" class="w-full rounded-2xl border border-white/10 bg-slate-900/70 p-6 shadow-xl shadow-black/40 transition-all duration-300 {{ $panelEnterClass }} sm:p-7">
-                    <h2 class="text-2xl font-semibold tracking-tight text-white">{{ $heading }}</h2>
+            <div class="flex items-center bg-slate-50/75 p-6 dark:bg-slate-950/75 sm:p-8 lg:p-10 {{ $formOrder }}">
+                <div id="auth-panel" class="w-full rounded-2xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-900/10 transition-all duration-300 dark:border-white/10 dark:bg-slate-900/70 dark:shadow-black/40 {{ $panelEnterClass }} sm:p-7">
+                    <h2 class="text-2xl font-semibold tracking-tight text-slate-950 dark:text-white">{{ $heading }}</h2>
                     {{ $slot }}
                 </div>
             </div>

@@ -28,13 +28,13 @@
 >
     <button
         type="button"
-        class="inline-flex h-9 items-center gap-2 rounded-xl px-3 text-sm font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 {{ $triggerClasses }}"
+        class="inline-flex h-8 items-center gap-1.5 rounded-lg px-2 text-xs font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 sm:h-9 sm:gap-2 sm:rounded-xl sm:px-3 sm:text-sm {{ $triggerClasses }}"
         @click="languageOpen = !languageOpen"
         :aria-expanded="languageOpen.toString()"
         aria-haspopup="menu"
         aria-label="{{ __('Language') }}"
     >
-        <span>{{ __($currentLabel) }}</span>
+        <span class="hidden min-[380px]:inline">{{ __($currentLabel) }}</span>
         <span class="text-xs uppercase opacity-70">{{ $currentLocale }}</span>
         <svg class="h-4 w-4 opacity-70 transition-transform" :class="languageOpen ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.126l3.71-3.895a.75.75 0 1 1 1.08 1.04l-4.25 4.46a.75.75 0 0 1-1.08 0l-4.25-4.46a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd" />

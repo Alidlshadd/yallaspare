@@ -7,6 +7,7 @@ use App\Models\Setting;
 use App\Support\Branding;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
@@ -78,7 +79,7 @@ class SettingController extends Controller
             try {
                 // Store the new logo first, then remove the old one.
                 // This prevents broken settings when storage write fails.
-                $storedPath = $uploadedLogo->store('settings', 'public');
+                $storedPath = $this->storeLogoWithTransparentBackground($uploadedLogo);
                 $storedPath = str_replace('\\', '/', (string) $storedPath);
                 if ($storedPath === '' || !Storage::disk('public')->exists($storedPath)) {
                     throw new \RuntimeException(__('Stored logo file was not found after upload.'));
@@ -124,5 +125,125 @@ class SettingController extends Controller
         return redirect()
             ->route('admin.settings.edit')
             ->with('success', __('System settings updated successfully.'));
+    }
+
+    private function storeLogoWithTransparentBackground(UploadedFile $uploadedLogo): string
+    {
+        if (! function_exists('imagecreatefromstring') || ! function_exists('imagepng')) {
+            return $this->storeOriginalLogo($uploadedLogo);
+        }
+
+        $realPath = $uploadedLogo->getRealPath();
+        $contents = $realPath ? @file_get_contents($realPath) : false;
+
+        if ($contents === false || $contents === '') {
+            return $this->storeOriginalLogo($uploadedLogo);
+        }
+
+        $image = @imagecreatefromstring($contents);
+
+        if (! $image) {
+            return $this->storeOriginalLogo($uploadedLogo);
+        }
+
+        if (! imageistruecolor($image) && function_exists('imagepalettetotruecolor')) {
+            imagepalettetotruecolor($image);
+        }
+
+        imagealphablending($image, false);
+        imagesavealpha($image, true);
+
+        $width = imagesx($image);
+        $height = imagesy($image);
+        $transparent = imagecolorallocatealpha($image, 255, 255, 255, 127);
+        $changed = false;
+        $visited = [];
+        $queue = new \SplQueue();
+
+        for ($x = 0; $x < $width; $x++) {
+            $this->queueWhiteLogoPixel($image, $queue, $visited, $width, $x, 0);
+            $this->queueWhiteLogoPixel($image, $queue, $visited, $width, $x, $height - 1);
+        }
+
+        for ($y = 1; $y < $height - 1; $y++) {
+            $this->queueWhiteLogoPixel($image, $queue, $visited, $width, 0, $y);
+            $this->queueWhiteLogoPixel($image, $queue, $visited, $width, $width - 1, $y);
+        }
+
+        while (! $queue->isEmpty()) {
+            $key = $queue->dequeue();
+            $x = $key % $width;
+            $y = intdiv($key, $width);
+
+            imagesetpixel($image, $x, $y, $transparent);
+            $changed = true;
+
+            if ($x > 0) {
+                $this->queueWhiteLogoPixel($image, $queue, $visited, $width, $x - 1, $y);
+            }
+            if ($x < $width - 1) {
+                $this->queueWhiteLogoPixel($image, $queue, $visited, $width, $x + 1, $y);
+            }
+            if ($y > 0) {
+                $this->queueWhiteLogoPixel($image, $queue, $visited, $width, $x, $y - 1);
+            }
+            if ($y < $height - 1) {
+                $this->queueWhiteLogoPixel($image, $queue, $visited, $width, $x, $y + 1);
+            }
+        }
+
+        if (! $changed) {
+            imagedestroy($image);
+
+            return $this->storeOriginalLogo($uploadedLogo);
+        }
+
+        ob_start();
+        $written = imagepng($image, null, 9);
+        $pngData = ob_get_clean();
+        imagedestroy($image);
+
+        if (! $written || ! is_string($pngData) || $pngData === '') {
+            return $this->storeOriginalLogo($uploadedLogo);
+        }
+
+        $storedPath = 'settings/' . (string) Str::uuid() . '.png';
+        Storage::disk('public')->put($storedPath, $pngData);
+
+        return $storedPath;
+    }
+
+    private function queueWhiteLogoPixel($image, \SplQueue $queue, array &$visited, int $width, int $x, int $y): void
+    {
+        $key = ($y * $width) + $x;
+
+        if (isset($visited[$key])) {
+            return;
+        }
+
+        $visited[$key] = true;
+
+        if (! $this->isNearWhiteLogoPixel(imagecolorat($image, $x, $y))) {
+            return;
+        }
+
+        $queue->enqueue($key);
+    }
+
+    private function isNearWhiteLogoPixel(int $rgba): bool
+    {
+        $alpha = ($rgba & 0x7F000000) >> 24;
+        $red = ($rgba >> 16) & 0xFF;
+        $green = ($rgba >> 8) & 0xFF;
+        $blue = $rgba & 0xFF;
+
+        return $alpha < 120
+            && min($red, $green, $blue) >= 242
+            && (max($red, $green, $blue) - min($red, $green, $blue)) <= 18;
+    }
+
+    private function storeOriginalLogo(UploadedFile $uploadedLogo): string
+    {
+        return str_replace('\\', '/', (string) $uploadedLogo->store('settings', 'public'));
     }
 }

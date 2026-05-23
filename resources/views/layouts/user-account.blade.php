@@ -31,13 +31,26 @@
             (function () {
                 try {
                     const normalizeTheme = (value) => ['light', 'dark'].includes(value) ? value : null;
-                    const storedThemeValue = localStorage.getItem('user-theme');
-                    const storedTheme = normalizeTheme(storedThemeValue);
+                    const lightDefaultResetKey = 'user-theme-light-default-20260523';
+                    let storedThemeValue = localStorage.getItem('user-theme');
+                    let storedTheme = normalizeTheme(storedThemeValue);
                     const serverTheme = @js($themePreference);
-                    const selectedTheme = storedTheme || normalizeTheme(serverTheme) || 'light';
+                    const isAuthenticated = @js(auth()->check());
+
+                    if (storedTheme === 'dark' && localStorage.getItem(lightDefaultResetKey) !== '1') {
+                        storedThemeValue = 'light';
+                        storedTheme = 'light';
+                        localStorage.setItem('user-theme', 'light');
+                    }
+
+                    localStorage.setItem(lightDefaultResetKey, '1');
+
+                    const selectedTheme = isAuthenticated ? (normalizeTheme(serverTheme) || 'light') : (storedTheme || 'light');
 
                     if (storedThemeValue !== null && storedTheme === null) {
                         localStorage.setItem('user-theme', 'light');
+                    } else if (isAuthenticated && storedThemeValue !== selectedTheme) {
+                        localStorage.setItem('user-theme', selectedTheme);
                     }
 
                     document.documentElement.classList.toggle('dark', selectedTheme === 'dark');

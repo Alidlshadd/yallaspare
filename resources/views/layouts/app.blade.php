@@ -33,7 +33,16 @@
             <script>
                 (function () {
                     try {
-                        const storedTheme = localStorage.getItem('admin-theme');
+                        const lightDefaultResetKey = 'admin-theme-light-default-20260523';
+                        let storedTheme = localStorage.getItem('admin-theme');
+
+                        if (storedTheme === 'dark' && localStorage.getItem(lightDefaultResetKey) !== '1') {
+                            storedTheme = 'light';
+                            localStorage.setItem('admin-theme', 'light');
+                        }
+
+                        localStorage.setItem(lightDefaultResetKey, '1');
+
                         const selectedTheme = storedTheme === 'dark' ? 'dark' : 'light';
 
                         if (storedTheme !== null && !['light', 'dark'].includes(storedTheme)) {
@@ -78,7 +87,7 @@
                                 <x-brand-mark
                                     :logo-url="$systemSettings['site_logo_url'] ?? null"
                                     :brand="$systemSettings['site_name'] ?? 'YallaSpare'"
-                                    wrapper-class="app-logo-mark"
+                                    wrapper-class="app-logo-mark logo-remove-white-bg"
                                     img-class="h-full w-auto object-contain"
                                     fallback-class="inline-flex h-full w-full items-center justify-center rounded-lg bg-slate-800"
                                     fallback-text-class="text-sm font-semibold text-white"
@@ -442,6 +451,7 @@
                     const themeToggle = document.getElementById('adminThemeToggle');
                     const themeIcon = document.getElementById('adminThemeIcon');
                     const themeStorageKey = 'admin-theme';
+                    const lightDefaultResetKey = 'admin-theme-light-default-20260523';
                     const applyTheme = (isDark) => {
                         document.documentElement.classList.toggle('dark', isDark);
                         if (themeIcon) {
@@ -449,7 +459,15 @@
                             themeIcon.classList.toggle('fa-sun', isDark);
                         }
                     };
-                    const storedTheme = localStorage.getItem(themeStorageKey);
+                    let storedTheme = localStorage.getItem(themeStorageKey);
+
+                    if (storedTheme === 'dark' && localStorage.getItem(lightDefaultResetKey) !== '1') {
+                        storedTheme = 'light';
+                        localStorage.setItem(themeStorageKey, 'light');
+                    }
+
+                    localStorage.setItem(lightDefaultResetKey, '1');
+
                     const selectedTheme = storedTheme === 'dark' ? 'dark' : 'light';
 
                     if (storedTheme !== null && !['light', 'dark'].includes(storedTheme)) {

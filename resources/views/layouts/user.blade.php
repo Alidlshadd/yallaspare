@@ -85,8 +85,8 @@
     );
     $shellClasses = trim('min-h-screen bg-slate-50 dark:bg-slate-950');
     $mainClasses = $isUserHomeRoute
-        ? 'mx-auto w-full max-w-7xl px-4 pb-12 pt-0 sm:px-6 sm:pb-12 sm:pt-0 lg:px-8 lg:pb-12 lg:pt-0'
-        : 'mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12';
+        ? 'mx-auto w-full max-w-7xl px-4 pb-8 pt-0 sm:px-6 sm:pb-10 sm:pt-0 lg:px-8 lg:pb-12 lg:pt-0'
+        : 'mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 sm:py-8 lg:px-8 lg:py-12';
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', $locale) }}" dir="{{ $dir }}" class="{{ $htmlClasses }}">
@@ -105,13 +105,26 @@
             (function () {
                 try {
                     const normalizeTheme = (value) => ['light', 'dark'].includes(value) ? value : null;
-                    const storedThemeValue = localStorage.getItem('user-theme');
-                    const storedTheme = normalizeTheme(storedThemeValue);
+                    const lightDefaultResetKey = 'user-theme-light-default-20260523';
+                    let storedThemeValue = localStorage.getItem('user-theme');
+                    let storedTheme = normalizeTheme(storedThemeValue);
                     const serverTheme = @js($themePreference);
-                    const selectedTheme = storedTheme || normalizeTheme(serverTheme) || 'light';
+                    const isAuthenticated = @js(auth()->check());
+
+                    if (storedTheme === 'dark' && localStorage.getItem(lightDefaultResetKey) !== '1') {
+                        storedThemeValue = 'light';
+                        storedTheme = 'light';
+                        localStorage.setItem('user-theme', 'light');
+                    }
+
+                    localStorage.setItem(lightDefaultResetKey, '1');
+
+                    const selectedTheme = isAuthenticated ? (normalizeTheme(serverTheme) || 'light') : (storedTheme || 'light');
 
                     if (storedThemeValue !== null && storedTheme === null) {
                         localStorage.setItem('user-theme', 'light');
+                    } else if (isAuthenticated && storedThemeValue !== selectedTheme) {
+                        localStorage.setItem('user-theme', selectedTheme);
                     }
 
                     document.documentElement.classList.toggle('dark', selectedTheme === 'dark');
@@ -136,7 +149,7 @@
             }
         </style>
     </head>
-    <body class="{{ $bodyClasses }}" x-data="{ accountOpen: false }">
+    <body class="{{ $bodyClasses }}" x-data="{ accountOpen: false, mobileNavOpen: false }">
         <div class="{{ $shellClasses }}">
             <header data-store-header class="relative sticky top-0 z-40 border-0 bg-[linear-gradient(180deg,#070740_0%,#0a0d3f_100%)] text-white shadow-none transition-transform duration-300 ease-out will-change-transform" style="margin-top:0;border-top:0">
                 @php
@@ -185,7 +198,7 @@
                             <x-brand-mark
                                 :logo-url="$brandLogoUrl"
                                 :brand="$brand"
-                                wrapper-class="app-logo-mark"
+                                wrapper-class="app-logo-mark logo-remove-white-bg"
                                 img-class="h-full w-auto object-contain"
                                 fallback-class="inline-flex h-full w-full items-center justify-center"
                                 fallback-text-class="text-[11px] font-semibold tracking-[0.18em] text-white"
@@ -260,13 +273,13 @@
                         </div>
                     </div>
 
-                    <div class="space-y-2.5 py-2.5 lg:hidden">
-                        <div class="flex items-center justify-between gap-3">
+                    <div class="space-y-2 py-2 lg:hidden">
+                        <div class="flex items-center justify-between gap-2">
                             <a href="{{ $storeHomeUrl }}" class="app-logo app-logo-dark app-logo-user focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25">
                                 <x-brand-mark
                                     :logo-url="$brandLogoUrl"
                                     :brand="$brand"
-                                    wrapper-class="app-logo-mark"
+                                    wrapper-class="app-logo-mark logo-remove-white-bg"
                                     img-class="h-full w-auto object-contain"
                                     fallback-class="inline-flex h-full w-full items-center justify-center"
                                     fallback-text-class="text-[11px] font-semibold tracking-[0.18em] text-white"
@@ -274,22 +287,22 @@
                                 <span class="app-logo-text">{{ $brand }}</span>
                             </a>
 
-                            <div class="flex items-center gap-2">
+                            <div class="flex shrink-0 items-center gap-1.5">
                                 <x-language-switcher variant="dark" />
 
                             @auth
                             <div class="relative">
                                 <button
                                     type="button"
-                                    class="inline-flex h-9 items-center gap-2 rounded-xl border border-white/10 bg-white/10 px-3 text-sm font-medium text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
+                                    class="inline-flex h-8 items-center gap-1.5 rounded-lg border border-white/10 bg-white/10 px-2 text-xs font-medium text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25 sm:h-9 sm:rounded-xl sm:px-3 sm:text-sm"
                                     @click="accountOpen = !accountOpen"
                                     :aria-expanded="accountOpen.toString()"
                                     aria-haspopup="menu"
                                 >
                                     @if($userProfilePhotoUrl)
-                                        <img src="{{ $userProfilePhotoUrl }}" alt="{{ $authUser->name ?? 'User' }} profile photo" class="h-7 w-7 rounded-full object-cover border border-white/30">
-                                    @else
-                                        <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white text-[11px] font-semibold text-[#070740]">
+                                            <img src="{{ $userProfilePhotoUrl }}" alt="{{ $authUser->name ?? 'User' }} profile photo" class="h-6 w-6 rounded-full object-cover border border-white/30 sm:h-7 sm:w-7">
+                                        @else
+                                            <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white text-[10px] font-semibold text-[#070740] sm:h-7 sm:w-7 sm:text-[11px]">
                                             {{ $userInitial }}
                                         </span>
                                     @endif
@@ -328,17 +341,31 @@
                                 </div>
                             </div>
                             @else
-                                <a href="{{ route('login') }}" class="inline-flex h-9 items-center rounded-xl border border-white/10 bg-white/10 px-3 text-sm font-medium text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25">
+                                <a href="{{ route('login') }}" class="inline-flex h-8 items-center rounded-lg border border-white/10 bg-white/10 px-2.5 text-xs font-medium text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25 sm:h-9 sm:rounded-xl sm:px-3 sm:text-sm">
                                     {{ __('Login') }}
                                 </a>
                             @endauth
+                                <button
+                                    type="button"
+                                    class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25 sm:h-9 sm:w-9 sm:rounded-xl"
+                                    @click="mobileNavOpen = !mobileNavOpen"
+                                    :aria-expanded="mobileNavOpen.toString()"
+                                    aria-label="{{ __('Menu') }}"
+                                >
+                                    <svg x-show="!mobileNavOpen" class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" />
+                                    </svg>
+                                    <svg x-cloak x-show="mobileNavOpen" class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6 6 18" />
+                                    </svg>
+                                </button>
                             </div>
                         </div>
 
                         <form method="GET" action="{{ route('shop.index') }}">
                             <div class="relative">
-                                <span class="pointer-events-none absolute inset-y-0 left-5 flex items-center text-white/55">
-                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                <span class="pointer-events-none absolute inset-y-0 left-3.5 flex items-center text-white/55">
+                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35" />
                                         <circle cx="11" cy="11" r="6" />
                                     </svg>
@@ -349,22 +376,22 @@
                                     value="{{ request('search') }}"
                                     placeholder="{{ __('Search part name, OEM number, SKU...') }}"
                                     aria-label="{{ __('Search catalog') }}"
-                                    class="block h-11 w-full rounded-full border border-white/10 bg-white/10 py-2.5 pl-14 pr-24 text-sm text-white outline-none transition duration-200 placeholder:text-white/45 focus:border-white/20 focus:bg-white/15 focus:ring-4 focus:ring-white/10"
+                                    class="block h-9 w-full rounded-full border border-white/10 bg-white/10 py-2 pl-10 pr-20 text-xs text-white outline-none transition duration-200 placeholder:text-white/45 focus:border-white/20 focus:bg-white/15 focus:ring-4 focus:ring-white/10 sm:h-10 sm:pr-24 sm:text-sm"
                                 />
                                 <button
                                     type="submit"
-                                    class="absolute {{ $isRtl ? 'left-1.5' : 'right-1.5' }} top-1.5 inline-flex h-8 items-center justify-center rounded-full bg-white px-4 text-sm font-semibold text-[#070740] transition duration-200 hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+                                    class="absolute {{ $isRtl ? 'left-1' : 'right-1' }} top-1 inline-flex h-7 items-center justify-center rounded-full bg-white px-3 text-xs font-semibold text-[#070740] transition duration-200 hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 sm:h-8 sm:px-4 sm:text-sm"
                                 >
                                     {{ __('Search') }}
                                 </button>
                             </div>
                         </form>
 
-                        <div class="flex items-center justify-end gap-2">
+                        <div class="flex items-center justify-end gap-1.5 sm:gap-2">
                             @auth
                                 <a
                                     href="{{ $cartUrl }}"
-                                    class="relative inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
+                                    class="relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25 sm:h-10 sm:w-10 sm:rounded-xl"
                                     aria-label="{{ __('Cart') }}"
                                 >
                                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -377,7 +404,7 @@
 
                                 <a
                                     href="{{ $wishlistUrl }}"
-                                    class="relative inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
+                                    class="relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25 sm:h-10 sm:w-10 sm:rounded-xl"
                                     aria-label="{{ __('Wishlist') }}"
                                 >
                                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -390,7 +417,7 @@
                             @else
                                 <a
                                     href="{{ route('register') }}"
-                                    class="inline-flex h-10 items-center rounded-xl bg-white px-3 text-sm font-semibold text-[#070740] transition duration-200 hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+                                    class="inline-flex h-9 items-center rounded-lg bg-white px-3 text-xs font-semibold text-[#070740] transition duration-200 hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40 sm:h-10 sm:rounded-xl sm:text-sm"
                                 >
                                     {{ __('Register') }}
                                 </a>
@@ -398,7 +425,7 @@
 
                             <a
                                 href="{{ url('/support') }}"
-                                class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
+                                class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25 sm:h-10 sm:w-10 sm:rounded-xl"
                                 aria-label="{{ __('Support') }}"
                             >
                                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -442,8 +469,8 @@
                             @endauth
                         </div>
 
-                        <form method="GET" action="{{ route('shop.index') }}" class="justify-self-center">
-                            <div class="relative mx-auto w-full min-w-[44rem] max-w-3xl">
+                        <form method="GET" action="{{ route('shop.index') }}" class="w-full justify-self-center">
+                            <div class="relative mx-auto w-full max-w-3xl">
                                 <span class="pointer-events-none absolute inset-y-0 left-5 flex items-center text-white/55">
                                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35" />
@@ -510,7 +537,7 @@
                 </div>
 
                 <nav
-                    class="pb-2.5 pt-1.5 text-white"
+                    class="pb-2 pt-1 text-white lg:pb-2.5 lg:pt-1.5"
                     aria-label="{{ __('Main navigation') }}"
                     x-data="{
                         categoriesOpen: false,
@@ -547,7 +574,12 @@
                 >
                     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                         <div class="relative" @mouseenter="cancelClose()" @mouseleave="queueClose()">
-                            <div class="flex items-center gap-1 overflow-x-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden lg:justify-center">
+                            <div
+                                x-cloak
+                                x-show="mobileNavOpen || isDesktop()"
+                                x-transition
+                                class="grid grid-cols-2 gap-1.5 rounded-2xl border border-white/10 bg-white/5 p-2 lg:flex lg:items-center lg:justify-center lg:gap-1 lg:overflow-x-visible lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0"
+                            >
                                 <a
                                     href="{{ $storeHomeUrl }}"
                                     class="inline-flex items-center rounded-xl px-3 py-1.5 text-sm font-medium transition duration-200 {{ request()->routeIs('user.shop.home') ? 'bg-white text-[#070740]' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"

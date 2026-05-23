@@ -1,22 +1,22 @@
 @extends('layouts.user')
 
 @section('content')
-    <div class="space-y-5">
+    <div class="space-y-4 sm:space-y-5">
         @guest
-            <section class="overflow-hidden rounded-3xl border border-[#070740]/10 bg-white shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10">
-                <div class="grid gap-5 p-5 sm:p-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
+            <section class="overflow-hidden rounded-2xl border border-[#070740]/10 bg-white shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:rounded-3xl">
+                <div class="grid gap-4 p-4 sm:gap-5 sm:p-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
                     <div>
                         <p class="text-xs font-semibold uppercase tracking-[0.16em] text-orange-600 dark:text-orange-300">{{ __('Account checkout') }}</p>
-                        <h1 class="mt-2 text-2xl font-semibold tracking-[-0.03em] text-slate-950 dark:text-white">{{ __('Login or create an account to order') }}</h1>
+                        <h1 class="mt-2 text-xl font-semibold tracking-[-0.03em] text-slate-950 dark:text-white sm:text-2xl">{{ __('Login or create an account to order') }}</h1>
                         <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">
                             {{ __('Pick a product, then sign in or create an account to place a cash-on-delivery order.') }}
                         </p>
                     </div>
-                    <div class="flex flex-wrap gap-2 lg:justify-end">
-                        <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-slate-800">
+                    <div class="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap lg:justify-end">
+                        <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-slate-800 sm:rounded-2xl sm:px-4 sm:py-2.5">
                             {{ __('Login') }}
                         </a>
-                        <a href="{{ route('register') }}" class="inline-flex items-center justify-center rounded-2xl bg-[#070740] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0a0a55]">
+                        <a href="{{ route('register') }}" class="inline-flex items-center justify-center rounded-xl bg-[#070740] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#0a0a55] sm:rounded-2xl sm:px-4 sm:py-2.5">
                             {{ __('Create Account') }}
                         </a>
                     </div>
@@ -43,13 +43,13 @@
             ];
         @endphp
 
-        <section class="grid gap-5 xl:grid-cols-[22rem_minmax(0,1fr)] xl:items-start">
-            <aside class="overflow-hidden rounded-[1.6rem] border border-slate-200/90 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.08)] dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/20 xl:sticky xl:top-4 xl:max-h-[calc(100vh-2rem)] xl:self-start">
-                <div class="border-b border-slate-200/80 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+        <section class="grid gap-4 lg:gap-5 xl:grid-cols-[22rem_minmax(0,1fr)] xl:items-start">
+            <aside class="overflow-hidden rounded-2xl border border-slate-200/90 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.08)] dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/20 sm:rounded-[1.6rem] xl:sticky xl:top-4 xl:max-h-[calc(100vh-2rem)] xl:self-start">
+                <div class="border-b border-slate-200/80 bg-white p-3.5 dark:border-slate-800 dark:bg-slate-900 sm:p-4">
                     <div class="flex items-start justify-between gap-3">
                         <div>
                             <p class="text-[11px] font-semibold uppercase tracking-[0.18em] text-orange-600 dark:text-orange-300">{{ __('Filters') }}</p>
-                            <h1 class="mt-1 text-xl font-semibold tracking-[-0.02em] text-slate-950 dark:text-white">{{ __('Find the right part') }}</h1>
+                            <h1 class="mt-1 text-lg font-semibold tracking-[-0.02em] text-slate-950 dark:text-white sm:text-xl">{{ __('Find the right part') }}</h1>
                         </div>
                         <span class="inline-flex shrink-0 items-center rounded-full border border-orange-200 bg-orange-50 px-2.5 py-1 text-[11px] font-bold text-orange-700 dark:border-orange-900/50 dark:bg-orange-950/30 dark:text-orange-300">
                             {{ trans_choice(':count filter|:count filters', $activeFilterCount, ['count' => $activeFilterCount]) }}
@@ -93,8 +93,8 @@
                     data-all-models-placeholder="{{ __('Select brand first') }}"
                     data-no-models-placeholder="{{ __('No models for this brand yet') }}"
                 >
-                    <div class="min-h-0 flex-1 divide-y divide-slate-200/80 overflow-y-auto dark:divide-slate-800">
-                    <div class="space-y-3 p-4">
+                    <div class="min-h-0 flex-1 divide-y divide-slate-200/80 overflow-visible dark:divide-slate-800 xl:overflow-y-auto">
+                    <div class="space-y-3 p-3.5 sm:p-4">
                         <div>
                             <h2 class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">{{ __('Vehicle fitment') }}</h2>
                             <p class="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">{{ __('Brand, model, engine/year') }}</p>
@@ -133,7 +133,7 @@
                         </div>
                     </div>
 
-                    <div class="space-y-3 p-4">
+                    <div class="space-y-3 p-3.5 sm:p-4">
                         <div>
                             <h2 class="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">{{ __('Sort') }}</h2>
                             <p class="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">{{ __('Choose product order') }}</p>
@@ -152,16 +152,16 @@
 
                     </div>
 
-                    <div class="grid grid-cols-2 gap-2 border-t border-slate-200/80 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+                    <div class="grid grid-cols-2 gap-2 border-t border-slate-200/80 bg-white p-3.5 dark:border-slate-800 dark:bg-slate-900 sm:p-4">
                         <button
                             type="submit"
-                            class="inline-flex items-center justify-center rounded-xl bg-[#070740] px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-[#0a0a55] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#070740]/20"
+                            class="inline-flex items-center justify-center rounded-xl bg-[#070740] px-3 py-2.5 text-sm font-semibold text-white transition duration-200 hover:bg-[#0a0a55] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#070740]/20 sm:px-4 sm:py-3"
                         >
                             {{ __('Apply filters') }}
                         </button>
                         <a
                             href="{{ route('shop.index') }}"
-                            class="inline-flex items-center justify-center rounded-xl border border-slate-200/80 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition duration-200 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                            class="inline-flex items-center justify-center rounded-xl border border-slate-200/80 bg-white px-3 py-2.5 text-sm font-semibold text-slate-700 transition duration-200 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 sm:px-4 sm:py-3"
                         >
                             {{ __('Reset') }}
                         </a>
@@ -171,8 +171,8 @@
 
             <div class="space-y-4">
                 @if ($products->isEmpty())
-                    <section class="rounded-3xl border border-slate-200/80 bg-white p-8 text-center shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10">
-                        <h2 class="text-2xl font-semibold tracking-[-0.03em] text-slate-950 dark:text-white">{{ __('No products found') }}</h2>
+                    <section class="rounded-2xl border border-slate-200/80 bg-white p-5 text-center shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:rounded-3xl sm:p-8">
+                        <h2 class="text-xl font-semibold tracking-[-0.03em] text-slate-950 dark:text-white sm:text-2xl">{{ __('No products found') }}</h2>
                         <p class="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{{ __('Try changing the filter or clearing your search.') }}</p>
                     </section>
                 @else

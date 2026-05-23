@@ -36,14 +36,11 @@
                 themePreference: @js($selectedThemePreference),
                 init() {
                     const normalizeTheme = (value) => ['light', 'dark'].includes(value) ? value : null;
-                    const storedTheme = localStorage.getItem('user-theme');
-                    const normalizedStoredTheme = normalizeTheme(storedTheme);
+                    const selectedTheme = normalizeTheme(this.themePreference) || 'light';
 
-                    if (normalizedStoredTheme) {
-                        this.themePreference = normalizedStoredTheme;
-                    } else if (storedTheme !== null) {
-                        localStorage.setItem('user-theme', 'light');
-                    }
+                    this.themePreference = selectedTheme;
+                    localStorage.setItem('user-theme', selectedTheme);
+                    document.documentElement.classList.toggle('dark', selectedTheme === 'dark');
                 },
                 applyTheme(value) {
                     const selectedTheme = ['light', 'dark'].includes(value) ? value : 'light';

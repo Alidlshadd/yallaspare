@@ -10,9 +10,18 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         <script>
-            (function () {
-                try {
-                    const storedTheme = localStorage.getItem('admin-theme');
+                (function () {
+                    try {
+                    const lightDefaultResetKey = 'admin-theme-light-default-20260523';
+                    let storedTheme = localStorage.getItem('admin-theme');
+
+                    if (storedTheme === 'dark' && localStorage.getItem(lightDefaultResetKey) !== '1') {
+                        storedTheme = 'light';
+                        localStorage.setItem('admin-theme', 'light');
+                    }
+
+                    localStorage.setItem(lightDefaultResetKey, '1');
+
                     const selectedTheme = storedTheme === 'dark' ? 'dark' : 'light';
 
                     if (storedTheme !== null && !['light', 'dark'].includes(storedTheme)) {
