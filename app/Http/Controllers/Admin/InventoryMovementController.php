@@ -7,6 +7,7 @@ use App\Models\InventoryMovement;
 use App\Models\Product;
 use App\Models\Warehouse;
 use App\Support\AdminLogger;
+use App\Support\SqlSafe;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -35,21 +36,21 @@ class InventoryMovementController extends Controller
 
         if ($search !== '') {
             $query->where(function ($q) use ($search) {
-                $q->where('reference', 'like', "%{$search}%")
-                    ->orWhere('note', 'like', "%{$search}%")
-                    ->orWhereHas('product', function ($productQuery) use ($search) {
-                        $productQuery->where('name_en', 'like', "%{$search}%")
-                            ->orWhere('name_ar', 'like', "%{$search}%")
-                            ->orWhere('name_ku', 'like', "%{$search}%")
-                            ->orWhere('sku', 'like', "%{$search}%")
-                            ->orWhere('part_number', 'like', "%{$search}%")
-                            ->orWhere('oem_number', 'like', "%{$search}%")
-                            ->orWhere('brand', 'like', "%{$search}%");
-                    })
-                    ->orWhereHas('user', function ($userQuery) use ($search) {
-                        $userQuery->where('name', 'like', "%{$search}%")
-                            ->orWhere('email', 'like', "%{$search}%");
-                    });
+                SqlSafe::whereLike($q, 'reference', $search);
+                SqlSafe::orWhereLike($q, 'note', $search);
+                $q->orWhereHas('product', function ($productQuery) use ($search) {
+                    SqlSafe::whereLike($productQuery, 'name_en', $search);
+                    SqlSafe::orWhereLike($productQuery, 'name_ar', $search);
+                    SqlSafe::orWhereLike($productQuery, 'name_ku', $search);
+                    SqlSafe::orWhereLike($productQuery, 'sku', $search);
+                    SqlSafe::orWhereLike($productQuery, 'part_number', $search);
+                    SqlSafe::orWhereLike($productQuery, 'oem_number', $search);
+                    SqlSafe::orWhereLike($productQuery, 'brand', $search);
+                });
+                $q->orWhereHas('user', function ($userQuery) use ($search) {
+                    SqlSafe::whereLike($userQuery, 'name', $search);
+                    SqlSafe::orWhereLike($userQuery, 'email', $search);
+                });
             });
         }
 

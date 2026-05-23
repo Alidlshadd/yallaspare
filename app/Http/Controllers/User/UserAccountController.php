@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Models\Order;
+use App\Support\SecureImageStorage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -75,7 +76,7 @@ class UserAccountController extends Controller
             if (!empty($profilePhotoPath)) {
                 Storage::disk('public')->delete($profilePhotoPath);
             }
-            $profilePhotoPath = $request->file('profile_photo')->store('users/profile-photos', 'public');
+            $profilePhotoPath = SecureImageStorage::store($request->file('profile_photo'), 'users/profile-photos');
         }
 
         $user->forceFill([

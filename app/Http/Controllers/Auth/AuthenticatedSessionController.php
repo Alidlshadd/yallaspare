@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Auth\AdminTwoFactorController;
 use App\Http\Requests\Auth\LoginRequest;
 use App\Providers\RouteServiceProvider;
 use Carbon\CarbonImmutable;
@@ -43,6 +44,12 @@ class AuthenticatedSessionController extends Controller
         }
 
         if ($user && $user->isAdminPanelUser()) {
+            if (config('security.admin_two_factor.enabled')) {
+                app(AdminTwoFactorController::class)->issueChallenge($request);
+
+                return redirect()->route('admin.two-factor.challenge');
+            }
+
             return redirect()->intended('/admin/dashboard');
         }
 
@@ -60,6 +67,8 @@ class AuthenticatedSessionController extends Controller
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
+
+        $request->session()->forget('admin_2fa');
 
         $request->session()->invalidate();
 

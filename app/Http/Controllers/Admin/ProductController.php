@@ -8,6 +8,8 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\Setting;
+use App\Support\SecureImageStorage;
+use App\Support\SqlSafe;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -44,15 +46,15 @@ class ProductController extends Controller
             ->with(['category:id,name_en,name_ar,name_ku,slug']);
 
         if ($request->filled('search')) {
-            $search = $request->search;
+            $search = SqlSafe::searchTerm($request->search);
             $query->where(function ($q) use ($search) {
-                $q->where('name_en', 'like', '%' . $search . '%')
-                    ->orWhere('name_ar', 'like', '%' . $search . '%')
-                    ->orWhere('name_ku', 'like', '%' . $search . '%')
-                    ->orWhere('sku', 'like', '%' . $search . '%')
-                    ->orWhere('oem_number', 'like', '%' . $search . '%')
-                    ->orWhere('part_number', 'like', '%' . $search . '%')
-                    ->orWhere('brand', 'like', '%' . $search . '%');
+                SqlSafe::whereLike($q, 'name_en', $search);
+                SqlSafe::orWhereLike($q, 'name_ar', $search);
+                SqlSafe::orWhereLike($q, 'name_ku', $search);
+                SqlSafe::orWhereLike($q, 'sku', $search);
+                SqlSafe::orWhereLike($q, 'oem_number', $search);
+                SqlSafe::orWhereLike($q, 'part_number', $search);
+                SqlSafe::orWhereLike($q, 'brand', $search);
             });
         }
 
@@ -153,7 +155,7 @@ class ProductController extends Controller
 
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('products', 'public');
+            $imagePath = SecureImageStorage::store($request->file('image'), 'products');
         }
 
         $compatibleModels = $request->filled('compatible_models')
@@ -286,7 +288,7 @@ class ProductController extends Controller
             if ($product->image) {
                 Storage::disk('public')->delete($product->image);
             }
-            $imagePath = $request->file('image')->store('products', 'public');
+            $imagePath = SecureImageStorage::store($request->file('image'), 'products');
         }
 
         $compatibleModels = $request->filled('compatible_models')
@@ -674,7 +676,7 @@ class ProductController extends Controller
             }
 
             $product->images()->create([
-                'path' => $file->store('products', 'public'),
+                'path' => SecureImageStorage::store($file, 'products'),
                 'disk' => 'public',
                 'alt_text' => $product->name_en,
                 'sort_order' => $startingOrder + $index,

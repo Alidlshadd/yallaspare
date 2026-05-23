@@ -18,6 +18,7 @@ use App\Models\UserAddress;
 use App\Models\VehicleBrand;
 use App\Models\Wishlist;
 use App\Services\CouponService;
+use App\Support\SqlSafe;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -191,11 +192,11 @@ class MobileController extends Controller
 
         if ($search = trim((string) $request->query('search', ''))) {
             $query->where(function ($builder) use ($search): void {
-                $builder->where('name_en', 'like', "%{$search}%")
-                    ->orWhere('sku', 'like', "%{$search}%")
-                    ->orWhere('oem_number', 'like', "%{$search}%")
-                    ->orWhere('part_number', 'like', "%{$search}%")
-                    ->orWhere('brand', 'like', "%{$search}%");
+                SqlSafe::whereLike($builder, 'name_en', $search);
+                SqlSafe::orWhereLike($builder, 'sku', $search);
+                SqlSafe::orWhereLike($builder, 'oem_number', $search);
+                SqlSafe::orWhereLike($builder, 'part_number', $search);
+                SqlSafe::orWhereLike($builder, 'brand', $search);
             });
         }
 
@@ -240,7 +241,9 @@ class MobileController extends Controller
                 }
                 if ($engine !== '') {
                     $fitment->where(function ($engineQuery) use ($engine): void {
-                        $engineQuery->whereNull('engine')->orWhere('engine', 'like', "%{$engine}%");
+                        $engineQuery->whereNull('engine')->orWhere(function ($likeQuery) use ($engine): void {
+                            SqlSafe::whereLike($likeQuery, 'engine', $engine);
+                        });
                     });
                 }
             });
@@ -315,8 +318,8 @@ class MobileController extends Controller
 
         if ($manufacturer !== 'Unknown') {
             $query->where(function ($builder) use ($manufacturer): void {
-                $builder->where('brand', 'like', "%{$manufacturer}%")
-                    ->orWhereHas('vehicleFitments.brand', fn ($brand) => $brand->where('name', 'like', "%{$manufacturer}%"));
+                SqlSafe::whereLike($builder, 'brand', $manufacturer);
+                $builder->orWhereHas('vehicleFitments.brand', fn ($brand) => SqlSafe::whereLike($brand, 'name', $manufacturer));
             });
         }
 
@@ -809,7 +812,7 @@ class MobileController extends Controller
 
     public function adminDashboard(Request $request)
     {
-        $this->requireAdmin($request);
+        $this->requirePermission($request, User::PERMISSION_DASHBOARD_VIEW);
 
         $revenue = (float) Order::query()->sum(DB::raw('COALESCE(grand_total, total_amount, 0)'));
 
@@ -845,14 +848,20 @@ class MobileController extends Controller
 
     public function adminModule(Request $request, string $section)
     {
-        $this->requireAdmin($request);
+        $permission = $this->permissionForAdminSection($section);
+        abort_unless($permission !== null, 404);
+        $this->requirePermission($request, $permission);
+
         $search = trim((string) $request->query('search', ''));
 
         $payload = match ($section) {
             'products', 'inventory' => [
                 'columns' => ['product', 'sku', 'brand', 'stock', 'price'],
                 'rows' => Product::query()
-                    ->when($search !== '', fn ($query) => $query->where('name_en', 'like', "%{$search}%")->orWhere('sku', 'like', "%{$search}%"))
+                    ->when($search !== '', fn ($query) => $query->where(function ($searchQuery) use ($search): void {
+                        SqlSafe::whereLike($searchQuery, 'name_en', $search);
+                        SqlSafe::orWhereLike($searchQuery, 'sku', $search);
+                    }))
                     ->latest('id')
                     ->limit(50)
                     ->get()
@@ -878,7 +887,10 @@ class MobileController extends Controller
                 'columns' => ['name', 'email', 'role', 'status'],
                 'rows' => User::query()
                     ->when($section === 'dealers', fn ($query) => $query->where('role', User::ROLE_DEALER))
-                    ->when($search !== '', fn ($query) => $query->where('name', 'like', "%{$search}%")->orWhere('email', 'like', "%{$search}%"))
+                    ->when($search !== '', fn ($query) => $query->where(function ($searchQuery) use ($search): void {
+                        SqlSafe::whereLike($searchQuery, 'name', $search);
+                        SqlSafe::orWhereLike($searchQuery, 'email', $search);
+                    }))
                     ->latest('id')
                     ->limit(50)
                     ->get()
@@ -920,7 +932,7 @@ class MobileController extends Controller
 
     public function adminUpdateProduct(Request $request, string $idOrSlug)
     {
-        $this->requireAdmin($request);
+        $this->requirePermission($request, User::PERMISSION_PRODUCTS_MANAGE);
         $product = $this->findProduct($idOrSlug);
         $data = $request->validate(['stock_quantity' => ['required', 'integer', 'min:0']]);
         $product->update(['stock_quantity' => (int) $data['stock_quantity']]);
@@ -930,7 +942,7 @@ class MobileController extends Controller
 
     public function adminUpdateOrderStatus(Request $request, Order $order)
     {
-        $this->requireAdmin($request);
+        $this->requirePermission($request, User::PERMISSION_ORDERS_MANAGE);
         $data = $request->validate(['status' => ['required', Rule::in(Order::allowedStatuses())]]);
         $order->update(['status' => $data['status']]);
 
@@ -939,9 +951,26 @@ class MobileController extends Controller
 
     public function adminUpdateUserRole(Request $request, User $user)
     {
-        $this->requireAdmin($request);
+        $authUser = $this->requirePermission($request, User::PERMISSION_USERS_MANAGE);
         $data = $request->validate(['role' => ['required', Rule::in(User::allowedRoles())]]);
         $role = User::normalizeRole($data['role']);
+
+        if (($user->isSuperAdmin() || $role === User::ROLE_SUPER_ADMIN) && ! $authUser->isSuperAdmin()) {
+            abort(403);
+        }
+
+        if ((int) $authUser->id === (int) $user->id && $user->isSuperAdmin() && $role !== User::ROLE_SUPER_ADMIN) {
+            abort(422, 'You cannot demote your own super admin account.');
+        }
+
+        if (
+            $user->isSuperAdmin()
+            && $role !== User::ROLE_SUPER_ADMIN
+            && User::query()->where('role', User::ROLE_SUPER_ADMIN)->count() <= 1
+        ) {
+            abort(422, 'At least one super admin account must remain.');
+        }
+
         $user->update(['role' => $role, 'permissions' => User::defaultPermissionsForRole($role)]);
 
         return response()->json(['user' => $this->userPayload($user->fresh())]);
@@ -949,7 +978,7 @@ class MobileController extends Controller
 
     public function adminUpdateDealer(Request $request, User $user)
     {
-        $this->requireAdmin($request);
+        $this->requirePermission($request, User::PERMISSION_DEALERS_MANAGE);
         $data = $request->validate([
             'dealer_status' => ['required', Rule::in(User::allowedDealerStatuses())],
             'dealer_discount' => ['required', 'numeric', 'min:0', 'max:100'],
@@ -965,7 +994,7 @@ class MobileController extends Controller
 
     public function adminCreateInventoryMovement(Request $request)
     {
-        $this->requireAdmin($request);
+        $this->requirePermission($request, User::PERMISSION_STOCK_MANAGE);
         $data = $request->validate([
             'product_id' => ['required', 'integer', 'exists:products,id'],
             'type' => ['required', Rule::in([InventoryMovement::TYPE_IN, InventoryMovement::TYPE_OUT])],
@@ -1123,7 +1152,28 @@ class MobileController extends Controller
     private function requireAdmin(Request $request): void
     {
         $user = $request->user();
-        abort_unless($user && in_array($user->role, [User::ROLE_SUPER_ADMIN, User::ROLE_ADMIN], true), 403);
+        abort_unless($user && $user->isAdminPanelUser(), 403);
+    }
+
+    private function requirePermission(Request $request, string $permission): User
+    {
+        $user = $request->user();
+        abort_unless($user && $user->hasPermission($permission), 403);
+
+        return $user;
+    }
+
+    private function permissionForAdminSection(string $section): ?string
+    {
+        return match ($section) {
+            'products', 'categories' => User::PERMISSION_PRODUCTS_MANAGE,
+            'inventory' => User::PERMISSION_STOCK_MANAGE,
+            'orders' => User::PERMISSION_ORDERS_MANAGE,
+            'users' => User::PERMISSION_USERS_VIEW,
+            'dealers' => User::PERMISSION_DEALERS_MANAGE,
+            'coupons', 'discount-rules' => User::PERMISSION_FINANCE_MANAGE,
+            default => null,
+        };
     }
 
     private function requireDealer(Request $request): void

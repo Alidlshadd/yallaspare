@@ -8,6 +8,7 @@ use App\Models\Discount;
 use App\Models\Product;
 use App\Models\Setting;
 use App\Services\CouponService;
+use App\Support\SqlSafe;
 use Carbon\Carbon;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -104,12 +105,11 @@ class DiscountCouponController extends Controller
             ->where('is_active', true)
             ->when($query !== '', function ($builder) use ($query) {
                 $builder->where(function ($nested) use ($query) {
-                    $nested
-                        ->where('name_en', 'like', "%{$query}%")
-                        ->orWhere('name_ar', 'like', "%{$query}%")
-                        ->orWhere('name_ku', 'like', "%{$query}%")
-                        ->orWhere('sku', 'like', "%{$query}%")
-                        ->orWhere('brand', 'like', "%{$query}%");
+                    SqlSafe::whereLike($nested, 'name_en', $query);
+                    SqlSafe::orWhereLike($nested, 'name_ar', $query);
+                    SqlSafe::orWhereLike($nested, 'name_ku', $query);
+                    SqlSafe::orWhereLike($nested, 'sku', $query);
+                    SqlSafe::orWhereLike($nested, 'brand', $query);
                 });
             })
             ->when($categoryId > 0, fn ($builder) => $builder->where('category_id', $categoryId))

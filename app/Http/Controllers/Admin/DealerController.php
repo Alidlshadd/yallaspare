@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Support\SqlSafe;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
@@ -22,9 +23,9 @@ class DealerController extends Controller
 
         if ($search !== '') {
             $dealersQuery->where(function ($query) use ($search) {
-                $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('phone', 'like', "%{$search}%");
+                SqlSafe::whereLike($query, 'name', $search);
+                SqlSafe::orWhereLike($query, 'email', $search);
+                SqlSafe::orWhereLike($query, 'phone', $search);
             });
         }
 

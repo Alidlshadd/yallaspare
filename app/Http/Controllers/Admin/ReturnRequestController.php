@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\ReturnRequest;
 use App\Support\AdminLogger;
+use App\Support\SqlSafe;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -24,12 +25,12 @@ class ReturnRequestController extends Controller
             ])
             ->when($search !== '', function ($query) use ($search): void {
                 $query->where(function ($nested) use ($search): void {
-                    $nested->where('reason', 'like', '%' . $search . '%')
-                        ->orWhereHas('order', fn ($orderQuery) => $orderQuery->where('order_number', 'like', '%' . $search . '%'))
-                        ->orWhereHas('user', function ($userQuery) use ($search): void {
-                            $userQuery->where('name', 'like', '%' . $search . '%')
-                                ->orWhere('email', 'like', '%' . $search . '%');
-                        });
+                    SqlSafe::whereLike($nested, 'reason', $search);
+                    $nested->orWhereHas('order', fn ($orderQuery) => SqlSafe::whereLike($orderQuery, 'order_number', $search));
+                    $nested->orWhereHas('user', function ($userQuery) use ($search): void {
+                        SqlSafe::whereLike($userQuery, 'name', $search);
+                        SqlSafe::orWhereLike($userQuery, 'email', $search);
+                    });
                 });
             });
 

@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\ProductVehicleFitment;
 use App\Models\VehicleBrand;
 use App\Models\VehicleModel;
+use App\Support\SqlSafe;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -38,15 +39,15 @@ class VehicleFitmentController extends Controller
             ])
             ->when($search !== '', function ($query) use ($search): void {
                 $query->where(function ($searchQuery) use ($search): void {
-                    $searchQuery->where('engine', 'like', '%' . $search . '%')
-                        ->orWhere('notes', 'like', '%' . $search . '%')
-                        ->orWhereHas('product', function ($productQuery) use ($search): void {
-                            $productQuery->where('name_en', 'like', '%' . $search . '%')
-                                ->orWhere('sku', 'like', '%' . $search . '%')
-                                ->orWhere('brand', 'like', '%' . $search . '%');
-                        })
-                        ->orWhereHas('brand', fn ($brandQuery) => $brandQuery->where('name', 'like', '%' . $search . '%'))
-                        ->orWhereHas('model', fn ($modelQuery) => $modelQuery->where('name', 'like', '%' . $search . '%'));
+                    SqlSafe::whereLike($searchQuery, 'engine', $search);
+                    SqlSafe::orWhereLike($searchQuery, 'notes', $search);
+                    $searchQuery->orWhereHas('product', function ($productQuery) use ($search): void {
+                        SqlSafe::whereLike($productQuery, 'name_en', $search);
+                        SqlSafe::orWhereLike($productQuery, 'sku', $search);
+                        SqlSafe::orWhereLike($productQuery, 'brand', $search);
+                    });
+                    $searchQuery->orWhereHas('brand', fn ($brandQuery) => SqlSafe::whereLike($brandQuery, 'name', $search));
+                    $searchQuery->orWhereHas('model', fn ($modelQuery) => SqlSafe::whereLike($modelQuery, 'name', $search));
                 });
             })
             ->latest('id')

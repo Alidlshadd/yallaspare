@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\InventoryMovement;
 use App\Models\Product;
 use App\Models\User;
+use App\Support\SqlSafe;
 use Illuminate\View\View;
 use Spatie\Activitylog\Models\Activity;
 
@@ -35,13 +36,13 @@ class AdminActivityLogController extends Controller
             })
             ->when($search !== '', function ($query) use ($search) {
                 $query->where(function ($q) use ($search) {
-                    $q->where('description', 'like', '%' . $search . '%')
-                        ->orWhere('subject_type', 'like', '%' . $search . '%')
-                        ->orWhere('subject_id', 'like', '%' . $search . '%')
-                        ->orWhereHas('causer', function ($cq) use ($search) {
-                            $cq->where('name', 'like', '%' . $search . '%')
-                                ->orWhere('email', 'like', '%' . $search . '%');
-                        });
+                    SqlSafe::whereLike($q, 'description', $search);
+                    SqlSafe::orWhereLike($q, 'subject_type', $search);
+                    SqlSafe::orWhereLike($q, 'subject_id', $search);
+                    $q->orWhereHas('causer', function ($cq) use ($search) {
+                        SqlSafe::whereLike($cq, 'name', $search);
+                        SqlSafe::orWhereLike($cq, 'email', $search);
+                    });
                 });
             })
             ->latest('id')

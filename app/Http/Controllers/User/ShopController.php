@@ -10,6 +10,7 @@ use App\Models\Setting;
 use App\Models\VehicleBrand;
 use App\Models\VehicleModel;
 use App\Models\Wishlist;
+use App\Support\SqlSafe;
 use Illuminate\Support\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -183,13 +184,13 @@ class ShopController extends Controller
         $search = trim((string) $request->input('q', $request->input('search', '')));
         if ($search !== '') {
             $productsQuery->where(function ($query) use ($search): void {
-                $query->where('name_en', 'like', '%' . $search . '%')
-                    ->orWhere('name_ar', 'like', '%' . $search . '%')
-                    ->orWhere('name_ku', 'like', '%' . $search . '%')
-                    ->orWhere('brand', 'like', '%' . $search . '%')
-                    ->orWhere('sku', 'like', '%' . $search . '%')
-                    ->orWhere('oem_number', 'like', '%' . $search . '%')
-                    ->orWhere('part_number', 'like', '%' . $search . '%');
+                SqlSafe::whereLike($query, 'name_en', $search);
+                SqlSafe::orWhereLike($query, 'name_ar', $search);
+                SqlSafe::orWhereLike($query, 'name_ku', $search);
+                SqlSafe::orWhereLike($query, 'brand', $search);
+                SqlSafe::orWhereLike($query, 'sku', $search);
+                SqlSafe::orWhereLike($query, 'oem_number', $search);
+                SqlSafe::orWhereLike($query, 'part_number', $search);
             });
         }
 
@@ -212,7 +213,9 @@ class ShopController extends Controller
                             ->orWhere('name_en', $categoryInput)
                             ->orWhere('name_ar', $categoryInput)
                             ->orWhere('name_ku', $categoryInput)
-                            ->orWhere('name_en', 'like', '%' . $normalizedCategoryName . '%');
+                            ->orWhere(function ($likeQuery) use ($normalizedCategoryName): void {
+                                SqlSafe::whereLike($likeQuery, 'name_en', $normalizedCategoryName);
+                            });
                     })
                     ->first();
 
@@ -226,11 +229,11 @@ class ShopController extends Controller
         $brand = trim((string) $request->input('brand', ''));
         if ($brand !== '') {
             $productsQuery->where(function ($query) use ($brand): void {
-                $query->where('brand', 'like', '%' . $brand . '%');
+                SqlSafe::whereLike($query, 'brand', $brand);
 
                 if (Schema::hasTable('product_vehicle_fitments') && Schema::hasTable('vehicle_brands')) {
                     $query->orWhereHas('vehicleFitments.brand', function ($fitmentQuery) use ($brand): void {
-                        $fitmentQuery->where('name', 'like', '%' . $brand . '%');
+                        SqlSafe::whereLike($fitmentQuery, 'name', $brand);
                     });
                 }
             });
@@ -239,11 +242,11 @@ class ShopController extends Controller
         $model = trim((string) $request->input('model', ''));
         if ($model !== '') {
             $productsQuery->where(function ($query) use ($model): void {
-                $query->where('compatible_models', 'like', '%' . $model . '%');
+                SqlSafe::whereLike($query, 'compatible_models', $model);
 
                 if (Schema::hasTable('product_vehicle_fitments') && Schema::hasTable('vehicle_models')) {
                     $query->orWhereHas('vehicleFitments.model', function ($fitmentQuery) use ($model): void {
-                        $fitmentQuery->where('name', 'like', '%' . $model . '%');
+                        SqlSafe::whereLike($fitmentQuery, 'name', $model);
                     });
                 }
             });
@@ -252,7 +255,7 @@ class ShopController extends Controller
         $vehicle = trim((string) $request->input('vehicle', ''));
         if ($vehicle !== '') {
             $productsQuery->where(function ($query) use ($vehicle): void {
-                $query->where('compatible_models', 'like', '%' . $vehicle . '%');
+                SqlSafe::whereLike($query, 'compatible_models', $vehicle);
 
                 if (Schema::hasTable('product_vehicle_fitments')) {
                     $year = $this->extractVehicleYear($vehicle);
@@ -273,10 +276,10 @@ class ShopController extends Controller
                             }
 
                             if ($engine !== '') {
-                                $nested->orWhere('engine', 'like', '%' . $engine . '%');
+                                SqlSafe::orWhereLike($nested, 'engine', $engine);
                             }
 
-                            $nested->orWhere('notes', 'like', '%' . $vehicle . '%');
+                            SqlSafe::orWhereLike($nested, 'notes', $vehicle);
                         });
                     });
                 }

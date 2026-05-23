@@ -20,17 +20,17 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::prefix('mobile')->group(function () {
-    Route::post('/login', [MobileController::class, 'login']);
-    Route::post('/register', [MobileController::class, 'register']);
-    Route::post('/forgot-password', [MobileController::class, 'forgotPassword']);
+    Route::post('/login', [MobileController::class, 'login'])->middleware('throttle:mobile-login');
+    Route::post('/register', [MobileController::class, 'register'])->middleware('throttle:mobile-register');
+    Route::post('/forgot-password', [MobileController::class, 'forgotPassword'])->middleware('throttle:mobile-password-reset');
 
     Route::get('/categories', [MobileController::class, 'categories']);
     Route::get('/brands', [MobileController::class, 'brands']);
     Route::get('/vehicle-fitments', [MobileController::class, 'vehicleFitments']);
-    Route::post('/vin/decode', [MobileController::class, 'decodeVin']);
+    Route::post('/vin/decode', [MobileController::class, 'decodeVin'])->middleware('throttle:mobile-lookup');
     Route::get('/products', [MobileController::class, 'products']);
     Route::get('/products/{idOrSlug}', [MobileController::class, 'product']);
-    Route::post('/coupons/preview', [MobileController::class, 'couponPreview']);
+    Route::post('/coupons/preview', [MobileController::class, 'couponPreview'])->middleware('throttle:mobile-lookup');
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::get('/me', [MobileController::class, 'me']);

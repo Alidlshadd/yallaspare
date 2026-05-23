@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\AdminTwoFactorController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\Auth\EmailVerificationPromptController;
@@ -56,4 +57,15 @@ Route::middleware('auth')->group(function () {
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
                 ->name('logout');
+
+    Route::get('admin/two-factor', [AdminTwoFactorController::class, 'show'])
+                ->name('admin.two-factor.challenge');
+
+    Route::post('admin/two-factor', [AdminTwoFactorController::class, 'verify'])
+                ->middleware('throttle:admin-2fa')
+                ->name('admin.two-factor.verify');
+
+    Route::post('admin/two-factor/resend', [AdminTwoFactorController::class, 'resend'])
+                ->middleware('throttle:admin-2fa')
+                ->name('admin.two-factor.resend');
 });

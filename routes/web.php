@@ -53,7 +53,7 @@ Route::post('/language/{locale}', function (Request $request, string $locale) {
     app()->setLocale($locale);
 
     return back();
-})->name('language.switch');
+})->middleware('throttle:public-write')->name('language.switch');
 Route::get('/shop', [UserShopController::class, 'shop'])->name('shop.index');
 Route::get('/categories', [UserShopController::class, 'categories'])->name('categories.index');
 Route::get('/categories/{category}', [UserShopController::class, 'category'])->name('categories.show');
@@ -98,16 +98,16 @@ Route::get('/brand/logo', function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/cart/{product}', [CartController::class, 'add'])->name('cart.add');
-    Route::patch('/cart/items/{item}', [CartController::class, 'update'])->name('cart.update');
-    Route::delete('/cart/items/{item}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::post('/cart/{product}', [CartController::class, 'add'])->middleware('throttle:commerce-write')->name('cart.add');
+    Route::patch('/cart/items/{item}', [CartController::class, 'update'])->middleware('throttle:commerce-write')->name('cart.update');
+    Route::delete('/cart/items/{item}', [CartController::class, 'remove'])->middleware('throttle:commerce-write')->name('cart.remove');
     Route::get('/checkout/options/{product}', [CheckoutController::class, 'options'])->name('checkout.options');
-    Route::match(['get', 'post'], '/checkout/buy-now/{product}', [CheckoutController::class, 'buyNow'])->name('checkout.buy-now');
-    Route::post('/checkout/buy-now/{product}/place', [CheckoutController::class, 'placeBuyNow'])->name('checkout.buy-now.place');
-    Route::match(['get', 'post'], '/checkout/review', [CheckoutController::class, 'review'])->name('checkout.review');
-    Route::post('/checkout', [CheckoutController::class, 'store'])->name('checkout.store');
+    Route::match(['get', 'post'], '/checkout/buy-now/{product}', [CheckoutController::class, 'buyNow'])->middleware('throttle:checkout-write')->name('checkout.buy-now');
+    Route::post('/checkout/buy-now/{product}/place', [CheckoutController::class, 'placeBuyNow'])->middleware('throttle:checkout-write')->name('checkout.buy-now.place');
+    Route::match(['get', 'post'], '/checkout/review', [CheckoutController::class, 'review'])->middleware('throttle:checkout-write')->name('checkout.review');
+    Route::post('/checkout', [CheckoutController::class, 'store'])->middleware('throttle:checkout-write')->name('checkout.store');
     Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
-    Route::post('/shop/products/{product}/reviews', [ProductReviewController::class, 'store'])->name('shop.reviews.store');
+    Route::post('/shop/products/{product}/reviews', [ProductReviewController::class, 'store'])->middleware('throttle:commerce-write')->name('shop.reviews.store');
 });
 
 Route::middleware('auth')->prefix('account')->name('account.')->group(function () {
@@ -117,15 +117,15 @@ Route::middleware('auth')->prefix('account')->name('account.')->group(function (
     Route::get('/orders', [AccountOrdersController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [AccountOrdersController::class, 'show'])->name('orders.show');
     Route::get('/orders/{order}/invoice', [AccountOrdersController::class, 'invoice'])->name('orders.invoice');
-    Route::post('/orders/{order}/cancellation-request', [AccountOrdersController::class, 'requestCancellation'])->name('orders.cancellation-request');
-    Route::post('/orders/{order}/return-request', [AccountOrdersController::class, 'requestReturn'])->name('orders.return-request');
+    Route::post('/orders/{order}/cancellation-request', [AccountOrdersController::class, 'requestCancellation'])->middleware('throttle:commerce-write')->name('orders.cancellation-request');
+    Route::post('/orders/{order}/return-request', [AccountOrdersController::class, 'requestReturn'])->middleware('throttle:commerce-write')->name('orders.return-request');
     Route::get('/addresses', [AccountAddressController::class, 'index'])->name('addresses.index');
     Route::get('/addresses/create', [AccountAddressController::class, 'create'])->name('addresses.create');
-    Route::post('/addresses', [AccountAddressController::class, 'store'])->name('addresses.store');
+    Route::post('/addresses', [AccountAddressController::class, 'store'])->middleware('throttle:commerce-write')->name('addresses.store');
     Route::get('/addresses/{address}/edit', [AccountAddressController::class, 'edit'])->name('addresses.edit');
-    Route::put('/addresses/{address}', [AccountAddressController::class, 'update'])->name('addresses.update');
-    Route::patch('/addresses/{address}/default', [AccountAddressController::class, 'setDefault'])->name('addresses.default');
-    Route::delete('/addresses/{address}', [AccountAddressController::class, 'destroy'])->name('addresses.destroy');
+    Route::put('/addresses/{address}', [AccountAddressController::class, 'update'])->middleware('throttle:commerce-write')->name('addresses.update');
+    Route::patch('/addresses/{address}/default', [AccountAddressController::class, 'setDefault'])->middleware('throttle:commerce-write')->name('addresses.default');
+    Route::delete('/addresses/{address}', [AccountAddressController::class, 'destroy'])->middleware('throttle:commerce-write')->name('addresses.destroy');
 });
 
 Route::prefix('user')->name('user.')->group(function () {
@@ -135,16 +135,16 @@ Route::prefix('user')->name('user.')->group(function () {
 
 Route::middleware('auth')->prefix('user')->name('user.')->group(function () {
     Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
-    Route::post('/wishlist/{product}', [WishlistController::class, 'store'])->name('wishlist.store');
-    Route::delete('/wishlist/{product}', [WishlistController::class, 'destroy'])->name('wishlist.destroy');
+    Route::post('/wishlist/{product}', [WishlistController::class, 'store'])->middleware('throttle:commerce-write')->name('wishlist.store');
+    Route::delete('/wishlist/{product}', [WishlistController::class, 'destroy'])->middleware('throttle:commerce-write')->name('wishlist.destroy');
     Route::get('/account', [UserAccountController::class, 'edit'])->name('account.edit');
     Route::get('/account/personal', [UserAccountController::class, 'personal'])->name('account.personal');
     Route::get('/account/addresses', [UserAccountController::class, 'addressesPage'])->name('account.addresses');
     Route::get('/account/security', [UserAccountController::class, 'securityPage'])->name('account.security');
     Route::get('/account/activity', [UserAccountController::class, 'activity'])->name('account.activity');
     Route::get('/account/actions', [UserAccountController::class, 'actions'])->name('account.actions');
-    Route::patch('/account', [UserAccountController::class, 'update'])->name('account.update');
-    Route::patch('/account/password', [UserAccountController::class, 'password'])->name('account.password');
+    Route::patch('/account', [UserAccountController::class, 'update'])->middleware('throttle:commerce-write')->name('account.update');
+    Route::patch('/account/password', [UserAccountController::class, 'password'])->middleware('throttle:commerce-write')->name('account.password');
     Route::get('/settings', [UserSettingsController::class, 'edit'])->name('settings.edit');
     Route::patch('/settings', [UserSettingsController::class, 'update'])->name('settings.update');
     Route::get('/settings/appearance', [UserSettingsController::class, 'appearance'])->name('settings.appearance');
@@ -185,7 +185,7 @@ Route::middleware('auth')->prefix('profile')->name('profile.')->group(function (
 });
 
 
-Route::middleware(['auth', 'verified', 'admin'])
+Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {

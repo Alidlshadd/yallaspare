@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use App\Exports\CategoriesExport;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Support\SecureImageStorage;
+use App\Support\SqlSafe;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -26,13 +28,11 @@ class CategoryController extends Controller
 
         if ($search !== '') {
             $query->where(function ($q) use ($search) {
-                $q->where('name_en', 'like', "%{$search}%")
-                    ->orWhere('name_ar', 'like', "%{$search}%")
-                    ->orWhere('name_ku', 'like', "%{$search}%")
-                    ->orWhere('name_ar', 'like', "%{$search}%")
-                    ->orWhere('name_ku', 'like', "%{$search}%")
-                    ->orWhere('slug', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%");
+                SqlSafe::whereLike($q, 'name_en', $search);
+                SqlSafe::orWhereLike($q, 'name_ar', $search);
+                SqlSafe::orWhereLike($q, 'name_ku', $search);
+                SqlSafe::orWhereLike($q, 'slug', $search);
+                SqlSafe::orWhereLike($q, 'description', $search);
             });
         }
 
@@ -71,7 +71,7 @@ class CategoryController extends Controller
         $baseSlug = Str::slug((string) ($data['slug'] ?: $data['name_en']));
         $data['slug'] = $this->makeUniqueSlug($baseSlug !== '' ? $baseSlug : 'category');
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('categories', 'public');
+            $data['image'] = SecureImageStorage::store($request->file('image'), 'categories');
         }
 
         Category::create($data);
@@ -115,7 +115,7 @@ class CategoryController extends Controller
                 Storage::disk('public')->delete($category->image);
             }
 
-            $data['image'] = $request->file('image')->store('categories', 'public');
+            $data['image'] = SecureImageStorage::store($request->file('image'), 'categories');
         }
 
         $category->update($data);

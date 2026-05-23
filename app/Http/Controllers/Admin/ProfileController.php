@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Support\SecureImageStorage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
@@ -46,7 +47,7 @@ class ProfileController extends Controller
                 Storage::disk('public')->delete($profilePhotoPath);
             }
 
-            $profilePhotoPath = $request->file('profile_photo')->store('users/profile-photos', 'public');
+            $profilePhotoPath = SecureImageStorage::store($request->file('profile_photo'), 'users/profile-photos');
         }
 
         $user->fill([

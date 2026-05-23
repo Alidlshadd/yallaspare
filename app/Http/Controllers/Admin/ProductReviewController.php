@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\ProductReview;
+use App\Support\SqlSafe;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -22,16 +23,16 @@ class ProductReviewController extends Controller
             ])
             ->when($search !== '', function ($query) use ($search): void {
                 $query->where(function ($nested) use ($search): void {
-                    $nested->where('title', 'like', '%' . $search . '%')
-                        ->orWhere('comment', 'like', '%' . $search . '%')
-                        ->orWhereHas('product', function ($productQuery) use ($search): void {
-                            $productQuery->where('name_en', 'like', '%' . $search . '%')
-                                ->orWhere('sku', 'like', '%' . $search . '%');
-                        })
-                        ->orWhereHas('user', function ($userQuery) use ($search): void {
-                            $userQuery->where('name', 'like', '%' . $search . '%')
-                                ->orWhere('email', 'like', '%' . $search . '%');
-                        });
+                    SqlSafe::whereLike($nested, 'title', $search);
+                    SqlSafe::orWhereLike($nested, 'comment', $search);
+                    $nested->orWhereHas('product', function ($productQuery) use ($search): void {
+                        SqlSafe::whereLike($productQuery, 'name_en', $search);
+                        SqlSafe::orWhereLike($productQuery, 'sku', $search);
+                    });
+                    $nested->orWhereHas('user', function ($userQuery) use ($search): void {
+                        SqlSafe::whereLike($userQuery, 'name', $search);
+                        SqlSafe::orWhereLike($userQuery, 'email', $search);
+                    });
                 });
             });
 

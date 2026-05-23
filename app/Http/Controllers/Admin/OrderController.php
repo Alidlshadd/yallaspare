@@ -10,6 +10,7 @@ use App\Models\Setting;
 use App\Models\User;
 use App\Support\AdminLogger;
 use App\Support\Branding;
+use App\Support\SqlSafe;
 use App\Support\UserCommunication;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
@@ -52,13 +53,13 @@ class OrderController extends Controller
 
         if ($search !== '') {
             $query->where(function ($q) use ($search) {
-                $q->where('order_number', 'like', '%' . $search . '%')
-                    ->orWhere('delivery_phone', 'like', '%' . $search . '%')
-                    ->orWhere('delivery_city', 'like', '%' . $search . '%')
-                    ->orWhereHas('user', function ($userQuery) use ($search) {
-                        $userQuery->where('name', 'like', '%' . $search . '%')
-                            ->orWhere('email', 'like', '%' . $search . '%');
-                    });
+                SqlSafe::whereLike($q, 'order_number', $search);
+                SqlSafe::orWhereLike($q, 'delivery_phone', $search);
+                SqlSafe::orWhereLike($q, 'delivery_city', $search);
+                $q->orWhereHas('user', function ($userQuery) use ($search) {
+                    SqlSafe::whereLike($userQuery, 'name', $search);
+                    SqlSafe::orWhereLike($userQuery, 'email', $search);
+                });
             });
         }
 

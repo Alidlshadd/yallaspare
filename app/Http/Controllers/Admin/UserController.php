@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Support\SqlSafe;
 use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -25,11 +26,10 @@ class UserController extends Controller
 
         if ($search !== '') {
             $usersQuery->where(function ($query) use ($search) {
-                $query
-                    ->where('name', 'like', "%{$search}%")
-                    ->orWhere('email', 'like', "%{$search}%")
-                    ->orWhere('phone', 'like', "%{$search}%")
-                    ->orWhere('role', 'like', "%{$search}%");
+                SqlSafe::whereLike($query, 'name', $search);
+                SqlSafe::orWhereLike($query, 'email', $search);
+                SqlSafe::orWhereLike($query, 'phone', $search);
+                SqlSafe::orWhereLike($query, 'role', $search);
 
                 if (is_numeric($search)) {
                     $query->orWhere('id', (int) $search);
