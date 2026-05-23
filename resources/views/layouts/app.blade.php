@@ -32,10 +32,16 @@
         @if(request()->routeIs('admin.*'))
             <script>
                 (function () {
-                    const storedTheme = localStorage.getItem('admin-theme');
-                    if (storedTheme === 'dark') {
-                        document.documentElement.classList.add('dark');
-                    } else if (storedTheme === 'light') {
+                    try {
+                        const storedTheme = localStorage.getItem('admin-theme');
+                        const selectedTheme = storedTheme === 'dark' ? 'dark' : 'light';
+
+                        if (storedTheme !== null && !['light', 'dark'].includes(storedTheme)) {
+                            localStorage.setItem('admin-theme', 'light');
+                        }
+
+                        document.documentElement.classList.toggle('dark', selectedTheme === 'dark');
+                    } catch (error) {
                         document.documentElement.classList.remove('dark');
                     }
                 })();
@@ -72,7 +78,7 @@
                                 <x-brand-mark
                                     :logo-url="$systemSettings['site_logo_url'] ?? null"
                                     :brand="$systemSettings['site_name'] ?? 'YallaSpare'"
-                                    wrapper-class="app-logo-mark rounded-lg border border-white/20 bg-white/5"
+                                    wrapper-class="app-logo-mark"
                                     img-class="h-full w-auto object-contain"
                                     fallback-class="inline-flex h-full w-full items-center justify-center rounded-lg bg-slate-800"
                                     fallback-text-class="text-sm font-semibold text-white"
@@ -444,7 +450,13 @@
                         }
                     };
                     const storedTheme = localStorage.getItem(themeStorageKey);
-                    applyTheme(storedTheme === 'dark');
+                    const selectedTheme = storedTheme === 'dark' ? 'dark' : 'light';
+
+                    if (storedTheme !== null && !['light', 'dark'].includes(storedTheme)) {
+                        localStorage.setItem(themeStorageKey, 'light');
+                    }
+
+                    applyTheme(selectedTheme === 'dark');
 
                     if (themeToggle) {
                         themeToggle.addEventListener('click', () => {

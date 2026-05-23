@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Notifications\QueuedResetPassword;
 use App\Notifications\QueuedVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -111,6 +112,14 @@ class User extends Authenticatable implements MustVerifyEmail
         'date_of_birth' => 'date',
         'permissions' => 'array',
     ];
+
+    protected function themePreference(): Attribute
+    {
+        return Attribute::make(
+            get: static fn ($value): string => in_array($value, ['light', 'dark'], true) ? $value : 'light',
+            set: static fn ($value): string => in_array($value, ['light', 'dark'], true) ? $value : 'light',
+        );
+    }
 
     protected static function booted(): void
     {

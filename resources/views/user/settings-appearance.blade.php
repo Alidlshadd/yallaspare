@@ -15,6 +15,11 @@
 @endsection
 
 @section('content')
+    @php
+        $selectedThemePreference = old('theme_preference', $user->theme_preference ?? 'light');
+        $selectedThemePreference = in_array($selectedThemePreference, ['light', 'dark'], true) ? $selectedThemePreference : 'light';
+    @endphp
+
     <div class="grid grid-cols-1 gap-6 xl:grid-cols-[18rem_minmax(0,1fr)]">
         <aside class="space-y-6">
             @include('user.partials.settings-nav')
@@ -28,20 +33,24 @@
             @endif
 
             <section class="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:p-8" x-data="{
-                themePreference: @js(old('theme_preference', $user->theme_preference ?? 'system')),
+                themePreference: @js($selectedThemePreference),
                 init() {
+                    const normalizeTheme = (value) => ['light', 'dark'].includes(value) ? value : null;
                     const storedTheme = localStorage.getItem('user-theme');
+                    const normalizedStoredTheme = normalizeTheme(storedTheme);
 
-                    if (storedTheme) {
-                        this.themePreference = storedTheme;
+                    if (normalizedStoredTheme) {
+                        this.themePreference = normalizedStoredTheme;
+                    } else if (storedTheme !== null) {
+                        localStorage.setItem('user-theme', 'light');
                     }
                 },
                 applyTheme(value) {
-                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                    const useDark = value === 'dark' || (value === 'system' && prefersDark);
+                    const selectedTheme = ['light', 'dark'].includes(value) ? value : 'light';
 
-                    document.documentElement.classList.toggle('dark', useDark);
-                    localStorage.setItem('user-theme', value);
+                    this.themePreference = selectedTheme;
+                    document.documentElement.classList.toggle('dark', selectedTheme === 'dark');
+                    localStorage.setItem('user-theme', selectedTheme);
                 }
             }">
                 <div class="flex flex-col gap-5 border-b border-slate-200/80 pb-6 dark:border-slate-800 sm:flex-row sm:items-start sm:justify-between">
@@ -69,7 +78,6 @@
                             @change="applyTheme($event.target.value)"
                             class="mt-2 block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-[#070740]/20 focus:ring-4 focus:ring-[#070740]/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
                         >
-                            <option value="system">{{ __('System default') }}</option>
                             <option value="light">{{ __('Light mode') }}</option>
                             <option value="dark">{{ __('Dark mode') }}</option>
                         </select>

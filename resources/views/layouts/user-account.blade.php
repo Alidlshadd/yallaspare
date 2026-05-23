@@ -6,7 +6,8 @@
     $titleContent = trim($__env->yieldContent('title'));
     $subtitleContent = trim($__env->yieldContent('subtitle'));
     $actionsContent = trim($__env->yieldContent('actions'));
-    $themePreference = auth()->check() ? (auth()->user()->theme_preference ?? 'system') : 'system';
+    $themePreference = auth()->check() ? (auth()->user()->theme_preference ?? 'light') : 'light';
+    $themePreference = in_array($themePreference, ['light', 'dark'], true) ? $themePreference : 'light';
     $fontSizePreference = auth()->check() ? (auth()->user()->font_size_preference ?? 'default') : 'default';
     $reducedMotion = auth()->check() ? (bool) (auth()->user()->reduced_motion ?? false) : false;
     $highContrastMode = auth()->check() ? (bool) (auth()->user()->high_contrast_mode ?? false) : false;
@@ -29,13 +30,17 @@
         <script>
             (function () {
                 try {
-                    const storedTheme = localStorage.getItem('user-theme');
+                    const normalizeTheme = (value) => ['light', 'dark'].includes(value) ? value : null;
+                    const storedThemeValue = localStorage.getItem('user-theme');
+                    const storedTheme = normalizeTheme(storedThemeValue);
                     const serverTheme = @js($themePreference);
-                    const selectedTheme = storedTheme || serverTheme;
-                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                    const shouldUseDark = selectedTheme === 'dark' || (selectedTheme === 'system' && prefersDark);
+                    const selectedTheme = storedTheme || normalizeTheme(serverTheme) || 'light';
 
-                    document.documentElement.classList.toggle('dark', shouldUseDark);
+                    if (storedThemeValue !== null && storedTheme === null) {
+                        localStorage.setItem('user-theme', 'light');
+                    }
+
+                    document.documentElement.classList.toggle('dark', selectedTheme === 'dark');
                 } catch (error) {
                     document.documentElement.classList.remove('dark');
                 }

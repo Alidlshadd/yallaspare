@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             if (! Schema::hasColumn('users', 'theme_preference')) {
-                $table->string('theme_preference', 20)->default('system')->after('phone');
+                $table->string('theme_preference', 20)->default('light')->after('phone');
             }
 
             if (! Schema::hasColumn('users', 'locale_preference')) {

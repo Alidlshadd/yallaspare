@@ -72,7 +72,7 @@ class SettingController extends Controller
             if (! $uploadedLogo->isValid()) {
                 return back()
                     ->withInput()
-                    ->withErrors(['site_logo' => __('Logo upload failed. Please select a valid JPG, PNG, or WEBP file (max 8MB).')]);
+                    ->withErrors(['site_logo' => __('Logo upload failed. Please select a valid transparent PNG, WEBP, or JPG file (max 8MB).')]);
             }
 
             try {

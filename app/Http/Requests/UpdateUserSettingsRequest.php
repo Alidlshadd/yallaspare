@@ -24,7 +24,7 @@ class UpdateUserSettingsRequest extends FormRequest
         $isAccessibility = $this->routeIs('user.settings.accessibility.update');
 
         return [
-            'theme_preference' => [($isFullUpdate || $isAppearance) ? 'required' : 'nullable', Rule::in(['light', 'dark', 'system'])],
+            'theme_preference' => [($isFullUpdate || $isAppearance) ? 'required' : 'nullable', Rule::in(['light', 'dark'])],
             'locale_preference' => [($isFullUpdate || $isLanguage) ? 'required' : 'nullable', Rule::in(['en', 'ar', 'ku'])],
             'notify_order_updates' => [($isFullUpdate || $isNotifications) ? 'nullable' : 'sometimes', 'boolean'],
             'notify_promotions' => [($isFullUpdate || $isNotifications) ? 'nullable' : 'sometimes', 'boolean'],

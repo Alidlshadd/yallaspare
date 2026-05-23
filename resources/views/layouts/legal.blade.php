@@ -11,10 +11,16 @@
 
         <script>
             (function () {
-                const storedTheme = localStorage.getItem('admin-theme');
-                if (storedTheme === 'dark') {
-                    document.documentElement.classList.add('dark');
-                } else if (storedTheme === 'light') {
+                try {
+                    const storedTheme = localStorage.getItem('admin-theme');
+                    const selectedTheme = storedTheme === 'dark' ? 'dark' : 'light';
+
+                    if (storedTheme !== null && !['light', 'dark'].includes(storedTheme)) {
+                        localStorage.setItem('admin-theme', 'light');
+                    }
+
+                    document.documentElement.classList.toggle('dark', selectedTheme === 'dark');
+                } catch (error) {
                     document.documentElement.classList.remove('dark');
                 }
             })();

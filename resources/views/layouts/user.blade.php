@@ -98,18 +98,23 @@
         <meta name="description" content="@yield('meta_description', 'Yalla Spare auto parts catalog, support, and legal information.')">
         @stack('head')
         @php
-            $themePreference = auth()->check() ? (auth()->user()->theme_preference ?? 'system') : 'system';
+            $themePreference = auth()->check() ? (auth()->user()->theme_preference ?? 'light') : 'light';
+            $themePreference = in_array($themePreference, ['light', 'dark'], true) ? $themePreference : 'light';
         @endphp
         <script>
             (function () {
                 try {
-                    const storedTheme = localStorage.getItem('user-theme');
+                    const normalizeTheme = (value) => ['light', 'dark'].includes(value) ? value : null;
+                    const storedThemeValue = localStorage.getItem('user-theme');
+                    const storedTheme = normalizeTheme(storedThemeValue);
                     const serverTheme = @js($themePreference);
-                    const selectedTheme = storedTheme || serverTheme;
-                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-                    const shouldUseDark = selectedTheme === 'dark' || (selectedTheme === 'system' && prefersDark);
+                    const selectedTheme = storedTheme || normalizeTheme(serverTheme) || 'light';
 
-                    document.documentElement.classList.toggle('dark', shouldUseDark);
+                    if (storedThemeValue !== null && storedTheme === null) {
+                        localStorage.setItem('user-theme', 'light');
+                    }
+
+                    document.documentElement.classList.toggle('dark', selectedTheme === 'dark');
                 } catch (error) {
                     document.documentElement.classList.remove('dark');
                 }
@@ -180,10 +185,10 @@
                             <x-brand-mark
                                 :logo-url="$brandLogoUrl"
                                 :brand="$brand"
-                                wrapper-class="app-logo-mark rounded-lg"
+                                wrapper-class="app-logo-mark"
                                 img-class="h-full w-auto object-contain"
-                                fallback-class="inline-flex h-full w-full items-center justify-center rounded-lg bg-white"
-                                fallback-text-class="text-[11px] font-semibold tracking-[0.18em] text-[#070740]"
+                                fallback-class="inline-flex h-full w-full items-center justify-center"
+                                fallback-text-class="text-[11px] font-semibold tracking-[0.18em] text-white"
                             />
                             <span class="app-logo-text">{{ $brand }}</span>
                         </a>
@@ -261,10 +266,10 @@
                                 <x-brand-mark
                                     :logo-url="$brandLogoUrl"
                                     :brand="$brand"
-                                    wrapper-class="app-logo-mark rounded-lg"
+                                    wrapper-class="app-logo-mark"
                                     img-class="h-full w-auto object-contain"
-                                    fallback-class="inline-flex h-full w-full items-center justify-center rounded-lg bg-white"
-                                    fallback-text-class="text-[11px] font-semibold tracking-[0.18em] text-[#070740]"
+                                    fallback-class="inline-flex h-full w-full items-center justify-center"
+                                    fallback-text-class="text-[11px] font-semibold tracking-[0.18em] text-white"
                                 />
                                 <span class="app-logo-text">{{ $brand }}</span>
                             </a>

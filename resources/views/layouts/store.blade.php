@@ -71,7 +71,7 @@
                     <x-brand-mark
                         :logo-url="$systemSettings['site_logo_url'] ?? null"
                         :brand="$systemSettings['site_name'] ?? 'YallaSpare'"
-                        wrapper-class="app-logo-mark rounded-lg shadow-sm"
+                        wrapper-class="app-logo-mark"
                         img-class="h-full w-auto object-contain"
                         fallback-class="inline-flex h-full w-full items-center justify-center rounded-lg bg-blue-600/90"
                         fallback-text-class="text-[11px] font-semibold tracking-[0.18em] text-white"
