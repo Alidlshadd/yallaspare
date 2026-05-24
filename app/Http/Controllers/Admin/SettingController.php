@@ -8,13 +8,19 @@ use App\Support\Branding;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Throwable;
 
 class SettingController extends Controller
 {
+    private const HERO_VIDEO_MAX_KILOBYTES = 51200;
+    private const HERO_VIDEO_MAX_BYTES = self::HERO_VIDEO_MAX_KILOBYTES * 1024;
+    private const HERO_VIDEO_DIRECTORY = 'home/hero';
+
     public function edit(): View
     {
         $settings = Setting::allWithDefaults();
@@ -30,7 +36,7 @@ class SettingController extends Controller
 
     public function update(Request $request): RedirectResponse
     {
-        $data = $request->validate([
+        $validator = Validator::make($request->all(), [
             'site_name' => ['required', 'string', 'max:120'],
             'currency_code' => ['required', 'string', 'max:10'],
             'currency_symbol' => ['required', 'string', 'max:10'],
@@ -57,7 +63,22 @@ class SettingController extends Controller
                 },
             ],
             'storefront_hero_image' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
-            'storefront_hero_video' => ['nullable', 'file', 'mimes:mp4', 'max:51200'],
+            'storefront_hero_video' => [
+                'nullable',
+                'file',
+                'mimes:mp4',
+                'mimetypes:video/mp4',
+                'max:' . self::HERO_VIDEO_MAX_KILOBYTES,
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    if (! $value instanceof UploadedFile) {
+                        return;
+                    }
+
+                    if (! $this->isSafeMp4Upload($value)) {
+                        $fail(__('Hero video upload failed. Please select a valid MP4 file.'));
+                    }
+                },
+            ],
             'remove_storefront_hero_image' => ['nullable', 'boolean'],
             'remove_storefront_hero_video' => ['nullable', 'boolean'],
             'sms_provider_webhook_url' => ['nullable', 'url', 'max:2048'],
@@ -75,6 +96,23 @@ class SettingController extends Controller
             'notification_order_status_updated_ku_subject' => ['nullable', 'string', 'max:160'],
             'notification_order_status_updated_ku_body' => ['nullable', 'string', 'max:3000'],
         ]);
+
+        if ($validator->fails()) {
+            if ($request->files->has('storefront_hero_video')) {
+                $this->logHeroVideoUploadFailure(
+                    $request,
+                    $request->file('storefront_hero_video'),
+                    'validation_failed',
+                    ['errors' => $validator->errors()->get('storefront_hero_video')]
+                );
+            }
+
+            return back()
+                ->withInput()
+                ->withErrors($validator);
+        }
+
+        $data = $validator->validated();
 
         $currentLogo = (string) Setting::getValue('site_logo', '');
         $currentLogoStoragePath = Branding::storagePathFromValue($currentLogo);
@@ -159,22 +197,36 @@ class SettingController extends Controller
 
         if ($request->hasFile('storefront_hero_video')) {
             $uploadedHeroVideo = $request->file('storefront_hero_video');
+            $this->logHeroVideoUploadAttempt($request, $uploadedHeroVideo);
 
             if (! $uploadedHeroVideo->isValid()) {
+                $this->logHeroVideoUploadFailure($request, $uploadedHeroVideo, 'php_upload_invalid');
+
                 return back()
                     ->withInput()
                     ->withErrors(['storefront_hero_video' => __('Hero video upload failed. Please select a valid MP4 file.')]);
             }
 
             try {
-                $storedHeroVideo = str_replace('\\', '/', (string) $uploadedHeroVideo->store('home/hero', 'public'));
+                $storedHeroVideo = $this->storeHeroVideo($uploadedHeroVideo);
                 if ($storedHeroVideo === '' || !Storage::disk('public')->exists($storedHeroVideo)) {
                     throw new \RuntimeException(__('Stored hero video was not found after upload.'));
                 }
 
                 $this->deleteManagedHeroMedia($heroVideo);
                 $heroVideo = $storedHeroVideo;
+                Log::info('Storefront hero video uploaded', [
+                    'path' => $storedHeroVideo,
+                    'size' => Storage::disk('public')->size($storedHeroVideo),
+                    'mime' => Storage::disk('public')->mimeType($storedHeroVideo),
+                    'admin_id' => optional($request->user())->getAuthIdentifier(),
+                ]);
             } catch (Throwable $e) {
+                $this->logHeroVideoUploadFailure($request, $uploadedHeroVideo, 'storage_failed', [
+                    'exception' => $e::class,
+                    'message' => $e->getMessage(),
+                ]);
+
                 return back()
                     ->withInput()
                     ->withErrors(['storefront_hero_video' => __('Could not save the uploaded hero video. Please try again.')]);
@@ -334,6 +386,137 @@ class SettingController extends Controller
     private function storeOriginalLogo(UploadedFile $uploadedLogo): string
     {
         return str_replace('\\', '/', (string) $uploadedLogo->store('settings', 'public'));
+    }
+
+    private function storeHeroVideo(UploadedFile $uploadedHeroVideo): string
+    {
+        $disk = Storage::disk('public');
+        $disk->makeDirectory(self::HERO_VIDEO_DIRECTORY);
+
+        $filename = (string) Str::uuid() . '.mp4';
+        $storedPath = $disk->putFileAs(self::HERO_VIDEO_DIRECTORY, $uploadedHeroVideo, $filename);
+        $storedPath = str_replace('\\', '/', (string) $storedPath);
+
+        if ($storedPath === '' || ! $disk->exists($storedPath)) {
+            throw new \RuntimeException('Hero video was not written to the public disk.');
+        }
+
+        if ((int) $disk->size($storedPath) <= 0) {
+            $disk->delete($storedPath);
+            throw new \RuntimeException('Hero video was written as an empty file.');
+        }
+
+        return $storedPath;
+    }
+
+    private function isSafeMp4Upload(UploadedFile $uploadedVideo): bool
+    {
+        $realPath = $uploadedVideo->getRealPath();
+
+        if (! $uploadedVideo->isValid()
+            || $realPath === false
+            || ! is_readable($realPath)
+            || strtolower($uploadedVideo->getClientOriginalExtension()) !== 'mp4'
+            || $uploadedVideo->getSize() <= 0
+            || $uploadedVideo->getSize() > self::HERO_VIDEO_MAX_BYTES
+        ) {
+            return false;
+        }
+
+        return $this->hasMp4FtypSignature($realPath)
+            && ! $this->containsDangerousUploadSignature($realPath);
+    }
+
+    private function hasMp4FtypSignature(string $path): bool
+    {
+        $handle = @fopen($path, 'rb');
+        if ($handle === false) {
+            return false;
+        }
+
+        $header = (string) fread($handle, 64);
+        fclose($handle);
+
+        if (strlen($header) < 12 || substr($header, 4, 4) !== 'ftyp') {
+            return false;
+        }
+
+        $brandBytes = substr($header, 8, 56);
+        foreach (['isom', 'iso2', 'mp41', 'mp42', 'avc1', 'dash', 'M4V '] as $brand) {
+            if (str_contains($brandBytes, $brand)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private function containsDangerousUploadSignature(string $path): bool
+    {
+        $handle = @fopen($path, 'rb');
+        if ($handle === false) {
+            return true;
+        }
+
+        $tail = '';
+        while (! feof($handle)) {
+            $chunk = $tail . (string) fread($handle, 1024 * 1024);
+            $lowerChunk = strtolower($chunk);
+
+            foreach (['<?php', '<?=', '<? ', '<script', '<html', '#!/usr/bin/env php'] as $signature) {
+                if (str_contains($lowerChunk, $signature)) {
+                    fclose($handle);
+
+                    return true;
+                }
+            }
+
+            $tail = substr($chunk, -32);
+        }
+
+        fclose($handle);
+
+        return false;
+    }
+
+    private function logHeroVideoUploadAttempt(Request $request, ?UploadedFile $uploadedVideo): void
+    {
+        Log::info('Storefront hero video upload attempt', $this->heroVideoUploadContext($request, $uploadedVideo));
+    }
+
+    /**
+     * @param  array<string, mixed>  $extra
+     */
+    private function logHeroVideoUploadFailure(Request $request, mixed $uploadedVideo, string $reason, array $extra = []): void
+    {
+        Log::warning('Storefront hero video upload failed', array_merge(
+            $this->heroVideoUploadContext($request, $uploadedVideo instanceof UploadedFile ? $uploadedVideo : null),
+            ['reason' => $reason],
+            $extra
+        ));
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function heroVideoUploadContext(Request $request, ?UploadedFile $uploadedVideo): array
+    {
+        return [
+            'admin_id' => optional($request->user())->getAuthIdentifier(),
+            'content_length' => (int) $request->server('CONTENT_LENGTH', 0),
+            'php_upload_max_filesize' => ini_get('upload_max_filesize'),
+            'php_post_max_size' => ini_get('post_max_size'),
+            'php_max_execution_time' => ini_get('max_execution_time'),
+            'php_max_input_time' => ini_get('max_input_time'),
+            'php_memory_limit' => ini_get('memory_limit'),
+            'original_name' => $uploadedVideo?->getClientOriginalName(),
+            'client_mime' => $uploadedVideo?->getClientMimeType(),
+            'detected_mime' => $uploadedVideo?->getMimeType(),
+            'extension' => $uploadedVideo?->getClientOriginalExtension(),
+            'size' => $uploadedVideo?->getSize(),
+            'upload_error' => $uploadedVideo?->getError(),
+            'upload_error_message' => $uploadedVideo?->getErrorMessage(),
+        ];
     }
 
     private function deleteManagedHeroMedia(string $path): void

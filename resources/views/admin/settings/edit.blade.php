@@ -48,7 +48,7 @@
                             <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Manage site identity and visuals that appear across the storefront.') }}</p>
                         </div>
                         <div class="p-6">
-                            <form method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data" class="space-y-6">
+                            <form method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data" class="space-y-6" data-admin-settings-form>
                                 @csrf
                                 @method('PUT')
 
@@ -135,8 +135,9 @@
 
                                             <div>
                                                 <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ __('Hero Video') }}</label>
-                                                <input type="file" name="storefront_hero_video" accept=".mp4,video/mp4" class="w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                                                <input type="file" name="storefront_hero_video" accept=".mp4,video/mp4" class="w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" data-hero-video-input>
                                                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ __('Optional MP4 video. If present, it appears before the image. Max 50MB.') }}</p>
+                                                <p class="mt-1 hidden text-xs font-medium text-rose-600 dark:text-rose-400" data-hero-video-client-error></p>
                                                 @if($storefrontHeroVideoUrl)
                                                     <video class="mt-3 h-24 w-full rounded-xl object-cover" muted controls>
                                                         <source src="{{ $storefrontHeroVideoUrl }}" type="video/mp4">
@@ -259,8 +260,9 @@
                                 </div>
 
                                 <div class="flex items-center justify-end gap-3">
-                                    <button type="submit" class="px-5 py-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold transition dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100">
-                                        {{ __('Save Settings') }}
+                                    <button type="submit" class="px-5 py-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-70 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100" data-settings-submit>
+                                        <span data-settings-submit-label>{{ __('Save Settings') }}</span>
+                                        <span class="hidden" data-settings-submit-loading>{{ __('Uploading...') }}</span>
                                     </button>
                                 </div>
                             </form>
@@ -341,4 +343,63 @@
             </div>
         </div>
     </div>
+
+@push('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.querySelector('[data-admin-settings-form]');
+            const input = document.querySelector('[data-hero-video-input]');
+            const clientError = document.querySelector('[data-hero-video-client-error]');
+            const submit = document.querySelector('[data-settings-submit]');
+            const submitLabel = document.querySelector('[data-settings-submit-label]');
+            const submitLoading = document.querySelector('[data-settings-submit-loading]');
+            const maxBytes = 50 * 1024 * 1024;
+
+            if (!form || !input || !clientError || !submit) {
+                return;
+            }
+
+            const showClientError = (message) => {
+                clientError.textContent = message;
+                clientError.classList.toggle('hidden', message === '');
+            };
+
+            const validateHeroVideo = () => {
+                const file = input.files && input.files.length > 0 ? input.files[0] : null;
+                if (!file) {
+                    showClientError('');
+                    return true;
+                }
+
+                const name = file.name.toLowerCase();
+                if (!name.endsWith('.mp4') || (file.type && file.type !== 'video/mp4')) {
+                    showClientError(@json(__('Hero video upload failed. Please select a valid MP4 file.')));
+                    return false;
+                }
+
+                if (file.size > maxBytes) {
+                    showClientError(@json(__('Hero video must be 50MB or smaller.')));
+                    return false;
+                }
+
+                showClientError('');
+                return true;
+            };
+
+            input.addEventListener('change', validateHeroVideo);
+
+            form.addEventListener('submit', (event) => {
+                if (!validateHeroVideo()) {
+                    event.preventDefault();
+                    input.focus();
+                    return;
+                }
+
+                submit.disabled = true;
+                submitLabel?.classList.add('hidden');
+                submitLoading?.classList.remove('hidden');
+            });
+        });
+    </script>
+@endpush
 </x-app-layout>

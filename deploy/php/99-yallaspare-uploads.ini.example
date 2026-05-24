@@ -1,0 +1,10 @@
+; YallaSpare PHP-FPM upload limits for 50MB MP4 storefront hero videos.
+; Copy to /etc/php/8.3/fpm/conf.d/99-yallaspare-uploads.ini, then reload PHP-FPM.
+
+file_uploads = On
+upload_max_filesize = 64M
+post_max_size = 64M
+max_file_uploads = 10
+max_execution_time = 120
+max_input_time = 120
+memory_limit = 256M

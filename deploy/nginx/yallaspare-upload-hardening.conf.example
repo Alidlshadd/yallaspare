@@ -1,0 +1,45 @@
+##
+# YallaSpare Laravel upload hardening snippet.
+# Include this inside the HTTPS server block for yallaspare.com.
+##
+
+# Laravel hero videos are capped at 50MB. 64M leaves room for multipart form
+# overhead while still rejecting oversized uploads before PHP handles them.
+client_max_body_size 64M;
+client_body_timeout 60s;
+client_header_timeout 30s;
+send_timeout 60s;
+
+location / {
+    try_files $uri $uri/ /index.php?$query_string;
+}
+
+location ^~ /storage/ {
+    alias /var/www/yallaspare/public/storage/;
+    access_log off;
+    expires 30d;
+    add_header Cache-Control "public, max-age=2592000, immutable";
+
+    # Uploaded media must never be executed.
+    location ~ \.php(?:/|$) {
+        return 404;
+    }
+}
+
+location ~ \.php$ {
+    include snippets/fastcgi-php.conf;
+    fastcgi_pass unix:/run/php/php8.3-fpm.sock;
+    fastcgi_param SCRIPT_FILENAME $realpath_root$fastcgi_script_name;
+    fastcgi_param DOCUMENT_ROOT $realpath_root;
+
+    fastcgi_read_timeout 120s;
+    fastcgi_send_timeout 120s;
+    fastcgi_connect_timeout 30s;
+
+    # Keep request buffering enabled so PHP-FPM is protected from slow clients.
+    fastcgi_request_buffering on;
+}
+
+location ~ /\.(?!well-known).* {
+    deny all;
+}
