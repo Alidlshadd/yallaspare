@@ -215,7 +215,7 @@ class SettingController extends Controller
 
                 $this->deleteManagedHeroMedia($heroVideo);
                 $heroVideo = $storedHeroVideo;
-                Log::info('Storefront hero video uploaded', [
+                $this->writeUploadLog('info', 'Storefront hero video uploaded', [
                     'path' => $storedHeroVideo,
                     'size' => Storage::disk('public')->size($storedHeroVideo),
                     'mime' => Storage::disk('public')->mimeType($storedHeroVideo),
@@ -481,7 +481,7 @@ class SettingController extends Controller
 
     private function logHeroVideoUploadAttempt(Request $request, ?UploadedFile $uploadedVideo): void
     {
-        Log::info('Storefront hero video upload attempt', $this->heroVideoUploadContext($request, $uploadedVideo));
+        $this->writeUploadLog('info', 'Storefront hero video upload attempt', $this->heroVideoUploadContext($request, $uploadedVideo));
     }
 
     /**
@@ -489,11 +489,23 @@ class SettingController extends Controller
      */
     private function logHeroVideoUploadFailure(Request $request, mixed $uploadedVideo, string $reason, array $extra = []): void
     {
-        Log::warning('Storefront hero video upload failed', array_merge(
+        $this->writeUploadLog('warning', 'Storefront hero video upload failed', array_merge(
             $this->heroVideoUploadContext($request, $uploadedVideo instanceof UploadedFile ? $uploadedVideo : null),
             ['reason' => $reason],
             $extra
         ));
+    }
+
+    /**
+     * @param  array<string, mixed>  $context
+     */
+    private function writeUploadLog(string $level, string $message, array $context): void
+    {
+        try {
+            Log::log($level, $message, $context);
+        } catch (Throwable) {
+            // Uploads must not fail only because production logging permissions are broken.
+        }
     }
 
     /**

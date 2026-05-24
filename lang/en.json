@@ -2073,5 +2073,6 @@
     "you@example.com": "you@example.com",
     "you@example.com or +964...": "you@example.com or +964...",
     "Hero video must be 50MB or smaller.": "Hero video must be 50MB or smaller.",
-    "Uploading...": "Uploading..."
+    "Uploading...": "Uploading...",
+    "The uploaded file is too large. Please upload an MP4 video up to 50MB.": "The uploaded file is too large. Please upload an MP4 video up to 50MB."
 }
