@@ -1,0 +1,16 @@
+; Copy to /etc/supervisor/conf.d/yallaspare-worker.conf on the VPS.
+; Replace the user and path values before enabling.
+
+[program:yallaspare-worker]
+process_name=%(program_name)s_%(process_num)02d
+command=/usr/bin/php /var/www/yallaspare/artisan queue:work database --queue=mail,default --sleep=3 --tries=3 --timeout=90 --max-time=3600
+directory=/var/www/yallaspare
+autostart=true
+autorestart=true
+stopasgroup=true
+killasgroup=true
+user=www-data
+numprocs=1
+redirect_stderr=true
+stdout_logfile=/var/www/yallaspare/storage/logs/worker.log
+stopwaitsecs=3600

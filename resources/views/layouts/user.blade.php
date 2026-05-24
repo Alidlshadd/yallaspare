@@ -210,12 +210,12 @@
                                 <x-language-switcher variant="dark" />
 
                             @auth
-                                <div class="relative">
+                                <div class="relative" data-header-account>
                                     <button
                                         type="button"
                                         class="inline-flex h-9 items-center gap-3 rounded-xl border border-white/10 bg-white/10 px-3 text-sm font-medium text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
-                                        @click="accountOpen = !accountOpen"
-                                        :aria-expanded="accountOpen.toString()"
+                                        data-header-account-trigger
+                                        aria-expanded="false"
                                         aria-haspopup="menu"
                                     >
                                         @if($userProfilePhotoUrl)
@@ -226,17 +226,14 @@
                                             </span>
                                         @endif
                                         <span>{{ auth()->user()->name ?? __('Account') }}</span>
-                                        <svg class="h-4 w-4 text-white/65" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                        <svg class="h-4 w-4 text-white/65 transition-transform" data-header-account-icon viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                             <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.126l3.71-3.895a.75.75 0 1 1 1.08 1.04l-4.25 4.46a.75.75 0 0 1-1.08 0l-4.25-4.46a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd" />
                                         </svg>
                                     </button>
 
                                     <div
-                                        x-cloak
-                                        x-show="accountOpen"
-                                        x-transition
-                                        @click.outside="accountOpen = false"
-                                        class="absolute {{ $isRtl ? 'left-0' : 'right-0' }} top-full z-50 mt-3 w-56 overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-2 text-slate-900 shadow-2xl shadow-slate-900/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:shadow-black/30"
+                                        data-header-account-menu
+                                        class="absolute {{ $isRtl ? 'left-0' : 'right-0' }} top-full z-50 mt-3 hidden w-56 overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-2 text-slate-900 shadow-2xl shadow-slate-900/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:shadow-black/30"
                                         role="menu"
                                     >
                                         <div class="rounded-2xl border border-slate-100 px-4 py-3 dark:border-slate-800">
@@ -291,12 +288,12 @@
                                 <x-language-switcher variant="dark" />
 
                             @auth
-                            <div class="relative">
+                            <div class="relative" data-header-account>
                                 <button
                                     type="button"
                                     class="inline-flex h-8 items-center gap-1.5 rounded-lg border border-white/10 bg-white/10 px-2 text-xs font-medium text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25 sm:h-9 sm:rounded-xl sm:px-3 sm:text-sm"
-                                    @click="accountOpen = !accountOpen"
-                                    :aria-expanded="accountOpen.toString()"
+                                    data-header-account-trigger
+                                    aria-expanded="false"
                                     aria-haspopup="menu"
                                 >
                                     @if($userProfilePhotoUrl)
@@ -307,17 +304,14 @@
                                         </span>
                                     @endif
                                     <span class="hidden sm:block">{{ auth()->user()->name ?? __('Account') }}</span>
-                                    <svg class="h-4 w-4 text-white/65" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <svg class="h-4 w-4 text-white/65 transition-transform" data-header-account-icon viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                         <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.126l3.71-3.895a.75.75 0 1 1 1.08 1.04l-4.25 4.46a.75.75 0 0 1-1.08 0l-4.25-4.46a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd" />
                                     </svg>
                                 </button>
 
                                 <div
-                                    x-cloak
-                                    x-show="accountOpen"
-                                    x-transition
-                                    @click.outside="accountOpen = false"
-                                    class="absolute {{ $isRtl ? 'left-0' : 'right-0' }} top-full z-50 mt-3 w-56 overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-2 text-slate-900 shadow-2xl shadow-slate-900/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:shadow-black/30"
+                                    data-header-account-menu
+                                    class="absolute {{ $isRtl ? 'left-0' : 'right-0' }} top-full z-50 mt-3 hidden w-56 overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-2 text-slate-900 shadow-2xl shadow-slate-900/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:shadow-black/30"
                                     role="menu"
                                 >
                                     <div class="rounded-2xl border border-slate-100 px-4 py-3 dark:border-slate-800">
@@ -436,7 +430,7 @@
                         </div>
                     </div>
 
-                    <div class="hidden py-3 lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center lg:gap-5">
+                    <div class="hidden py-3 lg:grid lg:grid-cols-[minmax(11rem,0.75fr)_minmax(30rem,1.45fr)_minmax(11rem,0.75fr)] lg:items-center lg:gap-5">
                         <div class="justify-self-start">
                             @auth
                                 <a
@@ -469,8 +463,8 @@
                             @endauth
                         </div>
 
-                        <form method="GET" action="{{ route('shop.index') }}" class="w-full justify-self-center">
-                            <div class="relative mx-auto w-full max-w-3xl">
+                        <form method="GET" action="{{ route('shop.index') }}" class="w-full min-w-0 justify-self-center">
+                            <div class="relative mx-auto w-full max-w-[38rem]">
                                 <span class="pointer-events-none absolute inset-y-0 left-5 flex items-center text-white/55">
                                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35" />
@@ -595,16 +589,13 @@
 
                                 <a
                                     href="{{ route('categories.index') }}"
-                                    class="inline-flex items-center gap-1 rounded-xl px-3 py-1.5 text-sm font-medium transition duration-200"
-                                    :class="categoriesOpen || {{ request()->routeIs('categories.*') ? 'true' : 'false' }} ? 'bg-white text-[#070740]' : 'text-white/80 hover:bg-white/10 hover:text-white'"
-                                    @mouseenter="if (isDesktop()) openNow()"
-                                    @focus="openNow()"
-                                    @click.prevent="if (isDesktop()) { window.location.href = '{{ route('categories.index') }}'; } else { toggleMenu(); }"
-                                    :aria-expanded="categoriesOpen.toString()"
+                                    class="inline-flex items-center gap-1 rounded-xl px-3 py-1.5 text-sm font-medium transition duration-200 {{ request()->routeIs('categories.*') ? 'bg-white text-[#070740]' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
+                                    data-store-categories-trigger
+                                    aria-expanded="false"
                                     aria-haspopup="menu"
                                 >
                                     <span>{{ __('Categories') }}</span>
-                                    <svg class="h-4 w-4 transition-transform" :class="categoriesOpen ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <svg class="h-4 w-4 transition-transform" data-store-categories-icon viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                         <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.126l3.71-3.895a.75.75 0 1 1 1.08 1.04l-4.25 4.46a.75.75 0 0 1-1.08 0l-4.25-4.46a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd" />
                                     </svg>
                                 </a>
@@ -624,19 +615,9 @@
                             </div>
 
                             <div
-                                x-cloak
-                                x-show="categoriesOpen"
-                                x-transition:enter="transition ease-out duration-180"
-                                x-transition:enter-start="opacity-0 -translate-y-1"
-                                x-transition:enter-end="opacity-100 translate-y-0"
-                                x-transition:leave="transition ease-in duration-120"
-                                x-transition:leave-start="opacity-100 translate-y-0"
-                                x-transition:leave-end="opacity-0 -translate-y-1"
-                                class="mt-3 rounded-3xl border border-slate-200/80 bg-white p-4 text-slate-900 shadow-2xl shadow-slate-900/10 dark:border-slate-800 dark:bg-slate-900 dark:text-white lg:absolute lg:left-0 lg:right-0 lg:top-full lg:z-50 lg:mt-2 lg:p-6"
+                                data-store-categories-menu
+                                class="mt-3 hidden rounded-3xl border border-slate-200/80 bg-white p-4 text-slate-900 shadow-2xl shadow-slate-900/10 dark:border-slate-800 dark:bg-slate-900 dark:text-white lg:absolute lg:left-0 lg:right-0 lg:top-full lg:z-50 lg:mt-2 lg:p-6"
                                 role="menu"
-                                @mouseenter="cancelClose()"
-                                @mouseleave="queueClose()"
-                                @click.outside="closeNow()"
                             >
                                 <div class="mb-4 flex items-center justify-between gap-3">
                                     <p class="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
@@ -776,6 +757,269 @@
                         showHeader();
                     }
                 }, { passive: true });
+            })();
+        </script>
+        <script>
+            (() => {
+                const desktopQuery = window.matchMedia('(min-width: 1024px)');
+                const languageDropdowns = Array.from(document.querySelectorAll('[data-header-dropdown]'));
+                const accountDropdowns = Array.from(document.querySelectorAll('[data-header-account]'));
+                const categoryTrigger = document.querySelector('[data-store-categories-trigger]');
+                const categoryMenu = document.querySelector('[data-store-categories-menu]');
+                const categoryIcon = document.querySelector('[data-store-categories-icon]');
+                let categoryCloseTimer = null;
+                let languageCloseTimer = null;
+                let accountCloseTimer = null;
+
+                const closeLanguageDropdowns = (except = null) => {
+                    if (languageCloseTimer) {
+                        window.clearTimeout(languageCloseTimer);
+                        languageCloseTimer = null;
+                    }
+
+                    languageDropdowns.forEach((root) => {
+                        if (root === except) {
+                            return;
+                        }
+
+                        const menu = root.querySelector('[data-header-dropdown-menu]');
+                        const trigger = root.querySelector('[data-header-dropdown-trigger]');
+                        const icon = root.querySelector('[data-header-dropdown-icon]');
+
+                        menu?.classList.add('hidden');
+                        trigger?.setAttribute('aria-expanded', 'false');
+                        icon?.classList.remove('rotate-180');
+                    });
+                };
+
+                const closeCategoryMenu = () => {
+                    if (categoryCloseTimer) {
+                        window.clearTimeout(categoryCloseTimer);
+                        categoryCloseTimer = null;
+                    }
+
+                    categoryMenu?.classList.add('hidden');
+                    categoryTrigger?.setAttribute('aria-expanded', 'false');
+                    categoryIcon?.classList.remove('rotate-180');
+                };
+
+                const closeAccountDropdowns = (except = null) => {
+                    if (accountCloseTimer) {
+                        window.clearTimeout(accountCloseTimer);
+                        accountCloseTimer = null;
+                    }
+
+                    accountDropdowns.forEach((root) => {
+                        if (root === except) {
+                            return;
+                        }
+
+                        const menu = root.querySelector('[data-header-account-menu]');
+                        const trigger = root.querySelector('[data-header-account-trigger]');
+                        const icon = root.querySelector('[data-header-account-icon]');
+
+                        menu?.classList.add('hidden');
+                        trigger?.setAttribute('aria-expanded', 'false');
+                        icon?.classList.remove('rotate-180');
+                    });
+                };
+
+                const openLanguageDropdown = (root) => {
+                    const menu = root.querySelector('[data-header-dropdown-menu]');
+                    const trigger = root.querySelector('[data-header-dropdown-trigger]');
+                    const icon = root.querySelector('[data-header-dropdown-icon]');
+
+                    closeCategoryMenu();
+                    closeAccountDropdowns();
+                    closeLanguageDropdowns(root);
+                    menu?.classList.remove('hidden');
+                    trigger?.setAttribute('aria-expanded', 'true');
+                    icon?.classList.add('rotate-180');
+                };
+
+                const toggleLanguageDropdown = (root) => {
+                    const menu = root.querySelector('[data-header-dropdown-menu]');
+
+                    if (!menu || menu.classList.contains('hidden')) {
+                        openLanguageDropdown(root);
+                        return;
+                    }
+
+                    closeLanguageDropdowns();
+                };
+
+                const queueLanguageClose = () => {
+                    if (languageCloseTimer) {
+                        window.clearTimeout(languageCloseTimer);
+                    }
+
+                    languageCloseTimer = window.setTimeout(() => closeLanguageDropdowns(), 220);
+                };
+
+                const cancelLanguageClose = () => {
+                    if (languageCloseTimer) {
+                        window.clearTimeout(languageCloseTimer);
+                        languageCloseTimer = null;
+                    }
+                };
+
+                const openAccountDropdown = (root) => {
+                    const menu = root.querySelector('[data-header-account-menu]');
+                    const trigger = root.querySelector('[data-header-account-trigger]');
+                    const icon = root.querySelector('[data-header-account-icon]');
+
+                    closeCategoryMenu();
+                    closeLanguageDropdowns();
+                    closeAccountDropdowns(root);
+                    menu?.classList.remove('hidden');
+                    trigger?.setAttribute('aria-expanded', 'true');
+                    icon?.classList.add('rotate-180');
+                };
+
+                const toggleAccountDropdown = (root) => {
+                    const menu = root.querySelector('[data-header-account-menu]');
+
+                    if (!menu || menu.classList.contains('hidden')) {
+                        openAccountDropdown(root);
+                        return;
+                    }
+
+                    closeAccountDropdowns();
+                };
+
+                const queueAccountClose = () => {
+                    if (accountCloseTimer) {
+                        window.clearTimeout(accountCloseTimer);
+                    }
+
+                    accountCloseTimer = window.setTimeout(() => closeAccountDropdowns(), 220);
+                };
+
+                const cancelAccountClose = () => {
+                    if (accountCloseTimer) {
+                        window.clearTimeout(accountCloseTimer);
+                        accountCloseTimer = null;
+                    }
+                };
+
+                const openCategoryMenu = () => {
+                    if (!categoryMenu || !categoryTrigger) {
+                        return;
+                    }
+
+                    if (categoryCloseTimer) {
+                        window.clearTimeout(categoryCloseTimer);
+                        categoryCloseTimer = null;
+                    }
+
+                    closeLanguageDropdowns();
+                    closeAccountDropdowns();
+                    categoryMenu.classList.remove('hidden');
+                    categoryTrigger.setAttribute('aria-expanded', 'true');
+                    categoryIcon?.classList.add('rotate-180');
+                };
+
+                const queueCategoryClose = () => {
+                    if (!desktopQuery.matches) {
+                        return;
+                    }
+
+                    if (categoryCloseTimer) {
+                        window.clearTimeout(categoryCloseTimer);
+                    }
+
+                    categoryCloseTimer = window.setTimeout(closeCategoryMenu, 180);
+                };
+
+                languageDropdowns.forEach((root) => {
+                    const trigger = root.querySelector('[data-header-dropdown-trigger]');
+
+                    root.addEventListener('mouseenter', () => {
+                        cancelLanguageClose();
+                        openLanguageDropdown(root);
+                    });
+                    root.addEventListener('mouseleave', queueLanguageClose);
+
+                    trigger?.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        toggleLanguageDropdown(root);
+                    });
+
+                    const menu = root.querySelector('[data-header-dropdown-menu]');
+
+                    menu?.addEventListener('mouseenter', cancelLanguageClose);
+                    menu?.addEventListener('mouseleave', queueLanguageClose);
+                    menu?.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                    });
+                });
+
+                accountDropdowns.forEach((root) => {
+                    const trigger = root.querySelector('[data-header-account-trigger]');
+                    const menu = root.querySelector('[data-header-account-menu]');
+
+                    root.addEventListener('mouseenter', () => {
+                        cancelAccountClose();
+                        openAccountDropdown(root);
+                    });
+                    root.addEventListener('mouseleave', queueAccountClose);
+
+                    trigger?.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+                        toggleAccountDropdown(root);
+                    });
+
+                    menu?.addEventListener('mouseenter', cancelAccountClose);
+                    menu?.addEventListener('mouseleave', queueAccountClose);
+                    menu?.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                    });
+                });
+
+                if (categoryTrigger && categoryMenu) {
+                    const categoryRoot = categoryMenu.parentElement;
+
+                    categoryRoot?.addEventListener('mouseenter', () => {
+                        if (categoryCloseTimer) {
+                            window.clearTimeout(categoryCloseTimer);
+                            categoryCloseTimer = null;
+                        }
+                    });
+                    categoryRoot?.addEventListener('mouseleave', queueCategoryClose);
+                    categoryTrigger.addEventListener('mouseenter', () => {
+                        if (desktopQuery.matches) {
+                            openCategoryMenu();
+                        }
+                    });
+                    categoryTrigger.addEventListener('click', (event) => {
+                        event.preventDefault();
+                        event.stopPropagation();
+
+                        if (categoryMenu.classList.contains('hidden')) {
+                            openCategoryMenu();
+                        } else {
+                            closeCategoryMenu();
+                        }
+                    });
+                    categoryMenu.addEventListener('click', (event) => {
+                        event.stopPropagation();
+                    });
+                }
+
+                document.addEventListener('click', () => {
+                    closeLanguageDropdowns();
+                    closeAccountDropdowns();
+                    closeCategoryMenu();
+                });
+                document.addEventListener('keydown', (event) => {
+                    if (event.key === 'Escape') {
+                        closeLanguageDropdowns();
+                        closeAccountDropdowns();
+                        closeCategoryMenu();
+                    }
+                });
             })();
         </script>
         @stack('scripts')

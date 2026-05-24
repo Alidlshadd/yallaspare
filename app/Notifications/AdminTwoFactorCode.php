@@ -2,20 +2,15 @@
 
 namespace App\Notifications;
 
-use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class AdminTwoFactorCode extends Notification implements ShouldQueue
+class AdminTwoFactorCode extends Notification
 {
-    use Queueable;
-
     public function __construct(
         private readonly string $code,
         private readonly int $ttlMinutes
     ) {
-        $this->onQueue('mail');
     }
 
     public function via(object $notifiable): array

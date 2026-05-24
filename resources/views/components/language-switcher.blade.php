@@ -21,36 +21,26 @@
 
 <div
     {{ $attributes->merge(['class' => 'relative inline-flex']) }}
-    x-data="{ languageOpen: false }"
-    @mouseenter="languageOpen = true"
-    @mouseleave="languageOpen = false"
-    @click.outside="languageOpen = false"
+    data-header-dropdown
 >
     <button
         type="button"
         class="inline-flex h-8 items-center gap-1.5 rounded-lg px-2 text-xs font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 sm:h-9 sm:gap-2 sm:rounded-xl sm:px-3 sm:text-sm {{ $triggerClasses }}"
-        @click="languageOpen = !languageOpen"
-        :aria-expanded="languageOpen.toString()"
+        data-header-dropdown-trigger
+        aria-expanded="false"
         aria-haspopup="menu"
         aria-label="{{ __('Language') }}"
     >
         <span class="hidden min-[380px]:inline">{{ __($currentLabel) }}</span>
         <span class="text-xs uppercase opacity-70">{{ $currentLocale }}</span>
-        <svg class="h-4 w-4 opacity-70 transition-transform" :class="languageOpen ? 'rotate-180' : ''" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+        <svg class="h-4 w-4 opacity-70 transition-transform" data-header-dropdown-icon viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.126l3.71-3.895a.75.75 0 1 1 1.08 1.04l-4.25 4.46a.75.75 0 0 1-1.08 0l-4.25-4.46a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd" />
         </svg>
     </button>
 
     <div
-        x-cloak
-        x-show="languageOpen"
-        x-transition:enter="transition ease-out duration-150"
-        x-transition:enter-start="opacity-0 -translate-y-1"
-        x-transition:enter-end="opacity-100 translate-y-0"
-        x-transition:leave="transition ease-in duration-100"
-        x-transition:leave-start="opacity-100 translate-y-0"
-        x-transition:leave-end="opacity-0 -translate-y-1"
-        class="absolute right-0 top-full z-50 mt-2 w-44 rounded-2xl p-2 {{ $menuClasses }}"
+        data-header-dropdown-menu
+        class="absolute right-0 top-full z-50 mt-2 hidden w-44 rounded-2xl p-2 {{ $menuClasses }}"
         role="menu"
         aria-label="{{ __('Language') }}"
     >

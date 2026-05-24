@@ -27,12 +27,15 @@ class SqlSafe
 
     public static function whereLike(EloquentBuilder|QueryBuilder $query, string $column, mixed $value, string $boolean = 'and'): void
     {
-        $grammar = DB::connection()->getQueryGrammar();
+        $connection = $query instanceof EloquentBuilder
+            ? $query->getQuery()->getConnection()
+            : $query->getConnection();
+        $grammar = $connection->getQueryGrammar();
         $wrappedColumn = $grammar->wrap($column);
 
         $query->whereRaw(
-            $wrappedColumn . " LIKE ? ESCAPE '\\'",
-            [self::containsPattern($value)],
+            $wrappedColumn . ' LIKE ? ESCAPE ?',
+            [self::containsPattern($value), '\\'],
             $boolean
         );
     }

@@ -46,6 +46,39 @@ return [
             'local_domain' => env('MAIL_EHLO_DOMAIN'),
         ],
 
+        'gmail' => [
+            'transport' => 'smtp',
+            'host' => env('MAIL_GMAIL_HOST', 'smtp.gmail.com'),
+            'port' => env('MAIL_GMAIL_PORT', 587),
+            'encryption' => env('MAIL_GMAIL_ENCRYPTION', 'tls'),
+            'username' => env('MAIL_GMAIL_USERNAME', env('MAIL_USERNAME')),
+            'password' => env('MAIL_GMAIL_PASSWORD', env('MAIL_PASSWORD')),
+            'timeout' => env('MAIL_TIMEOUT', 15),
+            'local_domain' => env('MAIL_EHLO_DOMAIN'),
+        ],
+
+        'hostinger' => [
+            'transport' => 'smtp',
+            'host' => env('MAIL_HOSTINGER_HOST', 'smtp.hostinger.com'),
+            'port' => env('MAIL_HOSTINGER_PORT', 465),
+            'encryption' => env('MAIL_HOSTINGER_ENCRYPTION', 'ssl'),
+            'username' => env('MAIL_HOSTINGER_USERNAME', env('MAIL_USERNAME')),
+            'password' => env('MAIL_HOSTINGER_PASSWORD', env('MAIL_PASSWORD')),
+            'timeout' => env('MAIL_TIMEOUT', 15),
+            'local_domain' => env('MAIL_EHLO_DOMAIN'),
+        ],
+
+        'mailtrap' => [
+            'transport' => 'smtp',
+            'host' => env('MAILTRAP_HOST', 'sandbox.smtp.mailtrap.io'),
+            'port' => env('MAILTRAP_PORT', 2525),
+            'encryption' => env('MAILTRAP_ENCRYPTION', 'tls'),
+            'username' => env('MAILTRAP_USERNAME'),
+            'password' => env('MAILTRAP_PASSWORD'),
+            'timeout' => env('MAIL_TIMEOUT', 15),
+            'local_domain' => env('MAIL_EHLO_DOMAIN'),
+        ],
+
         'ses' => [
             'transport' => 'ses',
         ],
@@ -81,10 +114,10 @@ return [
 
         'failover' => [
             'transport' => 'failover',
-            'mailers' => [
-                'smtp',
-                'log',
-            ],
+            'mailers' => array_values(array_filter(array_map(
+                'trim',
+                explode(',', (string) env('MAIL_FAILOVER_MAILERS', 'smtp,log'))
+            ))),
         ],
 
         'roundrobin' => [

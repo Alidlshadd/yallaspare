@@ -18,7 +18,7 @@
 
     <div class="space-y-6 sm:space-y-8 lg:space-y-10">
         <section class="mx-auto w-full overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-950 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:shadow-black/10 sm:rounded-3xl">
-            <div class="relative min-h-[210px] overflow-hidden sm:min-h-[280px] lg:min-h-[360px]">
+            <div class="relative h-[170px] overflow-hidden sm:h-[210px] lg:h-[250px]">
                 @if ($heroVideoUrl)
                     <video
                         class="h-full w-full object-cover"

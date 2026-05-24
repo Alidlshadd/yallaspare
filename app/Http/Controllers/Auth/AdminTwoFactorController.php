@@ -7,8 +7,10 @@ use App\Notifications\AdminTwoFactorCode;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\View\View;
+use Throwable;
 
 class AdminTwoFactorController extends Controller
 {
@@ -24,9 +26,12 @@ class AdminTwoFactorController extends Controller
             return redirect()->intended('/admin/dashboard');
         }
 
-        $this->ensureChallenge($request);
+        $mailAvailable = $this->ensureChallenge($request);
 
-        return view('auth.admin-two-factor');
+        return view('auth.admin-two-factor', [
+            'mailAvailable' => $mailAvailable,
+            'resendCooldownSeconds' => $this->resendCooldownSeconds($request),
+        ]);
     }
 
     public function verify(Request $request): RedirectResponse
@@ -71,13 +76,28 @@ class AdminTwoFactorController extends Controller
             abort(403);
         }
 
-        $this->issueChallenge($request);
+        if ($this->resendCooldownSeconds($request) > 0) {
+            return back()->withErrors([
+                'code' => __('Please wait a moment before requesting another verification code.'),
+            ]);
+        }
+
+        if (! $this->issueChallenge($request)) {
+            return back()->withErrors([
+                'code' => __('We could not send a new verification code. Please contact support or try again shortly.'),
+            ]);
+        }
 
         return back()->with('status', __('A new verification code has been sent.'));
     }
 
-    public function issueChallenge(Request $request): void
+    public function issueChallenge(Request $request): bool
     {
+        $user = $request->user();
+        if (! $user) {
+            return false;
+        }
+
         $code = (string) random_int(100000, 999999);
         $ttl = max((int) config('security.admin_two_factor.code_ttl_minutes', 10), 1);
 
@@ -87,15 +107,52 @@ class AdminTwoFactorController extends Controller
         ]);
         $request->session()->forget('admin_2fa.verified_user_id');
 
-        $request->user()->notify(new AdminTwoFactorCode($code, $ttl));
+        try {
+            $user->notify(new AdminTwoFactorCode($code, $ttl));
+            $request->session()->put('admin_2fa.last_sent_at', now()->timestamp);
+
+            return true;
+        } catch (Throwable $e) {
+            $request->session()->forget('admin_2fa.challenge');
+            $mailer = (string) config('mail.default');
+            $mailerConfig = (array) config("mail.mailers.{$mailer}", []);
+
+            Log::error('Admin two-factor code email failed', [
+                'user_id' => $user->id,
+                'email_hash' => hash('sha256', strtolower((string) $user->email)),
+                'mailer' => $mailer,
+                'transport' => (string) ($mailerConfig['transport'] ?? $mailer),
+                'host' => (string) ($mailerConfig['host'] ?? ''),
+                'port' => (int) ($mailerConfig['port'] ?? 0),
+                'encryption' => (string) ($mailerConfig['encryption'] ?? ''),
+                'from' => (string) config('mail.from.address'),
+                'exception' => $e::class,
+                'message' => $e->getMessage(),
+            ]);
+
+            return false;
+        }
     }
 
-    private function ensureChallenge(Request $request): void
+    private function ensureChallenge(Request $request): bool
     {
         $challenge = $request->session()->get('admin_2fa.challenge');
 
         if (! is_array($challenge) || (int) ($challenge['expires_at'] ?? 0) < now()->timestamp) {
-            $this->issueChallenge($request);
+            return $this->issueChallenge($request);
         }
+
+        return true;
+    }
+
+    private function resendCooldownSeconds(Request $request): int
+    {
+        $lastSentAt = (int) $request->session()->get('admin_2fa.last_sent_at', 0);
+
+        if ($lastSentAt < 1) {
+            return 0;
+        }
+
+        return max(0, 60 - (now()->timestamp - $lastSentAt));
     }
 }

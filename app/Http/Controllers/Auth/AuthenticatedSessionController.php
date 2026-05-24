@@ -45,9 +45,17 @@ class AuthenticatedSessionController extends Controller
 
         if ($user && $user->isAdminPanelUser()) {
             if (config('security.admin_two_factor.enabled')) {
-                app(AdminTwoFactorController::class)->issueChallenge($request);
+                $mailAvailable = app(AdminTwoFactorController::class)->issueChallenge($request);
 
-                return redirect()->route('admin.two-factor.challenge');
+                $redirect = redirect()->route('admin.two-factor.challenge');
+
+                if (! $mailAvailable) {
+                    return $redirect->withErrors([
+                        'code' => 'We could not send your admin verification code. Please contact support or try again shortly.',
+                    ]);
+                }
+
+                return $redirect;
             }
 
             return redirect()->intended('/admin/dashboard');
