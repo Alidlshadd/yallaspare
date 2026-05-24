@@ -513,6 +513,9 @@ class SettingController extends Controller
      */
     private function heroVideoUploadContext(Request $request, ?UploadedFile $uploadedVideo): array
     {
+        $realPath = $uploadedVideo?->getRealPath();
+        $readablePath = is_string($realPath) && $realPath !== '' && is_readable($realPath);
+
         return [
             'admin_id' => optional($request->user())->getAuthIdentifier(),
             'content_length' => (int) $request->server('CONTENT_LENGTH', 0),
@@ -521,14 +524,28 @@ class SettingController extends Controller
             'php_max_execution_time' => ini_get('max_execution_time'),
             'php_max_input_time' => ini_get('max_input_time'),
             'php_memory_limit' => ini_get('memory_limit'),
-            'original_name' => $uploadedVideo?->getClientOriginalName(),
-            'client_mime' => $uploadedVideo?->getClientMimeType(),
-            'detected_mime' => $uploadedVideo?->getMimeType(),
-            'extension' => $uploadedVideo?->getClientOriginalExtension(),
-            'size' => $uploadedVideo?->getSize(),
-            'upload_error' => $uploadedVideo?->getError(),
-            'upload_error_message' => $uploadedVideo?->getErrorMessage(),
+            'upload_tmp_path_readable' => $readablePath,
+            'original_name' => $this->uploadedFileValue($uploadedVideo, 'getClientOriginalName'),
+            'client_mime' => $this->uploadedFileValue($uploadedVideo, 'getClientMimeType'),
+            'detected_mime' => $readablePath ? $this->uploadedFileValue($uploadedVideo, 'getMimeType') : null,
+            'extension' => $this->uploadedFileValue($uploadedVideo, 'getClientOriginalExtension'),
+            'size' => $this->uploadedFileValue($uploadedVideo, 'getSize'),
+            'upload_error' => $this->uploadedFileValue($uploadedVideo, 'getError'),
+            'upload_error_message' => $this->uploadedFileValue($uploadedVideo, 'getErrorMessage'),
         ];
+    }
+
+    private function uploadedFileValue(?UploadedFile $uploadedVideo, string $method): mixed
+    {
+        if ($uploadedVideo === null || ! method_exists($uploadedVideo, $method)) {
+            return null;
+        }
+
+        try {
+            return $uploadedVideo->{$method}();
+        } catch (Throwable $e) {
+            return null;
+        }
     }
 
     private function deleteManagedHeroMedia(string $path): void
