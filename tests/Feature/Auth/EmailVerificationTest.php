@@ -24,6 +24,9 @@ class EmailVerificationTest extends TestCase
         $response = $this->actingAs($user)->get('/verify-email');
 
         $response->assertStatus(200);
+        $response->assertSee('Verify Email');
+        $response->assertSee('Resend Verification Email');
+        $response->assertSee($user->email);
     }
 
     public function test_unverified_users_cannot_access_verified_customer_routes(): void
