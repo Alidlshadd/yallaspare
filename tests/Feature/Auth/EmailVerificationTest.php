@@ -22,6 +22,7 @@ class EmailVerificationTest extends TestCase
     public function test_email_verification_screen_can_be_rendered(): void
     {
         $user = User::factory()->create([
+            'email' => 'customer@gmail.com',
             'email_verified_at' => null,
         ]);
 
@@ -30,7 +31,42 @@ class EmailVerificationTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('Verify Email');
         $response->assertSee('Resend Verification Email');
+        $response->assertSee('Open Gmail');
         $response->assertSee($user->email);
+        $response->assertDontSee('Verification Required');
+        $response->assertSee('data-resend-button', false);
+        $response->assertSee('data-cooldown-text', false);
+        $response->assertSee('data-cooldown-seconds="60"', false);
+    }
+
+    public function test_verification_screen_hides_gmail_button_for_other_email_domains(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'customer@example.com',
+            'email_verified_at' => null,
+        ]);
+
+        $response = $this->actingAs($user)->get('/verify-email');
+
+        $response->assertStatus(200);
+        $response->assertDontSee('Open Gmail');
+    }
+
+    public function test_verification_screen_shows_resend_success_state(): void
+    {
+        $user = User::factory()->create([
+            'email_verified_at' => null,
+        ]);
+
+        $response = $this->actingAs($user)
+            ->withSession(['status' => 'verification-link-sent'])
+            ->get('/verify-email');
+
+        $response->assertStatus(200);
+        $response->assertSee('A fresh verification email has been sent.');
+        $response->assertSee('data-verify-toast', false);
+        $response->assertSee('data-resend-sent="1"', false);
+        $response->assertSee('You can resend another email in :seconds seconds.');
     }
 
     public function test_resend_verification_email_sends_immediate_notification(): void
