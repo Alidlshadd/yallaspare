@@ -27,32 +27,6 @@
             .scrollbar-hide::-webkit-scrollbar {
                 display: none;
             }
-            @media (min-width: 1024px) {
-                .admin-sidebar-collapsed [data-admin-sidebar-logo] {
-                    display: none;
-                }
-                .admin-sidebar-collapsed [data-admin-sidebar-logo-text],
-                .admin-sidebar-collapsed [data-admin-sidebar-meta],
-                .admin-sidebar-collapsed [data-admin-sidebar-profile-details],
-                .admin-sidebar-collapsed [data-admin-sidebar] nav a > span:not(:first-child) {
-                    display: none;
-                }
-                .admin-sidebar-collapsed [data-admin-sidebar] nav {
-                    padding-left: 0.75rem;
-                    padding-right: 0.75rem;
-                }
-                .admin-sidebar-collapsed [data-admin-sidebar] nav a,
-                .admin-sidebar-collapsed [data-admin-sidebar-profile-link] {
-                    justify-content: center;
-                    padding-left: 0.75rem;
-                    padding-right: 0.75rem;
-                }
-                .admin-sidebar-collapsed [data-admin-sidebar-header] {
-                    justify-content: center;
-                    padding-left: 0.75rem;
-                    padding-right: 0.75rem;
-                }
-            }
         </style>
 
         @if(request()->routeIs('admin.*'))
@@ -76,6 +50,10 @@
                         }
 
                         document.documentElement.classList.toggle('dark', selectedTheme === 'dark');
+
+                        if (localStorage.getItem('admin-sidebar-collapsed') === '1') {
+                            document.documentElement.classList.add('admin-sidebar-precollapsed');
+                        }
                     } catch (error) {
                         document.documentElement.classList.remove('dark');
                     }
@@ -94,37 +72,35 @@
                     : null;
             @endphp
             <div
-                x-data="{
-                    sidebarOpen: false,
-                    sidebarCollapsed: localStorage.getItem('admin-sidebar-collapsed') === '1',
-                    toggleSidebarCollapsed() {
-                        this.sidebarCollapsed = !this.sidebarCollapsed;
-                        try {
-                            localStorage.setItem('admin-sidebar-collapsed', this.sidebarCollapsed ? '1' : '0');
-                        } catch (error) {}
-                    }
-                }"
+                x-data="adminSidebarShell({ storageKey: 'admin-sidebar-collapsed' })"
+                x-init="init()"
+                @keydown.escape.window="closeMobileSidebar()"
                 class="min-h-screen admin-shell"
                 :class="{ 'admin-sidebar-collapsed': sidebarCollapsed }"
+                data-admin-shell
             >
                 <!-- Mobile Overlay -->
                 <div
+                    x-cloak
                     x-show="sidebarOpen"
-                    class="fixed inset-0 z-30 bg-slate-900/50 lg:hidden"
-                    @click="sidebarOpen = false"
+                    class="admin-sidebar-backdrop fixed inset-0 z-30 bg-slate-950/55 lg:hidden"
+                    @click="closeMobileSidebar()"
                     x-transition.opacity
+                    aria-hidden="true"
                 ></div>
 
                 <!-- Sidebar -->
                 <aside
                     id="admin-sidebar"
                     data-admin-sidebar
-                    class="fixed inset-y-0 {{ $isRtl ? 'right-0' : 'left-0' }} z-40 w-64 bg-slate-900 text-slate-100 transform transition-all duration-200 lg:translate-x-0 dark:bg-slate-900 h-screen overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-hide"
-                    :class="[sidebarOpen ? 'translate-x-0' : '{{ $isRtl ? 'translate-x-full' : '-translate-x-full' }}', sidebarCollapsed ? 'lg:w-20' : 'lg:w-64']"
+                    class="admin-sidebar fixed inset-y-0 {{ $isRtl ? 'right-0' : 'left-0' }} z-40 bg-slate-900 text-slate-100 dark:bg-slate-900 h-screen overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-hide"
+                    :class="{ 'admin-sidebar-open': sidebarOpen }"
+                    @click="handleSidebarClick($event)"
+                    aria-label="{{ __('Admin navigation') }}"
                 >
-                    <div class="header-logo-area border-b border-white/10 px-3" data-admin-sidebar-header>
-                        <a href="{{ route('admin.dashboard') }}" class="app-logo app-logo-dark min-w-0 flex-1 justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-white/25" data-admin-sidebar-logo>
-                            <span class="inline-flex items-center gap-3 min-w-0">
+                    <div class="admin-sidebar-header" data-admin-sidebar-header>
+                        <a href="{{ route('admin.dashboard') }}" class="admin-sidebar-logo focus:outline-none" data-admin-sidebar-logo aria-label="{{ __('Go to admin dashboard') }}">
+                            <span class="inline-flex min-w-0 items-center gap-3">
                                 <x-brand-mark
                                     :logo-url="$systemSettings['site_logo_url'] ?? null"
                                     :brand="$systemSettings['site_name'] ?? 'YallaSpare'"
@@ -133,24 +109,36 @@
                                     fallback-class="inline-flex h-full w-full items-center justify-center rounded-lg bg-slate-800"
                                     fallback-text-class="text-sm font-semibold text-white"
                                 />
-                                <span class="app-logo-text truncate" data-admin-sidebar-logo-text>{{ $systemSettings['site_name'] ?? 'YallaSpare' }}</span>
+                                <span class="admin-sidebar-brand-copy app-logo-text truncate" data-admin-sidebar-logo-text>{{ $systemSettings['site_name'] ?? 'YallaSpare' }}</span>
                             </span>
-                            <span class="text-[11px] uppercase tracking-widest text-slate-400" data-admin-sidebar-meta>{{ __('Admin') }}</span>
+                            <span class="admin-sidebar-meta text-[11px] uppercase tracking-widest text-slate-400" data-admin-sidebar-meta>{{ __('Admin') }}</span>
                         </a>
                         <button
                             type="button"
-                            class="hidden h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-slate-100 transition hover:bg-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/25 lg:inline-flex"
+                            class="admin-sidebar-toggle hidden h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-slate-100 transition hover:bg-white/15 lg:inline-flex"
                             @click="toggleSidebarCollapsed()"
                             :aria-expanded="(!sidebarCollapsed).toString()"
+                            :aria-label="sidebarCollapsed ? $el.dataset.expandLabel : $el.dataset.collapseLabel"
+                            :title="sidebarCollapsed ? $el.dataset.expandLabel : $el.dataset.collapseLabel"
                             aria-controls="admin-sidebar"
-                            aria-label="{{ __('Toggle sidebar') }}"
-                            title="{{ __('Toggle sidebar') }}"
+                            data-expand-label="{{ __('Expand sidebar') }}"
+                            data-collapse-label="{{ __('Collapse sidebar') }}"
                             data-admin-sidebar-toggle
                         >
                             <i class="fas text-sm" :class="sidebarCollapsed ? '{{ $isRtl ? 'fa-angles-left' : 'fa-angles-right' }}' : '{{ $isRtl ? 'fa-angles-right' : 'fa-angles-left' }}'"></i>
                         </button>
+                        <button
+                            type="button"
+                            class="admin-sidebar-toggle inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-slate-100 transition hover:bg-white/15 lg:hidden"
+                            @click="closeMobileSidebar()"
+                            aria-controls="admin-sidebar"
+                            aria-label="{{ __('Close sidebar') }}"
+                            title="{{ __('Close sidebar') }}"
+                        >
+                            <i class="fas fa-xmark text-sm"></i>
+                        </button>
                     </div>
-                    <a href="{{ route('admin.profile.edit') }}" class="px-4 py-4 border-b border-white/10 flex items-center gap-3 transition hover:bg-slate-800/60" data-admin-sidebar-profile-link>
+                    <a href="{{ route('admin.profile.edit') }}" class="admin-profile-link text-slate-100" data-admin-sidebar-profile-link data-admin-sidebar-tooltip="{{ __('Profile') }}">
                         @if ($adminProfilePhotoUrl)
                             <img src="{{ $adminProfilePhotoUrl }}" alt="{{ $adminUser->name }} profile photo" class="h-10 w-10 shrink-0 rounded-full border border-white/20 object-cover">
                         @else
@@ -158,171 +146,201 @@
                                 {{ $adminAvatarInitial }}
                             </div>
                         @endif
-                        <div class="min-w-0" data-admin-sidebar-profile-details>
+                        <div class="admin-profile-details min-w-0" data-admin-sidebar-profile-details>
                             <p class="truncate text-sm font-semibold text-slate-100">{{ $adminUser->name }}</p>
                             <p class="text-xs text-slate-400">{{ __('Profile') }}</p>
                         </div>
                     </a>
 
-                    <nav class="px-4 py-6 space-y-2">
+                    <nav class="admin-nav space-y-1.5" aria-label="{{ __('Admin sections') }}">
                         @php
                             $navItem = function (bool $active) {
                                 return $active
-                                    ? 'bg-slate-800 text-white'
-                                    : 'text-slate-300 hover:text-white hover:bg-slate-800/60';
+                                    ? 'is-active text-white'
+                                    : 'text-slate-300';
                             };
                         @endphp
                         <a
                             href="{{ route('admin.dashboard') }}"
-                            class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.dashboard')) }}"
+                            class="admin-nav-link {{ $navItem(request()->routeIs('admin.dashboard')) }}"
+                            data-admin-sidebar-tooltip="{{ __('Dashboard') }}"
+                            @if(request()->routeIs('admin.dashboard')) aria-current="page" @endif
                         >
-                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                            <span class="admin-nav-icon" aria-hidden="true">
                                 <i class="fas fa-chart-line"></i>
                             </span>
-                            <span>{{ __('Dashboard') }}</span>
+                            <span class="admin-nav-label">{{ __('Dashboard') }}</span>
                         </a>
                         @can(\App\Models\User::PERMISSION_FINANCE_VIEW)
                             <a
                                 href="{{ route('admin.revenue.index') }}"
-                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.revenue.*')) }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.revenue.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Revenue') }}"
+                                @if(request()->routeIs('admin.revenue.*')) aria-current="page" @endif
                             >
-                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                <span class="admin-nav-icon" aria-hidden="true">
                                     <i class="fas fa-sack-dollar"></i>
                                 </span>
-                                <span>{{ __('Revenue') }}</span>
+                                <span class="admin-nav-label">{{ __('Revenue') }}</span>
                             </a>
                         @endcan
                         @can(\App\Models\User::PERMISSION_PRODUCTS_MANAGE)
                             <a
                                 href="{{ route('admin.products.index') }}"
-                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.products.*')) }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.products.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Products') }}"
+                                @if(request()->routeIs('admin.products.*')) aria-current="page" @endif
                             >
-                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                <span class="admin-nav-icon" aria-hidden="true">
                                     <i class="fas fa-box"></i>
                                 </span>
-                                <span>{{ __('Products') }}</span>
+                                <span class="admin-nav-label">{{ __('Products') }}</span>
                             </a>
                             <a
                                 href="{{ route('admin.categories.index') }}"
-                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.categories.*')) }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.categories.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Categories') }}"
+                                @if(request()->routeIs('admin.categories.*')) aria-current="page" @endif
                             >
-                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                <span class="admin-nav-icon" aria-hidden="true">
                                     <i class="fas fa-layer-group"></i>
                                 </span>
-                                <span>{{ __('Categories') }}</span>
+                                <span class="admin-nav-label">{{ __('Categories') }}</span>
                             </a>
                             <a
                                 href="{{ route('admin.vehicle-fitments.index') }}"
-                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.vehicle-fitments.*')) }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.vehicle-fitments.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Vehicle Finder') }}"
+                                @if(request()->routeIs('admin.vehicle-fitments.*')) aria-current="page" @endif
                             >
-                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                <span class="admin-nav-icon" aria-hidden="true">
                                     <i class="fas fa-car-side"></i>
                                 </span>
-                                <span>{{ __('Vehicle Finder') }}</span>
+                                <span class="admin-nav-label">{{ __('Vehicle Finder') }}</span>
                             </a>
                             <a
                                 href="{{ route('admin.reviews.index') }}"
-                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.reviews.*')) }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.reviews.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Customer Reviews') }}"
+                                @if(request()->routeIs('admin.reviews.*')) aria-current="page" @endif
                             >
-                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                <span class="admin-nav-icon" aria-hidden="true">
                                     <i class="fas fa-star"></i>
                                 </span>
-                                <span>{{ __('Customer Reviews') }}</span>
+                                <span class="admin-nav-label">{{ __('Customer Reviews') }}</span>
                             </a>
                         @endcan
                         @can(\App\Models\User::PERMISSION_STOCK_MANAGE)
                             <a
                                 href="{{ route('admin.inventory.index') }}"
-                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.inventory.*')) }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.inventory.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Inventory') }}"
+                                @if(request()->routeIs('admin.inventory.*')) aria-current="page" @endif
                             >
-                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                <span class="admin-nav-icon" aria-hidden="true">
                                     <i class="fas fa-warehouse"></i>
                                 </span>
-                                <span>{{ __('Inventory') }}</span>
+                                <span class="admin-nav-label">{{ __('Inventory') }}</span>
                             </a>
                         @endcan
                         @can(\App\Models\User::PERMISSION_ORDERS_MANAGE)
                             <a
                                 href="{{ route('admin.orders.index') }}"
-                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.orders.*')) }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.orders.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Orders Management') }}"
+                                @if(request()->routeIs('admin.orders.*')) aria-current="page" @endif
                             >
-                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                <span class="admin-nav-icon" aria-hidden="true">
                                     <i class="fas fa-receipt"></i>
                                 </span>
-                                <span>{{ __('Orders Management') }}</span>
+                                <span class="admin-nav-label">{{ __('Orders Management') }}</span>
                             </a>
                             <a
                                 href="{{ route('admin.returns.index') }}"
-                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.returns.*')) }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.returns.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Returns & Refunds') }}"
+                                @if(request()->routeIs('admin.returns.*')) aria-current="page" @endif
                             >
-                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                <span class="admin-nav-icon" aria-hidden="true">
                                     <i class="fas fa-rotate-left"></i>
                                 </span>
-                                <span>{{ __('Returns & Refunds') }}</span>
+                                <span class="admin-nav-label">{{ __('Returns & Refunds') }}</span>
                             </a>
                         @endcan
                         @can('manage-dealers')
                             <a
                                 href="{{ route('admin.dealers.index') }}"
-                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.dealers.*')) }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.dealers.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Dealers') }}"
+                                @if(request()->routeIs('admin.dealers.*')) aria-current="page" @endif
                             >
-                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                <span class="admin-nav-icon" aria-hidden="true">
                                     <i class="fas fa-handshake"></i>
                                 </span>
-                                <span>{{ __('Dealers') }}</span>
+                                <span class="admin-nav-label">{{ __('Dealers') }}</span>
                             </a>
                         @endcan
                         @can('viewAny', \App\Models\User::class)
                             <a
                                 href="{{ route('admin.users.index') }}"
-                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.users.*')) }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.users.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Users') }}"
+                                @if(request()->routeIs('admin.users.*')) aria-current="page" @endif
                             >
-                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                <span class="admin-nav-icon" aria-hidden="true">
                                     <i class="fas fa-users"></i>
                                 </span>
-                                <span>{{ __('Users') }}</span>
+                                <span class="admin-nav-label">{{ __('Users') }}</span>
                             </a>
                         @endcan
                         @can(\App\Models\User::PERMISSION_FINANCE_MANAGE)
                             <a
                                 href="{{ route('admin.discounts.edit') }}"
-                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.discounts.edit') || request()->routeIs('admin.discounts.coupons.*')) }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.discounts.edit') || request()->routeIs('admin.discounts.coupons.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Coupon Management') }}"
+                                @if(request()->routeIs('admin.discounts.edit') || request()->routeIs('admin.discounts.coupons.*')) aria-current="page" @endif
                             >
-                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                <span class="admin-nav-icon" aria-hidden="true">
                                     <i class="fas fa-tags"></i>
                                 </span>
-                                <span>{{ __('Coupon Management') }}</span>
+                                <span class="admin-nav-label">{{ __('Coupon Management') }}</span>
                             </a>
                             <a
                                 href="{{ route('admin.discounts.rules') }}"
-                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.discounts.rules')) }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.discounts.rules')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Discount Rules') }}"
+                                @if(request()->routeIs('admin.discounts.rules')) aria-current="page" @endif
                             >
-                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                <span class="admin-nav-icon" aria-hidden="true">
                                     <i class="fas fa-percent"></i>
                                 </span>
-                                <span>{{ __('Discount Rules') }}</span>
+                                <span class="admin-nav-label">{{ __('Discount Rules') }}</span>
                             </a>
                         @endcan
                         @can(\App\Models\User::PERMISSION_SETTINGS_MANAGE)
                             <a
                                 href="{{ route('admin.settings.edit') }}"
-                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.settings.*')) }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.settings.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Settings') }}"
+                                @if(request()->routeIs('admin.settings.*')) aria-current="page" @endif
                             >
-                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                <span class="admin-nav-icon" aria-hidden="true">
                                     <i class="fas fa-gear"></i>
                                 </span>
-                                <span>{{ __('Settings') }}</span>
+                                <span class="admin-nav-label">{{ __('Settings') }}</span>
                             </a>
                         @endcan
                         @can(\App\Models\User::PERMISSION_ACTIVITY_LOGS_VIEW)
                             <a
                                 href="{{ route('admin.activity-logs.index') }}"
-                                class="flex items-center gap-3 px-4 py-3 rounded-lg transition {{ $navItem(request()->routeIs('admin.activity-logs.*')) }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.activity-logs.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Activity Logs') }}"
+                                @if(request()->routeIs('admin.activity-logs.*')) aria-current="page" @endif
                             >
-                                <span class="inline-flex h-8 w-8 items-center justify-center rounded-md bg-slate-800/80">
+                                <span class="admin-nav-icon" aria-hidden="true">
                                     <i class="fas fa-clipboard-list"></i>
                                 </span>
-                                <span>{{ __('Activity Logs') }}</span>
+                                <span class="admin-nav-label">{{ __('Activity Logs') }}</span>
                             </a>
                         @endcan
                     </nav>
@@ -330,15 +348,21 @@
 
                 <!-- Main Content -->
                 <div
-                    class="min-h-screen flex flex-col transition-[padding] duration-200"
-                    :class="sidebarCollapsed ? '{{ $isRtl ? 'lg:pr-20' : 'lg:pl-20' }}' : '{{ $isRtl ? 'lg:pr-64' : 'lg:pl-64' }}'"
+                    class="admin-main min-h-screen flex flex-col"
+                    data-admin-main
                 >
                     <header class="sticky top-0 z-20 bg-white/90 backdrop-blur border-b border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
                         <div class="flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16">
                             <div class="flex items-center gap-3">
                                 <button
-                                    class="lg:hidden inline-flex items-center justify-center h-10 w-10 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
-                                    @click="sidebarOpen = true"
+                                    type="button"
+                                    class="admin-mobile-sidebar-toggle lg:hidden inline-flex items-center justify-center h-10 w-10 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                                    @click="openMobileSidebar()"
+                                    :aria-expanded="sidebarOpen.toString()"
+                                    aria-controls="admin-sidebar"
+                                    aria-label="{{ __('Open sidebar') }}"
+                                    title="{{ __('Open sidebar') }}"
+                                    data-admin-mobile-sidebar-toggle
                                 >
                                     <i class="fas fa-bars"></i>
                                 </button>

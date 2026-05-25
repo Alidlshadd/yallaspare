@@ -28,8 +28,13 @@ class AdminDashboardTest extends TestCase
         $response->assertOk();
         $response->assertSee('admin-sidebar-collapsed', false);
         $response->assertSee('admin-sidebar', false);
+        $response->assertSee('admin-main', false);
+        $response->assertSee('admin-nav-link', false);
+        $response->assertSee('data-admin-sidebar-tooltip', false);
         $response->assertSee('data-admin-sidebar-toggle', false);
-        $response->assertSee('Toggle sidebar', false);
+        $response->assertSee('data-admin-mobile-sidebar-toggle', false);
+        $response->assertSee('Collapse sidebar', false);
+        $response->assertSee('Expand sidebar', false);
     }
 
     public function test_low_stock_notifications_use_sqlite_compatible_expressions(): void
@@ -69,5 +74,37 @@ class AdminDashboardTest extends TestCase
         Cache::flush();
 
         $this->assertSame(0, $service->getUnreadLowStockCount($admin->id));
+    }
+
+    public function test_core_admin_pages_render_the_sidebar_shell(): void
+    {
+        $admin = User::factory()->create([
+            'role' => User::ROLE_SUPER_ADMIN,
+            'email_verified_at' => now(),
+        ]);
+
+        $routes = [
+            'admin.dashboard',
+            'admin.products.index',
+            'admin.categories.index',
+            'admin.orders.index',
+            'admin.inventory.index',
+            'admin.reviews.index',
+            'admin.settings.edit',
+            'admin.vehicle-fitments.index',
+            'admin.returns.index',
+            'admin.activity-logs.index',
+        ];
+
+        foreach ($routes as $route) {
+            $response = $this->actingAs($admin)->get(route($route));
+
+            $response->assertOk();
+            $response->assertSee('data-admin-sidebar', false);
+            $response->assertSee('data-admin-main', false);
+            $response->assertSee('data-admin-sidebar-toggle', false);
+            $response->assertSee('data-admin-mobile-sidebar-toggle', false);
+            $response->assertSee('data-admin-sidebar-tooltip', false);
+        }
     }
 }
