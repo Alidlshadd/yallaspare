@@ -27,6 +27,30 @@
             .scrollbar-hide::-webkit-scrollbar {
                 display: none;
             }
+            @media (min-width: 1024px) {
+                .admin-sidebar-collapsed [data-admin-sidebar-logo] {
+                    justify-content: center;
+                }
+                .admin-sidebar-collapsed [data-admin-sidebar-logo] > span:first-child {
+                    justify-content: center;
+                }
+                .admin-sidebar-collapsed [data-admin-sidebar-logo-text],
+                .admin-sidebar-collapsed [data-admin-sidebar-meta],
+                .admin-sidebar-collapsed [data-admin-sidebar-profile-details],
+                .admin-sidebar-collapsed [data-admin-sidebar] nav a > span:not(:first-child) {
+                    display: none;
+                }
+                .admin-sidebar-collapsed [data-admin-sidebar] nav {
+                    padding-left: 0.75rem;
+                    padding-right: 0.75rem;
+                }
+                .admin-sidebar-collapsed [data-admin-sidebar] nav a,
+                .admin-sidebar-collapsed [data-admin-sidebar-profile-link] {
+                    justify-content: center;
+                    padding-left: 0.75rem;
+                    padding-right: 0.75rem;
+                }
+            }
         </style>
 
         @if(request()->routeIs('admin.*'))
@@ -67,7 +91,20 @@
                     ? asset('storage/' . ltrim((string) $adminUser->profile_photo_path, '/'))
                     : null;
             @endphp
-            <div x-data="{ sidebarOpen: false }" class="min-h-screen admin-shell">
+            <div
+                x-data="{
+                    sidebarOpen: false,
+                    sidebarCollapsed: localStorage.getItem('admin-sidebar-collapsed') === '1',
+                    toggleSidebarCollapsed() {
+                        this.sidebarCollapsed = !this.sidebarCollapsed;
+                        try {
+                            localStorage.setItem('admin-sidebar-collapsed', this.sidebarCollapsed ? '1' : '0');
+                        } catch (error) {}
+                    }
+                }"
+                class="min-h-screen admin-shell"
+                :class="{ 'admin-sidebar-collapsed': sidebarCollapsed }"
+            >
                 <!-- Mobile Overlay -->
                 <div
                     x-show="sidebarOpen"
@@ -78,11 +115,13 @@
 
                 <!-- Sidebar -->
                 <aside
-                    class="fixed inset-y-0 {{ $isRtl ? 'right-0' : 'left-0' }} z-40 w-64 bg-slate-900 text-slate-100 transform transition-transform duration-200 lg:translate-x-0 dark:bg-slate-900 h-screen overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-hide"
-                    :class="sidebarOpen ? 'translate-x-0' : '{{ $isRtl ? 'translate-x-full' : '-translate-x-full' }}'"
+                    id="admin-sidebar"
+                    data-admin-sidebar
+                    class="fixed inset-y-0 {{ $isRtl ? 'right-0' : 'left-0' }} z-40 w-64 bg-slate-900 text-slate-100 transform transition-all duration-200 lg:translate-x-0 dark:bg-slate-900 h-screen overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-hide"
+                    :class="[sidebarOpen ? 'translate-x-0' : '{{ $isRtl ? 'translate-x-full' : '-translate-x-full' }}', sidebarCollapsed ? 'lg:w-20' : 'lg:w-64']"
                 >
                     <div class="header-logo-area border-b border-white/10 px-4">
-                        <a href="{{ route('admin.dashboard') }}" class="app-logo app-logo-dark w-full justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-white/25">
+                        <a href="{{ route('admin.dashboard') }}" class="app-logo app-logo-dark w-full justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-white/25" data-admin-sidebar-logo>
                             <span class="inline-flex items-center gap-3 min-w-0">
                                 <x-brand-mark
                                     :logo-url="$systemSettings['site_logo_url'] ?? null"
@@ -92,12 +131,12 @@
                                     fallback-class="inline-flex h-full w-full items-center justify-center rounded-lg bg-slate-800"
                                     fallback-text-class="text-sm font-semibold text-white"
                                 />
-                                <span class="app-logo-text truncate">{{ $systemSettings['site_name'] ?? 'YallaSpare' }}</span>
+                                <span class="app-logo-text truncate" data-admin-sidebar-logo-text>{{ $systemSettings['site_name'] ?? 'YallaSpare' }}</span>
                             </span>
-                            <span class="text-[11px] uppercase tracking-widest text-slate-400">{{ __('Admin') }}</span>
+                            <span class="text-[11px] uppercase tracking-widest text-slate-400" data-admin-sidebar-meta>{{ __('Admin') }}</span>
                         </a>
                     </div>
-                    <a href="{{ route('admin.profile.edit') }}" class="px-4 py-4 border-b border-white/10 flex items-center gap-3 transition hover:bg-slate-800/60">
+                    <a href="{{ route('admin.profile.edit') }}" class="px-4 py-4 border-b border-white/10 flex items-center gap-3 transition hover:bg-slate-800/60" data-admin-sidebar-profile-link>
                         @if ($adminProfilePhotoUrl)
                             <img src="{{ $adminProfilePhotoUrl }}" alt="{{ $adminUser->name }} profile photo" class="h-10 w-10 shrink-0 rounded-full border border-white/20 object-cover">
                         @else
@@ -105,7 +144,7 @@
                                 {{ $adminAvatarInitial }}
                             </div>
                         @endif
-                        <div class="min-w-0">
+                        <div class="min-w-0" data-admin-sidebar-profile-details>
                             <p class="truncate text-sm font-semibold text-slate-100">{{ $adminUser->name }}</p>
                             <p class="text-xs text-slate-400">{{ __('Profile') }}</p>
                         </div>
@@ -276,7 +315,10 @@
                 </aside>
 
                 <!-- Main Content -->
-                <div class="{{ $isRtl ? 'lg:pr-64' : 'lg:pl-64' }} min-h-screen flex flex-col">
+                <div
+                    class="min-h-screen flex flex-col transition-[padding] duration-200"
+                    :class="sidebarCollapsed ? '{{ $isRtl ? 'lg:pr-20' : 'lg:pl-20' }}' : '{{ $isRtl ? 'lg:pr-64' : 'lg:pl-64' }}'"
+                >
                     <header class="sticky top-0 z-20 bg-white/90 backdrop-blur border-b border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
                         <div class="flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16">
                             <div class="flex items-center gap-3">
@@ -285,6 +327,17 @@
                                     @click="sidebarOpen = true"
                                 >
                                     <i class="fas fa-bars"></i>
+                                </button>
+                                <button
+                                    type="button"
+                                    class="hidden lg:inline-flex items-center justify-center h-10 w-10 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                                    @click="toggleSidebarCollapsed()"
+                                    :aria-expanded="(!sidebarCollapsed).toString()"
+                                    aria-controls="admin-sidebar"
+                                    aria-label="{{ __('Toggle sidebar') }}"
+                                    title="{{ __('Toggle sidebar') }}"
+                                >
+                                    <i class="fas" :class="sidebarCollapsed ? '{{ $isRtl ? 'fa-angles-left' : 'fa-angles-right' }}' : '{{ $isRtl ? 'fa-angles-right' : 'fa-angles-left' }}'"></i>
                                 </button>
                                 <div class="hidden sm:block">
                                     @if (isset($header))

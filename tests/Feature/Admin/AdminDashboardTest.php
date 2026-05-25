@@ -26,6 +26,9 @@ class AdminDashboardTest extends TestCase
         $response = $this->actingAs($admin)->get(route('admin.dashboard'));
 
         $response->assertOk();
+        $response->assertSee('admin-sidebar-collapsed', false);
+        $response->assertSee('admin-sidebar', false);
+        $response->assertSee('Toggle sidebar', false);
     }
 
     public function test_low_stock_notifications_use_sqlite_compatible_expressions(): void
