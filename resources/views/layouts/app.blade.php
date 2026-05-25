@@ -73,6 +73,7 @@
             @endphp
             <div
                 x-data="adminSidebarShell({ storageKey: 'admin-sidebar-collapsed' })"
+                x-init="init()"
                 @keydown.escape.window="closeMobileSidebar()"
                 class="min-h-screen admin-shell"
                 :class="{ 'admin-sidebar-collapsed': sidebarCollapsed }"
@@ -99,22 +100,22 @@
                 >
                     <div class="admin-sidebar-header" data-admin-sidebar-header>
                         <a href="{{ route('admin.dashboard') }}" class="admin-sidebar-logo focus:outline-none" data-admin-sidebar-logo aria-label="{{ __('Go to admin dashboard') }}">
-                            <span class="inline-flex min-w-0 items-center gap-3">
-                                <x-brand-mark
-                                    :logo-url="$systemSettings['site_logo_url'] ?? null"
-                                    :brand="$systemSettings['site_name'] ?? 'YallaSpare'"
-                                    wrapper-class="app-logo-mark logo-remove-white-bg"
-                                    img-class="h-full w-auto object-contain"
-                                    fallback-class="inline-flex h-full w-full items-center justify-center rounded-lg bg-slate-800"
-                                    fallback-text-class="text-sm font-semibold text-white"
-                                />
+                            <x-brand-mark
+                                :logo-url="$systemSettings['site_logo_url'] ?? null"
+                                :brand="$systemSettings['site_name'] ?? 'YallaSpare'"
+                                wrapper-class="app-logo-mark logo-remove-white-bg"
+                                img-class="h-full w-auto object-contain"
+                                fallback-class="inline-flex h-full w-full items-center justify-center rounded-lg bg-slate-800"
+                                fallback-text-class="text-sm font-semibold text-white"
+                            />
+                            <span class="admin-sidebar-brand-block">
                                 <span class="admin-sidebar-brand-copy app-logo-text truncate" data-admin-sidebar-logo-text>{{ $systemSettings['site_name'] ?? 'YallaSpare' }}</span>
+                                <span class="admin-sidebar-meta text-[11px] uppercase tracking-widest text-slate-400" data-admin-sidebar-meta>{{ __('Admin') }}</span>
                             </span>
-                            <span class="admin-sidebar-meta text-[11px] uppercase tracking-widest text-slate-400" data-admin-sidebar-meta>{{ __('Admin') }}</span>
                         </a>
                         <button
                             type="button"
-                            class="admin-sidebar-toggle hidden h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-slate-100 transition hover:bg-white/15 lg:inline-flex"
+                            class="admin-sidebar-toggle hidden h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-slate-100 transition hover:border-white/20 hover:bg-white/15 hover:text-white lg:inline-flex"
                             @click.stop="toggleSidebarCollapsed()"
                             :aria-expanded="(!sidebarCollapsed).toString()"
                             :aria-label="sidebarCollapsed ? $el.dataset.expandLabel : $el.dataset.collapseLabel"
@@ -124,7 +125,8 @@
                             data-collapse-label="{{ __('Collapse sidebar') }}"
                             data-admin-sidebar-toggle
                         >
-                            <i class="fas text-sm" :class="sidebarCollapsed ? '{{ $isRtl ? 'fa-angles-left' : 'fa-angles-right' }}' : '{{ $isRtl ? 'fa-angles-right' : 'fa-angles-left' }}'"></i>
+                            <i class="fas {{ $isRtl ? 'fa-angles-right' : 'fa-angles-left' }} text-sm admin-toggle-collapse-icon"></i>
+                            <i class="fas {{ $isRtl ? 'fa-angles-left' : 'fa-angles-right' }} text-sm admin-toggle-expand-icon"></i>
                         </button>
                         <button
                             type="button"
@@ -356,14 +358,17 @@
                                 <button
                                     type="button"
                                     class="admin-sidebar-top-expand h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:bg-slate-100 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
-                                    @click="expandSidebar()"
-                                    aria-expanded="false"
+                                    @click="toggleSidebarCollapsed()"
+                                    :aria-expanded="(!sidebarCollapsed).toString()"
                                     aria-controls="admin-sidebar"
-                                    aria-label="{{ __('Expand sidebar') }}"
-                                    title="{{ __('Expand sidebar') }}"
+                                    :aria-label="sidebarCollapsed ? $el.dataset.expandLabel : $el.dataset.collapseLabel"
+                                    :title="sidebarCollapsed ? $el.dataset.expandLabel : $el.dataset.collapseLabel"
+                                    data-expand-label="{{ __('Expand sidebar') }}"
+                                    data-collapse-label="{{ __('Collapse sidebar') }}"
                                     data-admin-sidebar-expand
                                 >
-                                    <i class="fas {{ $isRtl ? 'fa-angles-left' : 'fa-angles-right' }}"></i>
+                                    <i class="fas {{ $isRtl ? 'fa-angles-right' : 'fa-angles-left' }} admin-toggle-collapse-icon"></i>
+                                    <i class="fas {{ $isRtl ? 'fa-angles-left' : 'fa-angles-right' }} admin-toggle-expand-icon"></i>
                                 </button>
                                 <button
                                     type="button"
