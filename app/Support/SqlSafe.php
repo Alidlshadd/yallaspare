@@ -18,9 +18,9 @@ class SqlSafe
     public static function containsPattern(mixed $value, int $maxLength = 120): string
     {
         $term = self::searchTerm($value, $maxLength);
-        $term = str_replace('\\', '\\\\', $term);
-        $term = str_replace('%', '\%', $term);
-        $term = str_replace('_', '\_', $term);
+        $term = str_replace('!', '!!', $term);
+        $term = str_replace('%', '!%', $term);
+        $term = str_replace('_', '!_', $term);
 
         return '%' . $term . '%';
     }
@@ -34,8 +34,8 @@ class SqlSafe
         $wrappedColumn = $grammar->wrap($column);
 
         $query->whereRaw(
-            $wrappedColumn . ' LIKE ? ESCAPE ?',
-            [self::containsPattern($value), '\\'],
+            $wrappedColumn . " LIKE ? ESCAPE '!'",
+            [self::containsPattern($value)],
             $boolean
         );
     }

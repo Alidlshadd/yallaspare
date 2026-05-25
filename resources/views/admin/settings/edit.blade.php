@@ -1,10 +1,6 @@
 @php
     $settingsLogoUrl = \App\Support\Branding::logoUrlFromValue((string) ($settings['site_logo'] ?? ''));
-    $storefrontHeroImage = trim((string) ($settings['storefront_hero_image'] ?? ''));
     $storefrontHeroVideo = trim((string) ($settings['storefront_hero_video'] ?? ''));
-    $storefrontHeroImageUrl = $storefrontHeroImage !== '' && \Illuminate\Support\Facades\Storage::disk('public')->exists($storefrontHeroImage)
-        ? asset('storage/' . $storefrontHeroImage)
-        : null;
     $storefrontHeroVideoUrl = $storefrontHeroVideo !== '' && \Illuminate\Support\Facades\Storage::disk('public')->exists($storefrontHeroVideo)
         ? asset('storage/' . $storefrontHeroVideo)
         : null;
@@ -77,81 +73,26 @@
                                 <div class="pt-6 border-t border-slate-200 dark:border-slate-800">
                                     <div class="mb-4">
                                         <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ __('Storefront Hero') }}</p>
-                                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Control the main banner text, call-to-action, image, and video shown on the customer home page.') }}</p>
+                                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Upload the video shown on the customer home page hero.') }}</p>
                                     </div>
 
-                                    <div class="grid grid-cols-1 gap-4">
-                                        <div>
-                                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ __('Hero Title') }}</label>
-                                            <input type="text" name="storefront_hero_title" value="{{ old('storefront_hero_title', $settings['storefront_hero_title'] ?? 'Find the right spare parts faster') }}" class="w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
-                                            @error('storefront_hero_title')
-                                                <p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-
-                                        <div>
-                                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ __('Hero Subtitle') }}</label>
-                                            <textarea name="storefront_hero_subtitle" rows="3" class="w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>{{ old('storefront_hero_subtitle', $settings['storefront_hero_subtitle'] ?? 'Browse saved categories, filter by vehicle, and shop available parts from one clean catalog.') }}</textarea>
-                                            @error('storefront_hero_subtitle')
-                                                <p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>
-                                            @enderror
-                                        </div>
-
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div>
-                                                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ __('Button Text') }}</label>
-                                                <input type="text" name="storefront_hero_button_label" value="{{ old('storefront_hero_button_label', $settings['storefront_hero_button_label'] ?? 'Shop now') }}" class="w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" required>
-                                                @error('storefront_hero_button_label')
-                                                    <p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>
-                                                @enderror
-                                            </div>
-
-                                            <div>
-                                                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ __('Button URL') }}</label>
-                                                <input type="text" name="storefront_hero_button_url" value="{{ old('storefront_hero_button_url', $settings['storefront_hero_button_url'] ?? '') }}" class="w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" placeholder="{{ route('shop.index') }}">
-                                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ __('Leave empty to send customers to the catalog.') }}</p>
-                                                @error('storefront_hero_button_url')
-                                                    <p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>
-                                                @enderror
-                                            </div>
-                                        </div>
-
-                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            <div>
-                                                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ __('Hero Image') }}</label>
-                                                <input type="file" name="storefront_hero_image" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp" class="w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
-                                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ __('JPG, PNG, or WEBP. Used as the banner image and video poster. Max 8MB.') }}</p>
-                                                @if($storefrontHeroImageUrl)
-                                                    <img src="{{ $storefrontHeroImageUrl }}" alt="{{ __('Current hero image') }}" class="mt-3 h-24 w-full rounded-xl object-cover">
-                                                    <label class="inline-flex items-center mt-2 text-xs text-slate-600 dark:text-slate-400">
-                                                        <input type="checkbox" name="remove_storefront_hero_image" value="1" class="rounded border-slate-300 dark:border-slate-700 mr-2">
-                                                        {{ __('Remove current hero image') }}
-                                                    </label>
-                                                @endif
-                                                @error('storefront_hero_image')
-                                                    <p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>
-                                                @enderror
-                                            </div>
-
-                                            <div>
-                                                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ __('Hero Video') }}</label>
-                                                <input type="file" name="storefront_hero_video" accept=".mp4,video/mp4" class="w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" data-hero-video-input>
-                                                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ __('Optional MP4 video. If present, it appears before the image. Max 50MB.') }}</p>
-                                                <p class="mt-1 hidden text-xs font-medium text-rose-600 dark:text-rose-400" data-hero-video-client-error></p>
-                                                @if($storefrontHeroVideoUrl)
-                                                    <video class="mt-3 h-24 w-full rounded-xl object-cover" muted controls>
-                                                        <source src="{{ $storefrontHeroVideoUrl }}" type="video/mp4">
-                                                    </video>
-                                                    <label class="inline-flex items-center mt-2 text-xs text-slate-600 dark:text-slate-400">
-                                                        <input type="checkbox" name="remove_storefront_hero_video" value="1" class="rounded border-slate-300 dark:border-slate-700 mr-2">
-                                                        {{ __('Remove current hero video') }}
-                                                    </label>
-                                                @endif
-                                                @error('storefront_hero_video')
-                                                    <p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>
-                                                @enderror
-                                            </div>
-                                        </div>
+                                    <div class="max-w-xl">
+                                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">{{ __('Hero Video') }}</label>
+                                        <input type="file" name="storefront_hero_video" accept=".mp4,video/mp4" class="w-full rounded-lg border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" data-hero-video-input>
+                                        <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ __('MP4 video only. Max 50MB.') }}</p>
+                                        <p class="mt-1 hidden text-xs font-medium text-rose-600 dark:text-rose-400" data-hero-video-client-error></p>
+                                        @if($storefrontHeroVideoUrl)
+                                            <video class="mt-3 h-32 w-full rounded-xl object-cover" muted controls>
+                                                <source src="{{ $storefrontHeroVideoUrl }}" type="video/mp4">
+                                            </video>
+                                            <label class="inline-flex items-center mt-2 text-xs text-slate-600 dark:text-slate-400">
+                                                <input type="checkbox" name="remove_storefront_hero_video" value="1" class="rounded border-slate-300 dark:border-slate-700 mr-2">
+                                                {{ __('Remove current hero video') }}
+                                            </label>
+                                        @endif
+                                        @error('storefront_hero_video')
+                                            <p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>
+                                        @enderror
                                     </div>
                                 </div>
 
@@ -372,7 +313,7 @@
                 }
 
                 const name = file.name.toLowerCase();
-                if (!name.endsWith('.mp4') || (file.type && file.type !== 'video/mp4')) {
+                if (!name.endsWith('.mp4')) {
                     showClientError(@json(__('Hero video upload failed. Please select a valid MP4 file.')));
                     return false;
                 }

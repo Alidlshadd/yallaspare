@@ -179,7 +179,7 @@
                                     $imagePath = $hasCategoryImage ? trim((string) $category->image) : '';
 
                                     return [
-                                        'label' => (string) ($category->{$dropdownNameField} ?: $category->name_en ?: $category->name_ar ?: $category->name_ku),
+                                        'label' => \App\Support\LocalizedText::first($category->{$dropdownNameField}, $category->name_en, $category->name_ar, $category->name_ku),
                                         'desc' => $category->localized_description,
                                         'url' => route('shop.index', ['category' => $category->slug ?: $category->id]),
                                         'image' => $imagePath !== '' ? asset('storage/' . ltrim($imagePath, '/')) : null,

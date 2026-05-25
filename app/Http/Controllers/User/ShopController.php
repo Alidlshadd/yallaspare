@@ -10,6 +10,7 @@ use App\Models\Setting;
 use App\Models\VehicleBrand;
 use App\Models\VehicleModel;
 use App\Models\Wishlist;
+use App\Support\LocalizedText;
 use App\Support\SqlSafe;
 use Illuminate\Support\Collection;
 use Illuminate\Http\RedirectResponse;
@@ -57,7 +58,7 @@ class ShopController extends Controller
                     return [
                         'id' => $category->id,
                         'slug' => $category->slug,
-                        'name' => (string) ($category->{$nameField} ?: $category->name_en ?: $category->name_ar ?: $category->name_ku),
+                        'name' => LocalizedText::first($category->{$nameField}, $category->name_en, $category->name_ar, $category->name_ku),
                         'description' => $category->localized_description,
                         'image' => $imagePath !== '' ? asset('storage/' . ltrim($imagePath, '/')) : null,
                     ];
@@ -96,7 +97,7 @@ class ShopController extends Controller
 
                     return [
                         'id' => $product->id,
-                        'name' => (string) ($product->{$nameField} ?: $product->name_en),
+                        'name' => LocalizedText::first($product->{$nameField}, $product->name_en, $product->name_ar, $product->name_ku),
                         'price' => (float) $pricing['price'],
                         'base_price' => (float) $pricing['base_price'],
                         'discount_amount' => (float) $pricing['discount_amount'],

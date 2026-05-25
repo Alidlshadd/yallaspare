@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\LocalizedText;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
@@ -24,7 +25,7 @@ class Category extends Model {
             default => 'name_en',
         };
 
-        return (string) ($this->{$field} ?: $this->name_en ?: $this->name_ar ?: $this->name_ku ?: __('Category'));
+        return LocalizedText::first($this->{$field}, $this->name_en, $this->name_ar, $this->name_ku, __('Category'));
     }
 
     public function localizedDescription(): string

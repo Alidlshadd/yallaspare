@@ -36,6 +36,18 @@ class SettingController extends Controller
 
     public function update(Request $request): RedirectResponse
     {
+        $currentHeroTitle = (string) Setting::getValue('storefront_hero_title', 'Find the right spare parts faster');
+        $currentHeroSubtitle = (string) Setting::getValue('storefront_hero_subtitle', 'Browse saved categories, filter by vehicle, and shop available parts from one clean catalog.');
+        $currentHeroButtonLabel = (string) Setting::getValue('storefront_hero_button_label', 'Shop now');
+        $currentHeroButtonUrl = (string) Setting::getValue('storefront_hero_button_url', '');
+
+        $request->merge([
+            'storefront_hero_title' => $request->input('storefront_hero_title', $currentHeroTitle),
+            'storefront_hero_subtitle' => $request->input('storefront_hero_subtitle', $currentHeroSubtitle),
+            'storefront_hero_button_label' => $request->input('storefront_hero_button_label', $currentHeroButtonLabel),
+            'storefront_hero_button_url' => $request->input('storefront_hero_button_url', $currentHeroButtonUrl),
+        ]);
+
         $validator = Validator::make($request->all(), [
             'site_name' => ['required', 'string', 'max:120'],
             'currency_code' => ['required', 'string', 'max:10'],
@@ -62,12 +74,10 @@ class SettingController extends Controller
                     }
                 },
             ],
-            'storefront_hero_image' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
             'storefront_hero_video' => [
                 'nullable',
                 'file',
                 'mimes:mp4',
-                'mimetypes:video/mp4',
                 'max:' . self::HERO_VIDEO_MAX_KILOBYTES,
                 function (string $attribute, mixed $value, \Closure $fail): void {
                     if (! $value instanceof UploadedFile) {
@@ -79,7 +89,6 @@ class SettingController extends Controller
                     }
                 },
             ],
-            'remove_storefront_hero_image' => ['nullable', 'boolean'],
             'remove_storefront_hero_video' => ['nullable', 'boolean'],
             'sms_provider_webhook_url' => ['nullable', 'url', 'max:2048'],
             'whatsapp_provider_webhook_url' => ['nullable', 'url', 'max:2048'],
@@ -161,38 +170,9 @@ class SettingController extends Controller
         $heroImage = (string) Setting::getValue('storefront_hero_image', '');
         $heroVideo = (string) Setting::getValue('storefront_hero_video', '');
 
-        if ($request->boolean('remove_storefront_hero_image')) {
-            $this->deleteManagedHeroMedia($heroImage);
-            $heroImage = '';
-        }
-
         if ($request->boolean('remove_storefront_hero_video')) {
             $this->deleteManagedHeroMedia($heroVideo);
             $heroVideo = '';
-        }
-
-        if ($request->hasFile('storefront_hero_image')) {
-            $uploadedHeroImage = $request->file('storefront_hero_image');
-
-            if (! $uploadedHeroImage->isValid()) {
-                return back()
-                    ->withInput()
-                    ->withErrors(['storefront_hero_image' => __('Hero image upload failed. Please select a valid JPG, PNG, or WEBP file.')]);
-            }
-
-            try {
-                $storedHeroImage = str_replace('\\', '/', (string) $uploadedHeroImage->store('home/hero', 'public'));
-                if ($storedHeroImage === '' || !Storage::disk('public')->exists($storedHeroImage)) {
-                    throw new \RuntimeException(__('Stored hero image was not found after upload.'));
-                }
-
-                $this->deleteManagedHeroMedia($heroImage);
-                $heroImage = $storedHeroImage;
-            } catch (Throwable $e) {
-                return back()
-                    ->withInput()
-                    ->withErrors(['storefront_hero_image' => __('Could not save the uploaded hero image. Please try again.')]);
-            }
         }
 
         if ($request->hasFile('storefront_hero_video')) {

@@ -50,6 +50,10 @@ Route::post('/language/{locale}', function (Request $request, string $locale) {
     abort_unless(in_array($locale, ['en', 'ar', 'ku'], true), 404);
 
     $request->session()->put('locale', $locale);
+    if ($request->user()) {
+        $request->user()->forceFill(['locale_preference' => $locale])->save();
+    }
+
     app()->setLocale($locale);
 
     return back();

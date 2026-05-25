@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use App\Support\LocalizedText;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -64,7 +65,7 @@ class Product extends Model {
             default => 'name_en',
         };
 
-        return (string) ($this->{$field} ?: $this->name_en ?: $this->name_ar ?: $this->name_ku ?: __('Product'));
+        return LocalizedText::first($this->{$field}, $this->name_en, $this->name_ar, $this->name_ku, __('Product'));
     }
 
     public function localizedDescription(?string $locale = null): ?string
@@ -76,9 +77,7 @@ class Product extends Model {
             default => 'description_en',
         };
 
-        $description = $this->{$field} ?: $this->description_en ?: $this->description_ar ?: $this->description_ku;
-
-        return $description !== null ? (string) $description : null;
+        return LocalizedText::nullable($this->{$field}, $this->description_en, $this->description_ar, $this->description_ku);
     }
 
     public function getNameAttribute(): string
