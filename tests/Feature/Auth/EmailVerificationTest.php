@@ -3,10 +3,13 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
+use App\Notifications\ImmediateVerifyEmail;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Verified;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
@@ -27,6 +30,19 @@ class EmailVerificationTest extends TestCase
         $response->assertSee('Verify Email');
         $response->assertSee('Resend Verification Email');
         $response->assertSee($user->email);
+    }
+
+    public function test_resend_verification_email_sends_immediate_notification(): void
+    {
+        Notification::fake();
+        $user = User::factory()->unverified()->create();
+
+        $this->actingAs($user)
+            ->post(route('verification.send'))
+            ->assertRedirect();
+
+        Notification::assertSentTo($user, ImmediateVerifyEmail::class);
+        $this->assertFalse(new ImmediateVerifyEmail() instanceof ShouldQueue);
     }
 
     public function test_unverified_users_cannot_access_verified_customer_routes(): void

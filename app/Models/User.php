@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Notifications\QueuedResetPassword;
-use App\Notifications\QueuedVerifyEmail;
+use App\Notifications\ImmediateVerifyEmail;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -132,7 +132,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function sendEmailVerificationNotification(): void
     {
-        $this->notify(new QueuedVerifyEmail());
+        $this->notify(new ImmediateVerifyEmail());
     }
 
     public function sendPasswordResetNotification($token): void
