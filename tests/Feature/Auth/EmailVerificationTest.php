@@ -46,6 +46,18 @@ class EmailVerificationTest extends TestCase
         $this->assertFalse(new ImmediateVerifyEmail() instanceof ShouldQueue);
     }
 
+    public function test_verification_email_has_branded_copy(): void
+    {
+        $user = User::factory()->unverified()->create();
+        $mail = (new ImmediateVerifyEmail())->toMail($user);
+
+        $this->assertSame('Verify your YallaSpare email address', $mail->subject);
+        $this->assertSame('Welcome to YallaSpare', $mail->greeting);
+        $this->assertSame('Verify email address', $mail->actionText);
+        $this->assertContains('Please confirm your email address so we can protect your account and unlock checkout, orders, saved addresses, and account settings.', $mail->introLines);
+        $this->assertContains('This verification link expires in 60 minutes.', $mail->outroLines);
+    }
+
     public function test_verification_email_uses_public_https_request_host(): void
     {
         config(['app.url' => 'http://127.0.0.1:8000']);
