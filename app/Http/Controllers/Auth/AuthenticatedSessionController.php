@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Auth\AdminTwoFactorController;
 use App\Http\Requests\Auth\LoginRequest;
-use App\Providers\RouteServiceProvider;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -59,6 +58,10 @@ class AuthenticatedSessionController extends Controller
             }
 
             return redirect()->intended('/admin/dashboard');
+        }
+
+        if ($user && ! $user->hasVerifiedEmail()) {
+            return redirect()->route('verification.notice');
         }
 
         $intendedUrl = (string) $request->session()->get('url.intended', '');

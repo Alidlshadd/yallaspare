@@ -19,6 +19,7 @@ use App\Models\VehicleBrand;
 use App\Models\Wishlist;
 use App\Services\CouponService;
 use App\Support\SqlSafe;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -50,6 +51,13 @@ class MobileController extends Controller
             $this->debugLoginFailure('password_mismatch', $login, $user);
 
             return response()->json(['message' => 'Email or password is incorrect.'], 422);
+        }
+
+        if (! $user->hasVerifiedEmail()) {
+            return response()->json([
+                'message' => 'Please verify your email address before signing in.',
+                'verification_required' => true,
+            ], 403);
         }
 
         try {
@@ -86,8 +94,11 @@ class MobileController extends Controller
             'role' => User::ROLE_USER,
         ]);
 
+        event(new Registered($user));
+
         return response()->json([
-            'token' => $user->createToken('mobile')->plainTextToken,
+            'message' => 'Registration complete. Please verify your email address before signing in.',
+            'verification_required' => true,
             'user' => $this->userPayload($user),
         ], 201);
     }
@@ -1063,6 +1074,7 @@ class MobileController extends Controller
             'email' => $user->email,
             'phone' => (string) $user->phone,
             'role' => $user->role,
+            'email_verified' => $user->hasVerifiedEmail(),
             'permissions' => $user->effectivePermissions(),
             'dealer_status' => $user->dealer_status,
             'dealer_discount' => (float) $user->dealer_discount,

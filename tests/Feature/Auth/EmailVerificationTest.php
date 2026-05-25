@@ -8,6 +8,7 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\URL;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class EmailVerificationTest extends TestCase
@@ -23,6 +24,61 @@ class EmailVerificationTest extends TestCase
         $response = $this->actingAs($user)->get('/verify-email');
 
         $response->assertStatus(200);
+    }
+
+    public function test_unverified_users_cannot_access_verified_customer_routes(): void
+    {
+        $user = User::factory()->unverified()->create();
+
+        $this->actingAs($user)
+            ->get(route('cart.index'))
+            ->assertRedirect(route('verification.notice'));
+    }
+
+    public function test_unverified_mobile_users_cannot_receive_login_tokens(): void
+    {
+        $user = User::factory()->unverified()->create();
+
+        $this->postJson('/api/mobile/login', [
+            'email' => $user->email,
+            'password' => 'password',
+        ])
+            ->assertForbidden()
+            ->assertJson([
+                'verification_required' => true,
+            ])
+            ->assertJsonMissingPath('token');
+    }
+
+    public function test_mobile_registration_requires_email_verification_before_token_issue(): void
+    {
+        Event::fake();
+
+        $this->postJson('/api/mobile/register', [
+            'name' => 'Mobile User',
+            'email' => 'mobile@example.com',
+            'password' => 'password',
+        ])
+            ->assertCreated()
+            ->assertJson([
+                'verification_required' => true,
+            ])
+            ->assertJsonMissingPath('token');
+
+        Event::assertDispatched(\Illuminate\Auth\Events\Registered::class);
+        $this->assertDatabaseHas('users', [
+            'email' => 'mobile@example.com',
+            'email_verified_at' => null,
+        ]);
+    }
+
+    public function test_existing_unverified_mobile_tokens_cannot_access_verified_api_routes(): void
+    {
+        $user = User::factory()->unverified()->create();
+
+        Sanctum::actingAs($user);
+
+        $this->getJson('/api/mobile/me')->assertForbidden();
     }
 
     public function test_email_can_be_verified(): void
