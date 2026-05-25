@@ -442,6 +442,7 @@
                 </main>
 
                 @include('partials.site-footer')
+                @include('partials.language-switcher-script')
             </div>
         @endif
 

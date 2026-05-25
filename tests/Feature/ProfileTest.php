@@ -19,6 +19,8 @@ class ProfileTest extends TestCase
             ->get('/profile');
 
         $response->assertOk();
+        $response->assertSee('data-header-dropdown-trigger', false);
+        $response->assertSee('languageDropdownReady', false);
     }
 
     public function test_profile_information_can_be_updated(): void
