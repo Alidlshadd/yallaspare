@@ -10,9 +10,9 @@
         $heroImageUrl = \Illuminate\Support\Facades\Storage::disk('public')->exists($heroImagePath)
             ? asset('storage/' . $heroImagePath)
             : null;
-        $heroTitle = trim((string) data_get($heroSettings ?? [], 'title', '')) ?: __('Find the right spare parts faster');
-        $heroSubtitle = trim((string) data_get($heroSettings ?? [], 'subtitle', '')) ?: __('Browse saved categories, filter by vehicle, and shop available parts from one clean catalog.');
-        $heroButtonLabel = trim((string) data_get($heroSettings ?? [], 'button_label', '')) ?: __('Shop now');
+        $heroTitle = __(trim((string) data_get($heroSettings ?? [], 'title', '')) ?: 'Find the right spare parts faster');
+        $heroSubtitle = __(trim((string) data_get($heroSettings ?? [], 'subtitle', '')) ?: 'Browse saved categories, filter by vehicle, and shop available parts from one clean catalog.');
+        $heroButtonLabel = __(trim((string) data_get($heroSettings ?? [], 'button_label', '')) ?: 'Shop now');
         $heroButtonUrl = trim((string) data_get($heroSettings ?? [], 'button_url', '')) ?: route('shop.index');
     @endphp
 
