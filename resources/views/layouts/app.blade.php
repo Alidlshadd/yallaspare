@@ -29,10 +29,7 @@
             }
             @media (min-width: 1024px) {
                 .admin-sidebar-collapsed [data-admin-sidebar-logo] {
-                    justify-content: center;
-                }
-                .admin-sidebar-collapsed [data-admin-sidebar-logo] > span:first-child {
-                    justify-content: center;
+                    display: none;
                 }
                 .admin-sidebar-collapsed [data-admin-sidebar-logo-text],
                 .admin-sidebar-collapsed [data-admin-sidebar-meta],
@@ -46,6 +43,11 @@
                 }
                 .admin-sidebar-collapsed [data-admin-sidebar] nav a,
                 .admin-sidebar-collapsed [data-admin-sidebar-profile-link] {
+                    justify-content: center;
+                    padding-left: 0.75rem;
+                    padding-right: 0.75rem;
+                }
+                .admin-sidebar-collapsed [data-admin-sidebar-header] {
                     justify-content: center;
                     padding-left: 0.75rem;
                     padding-right: 0.75rem;
@@ -120,8 +122,8 @@
                     class="fixed inset-y-0 {{ $isRtl ? 'right-0' : 'left-0' }} z-40 w-64 bg-slate-900 text-slate-100 transform transition-all duration-200 lg:translate-x-0 dark:bg-slate-900 h-screen overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-hide"
                     :class="[sidebarOpen ? 'translate-x-0' : '{{ $isRtl ? 'translate-x-full' : '-translate-x-full' }}', sidebarCollapsed ? 'lg:w-20' : 'lg:w-64']"
                 >
-                    <div class="header-logo-area border-b border-white/10 px-4">
-                        <a href="{{ route('admin.dashboard') }}" class="app-logo app-logo-dark w-full justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-white/25" data-admin-sidebar-logo>
+                    <div class="header-logo-area border-b border-white/10 px-3" data-admin-sidebar-header>
+                        <a href="{{ route('admin.dashboard') }}" class="app-logo app-logo-dark min-w-0 flex-1 justify-between focus:outline-none focus-visible:ring-2 focus-visible:ring-white/25" data-admin-sidebar-logo>
                             <span class="inline-flex items-center gap-3 min-w-0">
                                 <x-brand-mark
                                     :logo-url="$systemSettings['site_logo_url'] ?? null"
@@ -135,6 +137,18 @@
                             </span>
                             <span class="text-[11px] uppercase tracking-widest text-slate-400" data-admin-sidebar-meta>{{ __('Admin') }}</span>
                         </a>
+                        <button
+                            type="button"
+                            class="hidden h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-slate-100 transition hover:bg-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/25 lg:inline-flex"
+                            @click="toggleSidebarCollapsed()"
+                            :aria-expanded="(!sidebarCollapsed).toString()"
+                            aria-controls="admin-sidebar"
+                            aria-label="{{ __('Toggle sidebar') }}"
+                            title="{{ __('Toggle sidebar') }}"
+                            data-admin-sidebar-toggle
+                        >
+                            <i class="fas text-sm" :class="sidebarCollapsed ? '{{ $isRtl ? 'fa-angles-left' : 'fa-angles-right' }}' : '{{ $isRtl ? 'fa-angles-right' : 'fa-angles-left' }}'"></i>
+                        </button>
                     </div>
                     <a href="{{ route('admin.profile.edit') }}" class="px-4 py-4 border-b border-white/10 flex items-center gap-3 transition hover:bg-slate-800/60" data-admin-sidebar-profile-link>
                         @if ($adminProfilePhotoUrl)
@@ -327,17 +341,6 @@
                                     @click="sidebarOpen = true"
                                 >
                                     <i class="fas fa-bars"></i>
-                                </button>
-                                <button
-                                    type="button"
-                                    class="hidden lg:inline-flex items-center justify-center h-10 w-10 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
-                                    @click="toggleSidebarCollapsed()"
-                                    :aria-expanded="(!sidebarCollapsed).toString()"
-                                    aria-controls="admin-sidebar"
-                                    aria-label="{{ __('Toggle sidebar') }}"
-                                    title="{{ __('Toggle sidebar') }}"
-                                >
-                                    <i class="fas" :class="sidebarCollapsed ? '{{ $isRtl ? 'fa-angles-left' : 'fa-angles-right' }}' : '{{ $isRtl ? 'fa-angles-right' : 'fa-angles-left' }}'"></i>
                                 </button>
                                 <div class="hidden sm:block">
                                     @if (isset($header))

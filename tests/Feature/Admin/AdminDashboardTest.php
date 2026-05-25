@@ -28,6 +28,7 @@ class AdminDashboardTest extends TestCase
         $response->assertOk();
         $response->assertSee('admin-sidebar-collapsed', false);
         $response->assertSee('admin-sidebar', false);
+        $response->assertSee('data-admin-sidebar-toggle', false);
         $response->assertSee('Toggle sidebar', false);
     }
 
