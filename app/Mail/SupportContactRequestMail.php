@@ -28,7 +28,11 @@ class SupportContactRequestMail extends Mailable implements ShouldQueue
 
         $mail = $this
             ->subject('Support request: ' . $subject)
-            ->html($this->renderHtml());
+            ->view('emails.support.contact-request', $this->viewData())
+            ->text('emails.text.generic', [
+                'title' => 'Support request: ' . $subject,
+                'bodyText' => (string) ($this->data['message'] ?? ''),
+            ]);
 
         if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
             $mail->replyTo($email, $name);
@@ -37,26 +41,17 @@ class SupportContactRequestMail extends Mailable implements ShouldQueue
         return $mail;
     }
 
-    private function renderHtml(): string
+    private function viewData(): array
     {
-        $name = e((string) ($this->data['name'] ?? ''));
-        $email = e((string) ($this->data['email'] ?? ''));
-        $phone = e((string) ($this->data['phone'] ?? ''));
-        $topic = e((string) ($this->data['topic'] ?? 'general'));
-        $subject = e((string) ($this->data['subject'] ?? ''));
-        $message = nl2br(e((string) ($this->data['message'] ?? '')));
-
-        return <<<HTML
-<div style="font-family:Arial,sans-serif;line-height:1.6;color:#0f172a">
-    <h1 style="margin:0 0 16px;font-size:20px;color:#070740">New YallaSpare Support Request</h1>
-    <p><strong>Name:</strong> {$name}</p>
-    <p><strong>Email:</strong> {$email}</p>
-    <p><strong>Phone:</strong> {$phone}</p>
-    <p><strong>Topic:</strong> {$topic}</p>
-    <p><strong>Subject:</strong> {$subject}</p>
-    <hr style="border:none;border-top:1px solid #e2e8f0;margin:16px 0">
-    <p>{$message}</p>
-</div>
-HTML;
+        return [
+            'title' => __('New YallaSpare support request'),
+            'preheader' => __('A customer submitted a new support request.'),
+            'name' => (string) ($this->data['name'] ?? ''),
+            'email' => (string) ($this->data['email'] ?? ''),
+            'phone' => (string) ($this->data['phone'] ?? ''),
+            'topic' => (string) ($this->data['topic'] ?? 'general'),
+            'requestSubject' => (string) ($this->data['subject'] ?? ''),
+            'messageText' => (string) ($this->data['message'] ?? ''),
+        ];
     }
 }

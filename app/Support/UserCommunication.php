@@ -68,7 +68,12 @@ class UserCommunication
     {
         $sentVia = [];
 
-        if (($user->email_notifications ?? true) && $user->email && self::sendEmail((string) $user->email, $subject, $message, $context + ['type' => $type])) {
+        $localizedContext = $context + [
+            'type' => $type,
+            'locale' => method_exists($user, 'preferredLocale') ? $user->preferredLocale() : app()->getLocale(),
+        ];
+
+        if (($user->email_notifications ?? true) && $user->email && self::sendEmail((string) $user->email, $subject, $message, $localizedContext)) {
             $sentVia[] = 'email';
         }
 
@@ -90,6 +95,9 @@ class UserCommunication
     private static function sendEmail(string $email, string $subject, string $message, array $context = []): bool
     {
         $mailer = self::resolveMailer();
+        $context['locale'] = in_array((string) ($context['locale'] ?? app()->getLocale()), ['en', 'ar', 'ku'], true)
+            ? (string) ($context['locale'] ?? app()->getLocale())
+            : 'en';
 
         try {
             Mail::mailer($mailer)

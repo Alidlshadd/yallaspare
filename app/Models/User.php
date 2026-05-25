@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Notifications\QueuedResetPassword;
 use App\Notifications\ImmediateVerifyEmail;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,7 +12,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable implements MustVerifyEmail
+class User extends Authenticatable implements MustVerifyEmail, HasLocalePreference
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -138,6 +139,13 @@ class User extends Authenticatable implements MustVerifyEmail
     public function sendPasswordResetNotification($token): void
     {
         $this->notify(new QueuedResetPassword($token));
+    }
+
+    public function preferredLocale(): string
+    {
+        $locale = (string) ($this->locale_preference ?: app()->getLocale());
+
+        return in_array($locale, ['en', 'ar', 'ku'], true) ? $locale : 'en';
     }
 
     public static function allowedRoles(): array
