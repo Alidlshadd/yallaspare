@@ -93,7 +93,7 @@
                 <aside
                     id="admin-sidebar"
                     data-admin-sidebar
-                    class="admin-sidebar fixed inset-y-0 {{ $isRtl ? 'right-0' : 'left-0' }} z-40 bg-slate-900 text-slate-100 dark:bg-slate-900 h-screen overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-hide"
+                    class="admin-sidebar fixed inset-y-0 z-40 bg-slate-900 text-slate-100 dark:bg-slate-900 h-screen overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-hide"
                     :class="{ 'admin-sidebar-open': sidebarOpen }"
                     @click="handleSidebarClick($event)"
                     aria-label="{{ __('Admin navigation') }}"
@@ -358,17 +358,14 @@
                                 <button
                                     type="button"
                                     class="admin-sidebar-top-expand h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:bg-slate-100 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
-                                    @click="toggleSidebarCollapsed()"
-                                    :aria-expanded="(!sidebarCollapsed).toString()"
+                                    @click="expandSidebar()"
+                                    aria-expanded="false"
                                     aria-controls="admin-sidebar"
-                                    :aria-label="sidebarCollapsed ? $el.dataset.expandLabel : $el.dataset.collapseLabel"
-                                    :title="sidebarCollapsed ? $el.dataset.expandLabel : $el.dataset.collapseLabel"
-                                    data-expand-label="{{ __('Expand sidebar') }}"
-                                    data-collapse-label="{{ __('Collapse sidebar') }}"
+                                    aria-label="{{ __('Expand sidebar') }}"
+                                    title="{{ __('Expand sidebar') }}"
                                     data-admin-sidebar-expand
                                 >
-                                    <i class="fas {{ $isRtl ? 'fa-angles-right' : 'fa-angles-left' }} admin-toggle-collapse-icon"></i>
-                                    <i class="fas {{ $isRtl ? 'fa-angles-left' : 'fa-angles-right' }} admin-toggle-expand-icon"></i>
+                                    <i class="fas {{ $isRtl ? 'fa-angles-left' : 'fa-angles-right' }}"></i>
                                 </button>
                                 <button
                                     type="button"
