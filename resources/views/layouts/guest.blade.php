@@ -32,5 +32,6 @@
         </div>
 
         @include('partials.site-footer')
+        @include('partials.language-switcher-script')
     </body>
 </html>

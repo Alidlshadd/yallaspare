@@ -222,5 +222,6 @@
             });
         });
     </script>
+    @include('partials.language-switcher-script')
 </body>
 </html>

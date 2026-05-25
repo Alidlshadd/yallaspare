@@ -69,5 +69,6 @@
         </main>
 
         @include('partials.site-footer', ['maxWidth' => 'max-w-6xl'])
+        @include('partials.language-switcher-script')
     </body>
 </html>

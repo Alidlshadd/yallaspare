@@ -6,8 +6,8 @@
     $currentLocale = app()->getLocale();
     $locales = [
         'en' => 'English',
-        'ar' => 'العربية',
-        'ku' => 'کوردی',
+        'ar' => "\u{0627}\u{0644}\u{0639}\u{0631}\u{0628}\u{064A}\u{0629}",
+        'ku' => "\u{06A9}\u{0648}\u{0631}\u{062F}\u{06CC}",
     ];
     $currentLabel = $locales[$currentLocale] ?? $locales['en'];
     $triggerClasses = $variant === 'dark'
