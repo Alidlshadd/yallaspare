@@ -360,12 +360,26 @@
     }
 
     .admin-sidebar-toggle,
-    .admin-mobile-sidebar-toggle {
+    .admin-mobile-sidebar-toggle,
+    .admin-sidebar-top-expand {
+        cursor: pointer;
         outline: none;
+        user-select: none;
+    }
+
+    .admin-sidebar-toggle i,
+    .admin-mobile-sidebar-toggle i,
+    .admin-sidebar-top-expand i {
+        pointer-events: none;
+    }
+
+    .admin-sidebar-top-expand {
+        display: none;
     }
 
     .admin-sidebar-toggle:focus-visible,
     .admin-mobile-sidebar-toggle:focus-visible,
+    .admin-sidebar-top-expand:focus-visible,
     .admin-nav-link:focus-visible,
     .admin-profile-link:focus-visible,
     .admin-sidebar-logo:focus-visible {
@@ -464,7 +478,12 @@
         .admin-shell.admin-sidebar-collapsed .admin-sidebar-logo,
         .admin-sidebar-precollapsed .admin-shell .admin-sidebar-logo {
             flex: 0 0 2.75rem;
+            width: 2.75rem;
             max-width: 2.75rem;
+            height: 2.75rem;
+            justify-content: center;
+            gap: 0;
+            padding: 0.125rem;
         }
 
         .admin-shell.admin-sidebar-collapsed .admin-sidebar-brand-copy,
@@ -509,6 +528,11 @@
         .admin-shell.admin-sidebar-collapsed .admin-profile-link,
         .admin-sidebar-precollapsed .admin-shell .admin-profile-link {
             margin-inline: 0.75rem;
+        }
+
+        .admin-shell.admin-sidebar-collapsed .admin-sidebar-top-expand,
+        .admin-sidebar-precollapsed .admin-shell .admin-sidebar-top-expand {
+            display: inline-flex;
         }
 
         .admin-shell.admin-sidebar-collapsed .admin-nav-link[data-admin-sidebar-tooltip]::after,
@@ -562,7 +586,8 @@
         .admin-profile-details,
         .admin-nav-label,
         .admin-nav-link,
-        .admin-profile-link {
+        .admin-profile-link,
+        .admin-sidebar-top-expand {
             transition: none !important;
         }
     }

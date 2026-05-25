@@ -8,10 +8,17 @@ Alpine.data('adminSidebarShell', ({ storageKey = 'admin-sidebar-collapsed' } = {
     sidebarOpen: false,
     sidebarCollapsed: false,
     desktopQuery: null,
+    resizeHandler: null,
+    initialized: false,
 
     init() {
+        if (this.initialized) {
+            return;
+        }
+
+        this.initialized = true;
         this.desktopQuery = window.matchMedia('(min-width: 1024px)');
-        this.sidebarCollapsed = this.desktopQuery.matches && this.storedCollapsed();
+        this.sidebarCollapsed = this.isDesktop() && this.storedCollapsed();
         this.syncDocumentState();
 
         this.$watch('sidebarCollapsed', () => this.syncDocumentState());
@@ -19,18 +26,39 @@ Alpine.data('adminSidebarShell', ({ storageKey = 'admin-sidebar-collapsed' } = {
             document.documentElement.classList.toggle('admin-sidebar-drawer-open', open);
         });
 
-        const handleResize = () => {
-            if (this.desktopQuery.matches) {
+        this.resizeHandler = () => {
+            if (this.isDesktop()) {
                 this.sidebarOpen = false;
                 this.sidebarCollapsed = this.storedCollapsed();
+            } else {
+                this.sidebarOpen = false;
+                this.sidebarCollapsed = false;
             }
+
+            this.syncDocumentState();
         };
 
         if (typeof this.desktopQuery.addEventListener === 'function') {
-            this.desktopQuery.addEventListener('change', handleResize);
+            this.desktopQuery.addEventListener('change', this.resizeHandler);
         } else if (typeof this.desktopQuery.addListener === 'function') {
-            this.desktopQuery.addListener(handleResize);
+            this.desktopQuery.addListener(this.resizeHandler);
         }
+    },
+
+    destroy() {
+        if (!this.desktopQuery || !this.resizeHandler) {
+            return;
+        }
+
+        if (typeof this.desktopQuery.removeEventListener === 'function') {
+            this.desktopQuery.removeEventListener('change', this.resizeHandler);
+        } else if (typeof this.desktopQuery.removeListener === 'function') {
+            this.desktopQuery.removeListener(this.resizeHandler);
+        }
+    },
+
+    isDesktop() {
+        return this.desktopQuery?.matches === true;
     },
 
     storedCollapsed() {
@@ -48,11 +76,11 @@ Alpine.data('adminSidebarShell', ({ storageKey = 'admin-sidebar-collapsed' } = {
     },
 
     syncDocumentState() {
-        document.documentElement.classList.toggle('admin-sidebar-precollapsed', this.sidebarCollapsed);
+        document.documentElement.classList.toggle('admin-sidebar-precollapsed', this.isDesktop() && this.sidebarCollapsed);
     },
 
     toggleSidebarCollapsed() {
-        if (!this.desktopQuery?.matches) {
+        if (!this.isDesktop()) {
             this.openMobileSidebar();
             return;
         }
@@ -61,8 +89,25 @@ Alpine.data('adminSidebarShell', ({ storageKey = 'admin-sidebar-collapsed' } = {
         this.persistCollapsed();
     },
 
+    expandSidebar() {
+        if (!this.isDesktop()) {
+            this.openMobileSidebar();
+            return;
+        }
+
+        this.sidebarCollapsed = false;
+        this.persistCollapsed();
+    },
+
     openMobileSidebar() {
+        if (this.isDesktop()) {
+            this.expandSidebar();
+            return;
+        }
+
+        this.sidebarCollapsed = false;
         this.sidebarOpen = true;
+        this.syncDocumentState();
     },
 
     closeMobileSidebar() {
@@ -71,7 +116,7 @@ Alpine.data('adminSidebarShell', ({ storageKey = 'admin-sidebar-collapsed' } = {
 
     handleSidebarClick(event) {
         const link = event.target.closest('a');
-        if (link && !this.desktopQuery?.matches) {
+        if (link && !this.isDesktop()) {
             this.closeMobileSidebar();
         }
     },
