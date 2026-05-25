@@ -8,6 +8,7 @@ use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
@@ -43,6 +44,22 @@ class EmailVerificationTest extends TestCase
 
         Notification::assertSentTo($user, ImmediateVerifyEmail::class);
         $this->assertFalse(new ImmediateVerifyEmail() instanceof ShouldQueue);
+    }
+
+    public function test_verification_email_uses_public_https_request_host(): void
+    {
+        config(['app.url' => 'http://127.0.0.1:8000']);
+        $user = User::factory()->unverified()->create();
+        $request = HttpRequest::create('http://yallaspare.com/email/verification-notification', 'POST');
+
+        app()->instance('request', $request);
+        URL::setRequest($request);
+
+        $actionUrl = (string) (new ImmediateVerifyEmail())->toMail($user)->actionUrl;
+
+        $this->assertStringStartsWith('https://yallaspare.com/verify-email/', $actionUrl);
+        $this->assertStringContainsString('signature=', $actionUrl);
+        $this->assertStringNotContainsString('127.0.0.1', $actionUrl);
     }
 
     public function test_unverified_users_cannot_access_verified_customer_routes(): void
@@ -111,7 +128,8 @@ class EmailVerificationTest extends TestCase
         $verificationUrl = URL::temporarySignedRoute(
             'verification.verify',
             now()->addMinutes(60),
-            ['id' => $user->id, 'hash' => sha1($user->email)]
+            ['id' => $user->id, 'hash' => sha1($user->email)],
+            false
         );
 
         $response = $this->actingAs($user)->get($verificationUrl);
@@ -130,7 +148,8 @@ class EmailVerificationTest extends TestCase
         $verificationUrl = URL::temporarySignedRoute(
             'verification.verify',
             now()->addMinutes(60),
-            ['id' => $user->id, 'hash' => sha1('wrong-email')]
+            ['id' => $user->id, 'hash' => sha1('wrong-email')],
+            false
         );
 
         $this->actingAs($user)->get($verificationUrl);
