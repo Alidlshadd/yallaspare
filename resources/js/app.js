@@ -5,8 +5,9 @@ import Alpine from 'alpinejs';
 window.Alpine = Alpine;
 
 Alpine.data('adminSidebarShell', ({ storageKey = 'admin-sidebar-collapsed' } = {}) => ({
-    sidebarOpen: false,
     sidebarCollapsed: false,
+    mobileSidebarOpen: false,
+    isRtl: false,
     desktopQuery: null,
     resizeHandler: null,
     escapeHandler: null,
@@ -19,24 +20,28 @@ Alpine.data('adminSidebarShell', ({ storageKey = 'admin-sidebar-collapsed' } = {
         }
 
         this.initialized = true;
+        this.isRtl = document.documentElement.getAttribute('dir') === 'rtl';
         this.desktopQuery = window.matchMedia('(min-width: 1024px)');
         this.sidebarCollapsed = this.isDesktop() && this.storedCollapsed();
+        this.mobileSidebarOpen = false;
+        this.syncMobileDrawerState(false);
         this.syncDocumentState();
 
         this.$watch('sidebarCollapsed', () => this.syncDocumentState());
-        this.$watch('sidebarOpen', (open) => {
+        this.$watch('mobileSidebarOpen', (open) => {
             this.syncMobileDrawerState(open);
         });
 
         this.resizeHandler = () => {
             if (this.isDesktop()) {
-                this.sidebarOpen = false;
+                this.mobileSidebarOpen = false;
                 this.sidebarCollapsed = this.storedCollapsed();
             } else {
-                this.sidebarOpen = false;
+                this.mobileSidebarOpen = false;
                 this.sidebarCollapsed = false;
             }
 
+            this.syncMobileDrawerState(false);
             this.syncDocumentState();
         };
 
@@ -47,7 +52,7 @@ Alpine.data('adminSidebarShell', ({ storageKey = 'admin-sidebar-collapsed' } = {
         }
 
         this.escapeHandler = (event) => {
-            if (event.key === 'Escape') {
+            if (event.key === 'Escape' && this.mobileSidebarOpen) {
                 this.closeMobileSidebar();
             }
         };
@@ -58,6 +63,7 @@ Alpine.data('adminSidebarShell', ({ storageKey = 'admin-sidebar-collapsed' } = {
     },
 
     destroy() {
+        this.mobileSidebarOpen = false;
         this.syncMobileDrawerState(false);
 
         if (this.desktopQuery && this.resizeHandler) {
@@ -104,6 +110,7 @@ Alpine.data('adminSidebarShell', ({ storageKey = 'admin-sidebar-collapsed' } = {
 
         document.documentElement.classList.toggle('admin-sidebar-drawer-open', shouldLock);
         document.body?.classList.toggle('admin-sidebar-drawer-open', shouldLock);
+        this.$root?.classList.toggle('admin-mobile-drawer-open', shouldLock);
     },
 
     toggleSidebarCollapsed() {
@@ -133,13 +140,13 @@ Alpine.data('adminSidebarShell', ({ storageKey = 'admin-sidebar-collapsed' } = {
         }
 
         this.sidebarCollapsed = false;
-        this.sidebarOpen = true;
+        this.mobileSidebarOpen = true;
         this.syncDocumentState();
         this.syncMobileDrawerState(true);
     },
 
     closeMobileSidebar() {
-        this.sidebarOpen = false;
+        this.mobileSidebarOpen = false;
         this.syncMobileDrawerState(false);
     },
 

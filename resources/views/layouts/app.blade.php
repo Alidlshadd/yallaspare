@@ -51,7 +51,7 @@
 
                         document.documentElement.classList.toggle('dark', selectedTheme === 'dark');
 
-                        if (localStorage.getItem('admin-sidebar-collapsed') === '1') {
+                        if (window.matchMedia('(min-width: 1024px)').matches && localStorage.getItem('admin-sidebar-collapsed') === '1') {
                             document.documentElement.classList.add('admin-sidebar-precollapsed');
                         }
                     } catch (error) {
@@ -75,27 +75,28 @@
                 x-data="adminSidebarShell({ storageKey: 'admin-sidebar-collapsed' })"
                 x-init="init()"
                 class="min-h-screen admin-shell"
-                :class="{ 'admin-sidebar-collapsed': sidebarCollapsed }"
+                :class="{ 'admin-sidebar-collapsed': sidebarCollapsed, 'admin-mobile-drawer-open': mobileSidebarOpen && !isDesktop() }"
                 data-admin-shell
             >
                 <!-- Mobile Overlay -->
-                <div
-                    x-cloak
-                    x-show="sidebarOpen"
-                    class="admin-sidebar-backdrop fixed inset-0 bg-slate-950/55 lg:hidden"
-                    @click="closeMobileSidebar()"
-                    x-transition.opacity
-                    aria-hidden="true"
-                ></div>
+                <template x-if="mobileSidebarOpen && !isDesktop()">
+                    <div
+                        class="admin-sidebar-backdrop fixed inset-0 bg-slate-950/55 lg:hidden"
+                        @click="closeMobileSidebar()"
+                        x-transition.opacity
+                        aria-hidden="true"
+                        data-admin-sidebar-backdrop
+                    ></div>
+                </template>
 
                 <!-- Sidebar -->
                 <aside
                     id="admin-sidebar"
                     data-admin-sidebar
                     class="admin-sidebar fixed inset-y-0 bg-slate-900 text-slate-100 dark:bg-slate-900 h-screen overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-hide"
-                    :class="{ 'admin-sidebar-open': sidebarOpen }"
+                    :class="{ 'admin-sidebar-open': mobileSidebarOpen }"
                     @click="handleSidebarClick($event)"
-                    :aria-hidden="(!sidebarOpen && !isDesktop()).toString()"
+                    :aria-hidden="(!mobileSidebarOpen && !isDesktop()).toString()"
                     aria-label="{{ __('Admin navigation') }}"
                 >
                     <div class="admin-sidebar-header" data-admin-sidebar-header>
@@ -363,9 +364,9 @@
                     class="admin-main min-h-screen flex flex-col"
                     data-admin-main
                 >
-                    <header class="sticky top-0 z-20 bg-white/90 backdrop-blur border-b border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
-                        <div class="flex items-center justify-between px-4 sm:px-6 lg:px-8 h-16">
-                            <div class="flex items-center gap-3">
+                    <header class="admin-topbar sticky top-0 z-20 bg-white/90 backdrop-blur border-b border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
+                        <div class="flex h-16 min-w-0 items-center justify-between gap-3 px-3 sm:px-6 lg:px-8">
+                            <div class="flex min-w-0 items-center gap-3">
                                 <button
                                     type="button"
                                     class="admin-sidebar-top-expand h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:bg-slate-100 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
@@ -382,7 +383,7 @@
                                     type="button"
                                     class="admin-mobile-sidebar-toggle lg:hidden inline-flex items-center justify-center h-10 w-10 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
                                     @click="openMobileSidebar()"
-                                    :aria-expanded="sidebarOpen.toString()"
+                                    :aria-expanded="mobileSidebarOpen.toString()"
                                     aria-controls="admin-sidebar"
                                     aria-label="{{ __('Expand sidebar') }}"
                                     title="{{ __('Expand sidebar') }}"
@@ -401,7 +402,7 @@
                                 </div>
                             </div>
 
-                            <div class="flex items-center gap-4">
+                            <div class="admin-topbar-actions flex min-w-0 items-center gap-2 sm:gap-3">
                                 <x-language-switcher variant="light" />
 
                                 <button
@@ -502,7 +503,7 @@
                         </div>
                     </header>
 
-                    <main class="flex-1 px-4 sm:px-6 lg:px-8 py-6">
+                    <main class="admin-content flex-1 px-3 py-5 sm:px-6 sm:py-6 lg:px-8">
                         {{ $slot }}
                     </main>
 

@@ -4,6 +4,7 @@
 
 @php
     $currentLocale = app()->getLocale();
+    $isRtl = in_array($currentLocale, ['ar', 'ku'], true);
     $locales = [
         'en' => 'English',
         'ar' => "\u{0627}\u{0644}\u{0639}\u{0631}\u{0628}\u{064A}\u{0629}",
@@ -40,7 +41,7 @@
 
     <div
         data-header-dropdown-menu
-        class="absolute right-0 top-full z-50 mt-2 hidden w-44 rounded-2xl p-2 {{ $menuClasses }}"
+        class="absolute {{ $isRtl ? 'left-0' : 'right-0' }} top-full z-50 mt-2 hidden w-44 rounded-2xl p-2 {{ $menuClasses }}"
         role="menu"
         aria-label="{{ __('Language') }}"
     >
