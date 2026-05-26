@@ -74,7 +74,6 @@
             <div
                 x-data="adminSidebarShell({ storageKey: 'admin-sidebar-collapsed' })"
                 x-init="init()"
-                @keydown.escape.window="closeMobileSidebar()"
                 class="min-h-screen admin-shell"
                 :class="{ 'admin-sidebar-collapsed': sidebarCollapsed }"
                 data-admin-shell
@@ -83,7 +82,7 @@
                 <div
                     x-cloak
                     x-show="sidebarOpen"
-                    class="admin-sidebar-backdrop fixed inset-0 z-30 bg-slate-950/55 lg:hidden"
+                    class="admin-sidebar-backdrop fixed inset-0 bg-slate-950/55 lg:hidden"
                     @click="closeMobileSidebar()"
                     x-transition.opacity
                     aria-hidden="true"
@@ -93,9 +92,10 @@
                 <aside
                     id="admin-sidebar"
                     data-admin-sidebar
-                    class="admin-sidebar fixed inset-y-0 z-40 bg-slate-900 text-slate-100 dark:bg-slate-900 h-screen overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-hide"
+                    class="admin-sidebar fixed inset-y-0 bg-slate-900 text-slate-100 dark:bg-slate-900 h-screen overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-hide"
                     :class="{ 'admin-sidebar-open': sidebarOpen }"
                     @click="handleSidebarClick($event)"
+                    :aria-hidden="(!sidebarOpen && !isDesktop()).toString()"
                     aria-label="{{ __('Admin navigation') }}"
                 >
                     <div class="admin-sidebar-header" data-admin-sidebar-header>

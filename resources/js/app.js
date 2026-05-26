@@ -9,6 +9,8 @@ Alpine.data('adminSidebarShell', ({ storageKey = 'admin-sidebar-collapsed' } = {
     sidebarCollapsed: false,
     desktopQuery: null,
     resizeHandler: null,
+    escapeHandler: null,
+    pageHideHandler: null,
     initialized: false,
 
     init() {
@@ -23,7 +25,7 @@ Alpine.data('adminSidebarShell', ({ storageKey = 'admin-sidebar-collapsed' } = {
 
         this.$watch('sidebarCollapsed', () => this.syncDocumentState());
         this.$watch('sidebarOpen', (open) => {
-            document.documentElement.classList.toggle('admin-sidebar-drawer-open', open);
+            this.syncMobileDrawerState(open);
         });
 
         this.resizeHandler = () => {
@@ -43,17 +45,35 @@ Alpine.data('adminSidebarShell', ({ storageKey = 'admin-sidebar-collapsed' } = {
         } else if (typeof this.desktopQuery.addListener === 'function') {
             this.desktopQuery.addListener(this.resizeHandler);
         }
+
+        this.escapeHandler = (event) => {
+            if (event.key === 'Escape') {
+                this.closeMobileSidebar();
+            }
+        };
+        this.pageHideHandler = () => this.syncMobileDrawerState(false);
+
+        window.addEventListener('keydown', this.escapeHandler);
+        window.addEventListener('pagehide', this.pageHideHandler);
     },
 
     destroy() {
-        if (!this.desktopQuery || !this.resizeHandler) {
-            return;
+        this.syncMobileDrawerState(false);
+
+        if (this.desktopQuery && this.resizeHandler) {
+            if (typeof this.desktopQuery.removeEventListener === 'function') {
+                this.desktopQuery.removeEventListener('change', this.resizeHandler);
+            } else if (typeof this.desktopQuery.removeListener === 'function') {
+                this.desktopQuery.removeListener(this.resizeHandler);
+            }
         }
 
-        if (typeof this.desktopQuery.removeEventListener === 'function') {
-            this.desktopQuery.removeEventListener('change', this.resizeHandler);
-        } else if (typeof this.desktopQuery.removeListener === 'function') {
-            this.desktopQuery.removeListener(this.resizeHandler);
+        if (this.escapeHandler) {
+            window.removeEventListener('keydown', this.escapeHandler);
+        }
+
+        if (this.pageHideHandler) {
+            window.removeEventListener('pagehide', this.pageHideHandler);
         }
     },
 
@@ -77,6 +97,13 @@ Alpine.data('adminSidebarShell', ({ storageKey = 'admin-sidebar-collapsed' } = {
 
     syncDocumentState() {
         document.documentElement.classList.toggle('admin-sidebar-precollapsed', this.isDesktop() && this.sidebarCollapsed);
+    },
+
+    syncMobileDrawerState(open) {
+        const shouldLock = open && !this.isDesktop();
+
+        document.documentElement.classList.toggle('admin-sidebar-drawer-open', shouldLock);
+        document.body?.classList.toggle('admin-sidebar-drawer-open', shouldLock);
     },
 
     toggleSidebarCollapsed() {
@@ -108,10 +135,12 @@ Alpine.data('adminSidebarShell', ({ storageKey = 'admin-sidebar-collapsed' } = {
         this.sidebarCollapsed = false;
         this.sidebarOpen = true;
         this.syncDocumentState();
+        this.syncMobileDrawerState(true);
     },
 
     closeMobileSidebar() {
         this.sidebarOpen = false;
+        this.syncMobileDrawerState(false);
     },
 
     handleSidebarClick(event) {
