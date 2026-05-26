@@ -32,4 +32,8 @@ return [
         'enabled' => env('ADMIN_TWO_FACTOR_ENABLED', env('APP_ENV') === 'production'),
         'code_ttl_minutes' => (int) env('ADMIN_TWO_FACTOR_CODE_TTL', 10),
     ],
+
+    'email_verification' => [
+        'max_attempts' => (int) env('EMAIL_VERIFICATION_MAX_ATTEMPTS', 5),
+    ],
 ];

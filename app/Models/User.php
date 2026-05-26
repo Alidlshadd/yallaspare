@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Notifications\QueuedResetPassword;
 use App\Notifications\ImmediateVerifyEmail;
+use App\Support\EmailVerificationCode;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -133,7 +134,7 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
 
     public function sendEmailVerificationNotification(): void
     {
-        $this->notify(new ImmediateVerifyEmail());
+        $this->notify(new ImmediateVerifyEmail(EmailVerificationCode::generateFor($this)));
     }
 
     public function sendPasswordResetNotification($token): void

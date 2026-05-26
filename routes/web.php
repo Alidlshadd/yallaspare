@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DealerController;
 use App\Http\Controllers\Admin\InventoryMovementController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\EmailController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\LowStockController;
 use App\Http\Controllers\Admin\AdminActivityLogController;
@@ -316,19 +317,19 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
             ->middleware('can:' . User::PERMISSION_USERS_VIEW)
             ->name('users.index');
         Route::get('/users/{user}', [UserController::class, 'show'])
-            ->middleware('can:manage-users')
+            ->middleware(['can:manage-users', 'password.confirm'])
             ->name('users.show');
         Route::patch('/users/{user}', [UserController::class, 'updateDetails'])
-            ->middleware('can:manage-users')
+            ->middleware(['can:manage-users', 'password.confirm', 'throttle:admin-write'])
             ->name('users.update-details');
         Route::patch('/users/{user}/role', [UserController::class, 'updateRole'])
-            ->middleware('can:manage-users')
+            ->middleware(['can:manage-users', 'password.confirm', 'throttle:admin-write'])
             ->name('users.update-role');
         Route::patch('/users/{user}/password', [UserController::class, 'updatePassword'])
-            ->middleware('can:manage-users')
+            ->middleware(['can:manage-users', 'password.confirm', 'throttle:admin-write'])
             ->name('users.update-password');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])
-            ->middleware('can:manage-users')
+            ->middleware(['can:manage-users', 'password.confirm', 'throttle:admin-write'])
             ->name('users.destroy');
 
         // Dealers
@@ -352,11 +353,17 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
 
         // System Settings
         Route::get('/settings', [SettingController::class, 'edit'])
-            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
+            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'password.confirm'])
             ->name('settings.edit');
         Route::put('/settings', [SettingController::class, 'update'])
-            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
+            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'password.confirm', 'throttle:admin-write'])
             ->name('settings.update');
+        Route::get('/email', [EmailController::class, 'index'])
+            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'password.confirm'])
+            ->name('email.index');
+        Route::post('/email/test', [EmailController::class, 'sendTest'])
+            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'password.confirm', 'throttle:admin-write'])
+            ->name('email.test');
 
         // Notifications
         Route::get('/notifications', [NotificationController::class, 'index'])

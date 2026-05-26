@@ -20,7 +20,10 @@ class StorefrontHeroVideoUploadTest extends TestCase
         $video = $this->fakeMp4Upload('hero.mp4');
 
         $response = $this
-            ->withSession(['admin_2fa.verified_user_id' => $user->id])
+            ->withSession([
+                'admin_2fa.verified_user_id' => $user->id,
+                'auth.password_confirmed_at' => time(),
+            ])
             ->actingAs($user)
             ->put(route('admin.settings.update'), array_merge($this->validPayload(), [
                 'storefront_hero_video' => $video,
@@ -40,7 +43,10 @@ class StorefrontHeroVideoUploadTest extends TestCase
         $video = UploadedFile::fake()->createWithContent('hero.mp4', "<?php echo 'not a video';");
 
         $response = $this
-            ->withSession(['admin_2fa.verified_user_id' => $user->id])
+            ->withSession([
+                'admin_2fa.verified_user_id' => $user->id,
+                'auth.password_confirmed_at' => time(),
+            ])
             ->actingAs($user)
             ->from(route('admin.settings.edit'))
             ->put(route('admin.settings.update'), array_merge($this->validPayload(), [

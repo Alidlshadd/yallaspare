@@ -13,6 +13,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
+use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -30,6 +31,14 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useTailwind();
+
+        Password::defaults(function (): Password {
+            $rule = Password::min(app()->environment('production') ? 12 : 8);
+
+            return app()->environment('production')
+                ? $rule->mixedCase()->numbers()->symbols()->uncompromised()
+                : $rule;
+        });
 
         try {
             if (Schema::hasTable('settings')) {

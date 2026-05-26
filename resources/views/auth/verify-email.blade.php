@@ -11,7 +11,7 @@
         $verificationEmail = (string) auth()->user()?->email;
         $emailDomain = strtolower((string) str($verificationEmail)->afterLast('@'));
         $isGmailAddress = in_array($emailDomain, ['gmail.com', 'googlemail.com'], true);
-        $verificationSent = session('status') == 'verification-link-sent';
+        $verificationSent = session('status') == 'verification-code-sent';
         $cooldownSeconds = 60;
     @endphp
 
@@ -120,7 +120,7 @@
                         <path fill-rule="evenodd" d="M16.704 5.29a1 1 0 0 1 .006 1.414l-7.25 7.312a1 1 0 0 1-1.42.002L3.29 9.226a1 1 0 1 1 1.42-1.408l4.04 4.075 6.54-6.597a1 1 0 0 1 1.414-.006Z" clip-rule="evenodd" />
                     </svg>
                 </span>
-                <span>{{ __('A fresh verification email has been sent.') }}</span>
+                <span>{{ __('A fresh verification code has been sent.') }}</span>
             </div>
         </div>
     @endif
@@ -149,7 +149,7 @@
                 <div class="min-w-0">
                     <p class="text-sm font-semibold text-slate-950 dark:text-white">{{ __('Confirm your email address') }}</p>
                     <p class="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">
-                        {{ __('Use the secure link we sent to finish protecting your YallaSpare account.') }}
+                        {{ __('Enter the 6-digit code we sent to finish protecting your YallaSpare account.') }}
                     </p>
                     @if ($verificationEmail !== '')
                         <p class="mt-3 break-words rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-[#070740] dark:border-white/10 dark:bg-slate-900 dark:text-slate-100">
@@ -168,7 +168,7 @@
                 </div>
                 <div class="flex items-center gap-2 text-slate-700 dark:text-slate-200">
                     <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-[#070740] dark:bg-white/10 dark:text-white">2</span>
-                    <span class="font-semibold">{{ __('Click verify') }}</span>
+                    <span class="font-semibold">{{ __('Enter code') }}</span>
                 </div>
                 <div class="flex items-center gap-2 text-slate-700 dark:text-slate-200">
                     <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-[#070740] dark:bg-white/10 dark:text-white">3</span>
@@ -179,6 +179,38 @@
 
         <div class="border-t border-slate-200 pt-5 dark:border-white/10">
             <div class="grid gap-3">
+                <form method="POST" action="{{ route('verification.verify') }}" class="grid gap-3" data-auth-form>
+                    @csrf
+
+                    <div>
+                        <label for="verification_code" class="mb-2 block text-xs font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">
+                            {{ __('Verification code') }}
+                        </label>
+                        <input
+                            id="verification_code"
+                            name="verification_code"
+                            type="text"
+                            inputmode="numeric"
+                            autocomplete="one-time-code"
+                            maxlength="6"
+                            pattern="[0-9]*"
+                            value="{{ old('verification_code') }}"
+                            class="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-center text-xl font-bold tracking-[0.35em] text-[#070740] shadow-sm transition focus:border-[#070740] focus:outline-none focus:ring-2 focus:ring-[#070740]/20 dark:border-white/10 dark:bg-slate-900 dark:text-white dark:focus:border-sky-300 dark:focus:ring-sky-300/20"
+                            required
+                        >
+                        @error('verification_code')
+                            <p class="mt-2 text-sm font-medium text-rose-600 dark:text-rose-300">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="inline-flex min-h-[2.75rem] w-full items-center justify-center rounded-lg bg-[#070740] px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-slate-950/20 transition duration-200 hover:bg-[#10105c] focus:outline-none"
+                    >
+                        {{ __('Verify Code') }}
+                    </button>
+                </form>
+
                 <form method="POST" action="{{ route('verification.send') }}" data-auth-form data-resend-form>
                     @csrf
 
@@ -190,7 +222,7 @@
                         <svg class="h-4 w-4 opacity-0" data-verify-spinner viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                             <path stroke-linecap="round" d="M12 3a9 9 0 1 1-8.49 6" />
                         </svg>
-                        <span data-resend-label>{{ __('Resend Verification Email') }}</span>
+                        <span data-resend-label>{{ __('Resend Verification Code') }}</span>
                     </button>
                 </form>
 
@@ -225,7 +257,7 @@
         </div>
 
         <p class="text-xs leading-5 text-slate-500 dark:text-slate-400">
-            {{ __('If the email is not visible, check spam or request a fresh link. The newest link is the one you should use.') }}
+            {{ __('If the email is not visible, check spam or request a fresh code. The newest code is the one you should use.') }}
         </p>
     </section>
 
@@ -262,13 +294,13 @@
                     if (!isSubmitting) {
                         label.textContent = @json(__('Resend available soon'));
                     }
-                    cooldownText.textContent = @json(__('You can resend another email in :seconds seconds.')).replace(':seconds', String(remaining));
+                    cooldownText.textContent = @json(__('You can resend another code in :seconds seconds.')).replace(':seconds', String(remaining));
                     return;
                 }
 
                 isSubmitting = false;
                 button.disabled = false;
-                label.textContent = @json(__('Resend Verification Email'));
+                label.textContent = @json(__('Resend Verification Code'));
                 cooldownText.textContent = '';
                 spinner?.classList.add('opacity-0');
                 window.localStorage.removeItem(key);

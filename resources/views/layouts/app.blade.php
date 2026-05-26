@@ -320,6 +320,17 @@
                         @endcan
                         @can(\App\Models\User::PERMISSION_SETTINGS_MANAGE)
                             <a
+                                href="{{ route('admin.email.index') }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.email.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Email Center') }}"
+                                @if(request()->routeIs('admin.email.*')) aria-current="page" @endif
+                            >
+                                <span class="admin-nav-icon" aria-hidden="true">
+                                    <i class="fas fa-envelope-open-text"></i>
+                                </span>
+                                <span class="admin-nav-label">{{ __('Email Center') }}</span>
+                            </a>
+                            <a
                                 href="{{ route('admin.settings.edit') }}"
                                 class="admin-nav-link {{ $navItem(request()->routeIs('admin.settings.*')) }}"
                                 data-admin-sidebar-tooltip="{{ __('Settings') }}"

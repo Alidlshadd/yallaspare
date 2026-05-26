@@ -91,13 +91,17 @@ class AdminDashboardTest extends TestCase
             'admin.inventory.index',
             'admin.reviews.index',
             'admin.settings.edit',
+            'admin.email.index',
             'admin.vehicle-fitments.index',
             'admin.returns.index',
             'admin.activity-logs.index',
         ];
 
         foreach ($routes as $route) {
-            $response = $this->actingAs($admin)->get(route($route));
+            $response = $this
+                ->withSession(['auth.password_confirmed_at' => time()])
+                ->actingAs($admin)
+                ->get(route($route));
 
             $response->assertOk();
             $response->assertSee('data-admin-sidebar', false);

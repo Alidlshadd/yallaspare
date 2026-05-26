@@ -34,15 +34,29 @@
 
         <div>
             <x-input-label for="password" :value="__('Password')" class="text-sm font-medium text-slate-300" />
-            <x-text-input
-                id="password"
-                class="mt-2 block w-full rounded-lg border border-slate-700 bg-slate-800/90 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 transition duration-200 focus:border-red-500 focus:ring-red-500"
-                type="password"
-                name="password"
-                required
-                autocomplete="current-password"
-                placeholder="{{ __('Enter your password') }}"
-            />
+            <div class="relative mt-2">
+                <x-text-input
+                    id="password"
+                    class="block w-full rounded-lg border border-slate-700 bg-slate-800/90 px-3 py-2.5 pr-12 text-sm text-slate-100 placeholder:text-slate-500 transition duration-200 focus:border-red-500 focus:ring-red-500"
+                    type="password"
+                    name="password"
+                    required
+                    autocomplete="current-password"
+                    placeholder="{{ __('Enter your password') }}"
+                    data-password-input
+                />
+                <button
+                    type="button"
+                    class="absolute inset-y-0 right-2 inline-flex w-9 items-center justify-center rounded-md text-slate-400 transition hover:bg-slate-700/70 hover:text-slate-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500"
+                    data-password-toggle
+                    data-show-label="{{ __('Show password') }}"
+                    data-hide-label="{{ __('Hide password') }}"
+                    aria-label="{{ __('Show password') }}"
+                    title="{{ __('Show password') }}"
+                >
+                    <i class="fas fa-eye" aria-hidden="true" data-password-toggle-icon></i>
+                </button>
+            </div>
             <x-input-error :messages="$errors->get('password')" class="mt-2 text-sm text-red-400" />
         </div>
 

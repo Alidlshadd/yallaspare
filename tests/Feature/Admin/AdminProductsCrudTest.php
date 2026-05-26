@@ -365,7 +365,10 @@ class AdminProductsCrudTest extends TestCase
             'reviewed_at' => now(),
         ]);
 
-        $response = $this->actingAs($admin)->get(route('admin.users.show', $customer));
+        $response = $this
+            ->withSession(['auth.password_confirmed_at' => time()])
+            ->actingAs($admin)
+            ->get(route('admin.users.show', $customer));
 
         $response->assertOk();
         $response->assertSee('Customer Reviews');

@@ -17,6 +17,8 @@ class AuthenticationTest extends TestCase
         $response->assertStatus(200);
         $response->assertSee('data-header-dropdown-trigger', false);
         $response->assertSee('languageDropdownReady', false);
+        $response->assertSee('data-password-toggle', false);
+        $response->assertSee('Show password');
     }
 
     public function test_users_can_authenticate_using_the_login_screen(): void

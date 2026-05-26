@@ -5,10 +5,10 @@ namespace Tests\Feature\Auth;
 use App\Models\User;
 use App\Notifications\ImmediateVerifyEmail;
 use App\Providers\RouteServiceProvider;
+use App\Support\EmailVerificationCode;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Http\Request as HttpRequest;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\URL;
@@ -30,7 +30,9 @@ class EmailVerificationTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('Verify Email');
-        $response->assertSee('Resend Verification Email');
+        $response->assertSee('Verification code');
+        $response->assertSee('Verify Code');
+        $response->assertSee('Resend Verification Code');
         $response->assertSee('Open Gmail');
         $response->assertSee($user->email);
         $response->assertDontSee('Verification Required');
@@ -59,14 +61,14 @@ class EmailVerificationTest extends TestCase
         ]);
 
         $response = $this->actingAs($user)
-            ->withSession(['status' => 'verification-link-sent'])
+            ->withSession(['status' => 'verification-code-sent'])
             ->get('/verify-email');
 
         $response->assertStatus(200);
-        $response->assertSee('A fresh verification email has been sent.');
+        $response->assertSee('A fresh verification code has been sent.');
         $response->assertSee('data-verify-toast', false);
         $response->assertSee('data-resend-sent="1"', false);
-        $response->assertSee('You can resend another email in :seconds seconds.');
+        $response->assertSee('You can resend another code in :seconds seconds.');
     }
 
     public function test_resend_verification_email_sends_immediate_notification(): void
@@ -85,29 +87,14 @@ class EmailVerificationTest extends TestCase
     public function test_verification_email_has_branded_copy(): void
     {
         $user = User::factory()->unverified()->create();
-        $mail = (new ImmediateVerifyEmail())->toMail($user);
+        $mail = (new ImmediateVerifyEmail('123456'))->toMail($user);
 
         $this->assertSame('Verify your YallaSpare email address', $mail->subject);
         $this->assertSame('Welcome to YallaSpare', $mail->greeting);
-        $this->assertSame('Verify email address', $mail->actionText);
-        $this->assertContains('Please confirm your email address so we can protect your account and unlock checkout, orders, saved addresses, and account settings.', $mail->introLines);
-        $this->assertContains('This verification link expires in 60 minutes.', $mail->outroLines);
-    }
-
-    public function test_verification_email_uses_public_https_request_host(): void
-    {
-        config(['app.url' => 'http://127.0.0.1:8000']);
-        $user = User::factory()->unverified()->create();
-        $request = HttpRequest::create('http://yallaspare.com/email/verification-notification', 'POST');
-
-        app()->instance('request', $request);
-        URL::setRequest($request);
-
-        $actionUrl = (string) (new ImmediateVerifyEmail())->toMail($user)->actionUrl;
-
-        $this->assertStringStartsWith('https://yallaspare.com/verify-email/', $actionUrl);
-        $this->assertStringContainsString('signature=', $actionUrl);
-        $this->assertStringNotContainsString('127.0.0.1', $actionUrl);
+        $this->assertNull($mail->actionText);
+        $this->assertContains('Enter this verification code on the YallaSpare verification screen to protect your account and unlock checkout, orders, saved addresses, and account settings.', $mail->introLines);
+        $this->assertContains('Your verification code is 123456.', $mail->introLines);
+        $this->assertContains('This verification code expires in 60 minutes.', $mail->introLines);
     }
 
     public function test_unverified_users_cannot_access_verified_customer_routes(): void
@@ -165,7 +152,71 @@ class EmailVerificationTest extends TestCase
         $this->getJson('/api/mobile/me')->assertForbidden();
     }
 
-    public function test_email_can_be_verified(): void
+    public function test_email_can_be_verified_with_code(): void
+    {
+        $user = User::factory()->create([
+            'email_verified_at' => null,
+        ]);
+
+        Event::fake();
+        $code = EmailVerificationCode::generateFor($user);
+
+        $response = $this->actingAs($user)->post(route('verification.verify'), [
+            'verification_code' => $code,
+        ]);
+
+        Event::assertDispatched(Verified::class);
+        $this->assertTrue($user->fresh()->hasVerifiedEmail());
+        $response->assertRedirect(RouteServiceProvider::HOME.'?verified=1');
+    }
+
+    public function test_email_is_not_verified_with_invalid_code(): void
+    {
+        $user = User::factory()->create([
+            'email_verified_at' => null,
+        ]);
+        EmailVerificationCode::generateFor($user);
+
+        $this->actingAs($user)
+            ->from(route('verification.notice'))
+            ->post(route('verification.verify'), [
+                'verification_code' => '000000',
+            ])
+            ->assertRedirect(route('verification.notice'))
+            ->assertSessionHasErrors('verification_code');
+
+        $this->assertFalse($user->fresh()->hasVerifiedEmail());
+    }
+
+    public function test_email_verification_code_is_invalidated_after_too_many_failed_attempts(): void
+    {
+        config(['security.email_verification.max_attempts' => 2]);
+
+        $user = User::factory()->create([
+            'email_verified_at' => null,
+        ]);
+        $code = EmailVerificationCode::generateFor($user);
+
+        $this->actingAs($user)->post(route('verification.verify'), [
+            'verification_code' => '000000',
+        ]);
+
+        $this->actingAs($user)->post(route('verification.verify'), [
+            'verification_code' => '111111',
+        ]);
+
+        $this->actingAs($user)
+            ->from(route('verification.notice'))
+            ->post(route('verification.verify'), [
+                'verification_code' => $code,
+            ])
+            ->assertRedirect(route('verification.notice'))
+            ->assertSessionHasErrors('verification_code');
+
+        $this->assertFalse($user->fresh()->hasVerifiedEmail());
+    }
+
+    public function test_legacy_signed_email_link_still_verifies_email(): void
     {
         $user = User::factory()->create([
             'email_verified_at' => null,
@@ -174,7 +225,7 @@ class EmailVerificationTest extends TestCase
         Event::fake();
 
         $verificationUrl = URL::temporarySignedRoute(
-            'verification.verify',
+            'verification.verify-link',
             now()->addMinutes(60),
             ['id' => $user->id, 'hash' => sha1($user->email)],
             false
@@ -187,14 +238,14 @@ class EmailVerificationTest extends TestCase
         $response->assertRedirect(RouteServiceProvider::HOME.'?verified=1');
     }
 
-    public function test_email_is_not_verified_with_invalid_hash(): void
+    public function test_email_is_not_verified_with_invalid_legacy_hash(): void
     {
         $user = User::factory()->create([
             'email_verified_at' => null,
         ]);
 
         $verificationUrl = URL::temporarySignedRoute(
-            'verification.verify',
+            'verification.verify-link',
             now()->addMinutes(60),
             ['id' => $user->id, 'hash' => sha1('wrong-email')],
             false

@@ -181,7 +181,7 @@ class UserController extends Controller
             ? null
             : User::normalizePermissions($data['permissions'] ?? []);
 
-        $user->update([
+        $user->fill([
             'name' => trim($data['name']),
             'email' => strtolower(trim($data['email'])),
             'phone' => filled($data['phone'] ?? null) ? trim((string) $data['phone']) : null,
@@ -190,10 +190,13 @@ class UserController extends Controller
             'permissions' => $permissions,
             'dealer_status' => $dealerStatus,
             'dealer_discount' => $dealerDiscount,
+        ]);
+
+        $user->forceFill([
             'email_verified_at' => $request->boolean('email_verified')
                 ? ($user->email_verified_at ?? now())
                 : null,
-        ]);
+        ])->save();
 
         return back()->with('success', __('User details updated successfully.'));
     }
