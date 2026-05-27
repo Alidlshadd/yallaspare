@@ -63,7 +63,6 @@ class SecurityHeaders
             'forgot-password',
             'reset-password*',
             'verify-email*',
-            'confirm-password',
             'admin*',
             'account*',
             'profile*',

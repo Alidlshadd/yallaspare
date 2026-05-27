@@ -19,8 +19,7 @@ class AdminEmailPageTest extends TestCase
             'email_verified_at' => now(),
         ]);
 
-        $this->withSession(['auth.password_confirmed_at' => time()])
-            ->actingAs($admin)
+        $this->actingAs($admin)
             ->get(route('admin.email.index'))
             ->assertOk()
             ->assertSee('Email Center')
@@ -28,7 +27,7 @@ class AdminEmailPageTest extends TestCase
             ->assertSee('Readiness Checks');
     }
 
-    public function test_email_center_requires_recent_password_confirmation(): void
+    public function test_email_center_does_not_use_confirm_password_route(): void
     {
         $admin = User::factory()->create([
             'role' => User::ROLE_SETTINGS_MANAGER,
@@ -37,7 +36,8 @@ class AdminEmailPageTest extends TestCase
 
         $this->actingAs($admin)
             ->get(route('admin.email.index'))
-            ->assertRedirect(route('password.confirm'));
+            ->assertOk()
+            ->assertSee('Email Center');
     }
 
     public function test_settings_manager_can_send_test_email(): void
@@ -54,8 +54,7 @@ class AdminEmailPageTest extends TestCase
             'email_verified_at' => now(),
         ]);
 
-        $this->withSession(['auth.password_confirmed_at' => time()])
-            ->actingAs($admin)
+        $this->actingAs($admin)
             ->post(route('admin.email.test'), [
                 'recipient' => 'owner@example.com',
                 'subject' => 'Admin mail test',
