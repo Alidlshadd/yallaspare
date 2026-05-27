@@ -74,6 +74,7 @@
             <div
                 x-data="adminSidebarShell({ storageKey: 'admin-sidebar-collapsed' })"
                 x-init="init()"
+                @click.capture="handleShellClick($event)"
                 class="min-h-screen admin-shell"
                 :class="{ 'admin-sidebar-collapsed': sidebarCollapsed, 'admin-mobile-drawer-open': mobileSidebarOpen && !isDesktop() }"
                 data-admin-shell
@@ -117,7 +118,6 @@
                         <button
                             type="button"
                             class="admin-sidebar-toggle hidden h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-slate-100 transition hover:border-white/20 hover:bg-white/15 hover:text-white lg:inline-flex"
-                            @click.stop="toggleSidebarCollapsed()"
                             :aria-expanded="(!sidebarCollapsed).toString()"
                             :aria-label="sidebarCollapsed ? $el.dataset.expandLabel : $el.dataset.collapseLabel"
                             :title="sidebarCollapsed ? $el.dataset.expandLabel : $el.dataset.collapseLabel"
@@ -132,10 +132,10 @@
                         <button
                             type="button"
                             class="admin-sidebar-toggle inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-slate-100 transition hover:bg-white/15 lg:hidden"
-                            @click="closeMobileSidebar()"
                             aria-controls="admin-sidebar"
                             aria-label="{{ __('Collapse sidebar') }}"
                             title="{{ __('Collapse sidebar') }}"
+                            data-admin-mobile-sidebar-close
                         >
                             <i class="fas fa-xmark text-sm"></i>
                         </button>
@@ -370,7 +370,6 @@
                                 <button
                                     type="button"
                                     class="admin-sidebar-top-expand h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:bg-slate-100 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
-                                    @click="expandSidebar()"
                                     aria-expanded="false"
                                     aria-controls="admin-sidebar"
                                     aria-label="{{ __('Expand sidebar') }}"
@@ -382,7 +381,6 @@
                                 <button
                                     type="button"
                                     class="admin-mobile-sidebar-toggle lg:hidden inline-flex items-center justify-center h-10 w-10 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
-                                    @click="openMobileSidebar()"
                                     :aria-expanded="mobileSidebarOpen.toString()"
                                     aria-controls="admin-sidebar"
                                     aria-label="{{ __('Expand sidebar') }}"

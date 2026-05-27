@@ -84,7 +84,7 @@ Alpine.data('adminSidebarShell', ({ storageKey = 'admin-sidebar-collapsed' } = {
     },
 
     isDesktop() {
-        return this.desktopQuery?.matches === true;
+        return this.desktopQuery ? this.desktopQuery.matches === true : window.innerWidth >= 1024;
     },
 
     storedCollapsed() {
@@ -119,8 +119,11 @@ Alpine.data('adminSidebarShell', ({ storageKey = 'admin-sidebar-collapsed' } = {
             return;
         }
 
+        this.mobileSidebarOpen = false;
+        this.syncMobileDrawerState(false);
         this.sidebarCollapsed = !this.sidebarCollapsed;
         this.persistCollapsed();
+        this.syncDocumentState();
     },
 
     expandSidebar() {
@@ -129,8 +132,11 @@ Alpine.data('adminSidebarShell', ({ storageKey = 'admin-sidebar-collapsed' } = {
             return;
         }
 
+        this.mobileSidebarOpen = false;
+        this.syncMobileDrawerState(false);
         this.sidebarCollapsed = false;
         this.persistCollapsed();
+        this.syncDocumentState();
     },
 
     openMobileSidebar() {
@@ -150,8 +156,47 @@ Alpine.data('adminSidebarShell', ({ storageKey = 'admin-sidebar-collapsed' } = {
         this.syncMobileDrawerState(false);
     },
 
+    handleShellClick(event) {
+        const target = event.target instanceof Element ? event.target : null;
+        if (!target) {
+            return;
+        }
+
+        const toggle = target.closest('[data-admin-sidebar-toggle]');
+        if (toggle) {
+            event.preventDefault();
+            event.stopPropagation();
+            this.toggleSidebarCollapsed();
+            return;
+        }
+
+        const expand = target.closest('[data-admin-sidebar-expand]');
+        if (expand) {
+            event.preventDefault();
+            event.stopPropagation();
+            this.expandSidebar();
+            return;
+        }
+
+        const mobileOpen = target.closest('[data-admin-mobile-sidebar-toggle]');
+        if (mobileOpen) {
+            event.preventDefault();
+            event.stopPropagation();
+            this.openMobileSidebar();
+            return;
+        }
+
+        const mobileClose = target.closest('[data-admin-mobile-sidebar-close]');
+        if (mobileClose) {
+            event.preventDefault();
+            event.stopPropagation();
+            this.closeMobileSidebar();
+        }
+    },
+
     handleSidebarClick(event) {
-        const link = event.target.closest('a');
+        const target = event.target instanceof Element ? event.target : null;
+        const link = target?.closest('a');
         if (link && !this.isDesktop()) {
             this.closeMobileSidebar();
         }

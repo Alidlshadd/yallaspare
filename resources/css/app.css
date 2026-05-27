@@ -370,6 +370,7 @@
     }
 
     .admin-sidebar-header {
+        position: relative;
         display: flex;
         align-items: center;
         gap: 0.5rem;
@@ -379,6 +380,8 @@
     }
 
     .admin-sidebar-logo {
+        position: relative;
+        z-index: 1;
         min-width: 0;
         flex: 1 1 auto;
         display: inline-flex;
@@ -442,9 +445,13 @@
     .admin-sidebar-toggle,
     .admin-mobile-sidebar-toggle,
     .admin-sidebar-top-expand {
+        position: relative;
+        z-index: 5;
+        flex: 0 0 auto;
         cursor: pointer;
         outline: none;
         user-select: none;
+        touch-action: manipulation;
     }
 
     .admin-sidebar-toggle i,
