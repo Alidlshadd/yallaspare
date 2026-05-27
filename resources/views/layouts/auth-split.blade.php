@@ -212,30 +212,6 @@
             });
         });
 
-        document.querySelectorAll('[data-password-toggle]').forEach((button) => {
-            button.addEventListener('click', () => {
-                const wrapper = button.closest('.relative');
-                const input = wrapper?.querySelector('[data-password-input]');
-                const icon = button.querySelector('[data-password-toggle-icon]');
-
-                if (!input) {
-                    return;
-                }
-
-                const isVisible = input.type === 'text';
-                input.type = isVisible ? 'password' : 'text';
-
-                const label = isVisible
-                    ? button.dataset.showLabel || 'Show password'
-                    : button.dataset.hideLabel || 'Hide password';
-
-                button.setAttribute('aria-label', label);
-                button.setAttribute('title', label);
-                icon?.classList.toggle('fa-eye', isVisible);
-                icon?.classList.toggle('fa-eye-slash', !isVisible);
-            });
-        });
-
         document.querySelectorAll('[data-auth-form]').forEach((form) => {
             form.addEventListener('submit', () => {
                 const submitButtons = form.querySelectorAll('button[type="submit"]');

@@ -18,18 +18,31 @@
         <label for="{{ $inputId }}" class="block text-sm font-medium text-app">{{ $label }}</label>
     @endif
 
-    <input
-        id="{{ $inputId }}"
-        name="{{ $name }}"
-        type="{{ $type }}"
-        value="{{ old($name, $value) }}"
-        @if ($errorText) aria-invalid="true" aria-describedby="{{ $inputId }}-error" @elseif ($hint) aria-describedby="{{ $inputId }}-hint" @endif
-        {{ $attributes->except('class')->class([
-            'block w-full rounded-app border bg-surface-2 px-3 py-2.5 text-sm text-app placeholder:text-slate-400',
-            'border-app focus-ring',
-            $errorText ? 'border-[var(--danger)]' : '',
-        ]) }}
-    />
+    @if ($type === 'password')
+        <x-password-input
+            id="{{ $inputId }}"
+            name="{{ $name }}"
+            @if ($errorText) aria-invalid="true" aria-describedby="{{ $inputId }}-error" @elseif ($hint) aria-describedby="{{ $inputId }}-hint" @endif
+            {{ $attributes->except('class')->class([
+                'block w-full rounded-app border bg-surface-2 px-3 py-2.5 text-sm text-app placeholder:text-slate-400',
+                'border-app focus-ring',
+                $errorText ? 'border-[var(--danger)]' : '',
+            ]) }}
+        />
+    @else
+        <input
+            id="{{ $inputId }}"
+            name="{{ $name }}"
+            type="{{ $type }}"
+            value="{{ old($name, $value) }}"
+            @if ($errorText) aria-invalid="true" aria-describedby="{{ $inputId }}-error" @elseif ($hint) aria-describedby="{{ $inputId }}-hint" @endif
+            {{ $attributes->except('class')->class([
+                'block w-full rounded-app border bg-surface-2 px-3 py-2.5 text-sm text-app placeholder:text-slate-400',
+                'border-app focus-ring',
+                $errorText ? 'border-[var(--danger)]' : '',
+            ]) }}
+        />
+    @endif
 
     @if ($hint && ! $errorText)
         <p id="{{ $inputId }}-hint" class="text-xs text-muted">{{ $hint }}</p>

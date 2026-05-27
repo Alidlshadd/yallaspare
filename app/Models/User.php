@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Notifications\QueuedResetPassword;
+use App\Notifications\ImmediateResetPassword;
 use App\Notifications\ImmediateVerifyEmail;
 use App\Support\EmailVerificationCode;
 use Illuminate\Contracts\Translation\HasLocalePreference;
@@ -139,7 +139,7 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
 
     public function sendPasswordResetNotification($token): void
     {
-        $this->notify(new QueuedResetPassword($token));
+        $this->notify(new ImmediateResetPassword($token));
     }
 
     public function preferredLocale(): string

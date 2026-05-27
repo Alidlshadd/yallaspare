@@ -23,6 +23,15 @@ class ImmediateVerifyEmail extends Notification
         $expiresIn = EmailVerificationCode::expiresIn();
         $email = (string) $notifiable->getEmailForVerification();
 
+        $viewData = [
+            'title' => __('Verify your email address'),
+            'preheader' => __('Use your YallaSpare verification code to protect your account.'),
+            'intro' => __('Enter this verification code on the YallaSpare verification screen to protect your account.'),
+            'email' => $email,
+            'expiresIn' => $expiresIn,
+            'verificationCode' => $verificationCode,
+        ];
+
         return (new MailMessage)
             ->subject(__('Verify your YallaSpare email address'))
             ->greeting(__('Welcome to YallaSpare'))
@@ -30,16 +39,7 @@ class ImmediateVerifyEmail extends Notification
             ->line(__('Your verification code is :code.', ['code' => $verificationCode]))
             ->line(__('This verification code expires in :count minutes.', ['count' => $expiresIn]))
             ->line(__('If you did not create a YallaSpare account, you can ignore this email.'))
-            ->view([
-                'html' => 'emails.auth.verify-email',
-                'text' => 'emails.text.generic',
-            ], [
-                'title' => __('Verify your email address'),
-                'preheader' => __('Use your YallaSpare verification code to protect your account.'),
-                'intro' => __('Enter this verification code on the YallaSpare verification screen to protect your account.'),
-                'email' => $email,
-                'expiresIn' => $expiresIn,
-                'verificationCode' => $verificationCode,
-            ]);
+            ->view('emails.auth.verify-email', $viewData)
+            ->text('emails.text.generic', $viewData);
     }
 }

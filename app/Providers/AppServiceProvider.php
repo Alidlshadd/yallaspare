@@ -10,8 +10,11 @@ use App\Models\User;
 use App\Support\Branding;
 use App\Observers\AdminAuditObserver;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Lang;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\View;
 use Illuminate\Validation\Rules\Password;
 
@@ -31,6 +34,30 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Paginator::useTailwind();
+
+        Lang::handleMissingKeysUsing(function (string $key, array $replace, string $locale, bool $fallback): string {
+            Log::warning('Missing translation key.', [
+                'key' => $key,
+                'locale' => $locale,
+                'fallback' => $fallback,
+            ]);
+
+            $fallbackLocale = (string) config('app.fallback_locale', 'en');
+            $fallbackText = Lang::get($key, $replace, $fallbackLocale);
+
+            if (is_string($fallbackText) && $fallbackText !== $key) {
+                return $fallbackText;
+            }
+
+            $label = str_contains($key, '.') ? Str::afterLast($key, '.') : $key;
+
+            return Str::of($label)
+                ->replace(['_', '-'], ' ')
+                ->replaceMatches('/\s+/', ' ')
+                ->trim()
+                ->ucfirst()
+                ->toString();
+        });
 
         Password::defaults(function (): Password {
             $rule = Password::min(app()->environment('production') ? 12 : 8);

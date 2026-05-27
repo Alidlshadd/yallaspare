@@ -6,9 +6,9 @@
     $currentLocale = app()->getLocale();
     $isRtl = in_array($currentLocale, ['ar', 'ku'], true);
     $locales = [
-        'en' => 'English',
-        'ar' => "\u{0627}\u{0644}\u{0639}\u{0631}\u{0628}\u{064A}\u{0629}",
-        'ku' => "\u{06A9}\u{0648}\u{0631}\u{062F}\u{06CC}",
+        'en' => ['label' => 'English', 'code' => 'EN'],
+        'ar' => ['label' => "\u{0627}\u{0644}\u{0639}\u{0631}\u{0628}\u{064A}\u{0629}", 'code' => 'AR'],
+        'ku' => ['label' => "\u{06A9}\u{0648}\u{0631}\u{062F}\u{06CC}", 'code' => 'KU'],
     ];
     $currentLabel = $locales[$currentLocale] ?? $locales['en'];
     $triggerClasses = $variant === 'dark'
@@ -32,8 +32,8 @@
         aria-haspopup="menu"
         aria-label="{{ __('Language') }}"
     >
-        <span class="hidden min-[380px]:inline">{{ __($currentLabel) }}</span>
-        <span class="text-xs uppercase opacity-70">{{ $currentLocale }}</span>
+        <span class="hidden min-[380px]:inline">{{ __($currentLabel['label']) }}</span>
+        <span class="text-xs font-semibold uppercase opacity-70">{{ $currentLabel['code'] }}</span>
         <svg class="h-4 w-4 opacity-70 transition-transform" data-header-dropdown-icon viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
             <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.126l3.71-3.895a.75.75 0 1 1 1.08 1.04l-4.25 4.46a.75.75 0 0 1-1.08 0l-4.25-4.46a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd" />
         </svg>
@@ -45,17 +45,18 @@
         role="menu"
         aria-label="{{ __('Language') }}"
     >
-        @foreach ($locales as $locale => $label)
+        @foreach ($locales as $locale => $language)
             <form method="POST" action="{{ route('language.switch', $locale) }}">
                 @csrf
+                <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
                 <button
                     type="submit"
                     class="{{ $itemClasses }} {{ $currentLocale === $locale ? 'bg-slate-100 text-[#070740] dark:bg-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-300' }}"
                     @if ($currentLocale === $locale) aria-current="true" @endif
                     role="menuitem"
                 >
-                    <span>{{ __($label) }}</span>
-                    <span class="text-xs uppercase opacity-60">{{ $locale }}</span>
+                    <span>{{ __($language['label']) }}</span>
+                    <span class="text-xs font-semibold uppercase opacity-60">{{ $language['code'] }}</span>
                 </button>
             </form>
         @endforeach

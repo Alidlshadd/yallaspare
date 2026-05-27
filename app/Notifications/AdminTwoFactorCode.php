@@ -20,21 +20,21 @@ class AdminTwoFactorCode extends Notification
 
     public function toMail(object $notifiable): MailMessage
     {
+        $viewData = [
+            'title' => __('Admin verification required'),
+            'preheader' => __('Use your one-time admin verification code to continue signing in.'),
+            'code' => $this->code,
+            'ttlMinutes' => $this->ttlMinutes,
+            'email' => (string) ($notifiable->email ?? ''),
+            'intro' => __('Use this code to complete your admin sign-in.'),
+        ];
+
         return (new MailMessage)
             ->subject(__('YallaSpare admin verification code'))
             ->line(__('Use this code to complete your admin sign-in.'))
             ->line($this->code)
             ->line(__('This code expires in :count minutes.', ['count' => $this->ttlMinutes]))
-            ->view([
-                'html' => 'emails.admin.two-factor-code',
-                'text' => 'emails.text.generic',
-            ], [
-                'title' => __('Admin verification required'),
-                'preheader' => __('Use your one-time admin verification code to continue signing in.'),
-                'code' => $this->code,
-                'ttlMinutes' => $this->ttlMinutes,
-                'email' => (string) ($notifiable->email ?? ''),
-                'intro' => __('Use this code to complete your admin sign-in.'),
-            ]);
+            ->view('emails.admin.two-factor-code', $viewData)
+            ->text('emails.text.generic', $viewData);
     }
 }

@@ -4,6 +4,18 @@ import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;
 
+Alpine.data('passwordVisibility', (config = {}) => ({
+    visible: false,
+    showLabel: config.showLabel || 'Show password',
+    hideLabel: config.hideLabel || 'Hide password',
+    get label() {
+        return this.visible ? this.hideLabel : this.showLabel;
+    },
+    toggle() {
+        this.visible = !this.visible;
+    },
+}));
+
 const ADMIN_SIDEBAR_DEFAULT_STORAGE_KEY = 'admin-sidebar-collapsed';
 const ADMIN_DESKTOP_QUERY = '(min-width: 1024px)';
 

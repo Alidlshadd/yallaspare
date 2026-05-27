@@ -55,6 +55,18 @@
         text-align: right;
     }
 
+    [dir='rtl'] :is(.text-left, .sm\:text-left, .md\:text-left, .lg\:text-left) {
+        text-align: right;
+    }
+
+    [dir='rtl'] :is(.text-right, .sm\:text-right, .md\:text-right, .lg\:text-right) {
+        text-align: left;
+    }
+
+    [dir='rtl'] :is(.admin-nav-label, .admin-sidebar-brand-copy, .user-shell, .admin-shell, #auth-panel) {
+        overflow-wrap: anywhere;
+    }
+
     [x-cloak] {
         display: none !important;
     }
@@ -203,6 +215,50 @@
         outline: none;
         border-color: var(--primary);
         box-shadow: 0 0 0 4px var(--focus);
+    }
+
+    .password-input-control {
+        padding-inline-end: 3rem !important;
+    }
+
+    .password-input-toggle {
+        position: absolute;
+        inset-block: 0;
+        inset-inline-end: 0.5rem;
+        display: inline-flex;
+        width: 2.25rem;
+        align-items: center;
+        justify-content: center;
+        border-radius: 0.5rem;
+        color: #94a3b8;
+        outline: none;
+        touch-action: manipulation;
+        transition: background-color 160ms ease, color 160ms ease, opacity 160ms ease;
+    }
+
+    .password-input-toggle:hover {
+        background-color: rgba(148, 163, 184, 0.14);
+        color: #334155;
+    }
+
+    .password-input-toggle:focus-visible {
+        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.32);
+    }
+
+    .password-input-toggle:disabled {
+        cursor: not-allowed;
+        opacity: 0.55;
+    }
+
+    .dark .password-input-toggle,
+    .user-theme-dark .password-input-toggle {
+        color: #94a3b8;
+    }
+
+    .dark .password-input-toggle:hover,
+    .user-theme-dark .password-input-toggle:hover {
+        background-color: rgba(148, 163, 184, 0.18);
+        color: #f8fafc;
     }
 
     .ui-nav-link {

@@ -3,7 +3,8 @@
 namespace Tests\Feature\Auth;
 
 use App\Models\User;
-use App\Notifications\QueuedResetPassword;
+use App\Notifications\ImmediateResetPassword;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
@@ -27,7 +28,19 @@ class PasswordResetTest extends TestCase
 
         $this->post('/forgot-password', ['email' => $user->email]);
 
-        Notification::assertSentTo($user, QueuedResetPassword::class);
+        Notification::assertSentTo($user, ImmediateResetPassword::class);
+        $this->assertFalse(new ImmediateResetPassword('token') instanceof ShouldQueue);
+    }
+
+    public function test_reset_password_link_request_keeps_missing_users_private(): void
+    {
+        Notification::fake();
+
+        $this->post('/forgot-password', ['email' => 'missing@example.com'])
+            ->assertSessionHas('status', 'If this email exists, we sent a reset link.')
+            ->assertSessionHasNoErrors();
+
+        Notification::assertNothingSent();
     }
 
     public function test_reset_password_screen_can_be_rendered(): void
@@ -38,7 +51,7 @@ class PasswordResetTest extends TestCase
 
         $this->post('/forgot-password', ['email' => $user->email]);
 
-        Notification::assertSentTo($user, QueuedResetPassword::class, function ($notification) {
+        Notification::assertSentTo($user, ImmediateResetPassword::class, function ($notification) {
             $response = $this->get('/reset-password/'.$notification->token);
 
             $response->assertStatus(200);
@@ -55,7 +68,7 @@ class PasswordResetTest extends TestCase
 
         $this->post('/forgot-password', ['email' => $user->email]);
 
-        Notification::assertSentTo($user, QueuedResetPassword::class, function ($notification) use ($user) {
+        Notification::assertSentTo($user, ImmediateResetPassword::class, function ($notification) use ($user) {
             $response = $this->post('/reset-password', [
                 'token' => $notification->token,
                 'email' => $user->email,

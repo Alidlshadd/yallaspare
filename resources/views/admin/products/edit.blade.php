@@ -325,7 +325,7 @@
                     submitButton.dataset.loading = '1';
                     submitButton.disabled = true;
                     submitButton.classList.add('opacity-80', 'cursor-not-allowed');
-                    if (submitLabel) submitLabel.textContent = 'Saving...';
+                    if (submitLabel) submitLabel.textContent = @json(__('Saving...'));
                     if (spinner) spinner.classList.remove('hidden');
                 });
             }

@@ -200,7 +200,7 @@
 
                             <div>
                                 <label for="password" class="mb-2 block text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('New Password') }}</label>
-                                <input id="password" type="password" name="password" autocomplete="new-password" class="w-full rounded-2xl border border-amber-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20 dark:border-amber-900/60 dark:bg-slate-950 dark:text-slate-100">
+                                <x-password-input id="password" name="password" autocomplete="new-password" class="w-full rounded-2xl border border-amber-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20 dark:border-amber-900/60 dark:bg-slate-950 dark:text-slate-100" />
                                 @error('password')
                                     <p class="mt-2 text-xs font-semibold text-rose-600 dark:text-rose-300">{{ $message }}</p>
                                 @enderror
@@ -208,7 +208,7 @@
 
                             <div>
                                 <label for="password_confirmation" class="mb-2 block text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Confirm New Password') }}</label>
-                                <input id="password_confirmation" type="password" name="password_confirmation" autocomplete="new-password" class="w-full rounded-2xl border border-amber-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20 dark:border-amber-900/60 dark:bg-slate-950 dark:text-slate-100">
+                                <x-password-input id="password_confirmation" name="password_confirmation" autocomplete="new-password" class="w-full rounded-2xl border border-amber-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20 dark:border-amber-900/60 dark:bg-slate-950 dark:text-slate-100" />
                             </div>
 
                             <button type="submit" class="inline-flex w-full items-center justify-center rounded-2xl bg-amber-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-amber-700">

@@ -64,7 +64,7 @@
             if (!couponStatusBadge) return;
             if (!enabled) {
                 couponStatusBadge.className = 'inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold bg-slate-100 text-slate-600 border-slate-200';
-                couponStatusBadge.textContent = 'Disabled';
+                couponStatusBadge.textContent = @json(__('Disabled'));
                 return;
             }
             const state = timingState(couponStartsInput?.value || '', couponEndsInput?.value || '');
@@ -76,11 +76,11 @@
             if (!couponTypeInput || !couponValueInput) return;
             if (couponTypeInput.value === 'percent') {
                 couponValueInput.max = '100';
-                if (couponValueHelp) couponValueHelp.textContent = 'Percent type supports max 100.';
+                if (couponValueHelp) couponValueHelp.textContent = @json(__('Percent type supports max 100.'));
                 return;
             }
             couponValueInput.removeAttribute('max');
-            if (couponValueHelp) couponValueHelp.textContent = 'Fixed amount has no percentage cap.';
+            if (couponValueHelp) couponValueHelp.textContent = @json(__('Fixed amount has no percentage cap.'));
         };
 
         const chartPoints = @json($trendPoints);

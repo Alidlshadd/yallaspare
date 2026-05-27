@@ -27,10 +27,10 @@ class SupportContactRequestMail extends Mailable implements ShouldQueue
         $subject = (string) ($this->data['subject'] ?? 'Support request');
 
         $mail = $this
-            ->subject('Support request: ' . $subject)
+            ->subject(__('Support request: :subject', ['subject' => $subject]))
             ->view('emails.support.contact-request', $this->viewData())
             ->text('emails.text.generic', [
-                'title' => 'Support request: ' . $subject,
+                'title' => __('Support request: :subject', ['subject' => $subject]),
                 'bodyText' => (string) ($this->data['message'] ?? ''),
             ]);
 

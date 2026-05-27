@@ -35,6 +35,7 @@ use App\Models\Setting;
 use App\Models\User;
 use App\Support\Branding;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Storage;
 
 /*
@@ -57,7 +58,13 @@ Route::post('/language/{locale}', function (Request $request, string $locale) {
 
     app()->setLocale($locale);
 
-    return back();
+    $redirectTo = (string) $request->input('redirect_to', '');
+    $previousUrl = URL::previous();
+    $targetUrl = $redirectTo !== '' && str_starts_with($redirectTo, url('/'))
+        ? $redirectTo
+        : $previousUrl;
+
+    return redirect()->to($targetUrl);
 })->middleware('throttle:public-write')->name('language.switch');
 Route::get('/shop', [UserShopController::class, 'shop'])->name('shop.index');
 Route::get('/categories', [UserShopController::class, 'categories'])->name('categories.index');

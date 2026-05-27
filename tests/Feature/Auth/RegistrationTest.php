@@ -15,7 +15,8 @@ class RegistrationTest extends TestCase
         $response = $this->get('/register');
 
         $response->assertStatus(200);
-        $response->assertSee('data-password-toggle', false);
+        $response->assertSee('password-input-toggle', false);
+        $response->assertSee('passwordVisibility', false);
         $response->assertSee('Show password');
     }
 

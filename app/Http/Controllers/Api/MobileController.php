@@ -44,18 +44,18 @@ class MobileController extends Controller
         if (! $user) {
             $this->debugLoginFailure('user_not_found', $login);
 
-            return response()->json(['message' => 'Email or password is incorrect.'], 422);
+            return response()->json(['message' => __('Email or password is incorrect.')], 422);
         }
 
         if (! Hash::check((string) $credentials['password'], (string) $user->password)) {
             $this->debugLoginFailure('password_mismatch', $login, $user);
 
-            return response()->json(['message' => 'Email or password is incorrect.'], 422);
+            return response()->json(['message' => __('Email or password is incorrect.')], 422);
         }
 
         if (! $user->hasVerifiedEmail()) {
             return response()->json([
-                'message' => 'Please verify your email address before signing in.',
+                'message' => __('Please verify your email address before signing in.'),
                 'verification_required' => true,
             ], 403);
         }
@@ -68,7 +68,7 @@ class MobileController extends Controller
                 'reason' => $e->getMessage(),
             ]);
 
-            return response()->json(['message' => 'Unable to start mobile session. Please try again.'], 500);
+            return response()->json(['message' => __('Unable to start mobile session. Please try again.')], 500);
         }
 
         return response()->json([
@@ -97,7 +97,7 @@ class MobileController extends Controller
         event(new Registered($user));
 
         return response()->json([
-            'message' => 'Registration complete. Please verify your email address before signing in.',
+            'message' => __('Registration complete. Please verify your email address before signing in.'),
             'verification_required' => true,
             'user' => $this->userPayload($user),
         ], 201);
@@ -109,7 +109,7 @@ class MobileController extends Controller
 
         Password::sendResetLink(['email' => $data['email']]);
 
-        return response()->json(['message' => 'Password reset link sent if available.']);
+        return response()->json(['message' => __('If this email exists, we sent a reset link.')]);
     }
 
     public function me(Request $request)
@@ -121,7 +121,7 @@ class MobileController extends Controller
     {
         $request->user()?->currentAccessToken()?->delete();
 
-        return response()->json(['message' => 'Logged out.']);
+        return response()->json(['message' => __('Logged out.')]);
     }
 
     public function refreshToken(Request $request)
@@ -156,12 +156,12 @@ class MobileController extends Controller
         ]);
 
         if (! Hash::check($data['current_password'], $request->user()->password)) {
-            return response()->json(['message' => 'Current password is incorrect.'], 422);
+            return response()->json(['message' => __('Current password is incorrect.')], 422);
         }
 
         $request->user()->update(['password' => Hash::make($data['password'])]);
 
-        return response()->json(['message' => 'Password updated.']);
+        return response()->json(['message' => __('Password updated.')]);
     }
 
     public function categories()
@@ -376,7 +376,7 @@ class MobileController extends Controller
 
         return response()->json([
             'valid' => $preview['valid'],
-            'message' => $preview['message'] ?? ($preview['valid'] ? 'Coupon applied.' : 'Coupon is not valid.'),
+            'message' => $preview['message'] ?? ($preview['valid'] ? __('Coupon applied.') : __('Coupon is not valid.')),
             'code' => $preview['code'],
             'discount' => $preview['discount'],
             'free_shipping' => $preview['free_shipping'],
@@ -442,7 +442,7 @@ class MobileController extends Controller
             'product_id' => $product->id,
         ]);
 
-        return response()->json(['message' => 'Saved.']);
+        return response()->json(['message' => __('Saved.')]);
     }
 
     public function deleteWishlist(Request $request, string $idOrSlug)
@@ -453,7 +453,7 @@ class MobileController extends Controller
             ->where('product_id', $product->id)
             ->delete();
 
-        return response()->json(['message' => 'Removed.']);
+        return response()->json(['message' => __('Removed.')]);
     }
 
     public function checkout(Request $request, CouponService $coupons)
@@ -616,7 +616,7 @@ class MobileController extends Controller
         abort_unless($address->user_id === $request->user()->id, 403);
         $address->delete();
 
-        return response()->json(['message' => 'Address deleted.']);
+        return response()->json(['message' => __('Address deleted.')]);
     }
 
     public function requestCancellation(Request $request, Order $order)
@@ -633,7 +633,7 @@ class MobileController extends Controller
             'cancellation_reason' => trim($data['reason'] . "\n" . ($data['notes'] ?? '') . "\n" . ($data['attachment'] ?? '')),
         ]);
 
-        return response()->json(['message' => 'Cancellation request submitted.']);
+        return response()->json(['message' => __('Cancellation request submitted.')]);
     }
 
     public function requestReturn(Request $request, Order $order)
@@ -654,7 +654,7 @@ class MobileController extends Controller
             'requested_at' => now(),
         ]);
 
-        return response()->json(['message' => 'Return request submitted.']);
+        return response()->json(['message' => __('Return request submitted.')]);
     }
 
     public function notifications(Request $request)
@@ -668,8 +668,11 @@ class MobileController extends Controller
                 $items->push([
                     'id' => 'order-' . $latestOrder->id,
                     'type' => 'order',
-                    'title' => 'Order update',
-                    'message' => 'Order ' . $latestOrder->order_number . ' is ' . str_replace('_', ' ', $latestOrder->status) . '.',
+                    'title' => __('Order update'),
+                    'message' => __('Order :order is :status.', [
+                        'order' => $latestOrder->order_number,
+                        'status' => __(ucfirst(str_replace('_', ' ', $latestOrder->status))),
+                    ]),
                     'created_at' => optional($latestOrder->updated_at)->toISOString(),
                     'read' => false,
                 ]);
@@ -692,8 +695,8 @@ class MobileController extends Controller
                 $items->push([
                     'id' => 'coupon-' . $coupon->id,
                     'type' => 'promotion',
-                    'title' => 'Promotion',
-                    'message' => $coupon->code . ' is active for eligible carts.',
+                    'title' => __('Promotion'),
+                    'message' => __(':code is active for eligible carts.', ['code' => $coupon->code]),
                     'created_at' => optional($coupon->updated_at)->toISOString(),
                     'read' => false,
                 ]);
@@ -715,8 +718,11 @@ class MobileController extends Controller
                 $items->push([
                     'id' => 'stock-' . $product->id,
                     'type' => 'stock',
-                    'title' => 'Stock alert',
-                    'message' => $product->localizedName('en') . ' has ' . (int) $product->stock_quantity . ' left.',
+                    'title' => __('Stock alert'),
+                    'message' => __(':name has :count left.', [
+                        'name' => $product->localizedName(app()->getLocale()),
+                        'count' => (int) $product->stock_quantity,
+                    ]),
                     'created_at' => optional($product->updated_at)->toISOString(),
                     'read' => false,
                 ]);
@@ -741,40 +747,40 @@ class MobileController extends Controller
         return response()->json(['data' => [
             'metrics' => [
                 [
-                    'label' => 'Dealer discount',
+                    'label' => __('Dealer discount'),
                     'value' => number_format((float) $user->dealer_discount, 0) . '%',
                     'delta' => 0,
                 ],
                 [
-                    'label' => 'Active products',
+                    'label' => __('Active products'),
                     'value' => (string) (clone $dealerProducts)->where('is_active', true)->count(),
                     'delta' => (clone $dealerProducts)->where('is_active', true)->where('created_at', '>=', now()->subDays(30))->count(),
                 ],
                 [
-                    'label' => 'Open orders',
+                    'label' => __('Open orders'),
                     'value' => (string) $openOrders,
                     'delta' => (clone $dealerOrders)->where('created_at', '>=', now()->subDays(30))->count(),
                 ],
                 [
-                    'label' => 'Low stock',
+                    'label' => __('Low stock'),
                     'value' => (string) (clone $dealerProducts)->whereColumn('stock_quantity', '<=', 'low_stock_threshold')->count(),
                     'delta' => 0,
                 ],
             ],
             'operations' => [
                 [
-                    'title' => 'Dealer pricing',
-                    'subtitle' => 'Review dealer-specific prices and margin rules.',
+                    'title' => __('Dealer pricing'),
+                    'subtitle' => __('Review dealer-specific prices and margin rules.'),
                     'type' => 'pricing',
                 ],
                 [
-                    'title' => 'Inventory management',
-                    'subtitle' => 'Track real stock, low stock and dealer availability.',
+                    'title' => __('Inventory management'),
+                    'subtitle' => __('Track real stock, low stock and dealer availability.'),
                     'type' => 'inventory',
                 ],
                 [
-                    'title' => 'Dealer analytics',
-                    'subtitle' => 'Total order value: IQD ' . number_format($totalSpend, 0),
+                    'title' => __('Dealer analytics'),
+                    'subtitle' => __('Total order value: IQD :amount', ['amount' => number_format($totalSpend, 0)]),
                     'type' => 'analytics',
                 ],
             ],

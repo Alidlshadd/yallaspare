@@ -155,11 +155,11 @@
             if (!couponTypeInput || !couponValueInput) return;
             if (couponTypeInput.value === 'percent') {
                 couponValueInput.max = '100';
-                if (couponValueHelp) couponValueHelp.textContent = 'Percent type supports max 100.';
+                if (couponValueHelp) couponValueHelp.textContent = @json(__('Percent type supports max 100.'));
                 return;
             }
             couponValueInput.removeAttribute('max');
-            if (couponValueHelp) couponValueHelp.textContent = 'Fixed amount has no percentage cap.';
+            if (couponValueHelp) couponValueHelp.textContent = @json(__('Fixed amount has no percentage cap.'));
         };
 
         couponTypeInput?.addEventListener('change', syncCouponTypeLimits);
