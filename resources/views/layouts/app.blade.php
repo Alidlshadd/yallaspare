@@ -72,32 +72,25 @@
                     : null;
             @endphp
             <div
-                x-data="adminSidebarShell({ storageKey: 'admin-sidebar-collapsed' })"
-                x-init="init()"
-                @click.capture="handleShellClick($event)"
                 class="min-h-screen admin-shell"
-                :class="{ 'admin-sidebar-collapsed': sidebarCollapsed, 'admin-mobile-drawer-open': mobileSidebarOpen && !isDesktop() }"
                 data-admin-shell
+                data-admin-sidebar-collapsed-class="admin-sidebar-collapsed"
+                data-sidebar-storage-key="admin-sidebar-collapsed"
             >
                 <!-- Mobile Overlay -->
-                <template x-if="mobileSidebarOpen && !isDesktop()">
-                    <div
-                        class="admin-sidebar-backdrop fixed inset-0 bg-slate-950/55 lg:hidden"
-                        @click="closeMobileSidebar()"
-                        x-transition.opacity
-                        aria-hidden="true"
-                        data-admin-sidebar-backdrop
-                    ></div>
-                </template>
+                <div
+                    hidden
+                    class="admin-sidebar-backdrop fixed inset-0 bg-slate-950/55 lg:hidden"
+                    aria-hidden="true"
+                    data-admin-sidebar-backdrop
+                ></div>
 
                 <!-- Sidebar -->
                 <aside
                     id="admin-sidebar"
                     data-admin-sidebar
                     class="admin-sidebar fixed inset-y-0 bg-slate-900 text-slate-100 dark:bg-slate-900 h-screen overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-hide"
-                    :class="{ 'admin-sidebar-open': mobileSidebarOpen }"
-                    @click="handleSidebarClick($event)"
-                    :aria-hidden="(!mobileSidebarOpen && !isDesktop()).toString()"
+                    aria-hidden="false"
                     aria-label="{{ __('Admin navigation') }}"
                 >
                     <div class="admin-sidebar-header" data-admin-sidebar-header>
@@ -118,9 +111,9 @@
                         <button
                             type="button"
                             class="admin-sidebar-toggle hidden h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-slate-100 transition hover:border-white/20 hover:bg-white/15 hover:text-white lg:inline-flex"
-                            :aria-expanded="(!sidebarCollapsed).toString()"
-                            :aria-label="sidebarCollapsed ? $el.dataset.expandLabel : $el.dataset.collapseLabel"
-                            :title="sidebarCollapsed ? $el.dataset.expandLabel : $el.dataset.collapseLabel"
+                            aria-expanded="true"
+                            aria-label="{{ __('Collapse sidebar') }}"
+                            title="{{ __('Collapse sidebar') }}"
                             aria-controls="admin-sidebar"
                             data-expand-label="{{ __('Expand sidebar') }}"
                             data-collapse-label="{{ __('Collapse sidebar') }}"
@@ -381,7 +374,7 @@
                                 <button
                                     type="button"
                                     class="admin-mobile-sidebar-toggle lg:hidden inline-flex items-center justify-center h-10 w-10 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
-                                    :aria-expanded="mobileSidebarOpen.toString()"
+                                    aria-expanded="false"
                                     aria-controls="admin-sidebar"
                                     aria-label="{{ __('Expand sidebar') }}"
                                     title="{{ __('Expand sidebar') }}"

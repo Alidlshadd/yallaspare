@@ -4,203 +4,234 @@ import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;
 
-Alpine.data('adminSidebarShell', ({ storageKey = 'admin-sidebar-collapsed' } = {}) => ({
-    sidebarCollapsed: false,
-    mobileSidebarOpen: false,
-    isRtl: false,
-    desktopQuery: null,
-    resizeHandler: null,
-    escapeHandler: null,
-    pageHideHandler: null,
-    initialized: false,
+const ADMIN_SIDEBAR_DEFAULT_STORAGE_KEY = 'admin-sidebar-collapsed';
+const ADMIN_DESKTOP_QUERY = '(min-width: 1024px)';
 
-    init() {
-        if (this.initialized) {
+const safeLocalStorageGet = (key) => {
+    try {
+        return window.localStorage.getItem(key);
+    } catch (error) {
+        return null;
+    }
+};
+
+const safeLocalStorageSet = (key, value) => {
+    try {
+        window.localStorage.setItem(key, value);
+    } catch (error) {}
+};
+
+const initAdminSidebarShell = (shell) => {
+    if (!shell || shell.dataset.adminSidebarReady === '1') {
+        return;
+    }
+
+    shell.dataset.adminSidebarReady = '1';
+
+    const storageKey = shell.dataset.sidebarStorageKey || ADMIN_SIDEBAR_DEFAULT_STORAGE_KEY;
+    const collapsedClass = shell.dataset.adminSidebarCollapsedClass || 'admin-sidebar-collapsed';
+    const desktopQuery = window.matchMedia(ADMIN_DESKTOP_QUERY);
+    const sidebar = shell.querySelector('[data-admin-sidebar]');
+    const main = shell.querySelector('[data-admin-main]');
+    const backdrop = shell.querySelector('[data-admin-sidebar-backdrop]');
+    const desktopToggle = shell.querySelector('[data-admin-sidebar-toggle]');
+    const desktopExpand = shell.querySelector('[data-admin-sidebar-expand]');
+    const mobileToggle = shell.querySelector('[data-admin-mobile-sidebar-toggle]');
+    const mobileClose = shell.querySelector('[data-admin-mobile-sidebar-close]');
+
+    if (!sidebar || !main) {
+        return;
+    }
+
+    let sidebarCollapsed = desktopQuery.matches && safeLocalStorageGet(storageKey) === '1';
+    let mobileSidebarOpen = false;
+
+    const isDesktop = () => desktopQuery.matches;
+
+    const setHtmlCollapsedHint = () => {
+        document.documentElement.classList.toggle(
+            'admin-sidebar-precollapsed',
+            isDesktop() && sidebarCollapsed,
+        );
+    };
+
+    const setScrollLock = (locked) => {
+        document.documentElement.classList.toggle('admin-sidebar-drawer-open', locked);
+        document.body?.classList.toggle('admin-sidebar-drawer-open', locked);
+        shell.classList.toggle('admin-mobile-drawer-open', locked);
+    };
+
+    const updateButtonState = () => {
+        if (desktopToggle) {
+            const expandLabel = desktopToggle.dataset.expandLabel || 'Expand sidebar';
+            const collapseLabel = desktopToggle.dataset.collapseLabel || 'Collapse sidebar';
+            const label = sidebarCollapsed ? expandLabel : collapseLabel;
+
+            desktopToggle.setAttribute('aria-expanded', String(!sidebarCollapsed));
+            desktopToggle.setAttribute('aria-label', label);
+            desktopToggle.setAttribute('title', label);
+        }
+
+        if (desktopExpand) {
+            desktopExpand.setAttribute('aria-expanded', String(!sidebarCollapsed));
+        }
+
+        if (mobileToggle) {
+            mobileToggle.setAttribute('aria-expanded', String(mobileSidebarOpen));
+        }
+
+        if (mobileClose) {
+            mobileClose.setAttribute('aria-expanded', String(mobileSidebarOpen));
+        }
+    };
+
+    const applyState = () => {
+        const desktop = isDesktop();
+        const drawerOpen = !desktop && mobileSidebarOpen;
+
+        if (!desktop) {
+            sidebarCollapsed = false;
+            shell.classList.remove(collapsedClass);
+            document.documentElement.classList.remove('admin-sidebar-precollapsed');
+        } else {
+            shell.classList.toggle(collapsedClass, sidebarCollapsed);
+            setHtmlCollapsedHint();
+        }
+
+        sidebar.classList.toggle('admin-sidebar-open', drawerOpen);
+        sidebar.setAttribute('aria-hidden', String(!desktop && !drawerOpen));
+
+        if (backdrop) {
+            backdrop.hidden = !drawerOpen;
+        }
+
+        setScrollLock(drawerOpen);
+        updateButtonState();
+    };
+
+    const setDesktopCollapsed = (collapsed) => {
+        if (!isDesktop()) {
+            mobileSidebarOpen = true;
+            applyState();
             return;
         }
 
-        this.initialized = true;
-        this.isRtl = document.documentElement.getAttribute('dir') === 'rtl';
-        this.desktopQuery = window.matchMedia('(min-width: 1024px)');
-        this.sidebarCollapsed = this.isDesktop() && this.storedCollapsed();
-        this.mobileSidebarOpen = false;
-        this.syncMobileDrawerState(false);
-        this.syncDocumentState();
+        mobileSidebarOpen = false;
+        sidebarCollapsed = collapsed;
+        safeLocalStorageSet(storageKey, collapsed ? '1' : '0');
+        applyState();
+    };
 
-        this.$watch('sidebarCollapsed', () => this.syncDocumentState());
-        this.$watch('mobileSidebarOpen', (open) => {
-            this.syncMobileDrawerState(open);
-        });
+    const toggleDesktopCollapsed = () => {
+        setDesktopCollapsed(!sidebarCollapsed);
+    };
 
-        this.resizeHandler = () => {
-            if (this.isDesktop()) {
-                this.mobileSidebarOpen = false;
-                this.sidebarCollapsed = this.storedCollapsed();
-            } else {
-                this.mobileSidebarOpen = false;
-                this.sidebarCollapsed = false;
-            }
-
-            this.syncMobileDrawerState(false);
-            this.syncDocumentState();
-        };
-
-        if (typeof this.desktopQuery.addEventListener === 'function') {
-            this.desktopQuery.addEventListener('change', this.resizeHandler);
-        } else if (typeof this.desktopQuery.addListener === 'function') {
-            this.desktopQuery.addListener(this.resizeHandler);
-        }
-
-        this.escapeHandler = (event) => {
-            if (event.key === 'Escape' && this.mobileSidebarOpen) {
-                this.closeMobileSidebar();
-            }
-        };
-        this.pageHideHandler = () => this.syncMobileDrawerState(false);
-
-        window.addEventListener('keydown', this.escapeHandler);
-        window.addEventListener('pagehide', this.pageHideHandler);
-    },
-
-    destroy() {
-        this.mobileSidebarOpen = false;
-        this.syncMobileDrawerState(false);
-
-        if (this.desktopQuery && this.resizeHandler) {
-            if (typeof this.desktopQuery.removeEventListener === 'function') {
-                this.desktopQuery.removeEventListener('change', this.resizeHandler);
-            } else if (typeof this.desktopQuery.removeListener === 'function') {
-                this.desktopQuery.removeListener(this.resizeHandler);
-            }
-        }
-
-        if (this.escapeHandler) {
-            window.removeEventListener('keydown', this.escapeHandler);
-        }
-
-        if (this.pageHideHandler) {
-            window.removeEventListener('pagehide', this.pageHideHandler);
-        }
-    },
-
-    isDesktop() {
-        return this.desktopQuery ? this.desktopQuery.matches === true : window.innerWidth >= 1024;
-    },
-
-    storedCollapsed() {
-        try {
-            return window.localStorage.getItem(storageKey) === '1';
-        } catch (error) {
-            return false;
-        }
-    },
-
-    persistCollapsed() {
-        try {
-            window.localStorage.setItem(storageKey, this.sidebarCollapsed ? '1' : '0');
-        } catch (error) {}
-    },
-
-    syncDocumentState() {
-        document.documentElement.classList.toggle('admin-sidebar-precollapsed', this.isDesktop() && this.sidebarCollapsed);
-    },
-
-    syncMobileDrawerState(open) {
-        const shouldLock = open && !this.isDesktop();
-
-        document.documentElement.classList.toggle('admin-sidebar-drawer-open', shouldLock);
-        document.body?.classList.toggle('admin-sidebar-drawer-open', shouldLock);
-        this.$root?.classList.toggle('admin-mobile-drawer-open', shouldLock);
-    },
-
-    toggleSidebarCollapsed() {
-        if (!this.isDesktop()) {
-            this.openMobileSidebar();
+    const openMobileSidebar = () => {
+        if (isDesktop()) {
+            setDesktopCollapsed(false);
             return;
         }
 
-        this.mobileSidebarOpen = false;
-        this.syncMobileDrawerState(false);
-        this.sidebarCollapsed = !this.sidebarCollapsed;
-        this.persistCollapsed();
-        this.syncDocumentState();
-    },
+        sidebarCollapsed = false;
+        mobileSidebarOpen = true;
+        applyState();
+    };
 
-    expandSidebar() {
-        if (!this.isDesktop()) {
-            this.openMobileSidebar();
-            return;
-        }
+    const closeMobileSidebar = () => {
+        mobileSidebarOpen = false;
+        applyState();
+    };
 
-        this.mobileSidebarOpen = false;
-        this.syncMobileDrawerState(false);
-        this.sidebarCollapsed = false;
-        this.persistCollapsed();
-        this.syncDocumentState();
-    },
-
-    openMobileSidebar() {
-        if (this.isDesktop()) {
-            this.expandSidebar();
-            return;
-        }
-
-        this.sidebarCollapsed = false;
-        this.mobileSidebarOpen = true;
-        this.syncDocumentState();
-        this.syncMobileDrawerState(true);
-    },
-
-    closeMobileSidebar() {
-        this.mobileSidebarOpen = false;
-        this.syncMobileDrawerState(false);
-    },
-
-    handleShellClick(event) {
+    const handleClick = (event) => {
         const target = event.target instanceof Element ? event.target : null;
         if (!target) {
             return;
         }
 
-        const toggle = target.closest('[data-admin-sidebar-toggle]');
-        if (toggle) {
+        if (target.closest('[data-admin-sidebar-toggle]')) {
             event.preventDefault();
             event.stopPropagation();
-            this.toggleSidebarCollapsed();
+            toggleDesktopCollapsed();
             return;
         }
 
-        const expand = target.closest('[data-admin-sidebar-expand]');
-        if (expand) {
+        if (target.closest('[data-admin-sidebar-expand]')) {
             event.preventDefault();
             event.stopPropagation();
-            this.expandSidebar();
+            setDesktopCollapsed(false);
             return;
         }
 
-        const mobileOpen = target.closest('[data-admin-mobile-sidebar-toggle]');
-        if (mobileOpen) {
+        if (target.closest('[data-admin-mobile-sidebar-toggle]')) {
             event.preventDefault();
             event.stopPropagation();
-            this.openMobileSidebar();
+            openMobileSidebar();
             return;
         }
 
-        const mobileClose = target.closest('[data-admin-mobile-sidebar-close]');
-        if (mobileClose) {
+        if (target.closest('[data-admin-mobile-sidebar-close]')) {
             event.preventDefault();
             event.stopPropagation();
-            this.closeMobileSidebar();
+            closeMobileSidebar();
+            return;
         }
-    },
 
-    handleSidebarClick(event) {
-        const target = event.target instanceof Element ? event.target : null;
-        const link = target?.closest('a');
-        if (link && !this.isDesktop()) {
-            this.closeMobileSidebar();
+        if (backdrop && target === backdrop) {
+            event.preventDefault();
+            event.stopPropagation();
+            closeMobileSidebar();
+            return;
         }
-    },
-}));
+
+        if (!isDesktop() && mobileSidebarOpen && target.closest('[data-admin-sidebar] a')) {
+            closeMobileSidebar();
+        }
+    };
+
+    const handleEscape = (event) => {
+        if (event.key === 'Escape' && mobileSidebarOpen) {
+            closeMobileSidebar();
+        }
+    };
+
+    const handleViewportChange = () => {
+        if (isDesktop()) {
+            mobileSidebarOpen = false;
+            sidebarCollapsed = safeLocalStorageGet(storageKey) === '1';
+        } else {
+            sidebarCollapsed = false;
+            mobileSidebarOpen = false;
+        }
+
+        applyState();
+    };
+
+    const handlePageHide = () => {
+        mobileSidebarOpen = false;
+        setScrollLock(false);
+    };
+
+    shell.addEventListener('click', handleClick, true);
+    window.addEventListener('keydown', handleEscape);
+    window.addEventListener('pagehide', handlePageHide);
+
+    if (typeof desktopQuery.addEventListener === 'function') {
+        desktopQuery.addEventListener('change', handleViewportChange);
+    } else if (typeof desktopQuery.addListener === 'function') {
+        desktopQuery.addListener(handleViewportChange);
+    }
+
+    applyState();
+};
+
+const initAdminSidebars = () => {
+    document.querySelectorAll('[data-admin-shell]').forEach(initAdminSidebarShell);
+};
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAdminSidebars, { once: true });
+} else {
+    initAdminSidebars();
+}
 
 Alpine.start();

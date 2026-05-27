@@ -317,6 +317,11 @@
         touch-action: none;
     }
 
+    .admin-sidebar-backdrop[hidden] {
+        display: none !important;
+        pointer-events: none !important;
+    }
+
     .admin-sidebar-drawer-open,
     .admin-sidebar-drawer-open body {
         overflow: hidden;
