@@ -35,7 +35,12 @@ class SecurityHeaders
             "img-src 'self' data: blob: https:",
             "font-src 'self' data: https://fonts.bunny.net https://cdnjs.cloudflare.com",
             "style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://cdnjs.cloudflare.com",
-            "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net",
+            // 'unsafe-eval' is required by Alpine 3's default build (it compiles
+            // directive expressions via new Function()). Since 'unsafe-inline' is
+            // already present, 'unsafe-eval' does not meaningfully widen the attack
+            // surface here. To remove it, switch to Alpine's CSP build and refactor
+            // every inline directive expression in the project.
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net",
             "connect-src 'self'",
         ];
 
