@@ -1,7 +1,3 @@
-@php
-    $strictPassword = app()->environment('production');
-@endphp
-
 <x-auth-split-layout
     :heading="__('Reset Password')"
     form-position="right"
@@ -51,11 +47,7 @@
                 placeholder="{{ __('Enter a new password') }}"
             />
             <p class="mt-2 text-xs leading-5 text-slate-400" id="password-rule-help">
-                @if ($strictPassword)
-                    {{ __('Use at least 12 characters, including uppercase and lowercase letters, a number, and a symbol.') }}
-                @else
-                    {{ __('Use at least 8 characters.') }}
-                @endif
+                {{ __('Use at least 8 characters, including letters and a number.') }}
             </p>
             <x-input-error :messages="$errors->get('password')" class="mt-2 text-sm text-red-400" />
         </div>

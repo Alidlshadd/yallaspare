@@ -2243,5 +2243,6 @@
     "Enter a new password": "وشەی نهێنی نوێ بنووسە",
     "Repeat the new password": "وشەی نهێنی نوێ دووبارە بکەرەوە",
     "Use at least 12 characters, including uppercase and lowercase letters, a number, and a symbol.": "لانیکەم ١٢ پیت بەکاربێنە، لەگەڵ پیتی گەورە و بچووک، ژمارە و هێما.",
-    "Use at least 8 characters.": "لانیکەم ٨ پیت بەکاربێنە."
+    "Use at least 8 characters.": "لانیکەم ٨ پیت بەکاربێنە.",
+    "Use at least 8 characters, including letters and a number.": "لانیکەم ٨ پیت بەکاربێنە کە پیت و ژمارەی تێدابێت."
 }

@@ -59,13 +59,7 @@ class AppServiceProvider extends ServiceProvider
                 ->toString();
         });
 
-        Password::defaults(function (): Password {
-            $rule = Password::min(app()->environment('production') ? 12 : 8);
-
-            return app()->environment('production')
-                ? $rule->mixedCase()->numbers()->symbols()->uncompromised()
-                : $rule;
-        });
+        Password::defaults(fn (): Password => Password::min(8)->letters()->numbers());
 
         try {
             if (Schema::hasTable('settings')) {

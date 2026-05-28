@@ -2243,5 +2243,6 @@
     "Enter a new password": "أدخل كلمة مرور جديدة",
     "Repeat the new password": "أعد كتابة كلمة المرور الجديدة",
     "Use at least 12 characters, including uppercase and lowercase letters, a number, and a symbol.": "استخدم 12 حرفًا على الأقل، تتضمن حروفًا كبيرة وصغيرة ورقمًا ورمزًا.",
-    "Use at least 8 characters.": "استخدم 8 أحرف على الأقل."
+    "Use at least 8 characters.": "استخدم 8 أحرف على الأقل.",
+    "Use at least 8 characters, including letters and a number.": "استخدم 8 أحرف على الأقل، تشمل حروفًا ورقمًا."
 }
