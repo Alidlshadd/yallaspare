@@ -19,21 +19,31 @@ class UserCommunication
             return [];
         }
 
-        $context = [
-            'order_id' => $order->id,
-            'order_number' => $order->order_number,
-            'status' => ucfirst((string) $order->status),
-            'total' => number_format((float) $order->total_amount, (int) Setting::getValue('currency_decimals', 0)) . ' ' . (string) Setting::getValue('currency_code', 'IQD'),
-            'customer_name' => $user->name,
-        ];
-        [$subject, $message] = self::renderTemplate($user, 'order_placed', 'Order Confirmation', implode(PHP_EOL, [
-            'Your order has been placed successfully.',
-            'Order: {{order_number}}',
-            'Status: {{status}}',
-            'Total: {{total}}',
-        ]), $context);
+        return self::withUserLocale($user, function () use ($user, $order) {
+            $context = [
+                'order_id' => $order->id,
+                'order_number' => $order->order_number,
+                'status' => ucfirst((string) $order->status),
+                'total' => number_format((float) $order->total_amount, (int) Setting::getValue('currency_decimals', 0)) . ' ' . (string) Setting::getValue('currency_code', 'IQD'),
+                'customer_name' => $user->name,
+            ];
 
-        return self::dispatch($user, 'order_placed', $subject, $message, $context);
+            // Fallback strings translate via the active locale (set by withUserLocale).
+            // If the admin has configured per-locale Settings rows, renderTemplate will
+            // prefer those; otherwise this localised fallback is used directly.
+            [$subject, $message] = self::renderTemplate($user, 'order_placed',
+                __('Order Confirmation'),
+                implode(PHP_EOL, [
+                    __('Your order has been placed successfully.'),
+                    __('Order: :ref', ['ref' => $context['order_number']]),
+                    __('Status: :status', ['status' => $context['status']]),
+                    __('Total: :total', ['total' => $context['total']]),
+                ]),
+                $context
+            );
+
+            return self::dispatch($user, 'order_placed', $subject, $message, $context);
+        });
     }
 
     public static function sendOrderStatusUpdated(User $user, Order $order, string $from, string $to): array
@@ -42,21 +52,47 @@ class UserCommunication
             return [];
         }
 
-        $context = [
-            'order_id' => $order->id,
-            'order_number' => $order->order_number,
-            'from' => ucfirst(str_replace('_', ' ', $from)),
-            'to' => ucfirst(str_replace('_', ' ', $to)),
-            'customer_name' => $user->name,
-        ];
-        [$subject, $message] = self::renderTemplate($user, 'order_status_updated', 'Order Status Updated', implode(PHP_EOL, [
-            'Your order status has changed.',
-            'Order: {{order_number}}',
-            'From: {{from}}',
-            'To: {{to}}',
-        ]), $context);
+        return self::withUserLocale($user, function () use ($user, $order, $from, $to) {
+            $context = [
+                'order_id' => $order->id,
+                'order_number' => $order->order_number,
+                'from' => ucfirst(str_replace('_', ' ', $from)),
+                'to' => ucfirst(str_replace('_', ' ', $to)),
+                'customer_name' => $user->name,
+            ];
 
-        return self::dispatch($user, 'order_status_updated', $subject, $message, $context);
+            [$subject, $message] = self::renderTemplate($user, 'order_status_updated',
+                __('Order Status Updated'),
+                implode(PHP_EOL, [
+                    __('Your order status has changed.'),
+                    __('Order: :ref', ['ref' => $context['order_number']]),
+                    __('From: :from', ['from' => $context['from']]),
+                    __('To: :to', ['to' => $context['to']]),
+                ]),
+                $context
+            );
+
+            return self::dispatch($user, 'order_status_updated', $subject, $message, $context);
+        });
+    }
+
+    /**
+     * Run the given callback with Laravel's active locale temporarily set to
+     * the user's preferred locale. Restores the previous locale even if the
+     * callback throws. Used so __() and view rendering inside the callback
+     * speak to the user in their language.
+     */
+    private static function withUserLocale(User $user, \Closure $callback): array
+    {
+        $previous = app()->getLocale();
+        $target = method_exists($user, 'preferredLocale') ? $user->preferredLocale() : $previous;
+
+        try {
+            app()->setLocale($target);
+            return $callback();
+        } finally {
+            app()->setLocale($previous);
+        }
     }
 
     private static function shouldSendOperationalUpdates(User $user): bool

@@ -2251,5 +2251,13 @@
     "This is an automated message — please do not reply.": "ئەمە پەیامێکی ئۆتۆماتیکییە — تکایە وەڵامی مەدەرەوە.",
     "Questions?": "پرسیار هەیە؟",
     "Always verify you are at": "هەمیشە دڵنیابە کە تۆ لەسەر",
-    ":brand will never ask for your password, OTP, or card number by email.": ":brand هەرگیز داوای وشەی نهێنی، کۆدی OTP یان ژمارەی کارتت ناکات لە ڕێگەی ئیمەیلەوە."
+    ":brand will never ask for your password, OTP, or card number by email.": ":brand هەرگیز داوای وشەی نهێنی، کۆدی OTP یان ژمارەی کارتت ناکات لە ڕێگەی ئیمەیلەوە.",
+    "Order Confirmation": "پشتڕاستکردنەوەی داواکاری",
+    "Order Status Updated": "دۆخی داواکاری نوێکرایەوە",
+    "Your order has been placed successfully.": "داواکارییەکەت بە سەرکەوتوویی تۆمارکرا.",
+    "Your order status has changed.": "دۆخی داواکارییەکەت گۆڕاوە.",
+    "Order: :ref": "داواکاری: :ref",
+    "Total: :total": "کۆی گشتی: :total",
+    "From: :from": "لە: :from",
+    "To: :to": "بۆ: :to"
 }

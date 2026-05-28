@@ -2251,5 +2251,13 @@
     "This is an automated message — please do not reply.": "This is an automated message — please do not reply.",
     "Questions?": "Questions?",
     "Always verify you are at": "Always verify you are at",
-    ":brand will never ask for your password, OTP, or card number by email.": ":brand will never ask for your password, OTP, or card number by email."
+    ":brand will never ask for your password, OTP, or card number by email.": ":brand will never ask for your password, OTP, or card number by email.",
+    "Order Confirmation": "Order Confirmation",
+    "Order Status Updated": "Order Status Updated",
+    "Your order has been placed successfully.": "Your order has been placed successfully.",
+    "Your order status has changed.": "Your order status has changed.",
+    "Order: :ref": "Order: :ref",
+    "Total: :total": "Total: :total",
+    "From: :from": "From: :from",
+    "To: :to": "To: :to"
 }

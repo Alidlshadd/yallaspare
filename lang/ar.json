@@ -2251,5 +2251,13 @@
     "This is an automated message — please do not reply.": "هذه رسالة تلقائية — يرجى عدم الرد عليها.",
     "Questions?": "هل لديك استفسار؟",
     "Always verify you are at": "تأكد دائمًا أنك على",
-    ":brand will never ask for your password, OTP, or card number by email.": "لن تطلب :brand كلمة المرور أو رمز التحقق أو رقم البطاقة عبر البريد الإلكتروني."
+    ":brand will never ask for your password, OTP, or card number by email.": "لن تطلب :brand كلمة المرور أو رمز التحقق أو رقم البطاقة عبر البريد الإلكتروني.",
+    "Order Confirmation": "تأكيد الطلب",
+    "Order Status Updated": "تم تحديث حالة الطلب",
+    "Your order has been placed successfully.": "تم استلام طلبك بنجاح.",
+    "Your order status has changed.": "تغيرت حالة طلبك.",
+    "Order: :ref": "الطلب: :ref",
+    "Total: :total": "الإجمالي: :total",
+    "From: :from": "من: :from",
+    "To: :to": "إلى: :to"
 }
