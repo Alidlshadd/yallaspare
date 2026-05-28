@@ -2259,5 +2259,13 @@
     "Order: :ref": "الطلب: :ref",
     "Total: :total": "الإجمالي: :total",
     "From: :from": "من: :from",
-    "To: :to": "إلى: :to"
+    "To: :to": "إلى: :to",
+    "broadcast.template.campaign.title": "حملة / عرض ترويجي",
+    "broadcast.template.campaign.body": "<h2>عرض خاص</h2><p>عزيزي العميل،</p><p>لدينا عرض محدود الوقت لك. استخدم الرمز <strong>SAVE10</strong> عند الدفع.</p>",
+    "broadcast.template.announcement.title": "إعلان عام",
+    "broadcast.template.announcement.body": "<h2>إعلان</h2><p>مرحبًا،</p><p>نود أن نشاركك تحديثًا مهمًا.</p>",
+    "broadcast.template.dealer.title": "خاص بالموزعين",
+    "broadcast.template.dealer.body": "<h2>تحديث الموزع</h2><p>مرحبًا أيها الشريك،</p><p>هذه الرسالة مخصصة لموزعينا المعتمدين فقط.</p>",
+    "broadcast.template.thanks.title": "شكرًا",
+    "broadcast.template.thanks.body": "<h2>شكرًا لك</h2><p>نقدر ثقتك المستمرة في YallaSpare.</p>"
 }

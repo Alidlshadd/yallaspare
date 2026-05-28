@@ -2259,5 +2259,13 @@
     "Order: :ref": "داواکاری: :ref",
     "Total: :total": "کۆی گشتی: :total",
     "From: :from": "لە: :from",
-    "To: :to": "بۆ: :to"
+    "To: :to": "بۆ: :to",
+    "broadcast.template.campaign.title": "کەمپین / بانگەشە",
+    "broadcast.template.campaign.body": "<h2>پێشکەشێکی تایبەت</h2><p>کڕیاری ئازیز،</p><p>پێشکەشێکی کاتی سنوورداری هەیە بۆت. کۆدی <strong>SAVE10</strong> بەکاربەرە لە دانانی کاتی پارەدان.</p>",
+    "broadcast.template.announcement.title": "ڕاگەیاندنی گشتی",
+    "broadcast.template.announcement.body": "<h2>ڕاگەیاندن</h2><p>سڵاو،</p><p>دەمانەوێت گرنگییەکی نوێت لەگەڵ بەشدار بکەین.</p>",
+    "broadcast.template.dealer.title": "تەنیا بۆ بایی",
+    "broadcast.template.dealer.body": "<h2>نوێکردنەوەی بایی</h2><p>سڵاو هاوبەش،</p><p>ئەم پەیامە تەنیا بۆ بایی ڕێگەپێدراوەکانمانە.</p>",
+    "broadcast.template.thanks.title": "سوپاس",
+    "broadcast.template.thanks.body": "<h2>سوپاست دەکەین</h2><p>ئێمە بایەخ بە متمانە بەردەوامەکەت لە YallaSpare دەدەین.</p>"
 }

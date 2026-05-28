@@ -2259,5 +2259,13 @@
     "Order: :ref": "Order: :ref",
     "Total: :total": "Total: :total",
     "From: :from": "From: :from",
-    "To: :to": "To: :to"
+    "To: :to": "To: :to",
+    "broadcast.template.campaign.title": "Campaign / Promotion",
+    "broadcast.template.campaign.body": "<h2>Special offer</h2><p>Dear customer,</p><p>We have a limited-time offer for you. Use code <strong>SAVE10</strong> at checkout.</p>",
+    "broadcast.template.announcement.title": "General Announcement",
+    "broadcast.template.announcement.body": "<h2>Announcement</h2><p>Hello,</p><p>We want to share an important update with you.</p>",
+    "broadcast.template.dealer.title": "Dealer-Only",
+    "broadcast.template.dealer.body": "<h2>Dealer update</h2><p>Hello partner,</p><p>This message is for our authorised dealers only.</p>",
+    "broadcast.template.thanks.title": "Thanks",
+    "broadcast.template.thanks.body": "<h2>Thank you</h2><p>We appreciate your continued trust in YallaSpare.</p>"
 }
