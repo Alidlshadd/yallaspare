@@ -13,13 +13,16 @@ use Throwable;
 
 class EmailController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
+        $user = $request->user();
+
         return view('admin.email.index', [
             'summary' => $this->mailSummary(),
             'mailers' => $this->availableMailers(),
             'checks' => $this->readinessChecks(),
             'previewTemplates' => array_keys($this->previewTemplates()),
+            'canBroadcast' => $user?->hasPermission(\App\Models\User::PERMISSION_EMAIL_BROADCAST) ?? false,
         ]);
     }
 

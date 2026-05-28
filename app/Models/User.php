@@ -37,6 +37,7 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
     public const PERMISSION_USERS_MANAGE = 'users.manage';
     public const PERMISSION_DEALERS_MANAGE = 'dealers.manage';
     public const PERMISSION_ACTIVITY_LOGS_VIEW = 'activity_logs.view';
+    public const PERMISSION_EMAIL_BROADCAST = 'email.broadcast';
     public const DEALER_STATUS_ACTIVE = 'active';
     public const DEALER_STATUS_INACTIVE = 'inactive';
     public const DEALER_STATUS_SUSPENDED = 'suspended';
@@ -204,6 +205,9 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
             __('Audit') => [
                 self::PERMISSION_ACTIVITY_LOGS_VIEW => __('View admin activity logs'),
             ],
+            __('Communications') => [
+                self::PERMISSION_EMAIL_BROADCAST => __('Send broadcast emails to user segments'),
+            ],
         ];
     }
 
@@ -249,6 +253,7 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
                 self::PERMISSION_STOCK_MANAGE,
                 self::PERMISSION_USERS_VIEW,
                 self::PERMISSION_DEALERS_MANAGE,
+                self::PERMISSION_EMAIL_BROADCAST,
             ],
             self::ROLE_PRODUCT_MANAGER => [
                 self::PERMISSION_DASHBOARD_VIEW,
