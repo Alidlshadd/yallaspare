@@ -375,6 +375,15 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
             ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
             ->where('template', '[a-z0-9-]+')
             ->name('email.preview');
+        Route::post('/email/broadcasts', [\App\Http\Controllers\Admin\EmailBroadcastController::class, 'store'])
+            ->middleware(['can:' . User::PERMISSION_EMAIL_BROADCAST, 'throttle:email-broadcast'])
+            ->name('email.broadcasts.store');
+        Route::post('/email/broadcasts/test', [\App\Http\Controllers\Admin\EmailBroadcastController::class, 'sendTestToSelf'])
+            ->middleware(['can:' . User::PERMISSION_EMAIL_BROADCAST, 'throttle:admin-write'])
+            ->name('email.broadcasts.test');
+        Route::post('/email/broadcasts/recipients-preview', [\App\Http\Controllers\Admin\EmailBroadcastController::class, 'previewRecipients'])
+            ->middleware(['can:' . User::PERMISSION_EMAIL_BROADCAST, 'throttle:admin-write'])
+            ->name('email.broadcasts.recipients-preview');
 
         // Notifications
         Route::get('/notifications', [NotificationController::class, 'index'])
