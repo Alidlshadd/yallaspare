@@ -8,6 +8,8 @@ export default {
         './vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php',
         './storage/framework/views/*.php',
         './resources/views/**/*.blade.php',
+        // Preline 4+ no longer ships a Tailwind plugin; just scan its dist for class names.
+        './node_modules/preline/dist/*.js',
     ],
 
     theme: {
