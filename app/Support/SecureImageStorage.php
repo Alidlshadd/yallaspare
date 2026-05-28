@@ -44,6 +44,45 @@ class SecureImageStorage
         return $filename;
     }
 
+    /**
+     * Store an email-attachment-class upload. Accepts jpeg/png/webp via the
+     * existing image flow OR application/pdf with a magic-byte check. SVG and
+     * anything else is rejected with HTTP 422.
+     *
+     * @return string Relative storage path (e.g. "email-attachments/abc.pdf")
+     */
+    public static function storeAttachment(UploadedFile $file, string $directory, string $disk = 'local'): string
+    {
+        $realPath = $file->getRealPath();
+
+        if ($realPath === false || ! is_file($realPath)) {
+            abort(422, 'Unable to read uploaded file.');
+        }
+
+        $imageInfo = @getimagesize($realPath);
+        $mime = is_array($imageInfo) ? (string) ($imageInfo['mime'] ?? '') : '';
+
+        // Re-use the hardened image path (which itself rejects SVG/unverifiable MIME).
+        if (in_array($mime, ['image/jpeg', 'image/png', 'image/webp'], true)) {
+            return self::store($file, $directory, $disk);
+        }
+
+        // PDF path — verify magic bytes.
+        $head = (string) @file_get_contents($realPath, false, null, 0, 5);
+        if ($head !== '%PDF-') {
+            abort(422, 'Unsupported or unverifiable attachment format.');
+        }
+
+        $filename = trim($directory, '/') . '/' . (string) Str::uuid() . '.pdf';
+        Storage::disk($disk)->putFileAs(
+            trim($directory, '/'),
+            $file,
+            basename($filename)
+        );
+
+        return $filename;
+    }
+
     private static function encode(UploadedFile $file, string $mime, string $extension): ?string
     {
         $path = $file->getRealPath();
