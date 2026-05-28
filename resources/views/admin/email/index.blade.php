@@ -43,12 +43,14 @@
             <div x-show="tab === 'settings'"  x-cloak role="tabpanel">
                 @include('admin.email.partials._settings')
             </div>
-            <div x-show="tab === 'broadcast'" x-cloak role="tabpanel">
-                @include('admin.email.partials._broadcast')
-            </div>
-            <div x-show="tab === 'history'"   x-cloak role="tabpanel">
-                @include('admin.email.partials._history')
-            </div>
+            @if ($canBroadcast)
+                <div x-show="tab === 'broadcast'" x-cloak role="tabpanel">
+                    @include('admin.email.partials._broadcast')
+                </div>
+                <div x-show="tab === 'history'"   x-cloak role="tabpanel">
+                    @include('admin.email.partials._history')
+                </div>
+            @endif
             <div x-show="tab === 'preview'"   x-cloak role="tabpanel">
                 @include('admin.email.partials._preview')
             </div>
