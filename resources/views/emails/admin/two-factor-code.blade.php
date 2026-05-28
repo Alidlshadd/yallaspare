@@ -23,11 +23,10 @@
     {{-- OTP Code --}}
     @include('emails.components.verification-code', ['code' => $code])
 
-    {{-- Meta info --}}
+    {{-- Meta info — empty values are filtered out by the meta-grid component. --}}
     @include('emails.components.meta-grid', ['items' => [
         ['label' => __('Account'), 'value' => $email ?? ''],
         ['label' => __('Expires'), 'value' => __('In :count minutes', ['count' => $ttlMinutes ?? 10])],
-        ['label' => __('IP scope'),   'value' => __('This code is tied to your current session.')],
     ]])
 
     {{-- Danger alert --}}

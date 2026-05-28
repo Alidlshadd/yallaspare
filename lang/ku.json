@@ -2244,5 +2244,12 @@
     "Repeat the new password": "وشەی نهێنی نوێ دووبارە بکەرەوە",
     "Use at least 12 characters, including uppercase and lowercase letters, a number, and a symbol.": "لانیکەم ١٢ پیت بەکاربێنە، لەگەڵ پیتی گەورە و بچووک، ژمارە و هێما.",
     "Use at least 8 characters.": "لانیکەم ٨ پیت بەکاربێنە.",
-    "Use at least 8 characters, including letters and a number.": "لانیکەم ٨ پیت بەکاربێنە کە پیت و ژمارەی تێدابێت."
+    "Use at least 8 characters, including letters and a number.": "لانیکەم ٨ پیت بەکاربێنە کە پیت و ژمارەی تێدابێت.",
+    "Auto Parts & Commerce": "پارچەی ئۆتۆمبیل و بازرگانی",
+    "Single-use — do not share": "تەنیا یەک جار بەکاربەرە — لەگەڵ کەس بەشی مەکە",
+    "Sent to": "نێردراوە بۆ",
+    "This is an automated message — please do not reply.": "ئەمە پەیامێکی ئۆتۆماتیکییە — تکایە وەڵامی مەدەرەوە.",
+    "Questions?": "پرسیار هەیە؟",
+    "Always verify you are at": "هەمیشە دڵنیابە کە تۆ لەسەر",
+    ":brand will never ask for your password, OTP, or card number by email.": ":brand هەرگیز داوای وشەی نهێنی، کۆدی OTP یان ژمارەی کارتت ناکات لە ڕێگەی ئیمەیلەوە."
 }

@@ -2244,5 +2244,12 @@
     "Repeat the new password": "أعد كتابة كلمة المرور الجديدة",
     "Use at least 12 characters, including uppercase and lowercase letters, a number, and a symbol.": "استخدم 12 حرفًا على الأقل، تتضمن حروفًا كبيرة وصغيرة ورقمًا ورمزًا.",
     "Use at least 8 characters.": "استخدم 8 أحرف على الأقل.",
-    "Use at least 8 characters, including letters and a number.": "استخدم 8 أحرف على الأقل، تشمل حروفًا ورقمًا."
+    "Use at least 8 characters, including letters and a number.": "استخدم 8 أحرف على الأقل، تشمل حروفًا ورقمًا.",
+    "Auto Parts & Commerce": "قطع غيار السيارات والتجارة",
+    "Single-use — do not share": "للاستخدام مرة واحدة — لا تشاركه مع أحد",
+    "Sent to": "أُرسل إلى",
+    "This is an automated message — please do not reply.": "هذه رسالة تلقائية — يرجى عدم الرد عليها.",
+    "Questions?": "هل لديك استفسار؟",
+    "Always verify you are at": "تأكد دائمًا أنك على",
+    ":brand will never ask for your password, OTP, or card number by email.": "لن تطلب :brand كلمة المرور أو رمز التحقق أو رقم البطاقة عبر البريد الإلكتروني."
 }

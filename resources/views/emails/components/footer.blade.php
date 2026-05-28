@@ -7,7 +7,7 @@
             <tr>
                 <td align="center">
                     <p class="em-footer-text" style="margin:0 0 6px;font-size:13px;font-weight:700;color:#374151;">
-                        {{ $brandName ?? 'YallaSpare' }} &mdash; {{ __('Auto Parts &amp; Commerce') }}
+                        {{ $brandName ?? 'YallaSpare' }} — {{ __('Auto Parts & Commerce') }}
                     </p>
                     <p class="em-footer-text" style="margin:0;font-size:12px;color:#64748b;line-height:20px;">
                         {{ __('Questions?') }}

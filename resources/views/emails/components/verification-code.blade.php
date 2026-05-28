@@ -13,7 +13,7 @@
                     {{ $code }}
                 </div>
                 <p style="margin:14px 0 0;color:#6366f1;font-size:11px;font-weight:600;letter-spacing:0.3px;">
-                    {{ __('Single-use &mdash; do not share') }}
+                    {{ __('Single-use — do not share') }}
                 </p>
             </td>
         </tr>

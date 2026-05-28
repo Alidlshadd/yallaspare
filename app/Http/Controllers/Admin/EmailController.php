@@ -19,7 +19,163 @@ class EmailController extends Controller
             'summary' => $this->mailSummary(),
             'mailers' => $this->availableMailers(),
             'checks' => $this->readinessChecks(),
+            'previewTemplates' => array_keys($this->previewTemplates()),
         ]);
+    }
+
+    /**
+     * Render any of the transactional email templates with realistic sample data.
+     * Admin-only; the route is already behind the admin middleware + 2FA. The
+     * template key is matched against a static allowlist — no view paths from
+     * user input ever reach the renderer.
+     */
+    public function preview(string $template, Request $request): View
+    {
+        $registry = $this->previewTemplates();
+        abort_unless(isset($registry[$template]), 404);
+
+        $locale = (string) $request->query('locale', app()->getLocale());
+        if (! in_array($locale, ['en', 'ar', 'ku'], true)) {
+            $locale = 'en';
+        }
+        app()->setLocale($locale);
+
+        $entry = $registry[$template];
+
+        return view($entry['view'], array_merge($entry['data'], ['locale' => $locale]));
+    }
+
+    /**
+     * Allowlist of preview-able templates with realistic sample data.
+     *
+     * @return array<string, array{view:string, data:array<string,mixed>}>
+     */
+    private function previewTemplates(): array
+    {
+        $sampleOrderRows = [
+            ['name' => 'Bosch Front Brake Pads (Set)', 'sku' => 'BP-9043-FR', 'quantity' => 2, 'subtotal' => '85,000 IQD'],
+            ['name' => 'NGK Iridium Spark Plug', 'sku' => 'NGK-IX-IZTR5B', 'quantity' => 4, 'subtotal' => '42,000 IQD'],
+            ['name' => 'Mann Oil Filter W712/75', 'sku' => 'MN-W712-75', 'quantity' => 1, 'subtotal' => '13,500 IQD'],
+        ];
+        $sampleTotals = [
+            ['label' => 'Subtotal', 'value' => '140,500 IQD'],
+            ['label' => 'Shipping', 'value' => '5,000 IQD'],
+            ['label' => 'Discount', 'value' => '-10,000 IQD'],
+            ['label' => 'Grand total', 'value' => '135,500 IQD'],
+        ];
+
+        return [
+            'verify-email' => [
+                'view' => 'emails.auth.verify-email',
+                'data' => [
+                    'verificationCode' => '847293',
+                    'email' => 'customer@example.com',
+                    'expiresIn' => 60,
+                ],
+            ],
+            'reset-password' => [
+                'view' => 'emails.auth.reset-password',
+                'data' => [
+                    'actionUrl' => url('/reset-password/sample-token'),
+                    'email' => 'customer@example.com',
+                    'expiresIn' => 60,
+                ],
+            ],
+            'two-factor-code' => [
+                'view' => 'emails.admin.two-factor-code',
+                'data' => [
+                    'code' => '129 437',
+                    'email' => 'admin@yallaspare.com',
+                    'ttlMinutes' => 10,
+                ],
+            ],
+            'welcome' => [
+                'view' => 'emails.auth.welcome',
+                'data' => [
+                    'email' => 'newuser@example.com',
+                    'name' => 'Ahmed Al-Khalidi',
+                    'actionUrl' => url('/'),
+                    'actionText' => __('Open Your Account'),
+                ],
+            ],
+            'order-status' => [
+                'view' => 'emails.orders.status',
+                'data' => [
+                    'eyebrow' => __('Order shipped'),
+                    'title' => __('Your order is on the way'),
+                    'intro' => __('Your YallaSpare order #YS-104482 has shipped and will arrive in 2-3 business days.'),
+                    'orderStatus' => 'shipped',
+                    'recipientName' => 'Ahmed Al-Khalidi',
+                    'recipientEmail' => 'customer@example.com',
+                    'metaItems' => [
+                        ['label' => __('Order number'), 'value' => 'YS-104482'],
+                        ['label' => __('Tracking'), 'value' => 'AR-9837-4471-IQ'],
+                        ['label' => __('Placed on'), 'value' => '12 Mar 2026, 14:22'],
+                    ],
+                    'orderRows' => $sampleOrderRows,
+                    'totals' => $sampleTotals,
+                    'shippingAddress' => 'Hay Al-Jihad, Baghdad — +964 770 000 0000',
+                    'actionUrl' => url('/account/orders'),
+                    'actionText' => __('Track your order'),
+                ],
+            ],
+            'dealer' => [
+                'view' => 'emails.dealer.notification',
+                'data' => [
+                    'title' => __('Dealer status approved'),
+                    'bodyText' => __('Your YallaSpare dealer application has been approved. You can now access dealer pricing, order tools, and inventory management.'),
+                    'dealerStatus' => 'approved',
+                    'metaItems' => [
+                        ['label' => __('Dealer account'), 'value' => 'dealer@example.com'],
+                        ['label' => __('Discount tier'), 'value' => '8%'],
+                        ['label' => __('Status updated'), 'value' => '12 Mar 2026'],
+                    ],
+                    'actionUrl' => url('/'),
+                    'actionText' => __('View dealer dashboard'),
+                ],
+            ],
+            'support' => [
+                'view' => 'emails.support.contact-request',
+                'data' => [
+                    'name' => 'Sara Mohammed',
+                    'email' => 'sara@example.com',
+                    'phone' => '+964 770 123 4567',
+                    'topic' => 'Order issue',
+                    'requestSubject' => 'Wrong part received',
+                    'messageText' => "I ordered front brake pads for a 2017 Toyota Camry but received pads for a different model.\n\nOrder number: YS-104399",
+                ],
+            ],
+            'low-stock' => [
+                'view' => 'emails.inventory.low-stock-alert',
+                'data' => [
+                    'title' => __('3 products below threshold'),
+                    'bodyText' => __('The following products dropped below the low-stock threshold. Replenish them before the next sales cycle to avoid lost orders.'),
+                    'metaItems' => [
+                        ['label' => 'NGK-IX-IZTR5B', 'value' => __('4 units left (threshold 10)')],
+                        ['label' => 'BP-9043-FR', 'value' => __('2 units left (threshold 5)')],
+                        ['label' => 'MN-W712-75', 'value' => __('1 unit left (threshold 5)')],
+                    ],
+                    'actionUrl' => url('/'),
+                    'actionText' => __('Manage inventory'),
+                ],
+            ],
+            'security-alert' => [
+                'view' => 'emails.admin.security-alert',
+                'data' => [
+                    'title' => __('New admin sign-in detected'),
+                    'bodyText' => __("A YallaSpare admin account was just signed in from a new device.\n\nIf this was you, no further action is needed."),
+                    'email' => 'admin@yallaspare.com',
+                    'metaItems' => [
+                        ['label' => __('Account'), 'value' => 'admin@yallaspare.com'],
+                        ['label' => __('IP address'), 'value' => '93.184.216.34'],
+                        ['label' => __('Device'), 'value' => 'Chrome 134 — Windows 11'],
+                        ['label' => __('Signed in at'), 'value' => '12 Mar 2026, 14:22'],
+                    ],
+                    'actionUrl' => url('/'),
+                    'actionText' => __('Review account security'),
+                ],
+            ],
+        ];
     }
 
     public function sendTest(Request $request): RedirectResponse

@@ -125,11 +125,16 @@
                     </tr>
                     <tr>
                         <td align="center" style="padding-top:6px;color:#7c8db8;font-size:10.5px;font-weight:600;letter-spacing:2.8px;text-transform:uppercase;">
-                            {{ __('Auto Parts &amp; Commerce') }}
+                            {{ __('Auto Parts & Commerce') }}
                         </td>
                     </tr>
                     </table>
                 </td>
+            </tr>
+
+            {{-- ░░ BRAND ACCENT LINE ░░ — thin red stripe under hero, signature brand cue --}}
+            <tr>
+                <td style="height:3px;background:#dc2626;font-size:0;line-height:0;">&nbsp;</td>
             </tr>
 
             {{-- ░░ RECIPIENT BAR (optional) ░░ --}}

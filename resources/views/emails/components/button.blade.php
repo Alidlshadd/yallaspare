@@ -3,11 +3,13 @@
     $size    = $size    ?? 'default';
 
     $configs = [
-        'primary'   => ['bg' => '#070740', 'text' => '#ffffff', 'shadow' => 'rgba(7,7,64,0.45)'],
+        // Primary = brand red (#DC2626 = Tailwind red-600), matches the site Sign In button.
+        'primary'   => ['bg' => '#dc2626', 'text' => '#ffffff', 'shadow' => 'rgba(220,38,38,0.4)'],
         'danger'    => ['bg' => '#dc2626', 'text' => '#ffffff', 'shadow' => 'rgba(220,38,38,0.4)'],
         'success'   => ['bg' => '#16a34a', 'text' => '#ffffff', 'shadow' => 'rgba(22,163,74,0.4)'],
         'secondary' => ['bg' => '#ffffff', 'text' => '#070740', 'shadow' => 'rgba(0,0,0,0.08)'],
         'warning'   => ['bg' => '#d97706', 'text' => '#ffffff', 'shadow' => 'rgba(217,119,6,0.4)'],
+        'navy'      => ['bg' => '#070740', 'text' => '#ffffff', 'shadow' => 'rgba(7,7,64,0.45)'],
     ];
     $cfg = $configs[$variant] ?? $configs['primary'];
 
