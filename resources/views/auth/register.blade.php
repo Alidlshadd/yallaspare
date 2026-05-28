@@ -11,6 +11,10 @@
     :panel-button-href="route('login')"
     panel-exit-direction="right"
 >
+    @php
+        $strictPassword = app()->environment('production');
+    @endphp
+
     <form method="POST" action="{{ route('register') }}" class="mt-5 space-y-4" data-auth-form>
         @csrf
 
@@ -70,6 +74,13 @@
                 autocomplete="new-password"
                 placeholder="{{ __('Create password') }}"
             />
+            <p class="mt-2 text-xs leading-5 text-slate-400" id="password-rule-help">
+                @if ($strictPassword)
+                    {{ __('Use at least 12 characters, including uppercase and lowercase letters, a number, and a symbol.') }}
+                @else
+                    {{ __('Use at least 8 characters.') }}
+                @endif
+            </p>
             <x-input-error :messages="$errors->get('password')" class="mt-2 text-sm text-red-400" />
         </div>
 

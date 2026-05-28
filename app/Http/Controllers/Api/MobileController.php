@@ -86,13 +86,14 @@ class MobileController extends Controller
             'password' => ['required', 'string', 'min:8'],
         ]);
 
-        $user = User::query()->create([
+        $user = new User();
+        $user->forceFill([
             'name' => $data['name'],
             'email' => $data['email'],
             'phone' => $data['phone'] ?? null,
             'password' => Hash::make($data['password']),
             'role' => User::ROLE_USER,
-        ]);
+        ])->save();
 
         event(new Registered($user));
 
@@ -483,7 +484,8 @@ class MobileController extends Controller
         $discount = $preview && $preview['valid'] ? (float) $preview['discount'] : 0.0;
         $total = max(0, (float) $subtotal + $shipping - $discount);
 
-        $order = Order::query()->create([
+        $order = new Order();
+        $order->forceFill([
             'user_id' => $request->user()->id,
             'order_number' => 'ORD-' . now()->format('Ymd') . '-' . strtoupper(Str::random(5)),
             'subtotal_amount' => $subtotal,
@@ -498,7 +500,7 @@ class MobileController extends Controller
             'delivery_address' => $address->address_line1,
             'delivery_city' => $address->city,
             'delivery_phone' => $address->phone,
-        ]);
+        ])->save();
 
         foreach ($cart->items as $item) {
             $unit = $item->product->priceFor($request->user());
@@ -961,7 +963,7 @@ class MobileController extends Controller
     {
         $this->requirePermission($request, User::PERMISSION_ORDERS_MANAGE);
         $data = $request->validate(['status' => ['required', Rule::in(Order::allowedStatuses())]]);
-        $order->update(['status' => $data['status']]);
+        $order->forceFill(['status' => $data['status']])->save();
 
         return response()->json(['data' => $this->orderPayload($order->fresh('items.product.category', 'items.product.images', 'items.product.reviews', 'user'))]);
     }
@@ -988,7 +990,7 @@ class MobileController extends Controller
             abort(422, 'At least one super admin account must remain.');
         }
 
-        $user->update(['role' => $role, 'permissions' => User::defaultPermissionsForRole($role)]);
+        $user->forceFill(['role' => $role, 'permissions' => User::defaultPermissionsForRole($role)])->save();
 
         return response()->json(['user' => $this->userPayload($user->fresh())]);
     }
@@ -1000,11 +1002,11 @@ class MobileController extends Controller
             'dealer_status' => ['required', Rule::in(User::allowedDealerStatuses())],
             'dealer_discount' => ['required', 'numeric', 'min:0', 'max:100'],
         ]);
-        $user->update([
+        $user->forceFill([
             'role' => User::ROLE_DEALER,
             'dealer_status' => $data['dealer_status'],
             'dealer_discount' => $data['dealer_discount'],
-        ]);
+        ])->save();
 
         return response()->json(['user' => $this->userPayload($user->fresh())]);
     }
@@ -1058,7 +1060,7 @@ class MobileController extends Controller
             'part_number' => (string) $product->part_number,
             'price' => $pricing['price'],
             'base_price' => $pricing['base_price'],
-            'dealer_price' => $product->dealer_price,
+            'dealer_price' => ($user && $user->isDealer()) ? $product->dealer_price : null,
             'discount_percent' => $pricing['discount_percent'],
             'stock_quantity' => (int) $product->stock_quantity,
             'low_stock_threshold' => (int) ($product->low_stock_threshold ?? 5),

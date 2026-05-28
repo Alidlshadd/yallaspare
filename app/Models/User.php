@@ -75,6 +75,16 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
         'font_size_preference',
         'reduced_motion',
         'high_contrast_mode',
+    ];
+
+    /**
+     * Privilege/role fields intentionally excluded from $fillable to block
+     * mass-assignment escalation. Set these only via explicit forceFill()->save()
+     * in admin-gated controllers after validating against allowlists.
+     *
+     * @var array<int, string>
+     */
+    protected $guarded = [
         'role',
         'permissions',
         'dealer_status',

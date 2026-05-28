@@ -186,13 +186,15 @@ class UserController extends Controller
             'email' => strtolower(trim($data['email'])),
             'phone' => filled($data['phone'] ?? null) ? trim((string) $data['phone']) : null,
             'date_of_birth' => $data['date_of_birth'] ?? null,
+        ]);
+
+        // Privilege/role fields are guarded against mass assignment; set explicitly
+        // after validation against allowlists above.
+        $user->forceFill([
             'role' => $newRole,
             'permissions' => $permissions,
             'dealer_status' => $dealerStatus,
             'dealer_discount' => $dealerDiscount,
-        ]);
-
-        $user->forceFill([
             'email_verified_at' => $request->boolean('email_verified')
                 ? ($user->email_verified_at ?? now())
                 : null,
@@ -224,10 +226,10 @@ class UserController extends Controller
             return back()->with('error', __('At least one super admin account must remain.'));
         }
 
-        $user->update([
+        $user->forceFill([
             'role' => $newRole,
             'permissions' => null,
-        ]);
+        ])->save();
 
         return back()->with('success', __('User role updated successfully.'));
     }

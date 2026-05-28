@@ -93,7 +93,7 @@ class ReturnRequestController extends Controller
         ]);
 
         if ($data['status'] === ReturnRequest::STATUS_REFUNDED) {
-            $return->order?->update(['payment_status' => Order::PAYMENT_REFUNDED]);
+            $return->order?->forceFill(['payment_status' => Order::PAYMENT_REFUNDED])->save();
         }
 
         AdminLogger::log('return_request.updated', $return, [

@@ -16,7 +16,7 @@ class RegistrationTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('password-input-toggle', false);
-        $response->assertSee('passwordVisibility', false);
+        $response->assertSee('x-data="{ show: false }"', false);
         $response->assertSee('Show password');
     }
 

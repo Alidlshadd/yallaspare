@@ -18,7 +18,7 @@ class AuthenticationTest extends TestCase
         $response->assertSee('data-header-dropdown-trigger', false);
         $response->assertSee('languageDropdownReady', false);
         $response->assertSee('password-input-toggle', false);
-        $response->assertSee('passwordVisibility', false);
+        $response->assertSee('x-data="{ show: false }"', false);
         $response->assertSee('Show password');
     }
 

@@ -131,7 +131,8 @@ class CheckoutController extends Controller
                     'Preferred contact: ' . ucfirst($contactMethod),
                 ])->filter()->implode(PHP_EOL));
 
-                $order = Order::query()->create([
+                $order = new Order();
+                $order->forceFill([
                     'user_id' => $user->id,
                     'order_number' => 'ORD-' . now()->format('YmdHis') . '-' . Str::upper(Str::random(6)),
                     'subtotal_amount' => $subtotal,
@@ -149,6 +150,7 @@ class CheckoutController extends Controller
                     'delivery_phone' => $contactDestination,
                     'notes' => $notes !== '' ? $notes : null,
                 ]);
+                $order->save();
 
                 $order->statusHistory()->create([
                     'from_status' => null,
@@ -446,7 +448,8 @@ class CheckoutController extends Controller
                     'Preferred contact: ' . ucfirst($contactMethod),
                 ])->filter()->implode(PHP_EOL));
 
-                $order = Order::query()->create([
+                $order = new Order();
+                $order->forceFill([
                     'user_id' => auth()->id(),
                     'order_number' => 'ORD-' . now()->format('YmdHis') . '-' . Str::upper(Str::random(6)),
                     'subtotal_amount' => $subtotalAmount,
@@ -464,6 +467,7 @@ class CheckoutController extends Controller
                     'delivery_phone' => $contactDestination,
                     'notes' => $notes !== '' ? $notes : null,
                 ]);
+                $order->save();
 
                 if (!$order->statusHistory()->exists()) {
                     $order->statusHistory()->create([

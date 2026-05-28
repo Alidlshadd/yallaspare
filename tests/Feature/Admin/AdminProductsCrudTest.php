@@ -246,7 +246,7 @@ class AdminProductsCrudTest extends TestCase
             'is_active' => true,
         ]);
         $customer = User::factory()->create();
-        $order = Order::query()->create([
+        $order = Order::forceCreate([
             'user_id' => $customer->id,
             'order_number' => 'ORD-TEST-ARCHIVE',
             'total_amount' => 100,

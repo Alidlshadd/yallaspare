@@ -2236,5 +2236,12 @@
     "Total order value: IQD :amount": "إجمالي قيمة الطلب: :amount د.ع",
     "Support request: :subject": "طلب دعم: :subject",
     "Fixed amount has no percentage cap.": "المبلغ الثابت لا يحتوي على حد للنسبة المئوية.",
-    "Saving...": "جارٍ الحفظ..."
+    "Saving...": "جارٍ الحفظ...",
+    "Account Recovery": "استرداد الحساب",
+    "Back to Sign In": "العودة إلى تسجيل الدخول",
+    "Choose a new password to regain secure access to your YallaSpare account.": "اختر كلمة مرور جديدة لاستعادة الوصول الآمن إلى حساب YallaSpare الخاص بك.",
+    "Enter a new password": "أدخل كلمة مرور جديدة",
+    "Repeat the new password": "أعد كتابة كلمة المرور الجديدة",
+    "Use at least 12 characters, including uppercase and lowercase letters, a number, and a symbol.": "استخدم 12 حرفًا على الأقل، تتضمن حروفًا كبيرة وصغيرة ورقمًا ورمزًا.",
+    "Use at least 8 characters.": "استخدم 8 أحرف على الأقل."
 }

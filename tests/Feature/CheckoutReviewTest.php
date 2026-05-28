@@ -170,7 +170,7 @@ class CheckoutReviewTest extends TestCase
             'stock_quantity' => 3,
             'price' => 25000,
         ]);
-        $order = Order::query()->create([
+        $order = Order::forceCreate([
             'user_id' => $user->id,
             'order_number' => 'ORD-PENDING-CANCEL',
             'subtotal_amount' => 50000,

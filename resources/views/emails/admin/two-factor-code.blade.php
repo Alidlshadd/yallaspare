@@ -1,25 +1,44 @@
-@extends('emails.layouts.base')
+@extends('emails.layouts.base', [
+    'preheader'      => __('Your admin two-factor authentication code is ready.'),
+    'recipientEmail' => $email ?? null,
+])
 
 @section('content')
-    <p style="margin:0 0 8px;color:#dc2626;font-size:12px;font-weight:900;text-transform:uppercase;letter-spacing:1.5px;">{{ __('High security verification') }}</p>
-    <h1 class="email-title" style="margin:0;color:#070740;font-size:28px;line-height:36px;font-weight:900;letter-spacing:-0.4px;">{{ __('Admin verification required') }}</h1>
-    <p class="email-copy" style="margin:14px 0 0;color:#475569;font-size:16px;line-height:26px;">
-        {{ __('Use this one-time code to complete your admin sign-in. This code should only be used inside the YallaSpare admin panel.') }}
+
+    {{-- Eyebrow --}}
+    <p style="margin:0 0 10px;color:#dc2626;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2.2px;">
+        {{ __('High security verification') }}
     </p>
 
+    {{-- Headline --}}
+    <h1 class="em-title" style="margin:0;color:#0f172a;font-size:30px;line-height:38px;font-weight:800;letter-spacing:-0.5px;">
+        {{ __('Admin sign-in code') }}
+    </h1>
+
+    {{-- Body copy --}}
+    <p class="em-copy" style="margin:16px 0 0;color:#475569;font-size:16px;line-height:27px;">
+        {{ __('Use this one-time code to complete your sign-in to the YallaSpare admin panel. This code is only valid for this session.') }}
+    </p>
+
+    {{-- OTP Code --}}
     @include('emails.components.verification-code', ['code' => $code])
 
+    {{-- Meta info --}}
     @include('emails.components.meta-grid', ['items' => [
-        ['label' => __('Expires'), 'value' => __(':count minutes', ['count' => $ttlMinutes ?? 10])],
         ['label' => __('Account'), 'value' => $email ?? ''],
+        ['label' => __('Expires'), 'value' => __('In :count minutes', ['count' => $ttlMinutes ?? 10])],
+        ['label' => __('IP scope'),   'value' => __('This code is tied to your current session.')],
     ]])
 
+    {{-- Danger alert --}}
     @include('emails.components.alert', [
-        'tone' => 'danger',
-        'message' => __('If this sign-in was not yours, change your password and review admin access immediately.'),
+        'tone'    => 'danger',
+        'message' => __('YallaSpare staff will NEVER ask for this code by phone, chat, or email. If you receive such a request, it is a scam.'),
     ])
 
+    {{-- Security notice --}}
     @include('emails.components.security-notice', [
-        'message' => __('YallaSpare staff will never ask for this code. Do not share it by phone, chat, email, or screenshot.'),
+        'message' => __('If you did not attempt to sign in to the admin panel, change your password immediately and contact your system administrator.'),
     ])
+
 @endsection

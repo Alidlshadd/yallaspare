@@ -34,7 +34,7 @@ class ProductReviewTest extends TestCase
 
     private function deliveredOrderFor(User $user, Product $product): Order
     {
-        $order = Order::query()->create([
+        $order = Order::forceCreate([
             'user_id' => $user->id,
             'order_number' => 'ORD-REVIEW-' . $user->id . '-' . $product->id,
             'total_amount' => 100,

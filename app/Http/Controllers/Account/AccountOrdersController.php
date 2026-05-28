@@ -199,11 +199,11 @@ class AccountOrdersController extends Controller
                 ]);
             }
 
-            $lockedOrder->update([
+            $lockedOrder->forceFill([
                 'status' => Order::STATUS_CANCELLED,
                 'cancellation_requested_at' => now(),
                 'cancellation_reason' => $reason !== '' ? $reason : 'Cancelled by customer before processing',
-            ]);
+            ])->save();
 
             $lockedOrder->statusHistory()->create([
                 'from_status' => $previousStatus,

@@ -69,10 +69,10 @@ class DealerController extends Controller
             'dealer_discount' => ['required', 'numeric', 'min:0', 'max:100'],
         ]);
 
-        $dealer->update([
+        $dealer->forceFill([
             'dealer_status' => $data['dealer_status'],
             'dealer_discount' => round((float) $data['dealer_discount'], 2),
-        ]);
+        ])->save();
 
         return back()->with('success', __('Dealer updated successfully.'));
     }
@@ -85,11 +85,11 @@ class DealerController extends Controller
             abort(404);
         }
 
-        $dealer->update([
+        $dealer->forceFill([
             'role' => User::ROLE_USER,
             'dealer_status' => User::DEALER_STATUS_INACTIVE,
             'dealer_discount' => 0,
-        ]);
+        ])->save();
 
         return back()->with('success', __('Dealer was converted to regular user.'));
     }

@@ -33,7 +33,7 @@ class AdminOrdersTest extends TestCase
             'price' => 25000,
         ]);
 
-        $order = Order::query()->create([
+        $order = Order::forceCreate([
             'user_id' => $customer->id,
             'order_number' => 'ORD-PRESENTATION-001',
             'subtotal_amount' => 50000,

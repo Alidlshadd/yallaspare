@@ -2236,5 +2236,12 @@
     "Total order value: IQD :amount": "Total order value: IQD :amount",
     "Support request: :subject": "Support request: :subject",
     "Fixed amount has no percentage cap.": "Fixed amount has no percentage cap.",
-    "Saving...": "Saving..."
+    "Saving...": "Saving...",
+    "Account Recovery": "Account Recovery",
+    "Back to Sign In": "Back to Sign In",
+    "Choose a new password to regain secure access to your YallaSpare account.": "Choose a new password to regain secure access to your YallaSpare account.",
+    "Enter a new password": "Enter a new password",
+    "Repeat the new password": "Repeat the new password",
+    "Use at least 12 characters, including uppercase and lowercase letters, a number, and a symbol.": "Use at least 12 characters, including uppercase and lowercase letters, a number, and a symbol.",
+    "Use at least 8 characters.": "Use at least 8 characters."
 }

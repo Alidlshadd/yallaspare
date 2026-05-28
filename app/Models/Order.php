@@ -27,11 +27,7 @@ class Order extends Model
         'discount_amount',
         'coupon_id',
         'coupon_code',
-        'grand_total',
-        'total_amount',
-        'status',
         'payment_method',
-        'payment_status',
         'payment_reference',
         'delivery_address',
         'delivery_city',
@@ -40,6 +36,20 @@ class Order extends Model
         'cancellation_requested_at',
         'cancellation_reason',
         'archived_at',
+    ];
+
+    /**
+     * Money/status fields excluded from $fillable to block mass-assignment fraud
+     * (e.g. forcing grand_total=0 or payment_status=paid). Set these only via
+     * explicit forceFill()->save() with server-computed/allowlisted values.
+     *
+     * @var array<int, string>
+     */
+    protected $guarded = [
+        'grand_total',
+        'total_amount',
+        'status',
+        'payment_status',
     ];
 
     protected $casts = [

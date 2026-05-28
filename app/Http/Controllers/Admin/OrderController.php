@@ -245,10 +245,10 @@ class OrderController extends Controller
 
         $paymentStatus = Order::normalizedPaymentStatus($data['payment_status']);
 
-        $order->update([
+        $order->forceFill([
             'payment_status' => $paymentStatus,
             'payment_reference' => trim((string) ($data['payment_reference'] ?? '')) ?: null,
-        ]);
+        ])->save();
 
         AdminLogger::log('order.payment_updated', $order, [
             'payment_status' => $paymentStatus,
@@ -337,7 +337,7 @@ class OrderController extends Controller
                 }
             }
 
-            $lockedOrder->update(['status' => $status]);
+            $lockedOrder->forceFill(['status' => $status])->save();
 
             $lockedOrder->statusHistory()->create([
                 'from_status' => $previousStatus,

@@ -13,7 +13,16 @@ class SecureImageStorage
         $imageInfo = @getimagesize($file->getRealPath());
         $mime = is_array($imageInfo) ? (string) ($imageInfo['mime'] ?? '') : '';
 
-        if (! function_exists('imagecreatetruecolor') || ! in_array($mime, ['image/jpeg', 'image/png', 'image/webp'], true)) {
+        // Reject anything that is not a verified raster image we support. This blocks
+        // SVG (inline-JS stored XSS), GIF/BMP, and files disguised with an image
+        // extension whose real bytes do not match a supported format.
+        if (! in_array($mime, ['image/jpeg', 'image/png', 'image/webp'], true)) {
+            abort(422, 'Unsupported or unverifiable image format.');
+        }
+
+        // GD unavailable: the file is already verified as a real image above, so it
+        // is safe to store the original bytes without re-encoding.
+        if (! function_exists('imagecreatetruecolor')) {
             return str_replace('\\', '/', (string) $file->store($directory, $disk));
         }
 
