@@ -21,3 +21,4 @@ yarn-error.log
 /.phpactor.json
 /storage/pail
 /storage/backups/db/*.sql
+.superpowers/
