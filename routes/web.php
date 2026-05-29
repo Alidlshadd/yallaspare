@@ -370,6 +370,9 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::post('/inventory/movements', [InventoryMovementController::class, 'store'])
             ->middleware(['can:' . User::PERMISSION_STOCK_MANAGE, 'throttle:admin-write'])
             ->name('inventory.store');
+        Route::post('/inventory/movements/import', [InventoryMovementController::class, 'import'])
+            ->middleware(['can:' . User::PERMISSION_STOCK_MANAGE, 'throttle:admin-write'])
+            ->name('inventory.import');
 
         // System Settings
         Route::get('/settings', [SettingController::class, 'edit'])

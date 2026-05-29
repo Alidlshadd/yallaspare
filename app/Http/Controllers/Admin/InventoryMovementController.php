@@ -228,4 +228,165 @@ class InventoryMovementController extends Controller
 
         return back()->with('success', __('Inventory movement recorded successfully.'));
     }
+
+    public function import(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'import_file' => ['required', 'file', 'max:5120', 'mimes:csv,txt'],
+        ]);
+
+        $hasWarehouseSupport = Schema::hasTable('warehouses') && Schema::hasColumn('inventory_movements', 'warehouse_id');
+        $hasPerformedAt = Schema::hasColumn('inventory_movements', 'performed_at');
+
+        $path = $request->file('import_file')->getRealPath();
+        $handle = @fopen($path, 'rb');
+
+        if ($handle === false) {
+            return back()->with('error', __('Could not open uploaded CSV file.'));
+        }
+
+        $headers = fgetcsv($handle);
+        if (! is_array($headers) || $headers === []) {
+            fclose($handle);
+            return back()->with('error', __('Uploaded CSV does not contain a header row.'));
+        }
+
+        $headers = array_map(
+            fn ($h) => strtolower(trim((string) $h)),
+            $headers
+        );
+
+        $required = ['product_sku', 'type', 'quantity'];
+        $missing = array_diff($required, $headers);
+        if ($missing !== []) {
+            fclose($handle);
+            return back()->with('error', __('CSV is missing required columns: :missing', [
+                'missing' => implode(', ', $missing),
+            ]));
+        }
+
+        $imported = 0;
+        $skipped = 0;
+        $errors = [];
+        $rowNumber = 1;
+
+        while (($row = fgetcsv($handle)) !== false) {
+            $rowNumber++;
+            if ($row === [null] || $row === []) {
+                continue;
+            }
+
+            $assoc = [];
+            foreach ($headers as $index => $key) {
+                $assoc[$key] = isset($row[$index]) ? trim((string) $row[$index]) : '';
+            }
+
+            try {
+                DB::transaction(function () use ($assoc, $request, $hasWarehouseSupport, $hasPerformedAt) {
+                    $sku = $assoc['product_sku'] ?? '';
+                    $type = strtolower($assoc['type'] ?? '');
+                    $quantity = (int) ($assoc['quantity'] ?? 0);
+
+                    if ($sku === '') {
+                        throw new \RuntimeException('product_sku is required');
+                    }
+                    if (! in_array($type, [InventoryMovement::TYPE_IN, InventoryMovement::TYPE_OUT], true)) {
+                        throw new \RuntimeException("type must be 'in' or 'out', got '{$type}'");
+                    }
+                    if ($quantity <= 0) {
+                        throw new \RuntimeException('quantity must be > 0');
+                    }
+
+                    $product = Product::query()
+                        ->where(function ($q) use ($sku) {
+                            $q->where('sku', $sku)
+                                ->orWhere('part_number', $sku)
+                                ->orWhere('oem_number', $sku);
+                        })
+                        ->lockForUpdate()
+                        ->first();
+
+                    if (! $product) {
+                        throw new \RuntimeException("Product not found for SKU '{$sku}'");
+                    }
+
+                    $stockBefore = (int) $product->stock_quantity;
+                    $stockAfter = $type === InventoryMovement::TYPE_IN
+                        ? $stockBefore + $quantity
+                        : $stockBefore - $quantity;
+
+                    if ($stockAfter < 0) {
+                        throw new \RuntimeException("Stock out exceeds available stock ({$stockBefore})");
+                    }
+
+                    $warehouseCode = $assoc['warehouse_code'] ?? '';
+                    $reference = $assoc['reference'] ?? '';
+                    $note = $assoc['note'] ?? '';
+                    $performedAt = $assoc['performed_at'] ?? '';
+
+                    $warehouseId = null;
+                    if ($hasWarehouseSupport && $warehouseCode !== '') {
+                        $warehouse = Warehouse::query()->where('code', $warehouseCode)->first();
+                        if (! $warehouse) {
+                            throw new \RuntimeException("Warehouse code '{$warehouseCode}' not found");
+                        }
+                        $warehouseId = $warehouse->id;
+                    }
+
+                    $product->update(['stock_quantity' => $stockAfter]);
+
+                    $payload = [
+                        'product_id' => $product->id,
+                        'user_id' => $request->user()->id,
+                        'type' => $type,
+                        'quantity' => $quantity,
+                        'stock_before' => $stockBefore,
+                        'stock_after' => $stockAfter,
+                        'reference' => $reference !== '' ? $reference : null,
+                        'note' => $note !== '' ? $note : null,
+                    ];
+
+                    if ($hasWarehouseSupport) {
+                        $payload['warehouse_id'] = $warehouseId;
+                    }
+
+                    if ($hasPerformedAt) {
+                        $payload['performed_at'] = $performedAt !== ''
+                            ? $performedAt
+                            : now();
+                    }
+
+                    InventoryMovement::create($payload);
+
+                    AdminLogger::log('inventory.bulk_adjusted', $product, [
+                        'type' => $type,
+                        'quantity' => $quantity,
+                        'warehouse_id' => $warehouseId,
+                        'source' => 'csv_import',
+                    ]);
+                });
+
+                $imported++;
+            } catch (\Throwable $e) {
+                $skipped++;
+                if (count($errors) < 20) {
+                    $errors[] = "Row {$rowNumber}: " . $e->getMessage();
+                }
+            }
+        }
+
+        fclose($handle);
+
+        $summary = __(':imported imported, :skipped skipped', [
+            'imported' => $imported,
+            'skipped' => $skipped,
+        ]);
+
+        if ($skipped > 0) {
+            return back()
+                ->with('error', $summary . ' — ' . implode(' | ', $errors));
+        }
+
+        return back()->with('success', __('Bulk inventory import: :summary', ['summary' => $summary]));
+    }
 }
