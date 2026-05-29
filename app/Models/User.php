@@ -12,10 +12,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class User extends Authenticatable implements MustVerifyEmail, HasLocalePreference
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, LogsActivity, Notifiable;
 
     public const ROLE_SUPER_ADMIN = 'super_admin';
     public const ROLE_ADMIN = 'admin';
@@ -140,6 +142,26 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
                 $user->attributes['role'] = self::ROLE_USER;
             }
         });
+    }
+
+    /**
+     * Activity log scope is deliberately narrow: only the security/finance-
+     * relevant attributes are recorded so that profile/preference changes do
+     * not flood the log. Password, remember_token, and PII like phone and
+     * date_of_birth are intentionally NOT logged.
+     */
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly([
+                'role',
+                'permissions',
+                'dealer_status',
+                'dealer_discount',
+                'email',
+            ])
+            ->logOnlyDirty()
+            ->dontSubmitEmptyLogs();
     }
 
     public function sendEmailVerificationNotification(): void
