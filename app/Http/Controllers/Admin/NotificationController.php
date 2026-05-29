@@ -21,8 +21,13 @@ class NotificationController extends Controller
     public function index(): JsonResponse
     {
         $lowStockThreshold = max((int) Setting::getValue('low_stock_threshold', config('inventory.low_stock_threshold', 5)), 0);
-        $cacheTtl = max((int) config('performance.notification_cache_ttl', 30), 5);
-        $cacheBucket = now()->copy()->second(0)->format('YmdHi');
+        $cacheTtl = max((int) config('performance.notification_cache_ttl', 300), 5);
+        $bucketMinutes = max((int) config('performance.cache_bucket_minutes', 5), 1);
+        $now = now();
+        $cacheBucket = $now->copy()
+            ->second(0)
+            ->minute((int) floor($now->minute / $bucketMinutes) * $bucketMinutes)
+            ->format('YmdHi');
         $cacheKey = sprintf(
             'admin:notifications:v1:threshold:%d:bucket:%s',
             $lowStockThreshold,

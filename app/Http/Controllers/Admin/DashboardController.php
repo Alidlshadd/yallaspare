@@ -32,8 +32,12 @@ class DashboardController extends Controller
         if (!in_array($analyticsDays, $allowedAnalyticsDays, true)) {
             $analyticsDays = 14;
         }
-        $cacheTtl = max((int) config('performance.dashboard_cache_ttl', 60), 15);
-        $cacheBucket = $now->copy()->second(0)->format('YmdHi');
+        $cacheTtl = max((int) config('performance.dashboard_cache_ttl', 300), 15);
+        $bucketMinutes = max((int) config('performance.cache_bucket_minutes', 5), 1);
+        $cacheBucket = $now->copy()
+            ->second(0)
+            ->minute((int) floor($now->minute / $bucketMinutes) * $bucketMinutes)
+            ->format('YmdHi');
         $cacheKey = sprintf(
             'admin:dashboard:v2:days:%d:threshold:%d:bucket:%s',
             $analyticsDays,
