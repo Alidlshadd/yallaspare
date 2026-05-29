@@ -94,7 +94,7 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => 'password_reset_tokens',
-            'expire' => 60,
+            'expire' => 30,
             'throttle' => 60,
         ],
     ],
@@ -106,10 +106,12 @@ return [
     |
     | Here you may define the amount of seconds before a password confirmation
     | times out and the user is prompted to re-enter their password via the
-    | confirmation screen. By default, the timeout lasts for three hours.
+    | confirmation screen. Tightened from Laravel default (3h) to 1h so that
+    | sensitive operations (account changes, role edits) require a fresh
+    | password challenge sooner.
     |
     */
 
-    'password_timeout' => 10800,
+    'password_timeout' => 3600,
 
 ];

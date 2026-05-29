@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use App\Support\Branding;
+use App\Support\SecureImageStorage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
@@ -365,7 +366,10 @@ class SettingController extends Controller
 
     private function storeOriginalLogo(UploadedFile $uploadedLogo): string
     {
-        return str_replace('\\', '/', (string) $uploadedLogo->store('settings', 'public'));
+        // SecureImageStorage verifies the file is a real raster image (getimagesize on
+        // real bytes), re-encodes through GD when available, and rejects SVG/disguised
+        // payloads. Defends the fallback path when GD-based logo processing fails.
+        return SecureImageStorage::store($uploadedLogo, 'settings', 'public');
     }
 
     private function storeHeroVideo(UploadedFile $uploadedHeroVideo): string
