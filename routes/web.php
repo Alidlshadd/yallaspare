@@ -384,6 +384,13 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::post('/email/broadcasts/recipients-preview', [\App\Http\Controllers\Admin\EmailBroadcastController::class, 'previewRecipients'])
             ->middleware(['can:' . User::PERMISSION_EMAIL_BROADCAST, 'throttle:admin-write'])
             ->name('email.broadcasts.recipients-preview');
+        Route::get('/email/broadcasts/history', [\App\Http\Controllers\Admin\EmailBroadcastController::class, 'history'])
+            ->middleware('can:' . User::PERMISSION_EMAIL_BROADCAST)
+            ->name('email.broadcasts.history');
+        Route::get('/email/broadcasts/{broadcast}', [\App\Http\Controllers\Admin\EmailBroadcastController::class, 'show'])
+            ->middleware('can:' . User::PERMISSION_EMAIL_BROADCAST)
+            ->whereNumber('broadcast')
+            ->name('email.broadcasts.show');
 
         // Notifications
         Route::get('/notifications', [NotificationController::class, 'index'])

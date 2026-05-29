@@ -123,6 +123,43 @@ class EmailBroadcastController extends Controller
             ->with('success', __('Broadcast queued: :count recipients.', ['count' => $users->count()]));
     }
 
+    public function history(): \Illuminate\View\View
+    {
+        $broadcasts = EmailBroadcast::query()
+            ->with('admin:id,name,email')
+            ->latest()
+            ->limit(50)
+            ->get();
+
+        return view('admin.email.partials._history-data', compact('broadcasts'));
+    }
+
+    public function show(int $broadcast): JsonResponse
+    {
+        $b = EmailBroadcast::with(['admin:id,name,email', 'recipients' => fn ($q) => $q->latest()->limit(100)])
+            ->findOrFail($broadcast);
+
+        return response()->json([
+            'broadcast' => [
+                'id' => $b->id,
+                'subject' => $b->subject,
+                'admin' => $b->admin?->only(['name', 'email']),
+                'status' => $b->status,
+                'recipient_count' => $b->recipient_count,
+                'sent_count' => $b->sent_count,
+                'failed_count' => $b->failed_count,
+                'filters_snapshot' => $b->filters_snapshot,
+                'created_at' => $b->created_at?->toIso8601String(),
+                'recipients_preview' => $b->recipients->map(fn ($r) => [
+                    'email' => $r->email,
+                    'status' => $r->status,
+                    'sent_at' => $r->sent_at?->toIso8601String(),
+                    'error_message' => $r->error_message,
+                ])->all(),
+            ],
+        ]);
+    }
+
     public function sendTestToSelf(Request $request): RedirectResponse
     {
         $data = $request->validate([

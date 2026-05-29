@@ -5,9 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class EmailBroadcast extends Model
 {
+    use LogsActivity;
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->logOnly(['subject', 'recipient_count', 'admin_user_id'])
+            ->useLogName('email-broadcast');
+    }
+
     public const STATUS_QUEUED = 'queued';
     public const STATUS_SENDING = 'sending';
     public const STATUS_COMPLETED = 'completed';
