@@ -316,6 +316,9 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::get('/vehicle-fitments', [VehicleFitmentController::class, 'index'])
             ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
             ->name('vehicle-fitments.index');
+        Route::get('/vehicle-fitments/products/search', [VehicleFitmentController::class, 'searchProducts'])
+            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->name('vehicle-fitments.products.search');
         Route::post('/vehicle-fitments/brands', [VehicleFitmentController::class, 'storeBrand'])
             ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('vehicle-fitments.brands.store');

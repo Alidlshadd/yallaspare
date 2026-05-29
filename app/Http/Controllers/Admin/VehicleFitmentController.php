@@ -8,6 +8,7 @@ use App\Models\ProductVehicleFitment;
 use App\Models\VehicleBrand;
 use App\Models\VehicleModel;
 use App\Support\SqlSafe;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -24,11 +25,14 @@ class VehicleFitmentController extends Controller
             ->orderBy('name')
             ->get();
 
+        // Initial dropdown payload — only the first 100 most recently created
+        // active products. Additional matches are fetched on demand from the
+        // searchProducts JSON endpoint as the operator types in the filter.
         $products = Product::query()
             ->select(['id', 'name_en', 'name_ar', 'name_ku', 'sku', 'brand', 'image'])
             ->where('is_active', true)
-            ->orderBy('name_en')
-            ->limit(500)
+            ->orderByDesc('id')
+            ->limit(100)
             ->get();
 
         $fitments = ProductVehicleFitment::query()
@@ -64,6 +68,42 @@ class VehicleFitmentController extends Controller
                 'fitments' => ProductVehicleFitment::query()->count(),
                 'covered_products' => ProductVehicleFitment::query()->distinct('product_id')->count('product_id'),
             ],
+        ]);
+    }
+
+    public function searchProducts(Request $request): JsonResponse
+    {
+        $query = trim((string) $request->query('q', ''));
+        $perPage = max(10, min(50, (int) $request->query('per_page', 30)));
+
+        $products = Product::query()
+            ->select(['id', 'name_en', 'name_ar', 'name_ku', 'sku', 'brand'])
+            ->where('is_active', true)
+            ->when($query !== '', function ($builder) use ($query) {
+                $builder->where(function ($nested) use ($query) {
+                    SqlSafe::whereLike($nested, 'name_en', $query);
+                    SqlSafe::orWhereLike($nested, 'name_ar', $query);
+                    SqlSafe::orWhereLike($nested, 'name_ku', $query);
+                    SqlSafe::orWhereLike($nested, 'sku', $query);
+                    SqlSafe::orWhereLike($nested, 'oem_number', $query);
+                    SqlSafe::orWhereLike($nested, 'part_number', $query);
+                    SqlSafe::orWhereLike($nested, 'brand', $query);
+                });
+            })
+            ->orderBy('name_en')
+            ->limit($perPage)
+            ->get()
+            ->map(fn (Product $product) => [
+                'id' => $product->id,
+                'name' => (string) $product->name_en,
+                'sku' => (string) ($product->sku ?? ''),
+                'brand' => (string) ($product->brand ?? ''),
+            ]);
+
+        return response()->json([
+            'query' => $query,
+            'count' => $products->count(),
+            'results' => $products,
         ]);
     }
 

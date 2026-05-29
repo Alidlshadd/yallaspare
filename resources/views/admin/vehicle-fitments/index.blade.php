@@ -166,6 +166,7 @@
                     data-no-model-label="{{ __('No models for this brand yet') }}"
                     data-any-engine-label="{{ __('Any engine') }}"
                     data-any-year-label="{{ __('Any year') }}"
+                    data-product-search-url="{{ route('admin.vehicle-fitments.products.search') }}"
                 >
                     @csrf
                     <div class="space-y-5">
@@ -436,20 +437,85 @@
                 }
             };
 
-            const filterProducts = () => {
-                if (!productFilter || !productSelect) {
-                    return;
-                }
+            // Hybrid product filter: client-side hide for the initial 100
+            // rendered options (instant feedback) + debounced AJAX fetch
+            // against the search endpoint so operators can find any product
+            // in the catalog without the legacy limit(500) cap.
+            const productSearchUrl = form.dataset.productSearchUrl || '';
+            let productSearchTimer = null;
+            let productSearchAbort = null;
 
-                const needle = productFilter.value.trim().toLowerCase();
+            const escapeHtml = (value) => {
+                return String(value ?? '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;');
+            };
+
+            const filterRenderedOptions = (needle) => {
                 Array.from(productSelect.options).forEach((option) => {
                     if (option.value === '') {
                         option.hidden = false;
                         return;
                     }
-
-                    option.hidden = needle !== '' && !(option.dataset.search || option.textContent).toLowerCase().includes(needle);
+                    option.hidden = needle !== ''
+                        && !(option.dataset.search || option.textContent).toLowerCase().includes(needle);
                 });
+            };
+
+            const mergeAjaxResults = (results) => {
+                if (!Array.isArray(results)) return;
+                const previousValue = productSelect.value;
+                const existingIds = new Set(
+                    Array.from(productSelect.options).map((o) => o.value)
+                );
+                results.forEach((row) => {
+                    if (existingIds.has(String(row.id))) return;
+                    const labelParts = [row.name];
+                    if (row.sku) labelParts.push(`(${row.sku})`);
+                    if (row.brand) labelParts.push(`- ${row.brand}`);
+                    const label = labelParts.join(' ');
+                    const searchAttr = (row.name + ' ' + row.sku + ' ' + row.brand).toLowerCase();
+                    const opt = document.createElement('option');
+                    opt.value = String(row.id);
+                    opt.dataset.search = searchAttr;
+                    opt.textContent = label;
+                    productSelect.appendChild(opt);
+                });
+                if (previousValue) productSelect.value = previousValue;
+            };
+
+            const filterProducts = () => {
+                if (!productFilter || !productSelect) return;
+                const needle = productFilter.value.trim().toLowerCase();
+
+                // Always run the local filter first so the user sees instant feedback.
+                filterRenderedOptions(needle);
+
+                if (!productSearchUrl) return;
+
+                if (productSearchTimer) clearTimeout(productSearchTimer);
+                if (productSearchAbort) productSearchAbort.abort();
+
+                productSearchTimer = setTimeout(() => {
+                    const trimmed = productFilter.value.trim();
+                    if (trimmed === '') return;
+
+                    productSearchAbort = new AbortController();
+                    fetch(`${productSearchUrl}?q=${encodeURIComponent(trimmed)}&per_page=30`, {
+                        headers: { 'Accept': 'application/json' },
+                        credentials: 'same-origin',
+                        signal: productSearchAbort.signal,
+                    })
+                        .then((res) => res.ok ? res.json() : null)
+                        .then((data) => {
+                            if (!data) return;
+                            mergeAjaxResults(data.results || []);
+                            filterRenderedOptions(needle);
+                        })
+                        .catch(() => { /* aborted or network — ignore */ });
+                }, 250);
             };
 
             const setModelOptions = () => {
