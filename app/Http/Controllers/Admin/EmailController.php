@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Mail\OperationalNotificationMail;
+use App\Models\EmailLog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -20,6 +21,39 @@ class EmailController extends Controller
             'mailers' => $this->availableMailers(),
             'checks' => $this->readinessChecks(),
             'previewTemplates' => array_keys($this->previewTemplates()),
+        ]);
+    }
+
+    public function outbox(Request $request): View
+    {
+        $status = trim((string) $request->query('status', ''));
+        $domain = trim((string) $request->query('domain', ''));
+
+        $logs = EmailLog::query()
+            ->when(in_array($status, [EmailLog::STATUS_SENT, EmailLog::STATUS_FAILED], true),
+                fn ($q) => $q->where('status', $status))
+            ->when($domain !== '', fn ($q) => $q->where('recipient_domain', strtolower($domain)))
+            ->orderByDesc('id')
+            ->paginate(50)
+            ->withQueryString();
+
+        $stats = [
+            'total_24h' => EmailLog::query()->where('created_at', '>=', now()->subDay())->count(),
+            'sent_24h' => EmailLog::query()
+                ->where('status', EmailLog::STATUS_SENT)
+                ->where('created_at', '>=', now()->subDay())
+                ->count(),
+            'failed_24h' => EmailLog::query()
+                ->where('status', EmailLog::STATUS_FAILED)
+                ->where('created_at', '>=', now()->subDay())
+                ->count(),
+        ];
+
+        return view('admin.email.outbox', [
+            'logs' => $logs,
+            'stats' => $stats,
+            'status' => $status,
+            'domain' => $domain,
         ]);
     }
 
@@ -212,8 +246,23 @@ class EmailController extends Controller
                 ]
             ));
         } catch (Throwable $e) {
+            $recipient = (string) $data['recipient'];
+
+            EmailLog::create([
+                'recipient_hash' => hash('sha256', strtolower($recipient)),
+                'recipient_domain' => str_contains($recipient, '@')
+                    ? strtolower(substr($recipient, strpos($recipient, '@') + 1))
+                    : null,
+                'subject' => mb_substr((string) $data['subject'], 0, 255),
+                'mailer' => $mailer,
+                'mailable_class' => OperationalNotificationMail::class,
+                'status' => EmailLog::STATUS_FAILED,
+                'error_message' => mb_substr($e->getMessage(), 0, 2000),
+                'sent_at' => null,
+            ]);
+
             Log::error('Admin mail test failed', [
-                'recipient_hash' => hash('sha256', strtolower((string) $data['recipient'])),
+                'recipient_hash' => hash('sha256', strtolower($recipient)),
                 'mailer' => $mailer,
                 'exception' => $e::class,
                 'message' => $e->getMessage(),

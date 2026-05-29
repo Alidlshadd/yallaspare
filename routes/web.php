@@ -384,6 +384,9 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::get('/email', [EmailController::class, 'index'])
             ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
             ->name('email.index');
+        Route::get('/email/outbox', [EmailController::class, 'outbox'])
+            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
+            ->name('email.outbox');
         Route::post('/email/test', [EmailController::class, 'sendTest'])
             ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
             ->name('email.test');
