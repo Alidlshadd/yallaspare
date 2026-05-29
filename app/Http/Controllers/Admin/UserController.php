@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Support\SqlSafe;
-use Illuminate\Http\Request;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -269,5 +272,24 @@ class UserController extends Controller
         $user->delete();
 
         return back()->with('success', __('User deleted successfully.'));
+    }
+
+    public function exportExcel(Request $request)
+    {
+        try {
+            return Excel::download(
+                new UsersExport([
+                    'role' => $request->query('role'),
+                    'dealer_status' => $request->query('dealer_status'),
+                ]),
+                'users.xlsx'
+            );
+        } catch (\Throwable $e) {
+            Log::error('Users Excel export failed', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()->with('error', __('Failed to export users. Please try again.'));
+        }
     }
 }

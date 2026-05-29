@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\ReturnsExport;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\ReturnRequest;
@@ -9,7 +10,9 @@ use App\Support\AdminLogger;
 use App\Support\SqlSafe;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReturnRequestController extends Controller
 {
@@ -102,5 +105,25 @@ class ReturnRequestController extends Controller
         ]);
 
         return back()->with('success', __('Return request updated.'));
+    }
+
+    public function exportExcel(Request $request)
+    {
+        try {
+            return Excel::download(
+                new ReturnsExport([
+                    'from' => $request->query('from'),
+                    'to' => $request->query('to'),
+                    'status' => $request->query('status'),
+                ]),
+                'returns.xlsx'
+            );
+        } catch (\Throwable $e) {
+            Log::error('Returns Excel export failed', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()->with('error', __('Failed to export return requests. Please try again.'));
+        }
     }
 }

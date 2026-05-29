@@ -268,6 +268,9 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::resource('orders', OrderController::class)
             ->only(['index', 'show', 'update', 'destroy'])
             ->middleware(['can:' . User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write']);
+        Route::get('/orders/export-excel', [OrderController::class, 'exportExcel'])
+            ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE)
+            ->name('orders.export-excel');
         Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice'])
             ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE)
             ->name('orders.invoice');
@@ -285,6 +288,9 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::get('/returns', [ReturnRequestController::class, 'index'])
             ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE)
             ->name('returns.index');
+        Route::get('/returns/export-excel', [ReturnRequestController::class, 'exportExcel'])
+            ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE)
+            ->name('returns.export-excel');
         Route::patch('/returns/{return}', [ReturnRequestController::class, 'update'])
             ->middleware(['can:' . User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('returns.update');
@@ -293,6 +299,9 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::get('/reviews', [AdminProductReviewController::class, 'index'])
             ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
             ->name('reviews.index');
+        Route::get('/reviews/export-excel', [AdminProductReviewController::class, 'exportExcel'])
+            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->name('reviews.export-excel');
         Route::delete('/reviews/{review}', [AdminProductReviewController::class, 'destroy'])
             ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('reviews.destroy');
@@ -324,6 +333,9 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::get('/users', [UserController::class, 'index'])
             ->middleware('can:' . User::PERMISSION_USERS_VIEW)
             ->name('users.index');
+        Route::get('/users/export-excel', [UserController::class, 'exportExcel'])
+            ->middleware('can:' . User::PERMISSION_USERS_VIEW)
+            ->name('users.export-excel');
         Route::get('/users/{user}', [UserController::class, 'show'])
             ->middleware('can:manage-users')
             ->name('users.show');
@@ -394,9 +406,12 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
             ->name('low-stock.count');
 
         // Activity logs
-        Route::get('/activity-logs', AdminActivityLogController::class)
+        Route::get('/activity-logs', [AdminActivityLogController::class, 'index'])
             ->middleware('can:' . User::PERMISSION_ACTIVITY_LOGS_VIEW)
             ->name('activity-logs.index');
+        Route::get('/activity-logs/export-excel', [AdminActivityLogController::class, 'exportExcel'])
+            ->middleware('can:' . User::PERMISSION_ACTIVITY_LOGS_VIEW)
+            ->name('activity-logs.export-excel');
     });
 
 require __DIR__ . '/auth.php';

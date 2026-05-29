@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\ReviewsExport;
 use App\Http\Controllers\Controller;
 use App\Models\ProductReview;
 use App\Support\SqlSafe;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ProductReviewController extends Controller
 {
@@ -71,5 +74,24 @@ class ProductReviewController extends Controller
         $review->delete();
 
         return back()->with('success', __('Review deleted successfully.'));
+    }
+
+    public function exportExcel(Request $request)
+    {
+        try {
+            return Excel::download(
+                new ReviewsExport([
+                    'from' => $request->query('from'),
+                    'to' => $request->query('to'),
+                ]),
+                'reviews.xlsx'
+            );
+        } catch (\Throwable $e) {
+            Log::error('Reviews Excel export failed', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()->with('error', __('Failed to export reviews. Please try again.'));
+        }
     }
 }

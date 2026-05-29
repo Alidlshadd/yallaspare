@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\OrdersExport;
 use App\Http\Controllers\Controller;
 use App\Models\InventoryMovement;
 use App\Models\Order;
@@ -15,10 +16,12 @@ use App\Support\UserCommunication;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\Response;
 
 class OrderController extends Controller
 {
@@ -407,5 +410,25 @@ class OrderController extends Controller
         ]);
 
         return back()->with('success', __('Internal note added.'));
+    }
+
+    public function exportExcel(Request $request)
+    {
+        try {
+            return Excel::download(
+                new OrdersExport([
+                    'from' => $request->query('from'),
+                    'to' => $request->query('to'),
+                    'status' => $request->query('status'),
+                ]),
+                'orders.xlsx'
+            );
+        } catch (\Throwable $e) {
+            Log::error('Orders Excel export failed', [
+                'error' => $e->getMessage(),
+            ]);
+
+            return back()->with('error', __('Failed to export orders to Excel. Please try again.'));
+        }
     }
 }
