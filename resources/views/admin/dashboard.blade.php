@@ -162,6 +162,68 @@
         </div>
     </div>
 
+    {{-- ================= OPERATIONAL KPI (30d) ================= --}}
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 mb-8">
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow dark:border-slate-800 dark:bg-slate-900">
+            <p class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Return Rate (30d)') }}</p>
+            <div class="mt-2 flex items-end justify-between">
+                <h3 class="text-3xl font-bold text-slate-900 dark:text-slate-100">{{ number_format($returnRatePercent, 1) }}%</h3>
+                <span class="inline-flex items-center px-2 py-1 text-xs rounded-full bg-rose-100 text-rose-700">
+                    {{ __('Quality') }}
+                </span>
+            </div>
+            <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                {{ __(':returns returns / :delivered delivered orders', [
+                    'returns' => number_format($returnRequests30d),
+                    'delivered' => number_format($deliveredOrders30d),
+                ]) }}
+            </p>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow dark:border-slate-800 dark:bg-slate-900">
+            <p class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Avg Ship Time (30d)') }}</p>
+            <div class="mt-2 flex items-end justify-between">
+                <h3 class="text-3xl font-bold text-slate-900 dark:text-slate-100">
+                    @if($avgShipHours === null)
+                        <span class="text-slate-400">—</span>
+                    @elseif($avgShipHours >= 24)
+                        {{ number_format($avgShipHours / 24, 1) }}<span class="text-base font-medium text-slate-500">{{ __('d') }}</span>
+                    @else
+                        {{ number_format($avgShipHours, 1) }}<span class="text-base font-medium text-slate-500">{{ __('h') }}</span>
+                    @endif
+                </h3>
+                <span class="inline-flex items-center px-2 py-1 text-xs rounded-full bg-blue-100 text-blue-700">
+                    {{ __('Fulfillment') }}
+                </span>
+            </div>
+            <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
+                {{ __('Processing -> Shipped median over the last 30 days') }}
+            </p>
+        </div>
+
+        <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow dark:border-slate-800 dark:bg-slate-900">
+            <p class="text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Top Margin Products') }}</p>
+            @if($topProfitable->isEmpty())
+                <p class="mt-3 text-sm text-slate-500 dark:text-slate-400">
+                    {{ __('No products with a configured dealer_price yet — set it to see margin ranking.') }}
+                </p>
+            @else
+                <ul class="mt-3 space-y-2 text-sm">
+                    @foreach($topProfitable->take(3) as $product)
+                        <li class="flex items-center justify-between gap-2">
+                            <span class="truncate text-slate-700 dark:text-slate-200" title="{{ $product->name_en }}">
+                                {{ \Illuminate\Support\Str::limit((string) $product->name_en, 26) }}
+                            </span>
+                            <span class="font-semibold text-emerald-700 dark:text-emerald-300 whitespace-nowrap">
+                                {{ number_format((float) $product->margin_total, $currencyDecimals) }} {{ $currencyLabel }}
+                            </span>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+        </div>
+    </div>
+
     {{-- ================= STATS CARDS ================= --}}
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
 

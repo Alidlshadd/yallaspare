@@ -309,6 +309,93 @@ class DashboardController extends Controller
                 ->limit(5)
                 ->get();
 
+            // KPI 1: return rate over the last 30 days
+            $window = $now->copy()->subDays(30);
+            $deliveredOrders30d = Order::query()
+                ->where('status', Order::STATUS_DELIVERED)
+                ->where('created_at', '>=', $window)
+                ->count();
+            $returnRequests30d = ReturnRequest::query()
+                ->where('created_at', '>=', $window)
+                ->count();
+            $returnRatePercent = $deliveredOrders30d > 0
+                ? round(($returnRequests30d / $deliveredOrders30d) * 100, 1)
+                : 0.0;
+
+            // KPI 2: average processing -> shipped duration (hours) over the
+            // last 30 days. Computed in PHP for cross-database portability.
+            $avgShipHours = null;
+            if (Schema::hasTable('order_status_histories')) {
+                $shippedEvents = DB::table('order_status_histories')
+                    ->where('to_status', Order::STATUS_SHIPPED)
+                    ->where('created_at', '>=', $window)
+                    ->select(['order_id', DB::raw('MIN(created_at) as shipped_at')])
+                    ->groupBy('order_id')
+                    ->get();
+
+                if ($shippedEvents->isNotEmpty()) {
+                    $orderIds = $shippedEvents->pluck('order_id')->all();
+                    $processingEvents = DB::table('order_status_histories')
+                        ->whereIn('order_id', $orderIds)
+                        ->where('to_status', Order::STATUS_PROCESSING)
+                        ->select(['order_id', DB::raw('MIN(created_at) as processing_at')])
+                        ->groupBy('order_id')
+                        ->get()
+                        ->keyBy('order_id');
+
+                    $totalSeconds = 0;
+                    $sampleCount = 0;
+                    foreach ($shippedEvents as $event) {
+                        $processing = $processingEvents->get($event->order_id);
+                        if (! $processing) {
+                            continue;
+                        }
+                        $shippedAt = Carbon::parse($event->shipped_at);
+                        $processingAt = Carbon::parse($processing->processing_at);
+                        if ($shippedAt->lessThan($processingAt)) {
+                            continue;
+                        }
+                        $totalSeconds += $shippedAt->diffInSeconds($processingAt);
+                        $sampleCount++;
+                    }
+
+                    $avgShipHours = $sampleCount > 0
+                        ? round($totalSeconds / $sampleCount / 3600, 1)
+                        : null;
+                }
+            }
+
+            // KPI 3: top products by indicative margin (retail price - dealer
+            // price). Filtered to rows where dealer_price > 0 because a NULL
+            // or 0 dealer_price would mean "no margin baseline configured"
+            // and would distort the ranking.
+            $topProfitable = Product::query()
+                ->leftJoin('order_items', 'products.id', '=', 'order_items.product_id')
+                ->leftJoin('orders', function ($join) {
+                    $join->on('orders.id', '=', 'order_items.order_id')
+                        ->where('orders.status', '!=', Order::STATUS_CANCELLED);
+                })
+                ->whereNotNull('products.dealer_price')
+                ->where('products.dealer_price', '>', 0)
+                ->whereColumn('products.price', '>', 'products.dealer_price')
+                ->select(
+                    'products.id',
+                    'products.name_en',
+                    'products.name_ar',
+                    'products.name_ku',
+                    'products.image',
+                    'products.price',
+                    'products.dealer_price',
+                    DB::raw('COALESCE(SUM(order_items.quantity), 0) as units_sold'),
+                    DB::raw('COALESCE(SUM((products.price - products.dealer_price) * order_items.quantity), 0) as margin_total')
+                )
+                ->groupBy('products.id', 'products.name_en', 'products.name_ar', 'products.name_ku', 'products.image', 'products.price', 'products.dealer_price')
+                ->orderByDesc('margin_total')
+                ->limit(5)
+                ->get()
+                ->filter(fn ($row) => (int) ($row->units_sold ?? 0) > 0)
+                ->values();
+
             return [
                 'totalProducts' => $totalProducts,
                 'totalOrders' => $totalOrders,
@@ -349,6 +436,11 @@ class DashboardController extends Controller
                 'movementLabels' => $movementLabels,
                 'movementInValues' => $movementInValues,
                 'movementOutValues' => $movementOutValues,
+                'returnRatePercent' => $returnRatePercent,
+                'returnRequests30d' => $returnRequests30d,
+                'deliveredOrders30d' => $deliveredOrders30d,
+                'avgShipHours' => $avgShipHours,
+                'topProfitable' => $topProfitable,
             ];
         });
 
@@ -367,6 +459,11 @@ class DashboardController extends Controller
             'newCustomers' => 0,
             'todayPendingOrders' => 0,
             'needsShippingOrders' => 0,
+            'returnRatePercent' => 0.0,
+            'returnRequests30d' => 0,
+            'deliveredOrders30d' => 0,
+            'avgShipHours' => null,
+            'topProfitable' => collect(),
             'cancellationRequestOrders' => 0,
             'openReturnRequests' => 0,
             'operationsQueue' => [],
@@ -440,6 +537,11 @@ class DashboardController extends Controller
             'allowedAnalyticsDays',
             'recentOrders',
             'topProducts',
+            'returnRatePercent',
+            'returnRequests30d',
+            'deliveredOrders30d',
+            'avgShipHours',
+            'topProfitable',
             'currencySymbol',
             'currencyLabel',
             'currencyDecimals'
