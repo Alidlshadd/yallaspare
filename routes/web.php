@@ -277,6 +277,9 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])
             ->middleware(['can:' . User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('orders.update-status');
+        Route::post('/orders/bulk-status', [OrderController::class, 'bulkUpdateStatus'])
+            ->middleware(['can:' . User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
+            ->name('orders.bulk-status');
         Route::patch('/orders/{order}/payment', [OrderController::class, 'updatePayment'])
             ->middleware(['can:' . User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('orders.update-payment');
@@ -294,6 +297,9 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::patch('/returns/{return}', [ReturnRequestController::class, 'update'])
             ->middleware(['can:' . User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('returns.update');
+        Route::post('/returns/bulk-update', [ReturnRequestController::class, 'bulkUpdate'])
+            ->middleware(['can:' . User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
+            ->name('returns.bulk-update');
 
         // Reviews
         Route::get('/reviews', [AdminProductReviewController::class, 'index'])

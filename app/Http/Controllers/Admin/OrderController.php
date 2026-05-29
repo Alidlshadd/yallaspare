@@ -431,4 +431,138 @@ class OrderController extends Controller
             return back()->with('error', __('Failed to export orders to Excel. Please try again.'));
         }
     }
+
+    public function bulkUpdateStatus(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'order_ids' => ['required', 'array', 'min:1', 'max:200'],
+            'order_ids.*' => ['integer', 'min:1'],
+            'status' => ['required', 'string', 'max:32'],
+        ]);
+
+        $targetStatus = Order::normalizedStatus($data['status']);
+        if (! in_array($targetStatus, Order::allowedStatuses(), true)) {
+            return back()->with('error', __('Invalid order status.'));
+        }
+
+        $updated = 0;
+        $skipped = 0;
+        $skippedReasons = [];
+        $notifications = [];
+
+        foreach (array_unique($data['order_ids']) as $orderId) {
+            $result = DB::transaction(function () use ($orderId, $targetStatus): array {
+                $order = Order::query()
+                    ->whereKey($orderId)
+                    ->with(['items:id,order_id,product_id,quantity', 'user:id,name,email,phone,notify_order_updates,email_notifications,sms_notifications,whatsapp_notifications'])
+                    ->lockForUpdate()
+                    ->first();
+
+                if (! $order) {
+                    return ['outcome' => 'skipped', 'reason' => "Order #{$orderId} not found"];
+                }
+
+                $previousStatus = (string) $order->status;
+
+                if ($previousStatus === $targetStatus) {
+                    return ['outcome' => 'skipped', 'reason' => "Order #{$order->order_number} already {$targetStatus}"];
+                }
+
+                if (! Order::canTransition($previousStatus, $targetStatus)) {
+                    return ['outcome' => 'skipped', 'reason' => "Order #{$order->order_number} cannot go {$previousStatus}->{$targetStatus}"];
+                }
+
+                if (
+                    $targetStatus === Order::STATUS_CANCELLED
+                    && $previousStatus !== Order::STATUS_CANCELLED
+                    && $previousStatus !== Order::STATUS_DELIVERED
+                ) {
+                    foreach ($order->items as $item) {
+                        if (! $item->product_id) {
+                            continue;
+                        }
+
+                        $product = Product::query()
+                            ->whereKey($item->product_id)
+                            ->lockForUpdate()
+                            ->first();
+
+                        if (! $product) {
+                            continue;
+                        }
+
+                        $quantity = (int) $item->quantity;
+                        $stockBefore = (int) $product->stock_quantity;
+                        $stockAfter = $stockBefore + $quantity;
+
+                        $product->update(['stock_quantity' => $stockAfter]);
+
+                        InventoryMovement::query()->create([
+                            'product_id' => $product->id,
+                            'user_id' => auth()->id(),
+                            'type' => InventoryMovement::TYPE_IN,
+                            'quantity' => $quantity,
+                            'stock_before' => $stockBefore,
+                            'stock_after' => $stockAfter,
+                            'reference' => $order->order_number,
+                            'note' => 'Order cancelled (bulk) - stock restored',
+                        ]);
+                    }
+                }
+
+                $order->forceFill(['status' => $targetStatus])->save();
+
+                $order->statusHistory()->create([
+                    'from_status' => $previousStatus,
+                    'to_status' => $targetStatus,
+                    'changed_by' => auth()->id(),
+                    'note' => null,
+                    'created_at' => now(),
+                ]);
+
+                AdminLogger::log('order.status_changed_bulk', $order, [
+                    'from' => $previousStatus,
+                    'to' => $targetStatus,
+                ]);
+
+                $order->setAttribute('previous_status_for_notification', $previousStatus);
+
+                return ['outcome' => 'updated', 'order' => $order];
+            });
+
+            if ($result['outcome'] === 'updated') {
+                $updated++;
+                $notifications[] = $result['order'];
+            } else {
+                $skipped++;
+                if (count($skippedReasons) < 10) {
+                    $skippedReasons[] = $result['reason'];
+                }
+            }
+        }
+
+        foreach ($notifications as $order) {
+            if ($order->user) {
+                UserCommunication::sendOrderStatusUpdated(
+                    $order->user,
+                    $order,
+                    (string) $order->getAttribute('previous_status_for_notification'),
+                    (string) $order->status
+                );
+            }
+        }
+
+        if ($skipped > 0) {
+            return back()->with('error', __(':updated updated, :skipped skipped — :reasons', [
+                'updated' => $updated,
+                'skipped' => $skipped,
+                'reasons' => implode(' | ', $skippedReasons),
+            ]));
+        }
+
+        return back()->with('success', __('Bulk status: :updated orders updated to :status.', [
+            'updated' => $updated,
+            'status' => $targetStatus,
+        ]));
+    }
 }
