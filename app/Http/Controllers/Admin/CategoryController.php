@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exports\CategoriesExport;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\StoreCategoryRequest;
+use App\Http\Requests\Admin\UpdateCategoryRequest;
 use App\Models\Category;
 use App\Support\SecureImageStorage;
 use App\Support\SqlSafe;
@@ -11,8 +13,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
@@ -83,18 +85,11 @@ class CategoryController extends Controller
         return view('admin.categories.create');
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreCategoryRequest $request): RedirectResponse
     {
-        $data = $request->validate([
-            'name_en' => ['required', 'string', 'max:255'],
-            'name_ar' => ['required', 'string', 'max:255'],
-            'name_ku' => ['required', 'string', 'max:255'],
-            'slug' => ['nullable', 'string', 'max:255', Rule::unique('categories', 'slug')],
-            'description' => ['nullable', 'string'],
-            'image' => ['nullable', 'image', 'max:2048'],
-        ]);
+        $data = $request->validated();
 
-        $baseSlug = Str::slug((string) ($data['slug'] ?: $data['name_en']));
+        $baseSlug = Str::slug((string) (($data['slug'] ?? '') !== '' ? $data['slug'] : $data['name_en']));
         $data['slug'] = $this->makeUniqueSlug($baseSlug !== '' ? $baseSlug : 'category');
         if ($request->hasFile('image')) {
             $data['image'] = SecureImageStorage::store($request->file('image'), 'categories');
@@ -112,19 +107,11 @@ class CategoryController extends Controller
         return view('admin.categories.edit', compact('category'));
     }
 
-    public function update(Request $request, Category $category): RedirectResponse
+    public function update(UpdateCategoryRequest $request, Category $category): RedirectResponse
     {
-        $data = $request->validate([
-            'name_en' => ['required', 'string', 'max:255'],
-            'name_ar' => ['required', 'string', 'max:255'],
-            'name_ku' => ['required', 'string', 'max:255'],
-            'slug' => ['nullable', 'string', 'max:255', Rule::unique('categories', 'slug')->ignore($category->id)],
-            'description' => ['nullable', 'string'],
-            'image' => ['nullable', 'image', 'max:2048'],
-            'remove_image' => ['sometimes', 'boolean'],
-        ]);
+        $data = $request->validated();
 
-        $baseSlug = Str::slug((string) ($data['slug'] ?: $data['name_en']));
+        $baseSlug = Str::slug((string) (($data['slug'] ?? '') !== '' ? $data['slug'] : $data['name_en']));
         $data['slug'] = $this->makeUniqueSlug($baseSlug !== '' ? $baseSlug : 'category', $category->id);
         $data['image'] = $category->image;
 

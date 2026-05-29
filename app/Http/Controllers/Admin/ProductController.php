@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exports\ProductsExport;
+use App\Http\Requests\Admin\StoreProductRequest;
+use App\Http\Requests\Admin\UpdateProductRequest;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
@@ -128,31 +130,8 @@ class ProductController extends Controller
         return view('admin.products.create', compact('categories', 'currencySymbol', 'currencyCode', 'currencyLabel', 'currencyDecimals', 'lowStockThreshold'));
     }
 
-    public function store(Request $request)
+    public function store(StoreProductRequest $request)
     {
-        $request->validate([
-            'name_en' => 'required',
-            'name_ar' => 'required',
-            'name_ku' => 'required',
-            'description_en' => 'nullable|string',
-            'description_ar' => 'nullable|string',
-            'description_ku' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'dealer_price' => 'nullable|numeric|min:0',
-            'stock_quantity' => 'required|integer|min:0',
-            'sku' => 'nullable|string|max:64|unique:products,sku',
-            'oem_number' => 'nullable|string|max:120',
-            'part_number' => 'nullable|string|max:120',
-            'warranty' => 'nullable|string|max:160',
-            'brand' => 'nullable|string|max:100',
-            'compatible_models' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
-            'gallery_images' => 'nullable|array',
-            'gallery_images.*' => 'image|max:4096',
-            'is_active' => 'sometimes|boolean',
-            'category_id' => 'required|exists:categories,id',
-        ]);
-
         $imagePath = null;
         if ($request->hasFile('image')) {
             $imagePath = SecureImageStorage::store($request->file('image'), 'products');
@@ -238,44 +217,8 @@ class ProductController extends Controller
         return redirect()->route('admin.products.edit', $product);
     }
 
-    public function update(Request $request, Product $product)
+    public function update(UpdateProductRequest $request, Product $product)
     {
-        $request->validate([
-            'name_en' => 'required',
-            'name_ar' => 'required',
-            'name_ku' => 'required',
-            'description_en' => 'nullable|string',
-            'description_ar' => 'nullable|string',
-            'description_ku' => 'nullable|string',
-            'price' => 'required|numeric|min:0',
-            'dealer_price' => 'nullable|numeric|min:0',
-            'stock_quantity' => 'required|integer|min:0',
-            'sku' => [
-                'nullable',
-                'string',
-                'max:64',
-                Rule::unique('products', 'sku')->ignore($product->id),
-            ],
-            'oem_number' => 'nullable|string|max:120',
-            'part_number' => 'nullable|string|max:120',
-            'warranty' => 'nullable|string|max:160',
-            'brand' => 'nullable|string|max:100',
-            'compatible_models' => 'nullable|string',
-            'image' => 'nullable|image|max:2048',
-            'gallery_images' => 'nullable|array',
-            'gallery_images.*' => 'image|max:4096',
-            'is_active' => 'sometimes|boolean',
-            'remove_image' => 'sometimes|boolean',
-            'remove_gallery_image_ids' => 'nullable|array',
-            'remove_gallery_image_ids.*' => 'integer|exists:product_images,id',
-            'primary_image_id' => 'nullable|integer|exists:product_images,id',
-            'gallery_sort_order' => 'nullable|array',
-            'gallery_sort_order.*' => 'nullable|integer|min:0|max:10000',
-            'gallery_alt_text' => 'nullable|array',
-            'gallery_alt_text.*' => 'nullable|string|max:255',
-            'category_id' => 'required|exists:categories,id',
-        ]);
-
         $oldImagePath = $product->image;
         $imagePath = $product->image;
         if ($request->boolean('remove_image')) {
