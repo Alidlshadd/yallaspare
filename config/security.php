@@ -29,7 +29,13 @@ return [
     ],
 
     'admin_two_factor' => [
-        'enabled' => env('ADMIN_TWO_FACTOR_ENABLED', env('APP_ENV') === 'production'),
+        // Production: always on. Disabling requires the explicit emergency flag
+        // ADMIN_TWO_FACTOR_FORCE_DISABLE=true, which should never be set without
+        // a documented incident — a stray ADMIN_TWO_FACTOR_ENABLED=false in the
+        // production env should NOT silently kill admin 2FA.
+        'enabled' => env('APP_ENV') === 'production'
+            ? ! filter_var(env('ADMIN_TWO_FACTOR_FORCE_DISABLE', false), FILTER_VALIDATE_BOOLEAN)
+            : filter_var(env('ADMIN_TWO_FACTOR_ENABLED', false), FILTER_VALIDATE_BOOLEAN),
         'code_ttl_minutes' => (int) env('ADMIN_TWO_FACTOR_CODE_TTL', 10),
     ],
 

@@ -7,21 +7,21 @@
 
 <span
     class="{{ trim('relative block ' . $containerClass) }}"
-    x-data="{ show: false }"
+    x-data="passwordInput(@js($showLabel), @js($hideLabel))"
 >
     <input
         {{ $disabled ? 'disabled' : '' }}
         type="password"
-        :type="show ? 'text' : 'password'"
+        :type="inputType"
         {!! $attributes->except('type')->merge(['class' => 'password-input-control']) !!}
     >
 
     <button
         type="button"
         class="password-input-toggle"
-        @click="show = !show"
-        :aria-label="show ? @js($hideLabel) : @js($showLabel)"
-        :title="show ? @js($hideLabel) : @js($showLabel)"
+        @click="toggle"
+        :aria-label="toggleLabel"
+        :title="toggleLabel"
         aria-label="{{ $showLabel }}"
         title="{{ $showLabel }}"
         {{ $disabled ? 'disabled' : '' }}

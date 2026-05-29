@@ -60,6 +60,7 @@ return [
 
         'single' => [
             'driver' => 'single',
+            'tap' => [\App\Logging\LogRedactionTap::class],
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
@@ -67,6 +68,7 @@ return [
 
         'daily' => [
             'driver' => 'daily',
+            'tap' => [\App\Logging\LogRedactionTap::class],
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
             'days' => 14,
@@ -75,6 +77,7 @@ return [
 
         'slack' => [
             'driver' => 'slack',
+            'tap' => [\App\Logging\LogRedactionTap::class],
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
             'username' => 'Laravel Log',
             'emoji' => ':boom:',
@@ -84,6 +87,7 @@ return [
 
         'papertrail' => [
             'driver' => 'monolog',
+            'tap' => [\App\Logging\LogRedactionTap::class],
             'level' => env('LOG_LEVEL', 'debug'),
             'handler' => env('LOG_PAPERTRAIL_HANDLER', SyslogUdpHandler::class),
             'handler_with' => [
@@ -96,6 +100,7 @@ return [
 
         'stderr' => [
             'driver' => 'monolog',
+            'tap' => [\App\Logging\LogRedactionTap::class],
             'level' => env('LOG_LEVEL', 'debug'),
             'handler' => StreamHandler::class,
             'formatter' => env('LOG_STDERR_FORMATTER'),
@@ -107,6 +112,7 @@ return [
 
         'syslog' => [
             'driver' => 'syslog',
+            'tap' => [\App\Logging\LogRedactionTap::class],
             'level' => env('LOG_LEVEL', 'debug'),
             'facility' => LOG_USER,
             'replace_placeholders' => true,
@@ -114,6 +120,7 @@ return [
 
         'errorlog' => [
             'driver' => 'errorlog',
+            'tap' => [\App\Logging\LogRedactionTap::class],
             'level' => env('LOG_LEVEL', 'debug'),
             'replace_placeholders' => true,
         ],

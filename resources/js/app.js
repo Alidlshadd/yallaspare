@@ -4,6 +4,73 @@ import Alpine from 'alpinejs';
 
 window.Alpine = Alpine;
 
+// Alpine.data() registrations — keeps component logic out of inline directives,
+// so we can eventually switch to the CSP build of Alpine without rewrites.
+// New components should follow this pattern: register here, reference by name
+// via x-data="componentName" instead of inlining JS in Blade.
+
+Alpine.data('dropdown', () => ({
+    open: false,
+    toggle() { this.open = !this.open; },
+    close() { this.open = false; },
+}));
+
+Alpine.data('passwordInput', (showLabel, hideLabel) => ({
+    show: false,
+    _showLabel: showLabel,
+    _hideLabel: hideLabel,
+    toggle() { this.show = !this.show; },
+    get inputType() { return this.show ? 'text' : 'password'; },
+    get toggleLabel() { return this.show ? this._hideLabel : this._showLabel; },
+}));
+
+Alpine.data('mobileNav', () => ({
+    open: false,
+    toggle() { this.open = !this.open; },
+    get drawerClasses() { return this.open ? 'block' : 'hidden'; },
+    get menuIconClasses() { return this.open ? 'hidden' : 'inline-flex'; },
+    get closeIconClasses() { return this.open ? 'inline-flex' : 'hidden'; },
+}));
+
+Alpine.data('modal', (name, initialShow, focusable) => ({
+    show: Boolean(initialShow),
+    _name: name,
+    _focusable: Boolean(focusable),
+    init() {
+        this.$watch('show', (value) => {
+            if (value) {
+                document.body.classList.add('overflow-y-hidden');
+                if (this._focusable) {
+                    setTimeout(() => this.firstFocusable()?.focus(), 100);
+                }
+            } else {
+                document.body.classList.remove('overflow-y-hidden');
+            }
+        });
+    },
+    focusables() {
+        const selector = 'a, button, input:not([type="hidden"]), textarea, select, details, [tabindex]:not([tabindex="-1"])';
+        return Array.from(this.$el.querySelectorAll(selector))
+            .filter((el) => !el.hasAttribute('disabled'));
+    },
+    firstFocusable() { return this.focusables()[0]; },
+    lastFocusable() { return this.focusables().slice(-1)[0]; },
+    nextFocusableIndex() {
+        const items = this.focusables();
+        return (items.indexOf(document.activeElement) + 1) % (items.length + 1);
+    },
+    prevFocusableIndex() {
+        return Math.max(0, this.focusables().indexOf(document.activeElement)) - 1;
+    },
+    nextFocusable() { return this.focusables()[this.nextFocusableIndex()] || this.firstFocusable(); },
+    prevFocusable() { return this.focusables()[this.prevFocusableIndex()] || this.lastFocusable(); },
+    onOpen(event) { if (event.detail === this._name) this.show = true; },
+    onClose(event) { if (event.detail === this._name) this.show = false; },
+    closeNow() { this.show = false; },
+    onTabForward() { this.nextFocusable()?.focus(); },
+    onTabBackward() { this.prevFocusable()?.focus(); },
+}));
+
 const ADMIN_SIDEBAR_DEFAULT_STORAGE_KEY = 'admin-sidebar-collapsed';
 const ADMIN_DESKTOP_QUERY = '(min-width: 1024px)';
 
