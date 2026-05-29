@@ -109,13 +109,19 @@ class OrderController extends Controller
             $statsQuery->whereHas('user', fn ($q) => $q->where('role', User::ROLE_USER));
         }
 
+        $statusCounts = (clone $statsQuery)
+            ->selectRaw('status, COUNT(*) as aggregate')
+            ->groupBy('status')
+            ->pluck('aggregate', 'status')
+            ->map(fn ($count) => (int) $count);
+
         $stats = [
-            'total' => (clone $statsQuery)->count(),
-            'pending' => (clone $statsQuery)->where('status', Order::STATUS_PENDING)->count(),
-            'processing' => (clone $statsQuery)->where('status', Order::STATUS_PROCESSING)->count(),
-            'shipped' => (clone $statsQuery)->where('status', Order::STATUS_SHIPPED)->count(),
-            'delivered' => (clone $statsQuery)->where('status', Order::STATUS_DELIVERED)->count(),
-            'cancelled' => (clone $statsQuery)->where('status', Order::STATUS_CANCELLED)->count(),
+            'total' => (int) (clone $statsQuery)->count(),
+            'pending' => (int) ($statusCounts[Order::STATUS_PENDING] ?? 0),
+            'processing' => (int) ($statusCounts[Order::STATUS_PROCESSING] ?? 0),
+            'shipped' => (int) ($statusCounts[Order::STATUS_SHIPPED] ?? 0),
+            'delivered' => (int) ($statusCounts[Order::STATUS_DELIVERED] ?? 0),
+            'cancelled' => (int) ($statusCounts[Order::STATUS_CANCELLED] ?? 0),
         ];
 
         $transitionOptions = $orders->getCollection()
