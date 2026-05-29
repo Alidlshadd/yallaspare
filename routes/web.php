@@ -378,14 +378,18 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
 
         // Notifications
         Route::get('/notifications', [NotificationController::class, 'index'])
+            ->middleware('can:' . User::PERMISSION_DASHBOARD_VIEW)
             ->name('notifications.index');
         Route::post('/notifications/read', [NotificationController::class, 'markRead'])
+            ->middleware('can:' . User::PERMISSION_DASHBOARD_VIEW)
             ->name('notifications.read');
         Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])
+            ->middleware('can:' . User::PERMISSION_DASHBOARD_VIEW)
             ->name('notifications.read-all');
 
         // Low stock
         Route::get('/low-stock/count', [LowStockController::class, 'count'])
+            ->middleware('can:' . User::PERMISSION_DASHBOARD_VIEW)
             ->name('low-stock.count');
 
         // Activity logs
