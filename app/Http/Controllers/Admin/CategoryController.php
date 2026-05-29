@@ -23,6 +23,7 @@ class CategoryController extends Controller
     public function index(Request $request): View
     {
         $search = trim((string) $request->query('search', ''));
+        $stockFilter = trim((string) $request->query('stock', ''));
 
         $query = Category::query()->withCount('products');
 
@@ -36,8 +37,30 @@ class CategoryController extends Controller
             });
         }
 
+        if ($stockFilter === 'empty') {
+            $query->doesntHave('products');
+        } elseif ($stockFilter === 'has_products') {
+            $query->has('products');
+        }
+
+        $allowedSorts = ['id', 'name_en', 'name_ar', 'name_ku', 'slug', 'products_count', 'created_at'];
+        $sort = (string) $request->query('sort', 'id');
+        $direction = strtolower((string) $request->query('dir', 'desc'));
+
+        if (! in_array($sort, $allowedSorts, true)) {
+            $sort = 'id';
+        }
+
+        if (! in_array($direction, ['asc', 'desc'], true)) {
+            $direction = 'desc';
+        }
+
+        $query->orderBy($sort, $direction);
+        if ($sort !== 'id') {
+            $query->orderBy('id', $direction);
+        }
+
         $categories = $query
-            ->latest()
             ->paginate(12)
             ->withQueryString();
 
@@ -47,6 +70,9 @@ class CategoryController extends Controller
         return view('admin.categories.index', compact(
             'categories',
             'search',
+            'stockFilter',
+            'sort',
+            'direction',
             'totalCategories',
             'emptyCategories'
         ));
