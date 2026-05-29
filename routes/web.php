@@ -209,6 +209,7 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::get('/profile', [AdminProfileController::class, 'edit'])
             ->name('profile.edit');
         Route::patch('/profile', [AdminProfileController::class, 'update'])
+            ->middleware('throttle:admin-write')
             ->name('profile.update');
         Route::get('/revenue', [RevenueController::class, 'index'])
             ->middleware('can:' . User::PERMISSION_FINANCE_VIEW)
@@ -226,24 +227,24 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
             ->middleware('can:' . User::PERMISSION_FINANCE_MANAGE)
             ->name('discounts.coupons.create');
         Route::put('/discounts', [DiscountCouponController::class, 'update'])
-            ->middleware('can:' . User::PERMISSION_FINANCE_MANAGE)
+            ->middleware(['can:' . User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
             ->name('discounts.update');
         Route::put('/discounts/rules', [DiscountCouponController::class, 'updateRules'])
-            ->middleware('can:' . User::PERMISSION_FINANCE_MANAGE)
+            ->middleware(['can:' . User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
             ->name('discounts.update-rules');
         Route::patch('/discounts/rules/{discount}/status', [DiscountCouponController::class, 'updateRuleStatus'])
-            ->middleware('can:' . User::PERMISSION_FINANCE_MANAGE)
+            ->middleware(['can:' . User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
             ->name('discounts.update-rule-status');
         Route::delete('/discounts/rules/{discount}', [DiscountCouponController::class, 'destroyRule'])
-            ->middleware('can:' . User::PERMISSION_FINANCE_MANAGE)
+            ->middleware(['can:' . User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
             ->name('discounts.destroy-rule');
 
         // Products
         Route::resource('products', ProductController::class)
             ->except(['show'])
-            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE);
+            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write']);
         Route::post('/products/import', [ProductController::class, 'import'])
-            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('products.import');
         Route::get('/products/export-excel', [ProductController::class, 'exportExcel'])
             ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
@@ -255,9 +256,9 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         // Categories
         Route::resource('categories', CategoryController::class)
             ->except(['show'])
-            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE);
+            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write']);
         Route::post('/categories/import', [CategoryController::class, 'import'])
-            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('categories.import');
         Route::get('/categories/export-excel', [CategoryController::class, 'exportExcel'])
             ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
@@ -266,18 +267,18 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         // Orders
         Route::resource('orders', OrderController::class)
             ->only(['index', 'show', 'update', 'destroy'])
-            ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE);
+            ->middleware(['can:' . User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write']);
         Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice'])
             ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE)
             ->name('orders.invoice');
         Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])
-            ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE)
+            ->middleware(['can:' . User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('orders.update-status');
         Route::patch('/orders/{order}/payment', [OrderController::class, 'updatePayment'])
-            ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE)
+            ->middleware(['can:' . User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('orders.update-payment');
         Route::post('/orders/{order}/admin-notes', [OrderController::class, 'storeAdminNote'])
-            ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE)
+            ->middleware(['can:' . User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('orders.admin-notes.store');
 
         // Returns / Refunds
@@ -285,7 +286,7 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
             ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE)
             ->name('returns.index');
         Route::patch('/returns/{return}', [ReturnRequestController::class, 'update'])
-            ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE)
+            ->middleware(['can:' . User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('returns.update');
 
         // Reviews
@@ -293,7 +294,7 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
             ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
             ->name('reviews.index');
         Route::delete('/reviews/{review}', [AdminProductReviewController::class, 'destroy'])
-            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('reviews.destroy');
 
         // Vehicle Finder
@@ -301,22 +302,22 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
             ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
             ->name('vehicle-fitments.index');
         Route::post('/vehicle-fitments/brands', [VehicleFitmentController::class, 'storeBrand'])
-            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('vehicle-fitments.brands.store');
         Route::post('/vehicle-fitments/models', [VehicleFitmentController::class, 'storeModel'])
-            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('vehicle-fitments.models.store');
         Route::delete('/vehicle-fitments/brands/{brand}', [VehicleFitmentController::class, 'destroyBrand'])
-            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('vehicle-fitments.brands.destroy');
         Route::delete('/vehicle-fitments/models/{model}', [VehicleFitmentController::class, 'destroyModel'])
-            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('vehicle-fitments.models.destroy');
         Route::post('/vehicle-fitments', [VehicleFitmentController::class, 'storeFitment'])
-            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('vehicle-fitments.store');
         Route::delete('/vehicle-fitments/{fitment}', [VehicleFitmentController::class, 'destroyFitment'])
-            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('vehicle-fitments.destroy');
 
         // Users
@@ -344,10 +345,10 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
             ->middleware('can:manage-dealers')
             ->name('dealers.index');
         Route::patch('/dealers/{dealer}', [DealerController::class, 'update'])
-            ->middleware('can:manage-dealers')
+            ->middleware(['can:manage-dealers', 'throttle:admin-write'])
             ->name('dealers.update');
         Route::patch('/dealers/{dealer}/demote', [DealerController::class, 'demote'])
-            ->middleware('can:manage-dealers')
+            ->middleware(['can:manage-dealers', 'throttle:admin-write'])
             ->name('dealers.demote');
 
         // Inventory Movements
@@ -355,7 +356,7 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
             ->middleware('can:' . User::PERMISSION_STOCK_MANAGE)
             ->name('inventory.index');
         Route::post('/inventory/movements', [InventoryMovementController::class, 'store'])
-            ->middleware('can:' . User::PERMISSION_STOCK_MANAGE)
+            ->middleware(['can:' . User::PERMISSION_STOCK_MANAGE, 'throttle:admin-write'])
             ->name('inventory.store');
 
         // System Settings
