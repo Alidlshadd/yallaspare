@@ -7,13 +7,10 @@ use App\Models\InventoryMovement;
 use App\Models\Order;
 use App\Models\ProductReview;
 use App\Models\ReturnRequest;
-use App\Models\Setting;
-use App\Support\Branding;
-use Barryvdh\DomPDF\Facade\Pdf;
+use App\Services\InvoiceRenderer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\View\View;
 
@@ -63,7 +60,7 @@ class AccountOrdersController extends Controller
         ]);
     }
 
-    public function invoice(Request $request, Order $order): Response
+    public function invoice(Request $request, Order $order, InvoiceRenderer $renderer): Response
     {
         $order = auth()->user()
             ->orders()
@@ -76,45 +73,11 @@ class AccountOrdersController extends Controller
             ])
             ->firstOrFail();
 
-        $subtotal = (float) ($order->subtotal_amount ?: $order->items->sum('subtotal'));
-        $shipping = (float) $order->shipping_fee;
-        $discount = (float) $order->discount_amount;
-        $grandTotal = (float) ($order->grand_total ?: ($subtotal + $shipping - $discount));
-        $year = optional($order->created_at)->format('Y') ?: now()->format('Y');
-        $locale = $this->invoiceLocale($request, $order);
-        $previousLocale = app()->getLocale();
-        app()->setLocale($locale);
+        $explicit = (string) $request->query('lang', $request->query('locale', ''));
+        $locale = $renderer->resolveLocale($explicit !== '' ? $explicit : null, $order, auth()->user());
 
-        try {
-            $pdf = Pdf::loadView('admin.orders.invoice', [
-                'order' => $order,
-                'invoiceNumber' => 'INV-' . $year . '-' . str_pad((string) $order->id, 5, '0', STR_PAD_LEFT),
-                'currency' => 'IQD',
-                'logoPath' => $this->invoiceLogoPath(),
-                'subtotal' => $subtotal,
-                'shipping' => $shipping,
-                'discount' => $discount,
-                'grandTotal' => $grandTotal,
-                'locale' => $locale,
-                'isRtl' => in_array($locale, ['ar', 'ku'], true),
-            ])->setPaper('a4');
-        } finally {
-            app()->setLocale($previousLocale);
-        }
-
-        return $pdf->download('invoice-' . $order->id . '-' . $locale . '.pdf');
-    }
-
-    private function invoiceLocale(Request $request, Order $order): string
-    {
-        $requestedLocale = strtolower((string) $request->query('lang', $request->query('locale', '')));
-        if (in_array($requestedLocale, ['en', 'ar', 'ku'], true)) {
-            return $requestedLocale;
-        }
-
-        $preferredLocale = strtolower((string) ($order->user?->locale_preference ?: auth()->user()?->locale_preference ?: app()->getLocale()));
-
-        return in_array($preferredLocale, ['en', 'ar', 'ku'], true) ? $preferredLocale : 'en';
+        return $renderer->render($order, $locale)
+            ->download('invoice-' . $order->id . '-' . $locale . '.pdf');
     }
 
     public function requestCancellation(Request $request, Order $order): RedirectResponse
@@ -243,32 +206,4 @@ class AccountOrdersController extends Controller
         return back()->with('status', __('Return request sent. Our team will review it shortly.'));
     }
 
-    private function invoiceLogoPath(): ?string
-    {
-        $logoValue = (string) Setting::getValue('site_logo', '');
-        if ($logoValue === '') {
-            return null;
-        }
-
-        $storagePath = Branding::storagePathFromValue($logoValue);
-        if ($storagePath && Branding::isSafeLogoPath($storagePath)) {
-            $publicStoragePath = public_path('storage/' . ltrim($storagePath, '/'));
-            if (is_file($publicStoragePath)) {
-                return str_replace('\\', '/', $publicStoragePath);
-            }
-        }
-
-        $normalized = str_replace('\\', '/', trim($logoValue));
-        if (
-            Branding::isSafeLogoPath($normalized)
-            && Str::startsWith($normalized, ['assets/', 'images/', 'storage/', '/assets/', '/images/', '/storage/'])
-        ) {
-            $publicPath = public_path(ltrim($normalized, '/'));
-            if (is_file($publicPath)) {
-                return str_replace('\\', '/', $publicPath);
-            }
-        }
-
-        return null;
-    }
 }
