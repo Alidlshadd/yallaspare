@@ -29,7 +29,9 @@
 | Cancellation / return request | `orders.cancellation-request` / `orders.return-request` | `POST /orders/{x}/cancellation-request`, `return-request` |
 | Notifications | — | `GET /notifications` |
 | Localized errors (Accept-Language) | session-based | **header-based (added 78dcd3b)** |
-| **User settings (all 7 slices + full)** | `user.settings.*` (8 routes: edit/update + appearance/language/notifications/security/communication/checkout/accessibility) | **`GET /settings` + 8 PATCH endpoints (added this commit)** |
+| **User settings (all 7 slices + full)** | `user.settings.*` (8 routes: edit/update + appearance/language/notifications/security/communication/checkout/accessibility) | **`GET /settings` + 8 PATCH endpoints (added 50662ac)** |
+| **Legal content pages (7)** | `legal.*` (8 routes incl. contact) | **`GET /legal` + `GET /legal/{slug}` (added this commit; 7 content pages)** |
+| **Contact form** | `POST legal.contact.send` | **`POST /legal/contact` (added this commit)** |
 | Dealer dashboard / products / orders / stock | (admin-only on web) | `GET /dealer/*`, `PATCH .../stock` |
 | Admin module surface | full admin/ | `GET /admin/dashboard`, `/admin/{section}` + 5 patch endpoints |
 
@@ -42,8 +44,6 @@
 | 1 | **Buy-Now checkout flow** | `GET checkout.options/{product}`, `MATCH checkout.buy-now/{product}`, `POST checkout.buy-now.place` | ❌ | Single-product fast purchase. Common on PDP. Add as `POST /products/{x}/buy-now/preview` + `POST /products/{x}/buy-now/place`. |
 | 2 | **Checkout review (GET form)** | `MATCH checkout.review` | ❌ | Server-side computed totals before placing. Mobile recomputes locally; review endpoint would prevent client/server mismatch. Add `POST /checkout/review` returning subtotal + shipping + discount + grand total. |
 | 3 | **Order invoice download** | `account.orders.invoice` | ❌ | Returns PDF/HTML invoice. Add `GET /orders/{x}/invoice` returning a download URL or signed link. |
-| 4 | **Legal pages content** | 8 routes under `legal.*` (privacy, terms, support, about, contact, return, shipping, distance-sales) | ❌ | Mobile app currently has to ship copies of these texts. Add `GET /legal/{slug}` returning `{title, html_body, updated_at}` per locale. |
-| 5 | **Contact form submission** | `POST legal.contact.send` | ❌ | Add `POST /legal/contact` with same throttle. |
 
 ### Medium priority — UX surface
 
@@ -68,8 +68,8 @@
 
 ## Suggested order
 
-1. ~~**#6 Settings sub-pages**~~ — **closed this commit.**
-2. **#4 Legal pages content** + **#5 Contact form** — single small commit; closes the legal-compliance gap for the mobile app.
+1. ~~**#6 Settings sub-pages**~~ — **closed in 50662ac.**
+2. ~~**#4 Legal pages content** + **#5 Contact form**~~ — **closed this commit.**
 3. **#3 Order invoice** — backend reuses existing PDF/HTML renderer; mobile gets a download URL.
 4. **#1 + #2 Buy-Now + Checkout review** — single PR; behavior-equivalent to the web flow.
 5. **#8 Wishlist payload** — requires API version bump; do after #1-5 are settled.

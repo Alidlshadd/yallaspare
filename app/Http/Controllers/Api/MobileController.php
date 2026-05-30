@@ -16,6 +16,7 @@ use App\Models\ReturnRequest;
 use App\Models\User;
 use App\Models\UserAddress;
 use App\Models\VehicleBrand;
+use App\Mail\SupportContactRequestMail;
 use App\Models\Wishlist;
 use App\Rules\PhoneNumber;
 use App\Services\CouponService;
@@ -25,13 +26,30 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 
 class MobileController extends Controller
 {
+    /**
+     * Slug → translation-key map for the seven legal *content* pages.
+     * Contact is intentionally excluded — it's a form, not a static page,
+     * and is exposed via POST /legal/contact instead.
+     */
+    private const LEGAL_PAGES = [
+        'privacy' => 'Privacy Policy & SSL Security',
+        'terms' => 'Terms of Service | Yalla Spare',
+        'support' => 'Support | Yalla Spare',
+        'about' => 'About Us',
+        'return-exchange' => 'Return & Exchange Policy',
+        'shipping-delivery' => 'Shipping & Delivery',
+        'distance-sales-agreement' => 'Distance Sales Agreement',
+    ];
+
     public function login(Request $request)
     {
         $credentials = $request->validate([
@@ -347,6 +365,69 @@ class MobileController extends Controller
         ])->save();
 
         return response()->json(['data' => $this->settingsPayload($request->user()->fresh())]);
+    }
+
+    public function legalIndex()
+    {
+        $pages = [];
+        foreach (self::LEGAL_PAGES as $slug => $titleKey) {
+            $pages[] = [
+                'slug' => $slug,
+                'title' => __($titleKey),
+            ];
+        }
+
+        return response()->json(['data' => $pages]);
+    }
+
+    public function legalShow(string $slug)
+    {
+        $titleKey = self::LEGAL_PAGES[$slug] ?? null;
+        abort_if($titleKey === null, 404);
+
+        $viewName = 'legal.' . $slug;
+        abort_unless(View::exists($viewName), 404);
+
+        $sections = view($viewName)->renderSections();
+
+        return response()->json([
+            'data' => [
+                'slug' => $slug,
+                'title' => __($titleKey),
+                'html' => trim((string) ($sections['content'] ?? '')),
+            ],
+        ]);
+    }
+
+    public function sendContact(Request $request)
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:120'],
+            'email' => ['required', 'email', 'max:190'],
+            'phone' => ['nullable', 'string', 'max:40'],
+            'topic' => ['required', 'string', 'max:40'],
+            'subject' => ['required', 'string', 'max:160'],
+            'message' => ['required', 'string', 'max:3000'],
+        ]);
+
+        try {
+            Mail::to((string) config('mail.support.address'))
+                ->queue(new SupportContactRequestMail($data));
+        } catch (\Throwable $exception) {
+            Log::error('Mobile support contact email failed', [
+                'email' => $data['email'],
+                'topic' => $data['topic'],
+                'error' => $exception->getMessage(),
+            ]);
+
+            return response()->json([
+                'message' => __('We could not send your message right now. Please email support@yallaspare.com directly.'),
+            ], 503);
+        }
+
+        return response()->json([
+            'message' => __('Your message has been sent to YallaSpare support.'),
+        ]);
     }
 
     private function settingsPayload(User $user): array

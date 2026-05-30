@@ -24,6 +24,10 @@ Route::prefix('mobile')->group(function () {
     Route::post('/register', [MobileController::class, 'register'])->middleware('throttle:mobile-register');
     Route::post('/forgot-password', [MobileController::class, 'forgotPassword'])->middleware('throttle:mobile-password-reset');
 
+    Route::get('/legal', [MobileController::class, 'legalIndex']);
+    Route::get('/legal/{slug}', [MobileController::class, 'legalShow'])->where('slug', '[a-z0-9-]+');
+    Route::post('/legal/contact', [MobileController::class, 'sendContact'])->middleware('throttle:6,1');
+
     Route::get('/categories', [MobileController::class, 'categories']);
     Route::get('/brands', [MobileController::class, 'brands']);
     Route::get('/vehicle-fitments', [MobileController::class, 'vehicleFitments']);
