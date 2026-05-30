@@ -2,6 +2,7 @@
 
 namespace App\Support;
 
+use App\Models\Setting;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -134,7 +135,7 @@ class Branding
      */
     public static function invoiceLogoPath(): ?string
     {
-        $logoValue = (string) \App\Models\Setting::getValue('site_logo', '');
+        $logoValue = (string) Setting::getValue('site_logo', '');
         if ($logoValue === '') {
             return null;
         }
