@@ -37,4 +37,47 @@ final class InvoiceRenderer
 
         return 'en';
     }
+
+    /**
+     * Build the invoice PDF for an order in the given locale.
+     * Returns a DomPDF instance — callers choose download() or stream().
+     *
+     * The provided locale must already be normalized (use resolveLocale()).
+     * Temporarily switches app locale for view rendering and restores it after.
+     */
+    public function render(Order $order, string $locale): \Barryvdh\DomPDF\PDF
+    {
+        $order->loadMissing([
+            'user:id,name,email,phone,locale_preference',
+            'items' => fn ($query) => $query
+                ->select(['id', 'order_id', 'product_id', 'quantity', 'unit_price', 'subtotal'])
+                ->with(['product:id,name_en,name_ar,name_ku,sku,brand']),
+        ]);
+
+        $subtotal = (float) ($order->subtotal_amount ?: $order->items->sum('subtotal'));
+        $shipping = (float) $order->shipping_fee;
+        $discount = (float) $order->discount_amount;
+        $grandTotal = (float) ($order->grand_total ?: ($subtotal + $shipping - $discount));
+        $year = optional($order->created_at)->format('Y') ?: now()->format('Y');
+
+        $previousLocale = app()->getLocale();
+        app()->setLocale($locale);
+
+        try {
+            return \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.orders.invoice', [
+                'order' => $order,
+                'invoiceNumber' => 'INV-' . $year . '-' . str_pad((string) $order->id, 5, '0', STR_PAD_LEFT),
+                'currency' => 'IQD',
+                'logoPath' => \App\Support\Branding::invoiceLogoPath(),
+                'subtotal' => $subtotal,
+                'shipping' => $shipping,
+                'discount' => $discount,
+                'grandTotal' => $grandTotal,
+                'locale' => $locale,
+                'isRtl' => in_array($locale, ['ar', 'ku'], true),
+            ])->setPaper('a4');
+        } finally {
+            app()->setLocale($previousLocale);
+        }
+    }
 }
