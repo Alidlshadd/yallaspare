@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Models\Order;
 use App\Models\User;
+use App\Support\Branding;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 final class InvoiceRenderer
 {
@@ -64,11 +66,11 @@ final class InvoiceRenderer
         app()->setLocale($locale);
 
         try {
-            return \Barryvdh\DomPDF\Facade\Pdf::loadView('admin.orders.invoice', [
+            return Pdf::loadView('admin.orders.invoice', [
                 'order' => $order,
                 'invoiceNumber' => 'INV-' . $year . '-' . str_pad((string) $order->id, 5, '0', STR_PAD_LEFT),
                 'currency' => 'IQD',
-                'logoPath' => \App\Support\Branding::invoiceLogoPath(),
+                'logoPath' => Branding::invoiceLogoPath(),
                 'subtotal' => $subtotal,
                 'shipping' => $shipping,
                 'discount' => $discount,
