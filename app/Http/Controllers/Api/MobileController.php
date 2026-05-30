@@ -776,9 +776,7 @@ class MobileController extends Controller
         $cart = $this->cartFor($request->user())->load('items.product');
         abort_if($cart->items->isEmpty(), 422, __('errors.cart_empty'));
 
-        $address = $request->user()->addresses()->whereKey($data['address_id'] ?? null)->first()
-            ?: $request->user()->addresses()->where('is_default', true)->first()
-            ?: $request->user()->addresses()->first();
+        $address = $this->resolveOrderAddress($request->user(), $data['address_id'] ?? null);
         abort_if(! $address, 422, __('errors.delivery_address_required'));
         $normalizedDeliveryPhone = User::normalizePhone((string) $address->phone);
         abort_if(
@@ -1483,6 +1481,13 @@ class MobileController extends Controller
         if ($address->is_default) {
             $request->user()->addresses()->whereKeyNot($address->id)->update(['is_default' => false]);
         }
+    }
+
+    private function resolveOrderAddress(User $user, ?int $addressId): ?UserAddress
+    {
+        return $user->addresses()->whereKey($addressId)->first()
+            ?: $user->addresses()->where('is_default', true)->first()
+            ?: $user->addresses()->first();
     }
 
     private function addressPayload(UserAddress $address): array
