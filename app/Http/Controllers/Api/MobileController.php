@@ -166,6 +166,24 @@ class MobileController extends Controller
         return response()->json(['message' => __('Password updated.')]);
     }
 
+    public function deleteProfile(Request $request)
+    {
+        $data = $request->validate([
+            'password' => ['required', 'string'],
+        ]);
+
+        $user = $request->user();
+
+        if (! Hash::check($data['password'], (string) $user->password)) {
+            return response()->json(['message' => __('Current password is incorrect.')], 422);
+        }
+
+        $user->tokens()->delete();
+        $user->delete();
+
+        return response()->json(['message' => __('Account deleted.')]);
+    }
+
     public function categories()
     {
         return response()->json([

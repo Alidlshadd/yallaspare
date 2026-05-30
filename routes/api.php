@@ -38,6 +38,7 @@ Route::prefix('mobile')->group(function () {
         Route::post('/logout', [MobileController::class, 'logout']);
         Route::patch('/profile', [MobileController::class, 'updateProfile']);
         Route::patch('/profile/password', [MobileController::class, 'updatePassword']);
+        Route::delete('/profile', [MobileController::class, 'deleteProfile']);
         Route::get('/notifications', [MobileController::class, 'notifications']);
         Route::get('/dealer/dashboard', [MobileController::class, 'dealerDashboard']);
         Route::get('/dealer/products', [MobileController::class, 'dealerProducts']);

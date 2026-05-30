@@ -24,9 +24,9 @@ class LocalizedErrorMessagesTest extends TestCase
     public function test_mobile_checkout_empty_cart_returns_arabic_message_when_locale_is_ar(): void
     {
         $user = User::factory()->create();
-        app()->setLocale('ar');
 
         $response = $this->actingAs($user, 'sanctum')
+            ->withHeaders(['Accept-Language' => 'ar'])
             ->postJson('/api/mobile/checkout');
 
         $response->assertStatus(422);
@@ -36,11 +36,11 @@ class LocalizedErrorMessagesTest extends TestCase
     public function test_mobile_vin_decode_post_validation_strip_returns_localized_message(): void
     {
         $user = User::factory()->create();
-        app()->setLocale('ar');
 
         // 8 lowercase chars: passes min:8 validation but preg_replace('/[^A-Z0-9]/')
         // strips them all, leaving an empty VIN that triggers the abort_if.
         $response = $this->actingAs($user, 'sanctum')
+            ->withHeaders(['Accept-Language' => 'ar'])
             ->postJson('/api/mobile/vin/decode', ['vin' => 'abcdefgh']);
 
         $response->assertStatus(422);
