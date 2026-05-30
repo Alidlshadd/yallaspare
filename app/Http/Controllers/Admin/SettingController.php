@@ -382,12 +382,12 @@ class SettingController extends Controller
         $storedPath = str_replace('\\', '/', (string) $storedPath);
 
         if ($storedPath === '' || ! $disk->exists($storedPath)) {
-            throw new \RuntimeException('Hero video was not written to the public disk.');
+            throw new \RuntimeException(__('errors.hero_video_not_written'));
         }
 
         if ((int) $disk->size($storedPath) <= 0) {
             $disk->delete($storedPath);
-            throw new \RuntimeException('Hero video was written as an empty file.');
+            throw new \RuntimeException(__('errors.hero_video_empty'));
         }
 
         return $storedPath;

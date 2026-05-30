@@ -318,7 +318,7 @@ class MobileController extends Controller
         ]);
 
         $vin = strtoupper(preg_replace('/[^A-Z0-9]/', '', $data['vin']) ?? '');
-        abort_if(strlen($vin) < 8, 422, 'VIN is too short.');
+        abort_if(strlen($vin) < 8, 422, __('errors.vin_too_short'));
 
         $manufacturer = $this->vinManufacturer($vin);
         $year = $this->vinYear($vin);
@@ -466,12 +466,12 @@ class MobileController extends Controller
             'payment_method' => ['nullable', Rule::in(['cash_on_delivery', 'zaincash', 'fastpay', 'bank_transfer'])],
         ]);
         $cart = $this->cartFor($request->user())->load('items.product');
-        abort_if($cart->items->isEmpty(), 422, 'Cart is empty.');
+        abort_if($cart->items->isEmpty(), 422, __('errors.cart_empty'));
 
         $address = $request->user()->addresses()->whereKey($data['address_id'] ?? null)->first()
             ?: $request->user()->addresses()->where('is_default', true)->first()
             ?: $request->user()->addresses()->first();
-        abort_if(! $address, 422, 'Delivery address is required.');
+        abort_if(! $address, 422, __('errors.delivery_address_required'));
         $normalizedDeliveryPhone = User::normalizePhone((string) $address->phone);
         abort_if(
             $normalizedDeliveryPhone === null
@@ -481,7 +481,7 @@ class MobileController extends Controller
             __('validation.phone', ['attribute' => 'delivery phone']),
         );
         foreach ($cart->items as $item) {
-            abort_if(! $item->product || ! $item->product->is_active, 422, 'Cart contains unavailable products.');
+            abort_if(! $item->product || ! $item->product->is_active, 422, __('errors.cart_contains_unavailable'));
             abort_if((int) $item->product->stock_quantity < (int) $item->quantity, 422, $item->product->localizedName('en') . ' does not have enough stock.');
         }
 

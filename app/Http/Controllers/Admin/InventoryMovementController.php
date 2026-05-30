@@ -307,7 +307,7 @@ class InventoryMovementController extends Controller
                         ->first();
 
                     if (! $product) {
-                        throw new \RuntimeException("Product not found for SKU '{$sku}'");
+                        throw new \RuntimeException(__('errors.inventory_product_not_found', ['sku' => $sku]));
                     }
 
                     $stockBefore = (int) $product->stock_quantity;
@@ -316,7 +316,7 @@ class InventoryMovementController extends Controller
                         : $stockBefore - $quantity;
 
                     if ($stockAfter < 0) {
-                        throw new \RuntimeException("Stock out exceeds available stock ({$stockBefore})");
+                        throw new \RuntimeException(__('errors.inventory_stock_out_exceeds', ['available' => $stockBefore]));
                     }
 
                     $warehouseCode = $assoc['warehouse_code'] ?? '';
@@ -328,7 +328,7 @@ class InventoryMovementController extends Controller
                     if ($hasWarehouseSupport && $warehouseCode !== '') {
                         $warehouse = Warehouse::query()->where('code', $warehouseCode)->first();
                         if (! $warehouse) {
-                            throw new \RuntimeException("Warehouse code '{$warehouseCode}' not found");
+                            throw new \RuntimeException(__('errors.inventory_warehouse_not_found', ['code' => $warehouseCode]));
                         }
                         $warehouseId = $warehouse->id;
                     }
