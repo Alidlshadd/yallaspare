@@ -39,6 +39,16 @@ Route::prefix('mobile')->group(function () {
         Route::patch('/profile', [MobileController::class, 'updateProfile']);
         Route::patch('/profile/password', [MobileController::class, 'updatePassword']);
         Route::delete('/profile', [MobileController::class, 'deleteProfile']);
+
+        Route::get('/settings', [MobileController::class, 'getSettings']);
+        Route::patch('/settings', [MobileController::class, 'updateSettings']);
+        Route::patch('/settings/appearance', [MobileController::class, 'updateSettingsAppearance']);
+        Route::patch('/settings/language', [MobileController::class, 'updateSettingsLanguage']);
+        Route::patch('/settings/notifications', [MobileController::class, 'updateSettingsNotifications']);
+        Route::patch('/settings/security', [MobileController::class, 'updateSettingsSecurity']);
+        Route::patch('/settings/communication', [MobileController::class, 'updateSettingsCommunication']);
+        Route::patch('/settings/checkout', [MobileController::class, 'updateSettingsCheckout']);
+        Route::patch('/settings/accessibility', [MobileController::class, 'updateSettingsAccessibility']);
         Route::get('/notifications', [MobileController::class, 'notifications']);
         Route::get('/dealer/dashboard', [MobileController::class, 'dealerDashboard']);
         Route::get('/dealer/products', [MobileController::class, 'dealerProducts']);

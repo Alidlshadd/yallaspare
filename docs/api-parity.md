@@ -29,6 +29,7 @@
 | Cancellation / return request | `orders.cancellation-request` / `orders.return-request` | `POST /orders/{x}/cancellation-request`, `return-request` |
 | Notifications | — | `GET /notifications` |
 | Localized errors (Accept-Language) | session-based | **header-based (added 78dcd3b)** |
+| **User settings (all 7 slices + full)** | `user.settings.*` (8 routes: edit/update + appearance/language/notifications/security/communication/checkout/accessibility) | **`GET /settings` + 8 PATCH endpoints (added this commit)** |
 | Dealer dashboard / products / orders / stock | (admin-only on web) | `GET /dealer/*`, `PATCH .../stock` |
 | Admin module surface | full admin/ | `GET /admin/dashboard`, `/admin/{section}` + 5 patch endpoints |
 
@@ -48,7 +49,6 @@
 
 | # | Capability | Web | Mobile | Notes |
 |---|---|---|---|---|
-| 6 | **User settings sub-pages** | `user.settings.{notifications,communication,security,appearance,language,checkout,accessibility}` + their `PATCH` siblings | only `notify_order_updates` / `notify_promotions` / `notify_stock_alerts` writable via PATCH /profile? Verify. | Group as `GET /settings` returning all flags, `PATCH /settings/notifications`, `/security`, `/communication`, `/checkout`, `/accessibility` (each owns one slice). |
 | 7 | **Account activity feed** | `user.account.activity` | ❌ | Returns user's recent orders, address changes, security events. Add `GET /account/activity?limit=N`. |
 | 8 | **Wishlist payload shape mismatch** | `WishlistController` returns full product view models | `GET /mobile/wishlist` returns array of product_ids only | Mobile client has to make N follow-up calls for product details. Fix mobile to return paginated products consistent with `GET /products`. Schema break — bump API version or add `GET /wishlist?expand=products`. |
 
@@ -68,7 +68,7 @@
 
 ## Suggested order
 
-1. **#6 Settings sub-pages** — narrow scope, mostly a CRUD pattern repeated; high value for in-app preference management.
+1. ~~**#6 Settings sub-pages**~~ — **closed this commit.**
 2. **#4 Legal pages content** + **#5 Contact form** — single small commit; closes the legal-compliance gap for the mobile app.
 3. **#3 Order invoice** — backend reuses existing PDF/HTML renderer; mobile gets a download URL.
 4. **#1 + #2 Buy-Now + Checkout review** — single PR; behavior-equivalent to the web flow.

@@ -184,6 +184,214 @@ class MobileController extends Controller
         return response()->json(['message' => __('Account deleted.')]);
     }
 
+    public function getSettings(Request $request)
+    {
+        return response()->json(['data' => $this->settingsPayload($request->user())]);
+    }
+
+    public function updateSettings(Request $request)
+    {
+        $data = $request->validate([
+            'theme_preference' => ['required', Rule::in(['light', 'dark'])],
+            'locale_preference' => ['required', Rule::in(['en', 'ar', 'ku'])],
+            'notify_order_updates' => ['nullable', 'boolean'],
+            'notify_promotions' => ['nullable', 'boolean'],
+            'notify_stock_alerts' => ['nullable', 'boolean'],
+            'login_alerts' => ['nullable', 'boolean'],
+            'session_timeout' => ['required', Rule::in(['15', '30', '60', '120'])],
+            'email_notifications' => ['nullable', 'boolean'],
+            'sms_notifications' => ['nullable', 'boolean'],
+            'whatsapp_notifications' => ['nullable', 'boolean'],
+            'marketing_consent' => ['nullable', 'boolean'],
+            'currency_preference' => ['required', Rule::in(['USD', 'IQD'])],
+            'timezone_preference' => ['required', Rule::in(['Asia/Baghdad', 'UTC'])],
+            'date_format_preference' => ['required', Rule::in(['dmy', 'mdy', 'ymd'])],
+            'default_contact_method' => ['required', Rule::in(['phone', 'email', 'whatsapp'])],
+            'default_delivery_note' => ['nullable', 'string', 'max:255'],
+            'express_checkout' => ['nullable', 'boolean'],
+            'font_size_preference' => ['required', Rule::in(['default', 'large', 'xl'])],
+            'reduced_motion' => ['nullable', 'boolean'],
+            'high_contrast_mode' => ['nullable', 'boolean'],
+        ]);
+
+        $request->user()->forceFill([
+            'theme_preference' => $data['theme_preference'],
+            'locale_preference' => $data['locale_preference'],
+            'notify_order_updates' => $request->boolean('notify_order_updates'),
+            'notify_promotions' => $request->boolean('notify_promotions'),
+            'notify_stock_alerts' => $request->boolean('notify_stock_alerts'),
+            'two_factor_preference' => 'off',
+            'login_alerts' => $request->boolean('login_alerts'),
+            'session_timeout' => $data['session_timeout'],
+            'email_notifications' => $request->boolean('email_notifications'),
+            'sms_notifications' => $request->boolean('sms_notifications'),
+            'whatsapp_notifications' => $request->boolean('whatsapp_notifications'),
+            'marketing_consent' => $request->boolean('marketing_consent'),
+            'currency_preference' => $data['currency_preference'],
+            'timezone_preference' => $data['timezone_preference'],
+            'date_format_preference' => $data['date_format_preference'],
+            'default_contact_method' => $data['default_contact_method'],
+            'default_delivery_note' => $data['default_delivery_note'] ?? null,
+            'express_checkout' => $request->boolean('express_checkout'),
+            'font_size_preference' => $data['font_size_preference'],
+            'reduced_motion' => $request->boolean('reduced_motion'),
+            'high_contrast_mode' => $request->boolean('high_contrast_mode'),
+        ])->save();
+
+        return response()->json(['data' => $this->settingsPayload($request->user()->fresh())]);
+    }
+
+    public function updateSettingsAppearance(Request $request)
+    {
+        $data = $request->validate([
+            'theme_preference' => ['required', Rule::in(['light', 'dark'])],
+        ]);
+
+        $request->user()->forceFill(['theme_preference' => $data['theme_preference']])->save();
+
+        return response()->json(['data' => $this->settingsPayload($request->user()->fresh())]);
+    }
+
+    public function updateSettingsLanguage(Request $request)
+    {
+        $data = $request->validate([
+            'locale_preference' => ['required', Rule::in(['en', 'ar', 'ku'])],
+        ]);
+
+        $request->user()->forceFill(['locale_preference' => $data['locale_preference']])->save();
+
+        return response()->json(['data' => $this->settingsPayload($request->user()->fresh())]);
+    }
+
+    public function updateSettingsNotifications(Request $request)
+    {
+        $request->validate([
+            'notify_order_updates' => ['sometimes', 'boolean'],
+            'notify_promotions' => ['sometimes', 'boolean'],
+            'notify_stock_alerts' => ['sometimes', 'boolean'],
+        ]);
+
+        $request->user()->forceFill([
+            'notify_order_updates' => $request->boolean('notify_order_updates'),
+            'notify_promotions' => $request->boolean('notify_promotions'),
+            'notify_stock_alerts' => $request->boolean('notify_stock_alerts'),
+        ])->save();
+
+        return response()->json(['data' => $this->settingsPayload($request->user()->fresh())]);
+    }
+
+    public function updateSettingsSecurity(Request $request)
+    {
+        $data = $request->validate([
+            'login_alerts' => ['sometimes', 'boolean'],
+            'session_timeout' => ['required', Rule::in(['15', '30', '60', '120'])],
+        ]);
+
+        $request->user()->forceFill([
+            'two_factor_preference' => 'off',
+            'login_alerts' => $request->boolean('login_alerts'),
+            'session_timeout' => $data['session_timeout'],
+        ])->save();
+
+        return response()->json(['data' => $this->settingsPayload($request->user()->fresh())]);
+    }
+
+    public function updateSettingsCommunication(Request $request)
+    {
+        $request->validate([
+            'email_notifications' => ['sometimes', 'boolean'],
+            'sms_notifications' => ['sometimes', 'boolean'],
+            'whatsapp_notifications' => ['sometimes', 'boolean'],
+            'marketing_consent' => ['sometimes', 'boolean'],
+        ]);
+
+        $request->user()->forceFill([
+            'email_notifications' => $request->boolean('email_notifications'),
+            'sms_notifications' => $request->boolean('sms_notifications'),
+            'whatsapp_notifications' => $request->boolean('whatsapp_notifications'),
+            'marketing_consent' => $request->boolean('marketing_consent'),
+        ])->save();
+
+        return response()->json(['data' => $this->settingsPayload($request->user()->fresh())]);
+    }
+
+    public function updateSettingsCheckout(Request $request)
+    {
+        $data = $request->validate([
+            'default_contact_method' => ['required', Rule::in(['phone', 'email', 'whatsapp'])],
+            'default_delivery_note' => ['nullable', 'string', 'max:255'],
+            'express_checkout' => ['sometimes', 'boolean'],
+        ]);
+
+        $request->user()->forceFill([
+            'default_contact_method' => $data['default_contact_method'],
+            'default_delivery_note' => $data['default_delivery_note'] ?? null,
+            'express_checkout' => $request->boolean('express_checkout'),
+        ])->save();
+
+        return response()->json(['data' => $this->settingsPayload($request->user()->fresh())]);
+    }
+
+    public function updateSettingsAccessibility(Request $request)
+    {
+        $data = $request->validate([
+            'font_size_preference' => ['required', Rule::in(['default', 'large', 'xl'])],
+            'reduced_motion' => ['sometimes', 'boolean'],
+            'high_contrast_mode' => ['sometimes', 'boolean'],
+        ]);
+
+        $request->user()->forceFill([
+            'font_size_preference' => $data['font_size_preference'],
+            'reduced_motion' => $request->boolean('reduced_motion'),
+            'high_contrast_mode' => $request->boolean('high_contrast_mode'),
+        ])->save();
+
+        return response()->json(['data' => $this->settingsPayload($request->user()->fresh())]);
+    }
+
+    private function settingsPayload(User $user): array
+    {
+        return [
+            'appearance' => [
+                'theme_preference' => (string) ($user->theme_preference ?? 'light'),
+            ],
+            'language' => [
+                'locale_preference' => (string) ($user->locale_preference ?? 'en'),
+            ],
+            'notifications' => [
+                'notify_order_updates' => (bool) ($user->notify_order_updates ?? true),
+                'notify_promotions' => (bool) ($user->notify_promotions ?? false),
+                'notify_stock_alerts' => (bool) ($user->notify_stock_alerts ?? true),
+            ],
+            'security' => [
+                'login_alerts' => (bool) ($user->login_alerts ?? false),
+                'session_timeout' => (string) ($user->session_timeout ?? '30'),
+                'two_factor_preference' => (string) ($user->two_factor_preference ?? 'off'),
+            ],
+            'communication' => [
+                'email_notifications' => (bool) ($user->email_notifications ?? true),
+                'sms_notifications' => (bool) ($user->sms_notifications ?? false),
+                'whatsapp_notifications' => (bool) ($user->whatsapp_notifications ?? false),
+                'marketing_consent' => (bool) ($user->marketing_consent ?? false),
+            ],
+            'checkout' => [
+                'default_contact_method' => (string) ($user->default_contact_method ?? 'phone'),
+                'default_delivery_note' => $user->default_delivery_note,
+                'express_checkout' => (bool) ($user->express_checkout ?? false),
+            ],
+            'accessibility' => [
+                'font_size_preference' => (string) ($user->font_size_preference ?? 'default'),
+                'reduced_motion' => (bool) ($user->reduced_motion ?? false),
+                'high_contrast_mode' => (bool) ($user->high_contrast_mode ?? false),
+            ],
+            'general' => [
+                'currency_preference' => (string) ($user->currency_preference ?? 'IQD'),
+                'timezone_preference' => (string) ($user->timezone_preference ?? 'Asia/Baghdad'),
+                'date_format_preference' => (string) ($user->date_format_preference ?? 'dmy'),
+            ],
+        ];
+    }
+
     public function categories()
     {
         return response()->json([
