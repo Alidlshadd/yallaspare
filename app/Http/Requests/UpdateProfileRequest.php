@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\User;
+use App\Rules\PhoneNumber;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
@@ -19,7 +20,7 @@ class UpdateProfileRequest extends FormRequest
         return [
             'first_name' => ['required', 'string', 'max:120'],
             'last_name' => ['nullable', 'string', 'max:120'],
-            'phone' => ['nullable', 'string', 'max:30', 'regex:/^[0-9+\-\s().٠-٩۰-۹]+$/u', User::uniquePhoneRule($this->user()->id)],
+            'phone' => ['nullable', 'string', 'max:20', new PhoneNumber(), User::uniquePhoneRule($this->user()->id)],
             'profile_photo' => ['nullable', 'image', 'max:2048'],
             'remove_profile_photo' => ['sometimes', 'boolean'],
             'dob_day' => ['nullable', 'integer', 'between:1,31', 'required_with:dob_month,dob_year'],
@@ -48,13 +49,6 @@ class UpdateProfileRequest extends FormRequest
             'address_line1' => __('user.address_line'),
             'address_line2' => __('user.building_apartment'),
             'notes' => __('user.notes'),
-        ];
-    }
-
-    public function messages(): array
-    {
-        return [
-            'phone.regex' => __('user.phone_format_help'),
         ];
     }
 

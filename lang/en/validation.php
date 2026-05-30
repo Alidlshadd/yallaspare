@@ -13,6 +13,8 @@
 */
 
 return [
+    'phone' => 'The :attribute must be a valid phone number (8–15 digits).',
+
     'password' => [
         'letters'       => 'The :attribute must contain at least one letter.',
         'mixed'         => 'The :attribute must contain at least one uppercase and one lowercase letter.',

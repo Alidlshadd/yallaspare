@@ -17,6 +17,7 @@ use App\Models\User;
 use App\Models\UserAddress;
 use App\Models\VehicleBrand;
 use App\Models\Wishlist;
+use App\Rules\PhoneNumber;
 use App\Services\CouponService;
 use App\Support\SqlSafe;
 use Illuminate\Auth\Events\Registered;
@@ -82,7 +83,7 @@ class MobileController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')],
-            'phone' => ['nullable', 'string', 'max:40', User::uniquePhoneRule()],
+            'phone' => ['nullable', 'string', 'max:20', new PhoneNumber(), User::uniquePhoneRule()],
             'password' => ['required', 'string', 'min:8'],
         ]);
 
@@ -141,7 +142,7 @@ class MobileController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
-            'phone' => ['nullable', 'string', 'max:40', User::uniquePhoneRule($user->id)],
+            'phone' => ['nullable', 'string', 'max:20', new PhoneNumber(), User::uniquePhoneRule($user->id)],
         ]);
 
         $user->update($data);
@@ -471,7 +472,14 @@ class MobileController extends Controller
             ?: $request->user()->addresses()->where('is_default', true)->first()
             ?: $request->user()->addresses()->first();
         abort_if(! $address, 422, 'Delivery address is required.');
-        abort_if(! preg_match('/^\+?\d[\d\s]{7,}$/', (string) $address->phone), 422, 'Valid delivery phone is required.');
+        $normalizedDeliveryPhone = User::normalizePhone((string) $address->phone);
+        abort_if(
+            $normalizedDeliveryPhone === null
+                || strlen($normalizedDeliveryPhone) < PhoneNumber::MIN_DIGITS
+                || strlen($normalizedDeliveryPhone) > PhoneNumber::MAX_DIGITS,
+            422,
+            __('validation.phone', ['attribute' => 'delivery phone']),
+        );
         foreach ($cart->items as $item) {
             abort_if(! $item->product || ! $item->product->is_active, 422, 'Cart contains unavailable products.');
             abort_if((int) $item->product->stock_quantity < (int) $item->quantity, 422, $item->product->localizedName('en') . ' does not have enough stock.');
@@ -1132,7 +1140,7 @@ class MobileController extends Controller
             'city' => ['required', 'string', 'max:120'],
             'line1' => ['required', 'string', 'max:255'],
             'line2' => ['nullable', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:40'],
+            'phone' => ['nullable', 'string', 'max:20', new PhoneNumber()],
             'is_default' => ['nullable', 'boolean'],
         ]);
 
