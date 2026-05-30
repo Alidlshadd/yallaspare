@@ -7,8 +7,10 @@ use App\Models\Category;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
+use App\Http\View\Composers\HeaderComposer;
 use App\Support\Branding;
 use App\Observers\AdminAuditObserver;
+use App\Observers\CategoryCacheObserver;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Log;
@@ -94,8 +96,11 @@ class AppServiceProvider extends ServiceProvider
         View::share('systemSettings', $settings);
 
         Category::observe(AdminAuditObserver::class);
+        Category::observe(CategoryCacheObserver::class);
         Product::observe(AdminAuditObserver::class);
         User::observe(AdminAuditObserver::class);
         Order::observe(AdminAuditObserver::class);
+
+        View::composer(['layouts.user'], HeaderComposer::class);
     }
 }

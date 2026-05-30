@@ -18,49 +18,31 @@
     $highContrastMode = auth()->check() ? (bool) (auth()->user()->high_contrast_mode ?? false) : false;
     $currencyLabel = (string) \App\Models\Setting::getValue('currency_code', 'IQD');
 
-    if (auth()->check() && class_exists(\App\Models\Cart::class) && class_exists(\App\Models\Setting::class)) {
-        try {
-            $headerCart = \App\Models\Cart::query()
-                ->where('user_id', auth()->id())
-                ->with('items.product')
-                ->first();
+    $headerCart = $headerCart ?? null;
+    $headerCartCount = $headerCartCount ?? 0;
+    $headerWishlistCount = $headerWishlistCount ?? 0;
 
-            if ($headerCart) {
-                $derivedCartCount = (int) $headerCart->items->sum('quantity');
-                $derivedSubtotal = (float) $headerCart->items->sum(function ($item) {
-                    $product = $item->product;
+    if ($headerCart) {
+        $derivedSubtotal = (float) $headerCart->items->sum(function ($item) {
+            $product = $item->product;
 
-                    if (! $product) {
-                        return 0;
-                    }
-
-                    return $product->priceFor(auth()->user()) * $item->quantity;
-                });
-
-                if (! isset($cartCount) || $cartCount === 0) {
-                    $cartCount = $derivedCartCount;
-                }
-
-                $cartRef = $cartRef ?? ('#' . str_pad((string) $headerCart->id, 6, '0', STR_PAD_LEFT));
-                $cartTotalFormatted = $cartTotalFormatted ?? trim($currencyLabel . ' ' . number_format($derivedSubtotal, 2));
+            if (! $product) {
+                return 0;
             }
-        } catch (\Throwable $e) {
-            // Keep layout rendering even if cart data is unavailable.
+
+            return $product->priceFor(auth()->user()) * $item->quantity;
+        });
+
+        if (! isset($cartCount) || $cartCount === 0) {
+            $cartCount = $headerCartCount;
         }
+
+        $cartRef = $cartRef ?? ('#' . str_pad((string) $headerCart->id, 6, '0', STR_PAD_LEFT));
+        $cartTotalFormatted = $cartTotalFormatted ?? trim($currencyLabel . ' ' . number_format($derivedSubtotal, 2));
     }
 
-    if (auth()->check() && class_exists(\App\Models\Wishlist::class)) {
-        try {
-            $derivedWishlistCount = (int) \App\Models\Wishlist::query()
-                ->where('user_id', auth()->id())
-                ->count();
-
-            if ($wishlistCount === 0 && $derivedWishlistCount > 0) {
-                $wishlistCount = $derivedWishlistCount;
-            }
-        } catch (\Throwable $e) {
-            // Keep layout rendering even if wishlist data is unavailable.
-        }
+    if ($wishlistCount === 0 && $headerWishlistCount > 0) {
+        $wishlistCount = $headerWishlistCount;
     }
 
     $cartCount = max(0, (int) $cartCount);
@@ -153,42 +135,7 @@
         <div class="{{ $shellClasses }}">
             <header data-store-header class="relative sticky top-0 z-40 border-0 bg-[linear-gradient(180deg,#070740_0%,#0a0d3f_100%)] text-white shadow-none transition-transform duration-300 ease-out will-change-transform" style="margin-top:0;border-top:0">
                 @php
-                    $dropdownCategories = collect();
-
-                    try {
-                        if (\Illuminate\Support\Facades\Schema::hasTable('categories')) {
-                            $categoryColumns = ['id', 'slug', 'name_en', 'name_ar', 'name_ku', 'description'];
-                            $hasCategoryImage = \Illuminate\Support\Facades\Schema::hasColumn('categories', 'image');
-
-                            if ($hasCategoryImage) {
-                                $categoryColumns[] = 'image';
-                            }
-
-                            $dropdownNameField = match (true) {
-                                str_starts_with($locale, 'ar') => 'name_ar',
-                                str_starts_with($locale, 'ku') => 'name_ku',
-                                default => 'name_en',
-                            };
-
-                            $dropdownCategories = \App\Models\Category::query()
-                                ->select($categoryColumns)
-                                ->orderBy('name_en')
-                                ->take(8)
-                                ->get()
-                                ->map(function ($category) use ($dropdownNameField, $hasCategoryImage) {
-                                    $imagePath = $hasCategoryImage ? trim((string) $category->image) : '';
-
-                                    return [
-                                        'label' => \App\Support\LocalizedText::first($category->{$dropdownNameField}, $category->name_en, $category->name_ar, $category->name_ku),
-                                        'desc' => $category->localized_description,
-                                        'url' => route('shop.index', ['category' => $category->slug ?: $category->id]),
-                                        'image' => $imagePath !== '' ? asset('storage/' . ltrim($imagePath, '/')) : null,
-                                    ];
-                                });
-                        }
-                    } catch (\Throwable $e) {
-                        $dropdownCategories = collect();
-                    }
+                    $dropdownCategories = $dropdownCategories ?? collect();
                 @endphp
 
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
