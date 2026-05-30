@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\BackInStockSubscription;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Category;
@@ -12,6 +13,7 @@ use App\Models\InventoryMovement;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductReview;
+use App\Models\RecentlyViewedProduct;
 use App\Models\ReturnRequest;
 use App\Models\Setting;
 use App\Models\User;
@@ -594,9 +596,95 @@ class MobileController extends Controller
         ]);
     }
 
+    public function searchAutocomplete(Request $request)
+    {
+        $term = SqlSafe::searchTerm($request->query('q', $request->query('search', '')), 80);
+        $limit = min(max((int) $request->query('limit', 8), 1), 12);
+
+        if (mb_strlen($term) < 2) {
+            return response()->json(['data' => [
+                'query' => $term,
+                'products' => [],
+                'categories' => [],
+                'brands' => [],
+            ]]);
+        }
+
+        $products = Product::query()
+            ->with(['category', 'images', 'reviews'])
+            ->where('is_active', true)
+            ->where(function ($query) use ($term): void {
+                SqlSafe::whereLike($query, 'name_en', $term);
+                SqlSafe::orWhereLike($query, 'name_ar', $term);
+                SqlSafe::orWhereLike($query, 'name_ku', $term);
+                SqlSafe::orWhereLike($query, 'sku', $term);
+                SqlSafe::orWhereLike($query, 'oem_number', $term);
+                SqlSafe::orWhereLike($query, 'part_number', $term);
+                SqlSafe::orWhereLike($query, 'brand', $term);
+            })
+            ->orderByRaw('CASE WHEN stock_quantity > 0 THEN 0 ELSE 1 END')
+            ->latest('id')
+            ->limit($limit)
+            ->get()
+            ->map(fn (Product $product) => [
+                'id' => $product->id,
+                'slug' => $product->slug,
+                'label' => $product->localizedName(),
+                'sku' => (string) $product->sku,
+                'brand' => (string) $product->brand,
+                'price' => $product->priceFor($request->user()),
+                'stock_quantity' => (int) $product->stock_quantity,
+                'image_url' => $this->primaryImageUrl($product),
+            ])
+            ->values();
+
+        $categories = Category::query()
+            ->where(function ($query) use ($term): void {
+                SqlSafe::whereLike($query, 'name_en', $term);
+                SqlSafe::orWhereLike($query, 'name_ar', $term);
+                SqlSafe::orWhereLike($query, 'name_ku', $term);
+            })
+            ->withCount('products')
+            ->orderByDesc('products_count')
+            ->limit($limit)
+            ->get()
+            ->map(fn (Category $category) => [
+                'id' => $category->id,
+                'slug' => (string) ($category->slug ?? $category->id),
+                'label' => method_exists($category, 'localizedName') ? $category->localizedName() : (string) ($category->name_en ?? ''),
+                'product_count' => $category->products_count,
+            ])
+            ->values();
+
+        $brands = Product::query()
+            ->where('is_active', true)
+            ->whereNotNull('brand')
+            ->where('brand', '!=', '')
+            ->where(function ($query) use ($term): void {
+                SqlSafe::whereLike($query, 'brand', $term);
+            })
+            ->select('brand')
+            ->distinct()
+            ->orderBy('brand')
+            ->limit($limit)
+            ->pluck('brand')
+            ->map(fn (string $brand) => ['label' => $brand])
+            ->values();
+
+        return response()->json(['data' => [
+            'query' => $term,
+            'products' => $products,
+            'categories' => $categories,
+            'brands' => $brands,
+        ]]);
+    }
+
     public function product(Request $request, string $idOrSlug)
     {
         $product = $this->findProduct($idOrSlug);
+        if ($request->user()) {
+            $this->recordRecentlyViewedProduct($request->user(), $product);
+        }
 
         return response()->json(['data' => $this->productPayload($product, $request->user())]);
     }
@@ -693,6 +781,115 @@ class MobileController extends Controller
             'discount' => $preview['discount'],
             'free_shipping' => $preview['free_shipping'],
         ]);
+    }
+
+    public function recentlyViewed(Request $request)
+    {
+        $limit = min(max((int) $request->query('limit', 12), 1), 60);
+
+        $views = RecentlyViewedProduct::query()
+            ->with(['product.category', 'product.images', 'product.reviews'])
+            ->where('user_id', $request->user()->id)
+            ->whereHas('product', fn ($query) => $query->where('is_active', true))
+            ->latest('viewed_at')
+            ->limit($limit)
+            ->get();
+
+        return response()->json([
+            'data' => $views
+                ->map(fn (RecentlyViewedProduct $view) => [
+                    'viewed_at' => optional($view->viewed_at)->toISOString(),
+                    'product' => $this->productPayload($view->product, $request->user()),
+                ])
+                ->values(),
+        ]);
+    }
+
+    public function storeRecentlyViewed(Request $request, string $idOrSlug)
+    {
+        $product = $this->findProduct($idOrSlug);
+        abort_if(! $product->is_active, 404);
+
+        $this->recordRecentlyViewedProduct($request->user(), $product);
+
+        return response()->json([
+            'data' => [
+                'viewed_at' => now()->toISOString(),
+                'product' => $this->productPayload($product, $request->user()),
+            ],
+        ], 201);
+    }
+
+    public function clearRecentlyViewed(Request $request)
+    {
+        RecentlyViewedProduct::query()
+            ->where('user_id', $request->user()->id)
+            ->delete();
+
+        return response()->json(['message' => __('Recently viewed products cleared.')]);
+    }
+
+    public function backInStockSubscriptions(Request $request)
+    {
+        return response()->json([
+            'data' => BackInStockSubscription::query()
+                ->with(['product.category', 'product.images', 'product.reviews'])
+                ->where('user_id', $request->user()->id)
+                ->whereNull('notified_at')
+                ->latest('id')
+                ->get()
+                ->map(fn (BackInStockSubscription $subscription) => [
+                    'id' => $subscription->id,
+                    'created_at' => optional($subscription->created_at)->toISOString(),
+                    'product' => $this->productPayload($subscription->product, $request->user()),
+                ])
+                ->values(),
+        ]);
+    }
+
+    public function subscribeBackInStock(Request $request, string $idOrSlug)
+    {
+        $product = $this->findProduct($idOrSlug);
+        abort_if(! $product->is_active, 404);
+
+        if ((int) $product->stock_quantity > 0) {
+            BackInStockSubscription::query()
+                ->where('user_id', $request->user()->id)
+                ->where('product_id', $product->id)
+                ->delete();
+
+            return response()->json(['data' => [
+                'subscribed' => false,
+                'available_now' => true,
+                'message' => __('This product is already in stock.'),
+                'product' => $this->productPayload($product, $request->user()),
+            ]]);
+        }
+
+        $subscription = BackInStockSubscription::query()->firstOrCreate([
+            'user_id' => $request->user()->id,
+            'product_id' => $product->id,
+        ]);
+
+        return response()->json(['data' => [
+            'id' => $subscription->id,
+            'subscribed' => true,
+            'available_now' => false,
+            'message' => __('We will notify you when this product is back in stock.'),
+            'product' => $this->productPayload($product, $request->user()),
+        ]], $subscription->wasRecentlyCreated ? 201 : 200);
+    }
+
+    public function unsubscribeBackInStock(Request $request, string $idOrSlug)
+    {
+        $product = $this->findProduct($idOrSlug);
+
+        BackInStockSubscription::query()
+            ->where('user_id', $request->user()->id)
+            ->where('product_id', $product->id)
+            ->delete();
+
+        return response()->json(['message' => __('Back-in-stock notification removed.')]);
     }
 
     public function cart(Request $request)
@@ -891,6 +1088,143 @@ class MobileController extends Controller
         ]]);
     }
 
+    public function buyNowPreview(Request $request, string $idOrSlug, CouponService $coupons, CheckoutTotals $totals)
+    {
+        $data = $request->validate([
+            'quantity' => ['nullable', 'integer', 'min:1', 'max:99'],
+            'address_id' => ['nullable', 'integer'],
+            'notes' => ['nullable', 'string', 'max:1000'],
+            'coupon_code' => ['nullable', 'string', 'max:80'],
+        ]);
+
+        $user = $request->user();
+        $product = $this->findProduct($idOrSlug);
+        abort_unless($product->is_active, 422, __('errors.product_unavailable'));
+        abort_if((int) $product->stock_quantity < 1, 422, __('errors.stock_insufficient'));
+
+        $requestedQuantity = (int) ($data['quantity'] ?? 1);
+        $quantity = min(99, max(1, min($requestedQuantity, (int) $product->stock_quantity)));
+
+        $address = $this->resolveOrderAddress($user, $data['address_id'] ?? null);
+        abort_if(! $address, 422, __('errors.delivery_address_required'));
+        $normalizedDeliveryPhone = User::normalizePhone((string) $address->phone);
+        abort_if(
+            $normalizedDeliveryPhone === null
+                || strlen($normalizedDeliveryPhone) < PhoneNumber::MIN_DIGITS
+                || strlen($normalizedDeliveryPhone) > PhoneNumber::MAX_DIGITS,
+            422,
+            __('validation.phone', ['attribute' => 'delivery phone']),
+        );
+
+        $unitPrice = (float) $product->priceFor($user);
+        $shippingFee = (float) Setting::getValue('shipping_fee', 5000);
+        $code = $coupons->normalizeCode((string) ($data['coupon_code'] ?? ''));
+        $subtotalForCoupon = round($unitPrice * $quantity, 2);
+        $couponPreview = $code !== '' ? $coupons->preview($code, $subtotalForCoupon, $user) : null;
+
+        $computed = $totals->compute(
+            [['quantity' => $quantity, 'unit_price' => $unitPrice]],
+            $shippingFee,
+            $couponPreview,
+        );
+
+        $payload = [
+            'product' => $this->productPayload($product, $user),
+            'quantity' => $quantity,
+            'address' => $this->addressPayload($address),
+            'notes' => (string) ($data['notes'] ?? ''),
+            'totals' => $computed,
+            'coupon_summary' => $this->couponSummaryFor($couponPreview),
+        ];
+
+        if ($quantity !== $requestedQuantity) {
+            $payload['quantity_requested'] = $requestedQuantity;
+        }
+
+        return response()->json(['data' => $payload]);
+    }
+
+    public function buyNowPlace(Request $request, string $idOrSlug, CouponService $coupons, CheckoutTotals $totals)
+    {
+        $data = $request->validate([
+            'quantity' => ['required', 'integer', 'min:1', 'max:99'],
+            'address_id' => ['nullable', 'integer'],
+            'notes' => ['nullable', 'string', 'max:1000'],
+            'coupon_code' => ['nullable', 'string', 'max:80'],
+            'payment_method' => ['nullable', Rule::in(['cash_on_delivery', 'zaincash', 'fastpay', 'bank_transfer'])],
+        ]);
+
+        $user = $request->user();
+        $product = $this->findProduct($idOrSlug);
+        abort_unless($product->is_active, 422, __('errors.product_unavailable'));
+
+        $quantity = (int) $data['quantity'];
+        abort_if((int) $product->stock_quantity < $quantity, 422, __('errors.stock_insufficient'));
+
+        $address = $this->resolveOrderAddress($user, $data['address_id'] ?? null);
+        abort_if(! $address, 422, __('errors.delivery_address_required'));
+        $normalizedDeliveryPhone = User::normalizePhone((string) $address->phone);
+        abort_if(
+            $normalizedDeliveryPhone === null
+                || strlen($normalizedDeliveryPhone) < PhoneNumber::MIN_DIGITS
+                || strlen($normalizedDeliveryPhone) > PhoneNumber::MAX_DIGITS,
+            422,
+            __('validation.phone', ['attribute' => 'delivery phone']),
+        );
+
+        $unitPrice = (float) $product->priceFor($user);
+        $shippingFee = (float) Setting::getValue('shipping_fee', 5000);
+        $code = $coupons->normalizeCode((string) ($data['coupon_code'] ?? ''));
+        $subtotalForCoupon = round($unitPrice * $quantity, 2);
+        $couponPreview = null;
+        if ($code !== '') {
+            $couponPreview = $coupons->preview($code, $subtotalForCoupon, $user);
+            abort_if(
+                ! (bool) ($couponPreview['valid'] ?? false),
+                422,
+                (string) ($couponPreview['message'] ?? __('Coupon could not be applied.')),
+            );
+        }
+
+        $computed = $totals->compute(
+            [['quantity' => $quantity, 'unit_price' => $unitPrice]],
+            $shippingFee,
+            $couponPreview,
+        );
+
+        $order = new Order();
+        $order->forceFill([
+            'user_id' => $user->id,
+            'order_number' => 'ORD-' . now()->format('Ymd') . '-' . strtoupper(Str::random(5)),
+            'subtotal_amount' => $computed['subtotal'],
+            'shipping_fee' => $computed['shipping_fee'],
+            'discount_amount' => $computed['discount_amount'],
+            'coupon_code' => ($couponPreview['valid'] ?? false) ? (string) ($couponPreview['code'] ?? '') : null,
+            'grand_total' => $computed['grand_total'],
+            'total_amount' => $computed['grand_total'],
+            'status' => Order::STATUS_PENDING,
+            'payment_method' => $data['payment_method'] ?? 'cash_on_delivery',
+            'payment_status' => Order::PAYMENT_PENDING,
+            'delivery_address' => $address->address_line1,
+            'delivery_city' => $address->city,
+            'delivery_phone' => $address->phone,
+            'notes' => trim((string) ($data['notes'] ?? '')) !== '' ? (string) $data['notes'] : null,
+        ])->save();
+
+        $order->items()->create([
+            'product_id' => $product->id,
+            'quantity' => $quantity,
+            'unit_price' => $unitPrice,
+            'subtotal' => round($unitPrice * $quantity, 2),
+        ]);
+
+        $product->update(['stock_quantity' => (int) $product->stock_quantity - $quantity]);
+
+        return response()->json([
+            'order' => $this->orderPayload($order->fresh('items.product')),
+        ]);
+    }
+
     private function couponSummaryFor(?array $couponPreview): array
     {
         if ($couponPreview === null) {
@@ -929,6 +1263,91 @@ class MobileController extends Controller
         abort_unless($order->user_id === $request->user()->id, 403);
 
         return response()->json(['data' => $this->orderPayload($order->load('items.product.category', 'items.product.images', 'items.product.reviews'))]);
+    }
+
+    public function reorder(Request $request, Order $order)
+    {
+        abort_unless($order->user_id === $request->user()->id, 403);
+
+        $data = $request->validate([
+            'replace_cart' => ['sometimes', 'boolean'],
+        ]);
+
+        $user = $request->user();
+        $order->load('items.product.category', 'items.product.images', 'items.product.reviews');
+        $cart = $this->cartFor($user);
+
+        $added = [];
+        $skipped = [];
+
+        DB::transaction(function () use ($cart, $data, $order, $user, &$added, &$skipped): void {
+            if ((bool) ($data['replace_cart'] ?? false)) {
+                $cart->items()->delete();
+            }
+
+            foreach ($order->items as $orderItem) {
+                $product = $orderItem->product;
+                if (! $product || ! $product->is_active) {
+                    $skipped[] = [
+                        'product_id' => $orderItem->product_id,
+                        'reason' => 'unavailable',
+                    ];
+                    continue;
+                }
+
+                $availableStock = (int) $product->stock_quantity;
+                if ($availableStock <= 0) {
+                    $skipped[] = [
+                        'product_id' => $product->id,
+                        'product' => $this->productPayload($product, $user),
+                        'reason' => 'out_of_stock',
+                    ];
+                    continue;
+                }
+
+                $requestedQuantity = max(1, (int) $orderItem->quantity);
+                $item = $cart->items()->firstOrNew(['product_id' => $product->id]);
+                $currentQuantity = (int) ($item->exists ? $item->quantity : 0);
+                $nextQuantity = min($availableStock, $currentQuantity + $requestedQuantity);
+                $actualAddedQuantity = max(0, $nextQuantity - $currentQuantity);
+
+                if ($actualAddedQuantity <= 0) {
+                    $skipped[] = [
+                        'product_id' => $product->id,
+                        'product' => $this->productPayload($product, $user),
+                        'reason' => 'max_stock_in_cart',
+                    ];
+                    continue;
+                }
+
+                $item->quantity = $nextQuantity;
+                $item->save();
+
+                $added[] = [
+                    'product' => $this->productPayload($product, $user),
+                    'requested_quantity' => $requestedQuantity,
+                    'added_quantity' => $actualAddedQuantity,
+                    'cart_quantity' => (int) $item->quantity,
+                    'limited_by_stock' => (int) $item->quantity < ($currentQuantity + $requestedQuantity),
+                ];
+            }
+        });
+
+        if ($added === []) {
+            return response()->json([
+                'message' => __('No products from this order can be reordered right now.'),
+                'added' => [],
+                'skipped' => $skipped,
+                'cart' => $this->cartPayload($cart->fresh('items.product.category', 'items.product.images', 'items.product.reviews'), $user),
+            ], 422);
+        }
+
+        return response()->json([
+            'message' => __('Products added to cart.'),
+            'added' => $added,
+            'skipped' => $skipped,
+            'cart' => $this->cartPayload($cart->fresh('items.product.category', 'items.product.images', 'items.product.reviews'), $user),
+        ]);
     }
 
     public function orderInvoice(Request $request, Order $order, InvoiceRenderer $renderer)
@@ -1444,6 +1863,38 @@ class MobileController extends Controller
         ]);
 
         return response()->json(['data' => ['product_id' => $product->id, 'stock_quantity' => $after]], 201);
+    }
+
+    private function recordRecentlyViewedProduct(User $user, Product $product): void
+    {
+        RecentlyViewedProduct::query()->updateOrCreate(
+            [
+                'user_id' => $user->id,
+                'product_id' => $product->id,
+            ],
+            ['viewed_at' => now()],
+        );
+
+        $staleIds = RecentlyViewedProduct::query()
+            ->where('user_id', $user->id)
+            ->latest('viewed_at')
+            ->skip(60)
+            ->limit(1000)
+            ->pluck('id');
+
+        if ($staleIds->isNotEmpty()) {
+            RecentlyViewedProduct::query()->whereKey($staleIds)->delete();
+        }
+    }
+
+    private function primaryImageUrl(Product $product): ?string
+    {
+        $firstImage = $product->relationLoaded('images') ? $product->images->first() : $product->images()->first();
+        if ($firstImage) {
+            return asset('storage/' . $firstImage->path);
+        }
+
+        return $product->image ? asset('storage/' . $product->image) : null;
     }
 
     private function productPayload(Product $product, ?User $user): array

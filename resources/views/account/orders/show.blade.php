@@ -128,6 +128,12 @@
                 </div>
             </div>
             <div class="flex flex-wrap items-center gap-2">
+                <form method="POST" action="{{ route('account.orders.reorder', $order) }}">
+                    @csrf
+                    <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-[#070740] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#10105c]">
+                        {{ __('Reorder') }}
+                    </button>
+                </form>
                 <x-invoice-language-links :order="$order" route-name="account.orders.invoice" />
                 <a href="{{ route('account.orders.index') }}" class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
                     {{ __('Back to Orders') }}

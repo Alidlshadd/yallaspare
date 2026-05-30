@@ -69,6 +69,7 @@ Route::post('/language/{locale}', function (Request $request, string $locale) {
     return redirect()->to($targetUrl);
 })->middleware('throttle:public-write')->name('language.switch');
 Route::get('/shop', [UserShopController::class, 'shop'])->name('shop.index');
+Route::get('/shop/autocomplete', [CatalogShopController::class, 'autocomplete'])->name('shop.autocomplete');
 Route::get('/categories', [UserShopController::class, 'categories'])->name('categories.index');
 Route::get('/categories/{category}', [UserShopController::class, 'category'])->name('categories.show');
 Route::get('/shop/products/{product}', [CatalogShopController::class, 'show'])->name('shop.show');
@@ -121,6 +122,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::match(['get', 'post'], '/checkout/review', [CheckoutController::class, 'review'])->middleware('throttle:checkout-write')->name('checkout.review');
     Route::post('/checkout', [CheckoutController::class, 'store'])->middleware('throttle:checkout-write')->name('checkout.store');
     Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
+    Route::post('/shop/products/{product}/back-in-stock', [CatalogShopController::class, 'subscribeBackInStock'])->middleware('throttle:commerce-write')->name('shop.back-in-stock.store');
+    Route::delete('/shop/products/{product}/back-in-stock', [CatalogShopController::class, 'unsubscribeBackInStock'])->middleware('throttle:commerce-write')->name('shop.back-in-stock.destroy');
     Route::post('/shop/products/{product}/reviews', [ProductReviewController::class, 'store'])->middleware('throttle:commerce-write')->name('shop.reviews.store');
 });
 
@@ -131,6 +134,7 @@ Route::middleware(['auth', 'verified'])->prefix('account')->name('account.')->gr
     Route::get('/orders', [AccountOrdersController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order}', [AccountOrdersController::class, 'show'])->name('orders.show');
     Route::get('/orders/{order}/invoice', [AccountOrdersController::class, 'invoice'])->name('orders.invoice');
+    Route::post('/orders/{order}/reorder', [AccountOrdersController::class, 'reorder'])->middleware('throttle:commerce-write')->name('orders.reorder');
     Route::post('/orders/{order}/cancellation-request', [AccountOrdersController::class, 'requestCancellation'])->middleware('throttle:commerce-write')->name('orders.cancellation-request');
     Route::post('/orders/{order}/return-request', [AccountOrdersController::class, 'requestReturn'])->middleware('throttle:commerce-write')->name('orders.return-request');
     Route::get('/addresses', [AccountAddressController::class, 'index'])->name('addresses.index');

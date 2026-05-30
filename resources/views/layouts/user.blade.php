@@ -304,7 +304,7 @@
                             </div>
                         </div>
 
-                        <form method="GET" action="{{ route('shop.index') }}">
+                        <form method="GET" action="{{ route('shop.index') }}" data-search-autocomplete data-search-autocomplete-url="{{ route('shop.autocomplete') }}">
                             <div class="relative">
                                 <span class="pointer-events-none absolute inset-y-0 left-3.5 flex items-center text-white/55">
                                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -318,6 +318,8 @@
                                     value="{{ request('search') }}"
                                     placeholder="{{ __('Search part name, OEM number, SKU...') }}"
                                     aria-label="{{ __('Search catalog') }}"
+                                    autocomplete="off"
+                                    data-search-autocomplete-input
                                     class="block h-9 w-full rounded-full border border-white/10 bg-white/10 py-2 pl-10 pr-20 text-xs text-white outline-none transition duration-200 placeholder:text-white/45 focus:border-white/20 focus:bg-white/15 focus:ring-4 focus:ring-white/10 sm:h-10 sm:pr-24 sm:text-sm"
                                 />
                                 <button
@@ -326,6 +328,7 @@
                                 >
                                     {{ __('Search') }}
                                 </button>
+                                <div data-search-autocomplete-panel class="absolute left-0 right-0 top-full z-50 mt-2 hidden overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-xl shadow-slate-950/20 dark:border-slate-700 dark:bg-slate-950 dark:text-white"></div>
                             </div>
                         </form>
 
@@ -411,7 +414,7 @@
                             @endauth
                         </div>
 
-                        <form method="GET" action="{{ route('shop.index') }}" class="w-full min-w-0 justify-self-center">
+                        <form method="GET" action="{{ route('shop.index') }}" class="w-full min-w-0 justify-self-center" data-search-autocomplete data-search-autocomplete-url="{{ route('shop.autocomplete') }}">
                             <div class="relative mx-auto w-full max-w-[38rem]">
                                 <span class="pointer-events-none absolute inset-y-0 left-5 flex items-center text-white/55">
                                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -425,6 +428,8 @@
                                     value="{{ request('search') }}"
                                     placeholder="{{ __('Search part name, OEM number, SKU...') }}"
                                     aria-label="{{ __('Search catalog') }}"
+                                    autocomplete="off"
+                                    data-search-autocomplete-input
                                     class="block h-11 w-full rounded-full border border-white/10 bg-white/10 py-2.5 pl-14 pr-28 text-sm text-white outline-none transition duration-200 placeholder:text-white/45 focus:border-white/20 focus:bg-white/15 focus:ring-4 focus:ring-white/10"
                                 />
                                 <button
@@ -433,6 +438,7 @@
                                 >
                                     {{ __('Search') }}
                                 </button>
+                                <div data-search-autocomplete-panel class="absolute left-0 right-0 top-full z-50 mt-2 hidden overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-xl shadow-slate-950/20 dark:border-slate-700 dark:bg-slate-950 dark:text-white"></div>
                             </div>
                         </form>
 
@@ -705,6 +711,158 @@
                         showHeader();
                     }
                 }, { passive: true });
+            })();
+        </script>
+        <script>
+            (() => {
+                const forms = Array.from(document.querySelectorAll('[data-search-autocomplete]'));
+                if (forms.length === 0) {
+                    return;
+                }
+
+                const labels = {
+                    products: @json(__('Products')),
+                    categories: @json(__('Categories')),
+                    brands: @json(__('Brands')),
+                    sku: @json(__('SKU:')),
+                    inStock: @json(__('In stock')),
+                    outOfStock: @json(__('Out of stock')),
+                };
+
+                const makeText = (tag, className, text) => {
+                    const node = document.createElement(tag);
+                    node.className = className;
+                    node.textContent = text || '';
+                    return node;
+                };
+
+                const addSection = (panel, title, items, renderItem) => {
+                    if (!items || items.length === 0) {
+                        return;
+                    }
+
+                    panel.appendChild(makeText('div', 'px-3 pt-3 pb-1 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400', title));
+                    const list = document.createElement('div');
+                    list.className = 'py-1';
+                    items.forEach((item) => list.appendChild(renderItem(item)));
+                    panel.appendChild(list);
+                };
+
+                const productRow = (item) => {
+                    const row = document.createElement('a');
+                    row.href = item.url;
+                    row.className = 'flex items-center gap-3 px-3 py-2.5 text-sm transition hover:bg-slate-50 dark:hover:bg-slate-900';
+
+                    const media = document.createElement('span');
+                    media.className = 'flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-400 dark:border-slate-800 dark:bg-slate-900';
+                    if (item.image_url) {
+                        const image = document.createElement('img');
+                        image.src = item.image_url;
+                        image.alt = item.label || '';
+                        image.className = 'h-full w-full object-contain';
+                        media.appendChild(image);
+                    } else {
+                        media.textContent = (item.label || '?').slice(0, 1).toUpperCase();
+                    }
+
+                    const body = document.createElement('span');
+                    body.className = 'min-w-0 flex-1';
+                    body.appendChild(makeText('span', 'block truncate font-semibold text-slate-900 dark:text-white', item.label));
+                    body.appendChild(makeText('span', 'mt-0.5 block truncate text-xs text-slate-500 dark:text-slate-400', `${labels.sku} ${item.sku || '-'} | ${item.price_formatted || ''}`));
+
+                    const stock = makeText('span', `shrink-0 rounded-full px-2 py-1 text-[10px] font-semibold ${Number(item.stock_quantity || 0) > 0 ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300' : 'bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-300'}`, Number(item.stock_quantity || 0) > 0 ? labels.inStock : labels.outOfStock);
+
+                    row.append(media, body, stock);
+                    return row;
+                };
+
+                const simpleRow = (item, meta = '') => {
+                    const row = document.createElement('a');
+                    row.href = item.url;
+                    row.className = 'flex items-center justify-between gap-3 px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:text-slate-200 dark:hover:bg-slate-900';
+                    row.appendChild(makeText('span', 'truncate', item.label));
+                    if (meta) {
+                        row.appendChild(makeText('span', 'shrink-0 text-xs font-medium text-slate-500 dark:text-slate-400', meta));
+                    }
+                    return row;
+                };
+
+                forms.forEach((form) => {
+                    const input = form.querySelector('[data-search-autocomplete-input]');
+                    const panel = form.querySelector('[data-search-autocomplete-panel]');
+                    const endpoint = form.dataset.searchAutocompleteUrl;
+                    let timer = null;
+                    let controller = null;
+
+                    if (!input || !panel || !endpoint) {
+                        return;
+                    }
+
+                    const hide = () => {
+                        panel.classList.add('hidden');
+                    };
+
+                    const render = (payload) => {
+                        panel.replaceChildren();
+                        addSection(panel, labels.products, payload.products || [], productRow);
+                        addSection(panel, labels.categories, payload.categories || [], (item) => simpleRow(item, item.product_count ? String(item.product_count) : ''));
+                        addSection(panel, labels.brands, payload.brands || [], (item) => simpleRow(item));
+
+                        if (panel.childElementCount === 0) {
+                            hide();
+                            return;
+                        }
+
+                        panel.classList.remove('hidden');
+                    };
+
+                    const search = () => {
+                        const query = input.value.trim();
+                        if (query.length < 2) {
+                            hide();
+                            return;
+                        }
+
+                        controller?.abort();
+                        controller = new AbortController();
+
+                        const url = new URL(endpoint, window.location.origin);
+                        url.searchParams.set('q', query);
+
+                        fetch(url, {
+                            headers: { 'Accept': 'application/json' },
+                            signal: controller.signal,
+                        })
+                            .then((response) => response.ok ? response.json() : null)
+                            .then((json) => {
+                                if (json?.data) {
+                                    render(json.data);
+                                }
+                            })
+                            .catch((error) => {
+                                if (error.name !== 'AbortError') {
+                                    hide();
+                                }
+                            });
+                    };
+
+                    input.addEventListener('input', () => {
+                        window.clearTimeout(timer);
+                        timer = window.setTimeout(search, 180);
+                    });
+                    input.addEventListener('focus', search);
+                    input.addEventListener('keydown', (event) => {
+                        if (event.key === 'Escape') {
+                            hide();
+                        }
+                    });
+
+                    document.addEventListener('click', (event) => {
+                        if (!form.contains(event.target)) {
+                            hide();
+                        }
+                    });
+                });
             })();
         </script>
         <script>

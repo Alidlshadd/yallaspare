@@ -32,6 +32,7 @@ Route::prefix('mobile')->group(function () {
     Route::get('/brands', [MobileController::class, 'brands']);
     Route::get('/vehicle-fitments', [MobileController::class, 'vehicleFitments']);
     Route::post('/vin/decode', [MobileController::class, 'decodeVin'])->middleware('throttle:mobile-lookup');
+    Route::get('/search/autocomplete', [MobileController::class, 'searchAutocomplete'])->middleware('throttle:mobile-lookup');
     Route::get('/products', [MobileController::class, 'products']);
     Route::get('/products/{idOrSlug}', [MobileController::class, 'product']);
     Route::post('/coupons/preview', [MobileController::class, 'couponPreview'])->middleware('throttle:mobile-lookup');
@@ -68,8 +69,16 @@ Route::prefix('mobile')->group(function () {
         Route::post('/wishlist/{idOrSlug}', [MobileController::class, 'addWishlist']);
         Route::delete('/wishlist/{idOrSlug}', [MobileController::class, 'deleteWishlist']);
 
+        Route::get('/recently-viewed', [MobileController::class, 'recentlyViewed']);
+        Route::post('/recently-viewed/{idOrSlug}', [MobileController::class, 'storeRecentlyViewed']);
+        Route::delete('/recently-viewed', [MobileController::class, 'clearRecentlyViewed']);
+        Route::get('/back-in-stock', [MobileController::class, 'backInStockSubscriptions']);
+        Route::post('/products/{idOrSlug}/back-in-stock', [MobileController::class, 'subscribeBackInStock']);
+        Route::delete('/products/{idOrSlug}/back-in-stock', [MobileController::class, 'unsubscribeBackInStock']);
         Route::get('/products/{idOrSlug}/reviews', [MobileController::class, 'reviews']);
         Route::post('/products/{idOrSlug}/reviews', [MobileController::class, 'storeReview']);
+        Route::post('/products/{idOrSlug}/buy-now/preview', [MobileController::class, 'buyNowPreview']);
+        Route::post('/products/{idOrSlug}/buy-now/place', [MobileController::class, 'buyNowPlace']);
 
         Route::get('/addresses', [MobileController::class, 'addresses']);
         Route::post('/addresses', [MobileController::class, 'storeAddress']);
@@ -82,6 +91,7 @@ Route::prefix('mobile')->group(function () {
         Route::get('/orders', [MobileController::class, 'orders']);
         Route::get('/orders/{order}', [MobileController::class, 'order']);
         Route::get('/orders/{order}/invoice', [MobileController::class, 'orderInvoice']);
+        Route::post('/orders/{order}/reorder', [MobileController::class, 'reorder']);
 
         Route::post('/orders/{order}/cancellation-request', [MobileController::class, 'requestCancellation']);
         Route::post('/orders/{order}/return-request', [MobileController::class, 'requestReturn']);

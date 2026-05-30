@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Account;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cart;
+use App\Models\CartItem;
 use App\Models\InventoryMovement;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\ProductReview;
 use App\Models\ReturnRequest;
 use App\Services\InvoiceRenderer;
@@ -78,6 +81,82 @@ class AccountOrdersController extends Controller
 
         return $renderer->render($order, $locale)
             ->download('invoice-' . $order->id . '-' . $locale . '.pdf');
+    }
+
+    public function reorder(Request $request, Order $order): RedirectResponse
+    {
+        $data = $request->validate([
+            'replace_cart' => ['nullable', 'boolean'],
+        ]);
+
+        $order = auth()->user()
+            ->orders()
+            ->whereKey($order->id)
+            ->with('items:id,order_id,product_id,quantity')
+            ->firstOrFail();
+
+        $replaceCart = (bool) ($data['replace_cart'] ?? false);
+        $cart = Cart::query()->firstOrCreate(['user_id' => auth()->id()]);
+        $addedCount = 0;
+        $skippedCount = 0;
+        $wasLimited = false;
+
+        DB::transaction(function () use ($order, $cart, $replaceCart, &$addedCount, &$skippedCount, &$wasLimited): void {
+            if ($replaceCart) {
+                CartItem::query()
+                    ->where('cart_id', $cart->id)
+                    ->delete();
+            }
+
+            foreach ($order->items as $item) {
+                if (! $item->product_id) {
+                    $skippedCount++;
+                    continue;
+                }
+
+                $product = Product::query()
+                    ->whereKey($item->product_id)
+                    ->lockForUpdate()
+                    ->first();
+
+                $maxQuantity = $product && $product->is_active
+                    ? min(99, max(0, (int) $product->stock_quantity))
+                    : 0;
+
+                if ($maxQuantity < 1) {
+                    $skippedCount++;
+                    continue;
+                }
+
+                $cartItem = CartItem::query()->firstOrNew([
+                    'cart_id' => $cart->id,
+                    'product_id' => $product->id,
+                ]);
+                $currentQuantity = $cartItem->exists ? (int) $cartItem->quantity : 0;
+                $requestedTotal = $currentQuantity + max(1, (int) $item->quantity);
+                $cartItem->quantity = min($maxQuantity, $requestedTotal);
+                $cartItem->save();
+
+                $addedQuantity = max(0, (int) $cartItem->quantity - $currentQuantity);
+                if ($addedQuantity > 0) {
+                    $addedCount += $addedQuantity;
+                }
+
+                if ((int) $cartItem->quantity < $requestedTotal) {
+                    $wasLimited = true;
+                }
+            }
+        });
+
+        if ($addedCount < 1) {
+            return back()->with('error', __('No products from this order can be reordered right now.'));
+        }
+
+        $message = $skippedCount > 0 || $wasLimited
+            ? __('Available products were added to your cart. Some items were skipped or limited by stock.')
+            : __('Order products added to your cart.');
+
+        return redirect()->route('cart.index')->with($skippedCount > 0 || $wasLimited ? 'error' : 'success', $message);
     }
 
     public function requestCancellation(Request $request, Order $order): RedirectResponse

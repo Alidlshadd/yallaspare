@@ -100,6 +100,18 @@
 
 @section('content')
     <div class="space-y-6">
+        @if (session('status') || session('success'))
+            <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm font-semibold text-emerald-800 dark:border-emerald-900/50 dark:bg-emerald-900/20 dark:text-emerald-300">
+                {{ session('status') ?: session('success') }}
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-sm font-semibold text-rose-800 dark:border-rose-900/50 dark:bg-rose-900/20 dark:text-rose-300">
+                {{ session('error') }}
+            </div>
+        @endif
+
         <section class="rounded-3xl border border-slate-200/80 bg-white p-4 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:p-6 lg:p-8">
             <nav class="mb-6 flex flex-wrap items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400 sm:text-sm">
                 <a href="{{ route('home') }}" class="transition hover:text-slate-900 dark:hover:text-white">{{ __('Home') }}</a>
@@ -262,6 +274,22 @@
                                     <button type="button" disabled class="inline-flex w-full cursor-not-allowed items-center justify-center rounded-xl border border-slate-200 bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-400">
                                         {{ __('Currently unavailable') }}
                                     </button>
+                                    @if (!empty($isBackInStockSubscribed))
+                                        <form action="{{ route('shop.back-in-stock.destroy', $product) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl border border-emerald-300 px-4 py-3 text-sm font-semibold text-emerald-700 transition hover:border-emerald-400 hover:bg-emerald-50 dark:border-emerald-900/50 dark:text-emerald-300 dark:hover:border-emerald-800 dark:hover:bg-emerald-950/30">
+                                                {{ __('Notification enabled') }}
+                                            </button>
+                                        </form>
+                                    @else
+                                        <form action="{{ route('shop.back-in-stock.store', $product) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-[#070740]/40 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800">
+                                                {{ __('Notify me when available') }}
+                                            </button>
+                                        </form>
+                                    @endif
                                 @endif
                             @else
                                 @if ($inStock)
@@ -277,7 +305,7 @@
                                     </button>
                                 @endif
                                 <a href="{{ route('login') }}" class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-[#070740]/40 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800">
-                                    <span>{{ __('Login for wishlist') }}</span>
+                                    <span>{{ $inStock ? __('Login for wishlist') : __('Login for stock notification') }}</span>
                                 </a>
                             @endauth
 
@@ -401,6 +429,25 @@
                 @endforelse
             </div>
         </section>
+
+        @if (($recentlyViewedProducts ?? collect())->isNotEmpty())
+            <section class="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10">
+                <div class="flex items-center justify-between gap-3">
+                    <div>
+                        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Recently viewed') }}</p>
+                        <h2 class="mt-1 text-xl font-semibold tracking-[-0.02em] text-slate-950 dark:text-white">{{ __('Your product history') }}</h2>
+                    </div>
+                    <a href="{{ route('shop.index') }}" class="text-sm font-semibold text-[#070740] transition hover:text-[#10105c] dark:text-slate-200 dark:hover:text-white">
+                        {{ __('Shop') }}
+                    </a>
+                </div>
+                <div class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+                    @foreach ($recentlyViewedProducts as $recentProduct)
+                        <x-product-card :product="$recentProduct" />
+                    @endforeach
+                </div>
+            </section>
+        @endif
 
     </div>
 

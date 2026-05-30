@@ -22,6 +22,12 @@
                 </div>
             @endif
 
+            @if (session('error'))
+                <div class="rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 shadow-sm dark:border-rose-900/50 dark:bg-rose-900/20">
+                    <p class="text-sm font-semibold text-rose-800 dark:text-rose-300">{{ session('error') }}</p>
+                </div>
+            @endif
+
             <section class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         <div class="border-b border-slate-100 px-6 py-6 sm:px-8 dark:border-slate-800">
                             <h3 class="text-xl font-semibold tracking-[-0.02em] text-slate-950 dark:text-white">{{ __('Orders History') }}</h3>
@@ -71,6 +77,12 @@
                                                 <td class="px-6 py-4 text-right sm:px-8">
                                                     <div class="flex flex-wrap justify-end gap-2">
                                                         <a href="{{ route('account.orders.show', $order) }}" class="text-sm font-semibold text-slate-700 transition hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100">{{ __('View') }}</a>
+                                                        <form method="POST" action="{{ route('account.orders.reorder', $order) }}">
+                                                            @csrf
+                                                            <button type="submit" class="text-sm font-semibold text-[#070740] transition hover:text-[#10105c] dark:text-slate-200 dark:hover:text-white">
+                                                                {{ __('Reorder') }}
+                                                            </button>
+                                                        </form>
                                                         <x-invoice-language-links :order="$order" route-name="account.orders.invoice" mode="inline" size="xs" />
                                                     </div>
                                                 </td>
