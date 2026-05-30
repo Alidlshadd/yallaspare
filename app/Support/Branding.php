@@ -127,4 +127,37 @@ class Branding
 
         return null;
     }
+
+    /**
+     * Resolve an absolute filesystem path to the site logo for embedding in PDFs.
+     * DomPDF needs a path, not a URL. Returns null if no safe logo can be found.
+     */
+    public static function invoiceLogoPath(): ?string
+    {
+        $logoValue = (string) \App\Models\Setting::getValue('site_logo', '');
+        if ($logoValue === '') {
+            return null;
+        }
+
+        $storagePath = self::storagePathFromValue($logoValue);
+        if ($storagePath && self::isSafeLogoPath($storagePath)) {
+            $publicStoragePath = public_path('storage/' . ltrim($storagePath, '/'));
+            if (is_file($publicStoragePath)) {
+                return str_replace('\\', '/', $publicStoragePath);
+            }
+        }
+
+        $normalized = str_replace('\\', '/', trim($logoValue));
+        if (
+            self::isSafeLogoPath($normalized)
+            && Str::startsWith($normalized, ['assets/', 'images/', 'storage/', '/assets/', '/images/', '/storage/'])
+        ) {
+            $publicPath = public_path(ltrim($normalized, '/'));
+            if (is_file($publicPath)) {
+                return str_replace('\\', '/', $publicPath);
+            }
+        }
+
+        return null;
+    }
 }
