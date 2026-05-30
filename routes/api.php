@@ -78,6 +78,7 @@ Route::prefix('mobile')->group(function () {
         Route::delete('/addresses/{address}', [MobileController::class, 'deleteAddress']);
 
         Route::post('/checkout', [MobileController::class, 'checkout']);
+        Route::post('/checkout/review', [MobileController::class, 'checkoutReview']);
         Route::get('/orders', [MobileController::class, 'orders']);
         Route::get('/orders/{order}', [MobileController::class, 'order']);
         Route::get('/orders/{order}/invoice', [MobileController::class, 'orderInvoice']);

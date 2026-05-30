@@ -13,12 +13,14 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductReview;
 use App\Models\ReturnRequest;
+use App\Models\Setting;
 use App\Models\User;
 use App\Models\UserAddress;
 use App\Models\VehicleBrand;
 use App\Mail\SupportContactRequestMail;
 use App\Models\Wishlist;
 use App\Rules\PhoneNumber;
+use App\Services\CheckoutTotals;
 use App\Services\CouponService;
 use App\Services\InvoiceRenderer;
 use App\Support\SqlSafe;
@@ -832,6 +834,81 @@ class MobileController extends Controller
             'cart' => $this->cartPayload($cart->fresh('items.product'), $request->user()),
             'order' => $this->orderPayload($order->fresh('items.product')),
         ]);
+    }
+
+    public function checkoutReview(Request $request, CouponService $coupons, CheckoutTotals $totals)
+    {
+        $data = $request->validate([
+            'address_id' => ['nullable', 'integer'],
+            'notes' => ['nullable', 'string', 'max:1000'],
+            'coupon_code' => ['nullable', 'string', 'max:80'],
+        ]);
+
+        $user = $request->user();
+        $cart = $this->cartFor($user)->load('items.product');
+        abort_if($cart->items->isEmpty(), 422, __('errors.cart_empty'));
+
+        $address = $this->resolveOrderAddress($user, $data['address_id'] ?? null);
+        abort_if(! $address, 422, __('errors.delivery_address_required'));
+        $normalizedDeliveryPhone = User::normalizePhone((string) $address->phone);
+        abort_if(
+            $normalizedDeliveryPhone === null
+                || strlen($normalizedDeliveryPhone) < PhoneNumber::MIN_DIGITS
+                || strlen($normalizedDeliveryPhone) > PhoneNumber::MAX_DIGITS,
+            422,
+            __('validation.phone', ['attribute' => 'delivery phone']),
+        );
+
+        $lineItems = [];
+        $responseItems = [];
+        foreach ($cart->items as $item) {
+            if (! $item->product) {
+                continue;
+            }
+            $unitPrice = (float) $item->product->priceFor($user);
+            $lineItems[] = ['quantity' => (int) $item->quantity, 'unit_price' => $unitPrice];
+            $responseItems[] = [
+                'product' => $this->productPayload($item->product, $user),
+                'quantity' => (int) $item->quantity,
+                'unit_price' => $unitPrice,
+                'subtotal' => round($unitPrice * $item->quantity, 2),
+            ];
+        }
+
+        $shippingFee = (float) Setting::getValue('shipping_fee', 5000);
+        $code = $coupons->normalizeCode((string) ($data['coupon_code'] ?? ''));
+        $subtotalForCoupon = array_sum(array_map(fn ($i) => $i['quantity'] * $i['unit_price'], $lineItems));
+        $couponPreview = $code !== '' ? $coupons->preview($code, round($subtotalForCoupon, 2), $user) : null;
+
+        $computed = $totals->compute($lineItems, $shippingFee, $couponPreview);
+
+        return response()->json(['data' => [
+            'address' => $this->addressPayload($address),
+            'items' => $responseItems,
+            'notes' => (string) ($data['notes'] ?? ''),
+            'totals' => $computed,
+            'coupon_summary' => $this->couponSummaryFor($couponPreview),
+        ]]);
+    }
+
+    private function couponSummaryFor(?array $couponPreview): array
+    {
+        if ($couponPreview === null) {
+            return [
+                'valid' => false,
+                'code' => '',
+                'discount' => 0.0,
+                'free_shipping' => false,
+                'message' => null,
+            ];
+        }
+        return [
+            'valid' => (bool) ($couponPreview['valid'] ?? false),
+            'code' => (string) ($couponPreview['code'] ?? ''),
+            'discount' => (float) ($couponPreview['discount'] ?? 0),
+            'free_shipping' => (bool) ($couponPreview['free_shipping'] ?? false),
+            'message' => $couponPreview['message'] ?? null,
+        ];
     }
 
     public function orders(Request $request)
