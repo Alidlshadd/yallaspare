@@ -78,6 +78,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>@yield('title', $brand)</title>
         <meta name="description" content="@yield('meta_description', 'Yalla Spare auto parts catalog, support, and legal information.')">
+        @include('partials.seo-locale')
         @stack('head')
         @php
             $themePreference = auth()->check() ? (auth()->user()->theme_preference ?? 'light') : 'light';

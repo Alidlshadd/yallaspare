@@ -48,6 +48,8 @@ Route::get('/', function () {
     return redirect()->route('user.shop.home');
 })->name('home');
 
+Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
+
 Route::post('/language/{locale}', function (Request $request, string $locale) {
     abort_unless(in_array($locale, ['en', 'ar', 'ku'], true), 404);
 
