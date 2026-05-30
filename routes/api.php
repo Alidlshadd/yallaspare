@@ -80,6 +80,7 @@ Route::prefix('mobile')->group(function () {
         Route::post('/checkout', [MobileController::class, 'checkout']);
         Route::get('/orders', [MobileController::class, 'orders']);
         Route::get('/orders/{order}', [MobileController::class, 'order']);
+        Route::get('/orders/{order}/invoice', [MobileController::class, 'orderInvoice']);
 
         Route::post('/orders/{order}/cancellation-request', [MobileController::class, 'requestCancellation']);
         Route::post('/orders/{order}/return-request', [MobileController::class, 'requestReturn']);

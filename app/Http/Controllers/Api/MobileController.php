@@ -20,6 +20,7 @@ use App\Mail\SupportContactRequestMail;
 use App\Models\Wishlist;
 use App\Rules\PhoneNumber;
 use App\Services\CouponService;
+use App\Services\InvoiceRenderer;
 use App\Support\SqlSafe;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -853,6 +854,21 @@ class MobileController extends Controller
         abort_unless($order->user_id === $request->user()->id, 403);
 
         return response()->json(['data' => $this->orderPayload($order->load('items.product.category', 'items.product.images', 'items.product.reviews'))]);
+    }
+
+    public function orderInvoice(Request $request, Order $order, InvoiceRenderer $renderer)
+    {
+        abort_unless($order->user_id === $request->user()->id, 403);
+
+        $explicit = (string) $request->query('lang', '');
+        $locale = $renderer->resolveLocale(
+            $explicit !== '' ? $explicit : null,
+            $order,
+            $request->user(),
+        );
+
+        return $renderer->render($order, $locale)
+            ->download('invoice-' . $order->id . '-' . $locale . '.pdf');
     }
 
     public function reviews(string $idOrSlug)
