@@ -17,7 +17,7 @@
     $menuClasses = $variant === 'dark'
         ? 'border border-slate-200/80 bg-white text-slate-900 shadow-2xl shadow-slate-900/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:shadow-black/30'
         : 'border border-slate-200 bg-white text-slate-900 shadow-xl shadow-slate-900/10';
-    $itemClasses = 'flex w-full items-center justify-between gap-3 rounded-xl px-3 py-2 text-sm font-medium transition duration-200 hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#070740]/20 dark:hover:bg-slate-900 dark:hover:text-white';
+    $itemClasses = 'flex w-full items-center justify-between gap-3 rounded-xl px-3 py-2 text-sm font-medium transition duration-200 hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:hover:bg-slate-900 dark:hover:text-white';
 @endphp
 
 <div
@@ -51,7 +51,7 @@
                 <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
                 <button
                     type="submit"
-                    class="{{ $itemClasses }} {{ $currentLocale === $locale ? 'bg-slate-100 text-[#070740] dark:bg-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-300' }}"
+                    class="{{ $itemClasses }} {{ $currentLocale === $locale ? 'bg-slate-100 text-primary dark:bg-slate-900 dark:text-white' : 'text-slate-600 dark:text-slate-300' }}"
                     @if ($currentLocale === $locale) aria-current="true" @endif
                     role="menuitem"
                 >

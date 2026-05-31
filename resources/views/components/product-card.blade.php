@@ -35,12 +35,12 @@
 
 <article
     aria-label="{{ $productName }}"
-    class="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-4 text-left shadow-sm shadow-slate-900/5 transition duration-300 hover:-translate-y-1 hover:border-[#070740]/20 hover:shadow-lg hover:shadow-slate-900/10 active:translate-y-0.5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 dark:hover:border-[#070740]/30 dark:hover:shadow-black/20 sm:p-5"
+    class="group relative flex h-full flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-4 text-left shadow-sm shadow-slate-900/5 transition duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-lg hover:shadow-slate-900/10 active:translate-y-0.5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 dark:hover:border-primary/30 dark:hover:shadow-black/20 sm:p-5"
 >
     <a
         href="{{ route('shop.show', $product) }}"
         aria-label="{{ __('View details for :product', ['product' => $productName]) }}"
-        class="absolute inset-0 z-10 rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-[#070740] focus-visible:ring-offset-2"
+        class="absolute inset-0 z-10 rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
     ></a>
 
     @if ($showWishlist)
@@ -65,7 +65,7 @@
                         @csrf
                         <button
                             type="submit"
-                            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white/95 text-slate-500 shadow-sm transition hover:border-[#070740]/30 hover:text-[#070740] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#070740]/20 dark:border-slate-700 dark:bg-slate-900/95 dark:text-slate-300 dark:hover:border-slate-500"
+                            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white/95 text-slate-500 shadow-sm transition hover:border-primary/30 hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:border-slate-700 dark:bg-slate-900/95 dark:text-slate-300 dark:hover:border-slate-500"
                             aria-label="{{ __('Add to wishlist') }}"
                         >
                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -80,7 +80,7 @@
 
     <div class="flex flex-1 flex-col">
         <div
-            class="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-[1.4rem] border border-slate-200/80 bg-slate-50 p-4 transition duration-300 group-hover:border-[#070740]/10 group-hover:bg-white dark:border-slate-800 dark:bg-slate-950 dark:group-hover:border-[#070740]/20 dark:group-hover:bg-slate-950"
+            class="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-[1.4rem] border border-slate-200/80 bg-slate-50 p-4 transition duration-300 group-hover:border-primary/10 group-hover:bg-white dark:border-slate-800 dark:bg-slate-950 dark:group-hover:border-primary/20 dark:group-hover:bg-slate-950"
         >
             @if ($hasDiscount)
                 <div class="absolute left-3 top-3 z-10 inline-flex items-center rounded-full bg-rose-600 px-3 py-1 text-xs font-bold text-white shadow-sm">
@@ -127,7 +127,7 @@
                 </p>
             </div>
 
-            <h3 class="line-clamp-2 min-h-[3.2rem] text-[1.05rem] font-semibold leading-6 tracking-[-0.02em] text-slate-950 transition duration-200 group-hover:text-[#070740] dark:text-white dark:group-hover:text-slate-200">
+            <h3 class="line-clamp-2 min-h-[3.2rem] text-[1.05rem] font-semibold leading-6 tracking-[-0.02em] text-slate-950 transition duration-200 group-hover:text-primary dark:text-white dark:group-hover:text-slate-200">
                 {{ $productName }}
             </h3>
         </div>
@@ -137,7 +137,7 @@
                 {{ __('Price') }}
             </p>
             <div class="mt-1 flex flex-wrap items-end gap-2">
-                <p class="text-[1.45rem] font-semibold leading-none tracking-[-0.03em] text-[#070740] dark:text-white">
+                <p class="text-[1.45rem] font-semibold leading-none tracking-[-0.03em] text-primary dark:text-white">
                     {{ number_format($price, 2) }}
                     <span class="text-xs font-semibold uppercase tracking-[0.12em] text-amber-600 dark:text-amber-300">{{ $currencySymbol }}</span>
                 </p>
@@ -167,7 +167,7 @@
             <button
                 type="submit"
                 @disabled(! $inStock)
-                class="inline-flex w-full items-center justify-center rounded-2xl px-4 py-3 text-[0.8rem] font-semibold uppercase tracking-[0.1em] transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#070740] focus-visible:ring-offset-2 {{ $inStock ? 'bg-[#070740] text-white hover:bg-[#0a0d3f] active:translate-y-0.5' : 'cursor-not-allowed border border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-500' }}"
+                class="inline-flex w-full items-center justify-center rounded-2xl px-4 py-3 text-[0.8rem] font-semibold uppercase tracking-[0.1em] transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 {{ $inStock ? 'bg-primary text-white hover:bg-primary-hover active:translate-y-0.5' : 'cursor-not-allowed border border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-500' }}"
             >
                 {{ $inStock ? __('Add to Cart') : __('Out of Stock') }}
             </button>
@@ -176,7 +176,7 @@
         <a
             href="{{ $inStock ? route('checkout.options', $product) : '#' }}"
             aria-disabled="{{ $inStock ? 'false' : 'true' }}"
-            class="relative z-20 mt-4 inline-flex w-full items-center justify-center rounded-2xl px-4 py-3 text-[0.8rem] font-semibold uppercase tracking-[0.1em] transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#070740] focus-visible:ring-offset-2 {{ $inStock ? 'bg-[#070740] text-white hover:bg-[#0a0d3f] active:translate-y-0.5' : 'pointer-events-none cursor-not-allowed border border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-500' }}"
+            class="relative z-20 mt-4 inline-flex w-full items-center justify-center rounded-2xl px-4 py-3 text-[0.8rem] font-semibold uppercase tracking-[0.1em] transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 {{ $inStock ? 'bg-primary text-white hover:bg-primary-hover active:translate-y-0.5' : 'pointer-events-none cursor-not-allowed border border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-500' }}"
         >
             {{ $inStock ? __('Login or Register to Order') : __('Out of Stock') }}
         </a>

@@ -3,19 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Models\Cart;
-use App\Models\Discount;
-use App\Models\InventoryMovement;
 use App\Models\Order;
-use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Setting;
 use App\Models\UserAddress;
+use App\Services\Checkout\CheckoutService;
 use App\Services\CouponService;
 use App\Support\UserCommunication;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class CheckoutController extends Controller
@@ -23,6 +19,10 @@ class CheckoutController extends Controller
     private const REVIEW_SESSION_KEY = 'checkout.review';
     private const COUPON_SESSION_KEY = 'checkout.coupon_code';
     private const BUY_NOW_COUPON_SESSION_KEY = 'checkout.buy_now_coupon_code';
+
+    public function __construct(private readonly CheckoutService $checkoutService)
+    {
+    }
 
     public function options(Request $request, Product $product): View|RedirectResponse
     {
@@ -92,105 +92,14 @@ class CheckoutController extends Controller
         }
 
         try {
-            $placedOrder = DB::transaction(function () use ($product, $quantity, $address, $data, $user, $couponCode, $couponService): Order {
-                $lockedProduct = Product::query()->whereKey($product->id)->lockForUpdate()->firstOrFail();
-
-                if (! $lockedProduct->is_active) {
-                    throw new \RuntimeException(__('This product is not available right now.'));
-                }
-
-                if ($lockedProduct->stock_quantity < $quantity) {
-                    throw new \RuntimeException(__('Insufficient stock for :product.', ['product' => $lockedProduct->name]));
-                }
-
-                $unitPrice = (float) $lockedProduct->priceFor($user);
-                $subtotal = round($unitPrice * $quantity, 2);
-                $shippingFee = $this->shippingFee();
-                $couponPreview = ['valid' => false, 'coupon' => null, 'discount' => 0.0, 'free_shipping' => false, 'code' => ''];
-                if ($couponCode !== '') {
-                    $couponPreview = $couponService->preview($couponCode, $subtotal, $user);
-                    if (! $couponPreview['valid']) {
-                        throw new \RuntimeException($couponPreview['message'] ?? __('Coupon could not be applied.'));
-                    }
-                }
-                $couponDiscount = (float) ($couponPreview['discount'] ?? 0);
-                $couponShippingDiscount = ($couponPreview['free_shipping'] ?? false) ? $shippingFee : 0.0;
-                $discountAmount = round($couponDiscount + $couponShippingDiscount, 2);
-                $grandTotal = round(max(0, $subtotal + $shippingFee - $discountAmount), 2);
-
-                $contactMethod = in_array($user?->default_contact_method, ['phone', 'email', 'whatsapp'], true)
-                    ? $user->default_contact_method
-                    : 'phone';
-                $contactDestination = match ($contactMethod) {
-                    'email' => (string) ($user?->email ?? $address->phone),
-                    default => (string) ($address->phone ?: $user?->phone ?: $user?->email),
-                };
-                $baseNotes = trim((string) ($data['notes'] ?? $user?->default_delivery_note ?? ''));
-                $notes = trim(collect([
-                    $baseNotes !== '' ? $baseNotes : null,
-                    'Preferred contact: ' . ucfirst($contactMethod),
-                ])->filter()->implode(PHP_EOL));
-
-                $order = new Order();
-                $order->forceFill([
-                    'user_id' => $user->id,
-                    'order_number' => 'ORD-' . now()->format('YmdHis') . '-' . Str::upper(Str::random(6)),
-                    'subtotal_amount' => $subtotal,
-                    'shipping_fee' => $shippingFee,
-                    'discount_amount' => $discountAmount,
-                    'coupon_id' => ($couponPreview['coupon'] ?? null)?->exists ? $couponPreview['coupon']->id : null,
-                    'coupon_code' => ($couponPreview['code'] ?? '') !== '' ? (string) $couponPreview['code'] : null,
-                    'grand_total' => $grandTotal,
-                    'total_amount' => $grandTotal,
-                    'status' => 'pending',
-                    'payment_method' => 'cash_on_delivery',
-                    'payment_status' => Order::PAYMENT_PENDING,
-                    'delivery_address' => trim(collect([$address->address_line1, $address->address_line2])->filter()->implode(', ')),
-                    'delivery_city' => $address->city,
-                    'delivery_phone' => $contactDestination,
-                    'notes' => $notes !== '' ? $notes : null,
-                ]);
-                $order->save();
-
-                $order->statusHistory()->create([
-                    'from_status' => null,
-                    'to_status' => $order->status,
-                    'changed_by' => $user->id,
-                    'note' => 'Order created',
-                    'created_at' => now(),
-                ]);
-
-                OrderItem::query()->create([
-                    'order_id' => $order->id,
-                    'product_id' => $lockedProduct->id,
-                    'quantity' => $quantity,
-                    'unit_price' => $unitPrice,
-                    'subtotal' => $subtotal,
-                ]);
-
-                $this->recordDiscountRuleUsage($lockedProduct->appliedDiscountRuleIds($user));
-
-                if (($couponPreview['valid'] ?? false) && ($couponPreview['coupon'] ?? null)?->exists) {
-                    $couponService->recordUsage($couponPreview['coupon'], (int) $user->id, (int) $order->id, $discountAmount);
-                }
-
-                $stockBefore = (int) $lockedProduct->stock_quantity;
-                $stockAfter = $stockBefore - $quantity;
-                $lockedProduct->update(['stock_quantity' => $stockAfter]);
-
-                InventoryMovement::query()->create([
-                    'product_id' => $lockedProduct->id,
-                    'user_id' => $user->id,
-                    'type' => InventoryMovement::TYPE_OUT,
-                    'quantity' => $quantity,
-                    'stock_before' => $stockBefore,
-                    'stock_after' => $stockAfter,
-                    'reference' => $order->order_number,
-                    'note' => 'Order placed',
-                ]);
-
-                return $order;
-            });
+            $placedOrder = $this->checkoutService->placeBuyNowOrder(
+                $product,
+                $quantity,
+                $user,
+                $address,
+                $data['notes'] ?? null,
+                $couponCode
+            );
         } catch (\RuntimeException $exception) {
             return back()->with('error', $exception->getMessage())->withInput();
         }
@@ -384,142 +293,13 @@ class CheckoutController extends Controller
         $couponCode = app(CouponService::class)->normalizeCode((string) $request->session()->get(self::COUPON_SESSION_KEY, ''));
 
         try {
-            $placedOrder = DB::transaction(function () use ($cart, $data, $address, $user, $couponCode): Order {
-                $productIds = $cart->items
-                    ->pluck('product_id')
-                    ->filter()
-                    ->unique()
-                    ->values()
-                    ->all();
-
-                $products = Product::query()
-                    ->whereIn('id', $productIds)
-                    ->lockForUpdate()
-                    ->get()
-                    ->keyBy('id');
-
-                $subtotalAmount = 0;
-                $lineItems = [];
-                foreach ($cart->items as $item) {
-                    $product = $products->get($item->product_id);
-                    if (!$product) {
-                        continue;
-                    }
-
-                    if ($product->stock_quantity < $item->quantity) {
-                        throw new \RuntimeException(__('Insufficient stock for :product.', ['product' => $product->name]));
-                    }
-
-                    $unitPrice = $product->priceFor(auth()->user());
-                    $lineItems[] = [
-                        'product' => $product,
-                        'product_id' => $item->product_id,
-                        'quantity' => $item->quantity,
-                        'unit_price' => $unitPrice,
-                        'subtotal' => round($unitPrice * $item->quantity, 2),
-                    ];
-                    $subtotalAmount += $unitPrice * $item->quantity;
-                }
-
-                $subtotalAmount = round($subtotalAmount, 2);
-                $shippingFee = $this->shippingFee();
-                $couponPreview = ['valid' => false, 'coupon' => null, 'discount' => 0.0, 'free_shipping' => false, 'code' => ''];
-                if ($couponCode !== '') {
-                    $couponPreview = app(CouponService::class)->preview($couponCode, $subtotalAmount, $user);
-                    if (! $couponPreview['valid']) {
-                        throw new \RuntimeException($couponPreview['message'] ?? __('Coupon could not be applied.'));
-                    }
-                }
-                $couponDiscount = (float) ($couponPreview['discount'] ?? 0);
-                $couponShippingDiscount = ($couponPreview['free_shipping'] ?? false) ? $shippingFee : 0.0;
-                $discountAmount = round($couponDiscount + $couponShippingDiscount, 2);
-                $grandTotal = round(max(0, $subtotalAmount + $shippingFee - $discountAmount), 2);
-
-                $contactMethod = in_array($user?->default_contact_method, ['phone', 'email', 'whatsapp'], true)
-                    ? $user->default_contact_method
-                    : 'phone';
-                $contactDestination = match ($contactMethod) {
-                    'email' => (string) ($user?->email ?? $address->phone),
-                    default => (string) ($address->phone ?: $user?->phone ?: $user?->email),
-                };
-                $baseNotes = trim((string) ($data['notes'] ?? $user?->default_delivery_note ?? ''));
-                $notes = trim(collect([
-                    $baseNotes !== '' ? $baseNotes : null,
-                    'Preferred contact: ' . ucfirst($contactMethod),
-                ])->filter()->implode(PHP_EOL));
-
-                $order = new Order();
-                $order->forceFill([
-                    'user_id' => auth()->id(),
-                    'order_number' => 'ORD-' . now()->format('YmdHis') . '-' . Str::upper(Str::random(6)),
-                    'subtotal_amount' => $subtotalAmount,
-                    'shipping_fee' => $shippingFee,
-                    'discount_amount' => $discountAmount,
-                    'coupon_id' => ($couponPreview['coupon'] ?? null)?->exists ? $couponPreview['coupon']->id : null,
-                    'coupon_code' => ($couponPreview['code'] ?? '') !== '' ? (string) $couponPreview['code'] : null,
-                    'grand_total' => $grandTotal,
-                    'total_amount' => $grandTotal,
-                    'status' => 'pending',
-                    'payment_method' => 'cash_on_delivery',
-                    'payment_status' => Order::PAYMENT_PENDING,
-                    'delivery_address' => trim(collect([$address->address_line1, $address->address_line2])->filter()->implode(', ')),
-                    'delivery_city' => $address->city,
-                    'delivery_phone' => $contactDestination,
-                    'notes' => $notes !== '' ? $notes : null,
-                ]);
-                $order->save();
-
-                if (!$order->statusHistory()->exists()) {
-                    $order->statusHistory()->create([
-                        'from_status' => null,
-                        'to_status' => $order->status,
-                        'changed_by' => auth()->id(),
-                        'note' => 'Order created',
-                        'created_at' => now(),
-                    ]);
-                }
-
-                foreach ($lineItems as $line) {
-                    OrderItem::query()->create([
-                        'order_id' => $order->id,
-                        'product_id' => $line['product_id'],
-                        'quantity' => $line['quantity'],
-                        'unit_price' => $line['unit_price'],
-                        'subtotal' => $line['subtotal'],
-                    ]);
-
-                    $stockBefore = (int) $line['product']->stock_quantity;
-                    $stockAfter = $stockBefore - (int) $line['quantity'];
-                    $line['product']->update(['stock_quantity' => $stockAfter]);
-
-                    InventoryMovement::query()->create([
-                        'product_id' => $line['product_id'],
-                        'user_id' => auth()->id(),
-                        'type' => InventoryMovement::TYPE_OUT,
-                        'quantity' => (int) $line['quantity'],
-                        'stock_before' => $stockBefore,
-                        'stock_after' => $stockAfter,
-                        'reference' => $order->order_number,
-                        'note' => 'Order placed',
-                    ]);
-                }
-
-                if (($couponPreview['valid'] ?? false) && ($couponPreview['coupon'] ?? null)?->exists) {
-                    app(CouponService::class)->recordUsage($couponPreview['coupon'], (int) $user->id, (int) $order->id, $discountAmount);
-                }
-
-                $discountRuleIds = [];
-                foreach ($lineItems as $line) {
-                    $discountRuleIds = array_merge(
-                        $discountRuleIds,
-                        $line['product']->appliedDiscountRuleIds($user)
-                    );
-                }
-                $this->recordDiscountRuleUsage($discountRuleIds);
-
-                $cart->items()->delete();
-                return $order;
-            });
+            $placedOrder = $this->checkoutService->placeCartOrder(
+                $cart,
+                $user,
+                $address,
+                $data['notes'] ?? null,
+                $couponCode
+            );
         } catch (\RuntimeException $exception) {
             return back()->with('error', $exception->getMessage());
         }
@@ -643,22 +423,4 @@ class CheckoutController extends Controller
         return min(max(1, $quantity), $maxQuantity);
     }
 
-    /**
-     * @param  array<int>  $discountRuleIds
-     */
-    private function recordDiscountRuleUsage(array $discountRuleIds): void
-    {
-        $ids = collect($discountRuleIds)
-            ->map(fn ($id) => (int) $id)
-            ->filter(fn ($id) => $id > 0)
-            ->unique()
-            ->values()
-            ->all();
-
-        if ($ids === []) {
-            return;
-        }
-
-        Discount::query()->whereKey($ids)->increment('used_count');
-    }
 }

@@ -20,7 +20,7 @@
 @endphp
 
 <details {{ $attributes->merge(['class' => 'group relative inline-block text-left']) }}>
-    <summary class="inline-flex cursor-pointer list-none items-center justify-center gap-2 bg-[#070740] font-semibold text-white shadow-sm transition hover:bg-[#10105c] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#070740] focus-visible:ring-offset-2 [&::-webkit-details-marker]:hidden {{ $summaryClasses }}">
+    <summary class="inline-flex cursor-pointer list-none items-center justify-center gap-2 bg-primary font-semibold text-white shadow-sm transition hover:bg-[#10105c] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 [&::-webkit-details-marker]:hidden {{ $summaryClasses }}">
         <i class="fas fa-file-pdf"></i>
         <span>{{ __('Invoice') }}</span>
         <i class="fas fa-chevron-down text-[10px] transition group-open:rotate-180"></i>
@@ -30,7 +30,7 @@
             <a
                 href="{{ route($routeName, ['order' => $order, 'lang' => $localeCode]) }}"
                 title="{{ __('Invoice PDF') }} - {{ strtoupper($localeLabel) }}"
-                class="border-r border-slate-200 px-3 py-2 text-xs font-bold uppercase text-slate-700 transition last:border-r-0 hover:bg-[#070740] hover:text-white dark:border-slate-700 dark:text-slate-200"
+                class="border-r border-slate-200 px-3 py-2 text-xs font-bold uppercase text-slate-700 transition last:border-r-0 hover:bg-primary hover:text-white dark:border-slate-700 dark:text-slate-200"
             >
                 {{ $localeLabel }}
             </a>

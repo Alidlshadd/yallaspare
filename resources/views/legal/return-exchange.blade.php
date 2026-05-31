@@ -19,7 +19,7 @@
 
         <section class="rounded-2xl border border-slate-200/70 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900/60">
             <h2 class="flex items-center gap-3 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-[#070740] dark:bg-slate-800">
+                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-primary dark:bg-slate-800">
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8" />
                         <path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
@@ -39,7 +39,7 @@
 
         <section class="rounded-2xl border border-slate-200/70 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900/60">
             <h2 class="flex items-center gap-3 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-[#070740] dark:bg-slate-800">
+                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-primary dark:bg-slate-800">
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <path d="M6 4h12v16H6zM9 8h6M9 12h6M9 16h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
@@ -60,7 +60,7 @@
 
         <section class="rounded-2xl border border-slate-200/70 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900/60">
             <h2 class="flex items-center gap-3 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-[#070740] dark:bg-slate-800">
+                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-primary dark:bg-slate-800">
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <path d="M12 3l9 16H3L12 3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
                         <path d="M12 9v4M12 17h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
@@ -84,7 +84,7 @@
 
         <section class="rounded-2xl border border-slate-200/70 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900/60">
             <h2 class="flex items-center gap-3 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-[#070740] dark:bg-slate-800">
+                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-primary dark:bg-slate-800">
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <path d="M3 7h12v9H3zM15 10h3l3 3v3h-6z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
                         <circle cx="7" cy="18" r="1.5" stroke="currentColor" stroke-width="1.8" />
@@ -105,7 +105,7 @@
 
         <section class="rounded-2xl border border-slate-200/70 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900/60">
             <h2 class="flex items-center gap-3 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-[#070740] dark:bg-slate-800">
+                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-primary dark:bg-slate-800">
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <path d="M4 12a8 8 0 1 0 2.3-5.7M4 6v4h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
@@ -124,7 +124,7 @@
 
         <section class="rounded-2xl border border-slate-200/70 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900/60">
             <h2 class="flex items-center gap-3 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-[#070740] dark:bg-slate-800">
+                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-primary dark:bg-slate-800">
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <path d="M7 7h10M14 4l3 3-3 3M17 17H7M10 14l-3 3 3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
                     </svg>
@@ -143,7 +143,7 @@
 
         <section class="rounded-2xl border border-slate-200/70 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900/60">
             <h2 class="flex items-center gap-3 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-[#070740] dark:bg-slate-800">
+                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-primary dark:bg-slate-800">
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <path d="M6 6l12 12M18 6l-12 12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
                         <circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.8" />
@@ -163,7 +163,7 @@
 
         <section class="rounded-2xl border border-slate-200/70 bg-slate-50 p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
             <h2 class="flex items-center gap-3 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-white text-[#070740] dark:bg-slate-800">
+                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-white text-primary dark:bg-slate-800">
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                         <path d="M4 7.5A2.5 2.5 0 0 1 6.5 5h11A2.5 2.5 0 0 1 20 7.5v9a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 16.5v-9Z" stroke="currentColor" stroke-width="1.8" />
                         <path d="m5 7 7 5 7-5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
@@ -176,7 +176,7 @@
             </p>
             <a
                 href="{{ route('legal.contact', ['topic' => 'general']) }}"
-                class="mt-5 inline-flex items-center rounded-xl bg-[#070740] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0d1156] focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+                class="mt-5 inline-flex items-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0d1156] focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
             >
                 {{ __('Contact Support') }}
             </a>

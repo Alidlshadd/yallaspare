@@ -26,7 +26,7 @@
                         @if ($profilePhotoUrl)
                             <img
                                 src="{{ $profilePhotoUrl }}"
-                                alt="{{ $user->name }} profile photo"
+                                alt="{{ __(':name profile photo', ['name' => $user->name]) }}"
                                 class="h-20 w-20 rounded-full border border-white/20 object-cover"
                             >
                         @else
@@ -79,7 +79,7 @@
                     <p class="px-3 pb-3 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{{ __('Account Sections') }}</p>
                     <nav class="space-y-1">
                         <a href="#profile-details" class="flex items-start gap-3 rounded-2xl bg-slate-100 px-3 py-3 text-slate-950 dark:bg-slate-800 dark:text-white">
-                            <span class="mt-0.5 inline-flex h-2.5 w-2.5 shrink-0 rounded-full bg-[#070740] dark:bg-white"></span>
+                            <span class="mt-0.5 inline-flex h-2.5 w-2.5 shrink-0 rounded-full bg-primary dark:bg-white"></span>
                             <span class="min-w-0">
                                 <span class="block text-sm font-medium">{{ __('Profile Information') }}</span>
                                 <span class="mt-0.5 block text-xs text-slate-600 dark:text-slate-300">{{ __('Name') }} / {{ __('Email') }}</span>
@@ -111,7 +111,7 @@
                                 @if ($profilePhotoUrl)
                                     <img src="{{ $profilePhotoUrl }}" alt="{{ __('Current profile photo') }}" class="h-full w-full object-cover">
                                 @else
-                                    <span class="flex h-full w-full items-center justify-center bg-[#070740] text-2xl font-semibold text-white">{{ $avatarInitial }}</span>
+                                    <span class="flex h-full w-full items-center justify-center bg-primary text-2xl font-semibold text-white">{{ $avatarInitial }}</span>
                                 @endif
                                 <span class="absolute inset-x-0 bottom-0 bg-slate-950/70 px-2 py-1 text-center text-[11px] font-semibold text-white opacity-0 transition group-hover:opacity-100">{{ __('Change') }}</span>
                                 <input id="profile_photo" name="profile_photo" type="file" accept="image/*" class="sr-only">
@@ -149,7 +149,7 @@
                         </div>
 
                         <div class="flex items-center gap-4">
-                            <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#070740] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#10106a] focus:outline-none focus:ring-4 focus:ring-[#070740]/20">
+                            <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#10106a] focus:outline-none focus:ring-4 focus:ring-primary/20">
                                 <i class="fas fa-floppy-disk"></i>
                                 {{ __('Save') }}
                             </button>

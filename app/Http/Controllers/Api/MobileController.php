@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\View\Composers\HeaderComposer;
 use App\Models\BackInStockSubscription;
 use App\Models\Cart;
 use App\Models\CartItem;
@@ -34,6 +35,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -409,7 +411,7 @@ class MobileController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:120'],
             'email' => ['required', 'email', 'max:190'],
-            'phone' => ['nullable', 'string', 'max:40'],
+            'phone' => ['nullable', 'string', 'max:40', new PhoneNumber()],
             'topic' => ['required', 'string', 'max:40'],
             'subject' => ['required', 'string', 'max:160'],
             'message' => ['required', 'string', 'max:3000'],
@@ -721,7 +723,7 @@ class MobileController extends Controller
         $manufacturer = $this->vinManufacturer($vin);
         $year = $this->vinYear($vin);
         $model = $request->input('model') ?: $this->vinModelGuess($manufacturer);
-        $engine = $request->input('engine') ?: 'Engine match required';
+        $engine = $request->input('engine') ?: __('Engine match required');
 
         $query = Product::query()
             ->with(['category', 'images', 'reviews', 'vehicleFitments.brand', 'vehicleFitments.model'])
@@ -929,6 +931,7 @@ class MobileController extends Controller
     {
         $cart = $this->cartFor($request->user());
         $cart->items()->where('product_id', $productId)->delete();
+        HeaderComposer::forgetCartCacheForUser((int) $request->user()->id);
 
         return response()->json(['data' => $this->cartPayload($cart->fresh('items.product'), $request->user())]);
     }
@@ -961,6 +964,7 @@ class MobileController extends Controller
             ->where('user_id', $request->user()->id)
             ->where('product_id', $product->id)
             ->delete();
+        HeaderComposer::forgetWishlistCacheForUser((int) $request->user()->id);
 
         return response()->json(['message' => __('Removed.')]);
     }
@@ -977,17 +981,10 @@ class MobileController extends Controller
 
         $address = $this->resolveOrderAddress($request->user(), $data['address_id'] ?? null);
         abort_if(! $address, 422, __('errors.delivery_address_required'));
-        $normalizedDeliveryPhone = User::normalizePhone((string) $address->phone);
-        abort_if(
-            $normalizedDeliveryPhone === null
-                || strlen($normalizedDeliveryPhone) < PhoneNumber::MIN_DIGITS
-                || strlen($normalizedDeliveryPhone) > PhoneNumber::MAX_DIGITS,
-            422,
-            __('validation.phone', ['attribute' => 'delivery phone']),
-        );
+        $this->abortIfAddressPhoneInvalid($address);
         foreach ($cart->items as $item) {
             abort_if(! $item->product || ! $item->product->is_active, 422, __('errors.cart_contains_unavailable'));
-            abort_if((int) $item->product->stock_quantity < (int) $item->quantity, 422, $item->product->localizedName('en') . ' does not have enough stock.');
+            abort_if((int) $item->product->stock_quantity < (int) $item->quantity, 422, __('Insufficient stock for :product.', ['product' => $item->product->localizedName()]));
         }
 
         $subtotal = $cart->items->sum(fn (CartItem $item) => $item->quantity * $item->product->priceFor($request->user()));
@@ -1026,6 +1023,7 @@ class MobileController extends Controller
         }
 
         $cart->items()->delete();
+        HeaderComposer::forgetCartCacheForUser((int) $request->user()->id);
 
         return response()->json([
             'cart' => $this->cartPayload($cart->fresh('items.product'), $request->user()),
@@ -1047,14 +1045,7 @@ class MobileController extends Controller
 
         $address = $this->resolveOrderAddress($user, $data['address_id'] ?? null);
         abort_if(! $address, 422, __('errors.delivery_address_required'));
-        $normalizedDeliveryPhone = User::normalizePhone((string) $address->phone);
-        abort_if(
-            $normalizedDeliveryPhone === null
-                || strlen($normalizedDeliveryPhone) < PhoneNumber::MIN_DIGITS
-                || strlen($normalizedDeliveryPhone) > PhoneNumber::MAX_DIGITS,
-            422,
-            __('validation.phone', ['attribute' => 'delivery phone']),
-        );
+        $this->abortIfAddressPhoneInvalid($address);
 
         $lineItems = [];
         $responseItems = [];
@@ -1107,14 +1098,7 @@ class MobileController extends Controller
 
         $address = $this->resolveOrderAddress($user, $data['address_id'] ?? null);
         abort_if(! $address, 422, __('errors.delivery_address_required'));
-        $normalizedDeliveryPhone = User::normalizePhone((string) $address->phone);
-        abort_if(
-            $normalizedDeliveryPhone === null
-                || strlen($normalizedDeliveryPhone) < PhoneNumber::MIN_DIGITS
-                || strlen($normalizedDeliveryPhone) > PhoneNumber::MAX_DIGITS,
-            422,
-            __('validation.phone', ['attribute' => 'delivery phone']),
-        );
+        $this->abortIfAddressPhoneInvalid($address);
 
         $unitPrice = (float) $product->priceFor($user);
         $shippingFee = (float) Setting::getValue('shipping_fee', 5000);
@@ -1163,14 +1147,7 @@ class MobileController extends Controller
 
         $address = $this->resolveOrderAddress($user, $data['address_id'] ?? null);
         abort_if(! $address, 422, __('errors.delivery_address_required'));
-        $normalizedDeliveryPhone = User::normalizePhone((string) $address->phone);
-        abort_if(
-            $normalizedDeliveryPhone === null
-                || strlen($normalizedDeliveryPhone) < PhoneNumber::MIN_DIGITS
-                || strlen($normalizedDeliveryPhone) > PhoneNumber::MAX_DIGITS,
-            422,
-            __('validation.phone', ['attribute' => 'delivery phone']),
-        );
+        $this->abortIfAddressPhoneInvalid($address);
 
         $unitPrice = (float) $product->priceFor($user);
         $shippingFee = (float) Setting::getValue('shipping_fee', 5000);
@@ -1372,7 +1349,7 @@ class MobileController extends Controller
         return response()->json([
             'data' => $product->reviews()->latest()->limit(20)->get()->map(fn (ProductReview $review) => [
                 'id' => $review->id,
-                'author' => $review->user?->name ?? 'Customer',
+                'author' => $review->user?->name ?? __('Customer'),
                 'rating' => (int) $review->rating,
                 'comment' => (string) ($review->comment ?? ''),
                 'created_at' => optional($review->created_at)->toISOString(),
@@ -1804,7 +1781,7 @@ class MobileController extends Controller
         }
 
         if ((int) $authUser->id === (int) $user->id && $user->isSuperAdmin() && $role !== User::ROLE_SUPER_ADMIN) {
-            abort(422, 'You cannot demote your own super admin account.');
+            abort(422, __('You cannot demote your own super admin account.'));
         }
 
         if (
@@ -1812,7 +1789,7 @@ class MobileController extends Controller
             && $role !== User::ROLE_SUPER_ADMIN
             && User::query()->where('role', User::ROLE_SUPER_ADMIN)->count() <= 1
         ) {
-            abort(422, 'At least one super admin account must remain.');
+            abort(422, __('At least one super admin account must remain.'));
         }
 
         $user->forceFill(['role' => $role, 'permissions' => User::defaultPermissionsForRole($role)])->save();
@@ -1910,7 +1887,7 @@ class MobileController extends Controller
             'slug' => $product->slug,
             'name' => $product->localizedName(),
             'description' => (string) $product->localizedDescription(),
-            'category' => $product->category?->localizedName() ?? 'Uncategorized',
+            'category' => $product->category?->localizedName() ?? __('Uncategorized'),
             'brand' => (string) $product->brand,
             'sku' => (string) $product->sku,
             'oem_number' => (string) $product->oem_number,
@@ -1926,7 +1903,7 @@ class MobileController extends Controller
             'images' => $images,
             'rating' => round((float) $product->reviews->avg('rating'), 1),
             'review_count' => $product->reviews->count(),
-            'warranty' => (string) ($product->warranty ?? 'Warranty on request'),
+            'warranty' => (string) ($product->warranty ?? __('Warranty on request')),
             'is_active' => (bool) $product->is_active,
         ];
     }
@@ -2016,6 +1993,20 @@ class MobileController extends Controller
         return $user->addresses()->whereKey($addressId)->first()
             ?: $user->addresses()->where('is_default', true)->first()
             ?: $user->addresses()->first();
+    }
+
+    private function abortIfAddressPhoneInvalid(UserAddress $address): void
+    {
+        $validator = ValidatorFacade::make(
+            ['phone' => $address->phone],
+            ['phone' => ['required', new PhoneNumber()]],
+        );
+
+        abort_if(
+            $validator->fails(),
+            422,
+            __('validation.phone', ['attribute' => 'delivery phone']),
+        );
     }
 
     private function addressPayload(UserAddress $address): array

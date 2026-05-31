@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Category;
+use App\Models\Coupon;
 use App\Models\InventoryMovement;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -75,6 +76,124 @@ class CheckoutReviewTest extends TestCase
             'product_id' => $product->id,
         ]);
         $this->assertSame(3, $product->fresh()->stock_quantity);
+    }
+
+    public function test_checkout_store_applies_coupon_and_records_usage(): void
+    {
+        [$user, $address, $product] = $this->makeCheckoutContext();
+        $coupon = Coupon::query()->create([
+            'code' => 'SAVE10',
+            'name' => 'Save 10',
+            'type' => 'percent',
+            'value' => 10,
+            'is_active' => true,
+        ]);
+
+        $response = $this->actingAs($user)
+            ->withSession(['checkout.coupon_code' => 'SAVE10'])
+            ->post(route('checkout.store'), [
+                'address_id' => $address->id,
+            ]);
+
+        $order = Order::query()->first();
+
+        $response->assertRedirect(route('checkout.success', $order));
+        $this->assertSame($coupon->id, $order->coupon_id);
+        $this->assertSame('SAVE10', $order->coupon_code);
+        $this->assertSame('5000.00', (string) $order->discount_amount);
+        $this->assertDatabaseHas('coupon_usages', [
+            'coupon_id' => $coupon->id,
+            'user_id' => $user->id,
+            'order_id' => $order->id,
+        ]);
+        $this->assertSame(1, (int) $coupon->fresh()->used_count);
+        $this->assertSame(3, $product->fresh()->stock_quantity);
+    }
+
+    public function test_checkout_review_rejects_invalid_coupon(): void
+    {
+        [$user, $address] = $this->makeCheckoutContext();
+
+        $this->actingAs($user)
+            ->post(route('checkout.review'), [
+                'address_id' => $address->id,
+                'coupon_code' => 'NOPE',
+                'coupon_action' => 'apply',
+            ])
+            ->assertRedirect()
+            ->assertSessionHasErrors('coupon_code')
+            ->assertSessionMissing('checkout.coupon_code');
+        $this->assertSame(0, Order::query()->count());
+    }
+
+    public function test_checkout_store_fails_when_cart_product_is_out_of_stock(): void
+    {
+        [$user, $address, $product] = $this->makeCheckoutContext();
+        $product->update(['stock_quantity' => 1]);
+
+        $this->actingAs($user)
+            ->post(route('checkout.store'), [
+                'address_id' => $address->id,
+            ])
+            ->assertRedirect()
+            ->assertSessionHas('error');
+
+        $this->assertSame(0, Order::query()->count());
+        $this->assertDatabaseHas('cart_items', [
+            'product_id' => $product->id,
+            'quantity' => 2,
+        ]);
+        $this->assertSame(1, $product->fresh()->stock_quantity);
+    }
+
+    public function test_buy_now_checkout_creates_order_without_clearing_normal_cart(): void
+    {
+        [$user, $address, $cartProduct] = $this->makeCheckoutContext();
+        $buyNowProduct = Product::factory()->create([
+            'category_id' => $cartProduct->category_id,
+            'price' => 30000,
+            'stock_quantity' => 5,
+            'is_active' => true,
+        ]);
+
+        $response = $this->actingAs($user)
+            ->post(route('checkout.buy-now.place', $buyNowProduct), [
+                'quantity' => 2,
+                'address_id' => $address->id,
+                'notes' => 'Buy now note',
+            ]);
+
+        $order = Order::query()->first();
+
+        $response->assertRedirect(route('checkout.success', $order));
+        $this->assertSame($user->id, $order->user_id);
+        $this->assertSame(Order::PAYMENT_PENDING, $order->payment_status);
+        $this->assertStringContainsString('Buy now note', (string) $order->notes);
+        $this->assertDatabaseHas('order_items', [
+            'order_id' => $order->id,
+            'product_id' => $buyNowProduct->id,
+            'quantity' => 2,
+        ]);
+        $this->assertDatabaseHas('cart_items', [
+            'product_id' => $cartProduct->id,
+            'quantity' => 2,
+        ]);
+        $this->assertSame(3, $buyNowProduct->fresh()->stock_quantity);
+        $this->assertSame(5, $cartProduct->fresh()->stock_quantity);
+    }
+
+    public function test_checkout_store_validation_errors_still_show(): void
+    {
+        [$user] = $this->makeCheckoutContext();
+
+        $this->actingAs($user)
+            ->post(route('checkout.store'), [
+                'address_id' => 'not-an-integer',
+            ])
+            ->assertRedirect()
+            ->assertSessionHasErrors('address_id');
+
+        $this->assertSame(0, Order::query()->count());
     }
 
     public function test_cart_add_limits_quantity_to_available_stock(): void

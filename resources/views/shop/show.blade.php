@@ -144,7 +144,7 @@
                                 type="button"
                                 data-gallery-thumb
                                 data-image-src="{{ $thumb }}"
-                                class="inline-flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl border {{ $index === 0 ? 'border-[#070740] bg-slate-100 dark:bg-slate-800' : 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900' }} p-2 transition hover:border-[#070740]/50 hover:bg-slate-100 dark:hover:bg-slate-800"
+                                class="inline-flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl border {{ $index === 0 ? 'border-primary bg-slate-100 dark:bg-slate-800' : 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900' }} p-2 transition hover:border-primary/50 hover:bg-slate-100 dark:hover:bg-slate-800"
                                 aria-label="{{ __('Product image :number', ['number' => $index + 1]) }}"
                             >
                                 <img src="{{ $thumb }}" alt="{{ __(':name thumbnail :number', ['name' => $name, 'number' => $index + 1]) }}" class="h-full w-full object-contain">
@@ -207,7 +207,7 @@
                             <div>
                                 <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ $hasDiscount ? __('Discounted Price') : __('Price') }}</p>
                                 <div class="mt-1 flex items-end gap-2">
-                                    <p class="text-4xl font-bold tracking-[-0.03em] text-[#070740] dark:text-white">{{ number_format($currentPrice, 2) }}</p>
+                                    <p class="text-4xl font-bold tracking-[-0.03em] text-primary dark:text-white">{{ number_format($currentPrice, 2) }}</p>
                                     <span class="pb-1 text-sm font-semibold uppercase tracking-[0.1em] text-slate-600 dark:text-slate-300">{{ $currencySymbol }}</span>
                                 </div>
                             </div>
@@ -237,7 +237,7 @@
                                     <form action="{{ route('cart.add', $product) }}" method="POST" id="purchase-form" class="space-y-2.5">
                                         @csrf
                                         <input type="hidden" name="quantity" id="purchase-qty-hidden" value="1">
-                                        <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl bg-[#070740] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#0a0d55]">
+                                        <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#0a0d55]">
                                             {{ __('Add to Cart') }}
                                         </button>
                                         <button
@@ -262,7 +262,7 @@
                                     @else
                                         <form action="{{ route('user.wishlist.store', $product) }}" method="POST">
                                             @csrf
-                                            <button type="submit" class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-[#070740]/40 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800">
+                                            <button type="submit" class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-primary/40 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800">
                                                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="m12 20.25-1.45-1.32C5.4 14.36 2.25 11.5 2.25 7.97c0-2.48 1.95-4.47 4.43-4.47 1.4 0 2.75.65 3.57 1.66.82-1.01 2.17-1.66 3.57-1.66 2.48 0 4.43 1.99 4.43 4.47 0 3.53-3.15 6.39-8.3 10.96L12 20.25Z" />
                                                 </svg>
@@ -285,7 +285,7 @@
                                     @else
                                         <form action="{{ route('shop.back-in-stock.store', $product) }}" method="POST">
                                             @csrf
-                                            <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-[#070740]/40 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800">
+                                            <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-primary/40 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800">
                                                 {{ __('Notify me when available') }}
                                             </button>
                                         </form>
@@ -295,7 +295,7 @@
                                 @if ($inStock)
                                     <form action="{{ route('checkout.options', $product) }}" method="GET" class="space-y-2.5">
                                         <input type="hidden" name="quantity" id="purchase-qty-hidden-guest" value="1">
-                                        <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl bg-[#070740] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#0a0d55]">
+                                        <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#0a0d55]">
                                             {{ __('Login or Register to Order') }}
                                         </button>
                                     </form>
@@ -304,7 +304,7 @@
                                         {{ __('Currently unavailable') }}
                                     </button>
                                 @endif
-                                <a href="{{ route('login') }}" class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-[#070740]/40 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800">
+                                <a href="{{ route('login') }}" class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-primary/40 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800">
                                     <span>{{ $inStock ? __('Login for wishlist') : __('Login for stock notification') }}</span>
                                 </a>
                             @endauth
@@ -399,7 +399,7 @@
                     <article class="rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-4 dark:border-slate-800 dark:bg-slate-950">
                         <div class="flex flex-wrap items-start justify-between gap-3">
                             <div class="flex min-w-0 items-start gap-3">
-                                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#070740] text-xs font-bold uppercase text-white shadow-sm">{{ \Illuminate\Support\Str::substr($reviewerFirstName, 0, 1) }}</span>
+                                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold uppercase text-white shadow-sm">{{ \Illuminate\Support\Str::substr($reviewerFirstName, 0, 1) }}</span>
                                 <div class="min-w-0">
                                     <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ $review->title ?: __('Customer review') }}</p>
                                 <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
@@ -437,7 +437,7 @@
                         <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Recently viewed') }}</p>
                         <h2 class="mt-1 text-xl font-semibold tracking-[-0.02em] text-slate-950 dark:text-white">{{ __('Your product history') }}</h2>
                     </div>
-                    <a href="{{ route('shop.index') }}" class="text-sm font-semibold text-[#070740] transition hover:text-[#10105c] dark:text-slate-200 dark:hover:text-white">
+                    <a href="{{ route('shop.index') }}" class="text-sm font-semibold text-primary transition hover:text-[#10105c] dark:text-slate-200 dark:hover:text-white">
                         {{ __('Shop') }}
                     </a>
                 </div>
@@ -464,12 +464,12 @@
                     }
 
                     thumbs.forEach((node) => {
-                        node.classList.remove('border-[#070740]', 'bg-slate-100', 'dark:bg-slate-800');
+                        node.classList.remove('border-primary', 'bg-slate-100', 'dark:bg-slate-800');
                         node.classList.add('border-slate-200', 'bg-white', 'dark:border-slate-800', 'dark:bg-slate-900');
                     });
 
                     thumb.classList.remove('border-slate-200', 'bg-white', 'dark:border-slate-800', 'dark:bg-slate-900');
-                    thumb.classList.add('border-[#070740]', 'bg-slate-100', 'dark:bg-slate-800');
+                    thumb.classList.add('border-primary', 'bg-slate-100', 'dark:bg-slate-800');
                 });
             });
 

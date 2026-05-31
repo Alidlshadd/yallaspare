@@ -39,7 +39,7 @@ class AuthenticatedSessionController extends Controller
 
             $signedInAt = CarbonImmutable::now($timezone)->format('Y-m-d H:i');
 
-            $request->session()->flash('success', 'Login alert: sign-in detected at ' . $signedInAt . ' (' . $timezone . ').');
+            $request->session()->flash('success', __('Login alert: sign-in detected at :time (:timezone).', ['time' => $signedInAt, 'timezone' => $timezone]));
         }
 
         if ($user && $user->isAdminPanelUser()) {
@@ -50,7 +50,7 @@ class AuthenticatedSessionController extends Controller
 
                 if (! $mailAvailable) {
                     return $redirect->withErrors([
-                        'code' => 'We could not send your admin verification code. Please contact support or try again shortly.',
+                        'code' => __('We could not send your admin verification code. Please contact support or try again shortly.'),
                     ]);
                 }
 

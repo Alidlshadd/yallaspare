@@ -21,7 +21,7 @@
                 href="{{ route($item['route']) }}"
                 class="flex items-start gap-3 rounded-2xl px-3 py-3 transition duration-200 {{ $isActive ? 'bg-slate-100 text-slate-950 dark:bg-slate-800 dark:text-white' : 'text-slate-700 hover:bg-slate-50 hover:text-slate-950 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white' }}"
             >
-                <span class="mt-0.5 inline-flex h-2.5 w-2.5 shrink-0 rounded-full {{ $isActive ? 'bg-[#070740] dark:bg-white' : 'bg-slate-300 dark:bg-slate-600' }}"></span>
+                <span class="mt-0.5 inline-flex h-2.5 w-2.5 shrink-0 rounded-full {{ $isActive ? 'bg-primary dark:bg-white' : 'bg-slate-300 dark:bg-slate-600' }}"></span>
                 <span class="min-w-0">
                     <span class="block text-sm font-medium">{{ $item['label'] }}</span>
                     <span class="mt-0.5 block text-xs {{ $isActive ? 'text-slate-600 dark:text-slate-300' : 'text-slate-500 dark:text-slate-400' }}">{{ $item['description'] }}</span>

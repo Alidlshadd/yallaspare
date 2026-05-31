@@ -3,7 +3,7 @@
 @section('content')
     <div class="space-y-4 sm:space-y-5">
         @guest
-            <section class="overflow-hidden rounded-2xl border border-[#070740]/10 bg-white shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:rounded-3xl">
+            <section class="overflow-hidden rounded-2xl border border-primary/10 bg-white shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:rounded-3xl">
                 <div class="grid gap-4 p-4 sm:gap-5 sm:p-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
                     <div>
                         <p class="text-xs font-semibold uppercase tracking-[0.16em] text-orange-600 dark:text-orange-300">{{ __('Account checkout') }}</p>
@@ -16,7 +16,7 @@
                         <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-slate-800 sm:rounded-2xl sm:px-4 sm:py-2.5">
                             {{ __('Login') }}
                         </a>
-                        <a href="{{ route('register') }}" class="inline-flex items-center justify-center rounded-xl bg-[#070740] px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#0a0a55] sm:rounded-2xl sm:px-4 sm:py-2.5">
+                        <a href="{{ route('register') }}" class="inline-flex items-center justify-center rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#0a0a55] sm:rounded-2xl sm:px-4 sm:py-2.5">
                             {{ __('Create Account') }}
                         </a>
                     </div>
@@ -103,7 +103,7 @@
                         <div class="space-y-3">
                             <div>
                                 <label for="brand" class="mb-1.5 block text-xs font-semibold text-slate-600 dark:text-slate-300">{{ __('Brand') }}</label>
-                                <select id="brand" name="brand" data-vehicle-brand class="block w-full rounded-xl border border-slate-200/80 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-[#070740]/30 focus:bg-white focus:ring-4 focus:ring-[#070740]/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:bg-slate-900">
+                                <select id="brand" name="brand" data-vehicle-brand class="block w-full rounded-xl border border-slate-200/80 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/30 focus:bg-white focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:bg-slate-900">
                                     <option value="">{{ __('All brands') }}</option>
                                     @foreach ($brandOptions as $option)
                                         <option value="{{ $option }}" @selected(($brand ?? '') === (string) $option)>{{ $option }}</option>
@@ -113,7 +113,7 @@
 
                             <div>
                                 <label for="model" class="mb-1.5 block text-xs font-semibold text-slate-600 dark:text-slate-300">{{ __('Model') }}</label>
-                                <select id="model" name="model" data-vehicle-model class="block w-full rounded-xl border border-slate-200/80 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-[#070740]/30 focus:bg-white focus:ring-4 focus:ring-[#070740]/10 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:bg-slate-900">
+                                <select id="model" name="model" data-vehicle-model class="block w-full rounded-xl border border-slate-200/80 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/30 focus:bg-white focus:ring-4 focus:ring-primary/10 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:bg-slate-900">
                                     <option value="">{{ __('All models') }}</option>
                                     @foreach ($modelOptions as $option)
                                         <option value="{{ $option }}" @selected(($model ?? '') === (string) $option)>{{ $option }}</option>
@@ -123,7 +123,7 @@
 
                             <div>
                                 <label for="vehicle" class="mb-1.5 block text-xs font-semibold text-slate-600 dark:text-slate-300">{{ __('Engine / Year') }}</label>
-                                <select id="vehicle" name="vehicle" class="block w-full rounded-xl border border-slate-200/80 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-[#070740]/30 focus:bg-white focus:ring-4 focus:ring-[#070740]/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:bg-slate-900">
+                                <select id="vehicle" name="vehicle" class="block w-full rounded-xl border border-slate-200/80 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/30 focus:bg-white focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:bg-slate-900">
                                     <option value="">{{ __('Any engine / year') }}</option>
                                     @foreach ($engineOptions as $option)
                                         <option value="{{ $option }}" @selected(($vehicle ?? '') === (string) $option)>{{ $option }}</option>
@@ -142,7 +142,7 @@
                         <select
                             id="sort"
                             name="sort"
-                            class="block w-full rounded-xl border border-slate-200/80 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-[#070740]/30 focus:bg-white focus:ring-4 focus:ring-[#070740]/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:bg-slate-900"
+                            class="block w-full rounded-xl border border-slate-200/80 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/30 focus:bg-white focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:bg-slate-900"
                         >
                             @foreach ($sortLabels as $value => $label)
                                 <option value="{{ $value }}" @selected($sort === $value)>{{ $label }}</option>
@@ -155,7 +155,7 @@
                     <div class="grid grid-cols-2 gap-2 border-t border-slate-200/80 bg-white p-3.5 dark:border-slate-800 dark:bg-slate-900 sm:p-4">
                         <button
                             type="submit"
-                            class="inline-flex items-center justify-center rounded-xl bg-[#070740] px-3 py-2.5 text-sm font-semibold text-white transition duration-200 hover:bg-[#0a0a55] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#070740]/20 sm:px-4 sm:py-3"
+                            class="inline-flex items-center justify-center rounded-xl bg-primary px-3 py-2.5 text-sm font-semibold text-white transition duration-200 hover:bg-[#0a0a55] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 sm:px-4 sm:py-3"
                         >
                             {{ __('Apply filters') }}
                         </button>

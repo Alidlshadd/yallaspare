@@ -2259,5 +2259,17 @@
     "Order: :ref": "داواکاری: :ref",
     "Total: :total": "کۆی گشتی: :total",
     "From: :from": "لە: :from",
-    "To: :to": "بۆ: :to"
+    "To: :to": "بۆ: :to",
+    "Login alert: sign-in detected at :time (:timezone).": "ئاگاداری چوونەژوورەوە: چوونەژوورەوەیەک لە :time (:timezone) ئاشکراکرا.",
+    "We could not send your admin verification code. Please contact support or try again shortly.": "نەمانتوانی کۆدی پشتڕاستکردنەوەی بەڕێوەبەرت بنێرین. تکایە پەیوەندی بە پشتیوانییەوە بکە یان دواتر هەوڵبدەرەوە.",
+    ":name profile photo": "وێنەی پرۆفایلی :name",
+    "Yalla Spare auto parts catalog, support, and legal information.": "کاتالۆگی پارچەی یەدەکی یەڵا سپێر، پشتیوانی و زانیاری یاسایی.",
+    "Express checkout is enabled. Your default address can be used automatically when available.": "پشکنینی خێرا چالاککراوە. ناونیشانی بنەڕەتت دەکرێ بە شێوەی خۆکار بەکاربێت کاتێک بەردەستە.",
+    "Standard checkout is active. You can still review and edit details before ordering.": "پشکنینی ئاسایی چالاکە. هێشتا دەتوانیت وردەکارییەکان پێش داواکاری پێداچوونەوە و دەستکاری بکەیت.",
+    "Review Order Faster": "پێداچوونەوەی داواکاری بە خێراتر",
+    "Review Order": "پێداچوونەوەی داواکاری",
+    "Preferred contact: :method": "ڕێگای پەیوەندی پەسەند: :method",
+    "Uncategorized": "بێ پۆل",
+    "Warranty on request": "گەرەنتی لە کاتی داواکاریدا",
+    "Engine match required": "پێویستە جیهازی وزە بگونجێ"
 }

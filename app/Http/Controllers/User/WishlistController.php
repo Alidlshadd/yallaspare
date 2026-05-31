@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\View\Composers\HeaderComposer;
 use App\Models\Product;
 use App\Models\Wishlist;
 use Illuminate\Http\RedirectResponse;
@@ -55,5 +56,6 @@ class WishlistController extends Controller
             ->count();
 
         $request->session()->put('wishlist_count', $count);
+        HeaderComposer::forgetWishlistCacheForUser((int) $request->user()->id);
     }
 }

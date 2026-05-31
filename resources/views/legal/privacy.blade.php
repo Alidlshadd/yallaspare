@@ -101,7 +101,7 @@
             </div>
             <a
                 href="{{ route('legal.contact') }}"
-                class="mt-5 inline-flex items-center rounded-xl bg-[#070740] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0d1156] focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
+                class="mt-5 inline-flex items-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0d1156] focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-500 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-slate-500 dark:focus-visible:ring-offset-slate-950"
             >
                 {{ __('Contact Support') }}
             </a>

@@ -9,7 +9,7 @@
 @section('actions')
     <a
         href="{{ route('user.shop.home') }}"
-        class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#070740] focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+        class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
     >
         {{ __('Home') }}
         <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -31,11 +31,11 @@
                         @if (!empty($user->profile_photo_path))
                             <img
                                 src="{{ asset('storage/' . ltrim((string) $user->profile_photo_path, '/')) }}"
-                                alt="{{ $user->name }} profile photo"
+                                alt="{{ __(':name profile photo', ['name' => $user->name]) }}"
                                 class="h-16 w-16 rounded-full object-cover border border-slate-200 dark:border-slate-700"
                             >
                         @else
-                            <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-[#070740] text-xl font-semibold text-white">
+                            <div class="inline-flex h-16 w-16 items-center justify-center rounded-full bg-primary text-xl font-semibold text-white">
                                 {{ $avatarInitial }}
                             </div>
                         @endif
@@ -58,7 +58,7 @@
                     ] as $section)
                         <a
                             href="{{ route($section['route']) }}"
-                            class="group block w-full rounded-3xl border border-slate-200/80 bg-slate-50 p-5 transition duration-200 hover:-translate-y-0.5 hover:border-[#070740]/20 hover:bg-white hover:shadow-sm hover:shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-950 dark:hover:border-[#070740]/30 dark:hover:bg-slate-900 dark:hover:shadow-black/20"
+                            class="group block w-full rounded-3xl border border-slate-200/80 bg-slate-50 p-5 transition duration-200 hover:-translate-y-0.5 hover:border-primary/20 hover:bg-white hover:shadow-sm hover:shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-950 dark:hover:border-primary/30 dark:hover:bg-slate-900 dark:hover:shadow-black/20"
                         >
                             <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                                 <div class="min-w-0">

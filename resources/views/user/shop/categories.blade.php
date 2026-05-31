@@ -17,7 +17,7 @@
 
                 <a
                     href="{{ route('shop.index') }}"
-                    class="inline-flex items-center justify-center rounded-2xl bg-[#070740] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0a0a55] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#070740]/20"
+                    class="inline-flex items-center justify-center rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0a0a55] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
                 >
                     {{ __('View all products') }}
                 </a>
@@ -34,9 +34,9 @@
 
                     <a
                         href="{{ route('shop.index', ['category' => $category->slug ?: $category->id]) }}"
-                        class="group flex h-full min-h-72 flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm shadow-slate-900/5 transition duration-200 hover:-translate-y-0.5 hover:border-[#070740]/20 hover:shadow-md hover:shadow-slate-900/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#070740]/20 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 dark:hover:border-[#070740]/30 dark:hover:shadow-black/20"
+                        class="group flex h-full min-h-72 flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm shadow-slate-900/5 transition duration-200 hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md hover:shadow-slate-900/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 dark:hover:border-primary/30 dark:hover:shadow-black/20"
                     >
-                        <div class="relative flex h-44 items-center justify-center overflow-hidden bg-slate-100 p-3 text-[#070740] dark:bg-slate-800 dark:text-slate-200">
+                        <div class="relative flex h-44 items-center justify-center overflow-hidden bg-slate-100 p-3 text-primary dark:bg-slate-800 dark:text-slate-200">
                             @if ($imageUrl)
                                 <img src="{{ $imageUrl }}" alt="{{ $category->name }}" class="h-full w-full object-contain transition duration-300 group-hover:scale-[1.04]" loading="lazy">
                             @else
@@ -49,7 +49,7 @@
 
                         <div class="flex flex-1 flex-col p-5">
                             <div>
-                                <h2 class="line-clamp-2 text-base font-semibold text-slate-950 transition group-hover:text-[#070740] dark:text-white dark:group-hover:text-slate-200">
+                                <h2 class="line-clamp-2 text-base font-semibold text-slate-950 transition group-hover:text-primary dark:text-white dark:group-hover:text-slate-200">
                                     {{ $category->name }}
                                 </h2>
                             </div>
@@ -58,7 +58,7 @@
                                 <p class="mt-3 line-clamp-3 text-sm leading-6 text-slate-500 dark:text-slate-400">{{ $category->localized_description }}</p>
                             @endif
 
-                            <span class="mt-auto pt-5 text-sm font-semibold text-[#070740] dark:text-slate-200">
+                            <span class="mt-auto pt-5 text-sm font-semibold text-primary dark:text-slate-200">
                                 {{ __('Open category') }}
                             </span>
                         </div>

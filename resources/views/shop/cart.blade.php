@@ -26,7 +26,7 @@
                     <div class="mt-6 flex items-center justify-center">
                         <a
                             href="{{ route('shop.index') }}"
-                            class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#070740] focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                            class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
                         >
                             {{ __('Browse Products') }}
                             <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -52,7 +52,7 @@
                             $maxQuantity = $product ? min(99, max(1, (int) $product->stock_quantity)) : 1;
                         @endphp
 
-                        <article class="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-900/5 transition duration-200 hover:-translate-y-0.5 hover:border-[#070740]/20 hover:shadow-md hover:shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 dark:hover:border-[#070740]/30 dark:hover:shadow-black/20 sm:p-6">
+                        <article class="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-900/5 transition duration-200 hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md hover:shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 dark:hover:border-primary/30 dark:hover:shadow-black/20 sm:p-6">
                             <div class="flex items-start gap-6">
                                 <div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-950">
                                     <img
@@ -130,7 +130,7 @@
                                                         <button
                                                             type="button"
                                                             onclick="const input = document.getElementById('quantity-{{ $item->id }}'); input.stepDown(); input.form.requestSubmit();"
-                                                            class="inline-flex h-12 w-11 items-center justify-center border-r border-slate-200/80 bg-[#070740] text-base font-semibold text-white transition duration-200 hover:bg-[#0a0d3f] focus:outline-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-[#070740] dark:border-slate-800"
+                                                            class="inline-flex h-12 w-11 items-center justify-center border-r border-slate-200/80 bg-primary text-base font-semibold text-white transition duration-200 hover:bg-primary-hover focus:outline-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-primary dark:border-slate-800"
                                                             aria-label="{{ __('Decrease quantity') }}"
                                                         >
                                                             -
@@ -149,7 +149,7 @@
                                                             type="button"
                                                             onclick="const input = document.getElementById('quantity-{{ $item->id }}'); input.stepUp(); input.form.requestSubmit();"
                                                             @disabled($item->quantity >= $maxQuantity)
-                                                            class="inline-flex h-12 w-11 items-center justify-center border-l border-slate-200/80 bg-[#070740] text-base font-semibold text-white transition duration-200 hover:bg-[#0a0d3f] focus:outline-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-[#070740] disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 dark:border-slate-800 dark:disabled:bg-slate-800 dark:disabled:text-slate-500"
+                                                            class="inline-flex h-12 w-11 items-center justify-center border-l border-slate-200/80 bg-primary text-base font-semibold text-white transition duration-200 hover:bg-primary-hover focus:outline-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 dark:border-slate-800 dark:disabled:bg-slate-800 dark:disabled:text-slate-500"
                                                             aria-label="{{ __('Increase quantity') }}"
                                                         >
                                                             +
@@ -217,7 +217,7 @@
                                     <div class="mt-4 flex justify-end">
                                         <a
                                             href="{{ route('user.account.addresses') }}"
-                                            class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#070740] focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                                            class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
                                         >
                                             {{ __('Manage Addresses') }}
                                             <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -229,13 +229,13 @@
                             @else
                                 <div class="space-y-3">
                                     @foreach ($addresses as $address)
-                                        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-4 transition duration-200 hover:border-[#070740]/20 dark:border-slate-800 dark:bg-slate-950 dark:hover:border-[#070740]/30">
+                                        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-4 transition duration-200 hover:border-primary/20 dark:border-slate-800 dark:bg-slate-950 dark:hover:border-primary/30">
                                             <input
                                                 type="radio"
                                                 name="address_id"
                                                 value="{{ $address->id }}"
                                                 @checked((int) old('address_id', $defaultAddress?->id) === (int) $address->id)
-                                                class="mt-1 h-4 w-4 border-slate-300 text-[#070740] focus:ring-[#070740]/30 dark:border-slate-700 dark:bg-slate-900"
+                                                class="mt-1 h-4 w-4 border-slate-300 text-primary focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-900"
                                             >
                                             <span class="min-w-0 flex-1">
                                                 <span class="flex flex-wrap items-center gap-2">
@@ -266,7 +266,7 @@
                                     <div class="mt-3 flex flex-wrap items-center justify-end gap-3">
                                         <a
                                             href="{{ route('account.addresses.create') }}"
-                                            class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#070740] focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                                            class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
                                         >
                                             {{ __('Add Another') }}
                                             <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -275,7 +275,7 @@
                                         </a>
                                         <a
                                             href="{{ route('user.account.addresses') }}"
-                                            class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#070740] focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                                            class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
                                         >
                                             {{ __('Manage Addresses') }}
                                             <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -287,11 +287,19 @@
 
                             @endif
 
+                            @php
+                                $contactMethodLabels = [
+                                    'phone' => __('Phone'),
+                                    'email' => __('Email'),
+                                    'whatsapp' => __('WhatsApp'),
+                                ];
+                                $contactMethodLabel = $contactMethodLabels[$defaultContactMethod] ?? __(ucfirst((string) $defaultContactMethod));
+                            @endphp
                             <div class="rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-950">
                                 <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Checkout Defaults') }}</p>
-                                <p class="mt-1 text-sm font-medium text-slate-900 dark:text-white">Preferred contact: {{ ucfirst($defaultContactMethod) }}</p>
+                                <p class="mt-1 text-sm font-medium text-slate-900 dark:text-white">{{ __('Preferred contact: :method', ['method' => $contactMethodLabel]) }}</p>
                                 <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">
-                                    {{ $expressCheckout ? 'Express checkout is enabled. Your default address can be used automatically when available.' : 'Standard checkout is active. You can still review and edit details before ordering.' }}
+                                    {{ $expressCheckout ? __('Express checkout is enabled. Your default address can be used automatically when available.') : __('Standard checkout is active. You can still review and edit details before ordering.') }}
                                 </p>
                             </div>
 
@@ -301,7 +309,7 @@
                                     id="notes"
                                     name="notes"
                                     rows="4"
-                                    class="block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-[#070740]/20 focus:ring-4 focus:ring-[#070740]/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                                    class="block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
                                 >{{ old('notes', $defaultDeliveryNote) }}</textarea>
                             </div>
 
@@ -313,7 +321,7 @@
                                             id="coupon_code"
                                             name="coupon_code"
                                             value="{{ old('coupon_code', session('checkout.coupon_code', '')) }}"
-                                            class="min-w-0 flex-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm uppercase text-slate-900 outline-none transition duration-200 focus:border-[#070740]/20 focus:ring-4 focus:ring-[#070740]/10 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                                            class="min-w-0 flex-1 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm uppercase text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
                                             placeholder="{{ __('SAVE10') }}"
                                         >
                                         <button
@@ -335,9 +343,9 @@
                             @if ($addresses->isNotEmpty())
                                 <button
                                     type="submit"
-                                    class="inline-flex w-full items-center justify-center rounded-2xl bg-[#070740] px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-[#0a0d3f] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#070740] focus-visible:ring-offset-2"
+                                    class="inline-flex w-full items-center justify-center rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                                 >
-                                    {{ $expressCheckout ? 'Review Order Faster' : 'Review Order' }}
+                                    {{ $expressCheckout ? __('Review Order Faster') : __('Review Order') }}
                                 </button>
                             @endif
                         </form>

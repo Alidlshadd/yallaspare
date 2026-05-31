@@ -39,7 +39,7 @@
             </div>
             <a
                 href="{{ route('legal.contact', ['topic' => 'general']) }}"
-                class="inline-flex items-center justify-center rounded-xl bg-[#070740] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0d1156] focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-slate-600 dark:focus-visible:ring-offset-slate-950"
+                class="inline-flex items-center justify-center rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#0d1156] focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-slate-600 dark:focus-visible:ring-offset-slate-950"
             >
                 {{ __('General Support') }}
             </a>
@@ -76,7 +76,7 @@
         <h2 class="text-xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">{{ __('FAQ') }}</h2>
         <div class="mt-6 divide-y divide-slate-200/70 dark:divide-slate-800/70">
             <details class="group py-5">
-                <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-sm font-medium text-slate-700 transition-colors hover:text-[#070740] focus:outline-none dark:text-slate-300">
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-sm font-medium text-slate-700 transition-colors hover:text-primary focus:outline-none dark:text-slate-300">
                     <span>{{ __('How do I reset my account password?') }}</span>
                     <svg class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                         <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
@@ -92,7 +92,7 @@
             </details>
 
             <details class="group py-5">
-                <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-sm font-medium text-slate-700 transition-colors hover:text-[#070740] focus:outline-none dark:text-slate-300">
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-sm font-medium text-slate-700 transition-colors hover:text-primary focus:outline-none dark:text-slate-300">
                     <span>{{ __('Can you help with billing and invoice questions?') }}</span>
                     <svg class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                         <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
@@ -108,7 +108,7 @@
             </details>
 
             <details class="group py-5">
-                <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-sm font-medium text-slate-700 transition-colors hover:text-[#070740] focus:outline-none dark:text-slate-300">
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-sm font-medium text-slate-700 transition-colors hover:text-primary focus:outline-none dark:text-slate-300">
                     <span>{{ __('Where can I report a technical issue?') }}</span>
                     <svg class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                         <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
@@ -124,7 +124,7 @@
             </details>
 
             <details class="group py-5">
-                <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-sm font-medium text-slate-700 transition-colors hover:text-[#070740] focus:outline-none dark:text-slate-300">
+                <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-sm font-medium text-slate-700 transition-colors hover:text-primary focus:outline-none dark:text-slate-300">
                     <span>{{ __('What should I include in a support request?') }}</span>
                     <svg class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                         <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />

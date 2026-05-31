@@ -65,7 +65,7 @@
                             <option value="inactive" @selected($status === 'inactive')>{{ __('Inactive') }}</option>
                             <option value="suspended" @selected($status === 'suspended')>{{ __('Suspended') }}</option>
                         </select>
-                        <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-[#070740] px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#0a0a55]">
+                        <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#0a0a55]">
                             {{ __('Apply') }}
                         </button>
                         <a href="{{ route('admin.dealers.index') }}" class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
@@ -203,7 +203,7 @@
                                     @endif
 
                                     <details class="group w-full md:w-auto 2xl:w-full">
-                                        <summary class="inline-flex w-full cursor-pointer list-none items-center justify-center gap-2 rounded-xl bg-[#070740] px-3 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-white transition hover:bg-[#0a0a55] md:w-auto 2xl:w-full">
+                                        <summary class="inline-flex w-full cursor-pointer list-none items-center justify-center gap-2 rounded-xl bg-primary px-3 py-2 text-xs font-semibold uppercase tracking-[0.08em] text-white transition hover:bg-[#0a0a55] md:w-auto 2xl:w-full">
                                             <span class="h-2 w-2 rounded-full bg-cyan-300"></span>
                                             {{ __('Manage') }}
                                         </summary>

@@ -2259,5 +2259,17 @@
     "Order: :ref": "Order: :ref",
     "Total: :total": "Total: :total",
     "From: :from": "From: :from",
-    "To: :to": "To: :to"
+    "To: :to": "To: :to",
+    "Login alert: sign-in detected at :time (:timezone).": "Login alert: sign-in detected at :time (:timezone).",
+    "We could not send your admin verification code. Please contact support or try again shortly.": "We could not send your admin verification code. Please contact support or try again shortly.",
+    ":name profile photo": ":name profile photo",
+    "Yalla Spare auto parts catalog, support, and legal information.": "Yalla Spare auto parts catalog, support, and legal information.",
+    "Express checkout is enabled. Your default address can be used automatically when available.": "Express checkout is enabled. Your default address can be used automatically when available.",
+    "Standard checkout is active. You can still review and edit details before ordering.": "Standard checkout is active. You can still review and edit details before ordering.",
+    "Review Order Faster": "Review Order Faster",
+    "Review Order": "Review Order",
+    "Preferred contact: :method": "Preferred contact: :method",
+    "Uncategorized": "Uncategorized",
+    "Warranty on request": "Warranty on request",
+    "Engine match required": "Engine match required"
 }

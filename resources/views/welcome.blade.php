@@ -15,7 +15,7 @@
         <main class="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-8 sm:px-6 sm:py-10 lg:px-12 lg:py-12">
             <section class="flex flex-1 flex-col justify-center py-8 sm:py-10">
                 <div class="max-w-3xl">
-                    <h1 class="text-3xl font-bold tracking-tight text-[#070740] sm:text-4xl lg:text-6xl dark:text-white">
+                    <h1 class="text-3xl font-bold tracking-tight text-primary sm:text-4xl lg:text-6xl dark:text-white">
                         {{ __('YallaSpare Auto Parts System') }}
                     </h1>
 

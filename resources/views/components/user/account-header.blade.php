@@ -46,9 +46,9 @@
                         aria-haspopup="menu"
                     >
                         @if($userProfilePhotoUrl)
-                            <img src="{{ $userProfilePhotoUrl }}" alt="{{ $authUser->name ?? 'User' }} profile photo" class="h-7 w-7 rounded-full object-cover border border-white/30">
+                            <img src="{{ $userProfilePhotoUrl }}" alt="{{ __(':name profile photo', ['name' => $authUser->name ?? __('User')]) }}" class="h-7 w-7 rounded-full object-cover border border-white/30">
                         @else
-                            <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white text-[11px] font-semibold text-[#070740]">
+                            <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white text-[11px] font-semibold text-primary">
                                 {{ $userInitial }}
                             </span>
                         @endif
@@ -71,15 +71,15 @@
                             <p class="truncate text-xs text-slate-500 dark:text-slate-400">{{ auth()->user()->email ?? '' }}</p>
                         </div>
                         <div class="mt-2 space-y-1">
-                            <a href="{{ route('user.account.edit') }}" class="flex rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#070740]/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-[#070740]/30" role="menuitem">
+                            <a href="{{ route('user.account.edit') }}" class="flex rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-primary/30" role="menuitem">
                                 {{ __('Profile') }}
                             </a>
-                            <a href="{{ route('user.settings.edit') }}" class="flex rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#070740]/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-[#070740]/30" role="menuitem">
+                            <a href="{{ route('user.settings.edit') }}" class="flex rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-primary/30" role="menuitem">
                                 {{ __('Settings') }}
                             </a>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="flex w-full rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#070740]/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-[#070740]/30" role="menuitem">
+                                <button type="submit" class="flex w-full rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-primary/30" role="menuitem">
                                     {{ __('Logout') }}
                                 </button>
                             </form>
@@ -94,19 +94,19 @@
             <div class="mx-auto flex max-w-6xl items-center justify-center gap-2 px-4 py-3 sm:px-6 lg:px-8">
                 <a
                     href="{{ route('user.shop.home') }}"
-                    class="inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm font-medium transition duration-200 {{ request()->routeIs('user.shop.*') || request()->routeIs('shop.index') || request()->routeIs('cart.*') ? 'bg-white text-[#070740]' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
+                    class="inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm font-medium transition duration-200 {{ request()->routeIs('user.shop.*') || request()->routeIs('shop.index') || request()->routeIs('cart.*') ? 'bg-white text-primary' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
                 >
                     {{ __('Home') }}
                 </a>
                 <a
                     href="{{ route('user.account.edit') }}"
-                    class="inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm font-medium transition duration-200 {{ request()->routeIs('user.account.*') || request()->routeIs('account.*') ? 'bg-white text-[#070740]' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
+                    class="inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm font-medium transition duration-200 {{ request()->routeIs('user.account.*') || request()->routeIs('account.*') ? 'bg-white text-primary' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
                 >
                     {{ __('Profile') }}
                 </a>
                 <a
                     href="{{ route('user.settings.edit') }}"
-                    class="inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm font-medium transition duration-200 {{ request()->routeIs('user.settings.*') ? 'bg-white text-[#070740]' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
+                    class="inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm font-medium transition duration-200 {{ request()->routeIs('user.settings.*') ? 'bg-white text-primary' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
                 >
                     {{ __('Settings') }}
                 </a>

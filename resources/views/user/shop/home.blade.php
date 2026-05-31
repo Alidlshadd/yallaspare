@@ -48,7 +48,7 @@
                         </p>
                         <a
                             href="{{ $heroButtonUrl }}"
-                            class="mt-4 inline-flex items-center justify-center rounded-xl bg-white px-3.5 py-2 text-xs font-semibold text-[#070740] transition duration-200 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 sm:mt-5 sm:rounded-2xl sm:px-4 sm:py-2.5 sm:text-sm"
+                            class="mt-4 inline-flex items-center justify-center rounded-xl bg-white px-3.5 py-2 text-xs font-semibold text-primary transition duration-200 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 sm:mt-5 sm:rounded-2xl sm:px-4 sm:py-2.5 sm:text-sm"
                         >
                             {{ $heroButtonLabel }}
                         </a>
@@ -76,7 +76,7 @@
                 <select
                     name="brand"
                     data-vehicle-brand
-                    class="w-full rounded-xl border border-slate-200/80 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-[#070740]/20 focus:ring-4 focus:ring-[#070740]/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:border-[#070740]/30 dark:focus:ring-[#070740]/10 sm:rounded-2xl sm:px-4 sm:py-3"
+                    class="w-full rounded-xl border border-slate-200/80 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:border-primary/30 dark:focus:ring-primary/10 sm:rounded-2xl sm:px-4 sm:py-3"
                 >
                     <option value="">{{ __('Brand') }}</option>
                     @foreach ($brandOptions as $option)
@@ -87,7 +87,7 @@
                 <select
                     name="model"
                     data-vehicle-model
-                    class="w-full rounded-xl border border-slate-200/80 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-[#070740]/20 focus:ring-4 focus:ring-[#070740]/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:border-[#070740]/30 dark:focus:ring-[#070740]/10 sm:rounded-2xl sm:px-4 sm:py-3"
+                    class="w-full rounded-xl border border-slate-200/80 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:border-primary/30 dark:focus:ring-primary/10 sm:rounded-2xl sm:px-4 sm:py-3"
                 >
                     <option value="">{{ __('Model') }}</option>
                     @foreach ($modelOptions as $option)
@@ -97,7 +97,7 @@
 
                 <select
                     name="vehicle"
-                    class="w-full rounded-xl border border-slate-200/80 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-[#070740]/20 focus:ring-4 focus:ring-[#070740]/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:border-[#070740]/30 dark:focus:ring-[#070740]/10 sm:rounded-2xl sm:px-4 sm:py-3"
+                    class="w-full rounded-xl border border-slate-200/80 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:border-primary/30 dark:focus:ring-primary/10 sm:rounded-2xl sm:px-4 sm:py-3"
                 >
                     <option value="">{{ __('Engine / Year') }}</option>
                     @foreach ($engineOptions as $option)
@@ -107,7 +107,7 @@
 
                 <button
                     type="submit"
-                    class="inline-flex items-center justify-center rounded-xl bg-[#070740] px-4 py-2.5 text-sm font-medium text-white transition duration-200 hover:bg-[#0a0a55] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#070740]/20 sm:rounded-2xl sm:px-5 sm:py-3 md:col-span-2 lg:col-span-1"
+                    class="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-medium text-white transition duration-200 hover:bg-[#0a0a55] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 sm:rounded-2xl sm:px-5 sm:py-3 md:col-span-2 lg:col-span-1"
                 >
                     {{ __('Find parts') }}
                 </button>
@@ -122,7 +122,7 @@
                 </div>
                 <a
                     href="{{ route('categories.index') }}"
-                    class="inline-flex items-center rounded-full px-3 py-2 text-sm font-medium text-slate-600 transition duration-200 hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#070740]/20 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white dark:focus-visible:ring-[#070740]/30"
+                    class="inline-flex items-center rounded-full px-3 py-2 text-sm font-medium text-slate-600 transition duration-200 hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white dark:focus-visible:ring-primary/30"
                 >
                     {{ __('View catalog') }}
                 </a>
@@ -132,9 +132,9 @@
                 @forelse ($categories as $category)
                     <a
                         href="{{ route('shop.index', ['category' => data_get($category, 'slug') ?: data_get($category, 'id')]) }}"
-                        class="group flex min-h-0 flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm shadow-slate-900/5 transition duration-200 hover:-translate-y-0.5 hover:border-[#070740]/20 hover:shadow-md hover:shadow-slate-900/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#070740]/20 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 dark:hover:border-[#070740]/30 dark:hover:shadow-black/20 sm:min-h-56 sm:rounded-3xl"
+                        class="group flex min-h-0 flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm shadow-slate-900/5 transition duration-200 hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md hover:shadow-slate-900/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 dark:hover:border-primary/30 dark:hover:shadow-black/20 sm:min-h-56 sm:rounded-3xl"
                     >
-                        <div class="flex h-28 items-center justify-center overflow-hidden bg-slate-100 p-1.5 text-[#070740] transition duration-200 group-hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:group-hover:bg-slate-700 sm:h-36">
+                        <div class="flex h-28 items-center justify-center overflow-hidden bg-slate-100 p-1.5 text-primary transition duration-200 group-hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:group-hover:bg-slate-700 sm:h-36">
                             @if (data_get($category, 'image'))
                                 <img src="{{ data_get($category, 'image') }}" alt="{{ data_get($category, 'name') }}" class="h-full w-full scale-[1.08] object-contain transition duration-300 group-hover:scale-[1.1]" loading="lazy">
                             @else
@@ -167,7 +167,7 @@
                 </div>
                 <a
                     href="{{ route('shop.index') }}"
-                    class="inline-flex items-center rounded-full px-3 py-2 text-sm font-medium text-slate-600 transition duration-200 hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#070740]/20 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white dark:focus-visible:ring-[#070740]/30"
+                    class="inline-flex items-center rounded-full px-3 py-2 text-sm font-medium text-slate-600 transition duration-200 hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white dark:focus-visible:ring-primary/30"
                 >
                     {{ __('View catalog') }}
                 </a>
@@ -185,7 +185,7 @@
                         $discountPercent = (int) data_get($product, 'discount_percent', 0);
                         $discountAmount = (float) data_get($product, 'discount_amount', 0);
                     @endphp
-                    <article class="flex h-full min-h-full flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm shadow-slate-900/5 transition duration-200 hover:-translate-y-0.5 hover:border-[#070740]/20 hover:shadow-lg hover:shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 dark:hover:border-[#070740]/30 dark:hover:shadow-black/20">
+                    <article class="flex h-full min-h-full flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm shadow-slate-900/5 transition duration-200 hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-lg hover:shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 dark:hover:border-primary/30 dark:hover:shadow-black/20">
                         <div class="relative h-52 overflow-hidden bg-slate-100 p-4 dark:bg-slate-800/80">
                             @if ($hasDiscount)
                                 <span class="absolute left-3 top-3 z-10 inline-flex rounded-full bg-rose-600 px-3 py-1 text-xs font-bold text-white shadow-sm">
@@ -213,7 +213,7 @@
                                         @endif
                                         <button
                                             type="submit"
-                                            class="js-wishlist-button inline-flex items-center justify-center rounded-full border bg-white/95 p-1.5 text-[11px] font-semibold shadow-sm transition focus:outline-none focus-visible:ring-2 dark:bg-slate-900/95 {{ $isWishlisted ? 'border-rose-200 text-rose-700 hover:bg-rose-50 focus-visible:ring-rose-300 dark:border-rose-900/60 dark:text-rose-300' : 'border-slate-200 text-slate-500 hover:border-[#070740]/30 hover:text-[#070740] focus-visible:ring-[#070740]/20 dark:border-slate-700 dark:text-slate-400' }}"
+                                            class="js-wishlist-button inline-flex items-center justify-center rounded-full border bg-white/95 p-1.5 text-[11px] font-semibold shadow-sm transition focus:outline-none focus-visible:ring-2 dark:bg-slate-900/95 {{ $isWishlisted ? 'border-rose-200 text-rose-700 hover:bg-rose-50 focus-visible:ring-rose-300 dark:border-rose-900/60 dark:text-rose-300' : 'border-slate-200 text-slate-500 hover:border-primary/30 hover:text-primary focus-visible:ring-primary/20 dark:border-slate-700 dark:text-slate-400' }}"
                                             aria-label="{{ $isWishlisted ? 'Remove from wishlist' : 'Add to wishlist' }}"
                                         >
                                             <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -247,12 +247,12 @@
                         <div class="flex flex-1 flex-col space-y-4 p-5">
                             <div class="flex items-start justify-between gap-3">
                                 <div class="min-w-0">
-                                    <a href="{{ data_get($product, 'detail_url') }}" class="line-clamp-2 block min-h-[3rem] text-base font-semibold leading-6 text-slate-950 transition hover:text-[#070740] dark:text-white dark:hover:text-slate-200">
+                                    <a href="{{ data_get($product, 'detail_url') }}" class="line-clamp-2 block min-h-[3rem] text-base font-semibold leading-6 text-slate-950 transition hover:text-primary dark:text-white dark:hover:text-slate-200">
                                         {{ data_get($product, 'name') }}
                                     </a>
                                     <div class="mt-2 space-y-1">
                                         <div class="flex flex-wrap items-end gap-2">
-                                            <p class="text-xl font-bold tracking-[-0.02em] text-[#070740] dark:text-white">
+                                            <p class="text-xl font-bold tracking-[-0.02em] text-primary dark:text-white">
                                                 {{ number_format((float) data_get($product, 'price', 0), 0) }} {{ $currencySymbol }}
                                             </p>
                                             @if ($hasDiscount)
@@ -296,7 +296,7 @@
                             <div class="mt-auto grid grid-cols-2 items-stretch gap-3">
                                 <a
                                     href="{{ data_get($product, 'detail_url') }}"
-                                    class="inline-flex h-full items-center justify-center rounded-2xl border border-slate-200/80 px-4 py-3 text-sm font-medium text-slate-700 transition duration-200 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#070740]/20 dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-white dark:focus-visible:ring-[#070740]/30"
+                                    class="inline-flex h-full items-center justify-center rounded-2xl border border-slate-200/80 px-4 py-3 text-sm font-medium text-slate-700 transition duration-200 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-white dark:focus-visible:ring-primary/30"
                                 >
                                     {{ __('View') }}
                                 </a>
@@ -305,7 +305,7 @@
                                     <button
                                         type="submit"
                                         @disabled((int) data_get($product, 'stock_quantity', 0) <= 0)
-                                        class="js-add-cart-button inline-flex h-full w-full items-center justify-center rounded-2xl px-4 py-3 text-sm font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#070740]/20 {{ (int) data_get($product, 'stock_quantity', 0) > 0 ? 'bg-[#070740] text-white hover:bg-[#0a0a55]' : 'cursor-not-allowed border border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-500' }}"
+                                        class="js-add-cart-button inline-flex h-full w-full items-center justify-center rounded-2xl px-4 py-3 text-sm font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 {{ (int) data_get($product, 'stock_quantity', 0) > 0 ? 'bg-primary text-white hover:bg-[#0a0a55]' : 'cursor-not-allowed border border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-500' }}"
                                     >
                                         {{ __('Add to Cart') }}
                                     </button>
@@ -459,8 +459,8 @@
 
                 button.setAttribute('aria-label', isWishlisted ? 'Remove from wishlist' : 'Add to wishlist');
                 button.classList.remove(
-                    'border-slate-200', 'text-slate-500', 'hover:border-[#070740]/30', 'hover:text-[#070740]',
-                    'focus-visible:ring-[#070740]/20', 'dark:border-slate-700', 'dark:text-slate-400',
+                    'border-slate-200', 'text-slate-500', 'hover:border-primary/30', 'hover:text-primary',
+                    'focus-visible:ring-primary/20', 'dark:border-slate-700', 'dark:text-slate-400',
                     'border-rose-200', 'text-rose-700', 'hover:bg-rose-50', 'focus-visible:ring-rose-300',
                     'dark:border-rose-900/60', 'dark:text-rose-300'
                 );
@@ -472,8 +472,8 @@
                     );
                 } else {
                     button.classList.add(
-                        'border-slate-200', 'text-slate-500', 'hover:border-[#070740]/30', 'hover:text-[#070740]',
-                        'focus-visible:ring-[#070740]/20', 'dark:border-slate-700', 'dark:text-slate-400'
+                        'border-slate-200', 'text-slate-500', 'hover:border-primary/30', 'hover:text-primary',
+                        'focus-visible:ring-primary/20', 'dark:border-slate-700', 'dark:text-slate-400'
                     );
                 }
             };

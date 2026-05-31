@@ -3,14 +3,18 @@
 namespace App\Providers;
 
 use App\Models\Setting;
+use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
+use App\Models\Wishlist;
 use App\Http\View\Composers\HeaderComposer;
 use App\Support\Branding;
 use App\Observers\AdminAuditObserver;
+use App\Observers\CartItemCacheObserver;
 use App\Observers\CategoryCacheObserver;
+use App\Observers\WishlistCacheObserver;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Log;
@@ -97,10 +101,12 @@ class AppServiceProvider extends ServiceProvider
 
         Category::observe(AdminAuditObserver::class);
         Category::observe(CategoryCacheObserver::class);
+        CartItem::observe(CartItemCacheObserver::class);
         Product::observe(AdminAuditObserver::class);
         User::observe(AdminAuditObserver::class);
+        Wishlist::observe(WishlistCacheObserver::class);
         Order::observe(AdminAuditObserver::class);
 
-        View::composer(['layouts.user'], HeaderComposer::class);
+        View::composer(['layouts.user', 'layouts.store'], HeaderComposer::class);
     }
 }

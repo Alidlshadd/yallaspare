@@ -79,7 +79,7 @@
                                                         <a href="{{ route('account.orders.show', $order) }}" class="text-sm font-semibold text-slate-700 transition hover:text-slate-900 dark:text-slate-300 dark:hover:text-slate-100">{{ __('View') }}</a>
                                                         <form method="POST" action="{{ route('account.orders.reorder', $order) }}">
                                                             @csrf
-                                                            <button type="submit" class="text-sm font-semibold text-[#070740] transition hover:text-[#10105c] dark:text-slate-200 dark:hover:text-white">
+                                                            <button type="submit" class="text-sm font-semibold text-primary transition hover:text-[#10105c] dark:text-slate-200 dark:hover:text-white">
                                                                 {{ __('Reorder') }}
                                                             </button>
                                                         </form>

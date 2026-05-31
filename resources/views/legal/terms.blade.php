@@ -20,43 +20,43 @@
             <nav aria-label="{{ __('Terms sections') }}" class="sticky top-24">
                 <ul class="space-y-1.5 text-sm">
                     <li>
-                        <a href="#service-usage" data-terms-nav class="terms-nav-link group inline-flex items-center gap-3 rounded-md px-2 py-1.5 text-slate-500 transition-colors hover:text-[#070740] dark:text-slate-400 dark:hover:text-slate-200">
+                        <a href="#service-usage" data-terms-nav class="terms-nav-link group inline-flex items-center gap-3 rounded-md px-2 py-1.5 text-slate-500 transition-colors hover:text-primary dark:text-slate-400 dark:hover:text-slate-200">
                             <span class="h-1.5 w-1.5 rounded-full bg-current opacity-45 transition-opacity group-hover:opacity-100"></span>
                             <span>{{ __('Service Usage') }}</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#account-responsibility" data-terms-nav class="terms-nav-link group inline-flex items-center gap-3 rounded-md px-2 py-1.5 text-slate-500 transition-colors hover:text-[#070740] dark:text-slate-400 dark:hover:text-slate-200">
+                        <a href="#account-responsibility" data-terms-nav class="terms-nav-link group inline-flex items-center gap-3 rounded-md px-2 py-1.5 text-slate-500 transition-colors hover:text-primary dark:text-slate-400 dark:hover:text-slate-200">
                             <span class="h-1.5 w-1.5 rounded-full bg-current opacity-45 transition-opacity group-hover:opacity-100"></span>
                             <span>{{ __('Account Responsibility') }}</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#payment-terms" data-terms-nav class="terms-nav-link group inline-flex items-center gap-3 rounded-md px-2 py-1.5 text-slate-500 transition-colors hover:text-[#070740] dark:text-slate-400 dark:hover:text-slate-200">
+                        <a href="#payment-terms" data-terms-nav class="terms-nav-link group inline-flex items-center gap-3 rounded-md px-2 py-1.5 text-slate-500 transition-colors hover:text-primary dark:text-slate-400 dark:hover:text-slate-200">
                             <span class="h-1.5 w-1.5 rounded-full bg-current opacity-45 transition-opacity group-hover:opacity-100"></span>
                             <span>{{ __('Payment Terms') }}</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#limitation-of-liability" data-terms-nav class="terms-nav-link group inline-flex items-center gap-3 rounded-md px-2 py-1.5 text-slate-500 transition-colors hover:text-[#070740] dark:text-slate-400 dark:hover:text-slate-200">
+                        <a href="#limitation-of-liability" data-terms-nav class="terms-nav-link group inline-flex items-center gap-3 rounded-md px-2 py-1.5 text-slate-500 transition-colors hover:text-primary dark:text-slate-400 dark:hover:text-slate-200">
                             <span class="h-1.5 w-1.5 rounded-full bg-current opacity-45 transition-opacity group-hover:opacity-100"></span>
                             <span>{{ __('Limitation of Liability') }}</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#termination" data-terms-nav class="terms-nav-link group inline-flex items-center gap-3 rounded-md px-2 py-1.5 text-slate-500 transition-colors hover:text-[#070740] dark:text-slate-400 dark:hover:text-slate-200">
+                        <a href="#termination" data-terms-nav class="terms-nav-link group inline-flex items-center gap-3 rounded-md px-2 py-1.5 text-slate-500 transition-colors hover:text-primary dark:text-slate-400 dark:hover:text-slate-200">
                             <span class="h-1.5 w-1.5 rounded-full bg-current opacity-45 transition-opacity group-hover:opacity-100"></span>
                             <span>{{ __('Termination') }}</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#governing-law" data-terms-nav class="terms-nav-link group inline-flex items-center gap-3 rounded-md px-2 py-1.5 text-slate-500 transition-colors hover:text-[#070740] dark:text-slate-400 dark:hover:text-slate-200">
+                        <a href="#governing-law" data-terms-nav class="terms-nav-link group inline-flex items-center gap-3 rounded-md px-2 py-1.5 text-slate-500 transition-colors hover:text-primary dark:text-slate-400 dark:hover:text-slate-200">
                             <span class="h-1.5 w-1.5 rounded-full bg-current opacity-45 transition-opacity group-hover:opacity-100"></span>
                             <span>{{ __('Governing Law') }}</span>
                         </a>
                     </li>
                     <li>
-                        <a href="#contact-information" data-terms-nav class="terms-nav-link group inline-flex items-center gap-3 rounded-md px-2 py-1.5 text-slate-500 transition-colors hover:text-[#070740] dark:text-slate-400 dark:hover:text-slate-200">
+                        <a href="#contact-information" data-terms-nav class="terms-nav-link group inline-flex items-center gap-3 rounded-md px-2 py-1.5 text-slate-500 transition-colors hover:text-primary dark:text-slate-400 dark:hover:text-slate-200">
                             <span class="h-1.5 w-1.5 rounded-full bg-current opacity-45 transition-opacity group-hover:opacity-100"></span>
                             <span>{{ __('Contact') }}</span>
                         </a>
@@ -132,7 +132,7 @@
                     {{ __('For legal, contractual, or policy-related inquiries, contact:') }}
                 </p>
                 <p class="mt-4 text-slate-500 dark:text-slate-400">
-                    <a href="mailto:support@yallaspare.com" class="font-medium text-[#070740] underline decoration-[#070740]/60 underline-offset-4 transition-colors hover:text-slate-900 dark:text-slate-200 dark:hover:text-white">
+                    <a href="mailto:support@yallaspare.com" class="font-medium text-primary underline decoration-primary/60 underline-offset-4 transition-colors hover:text-slate-900 dark:text-slate-200 dark:hover:text-white">
                         support@yallaspare.com
                     </a>
                 </p>
@@ -149,7 +149,7 @@
 
             if (sections.length === 0 || links.length === 0) return;
 
-            const activeClasses = ['text-[#070740]', 'dark:text-slate-100', 'font-semibold'];
+            const activeClasses = ['text-primary', 'dark:text-slate-100', 'font-semibold'];
 
             const setActive = (id) => {
                 links.forEach((link) => {

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\SupportContactRequestMail;
+use App\Rules\PhoneNumber;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -41,7 +42,7 @@ class LegalController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:120'],
             'email' => ['required', 'email', 'max:190'],
-            'phone' => ['nullable', 'string', 'max:40'],
+            'phone' => ['nullable', 'string', 'max:40', new PhoneNumber()],
             'topic' => ['required', 'string', 'max:40'],
             'subject' => ['required', 'string', 'max:160'],
             'message' => ['required', 'string', 'max:3000'],

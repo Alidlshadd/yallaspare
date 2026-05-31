@@ -9,13 +9,13 @@
             <div class="flex min-w-0 items-center gap-4 sm:gap-8">
                 <div class="flex shrink-0 items-center">
                     <div class="header-logo-area">
-                    <a href="{{ route($dashboardRoute) }}" class="app-logo app-logo-light app-logo-user focus:outline-none focus-visible:ring-2 focus-visible:ring-[#070740] focus-visible:ring-offset-2">
+                    <a href="{{ route($dashboardRoute) }}" class="app-logo app-logo-light app-logo-user focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
                         <x-brand-mark
                             :logo-url="$systemSettings['site_logo_url'] ?? null"
                             :brand="$systemSettings['site_name'] ?? 'YallaSpare'"
                             wrapper-class="app-logo-mark"
                             img-class="h-full w-auto object-contain"
-                            fallback-class="inline-flex h-full w-full items-center justify-center rounded-lg bg-[#070740]"
+                            fallback-class="inline-flex h-full w-full items-center justify-center rounded-lg bg-primary"
                             fallback-text-class="text-[11px] font-semibold tracking-[0.18em] text-white"
                         />
                         <span class="app-logo-text hidden sm:inline-flex">
@@ -52,8 +52,8 @@
 
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium leading-4 text-slate-700 shadow-sm transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#070740] focus-visible:ring-offset-2">
-                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#070740] text-[11px] font-semibold text-white">
+                        <button class="inline-flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3 py-2 text-sm font-medium leading-4 text-slate-700 shadow-sm transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+                            <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary text-[11px] font-semibold text-white">
                                 {{ strtoupper(substr((string) Auth::user()->name, 0, 1)) }}
                             </span>
                             <div class="max-w-[140px] truncate">{{ Auth::user()->name }}</div>
@@ -92,7 +92,7 @@
             </div>
 
             <div class="flex items-center sm:hidden">
-                <button @click="toggle" class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white p-2 text-slate-500 transition duration-200 hover:bg-slate-50 hover:text-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#070740] focus-visible:ring-offset-2">
+                <button @click="toggle" class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white p-2 text-slate-500 transition duration-200 hover:bg-slate-50 hover:text-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="menuIconClasses" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         <path :class="closeIconClasses" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -127,7 +127,7 @@
         <div class="border-t border-slate-200 px-4 py-4">
             <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-4">
                 <div class="flex items-center gap-3">
-                    <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-[#070740] text-sm font-semibold text-white">
+                    <span class="inline-flex h-10 w-10 items-center justify-center rounded-full bg-primary text-sm font-semibold text-white">
                         {{ strtoupper(substr((string) Auth::user()->name, 0, 1)) }}
                     </span>
                     <div class="min-w-0">

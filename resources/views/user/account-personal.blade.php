@@ -6,7 +6,7 @@
     <div class="flex flex-wrap items-center justify-end gap-3">
         <a
             href="{{ route('user.account.edit') }}"
-            class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#070740] focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+            class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
         >
             {{ __('Account') }}
             <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -80,7 +80,7 @@
                                     class="h-24 w-24 rounded-full object-cover border border-slate-200 dark:border-slate-700"
                                 >
                             @else
-                                <span class="inline-flex h-24 w-24 items-center justify-center rounded-full bg-[#070740] text-2xl font-semibold text-white">
+                                <span class="inline-flex h-24 w-24 items-center justify-center rounded-full bg-primary text-2xl font-semibold text-white">
                                     {{ strtoupper(substr((string) ($firstName ?: $user->name ?: 'U'), 0, 1)) }}
                                 </span>
                             @endif
@@ -183,13 +183,13 @@
                     <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
                         <a
                             href="{{ route('user.account.edit') }}"
-                            class="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#070740] focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                            class="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
                         >
                             {{ __('Cancel') }}
                         </a>
                         <button
                             type="submit"
-                            class="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[#070740] px-5 text-sm font-semibold text-white transition duration-200 hover:bg-[#10106a] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#070740] focus-visible:ring-offset-2"
+                            class="inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-primary px-5 text-sm font-semibold text-white transition duration-200 hover:bg-[#10106a] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                         >
                             <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                 <path d="M5.5 3.5A2.5 2.5 0 0 0 3 6v8a2.5 2.5 0 0 0 2.5 2.5h9A2.5 2.5 0 0 0 17 14V7.62a2.5 2.5 0 0 0-.73-1.77l-2.12-2.12A2.5 2.5 0 0 0 12.38 3H5.5v.5ZM6 5h5v3H6V5Zm1 8a2 2 0 1 1 4 0 2 2 0 0 1-4 0Z" />

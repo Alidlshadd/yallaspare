@@ -18,16 +18,28 @@ class HeaderComposer
 
     public const CATEGORY_CACHE_PREFIX = 'header_dropdown_categories_';
 
+    public const USER_COUNT_CACHE_TTL_SECONDS = 60;
+
+    private const CART_SUMMARY_CACHE_PREFIX = 'header_cart_summary_user_';
+
+    private const WISHLIST_COUNT_CACHE_PREFIX = 'header_wishlist_count_user_';
+
     public function compose(View $view): void
     {
         $user = auth()->user();
         $locale = app()->getLocale();
+        $cartSummary = $this->cartSummaryFor($user);
+        $headerCategories = $this->dropdownCategories($locale);
 
         $view->with([
-            'headerCart' => $this->cartFor($user),
-            'headerCartCount' => $this->cartCountFor($user),
+            'headerCart' => null,
+            'headerCartCount' => (int) $cartSummary['count'],
+            'headerCartRef' => $cartSummary['ref'],
+            'headerCartSubtotal' => (float) $cartSummary['subtotal'],
+            'headerCartTotalFormatted' => $cartSummary['total_formatted'],
             'headerWishlistCount' => $this->wishlistCountFor($user),
-            'dropdownCategories' => $this->dropdownCategories($locale),
+            'headerCategories' => $headerCategories,
+            'dropdownCategories' => $headerCategories,
         ]);
     }
 
@@ -49,13 +61,49 @@ class HeaderComposer
 
     public function cartCountFor(?Authenticatable $user): int
     {
-        $cart = $this->cartFor($user);
+        return (int) $this->cartSummaryFor($user)['count'];
+    }
 
-        if ($cart === null) {
-            return 0;
+    /**
+     * @return array{count:int,ref:?string,subtotal:float,total_formatted:?string}
+     */
+    public function cartSummaryFor(?Authenticatable $user): array
+    {
+        if ($user === null) {
+            return $this->emptyCartSummary();
         }
 
-        return (int) $cart->items->sum('quantity');
+        $userId = (int) $user->getAuthIdentifier();
+
+        return Cache::remember($this->cartSummaryCacheKey($userId), self::USER_COUNT_CACHE_TTL_SECONDS, function () use ($user): array {
+            try {
+                $cart = $this->cartFor($user);
+
+                if ($cart === null) {
+                    return $this->emptyCartSummary();
+                }
+
+                $count = (int) $cart->items->sum('quantity');
+                $subtotal = (float) $cart->items->sum(function ($item) use ($user): float {
+                    $product = $item->product;
+
+                    if (! $product) {
+                        return 0.0;
+                    }
+
+                    return (float) $product->priceFor($user) * (int) $item->quantity;
+                });
+
+                return [
+                    'count' => $count,
+                    'ref' => '#' . str_pad((string) $cart->id, 6, '0', STR_PAD_LEFT),
+                    'subtotal' => round($subtotal, 2),
+                    'total_formatted' => null,
+                ];
+            } catch (\Throwable $e) {
+                return $this->emptyCartSummary();
+            }
+        });
     }
 
     public function wishlistCountFor(?Authenticatable $user): int
@@ -64,13 +112,17 @@ class HeaderComposer
             return 0;
         }
 
-        try {
-            return (int) Wishlist::query()
-                ->where('user_id', $user->getAuthIdentifier())
-                ->count();
-        } catch (\Throwable $e) {
-            return 0;
-        }
+        $userId = (int) $user->getAuthIdentifier();
+
+        return (int) Cache::remember($this->wishlistCountCacheKey($userId), self::USER_COUNT_CACHE_TTL_SECONDS, function () use ($user): int {
+            try {
+                return (int) Wishlist::query()
+                    ->where('user_id', $user->getAuthIdentifier())
+                    ->count();
+            } catch (\Throwable $e) {
+                return 0;
+            }
+        });
     }
 
     public function dropdownCategories(string $locale): Collection
@@ -127,5 +179,46 @@ class HeaderComposer
         foreach (['en', 'ar', 'ku'] as $locale) {
             Cache::forget(self::CATEGORY_CACHE_PREFIX . $locale);
         }
+    }
+
+    public static function forgetCartCacheForUser(?int $userId): void
+    {
+        if ($userId === null || $userId < 1) {
+            return;
+        }
+
+        Cache::forget(self::CART_SUMMARY_CACHE_PREFIX . $userId);
+    }
+
+    public static function forgetWishlistCacheForUser(?int $userId): void
+    {
+        if ($userId === null || $userId < 1) {
+            return;
+        }
+
+        Cache::forget(self::WISHLIST_COUNT_CACHE_PREFIX . $userId);
+    }
+
+    /**
+     * @return array{count:int,ref:?string,subtotal:float,total_formatted:?string}
+     */
+    private function emptyCartSummary(): array
+    {
+        return [
+            'count' => 0,
+            'ref' => null,
+            'subtotal' => 0.0,
+            'total_formatted' => null,
+        ];
+    }
+
+    private function cartSummaryCacheKey(int $userId): string
+    {
+        return self::CART_SUMMARY_CACHE_PREFIX . $userId;
+    }
+
+    private function wishlistCountCacheKey(int $userId): string
+    {
+        return self::WISHLIST_COUNT_CACHE_PREFIX . $userId;
     }
 }

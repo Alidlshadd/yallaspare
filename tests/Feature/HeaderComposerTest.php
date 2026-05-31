@@ -119,6 +119,7 @@ class HeaderComposerTest extends TestCase
 
         $this->assertArrayHasKey('headerCart', $data);
         $this->assertArrayHasKey('headerCartCount', $data);
+        $this->assertArrayHasKey('headerCategories', $data);
         $this->assertArrayHasKey('headerWishlistCount', $data);
         $this->assertArrayHasKey('dropdownCategories', $data);
     }
@@ -134,5 +135,66 @@ class HeaderComposerTest extends TestCase
         $after = (new HeaderComposer())->dropdownCategories('en');
 
         $this->assertCount(2, $after, 'Cache must invalidate when a Category is saved');
+    }
+
+    public function test_cart_count_cache_invalidates_when_cart_item_changes(): void
+    {
+        Cache::flush();
+        $user = User::factory()->create();
+        Category::factory()->create();
+        $product = Product::factory()->create();
+        $cart = Cart::create(['user_id' => $user->id]);
+        $item = CartItem::create(['cart_id' => $cart->id, 'product_id' => $product->id, 'quantity' => 1]);
+        $composer = new HeaderComposer();
+
+        $this->assertSame(1, $composer->cartCountFor($user));
+
+        $item->update(['quantity' => 4]);
+
+        $this->assertSame(4, $composer->cartCountFor($user));
+    }
+
+    public function test_wishlist_count_cache_invalidates_when_wishlist_changes(): void
+    {
+        Cache::flush();
+        $user = User::factory()->create();
+        Category::factory()->create();
+        $product = Product::factory()->create();
+        $wishlist = Wishlist::create(['user_id' => $user->id, 'product_id' => $product->id]);
+        $composer = new HeaderComposer();
+
+        $this->assertSame(1, $composer->wishlistCountFor($user));
+
+        $wishlist->delete();
+
+        $this->assertSame(0, $composer->wishlistCountFor($user));
+    }
+
+    public function test_guest_user_layout_renders_header_categories(): void
+    {
+        Category::factory()->create(['name_en' => 'Brakes', 'slug' => 'brakes']);
+
+        $this->get(route('legal.about'))
+            ->assertOk()
+            ->assertSee('Brakes');
+    }
+
+    public function test_authenticated_user_layout_renders_cart_and_wishlist_counts(): void
+    {
+        $user = User::factory()->create();
+        $category = Category::factory()->create(['id' => 1, 'name_en' => 'Brakes', 'slug' => 'brakes']);
+        $cartProduct = Product::factory()->create(['category_id' => $category->id]);
+        $wishlistProduct = Product::factory()->create(['category_id' => $category->id]);
+        $cart = Cart::create(['user_id' => $user->id]);
+        CartItem::create(['cart_id' => $cart->id, 'product_id' => $cartProduct->id, 'quantity' => 2]);
+        Wishlist::create(['user_id' => $user->id, 'product_id' => $wishlistProduct->id]);
+
+        $this->actingAs($user)
+            ->get(route('legal.about'))
+            ->assertOk()
+            ->assertSee('Items (2)')
+            ->assertSee('data-cart-count-value="2"', false)
+            ->assertSee('data-wishlist-count-value="1"', false)
+            ->assertSee('Brakes');
     }
 }

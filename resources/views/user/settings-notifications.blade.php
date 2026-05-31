@@ -5,7 +5,7 @@
 @section('actions')
     <a
         href="{{ route('user.settings.edit') }}"
-        class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#070740] focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+        class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
     >
         {{ __('Settings') }}
         <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -50,13 +50,13 @@
                     @csrf
                     @method('PATCH')
 
-                    <label class="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-4 transition duration-200 hover:border-[#070740]/20 hover:bg-white dark:border-slate-800 dark:bg-slate-950 dark:hover:border-[#070740]/30 dark:hover:bg-slate-900">
+                    <label class="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-4 transition duration-200 hover:border-primary/20 hover:bg-white dark:border-slate-800 dark:bg-slate-950 dark:hover:border-primary/30 dark:hover:bg-slate-900">
                         <input
                             type="checkbox"
                             name="notify_order_updates"
                             value="1"
                             @checked(old('notify_order_updates', $user->notify_order_updates))
-                            class="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#070740] focus:ring-[#070740]/30"
+                            class="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary/30"
                         >
                         <span class="min-w-0">
                             <span class="block text-sm font-medium text-slate-900 dark:text-white">{{ __('Order Updates') }}</span>
@@ -64,13 +64,13 @@
                         </span>
                     </label>
 
-                    <label class="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-4 transition duration-200 hover:border-[#070740]/20 hover:bg-white dark:border-slate-800 dark:bg-slate-950 dark:hover:border-[#070740]/30 dark:hover:bg-slate-900">
+                    <label class="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-4 transition duration-200 hover:border-primary/20 hover:bg-white dark:border-slate-800 dark:bg-slate-950 dark:hover:border-primary/30 dark:hover:bg-slate-900">
                         <input
                             type="checkbox"
                             name="notify_promotions"
                             value="1"
                             @checked(old('notify_promotions', $user->notify_promotions))
-                            class="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#070740] focus:ring-[#070740]/30"
+                            class="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary/30"
                         >
                         <span class="min-w-0">
                             <span class="block text-sm font-medium text-slate-900 dark:text-white">{{ __('Promotions') }}</span>
@@ -78,13 +78,13 @@
                         </span>
                     </label>
 
-                    <label class="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-4 transition duration-200 hover:border-[#070740]/20 hover:bg-white dark:border-slate-800 dark:bg-slate-950 dark:hover:border-[#070740]/30 dark:hover:bg-slate-900">
+                    <label class="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-4 transition duration-200 hover:border-primary/20 hover:bg-white dark:border-slate-800 dark:bg-slate-950 dark:hover:border-primary/30 dark:hover:bg-slate-900">
                         <input
                             type="checkbox"
                             name="notify_stock_alerts"
                             value="1"
                             @checked(old('notify_stock_alerts', $user->notify_stock_alerts))
-                            class="mt-0.5 h-4 w-4 rounded border-slate-300 text-[#070740] focus:ring-[#070740]/30"
+                            class="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary/30"
                         >
                         <span class="min-w-0">
                             <span class="block text-sm font-medium text-slate-900 dark:text-white">{{ __('Stock Alerts') }}</span>
@@ -95,7 +95,7 @@
                     <div class="flex items-center justify-end pt-2">
                         <button
                             type="submit"
-                            class="inline-flex items-center justify-center rounded-lg bg-[#070740] px-4 py-2 text-sm font-semibold text-white transition duration-200 hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#070740] focus-visible:ring-offset-2"
+                            class="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition duration-200 hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                         >
                             {{ __('Save Notifications') }}
                         </button>

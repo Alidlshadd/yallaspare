@@ -109,7 +109,7 @@
                                 type="text"
                                 name="coupon_code"
                                 value="{{ old('coupon_code', data_get($couponSummary ?? [], 'code', '')) }}"
-                                class="min-w-0 flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm uppercase text-slate-900 outline-none focus:border-[#070740]/20 focus:ring-4 focus:ring-[#070740]/10 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                                class="min-w-0 flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm uppercase text-slate-900 outline-none focus:border-primary/20 focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
                                 placeholder="{{ __('SAVE10') }}"
                             >
                             <button type="submit" name="coupon_action" value="apply" class="rounded-xl bg-slate-900 px-3 py-2 text-xs font-semibold text-white dark:bg-white dark:text-slate-900">
@@ -133,7 +133,7 @@
                         <input type="hidden" name="notes" value="{{ $notes }}">
                         <button
                             type="submit"
-                            class="inline-flex w-full items-center justify-center rounded-2xl bg-[#070740] px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-[#0a0d3f] focus:outline-none focus-visible:ring-2 focus-visible:ring-[#070740] focus-visible:ring-offset-2"
+                            class="inline-flex w-full items-center justify-center rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
                         >
                             {{ __('Confirm & Place Order') }}
                         </button>

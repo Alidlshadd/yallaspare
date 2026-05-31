@@ -19,16 +19,35 @@ class PhoneNumber implements ValidationRule
         }
 
         if (! is_scalar($value)) {
-            $fail(__('validation.phone'));
+            $fail($this->message());
 
             return;
         }
 
-        $normalized = User::normalizePhone((string) $value);
+        $phone = trim((string) $value);
+
+        if ($phone === '' || ! preg_match('/\A[0-9\p{Nd}+\-\s().]+\z/u', $phone)) {
+            $fail($this->message());
+
+            return;
+        }
+
+        if (substr_count($phone, '+') > 1 || (str_contains($phone, '+') && ! str_starts_with($phone, '+'))) {
+            $fail($this->message());
+
+            return;
+        }
+
+        $normalized = User::normalizePhone($phone);
         $length = $normalized !== null ? strlen($normalized) : 0;
 
         if ($length < self::MIN_DIGITS || $length > self::MAX_DIGITS) {
-            $fail(__('validation.phone'));
+            $fail($this->message());
         }
+    }
+
+    private function message(): string
+    {
+        return __('validation.phone');
     }
 }

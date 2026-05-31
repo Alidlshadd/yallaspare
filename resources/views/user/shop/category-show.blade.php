@@ -10,7 +10,7 @@
                 <div class="flex flex-col justify-between">
                     <div>
                         <div class="flex flex-wrap items-center gap-2 text-sm text-slate-500 dark:text-slate-400">
-                            <a href="{{ route('categories.index') }}" class="font-semibold text-[#070740] transition hover:text-[#0a0a55] dark:text-slate-200 dark:hover:text-white">{{ __('Categories') }}</a>
+                            <a href="{{ route('categories.index') }}" class="font-semibold text-primary transition hover:text-[#0a0a55] dark:text-slate-200 dark:hover:text-white">{{ __('Categories') }}</a>
                             <span>/</span>
                             <span>{{ $category->name }}</span>
                         </div>
@@ -30,14 +30,14 @@
                         </span>
                         <a
                             href="{{ route('shop.index', ['category' => $category->slug ?: $category->id]) }}"
-                            class="inline-flex rounded-full bg-[#070740] px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-[#0a0a55]"
+                            class="inline-flex rounded-full bg-primary px-4 py-1.5 text-sm font-semibold text-white transition hover:bg-[#0a0a55]"
                         >
                             {{ __('Use in shop filter') }}
                         </a>
                     </div>
                 </div>
 
-                <div class="flex min-h-52 items-center justify-center overflow-hidden rounded-3xl bg-slate-100 p-5 text-[#070740] dark:bg-slate-800 dark:text-slate-200">
+                <div class="flex min-h-52 items-center justify-center overflow-hidden rounded-3xl bg-slate-100 p-5 text-primary dark:bg-slate-800 dark:text-slate-200">
                     @if ($categoryImageUrl)
                         <img src="{{ $categoryImageUrl }}" alt="{{ $category->name }}" class="h-full max-h-64 w-full object-contain" loading="lazy">
                     @else
@@ -56,7 +56,7 @@
                     <h2 class="text-xl font-semibold text-slate-950 dark:text-white">{{ __('Products') }}</h2>
                     <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('Available items from this category.') }}</p>
                 </div>
-                <a href="{{ route('categories.index') }}" class="text-sm font-semibold text-[#070740] transition hover:text-[#0a0a55] dark:text-slate-200 dark:hover:text-white">
+                <a href="{{ route('categories.index') }}" class="text-sm font-semibold text-primary transition hover:text-[#0a0a55] dark:text-slate-200 dark:hover:text-white">
                     {{ __('All categories') }}
                 </a>
             </div>

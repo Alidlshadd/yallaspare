@@ -113,7 +113,7 @@
                             {{ $panelTag }}
                         </span>
                     @endif
-                    <h1 class="text-4xl font-bold tracking-tight text-[#070740] dark:text-white sm:text-5xl">{{ $panelTitle }}</h1>
+                    <h1 class="text-4xl font-bold tracking-tight text-primary dark:text-white sm:text-5xl">{{ $panelTitle }}</h1>
                     <p class="mt-3 max-w-md text-sm leading-6 text-slate-600 dark:text-slate-300">{{ $panelSubtitle }}</p>
 
                     @if ($panelButtonText)

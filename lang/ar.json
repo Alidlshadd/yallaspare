@@ -2259,5 +2259,17 @@
     "Order: :ref": "الطلب: :ref",
     "Total: :total": "الإجمالي: :total",
     "From: :from": "من: :from",
-    "To: :to": "إلى: :to"
+    "To: :to": "إلى: :to",
+    "Login alert: sign-in detected at :time (:timezone).": "تنبيه تسجيل دخول: تم رصد تسجيل دخول في :time (:timezone).",
+    "We could not send your admin verification code. Please contact support or try again shortly.": "تعذّر إرسال رمز تحقق المسؤول. يرجى التواصل مع الدعم أو المحاولة مرة أخرى بعد قليل.",
+    ":name profile photo": "الصورة الشخصية لـ :name",
+    "Yalla Spare auto parts catalog, support, and legal information.": "كتالوج قطع غيار يلا سبير والدعم والمعلومات القانونية.",
+    "Express checkout is enabled. Your default address can be used automatically when available.": "الدفع السريع مفعّل. يمكن استخدام عنوانك الافتراضي تلقائياً عند توفره.",
+    "Standard checkout is active. You can still review and edit details before ordering.": "الدفع العادي مفعّل. لا يزال بإمكانك مراجعة التفاصيل وتعديلها قبل الطلب.",
+    "Review Order Faster": "مراجعة الطلب بشكل أسرع",
+    "Review Order": "مراجعة الطلب",
+    "Preferred contact: :method": "طريقة التواصل المفضّلة: :method",
+    "Uncategorized": "غير مصنف",
+    "Warranty on request": "الضمان عند الطلب",
+    "Engine match required": "يلزم تطابق المحرك"
 }

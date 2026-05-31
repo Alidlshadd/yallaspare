@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Rules\PhoneNumber;
 use App\Support\SqlSafe;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
@@ -149,7 +150,7 @@ class UserController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email:rfc', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
-            'phone' => ['nullable', 'string', 'max:30', 'regex:/^[0-9+\-\s().٠-٩۰-۹]+$/u', User::uniquePhoneRule($user->id)],
+            'phone' => ['nullable', 'string', 'max:30', new PhoneNumber(), User::uniquePhoneRule($user->id)],
             'date_of_birth' => ['nullable', 'date', 'before:today'],
             'role' => ['required', 'string', 'in:' . implode(',', User::allowedRoles())],
             'permissions' => ['nullable', 'array'],

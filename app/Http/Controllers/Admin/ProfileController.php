@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Rules\PhoneNumber;
 use App\Support\SecureImageStorage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -27,7 +28,7 @@ class ProfileController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
-            'phone' => ['nullable', 'string', 'max:30', 'regex:/^[0-9+\-\s().٠-٩۰-۹]+$/u', User::uniquePhoneRule($user->id)],
+            'phone' => ['nullable', 'string', 'max:30', new PhoneNumber(), User::uniquePhoneRule($user->id)],
             'profile_photo' => ['nullable', 'image', 'max:2048'],
             'remove_profile_photo' => ['sometimes', 'boolean'],
         ]);

@@ -55,7 +55,7 @@
 </head>
 <body class="min-h-screen">
     @php
-        $headerCartCount = (int) ($cartCount ?? 0);
+        $headerCartCount = (int) ($headerCartCount ?? $cartCount ?? 0);
     @endphp
 
     <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
@@ -85,7 +85,7 @@
 
                     <button
                         type="button"
-                        class="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#070740]/20 sm:hidden"
+                        class="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 sm:hidden"
                         @click="storeMenuOpen = !storeMenuOpen"
                         :aria-expanded="storeMenuOpen.toString()"
                         aria-label="{{ __('Menu') }}"

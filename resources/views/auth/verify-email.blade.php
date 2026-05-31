@@ -134,7 +134,7 @@
     >
         <div class="rounded-xl bg-slate-50 p-4 ring-1 ring-inset ring-slate-200 dark:bg-slate-950/50 dark:ring-white/10">
             <div class="flex items-start gap-4">
-                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#070740] text-white shadow-lg shadow-slate-950/20">
+                <div class="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary text-white shadow-lg shadow-slate-950/20">
                     @if ($verificationSent)
                         <svg class="h-6 w-6" data-verify-check viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                             <path fill-rule="evenodd" d="M16.704 5.29a1 1 0 0 1 .006 1.414l-7.25 7.312a1 1 0 0 1-1.42.002L3.29 9.226a1 1 0 1 1 1.42-1.408l4.04 4.075 6.54-6.597a1 1 0 0 1 1.414-.006Z" clip-rule="evenodd" />
@@ -152,7 +152,7 @@
                         {{ __('Enter the 6-digit code we sent to finish protecting your YallaSpare account.') }}
                     </p>
                     @if ($verificationEmail !== '')
-                        <p class="mt-3 break-words rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-[#070740] dark:border-white/10 dark:bg-slate-900 dark:text-slate-100">
+                        <p class="mt-3 break-words rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-primary dark:border-white/10 dark:bg-slate-900 dark:text-slate-100">
                             {{ $verificationEmail }}
                         </p>
                     @endif
@@ -163,15 +163,15 @@
         <div class="border-y border-slate-200 py-3 dark:border-white/10" aria-label="{{ __('Verification steps') }}">
             <div class="grid gap-3 text-sm sm:grid-cols-3">
                 <div class="flex items-center gap-2 text-slate-700 dark:text-slate-200">
-                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-[#070740] dark:bg-white/10 dark:text-white">1</span>
+                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-primary dark:bg-white/10 dark:text-white">1</span>
                     <span class="font-semibold">{{ __('Open inbox') }}</span>
                 </div>
                 <div class="flex items-center gap-2 text-slate-700 dark:text-slate-200">
-                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-[#070740] dark:bg-white/10 dark:text-white">2</span>
+                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-primary dark:bg-white/10 dark:text-white">2</span>
                     <span class="font-semibold">{{ __('Enter code') }}</span>
                 </div>
                 <div class="flex items-center gap-2 text-slate-700 dark:text-slate-200">
-                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-[#070740] dark:bg-white/10 dark:text-white">3</span>
+                    <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-slate-100 text-xs font-bold text-primary dark:bg-white/10 dark:text-white">3</span>
                     <span class="font-semibold">{{ __('Continue shopping') }}</span>
                 </div>
             </div>
@@ -195,7 +195,7 @@
                             maxlength="6"
                             pattern="[0-9]*"
                             value="{{ old('verification_code') }}"
-                            class="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-center text-xl font-bold tracking-[0.35em] text-[#070740] shadow-sm transition focus:border-[#070740] focus:outline-none focus:ring-2 focus:ring-[#070740]/20 dark:border-white/10 dark:bg-slate-900 dark:text-white dark:focus:border-sky-300 dark:focus:ring-sky-300/20"
+                            class="w-full rounded-lg border border-slate-200 bg-white px-4 py-3 text-center text-xl font-bold tracking-[0.35em] text-primary shadow-sm transition focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/20 dark:border-white/10 dark:bg-slate-900 dark:text-white dark:focus:border-sky-300 dark:focus:ring-sky-300/20"
                             required
                         >
                         @error('verification_code')
@@ -205,7 +205,7 @@
 
                     <button
                         type="submit"
-                        class="inline-flex min-h-[2.75rem] w-full items-center justify-center rounded-lg bg-[#070740] px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-slate-950/20 transition duration-200 hover:bg-[#10105c] focus:outline-none"
+                        class="inline-flex min-h-[2.75rem] w-full items-center justify-center rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-slate-950/20 transition duration-200 hover:bg-[#10105c] focus:outline-none"
                     >
                         {{ __('Verify Code') }}
                     </button>
@@ -216,7 +216,7 @@
 
                     <button
                         type="submit"
-                        class="inline-flex min-h-[2.75rem] w-full min-w-[14rem] items-center justify-center gap-2 rounded-lg bg-[#070740] px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-slate-950/20 transition duration-200 hover:bg-[#10105c] focus:outline-none disabled:cursor-not-allowed disabled:bg-slate-500 disabled:shadow-none sm:w-auto"
+                        class="inline-flex min-h-[2.75rem] w-full min-w-[14rem] items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-slate-950/20 transition duration-200 hover:bg-[#10105c] focus:outline-none disabled:cursor-not-allowed disabled:bg-slate-500 disabled:shadow-none sm:w-auto"
                         data-resend-button
                     >
                         <svg class="h-4 w-4 opacity-0" data-verify-spinner viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
