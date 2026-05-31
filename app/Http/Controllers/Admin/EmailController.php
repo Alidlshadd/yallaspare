@@ -509,18 +509,7 @@ class EmailController extends Controller
         } catch (Throwable $e) {
             $recipient = (string) $data['recipient'];
 
-            EmailLog::create([
-                'recipient_hash' => hash('sha256', strtolower($recipient)),
-                'recipient_domain' => str_contains($recipient, '@')
-                    ? strtolower(substr($recipient, strpos($recipient, '@') + 1))
-                    : null,
-                'subject' => mb_substr((string) $data['subject'], 0, 255),
-                'mailer' => $mailer,
-                'mailable_class' => OperationalNotificationMail::class,
-                'status' => EmailLog::STATUS_FAILED,
-                'error_message' => mb_substr($e->getMessage(), 0, 2000),
-                'sent_at' => null,
-            ]);
+            $this->recordFailedEmail($recipient, (string) $data['subject'], $mailer, $e);
 
             Log::error('Admin mail test failed', [
                 'recipient_hash' => hash('sha256', strtolower($recipient)),
@@ -535,6 +524,30 @@ class EmailController extends Controller
         }
 
         return back()->with('success', __('Test email sent successfully.'));
+    }
+
+    private function recordFailedEmail(string $recipient, string $subject, string $mailer, Throwable $e): void
+    {
+        if (! $this->emailLogTableExists()) {
+            return;
+        }
+
+        try {
+            EmailLog::create([
+                'recipient_hash' => hash('sha256', strtolower($recipient)),
+                'recipient_domain' => str_contains($recipient, '@')
+                    ? strtolower(substr($recipient, strpos($recipient, '@') + 1))
+                    : null,
+                'subject' => mb_substr($subject, 0, 255),
+                'mailer' => $mailer,
+                'mailable_class' => OperationalNotificationMail::class,
+                'status' => EmailLog::STATUS_FAILED,
+                'error_message' => mb_substr($e->getMessage(), 0, 2000),
+                'sent_at' => null,
+            ]);
+        } catch (Throwable) {
+            // Failed delivery logging must never turn a handled mail failure into a 500.
+        }
     }
 
     /**

@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
+use RuntimeException;
 use Tests\TestCase;
 
 class AdminEmailPageTest extends TestCase
@@ -78,9 +79,11 @@ class AdminEmailPageTest extends TestCase
         ]);
 
         foreach (['verify-email', 'order-status', 'security-alert', 'reset-password', 'two-factor-code', 'welcome', 'dealer', 'low-stock', 'support'] as $template) {
-            $this->actingAs($admin)
-                ->get(route('admin.email.preview', ['template' => $template, 'locale' => 'en']))
-                ->assertOk();
+            foreach (['en', 'ar', 'ku'] as $locale) {
+                $this->actingAs($admin)
+                    ->get(route('admin.email.preview', ['template' => $template, 'locale' => $locale]))
+                    ->assertOk();
+            }
         }
     }
 
@@ -98,5 +101,35 @@ class AdminEmailPageTest extends TestCase
             ->assertOk()
             ->assertSee('Email Center')
             ->assertSee('Mail log table is not installed yet');
+    }
+
+    public function test_failed_test_email_does_not_crash_when_email_log_table_is_missing(): void
+    {
+        Schema::dropIfExists('email_logs');
+
+        config([
+            'mail.default' => 'array',
+            'mail.from.address' => 'support@yallaspare.com',
+            'mail.from.name' => 'YallaSpare',
+        ]);
+
+        Mail::shouldReceive('mailer')
+            ->once()
+            ->with('array')
+            ->andThrow(new RuntimeException('Simulated mail transport failure'));
+
+        $admin = User::factory()->create([
+            'role' => User::ROLE_SETTINGS_MANAGER,
+            'email_verified_at' => now(),
+        ]);
+
+        $this->actingAs($admin)
+            ->post(route('admin.email.test'), [
+                'recipient' => 'owner@example.com',
+                'subject' => 'Admin mail test',
+                'mailer' => 'array',
+            ])
+            ->assertRedirect()
+            ->assertSessionHasErrors('recipient');
     }
 }
