@@ -7,6 +7,7 @@ use App\Models\EmailLog;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 
 class AdminEmailOutboxTest extends TestCase
@@ -88,5 +89,15 @@ class AdminEmailOutboxTest extends TestCase
             ->assertOk()
             ->assertSee('Failed one')
             ->assertDontSee('Sent one');
+    }
+
+    public function test_outbox_renders_when_email_log_table_is_missing(): void
+    {
+        Schema::dropIfExists('email_logs');
+
+        $this->actingAs($this->admin())
+            ->get(route('admin.email.outbox'))
+            ->assertOk()
+            ->assertSee('Email Outbox');
     }
 }

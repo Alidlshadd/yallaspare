@@ -5,10 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Mail\OperationalNotificationMail;
 use App\Models\EmailLog;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 use Throwable;
 
@@ -36,32 +38,28 @@ class EmailController extends Controller
     {
         $status = trim((string) $request->query('status', ''));
         $domain = trim((string) $request->query('domain', ''));
+        $mailLogAvailable = $this->emailLogTableExists();
 
-        $logs = EmailLog::query()
-            ->when(in_array($status, [EmailLog::STATUS_SENT, EmailLog::STATUS_FAILED], true),
-                fn ($q) => $q->where('status', $status))
-            ->when($domain !== '', fn ($q) => $q->where('recipient_domain', strtolower($domain)))
-            ->orderByDesc('id')
-            ->paginate(50)
-            ->withQueryString();
+        if ($mailLogAvailable) {
+            $logs = EmailLog::query()
+                ->when(in_array($status, [EmailLog::STATUS_SENT, EmailLog::STATUS_FAILED], true),
+                    fn ($q) => $q->where('status', $status))
+                ->when($domain !== '', fn ($q) => $q->where('recipient_domain', strtolower($domain)))
+                ->orderByDesc('id')
+                ->paginate(50)
+                ->withQueryString();
+        } else {
+            $logs = new LengthAwarePaginator([], 0, 50);
+        }
 
-        $stats = [
-            'total_24h' => EmailLog::query()->where('created_at', '>=', now()->subDay())->count(),
-            'sent_24h' => EmailLog::query()
-                ->where('status', EmailLog::STATUS_SENT)
-                ->where('created_at', '>=', now()->subDay())
-                ->count(),
-            'failed_24h' => EmailLog::query()
-                ->where('status', EmailLog::STATUS_FAILED)
-                ->where('created_at', '>=', now()->subDay())
-                ->count(),
-        ];
+        $stats = $this->emailLogStats24h();
 
         return view('admin.email.outbox', [
             'logs' => $logs,
             'stats' => $stats,
             'status' => $status,
             'domain' => $domain,
+            'mailLogAvailable' => $mailLogAvailable,
         ]);
     }
 
@@ -225,6 +223,17 @@ class EmailController extends Controller
      */
     private function emailStats(): array
     {
+        if (! $this->emailLogTableExists()) {
+            return [
+                'total_24h' => 0,
+                'sent_24h' => 0,
+                'failed_24h' => 0,
+                'total_7d' => 0,
+                'success_rate_24h' => null,
+                'last_sent_label' => __('Mail log table is not installed yet'),
+            ];
+        }
+
         $lastDay = now()->subDay();
         $lastWeek = now()->subDays(7);
 
@@ -261,10 +270,51 @@ class EmailController extends Controller
      */
     private function recentLogs()
     {
+        if (! $this->emailLogTableExists()) {
+            return collect();
+        }
+
         return EmailLog::query()
             ->orderByDesc('id')
             ->limit(5)
             ->get();
+    }
+
+    /**
+     * @return array{total_24h:int,sent_24h:int,failed_24h:int}
+     */
+    private function emailLogStats24h(): array
+    {
+        if (! $this->emailLogTableExists()) {
+            return [
+                'total_24h' => 0,
+                'sent_24h' => 0,
+                'failed_24h' => 0,
+            ];
+        }
+
+        $lastDay = now()->subDay();
+
+        return [
+            'total_24h' => EmailLog::query()->where('created_at', '>=', $lastDay)->count(),
+            'sent_24h' => EmailLog::query()
+                ->where('status', EmailLog::STATUS_SENT)
+                ->where('created_at', '>=', $lastDay)
+                ->count(),
+            'failed_24h' => EmailLog::query()
+                ->where('status', EmailLog::STATUS_FAILED)
+                ->where('created_at', '>=', $lastDay)
+                ->count(),
+        ];
+    }
+
+    private function emailLogTableExists(): bool
+    {
+        try {
+            return Schema::hasTable('email_logs');
+        } catch (Throwable) {
+            return false;
+        }
     }
 
     /**

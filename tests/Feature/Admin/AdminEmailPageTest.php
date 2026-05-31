@@ -6,6 +6,7 @@ use App\Mail\OperationalNotificationMail;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Schema;
 use Tests\TestCase;
 
 class AdminEmailPageTest extends TestCase
@@ -81,5 +82,21 @@ class AdminEmailPageTest extends TestCase
                 ->get(route('admin.email.preview', ['template' => $template, 'locale' => 'en']))
                 ->assertOk();
         }
+    }
+
+    public function test_email_center_renders_when_email_log_table_is_missing(): void
+    {
+        Schema::dropIfExists('email_logs');
+
+        $admin = User::factory()->create([
+            'role' => User::ROLE_SETTINGS_MANAGER,
+            'email_verified_at' => now(),
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.email.index'))
+            ->assertOk()
+            ->assertSee('Email Center')
+            ->assertSee('Mail log table is not installed yet');
     }
 }

@@ -15,6 +15,12 @@
 
     <div class="py-8">
         <div class="mx-auto max-w-6xl space-y-6 px-4 sm:px-6 lg:px-8">
+            @if(isset($mailLogAvailable) && ! $mailLogAvailable)
+                <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">
+                    {{ __('Mail log table is not installed yet. Run the pending migrations to enable delivery history.') }}
+                </div>
+            @endif
+
             <div class="grid gap-3 sm:grid-cols-3">
                 <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Total (24h)') }}</p>
