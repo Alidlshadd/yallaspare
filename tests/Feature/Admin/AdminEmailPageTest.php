@@ -68,4 +68,18 @@ class AdminEmailPageTest extends TestCase
                 && ($mail->context['type'] ?? null) === 'mail_test';
         });
     }
+
+    public function test_settings_manager_can_preview_email_templates(): void
+    {
+        $admin = User::factory()->create([
+            'role' => User::ROLE_SETTINGS_MANAGER,
+            'email_verified_at' => now(),
+        ]);
+
+        foreach (['verify-email', 'order-status', 'security-alert', 'reset-password', 'two-factor-code', 'welcome', 'dealer', 'low-stock', 'support'] as $template) {
+            $this->actingAs($admin)
+                ->get(route('admin.email.preview', ['template' => $template, 'locale' => 'en']))
+                ->assertOk();
+        }
+    }
 }

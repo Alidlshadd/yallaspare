@@ -16,11 +16,19 @@ class EmailController extends Controller
 {
     public function index(): View
     {
+        $checks = $this->readinessChecks();
+        $templateCards = $this->templateCards();
+
         return view('admin.email.index', [
             'summary' => $this->mailSummary(),
             'mailers' => $this->availableMailers(),
-            'checks' => $this->readinessChecks(),
+            'checks' => $checks,
+            'emailStats' => $this->emailStats(),
+            'health' => $this->healthSummary($checks),
+            'recentLogs' => $this->recentLogs(),
             'previewTemplates' => array_keys($this->previewTemplates()),
+            'templateCards' => $templateCards,
+            'previewShowcase' => array_slice($templateCards, 0, 3),
         ]);
     }
 
@@ -207,6 +215,209 @@ class EmailController extends Controller
                     ],
                     'actionUrl' => url('/'),
                     'actionText' => __('Review account security'),
+                ],
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function emailStats(): array
+    {
+        $lastDay = now()->subDay();
+        $lastWeek = now()->subDays(7);
+
+        $total24h = EmailLog::query()->where('created_at', '>=', $lastDay)->count();
+        $sent24h = EmailLog::query()
+            ->where('status', EmailLog::STATUS_SENT)
+            ->where('created_at', '>=', $lastDay)
+            ->count();
+        $failed24h = EmailLog::query()
+            ->where('status', EmailLog::STATUS_FAILED)
+            ->where('created_at', '>=', $lastDay)
+            ->count();
+        $total7d = EmailLog::query()->where('created_at', '>=', $lastWeek)->count();
+        $lastSent = EmailLog::query()
+            ->where('status', EmailLog::STATUS_SENT)
+            ->orderByDesc('sent_at')
+            ->orderByDesc('id')
+            ->first();
+
+        return [
+            'total_24h' => $total24h,
+            'sent_24h' => $sent24h,
+            'failed_24h' => $failed24h,
+            'total_7d' => $total7d,
+            'success_rate_24h' => $total24h > 0 ? (int) round(($sent24h / $total24h) * 100) : null,
+            'last_sent_label' => $lastSent?->sent_at
+                ? $lastSent->sent_at->diffForHumans()
+                : __('No sent mail yet'),
+        ];
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection<int, EmailLog>
+     */
+    private function recentLogs()
+    {
+        return EmailLog::query()
+            ->orderByDesc('id')
+            ->limit(5)
+            ->get();
+    }
+
+    /**
+     * @param  array<int, array{label:string,value:string,ok:bool,detail:string}>  $checks
+     * @return array{ok:int,total:int,score:int,label:string,tone:string}
+     */
+    private function healthSummary(array $checks): array
+    {
+        $total = count($checks);
+        $ok = collect($checks)->where('ok', true)->count();
+        $score = $total > 0 ? (int) round(($ok / $total) * 100) : 0;
+
+        return [
+            'ok' => $ok,
+            'total' => $total,
+            'score' => $score,
+            'label' => $score >= 100
+                ? __('Ready')
+                : ($score >= 75 ? __('Needs review') : __('Needs setup')),
+            'tone' => $score >= 100 ? 'green' : ($score >= 75 ? 'amber' : 'rose'),
+        ];
+    }
+
+    /**
+     * @return array<int, array{key:string,title:string,description:string,icon:string,tone:string,badges:array<int,string>,sample:array{spec:string,subject:string,body:string,meta:string}}>
+     */
+    private function templateCards(): array
+    {
+        return [
+            [
+                'key' => 'verify-email',
+                'title' => __('Email verification'),
+                'description' => __('Six-digit customer verification with expiry details.'),
+                'icon' => 'fa-shield-halved',
+                'tone' => 'blue',
+                'badges' => ['Auth', 'Code'],
+                'sample' => [
+                    'spec' => 'SYS / VERIFY',
+                    'subject' => __('Verify your email address'),
+                    'body' => __('Enter the code on the verification screen to protect your account.'),
+                    'meta' => __('Code 847293 - expires in 60 minutes'),
+                ],
+            ],
+            [
+                'key' => 'order-status',
+                'title' => __('Order status'),
+                'description' => __('Customer order timeline with items, totals, and tracking CTA.'),
+                'icon' => 'fa-truck-fast',
+                'tone' => 'emerald',
+                'badges' => ['Orders', 'Customer'],
+                'sample' => [
+                    'spec' => 'ORD / STATUS',
+                    'subject' => __('Your order is on the way'),
+                    'body' => __('Order #YS-104482 has shipped and will arrive in 2-3 business days.'),
+                    'meta' => __('3 items - 135,500 IQD'),
+                ],
+            ],
+            [
+                'key' => 'security-alert',
+                'title' => __('Security alert'),
+                'description' => __('Admin sign-in and risk notification with device metadata.'),
+                'icon' => 'fa-triangle-exclamation',
+                'tone' => 'rose',
+                'badges' => ['Admin', 'Security'],
+                'sample' => [
+                    'spec' => 'SEC / ALERT',
+                    'subject' => __('New admin sign-in detected'),
+                    'body' => __('A protected admin account signed in from a new device.'),
+                    'meta' => __('Chrome 134 - Windows 11'),
+                ],
+            ],
+            [
+                'key' => 'reset-password',
+                'title' => __('Password reset'),
+                'description' => __('Secure reset flow with expiry and protective warning.'),
+                'icon' => 'fa-key',
+                'tone' => 'amber',
+                'badges' => ['Auth', 'Security'],
+                'sample' => [
+                    'spec' => 'SEC / RESET',
+                    'subject' => __('Reset your password'),
+                    'body' => __('Choose a new password using the secure reset link.'),
+                    'meta' => __('Expires in 60 minutes'),
+                ],
+            ],
+            [
+                'key' => 'two-factor-code',
+                'title' => __('Admin 2FA'),
+                'description' => __('Short-lived admin sign-in code for protected sessions.'),
+                'icon' => 'fa-user-lock',
+                'tone' => 'violet',
+                'badges' => ['Admin', '2FA'],
+                'sample' => [
+                    'spec' => 'SEC / 2FA',
+                    'subject' => __('Admin sign-in code'),
+                    'body' => __('Use this one-time code to finish signing in.'),
+                    'meta' => __('Code 129 437 - valid for 10 minutes'),
+                ],
+            ],
+            [
+                'key' => 'welcome',
+                'title' => __('Welcome'),
+                'description' => __('New account onboarding with useful next actions.'),
+                'icon' => 'fa-star',
+                'tone' => 'cyan',
+                'badges' => ['Customer', 'Onboarding'],
+                'sample' => [
+                    'spec' => 'SYS / WELCOME',
+                    'subject' => __('Welcome to YallaSpare'),
+                    'body' => __('Your account is ready for checkout, tracking, and saved settings.'),
+                    'meta' => __('Shop parts - track orders - secure checkout'),
+                ],
+            ],
+            [
+                'key' => 'dealer',
+                'title' => __('Dealer update'),
+                'description' => __('Dealer account status and account action messaging.'),
+                'icon' => 'fa-handshake',
+                'tone' => 'indigo',
+                'badges' => ['Dealer', 'Status'],
+                'sample' => [
+                    'spec' => 'DLR / STATUS',
+                    'subject' => __('Dealer status approved'),
+                    'body' => __('Dealer pricing and account tools are now available.'),
+                    'meta' => __('Discount tier 8%'),
+                ],
+            ],
+            [
+                'key' => 'low-stock',
+                'title' => __('Low stock alert'),
+                'description' => __('Inventory warning for products below configured threshold.'),
+                'icon' => 'fa-boxes-stacked',
+                'tone' => 'orange',
+                'badges' => ['Inventory', 'Ops'],
+                'sample' => [
+                    'spec' => 'INV / STOCK',
+                    'subject' => __('3 products below threshold'),
+                    'body' => __('Replenish products before the next sales cycle.'),
+                    'meta' => __('NGK-IX-IZTR5B - 4 units left'),
+                ],
+            ],
+            [
+                'key' => 'support',
+                'title' => __('Support request'),
+                'description' => __('Inbound customer contact details and message summary.'),
+                'icon' => 'fa-headset',
+                'tone' => 'slate',
+                'badges' => ['Support', 'Admin'],
+                'sample' => [
+                    'spec' => 'SUP / REQUEST',
+                    'subject' => __('Wrong part received'),
+                    'body' => __('Customer submitted an order issue with contact details.'),
+                    'meta' => __('sara@example.com - +964 770 123 4567'),
                 ],
             ],
         ];
