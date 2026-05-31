@@ -3,14 +3,18 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Jobs\SendEmailBroadcastJob;
 use App\Mail\OperationalNotificationMail;
+use App\Models\EmailBroadcast;
 use App\Models\EmailLog;
+use App\Models\User;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Throwable;
 
@@ -31,6 +35,9 @@ class EmailController extends Controller
             'previewTemplates' => array_keys($this->previewTemplates()),
             'templateCards' => $templateCards,
             'previewShowcase' => array_slice($templateCards, 0, 3),
+            'audienceRoles' => $this->broadcastAudienceRoles(),
+            'recentBroadcasts' => $this->recentBroadcasts(),
+            'broadcastsAvailable' => $this->emailBroadcastTableExists(),
         ]);
     }
 
@@ -526,6 +533,70 @@ class EmailController extends Controller
         return back()->with('success', __('Test email sent successfully.'));
     }
 
+    public function sendBroadcast(Request $request): RedirectResponse
+    {
+        if (! $this->emailBroadcastTableExists()) {
+            return back()
+                ->withInput()
+                ->withErrors(['broadcast' => 'Email broadcast table is not installed yet. Run the pending migrations first.']);
+        }
+
+        $data = $request->validate([
+            'audience_type' => ['required', Rule::in([
+                EmailBroadcast::AUDIENCE_ALL,
+                EmailBroadcast::AUDIENCE_ROLE,
+                EmailBroadcast::AUDIENCE_USER,
+            ])],
+            'audience_role' => ['nullable', 'required_if:audience_type,' . EmailBroadcast::AUDIENCE_ROLE, Rule::in(array_keys($this->broadcastAudienceRoles()))],
+            'recipient_email' => ['nullable', 'required_if:audience_type,' . EmailBroadcast::AUDIENCE_USER, 'email:rfc', 'max:255'],
+            'purpose' => ['required', Rule::in([EmailBroadcast::PURPOSE_PROMOTIONAL, EmailBroadcast::PURPOSE_OPERATIONAL])],
+            'subject' => ['required', 'string', 'max:160'],
+            'message' => ['required', 'string', 'max:5000'],
+            'action_url' => [
+                'nullable',
+                'url',
+                'max:2048',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    if (is_string($value) && $value !== '' && ! $this->isAllowedBroadcastUrl($value)) {
+                        $fail('Action links must point to the YallaSpare website.');
+                    }
+                },
+            ],
+            'action_text' => ['nullable', 'string', 'max:80'],
+        ]);
+
+        $actionUrl = trim((string) ($data['action_url'] ?? ''));
+        $targetUser = null;
+        if ($data['audience_type'] === EmailBroadcast::AUDIENCE_USER) {
+            $targetUser = User::query()
+                ->whereRaw('LOWER(email) = ?', [strtolower((string) $data['recipient_email'])])
+                ->first();
+
+            if (! $targetUser) {
+                return back()
+                    ->withInput()
+                    ->withErrors(['recipient_email' => __('No user was found for that email address.')]);
+            }
+        }
+
+        $broadcast = EmailBroadcast::create([
+            'admin_id' => $request->user()?->getAuthIdentifier(),
+            'target_user_id' => $targetUser?->getKey(),
+            'audience_type' => (string) $data['audience_type'],
+            'audience_role' => $data['audience_type'] === EmailBroadcast::AUDIENCE_ROLE ? (string) $data['audience_role'] : null,
+            'purpose' => (string) $data['purpose'],
+            'subject' => trim((string) $data['subject']),
+            'message' => trim((string) $data['message']),
+            'action_url' => $actionUrl !== '' ? $actionUrl : null,
+            'action_text' => trim((string) ($data['action_text'] ?? '')) ?: null,
+            'status' => EmailBroadcast::STATUS_QUEUED,
+        ]);
+
+        SendEmailBroadcastJob::dispatch($broadcast->id);
+
+        return back()->with('success', __('Email broadcast queued successfully.'));
+    }
+
     private function recordFailedEmail(string $recipient, string $subject, string $mailer, Throwable $e): void
     {
         if (! $this->emailLogTableExists()) {
@@ -548,6 +619,60 @@ class EmailController extends Controller
         } catch (Throwable) {
             // Failed delivery logging must never turn a handled mail failure into a 500.
         }
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function broadcastAudienceRoles(): array
+    {
+        return [
+            User::ROLE_USER => __('Customers'),
+            User::ROLE_DEALER => __('Dealers'),
+            User::ROLE_ADMIN => __('Admins'),
+            User::ROLE_SETTINGS_MANAGER => __('Settings managers'),
+        ];
+    }
+
+    private function recentBroadcasts()
+    {
+        if (! $this->emailBroadcastTableExists()) {
+            return collect();
+        }
+
+        return EmailBroadcast::query()
+            ->with(['admin:id,name', 'targetUser:id,name,email'])
+            ->latest('id')
+            ->limit(5)
+            ->get();
+    }
+
+    private function emailBroadcastTableExists(): bool
+    {
+        try {
+            return Schema::hasTable('email_broadcasts');
+        } catch (Throwable) {
+            return false;
+        }
+    }
+
+    private function isAllowedBroadcastUrl(string $url): bool
+    {
+        $urlHost = parse_url($url, PHP_URL_HOST);
+        if (! is_string($urlHost) || $urlHost === '') {
+            return false;
+        }
+
+        $allowedHosts = collect([
+            parse_url((string) config('app.url'), PHP_URL_HOST),
+            request()->getHost(),
+        ])
+            ->filter(fn ($host) => is_string($host) && $host !== '')
+            ->map(fn (string $host) => strtolower($host))
+            ->unique()
+            ->all();
+
+        return in_array(strtolower($urlHost), $allowedHosts, true);
     }
 
     /**

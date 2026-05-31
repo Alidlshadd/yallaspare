@@ -405,6 +405,9 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::post('/email/test', [EmailController::class, 'sendTest'])
             ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
             ->name('email.test');
+        Route::post('/email/broadcast', [EmailController::class, 'sendBroadcast'])
+            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
+            ->name('email.broadcast');
         Route::get('/email/preview/{template}', [EmailController::class, 'preview'])
             ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
             ->where('template', '[a-z0-9-]+')

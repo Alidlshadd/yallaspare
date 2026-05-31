@@ -61,8 +61,8 @@ class OperationalNotificationMail extends Mailable implements ShouldQueue
             'preheader' => Str::limit(strip_tags($this->bodyText), 120),
             'eyebrow' => __('YallaSpare notification'),
             'metaItems' => $this->metaItemsFromContext(),
-            'actionUrl' => url('/'),
-            'actionText' => __('Open YallaSpare'),
+            'actionUrl' => (string) ($this->context['action_url'] ?? url('/')),
+            'actionText' => (string) ($this->context['action_text'] ?? __('Open YallaSpare')),
         ];
 
         if (in_array($type, ['order_placed', 'order_status_updated'], true)) {
@@ -140,7 +140,7 @@ class OperationalNotificationMail extends Mailable implements ShouldQueue
     private function metaItemsFromContext(): array
     {
         return collect($this->context)
-            ->except(['type', 'locale', 'order_id'])
+            ->except(['type', 'locale', 'order_id', 'broadcast_id', 'purpose', 'action_url', 'action_text'])
             ->take(6)
             ->map(fn ($value, $key) => [
                 'label' => __(Str::headline((string) $key)),

@@ -174,6 +174,143 @@
                 </div>
             </section>
 
+            <section class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/30">
+                <div class="grid gap-0 xl:grid-cols-[1fr_0.9fr]">
+                    <form method="POST" action="{{ route('admin.email.broadcast') }}" class="space-y-5 p-6 sm:p-8">
+                        @csrf
+                        <div>
+                            <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ __('Send Broadcast') }}</p>
+                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Send a controlled email to one user, a role group, or all eligible users.') }}</p>
+                        </div>
+
+                        @if(! $broadcastsAvailable)
+                            <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-medium leading-5 text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">
+                                {{ __('Email broadcast table is not installed yet. Run the pending migrations before sending broadcasts.') }}
+                            </div>
+                        @endif
+
+                        <div class="grid gap-4 md:grid-cols-2">
+                            <div>
+                                <label for="audience_type" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Audience') }}</label>
+                                <select id="audience_type" name="audience_type" class="w-full rounded-xl border-slate-300 bg-white text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                    <option value="all" @selected(old('audience_type') === 'all')>{{ __('All eligible users') }}</option>
+                                    <option value="role" @selected(old('audience_type') === 'role')>{{ __('Role group') }}</option>
+                                    <option value="user" @selected(old('audience_type') === 'user')>{{ __('Single user') }}</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="purpose" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Purpose') }}</label>
+                                <select id="purpose" name="purpose" class="w-full rounded-xl border-slate-300 bg-white text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                    <option value="promotional" @selected(old('purpose', 'promotional') === 'promotional')>{{ __('Promotional / special day') }}</option>
+                                    <option value="operational" @selected(old('purpose') === 'operational')>{{ __('Operational notice') }}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="grid gap-4 md:grid-cols-2">
+                            <div>
+                                <label for="audience_role" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Role group') }}</label>
+                                <select id="audience_role" name="audience_role" class="w-full rounded-xl border-slate-300 bg-white text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                    <option value="">{{ __('Choose when audience is role group') }}</option>
+                                    @foreach($audienceRoles as $role => $label)
+                                        <option value="{{ $role }}" @selected(old('audience_role') === $role)>{{ $label }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div>
+                                <label for="recipient_email" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Single user email') }}</label>
+                                <input id="recipient_email" type="email" name="recipient_email" value="{{ old('recipient_email') }}" placeholder="customer@example.com" class="w-full rounded-xl border-slate-300 bg-white text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label for="broadcast_subject" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Subject') }}</label>
+                            <input id="broadcast_subject" type="text" name="subject" value="{{ old('subject') }}" placeholder="{{ __('Happy Newroz from YallaSpare') }}" class="w-full rounded-xl border-slate-300 bg-white text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" required>
+                        </div>
+
+                        <div>
+                            <label for="broadcast_message" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Message') }}</label>
+                            <textarea id="broadcast_message" name="message" rows="6" class="w-full rounded-xl border-slate-300 bg-white text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" placeholder="{{ __('Write the email body here. Plain text is safest and line breaks are preserved.') }}" required>{{ old('message') }}</textarea>
+                        </div>
+
+                        <div class="grid gap-4 md:grid-cols-2">
+                            <div>
+                                <label for="action_url" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Button URL') }}</label>
+                                <input id="action_url" type="url" name="action_url" value="{{ old('action_url') }}" placeholder="{{ url('/') }}" class="w-full rounded-xl border-slate-300 bg-white text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                            </div>
+                            <div>
+                                <label for="action_text" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Button text') }}</label>
+                                <input id="action_text" type="text" name="action_text" value="{{ old('action_text') }}" placeholder="{{ __('Shop now') }}" class="w-full rounded-xl border-slate-300 bg-white text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                            </div>
+                        </div>
+
+                        <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-5 text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">
+                            {{ __('Promotional broadcasts only go to verified users who allow email and marketing messages. Operational notices still require verified email and email notifications enabled.') }}
+                        </div>
+
+                        <button type="submit" @disabled(! $broadcastsAvailable) class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:bg-slate-400">
+                            <i class="fas fa-bullhorn"></i>
+                            {{ __('Queue Broadcast') }}
+                        </button>
+                    </form>
+
+                    <div class="border-t border-slate-200 p-6 dark:border-slate-800 sm:p-8 xl:border-l xl:border-t-0">
+                        <div class="flex items-center justify-between gap-3">
+                            <div>
+                                <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ __('Recent Broadcasts') }}</p>
+                                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Queued campaign and announcement jobs.') }}</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-5 divide-y divide-slate-100 dark:divide-slate-800">
+                            @forelse($recentBroadcasts as $broadcast)
+                                <div class="py-4">
+                                    <div class="flex items-start justify-between gap-3">
+                                        <div class="min-w-0">
+                                            <p class="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $broadcast->subject }}</p>
+                                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
+                                                {{ __(ucfirst($broadcast->audience_type)) }}
+                                                @if($broadcast->audience_role)
+                                                    <span class="mx-1 text-slate-300">/</span>{{ $audienceRoles[$broadcast->audience_role] ?? $broadcast->audience_role }}
+                                                @endif
+                                                @if($broadcast->targetUser)
+                                                    <span class="mx-1 text-slate-300">/</span>{{ $broadcast->targetUser->email }}
+                                                @endif
+                                            </p>
+                                        </div>
+                                        <span class="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                                            {{ __(ucfirst($broadcast->status)) }}
+                                        </span>
+                                    </div>
+                                    <div class="mt-3 grid grid-cols-3 gap-2 text-center text-xs">
+                                        <div class="rounded-lg bg-slate-50 px-2 py-2 dark:bg-slate-950">
+                                            <p class="font-semibold text-slate-900 dark:text-slate-100">{{ number_format($broadcast->recipient_count) }}</p>
+                                            <p class="text-slate-500 dark:text-slate-400">{{ __('Recipients') }}</p>
+                                        </div>
+                                        <div class="rounded-lg bg-emerald-50 px-2 py-2 dark:bg-emerald-950/30">
+                                            <p class="font-semibold text-emerald-800 dark:text-emerald-200">{{ number_format($broadcast->sent_count) }}</p>
+                                            <p class="text-emerald-700 dark:text-emerald-300">{{ __('Sent') }}</p>
+                                        </div>
+                                        <div class="rounded-lg bg-rose-50 px-2 py-2 dark:bg-rose-950/30">
+                                            <p class="font-semibold text-rose-800 dark:text-rose-200">{{ number_format($broadcast->failed_count) }}</p>
+                                            <p class="text-rose-700 dark:text-rose-300">{{ __('Failed') }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            @empty
+                                <div class="py-12 text-center">
+                                    <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300">
+                                        <i class="fas fa-bullhorn"></i>
+                                    </span>
+                                    <p class="mt-3 text-sm font-semibold text-slate-900 dark:text-slate-100">{{ __('No broadcasts yet') }}</p>
+                                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('Queue the first announcement from the form.') }}</p>
+                                </div>
+                            @endforelse
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <div class="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
                 <section class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/30">
                     <div class="flex items-center justify-between gap-3 border-b border-slate-200 px-6 py-5 dark:border-slate-800">
