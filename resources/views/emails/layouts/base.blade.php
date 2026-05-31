@@ -1,14 +1,11 @@
 @php
     $brandName     = (string) ($brandName ?? ($systemSettings['site_name'] ?? 'YallaSpare'));
-    $logoUrl       = $logoUrl ?? ($systemSettings['site_logo_url'] ?? null);
-    $absoluteLogoUrl = is_string($logoUrl) && $logoUrl !== ''
-        ? (str_starts_with($logoUrl, 'http://') || str_starts_with($logoUrl, 'https://') ? $logoUrl : url($logoUrl))
-        : null;
     $locale        = (string) ($locale ?? app()->getLocale());
     $isRtl         = in_array($locale, ['ar', 'ku'], true);
     $preheaderText = trim((string) ($preheader ?? ''));
     $recipientEmail = $recipientEmail ?? null;
-    $recipientName  = $recipientName ?? null;
+    $recipientName  = $recipientName  ?? null;
+    $specTag        = trim((string) ($specTag ?? 'YALLASPARE / SYS'));
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', $locale) }}" dir="{{ $isRtl ? 'rtl' : 'ltr' }}">
@@ -27,45 +24,51 @@
         body                  { margin:0!important; padding:0!important; width:100%!important; min-width:100%; }
 
         /* ─── LINKS ──────────────────────────────────────────────── */
-        a                     { color:#3b82f6; text-decoration:none; }
+        a                     { color:#070740; text-decoration:none; }
         a:hover               { text-decoration:underline; }
 
-        /* ─── MOBILE ─────────────────────────────────────────────── */
+        /* ─── MOBILE (down to 320px) ─────────────────────────────── */
         @media screen and (max-width:640px) {
             .em-shell         { padding:0!important; }
-            .em-outer         { padding:16px 12px 24px!important; }
-            .em-card          { border-radius:16px!important; }
-            .em-hero          { padding:30px 22px 26px!important; }
-            .em-body          { padding:28px 22px!important; }
-            .em-footer        { padding:24px 22px!important; }
-            .em-title         { font-size:24px!important; line-height:32px!important; }
-            .em-copy          { font-size:15px!important; line-height:26px!important; }
-            .em-btn           { display:block!important; width:100%!important; box-sizing:border-box!important; text-align:center!important; padding:15px 20px!important; }
+            .em-outer         { padding:14px 10px 22px!important; }
+            .em-card          { border-radius:4px!important; }
+            .em-hero          { padding:24px 22px!important; }
+            .em-hero-mark     { font-size:15px!important; }
+            .em-hero-spec     { font-size:9.5px!important; letter-spacing:1.2px!important; }
+            .em-rbar          { padding:10px 22px!important; }
+            .em-body          { padding:32px 22px 28px!important; }
+            .em-footer        { padding:18px 22px!important; }
+            .em-footer-cell   { display:block!important; width:100%!important; text-align:center!important; padding:4px 0!important; }
+            .em-title         { font-size:24px!important; line-height:30px!important; }
+            .em-copy          { font-size:15px!important; line-height:25px!important; }
+            .em-btn           { display:block!important; width:100%!important; box-sizing:border-box!important; text-align:center!important; padding:14px 18px!important; }
             .em-btn-wrap      { width:100%!important; }
-            .em-code          { font-size:30px!important; letter-spacing:8px!important; }
-            .em-rbar          { padding:11px 22px!important; }
-            .em-meta-label    { display:block!important; width:100%!important; border-right:0!important; border-bottom:1px solid #e2e8f0; }
-            .em-meta-value    { display:block!important; width:100%!important; }
+            .em-code          { font-size:30px!important; letter-spacing:8px!important; padding-left:8px!important; }
+            .em-meta-label    { display:block!important; width:100%!important; border-right:0!important; border-bottom:1px solid #ebedf0!important; }
+            .em-meta-value    { display:block!important; width:100%!important; padding-top:0!important; }
             .em-hide-sm       { display:none!important; }
             .em-stack         { display:block!important; width:100%!important; }
+            .em-card-legal    { padding:14px 16px!important; font-size:10.5px!important; }
         }
 
         /* ─── DARK MODE ──────────────────────────────────────────── */
         @media (prefers-color-scheme:dark) {
             body,
-            .em-page-bg       { background-color:#02021a!important; }
-            .em-card          { background-color:#0f1035!important; border-color:rgba(255,255,255,0.06)!important; }
-            .em-body-bg       { background-color:#0f1035!important; }
-            .em-rbar          { background-color:#111246!important; border-bottom-color:#1e2060!important; }
+            .em-page-bg       { background-color:#070b1f!important; }
+            .em-card          { background-color:#10112e!important; border-color:rgba(255,255,255,0.06)!important; }
+            .em-body-bg       { background-color:#10112e!important; }
+            .em-rbar          { background-color:#0f1135!important; border-bottom-color:#1e2060!important; }
             .em-rbar-text     { color:#94a3b8!important; }
             .em-rbar-email    { color:#60a5fa!important; }
+            .em-kicker        { color:#94a3b8!important; }
             .em-title         { color:#f1f5f9!important; }
-            .em-copy          { color:#94a3b8!important; }
-            .em-strong        { color:#cbd5e1!important; }
-            .em-muted         { color:#64748b!important; }
+            .em-copy          { color:#cbd5e1!important; }
+            .em-strong        { color:#e2e8f0!important; }
+            .em-muted         { color:#94a3b8!important; }
             .em-meta-row      { border-color:#1e2462!important; }
             .em-meta-bg       { background-color:#141550!important; }
-            .em-meta-val      { color:#cbd5e1!important; }
+            .em-meta-label    { color:#8a8ea3!important; }
+            .em-meta-val      { color:#e2e8f0!important; }
             .em-alert-info    { background-color:#0d1b3e!important; border-color:#1e3a8a!important; color:#93c5fd!important; }
             .em-alert-warn    { background-color:#1c1400!important; border-color:#92400e!important; color:#fcd34d!important; }
             .em-alert-danger  { background-color:#1a0808!important; border-color:#9f1239!important; color:#fca5a5!important; }
@@ -74,21 +77,22 @@
             .em-code-text     { color:#a5b4fc!important; }
             .em-order-hdr     { background-color:#141550!important; color:#e2e8f0!important; }
             .em-order-row     { border-color:#1e2462!important; color:#cbd5e1!important; }
-            .em-order-sku     { color:#64748b!important; }
+            .em-order-sku     { color:#94a3b8!important; }
             .em-totals-row    { border-color:#1e2462!important; }
             .em-totals-label  { color:#94a3b8!important; }
             .em-totals-val    { color:#e2e8f0!important; }
             .em-sec-notice    { background-color:#0a0b38!important; border-color:#1e2462!important; }
-            .em-sec-title     { color:#cbd5e1!important; }
-            .em-sec-text      { color:#64748b!important; }
-            .em-footer-bg     { background-color:#070720!important; border-top-color:#1e2060!important; }
-            .em-footer-text   { color:#475569!important; }
-            .em-footer-link   { color:#3b82f6!important; }
-            .em-footer-dim    { color:#334155!important; }
+            .em-sec-title     { color:#e2e8f0!important; }
+            .em-sec-text      { color:#94a3b8!important; }
+            .em-footer-bg     { background-color:#0a0b2a!important; border-top-color:#1e2060!important; }
+            .em-footer-text   { color:#94a3b8!important; }
+            .em-footer-link   { color:#60a5fa!important; border-bottom-color:#1e2462!important; }
+            .em-footer-dim    { color:#64748b!important; }
+            .em-card-legal    { color:#475569!important; }
         }
     </style>
 </head>
-<body class="em-page-bg" style="margin:0;padding:0;background:#040325;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;color:#0f172a;">
+<body class="em-page-bg" style="margin:0;padding:0;background:#eef0f4;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;color:#0f172a;">
 
     {{-- PREHEADER (invisible preview text) --}}
     @if ($preheaderText !== '')
@@ -96,58 +100,46 @@
     @endif
 
     {{-- OUTER WRAPPER --}}
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;background:#040325;">
-    <tr><td class="em-outer" align="center" style="padding:32px 16px 40px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="width:100%;background:#eef0f4;">
+    <tr><td class="em-outer" align="center" style="padding:26px 16px 36px;">
 
         {{-- EMAIL CARD --}}
-        <table role="presentation" class="em-card" width="100%" cellpadding="0" cellspacing="0" style="max-width:620px;width:100%;background:#ffffff;border-radius:24px;overflow:hidden;box-shadow:0 40px 100px rgba(0,0,0,0.65),0 12px 32px rgba(0,0,0,0.35);border:1px solid rgba(255,255,255,0.07);">
+        <table role="presentation" class="em-card" width="100%" cellpadding="0" cellspacing="0" style="max-width:620px;width:100%;background:#ffffff;border-radius:4px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,0.04),0 24px 60px -24px rgba(7,7,64,0.18);border:1px solid #ececec;">
 
-            {{-- ░░ HERO HEADER ░░ --}}
+            {{-- ░░ HERO HEADER ░░ — navy with subtle dot-grid texture --}}
             <tr>
-                <td class="em-hero" align="center" style="padding:38px 40px 32px;background:#070740;background-image:linear-gradient(148deg,#040430 0%,#070740 45%,#101580 80%,#1a2090 100%);">
-                    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto;">
-                    <tr>
-                        <td align="center">
-                            @if ($absoluteLogoUrl)
-                                <img src="{{ $absoluteLogoUrl }}" width="58" height="58" alt="{{ $brandName }}"
-                                     style="display:block;width:58px;height:58px;object-fit:contain;border-radius:16px;margin:0 auto;box-shadow:0 8px 28px rgba(0,0,0,0.4);">
-                            @else
-                                <table role="presentation" cellpadding="0" cellspacing="0"><tr>
-                                <td align="center" style="width:60px;height:60px;border-radius:16px;background:#ffffff;font-size:22px;font-weight:900;color:#070740;line-height:60px;text-align:center;box-shadow:0 8px 28px rgba(0,0,0,0.4);letter-spacing:-1px;">YS</td>
-                                </tr></table>
-                            @endif
+                <td class="em-hero" style="padding:28px 36px;background:#070740;background-image:radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px);background-size:22px 22px;background-position:0 0;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
+                        <td valign="middle" align="{{ $isRtl ? 'right' : 'left' }}">
+                            <span class="em-hero-mark" dir="ltr" style="font-family:'Space Grotesk','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:17px;font-weight:700;letter-spacing:-0.2px;color:#ffffff;unicode-bidi:isolate;">
+                                {{ strtoupper($brandName) }}
+                            </span>
                         </td>
-                    </tr>
-                    <tr>
-                        <td align="center" style="padding-top:16px;color:#ffffff;font-size:22px;font-weight:800;letter-spacing:-0.4px;">
-                            {{ $brandName }}
+                        <td valign="middle" align="{{ $isRtl ? 'left' : 'right' }}">
+                            <span class="em-hero-spec" dir="ltr" style="font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;font-size:10px;color:#a4b3d4;letter-spacing:1.5px;text-transform:uppercase;unicode-bidi:isolate;">
+                                {{ $specTag }}
+                            </span>
                         </td>
-                    </tr>
-                    <tr>
-                        <td align="center" style="padding-top:6px;color:#7c8db8;font-size:10.5px;font-weight:600;letter-spacing:2.8px;text-transform:uppercase;">
-                            {{ __('Auto Parts & Commerce') }}
-                        </td>
-                    </tr>
-                    </table>
+                    </tr></table>
                 </td>
             </tr>
 
-            {{-- ░░ BRAND ACCENT LINE ░░ — thin navy stripe under hero, signature brand cue --}}
+            {{-- ░░ ACCENT STRIPE ░░ — 2px orange hairline, the only orange in the whole card --}}
             <tr>
-                <td style="height:3px;background:#070740;font-size:0;line-height:0;">&nbsp;</td>
+                <td style="height:2px;background:#e85d2a;font-size:0;line-height:0;">&nbsp;</td>
             </tr>
 
             {{-- ░░ RECIPIENT BAR (optional) ░░ --}}
             @if ($recipientEmail || $recipientName)
             <tr>
-                <td class="em-rbar" style="padding:11px 40px;background:#f0f4ff;border-bottom:1px solid #dde5f5;">
+                <td class="em-rbar" style="padding:11px 36px;background:#fafbfc;border-bottom:1px solid #ebedf0;">
                     <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
-                    <td class="em-rbar-text" style="font-size:12px;color:#64748b;font-weight:500;">
+                    <td class="em-rbar-text" style="font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;font-size:11px;color:#8a8ea3;font-weight:500;letter-spacing:0.4px;">
                         @if ($recipientName)
-                            <strong style="color:#374151;font-weight:700;">{{ $recipientName }}</strong>
+                            <strong style="color:#4a4e63;font-weight:700;">{{ $recipientName }}</strong>
                             &nbsp;&middot;&nbsp;
                         @endif
-                        {{ __('Sent to') }}:&nbsp;<span class="em-rbar-email" style="color:#3b82f6;font-weight:600;">{{ $recipientEmail }}</span>
+                        {{ __('Sent to') }}:&nbsp;<span class="em-rbar-email" dir="ltr" style="color:#070740;font-weight:600;unicode-bidi:isolate;">{{ $recipientEmail }}</span>
                     </td>
                     </tr></table>
                 </td>
@@ -156,14 +148,14 @@
 
             {{-- ░░ CONTENT ░░ --}}
             <tr>
-                <td class="em-body em-body-bg" style="padding:40px 40px 36px;background:#ffffff;">
+                <td class="em-body em-body-bg" style="padding:44px 40px 36px;background:#ffffff;">
                     @yield('content')
                 </td>
             </tr>
 
             {{-- ░░ FOOTER ░░ --}}
             <tr>
-                <td class="em-footer-bg" style="background:#f8fafc;border-top:1px solid #e2e8f0;">
+                <td class="em-footer-bg" style="background:#fafbfc;border-top:1px solid #ececec;">
                     @include('emails.components.footer', ['brandName' => $brandName])
                 </td>
             </tr>
@@ -173,11 +165,9 @@
 
         {{-- BELOW-CARD LEGAL --}}
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:620px;margin:0 auto;"><tr>
-        <td align="center" style="padding:18px 20px 4px;">
-            <p style="margin:0;font-size:11px;line-height:18px;color:#3a4060;">
-                &copy; {{ date('Y') }} {{ $brandName }}. {{ __('All rights reserved.') }}&nbsp;&nbsp;
-                {{ __('This is an automated message — please do not reply.') }}
-            </p>
+        <td align="center" class="em-card-legal" style="padding:18px 20px 4px;font-size:11px;line-height:18px;color:#6b6f80;">
+            &copy; {{ date('Y') }} {{ $brandName }}.
+            {{ __('This is an automated message — please do not reply.') }}
         </td>
         </tr></table>
 

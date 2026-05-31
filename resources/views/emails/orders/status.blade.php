@@ -2,33 +2,27 @@
     'preheader'      => $preheader ?? __('Your YallaSpare order has been updated.'),
     'recipientEmail' => $recipientEmail ?? null,
     'recipientName'  => $recipientName  ?? null,
+    'specTag'        => 'ORD / STATUS',
 ])
 
 @section('content')
 
-    {{-- Eyebrow + Status badge --}}
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 12px;">
-    <tr>
-        <td valign="middle">
-            <p style="margin:0;color:#2563eb;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2.2px;">
-                {{ $eyebrow ?? __('Order update') }}
-            </p>
-        </td>
-        @if (!empty($orderStatus))
-        <td align="right" valign="middle">
-            @include('emails.components.status-badge', ['status' => $orderStatus])
-        </td>
-        @endif
-    </tr>
-    </table>
+    {{-- Kicker --}}
+    <x-email-kicker :text="$eyebrow ?? __('Order update')" />
 
-    {{-- Headline --}}
-    <h1 class="em-title" style="margin:0;color:#0f172a;font-size:30px;line-height:38px;font-weight:800;letter-spacing:-0.5px;">
+    {{-- Headline + optional status badge --}}
+    <h1 class="em-title" style="margin:0;font-family:'Space Grotesk','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#070740;font-size:30px;line-height:35px;font-weight:700;letter-spacing:-0.6px;">
         {{ $title ?? __('Order status updated') }}
     </h1>
 
+    @if (!empty($orderStatus))
+    <div style="margin:14px 0 0;">
+        @include('emails.components.status-badge', ['status' => $orderStatus])
+    </div>
+    @endif
+
     {{-- Body copy --}}
-    <p class="em-copy" style="margin:16px 0 0;color:#475569;font-size:16px;line-height:27px;">
+    <p class="em-copy" style="margin:16px 0 0;color:#4a4e63;font-size:15px;line-height:25px;">
         {{ $intro ?? $bodyText ?? '' }}
     </p>
 
@@ -40,16 +34,16 @@
 
     {{-- Totals --}}
     @if (!empty($totals))
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 24px;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 26px;">
         @foreach ($totals as $total)
         <tr class="em-totals-row">
             <td class="em-totals-label"
-                style="padding:12px 18px;border-top:{{ $loop->first ? '0' : '1px solid #e2e8f0' }};color:{{ $loop->last ? '#0f172a' : '#64748b' }};font-size:{{ $loop->last ? '15px' : '13px' }};font-weight:{{ $loop->last ? '800' : '600' }};">
+                style="padding:8px 0;border-top:{{ $loop->first ? '1px solid #ebedf0' : '0' }};{{ $loop->last ? 'border-top:1px solid #ebedf0;padding-top:14px;' : '' }}font-family:{{ $loop->last ? "'Space Grotesk','Inter',sans-serif" : "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" }};color:{{ $loop->last ? '#070740' : '#4a4e63' }};font-size:{{ $loop->last ? '15px' : '13px' }};font-weight:{{ $loop->last ? '700' : '500' }};">
                 {{ $total['label'] }}
             </td>
             <td class="em-totals-val" align="right"
-                style="padding:12px 18px;border-top:{{ $loop->first ? '0' : '1px solid #e2e8f0' }};color:{{ $loop->last ? '#070740' : '#0f172a' }};font-size:{{ $loop->last ? '17px' : '14px' }};font-weight:{{ $loop->last ? '900' : '700' }};white-space:nowrap;">
-                {{ $total['value'] }}
+                style="padding:8px 0;border-top:{{ $loop->first ? '1px solid #ebedf0' : '0' }};{{ $loop->last ? 'border-top:1px solid #ebedf0;padding-top:14px;' : '' }}font-family:'Space Grotesk','Inter',sans-serif;color:{{ $loop->last ? '#070740' : '#070740' }};font-size:{{ $loop->last ? '15px' : '14px' }};font-weight:700;white-space:nowrap;">
+                <span dir="ltr" style="unicode-bidi:isolate;">{{ $total['value'] }}</span>
             </td>
         </tr>
         @endforeach

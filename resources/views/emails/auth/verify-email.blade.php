@@ -1,22 +1,21 @@
 @extends('emails.layouts.base', [
     'preheader'      => __('Your verification code is ready. Use it to confirm your YallaSpare account.'),
     'recipientEmail' => $email ?? null,
+    'specTag'        => 'SYS / VERIFY',
 ])
 
 @section('content')
 
-    {{-- Eyebrow --}}
-    <p style="margin:0 0 10px;color:#4f46e5;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2.2px;">
-        {{ __('Account verification') }}
-    </p>
+    {{-- Kicker --}}
+    <x-email-kicker :text="__('Account verification')" />
 
     {{-- Headline --}}
-    <h1 class="em-title" style="margin:0;color:#0f172a;font-size:30px;line-height:38px;font-weight:800;letter-spacing:-0.5px;">
+    <h1 class="em-title" style="margin:0;font-family:'Space Grotesk','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#070740;font-size:30px;line-height:35px;font-weight:700;letter-spacing:-0.6px;">
         {{ __('Verify your email address') }}
     </h1>
 
     {{-- Body copy --}}
-    <p class="em-copy" style="margin:16px 0 0;color:#475569;font-size:16px;line-height:27px;">
+    <p class="em-copy" style="margin:16px 0 0;color:#4a4e63;font-size:15px;line-height:25px;">
         {{ __('Enter this verification code on the YallaSpare verification screen to protect your account and unlock checkout, order tracking, and account settings.') }}
     </p>
 

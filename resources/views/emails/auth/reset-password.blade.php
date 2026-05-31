@@ -1,22 +1,21 @@
 @extends('emails.layouts.base', [
     'preheader'      => __('Reset your YallaSpare password using the secure link inside.'),
     'recipientEmail' => $email ?? null,
+    'specTag'        => 'SEC / RESET',
 ])
 
 @section('content')
 
-    {{-- Eyebrow --}}
-    <p style="margin:0 0 10px;color:#dc2626;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2.2px;">
-        {{ __('Secure account action') }}
-    </p>
+    {{-- Security label --}}
+    <x-email-security-label :text="__('Secure account action')" />
 
     {{-- Headline --}}
-    <h1 class="em-title" style="margin:0;color:#0f172a;font-size:30px;line-height:38px;font-weight:800;letter-spacing:-0.5px;">
+    <h1 class="em-title" style="margin:0;font-family:'Space Grotesk','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#070740;font-size:30px;line-height:35px;font-weight:700;letter-spacing:-0.6px;">
         {{ __('Reset your password') }}
     </h1>
 
     {{-- Body copy --}}
-    <p class="em-copy" style="margin:16px 0 0;color:#475569;font-size:16px;line-height:27px;">
+    <p class="em-copy" style="margin:16px 0 0;color:#4a4e63;font-size:15px;line-height:25px;">
         {{ __('We received a request to reset the password for your YallaSpare account. Click the button below to choose a new password.') }}
     </p>
 
@@ -26,7 +25,7 @@
         ['label' => __('Expires'), 'value' => __('In :count minutes', ['count' => $expiresIn ?? 60])],
     ]])
 
-    {{-- CTA Button --}}
+    {{-- CTA Button (variant='danger' explicitly: this is a security flow, red is correct) --}}
     <table role="presentation" cellpadding="0" cellspacing="0" style="margin:28px 0;">
     <tr><td>
         @include('emails.components.button', [

@@ -2,39 +2,38 @@
     'preheader'      => __('Welcome to YallaSpare — your account is ready.'),
     'recipientEmail' => $email ?? null,
     'recipientName'  => $name  ?? null,
+    'specTag'        => 'SYS / WELCOME',
 ])
 
 @section('content')
 
-    {{-- Eyebrow --}}
-    <p style="margin:0 0 10px;color:#16a34a;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2.2px;">
-        {{ __('Account created') }}
-    </p>
+    {{-- Kicker --}}
+    <x-email-kicker :text="__('Account created')" />
 
     {{-- Headline --}}
-    <h1 class="em-title" style="margin:0;color:#0f172a;font-size:30px;line-height:38px;font-weight:800;letter-spacing:-0.5px;">
+    <h1 class="em-title" style="margin:0;font-family:'Space Grotesk','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#070740;font-size:30px;line-height:35px;font-weight:700;letter-spacing:-0.6px;">
         {{ __('Welcome to YallaSpare') }}{{ !empty($name) ? ', ' . e($name) : '' }}
     </h1>
 
     {{-- Body copy --}}
-    <p class="em-copy" style="margin:16px 0 0;color:#475569;font-size:16px;line-height:27px;">
+    <p class="em-copy" style="margin:16px 0 0;color:#4a4e63;font-size:15px;line-height:25px;">
         {{ __('Your account is ready. You can now browse thousands of auto parts, place orders, track deliveries, and manage your account — all in one place.') }}
     </p>
 
     {{-- Feature highlights --}}
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:24px 0;border:1px solid #e2e8f0;border-radius:16px;overflow:hidden;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:26px 0;border-top:1px solid #ebedf0;border-bottom:1px solid #ebedf0;">
         @foreach ([
             ['icon' => '&#x1F6CD;', 'title' => __('Shop parts'), 'desc' => __('Thousands of genuine & aftermarket parts.')],
             ['icon' => '&#x1F4E6;', 'title' => __('Track orders'), 'desc' => __('Real-time updates from warehouse to door.')],
             ['icon' => '&#x1F512;', 'title' => __('Secure checkout'), 'desc' => __('Protected payments and order history.')],
         ] as $i => $feat)
         <tr>
-            <td style="padding:14px 18px;border-bottom:{{ $i === 2 ? '0' : '1px solid #e2e8f0' }};">
+            <td style="padding:14px 0;border-bottom:{{ $i === 2 ? '0' : '1px solid #ebedf0' }};">
                 <table role="presentation" cellpadding="0" cellspacing="0"><tr>
-                <td valign="middle" style="font-size:22px;padding-right:14px;">{!! $feat['icon'] !!}</td>
+                <td valign="middle" style="font-size:18px;padding-right:14px;width:30px;">{!! $feat['icon'] !!}</td>
                 <td valign="middle">
-                    <span style="display:block;color:#0f172a;font-size:14px;font-weight:700;">{{ $feat['title'] }}</span>
-                    <span style="display:block;color:#64748b;font-size:13px;margin-top:2px;">{{ $feat['desc'] }}</span>
+                    <span style="display:block;font-family:'Space Grotesk','Inter',sans-serif;color:#070740;font-size:13.5px;font-weight:700;">{{ $feat['title'] }}</span>
+                    <span style="display:block;color:#64748b;font-size:12.5px;margin-top:2px;">{{ $feat['desc'] }}</span>
                 </td>
                 </tr></table>
             </td>

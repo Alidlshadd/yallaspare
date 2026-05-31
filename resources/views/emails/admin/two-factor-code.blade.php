@@ -1,22 +1,21 @@
 @extends('emails.layouts.base', [
     'preheader'      => __('Your admin two-factor authentication code is ready.'),
     'recipientEmail' => $email ?? null,
+    'specTag'        => 'SEC / 2FA',
 ])
 
 @section('content')
 
-    {{-- Eyebrow --}}
-    <p style="margin:0 0 10px;color:#dc2626;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2.2px;">
-        {{ __('High security verification') }}
-    </p>
+    {{-- Security label --}}
+    <x-email-security-label :text="__('High security verification')" />
 
     {{-- Headline --}}
-    <h1 class="em-title" style="margin:0;color:#0f172a;font-size:30px;line-height:38px;font-weight:800;letter-spacing:-0.5px;">
+    <h1 class="em-title" style="margin:0;font-family:'Space Grotesk','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#070740;font-size:30px;line-height:35px;font-weight:700;letter-spacing:-0.6px;">
         {{ __('Admin sign-in code') }}
     </h1>
 
     {{-- Body copy --}}
-    <p class="em-copy" style="margin:16px 0 0;color:#475569;font-size:16px;line-height:27px;">
+    <p class="em-copy" style="margin:16px 0 0;color:#4a4e63;font-size:15px;line-height:25px;">
         {{ __('Use this one-time code to complete your sign-in to the YallaSpare admin panel. This code is only valid for this session.') }}
     </p>
 
