@@ -3,8 +3,8 @@
     $size    = $size    ?? 'default';
 
     $configs = [
-        // Primary = brand red (#DC2626 = Tailwind red-600), matches the site Sign In button.
-        'primary'   => ['bg' => '#dc2626', 'text' => '#ffffff', 'shadow' => 'rgba(220,38,38,0.4)'],
+        // Primary = brand navy (#070740). Red is reserved for danger/security flows only.
+        'primary'   => ['bg' => '#070740', 'text' => '#ffffff', 'shadow' => 'rgba(7,7,64,0.45)'],
         'danger'    => ['bg' => '#dc2626', 'text' => '#ffffff', 'shadow' => 'rgba(220,38,38,0.4)'],
         'success'   => ['bg' => '#16a34a', 'text' => '#ffffff', 'shadow' => 'rgba(22,163,74,0.4)'],
         'secondary' => ['bg' => '#ffffff', 'text' => '#070740', 'shadow' => 'rgba(0,0,0,0.08)'],

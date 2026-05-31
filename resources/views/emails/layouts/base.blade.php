@@ -132,9 +132,9 @@
                 </td>
             </tr>
 
-            {{-- ░░ BRAND ACCENT LINE ░░ — thin red stripe under hero, signature brand cue --}}
+            {{-- ░░ BRAND ACCENT LINE ░░ — thin navy stripe under hero, signature brand cue --}}
             <tr>
-                <td style="height:3px;background:#dc2626;font-size:0;line-height:0;">&nbsp;</td>
+                <td style="height:3px;background:#070740;font-size:0;line-height:0;">&nbsp;</td>
             </tr>
 
             {{-- ░░ RECIPIENT BAR (optional) ░░ --}}
