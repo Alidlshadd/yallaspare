@@ -271,12 +271,15 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
             ->name('categories.export-excel');
 
         // Orders
-        Route::resource('orders', OrderController::class)
-            ->only(['index', 'show', 'update', 'destroy'])
-            ->middleware(['can:' . User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write']);
+        // IMPORTANT: static segments like /orders/export-excel must be registered
+        // BEFORE Route::resource('orders'), otherwise the resource's /orders/{order}
+        // show route swallows them and route-model-binding returns 404.
         Route::get('/orders/export-excel', [OrderController::class, 'exportExcel'])
             ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE)
             ->name('orders.export-excel');
+        Route::resource('orders', OrderController::class)
+            ->only(['index', 'show', 'update', 'destroy'])
+            ->middleware(['can:' . User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write']);
         Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice'])
             ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE)
             ->name('orders.invoice');
