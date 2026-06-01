@@ -6,6 +6,10 @@
     $recipientEmail = $recipientEmail ?? null;
     $recipientName  = $recipientName  ?? null;
     $specTag        = trim((string) ($specTag ?? 'YALLASPARE / SYS'));
+    $logoUrl       = $logoUrl ?? ($systemSettings['site_logo_url'] ?? null);
+    $absoluteLogoUrl = is_string($logoUrl) && $logoUrl !== ''
+        ? (str_starts_with($logoUrl, 'http://') || str_starts_with($logoUrl, 'https://') ? $logoUrl : url($logoUrl))
+        : null;
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', $locale) }}" dir="{{ $isRtl ? 'rtl' : 'ltr' }}">
@@ -35,6 +39,7 @@
             .em-hero          { padding:24px 22px!important; }
             .em-hero-mark     { font-size:15px!important; }
             .em-hero-spec     { font-size:9.5px!important; letter-spacing:1.2px!important; }
+            .em-hero-logo     { width:26px!important; height:26px!important; }
             .em-rbar          { padding:10px 22px!important; }
             .em-body          { padding:32px 22px 28px!important; }
             .em-footer        { padding:18px 22px!important; }
@@ -111,14 +116,23 @@
             {{-- ░░ HERO HEADER ░░ — navy with subtle dot-grid texture --}}
             <tr>
                 <td class="em-hero" style="padding:28px 36px;background:#070740;background-image:radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px);background-size:22px 22px;background-position:0 0;">
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
-                        <td valign="middle" align="{{ $isRtl ? 'right' : 'left' }}">
-                            <span class="em-hero-mark" dir="ltr" style="font-family:'Space Grotesk','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:17px;font-weight:700;letter-spacing:-0.2px;color:#ffffff;unicode-bidi:isolate;">
-                                {{ strtoupper($brandName) }}
-                            </span>
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" dir="ltr" style="unicode-bidi:isolate;"><tr>
+                        <td valign="middle" align="left">
+                            <table role="presentation" cellpadding="0" cellspacing="0"><tr>
+                                @if ($absoluteLogoUrl)
+                                <td valign="middle" style="padding-right:10px;line-height:0;">
+                                    <img src="{{ $absoluteLogoUrl }}" alt="{{ $brandName }}" width="32" height="32" class="em-hero-logo" style="display:block;width:32px;height:32px;object-fit:contain;border:0;outline:none;border-radius:4px;">
+                                </td>
+                                @endif
+                                <td valign="middle">
+                                    <span class="em-hero-mark" style="font-family:'Space Grotesk','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:17px;font-weight:700;letter-spacing:-0.2px;color:#ffffff;">
+                                        {{ strtoupper($brandName) }}
+                                    </span>
+                                </td>
+                            </tr></table>
                         </td>
-                        <td valign="middle" align="{{ $isRtl ? 'left' : 'right' }}">
-                            <span class="em-hero-spec" dir="ltr" style="font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;font-size:10px;color:#a4b3d4;letter-spacing:1.5px;text-transform:uppercase;unicode-bidi:isolate;">
+                        <td valign="middle" align="right">
+                            <span class="em-hero-spec" style="font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;font-size:10px;color:#a4b3d4;letter-spacing:1.5px;text-transform:uppercase;">
                                 {{ $specTag }}
                             </span>
                         </td>
