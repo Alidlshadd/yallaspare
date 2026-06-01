@@ -106,6 +106,16 @@
                                     <td class="px-4 py-4">
                                         <p class="max-w-[13rem] break-words text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $order->order_number }}</p>
                                         <p class="text-xs text-slate-500 dark:text-slate-400">ID #{{ $order->id }}</p>
+                                        @if($order->cancellation_requested_at && $order->status !== \App\Models\Order::STATUS_CANCELLED)
+                                            <span class="mt-1 inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-[10px] font-semibold uppercase text-amber-800 dark:bg-amber-900/30 dark:text-amber-300">
+                                                {{ __('Cancellation Requested') }}
+                                            </span>
+                                        @endif
+                                        @if(($order->open_returns_count ?? 0) > 0)
+                                            <span class="mt-1 inline-flex items-center gap-1 rounded-full bg-orange-100 px-2 py-0.5 text-[10px] font-semibold uppercase text-orange-800 dark:bg-orange-900/30 dark:text-orange-300">
+                                                {{ __('Return requests') }}
+                                            </span>
+                                        @endif
                                     </td>
                                     <td class="px-4 py-4">
                                         <p class="text-sm font-medium text-slate-900 dark:text-slate-100">{{ $order->user?->name ?? __('Guest customer') }}</p>

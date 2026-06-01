@@ -52,6 +52,7 @@ class OrderController extends Controller
             ])
             ->with(['user:id,name,email,role,dealer_status'])
             ->withCount('items')
+            ->withCount(['returnRequests as open_returns_count' => fn ($q) => $q->whereIn('status', ['requested', 'approved', 'received'])])
             ->whereNull('archived_at');
 
         if ($search !== '') {
