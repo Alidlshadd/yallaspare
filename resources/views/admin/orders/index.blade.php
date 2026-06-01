@@ -1,8 +1,21 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-            <h2 class="font-semibold text-2xl text-gray-800 dark:text-slate-100">{{ __('Orders Management') }}</h2>
-            <p class="text-sm text-gray-500 dark:text-slate-400">{{ __('Track orders, update status, and review customer or dealer activity.') }}</p>
+        <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <div>
+                <h2 class="font-semibold text-2xl text-gray-800 dark:text-slate-100">{{ __('Orders Management') }}</h2>
+                <p class="text-sm text-gray-500 dark:text-slate-400">{{ __('Track orders, update status, and review customer or dealer activity.') }}</p>
+            </div>
+            <a href="{{ route('admin.orders.export-excel', array_filter([
+                    'from' => request('from'),
+                    'to' => request('to'),
+                    'status' => request('status'),
+                ], fn ($v) => $v !== null && $v !== '')) }}"
+               class="inline-flex items-center gap-2 self-start rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-700 md:self-auto">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/>
+                </svg>
+                {{ __('Export Excel (.xlsx)') }}
+            </a>
         </div>
     </x-slot>
     @php
