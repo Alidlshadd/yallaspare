@@ -5,6 +5,11 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateUserSettingsRequest;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
 class UserSettingsController extends Controller
@@ -76,7 +81,7 @@ class UserSettingsController extends Controller
             'notify_order_updates' => $request->boolean('notify_order_updates'),
             'notify_promotions' => $request->boolean('notify_promotions'),
             'notify_stock_alerts' => $request->boolean('notify_stock_alerts'),
-            'two_factor_preference' => 'off',
+            'two_factor_preference' => (string) ($data['two_factor_preference'] ?? $user->two_factor_preference ?? 'off'),
             'login_alerts' => $request->boolean('login_alerts'),
             'session_timeout' => $data['session_timeout'],
             'email_notifications' => $request->boolean('email_notifications'),
@@ -150,14 +155,53 @@ class UserSettingsController extends Controller
         $data = $request->validated();
 
         $user->forceFill([
-            'two_factor_preference' => 'off',
+            'two_factor_preference' => (string) ($data['two_factor_preference'] ?? 'off'),
             'login_alerts' => $request->boolean('login_alerts'),
             'session_timeout' => $data['session_timeout'],
         ])->save();
 
+        if ((string) ($data['two_factor_preference'] ?? 'off') === 'email') {
+            $request->session()->put('user_2fa.verified_user_id', $user->id);
+        } else {
+            $request->session()->forget('user_2fa');
+        }
+
         return redirect()
             ->route('user.settings.security')
             ->with('success', __('Security settings updated successfully.'));
+    }
+
+    public function globalSignOut(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'current_password' => ['required', 'string'],
+        ]);
+
+        $user = $request->user();
+        if (! $user || ! Hash::check((string) $data['current_password'], (string) $user->password)) {
+            throw ValidationException::withMessages([
+                'current_password' => __('The current password is incorrect.'),
+            ]);
+        }
+
+        $currentSessionId = $request->session()->getId();
+
+        if (Schema::hasTable('sessions')) {
+            DB::table('sessions')
+                ->where('user_id', $user->id)
+                ->where('id', '!=', $currentSessionId)
+                ->delete();
+        }
+
+        $user->tokens()->delete();
+        $user->forceFill(['remember_token' => null])->save();
+
+        $request->session()->put('user_2fa.verified_user_id', $user->id);
+        $request->session()->regenerateToken();
+
+        return redirect()
+            ->route('user.settings.security')
+            ->with('success', __('Other devices have been signed out.'));
     }
 
     public function updateCommunication(UpdateUserSettingsRequest $request): RedirectResponse

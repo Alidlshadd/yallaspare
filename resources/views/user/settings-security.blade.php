@@ -36,7 +36,9 @@
                     </div>
                     <div class="rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-950">
                         <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Two-Step') }}</p>
-                        <p class="mt-1 text-sm font-semibold text-amber-600 dark:text-amber-400">{{ __('Coming soon') }}</p>
+                        <p class="mt-1 text-sm font-semibold {{ ($user->two_factor_preference ?? 'off') === 'email' ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-600 dark:text-slate-300' }}">
+                            {{ ($user->two_factor_preference ?? 'off') === 'email' ? __('Active') : __('Off') }}
+                        </p>
                     </div>
                 </div>
 
@@ -45,9 +47,16 @@
                     @method('PATCH')
 
                     <div class="grid gap-6 md:grid-cols-2">
-                        <div class="rounded-2xl border border-dashed border-slate-300/80 bg-slate-50 px-4 py-4 dark:border-slate-700 dark:bg-slate-950">
-                            <p class="text-sm font-medium text-slate-700 dark:text-slate-200">{{ __('Two-Step Verification') }}</p>
-                            <p class="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">{{ __('This feature is disabled until full 2FA enforcement is implemented in the login flow.') }}</p>
+                        <div>
+                            <label for="two_factor_preference" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Two-Factor Authentication') }}</label>
+                            <select id="two_factor_preference" name="two_factor_preference" class="mt-2 block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white">
+                                <option value="off" @selected(old('two_factor_preference', $user->two_factor_preference ?? 'off') === 'off')>{{ __('Off') }}</option>
+                                <option value="email" @selected(old('two_factor_preference', $user->two_factor_preference ?? 'off') === 'email')>{{ __('Email verification code') }}</option>
+                            </select>
+                            <p class="mt-2 text-sm leading-6 text-slate-500 dark:text-slate-400">{{ __('When enabled, sign-in requires a one-time code sent to your email address.') }}</p>
+                            @error('two_factor_preference')
+                                <p class="mt-2 text-sm text-rose-600 dark:text-rose-400">{{ $message }}</p>
+                            @enderror
                         </div>
 
                         <div>
@@ -77,6 +86,35 @@
                             {{ __('Save Security') }}
                         </button>
                     </div>
+                </form>
+            </section>
+
+            <section class="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:p-8">
+                <div class="flex flex-col gap-2">
+                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ __('Active Sessions') }}</p>
+                    <h2 class="text-xl font-semibold tracking-[-0.02em] text-slate-950 dark:text-white">{{ __('Global Sign-out') }}</h2>
+                    <p class="max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">{{ __('Sign out other browser sessions and revoke mobile API tokens. Your current session stays active.') }}</p>
+                </div>
+
+                <form action="{{ route('user.settings.security.global-signout') }}" method="POST" class="mt-5 grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto]">
+                    @csrf
+                    <div>
+                        <label for="current_password" class="sr-only">{{ __('Current Password') }}</label>
+                        <input
+                            id="current_password"
+                            type="password"
+                            name="current_password"
+                            autocomplete="current-password"
+                            placeholder="{{ __('Current password') }}"
+                            class="block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                        >
+                        @error('current_password')
+                            <p class="mt-2 text-sm text-rose-600 dark:text-rose-400">{{ $message }}</p>
+                        @enderror
+                    </div>
+                    <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-slate-950 px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 dark:bg-white dark:text-slate-950">
+                        {{ __('Sign out other devices') }}
+                    </button>
                 </form>
             </section>
         </div>

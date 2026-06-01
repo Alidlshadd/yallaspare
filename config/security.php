@@ -8,6 +8,7 @@ return [
         'max_score' => (int) env('INTRUSION_PREVENTION_MAX_SCORE', 8),
         'excluded_paths' => [
             'admin/two-factor*',
+            'user/two-factor*',
         ],
         'probe_paths' => [
             '/.env',
@@ -37,6 +38,10 @@ return [
             ? ! filter_var(env('ADMIN_TWO_FACTOR_FORCE_DISABLE', false), FILTER_VALIDATE_BOOLEAN)
             : filter_var(env('ADMIN_TWO_FACTOR_ENABLED', false), FILTER_VALIDATE_BOOLEAN),
         'code_ttl_minutes' => (int) env('ADMIN_TWO_FACTOR_CODE_TTL', 10),
+    ],
+
+    'user_two_factor' => [
+        'code_ttl_minutes' => (int) env('USER_TWO_FACTOR_CODE_TTL', 10),
     ],
 
     'email_verification' => [

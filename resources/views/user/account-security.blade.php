@@ -86,11 +86,19 @@
                     <div class="space-y-3">
                         <div class="rounded-app border border-app bg-surface-1 px-4 py-3">
                             <p class="text-sm font-semibold text-app">{{ __('Two-Factor Authentication') }}</p>
-                            <p class="mt-1 text-sm text-muted">{{ __('Dedicated 2FA setup can be added next when you want the backend flow.') }}</p>
+                            <p class="mt-1 text-sm text-muted">
+                                {{ ($user->two_factor_preference ?? 'off') === 'email' ? __('Email code verification is active for your next sign-in.') : __('Email code verification is available in security settings.') }}
+                            </p>
+                            <a href="{{ route('user.settings.security') }}" class="mt-3 inline-flex text-sm font-semibold text-primary hover:underline">
+                                {{ __('Manage 2FA') }}
+                            </a>
                         </div>
                         <div class="rounded-app border border-app bg-surface-1 px-4 py-3">
                             <p class="text-sm font-semibold text-app">{{ __('Global Sign-out') }}</p>
-                            <p class="mt-1 text-sm text-muted">{{ __('All-device logout is planned as a separate server-side action.') }}</p>
+                            <p class="mt-1 text-sm text-muted">{{ __('Sign out other browser sessions and revoke mobile API tokens from security settings.') }}</p>
+                            <a href="{{ route('user.settings.security') }}" class="mt-3 inline-flex text-sm font-semibold text-primary hover:underline">
+                                {{ __('Open security settings') }}
+                            </a>
                         </div>
                     </div>
                 </x-ui.card>

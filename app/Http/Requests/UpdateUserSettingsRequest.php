@@ -29,7 +29,7 @@ class UpdateUserSettingsRequest extends FormRequest
             'notify_order_updates' => [($isFullUpdate || $isNotifications) ? 'nullable' : 'sometimes', 'boolean'],
             'notify_promotions' => [($isFullUpdate || $isNotifications) ? 'nullable' : 'sometimes', 'boolean'],
             'notify_stock_alerts' => [($isFullUpdate || $isNotifications) ? 'nullable' : 'sometimes', 'boolean'],
-            'two_factor_preference' => ['nullable', Rule::in(['off'])],
+            'two_factor_preference' => ['nullable', Rule::in(['off', 'email'])],
             'login_alerts' => [($isFullUpdate || $isSecurity) ? 'nullable' : 'sometimes', 'boolean'],
             'session_timeout' => [($isFullUpdate || $isSecurity) ? 'required' : 'nullable', Rule::in(['15', '30', '60', '120'])],
             'email_notifications' => [($isFullUpdate || $isCommunication) ? 'nullable' : 'sometimes', 'boolean'],

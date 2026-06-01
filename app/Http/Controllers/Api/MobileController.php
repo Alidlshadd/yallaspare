@@ -245,7 +245,7 @@ class MobileController extends Controller
             'notify_order_updates' => $request->boolean('notify_order_updates'),
             'notify_promotions' => $request->boolean('notify_promotions'),
             'notify_stock_alerts' => $request->boolean('notify_stock_alerts'),
-            'two_factor_preference' => 'off',
+            'two_factor_preference' => (string) ($request->user()->two_factor_preference ?? 'off'),
             'login_alerts' => $request->boolean('login_alerts'),
             'session_timeout' => $data['session_timeout'],
             'email_notifications' => $request->boolean('email_notifications'),
@@ -313,7 +313,7 @@ class MobileController extends Controller
         ]);
 
         $request->user()->forceFill([
-            'two_factor_preference' => 'off',
+            'two_factor_preference' => (string) ($request->user()->two_factor_preference ?? 'off'),
             'login_alerts' => $request->boolean('login_alerts'),
             'session_timeout' => $data['session_timeout'],
         ])->save();

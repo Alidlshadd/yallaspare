@@ -8,6 +8,7 @@ use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\Auth\UserTwoFactorController;
 use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
@@ -66,4 +67,15 @@ Route::middleware('auth')->group(function () {
     Route::post('admin/two-factor/resend', [AdminTwoFactorController::class, 'resend'])
                 ->middleware('throttle:admin-2fa')
                 ->name('admin.two-factor.resend');
+
+    Route::get('user/two-factor', [UserTwoFactorController::class, 'show'])
+                ->name('user.two-factor.challenge');
+
+    Route::post('user/two-factor', [UserTwoFactorController::class, 'verify'])
+                ->middleware('throttle:admin-2fa')
+                ->name('user.two-factor.verify');
+
+    Route::post('user/two-factor/resend', [UserTwoFactorController::class, 'resend'])
+                ->middleware('throttle:admin-2fa')
+                ->name('user.two-factor.resend');
 });

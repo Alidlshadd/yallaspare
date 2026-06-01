@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Auth\AdminTwoFactorController;
+use App\Http\Controllers\Auth\UserTwoFactorController;
 use App\Http\Requests\Auth\LoginRequest;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\RedirectResponse;
@@ -64,6 +65,19 @@ class AuthenticatedSessionController extends Controller
             return redirect()->route('verification.notice');
         }
 
+        if ($user && (string) ($user->two_factor_preference ?? 'off') === 'email') {
+            $mailAvailable = app(UserTwoFactorController::class)->issueChallenge($request);
+            $redirect = redirect()->route('user.two-factor.challenge');
+
+            if (! $mailAvailable) {
+                return $redirect->withErrors([
+                    'code' => __('We could not send your verification code. Please contact support or try again shortly.'),
+                ]);
+            }
+
+            return $redirect;
+        }
+
         $intendedUrl = (string) $request->session()->get('url.intended', '');
         if ($intendedUrl !== '' && str_starts_with($intendedUrl, url('/admin'))) {
             $request->session()->forget('url.intended');
@@ -80,6 +94,7 @@ class AuthenticatedSessionController extends Controller
         Auth::guard('web')->logout();
 
         $request->session()->forget('admin_2fa');
+        $request->session()->forget('user_2fa');
 
         $request->session()->invalidate();
 
