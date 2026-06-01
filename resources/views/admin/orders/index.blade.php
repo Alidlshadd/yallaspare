@@ -107,7 +107,7 @@
                     </form>
                 </div>
                 <div class="border-b border-slate-200 p-4 dark:border-slate-800">
-                    <form method="GET" action="{{ route('admin.orders.index') }}" class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(18rem,2fr)_minmax(13rem,1fr)_minmax(13rem,1fr)_auto]">
+                    <form method="GET" action="{{ route('admin.orders.index') }}" class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
                         @if($currentAttention !== '')
                             <input type="hidden" name="attention" value="{{ $currentAttention }}">
                         @endif
@@ -116,7 +116,7 @@
                             name="search"
                             value="{{ request('search') }}"
                             placeholder="{{ __('Search order #, city, phone, user...') }}"
-                            class="rounded-lg border-slate-300 bg-white text-sm text-slate-900 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 sm:col-span-2 xl:col-span-1"
+                            class="rounded-lg border-slate-300 bg-white text-sm text-slate-900 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 sm:col-span-2 xl:col-span-3"
                         >
                         <select name="status" class="rounded-lg border-slate-300 bg-white text-sm text-slate-900 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             <option value="">{{ __('All Statuses') }}</option>
@@ -131,9 +131,29 @@
                             <option value="user" @selected(($association ?? '') === 'user')>{{ __('Retail Users') }}</option>
                             <option value="dealer" @selected(($association ?? '') === 'dealer')>{{ __('Dealers') }}</option>
                         </select>
-                        <button type="submit" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 sm:col-span-2 xl:col-span-1">
-                            {{ __('Apply Filters') }}
-                        </button>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="flex flex-col text-xs font-medium text-slate-600 dark:text-slate-400">
+                                {{ __('From') }}
+                                <input type="date" name="from" value="{{ request('from') }}"
+                                       class="mt-1 rounded-lg border-slate-300 bg-white text-sm text-slate-900 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                            </label>
+                            <label class="flex flex-col text-xs font-medium text-slate-600 dark:text-slate-400">
+                                {{ __('To') }}
+                                <input type="date" name="to" value="{{ request('to') }}"
+                                       class="mt-1 rounded-lg border-slate-300 bg-white text-sm text-slate-900 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                            </label>
+                        </div>
+                        <div class="flex gap-2 sm:col-span-2 xl:col-span-3">
+                            <button type="submit" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">
+                                {{ __('Apply Filters') }}
+                            </button>
+                            @if(request()->hasAny(['search', 'status', 'association', 'from', 'to']))
+                                <a href="{{ route('admin.orders.index', $currentAttention !== '' ? ['attention' => $currentAttention] : []) }}"
+                                   class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">
+                                    {{ __('Clear') }}
+                                </a>
+                            @endif
+                        </div>
                     </form>
                 </div>
 
