@@ -34,10 +34,10 @@
                     </span>
                     @endif
                 </td>
-                <td align="center" style="padding:14px 10px;border-bottom:1px solid #ebedf0;font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;color:#8a8ea3;font-size:11px;font-weight:600;white-space:nowrap;vertical-align:middle;letter-spacing:0.5px;">
+                <td class="em-muted" align="center" style="padding:14px 10px;border-bottom:1px solid #ebedf0;font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;color:#8a8ea3;font-size:11px;font-weight:600;white-space:nowrap;vertical-align:middle;letter-spacing:0.5px;">
                     <span dir="ltr" style="unicode-bidi:isolate;">&times;&nbsp;{{ $row['quantity'] ?? 1 }}</span>
                 </td>
-                <td align="right" style="padding:14px 0;border-bottom:1px solid #ebedf0;font-family:'Space Grotesk','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#070740;font-size:14px;font-weight:700;white-space:nowrap;vertical-align:middle;">
+                <td class="em-strong" align="right" style="padding:14px 0;border-bottom:1px solid #ebedf0;font-family:'Space Grotesk','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#070740;font-size:14px;font-weight:700;white-space:nowrap;vertical-align:middle;">
                     <span dir="ltr" style="unicode-bidi:isolate;">{{ $row['subtotal'] ?? '' }}</span>
                 </td>
             </tr>

@@ -29,14 +29,13 @@
         'message' => __('If you do not recognise this activity, change your admin password immediately and review active sessions.'),
     ])
 
-    {{-- CTA (variant='danger' explicitly: security flow, red is correct) --}}
+    {{-- CTA — navy primary per spec. Red is reserved for the security label only. --}}
     @if (!empty($actionUrl))
     <table role="presentation" cellpadding="0" cellspacing="0" style="margin:24px 0;">
     <tr><td>
         @include('emails.components.button', [
-            'url'     => $actionUrl,
-            'label'   => $actionText ?? __('Review account security'),
-            'variant' => 'danger',
+            'url'   => $actionUrl,
+            'label' => $actionText ?? __('Review account security'),
         ])
     </td></tr>
     </table>

@@ -32,8 +32,8 @@
                 <table role="presentation" cellpadding="0" cellspacing="0"><tr>
                 <td valign="middle" style="font-size:18px;padding-right:14px;width:30px;">{!! $feat['icon'] !!}</td>
                 <td valign="middle">
-                    <span style="display:block;font-family:'Space Grotesk','Inter',sans-serif;color:#070740;font-size:13.5px;font-weight:700;">{{ $feat['title'] }}</span>
-                    <span style="display:block;color:#64748b;font-size:12.5px;margin-top:2px;">{{ $feat['desc'] }}</span>
+                    <span class="em-strong" style="display:block;font-family:'Space Grotesk','Inter',sans-serif;color:#070740;font-size:13.5px;font-weight:700;">{{ $feat['title'] }}</span>
+                    <span class="em-muted" style="display:block;color:#64748b;font-size:12.5px;margin-top:2px;">{{ $feat['desc'] }}</span>
                 </td>
                 </tr></table>
             </td>

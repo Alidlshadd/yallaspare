@@ -25,14 +25,13 @@
         ['label' => __('Expires'), 'value' => __('In :count minutes', ['count' => $expiresIn ?? 60])],
     ]])
 
-    {{-- CTA Button (variant='danger' explicitly: this is a security flow, red is correct) --}}
+    {{-- CTA Button — navy primary per spec. Red is reserved for the security label only. --}}
     <table role="presentation" cellpadding="0" cellspacing="0" style="margin:28px 0;">
     <tr><td>
         @include('emails.components.button', [
-            'url'     => $actionUrl,
-            'label'   => __('Reset Password'),
-            'variant' => 'danger',
-            'size'    => 'large',
+            'url'   => $actionUrl,
+            'label' => __('Reset Password'),
+            'size'  => 'large',
         ])
     </td></tr>
     </table>

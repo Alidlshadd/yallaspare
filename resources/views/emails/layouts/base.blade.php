@@ -61,6 +61,8 @@
             .em-rbar-text     { color:#94a3b8!important; }
             .em-rbar-email    { color:#60a5fa!important; }
             .em-kicker        { color:#94a3b8!important; }
+            .em-sec-label     { color:#fca5a5!important; }
+            .em-sec-dot       { background-color:#fca5a5!important; }
             .em-title         { color:#f1f5f9!important; }
             .em-copy          { color:#cbd5e1!important; }
             .em-strong        { color:#e2e8f0!important; }
