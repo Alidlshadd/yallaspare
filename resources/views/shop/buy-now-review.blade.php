@@ -99,16 +99,20 @@
                     <p class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{{ __('Payment Method') }}</p>
                     <div class="mt-3 grid gap-2 sm:grid-cols-2">
                         @foreach($paymentMethods as $method)
-                            <label class="flex cursor-pointer items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm transition hover:border-primary/30 dark:border-slate-800 dark:bg-slate-900">
+                            @php($isDisabled = ! ($method['enabled'] ?? false))
+                            <label class="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm transition dark:border-slate-800 dark:bg-slate-900 {{ $isDisabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer hover:border-primary/30' }}">
                                 <input
                                     type="radio"
                                     name="payment_method"
                                     value="{{ $method['key'] }}"
                                     @checked(old('payment_method', 'cash_on_delivery') === $method['key'])
+                                    @disabled($isDisabled)
                                     class="h-4 w-4 border-slate-300 text-primary focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-900"
                                 >
                                 <span class="flex-1 font-medium text-slate-900 dark:text-white">{{ __($method['label']) }}</span>
-                                @if($method['online'])
+                                @if($method['coming_soon'] ?? false)
+                                    <span class="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">{{ __('Coming soon') }}</span>
+                                @elseif($method['online'])
                                     <span class="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">{{ __('Online') }}</span>
                                 @endif
                             </label>

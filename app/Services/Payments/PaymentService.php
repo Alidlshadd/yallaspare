@@ -24,12 +24,13 @@ class PaymentService
     public function checkoutMethods(): array
     {
         return collect((array) config('payments.methods', []))
-            ->only([self::METHOD_COD, 'fib', 'zaincash'])
-            ->filter(fn (array $method): bool => (bool) ($method['enabled'] ?? false))
+            ->filter(fn (array $method): bool => (bool) ($method['enabled'] ?? false) || (bool) ($method['coming_soon'] ?? false))
             ->map(fn (array $method, string $key): array => [
                 'key' => $key,
                 'label' => (string) ($method['label'] ?? $key),
                 'online' => (bool) ($method['online'] ?? false),
+                'enabled' => (bool) ($method['enabled'] ?? false),
+                'coming_soon' => (bool) ($method['coming_soon'] ?? false),
             ])
             ->values()
             ->all();
@@ -37,7 +38,12 @@ class PaymentService
 
     public function allowedCheckoutMethods(): array
     {
-        return array_column($this->checkoutMethods(), 'key');
+        return collect((array) config('payments.methods', []))
+            ->only([self::METHOD_COD, 'fib', 'zaincash'])
+            ->filter(fn (array $method): bool => (bool) ($method['enabled'] ?? false))
+            ->keys()
+            ->values()
+            ->all();
     }
 
     public function isOnlineMethod(string $method): bool
