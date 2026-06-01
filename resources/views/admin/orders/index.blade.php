@@ -88,6 +88,7 @@
                                 <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('User / Dealer') }}</th>
                                 <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Items') }}</th>
                                 <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Total') }}</th>
+                                <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Payment') }}</th>
                                 <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Status') }}</th>
                                 <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Date') }}</th>
                                 <th class="px-4 py-3 text-right text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Actions') }}</th>
@@ -98,6 +99,7 @@
                                 @php
                                     $isDealer = $order->user && $order->user->role === \App\Models\User::ROLE_DEALER;
                                     $statusMeta = \App\Models\Order::statusMeta((string) $order->status);
+                                    $paymentMeta = \App\Models\Order::paymentStatusMeta((string) $order->payment_status);
                                     $allowedTransitions = $transitionOptions[$order->id] ?? [$order->status];
                                 @endphp
                                 <tr>
@@ -116,6 +118,14 @@
                                     </td>
                                     <td class="px-4 py-4 text-sm text-slate-700 dark:text-slate-300">{{ $order->items_count }}</td>
                                     <td class="px-4 py-4 text-sm font-semibold text-slate-900 dark:text-slate-100">{{ number_format((float) $order->total_amount, $currencyDecimals) }} {{ $currencyLabel }}</td>
+                                    <td class="px-4 py-4">
+                                        <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $paymentMeta['class'] }}">
+                                            {{ $paymentMeta['label'] }}
+                                        </span>
+                                        @if($order->payment_method)
+                                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ $order->payment_method }}</p>
+                                        @endif
+                                    </td>
                                     <td class="px-4 py-4">
                                         <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-semibold {{ $statusMeta['class'] }}">
                                             {{ $statusMeta['label'] }}
@@ -167,7 +177,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="7" class="px-6 py-12 text-center">
+                                    <td colspan="8" class="px-6 py-12 text-center">
                                         <p class="text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('No orders found for the current filter.') }}</p>
                                     </td>
                                 </tr>
