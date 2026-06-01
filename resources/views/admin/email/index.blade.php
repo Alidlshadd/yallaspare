@@ -155,6 +155,11 @@
                         </div>
 
                         <div>
+                            <label for="test_body" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Message') }}</label>
+                            <textarea id="test_body" name="body" rows="4" class="w-full rounded-xl border-slate-300 bg-white text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" placeholder="{{ __('Optional custom text for this test email.') }}">{{ old('body') }}</textarea>
+                        </div>
+
+                        <div>
                             <label for="mailer" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Mailer') }}</label>
                             <select id="mailer" name="mailer" class="w-full rounded-xl border-slate-300 bg-white text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                 @foreach($mailers as $mailer)
@@ -246,6 +251,7 @@
 
                         <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-5 text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">
                             {{ __('Promotional broadcasts only go to verified users who allow email and marketing messages. Operational notices still require verified email and email notifications enabled.') }}
+                            {{ __('Single-user broadcasts are sent immediately. Group and all-user broadcasts are queued and require a running queue worker.') }}
                         </div>
 
                         <button type="submit" @disabled(! $broadcastsAvailable) class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:bg-slate-400">

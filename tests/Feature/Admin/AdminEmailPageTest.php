@@ -160,6 +160,13 @@ class AdminEmailPageTest extends TestCase
     {
         Bus::fake();
 
+        User::factory()->create([
+            'role' => User::ROLE_USER,
+            'email_verified_at' => now(),
+            'email_notifications' => true,
+            'marketing_consent' => true,
+        ]);
+
         $admin = User::factory()->create([
             'role' => User::ROLE_SETTINGS_MANAGER,
             'email_verified_at' => now(),
@@ -183,8 +190,46 @@ class AdminEmailPageTest extends TestCase
         $this->assertNotNull($broadcast);
         $this->assertSame(User::ROLE_USER, $broadcast->audience_role);
         $this->assertSame(EmailBroadcast::STATUS_QUEUED, $broadcast->status);
+        $this->assertSame(1, $broadcast->recipient_count);
 
         Bus::assertDispatched(SendEmailBroadcastJob::class, fn (SendEmailBroadcastJob $job): bool => $job->broadcastId === $broadcast->id);
+    }
+
+    public function test_single_user_broadcast_sends_immediately(): void
+    {
+        Mail::fake();
+
+        $user = User::factory()->create([
+            'email' => 'customer@example.com',
+            'email_verified_at' => now(),
+            'email_notifications' => true,
+            'marketing_consent' => true,
+        ]);
+
+        $admin = User::factory()->create([
+            'role' => User::ROLE_SETTINGS_MANAGER,
+            'email_verified_at' => now(),
+        ]);
+
+        $this->actingAs($admin)
+            ->post(route('admin.email.broadcast'), [
+                'audience_type' => EmailBroadcast::AUDIENCE_USER,
+                'recipient_email' => $user->email,
+                'purpose' => EmailBroadcast::PURPOSE_PROMOTIONAL,
+                'subject' => 'YallaSpare test email',
+                'message' => 'Single user message.',
+                'action_url' => url('/'),
+                'action_text' => 'Open',
+            ])
+            ->assertRedirect()
+            ->assertSessionHas('success');
+
+        Mail::assertQueued(OperationalNotificationMail::class, 1);
+
+        $broadcast = EmailBroadcast::query()->latest('id')->first();
+        $this->assertSame(EmailBroadcast::STATUS_SENT, $broadcast->status);
+        $this->assertSame(1, $broadcast->recipient_count);
+        $this->assertSame(1, $broadcast->sent_count);
     }
 
     public function test_broadcast_rejects_external_action_url(): void

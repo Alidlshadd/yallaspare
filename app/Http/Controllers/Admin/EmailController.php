@@ -485,6 +485,7 @@ class EmailController extends Controller
         $data = $request->validate([
             'recipient' => ['required', 'email:rfc', 'max:255'],
             'subject' => ['required', 'string', 'max:160'],
+            'body' => ['nullable', 'string', 'max:2000'],
             'mailer' => ['nullable', 'string', 'max:80'],
         ]);
 
@@ -506,7 +507,9 @@ class EmailController extends Controller
         try {
             Mail::mailer($mailer)->to($data['recipient'])->send(new OperationalNotificationMail(
                 (string) $data['subject'],
-                "This is a YallaSpare admin test email.\n\nMailer: {$mailer}\nSent at: " . now()->toDateTimeString(),
+                trim((string) ($data['body'] ?? '')) !== ''
+                    ? trim((string) $data['body'])
+                    : "This is a YallaSpare admin test email.\n\nMailer: {$mailer}\nSent at: " . now()->toDateTimeString(),
                 [
                     'type' => 'mail_test',
                     'mailer' => $mailer,
@@ -579,6 +582,19 @@ class EmailController extends Controller
             }
         }
 
+        $recipientCount = $this->broadcastRecipientCount(
+            (string) $data['audience_type'],
+            $data['audience_type'] === EmailBroadcast::AUDIENCE_ROLE ? (string) $data['audience_role'] : null,
+            $targetUser,
+            (string) $data['purpose'],
+        );
+
+        if ($recipientCount < 1) {
+            return back()
+                ->withInput()
+                ->withErrors(['broadcast' => __('No eligible recipients matched this audience and purpose.')]);
+        }
+
         $broadcast = EmailBroadcast::create([
             'admin_id' => $request->user()?->getAuthIdentifier(),
             'target_user_id' => $targetUser?->getKey(),
@@ -590,11 +606,18 @@ class EmailController extends Controller
             'action_url' => $actionUrl !== '' ? $actionUrl : null,
             'action_text' => trim((string) ($data['action_text'] ?? '')) ?: null,
             'status' => EmailBroadcast::STATUS_QUEUED,
+            'recipient_count' => $recipientCount,
         ]);
+
+        if ($broadcast->audience_type === EmailBroadcast::AUDIENCE_USER) {
+            SendEmailBroadcastJob::dispatchSync($broadcast->id);
+
+            return back()->with('success', __('Email sent to the selected user.'));
+        }
 
         SendEmailBroadcastJob::dispatch($broadcast->id);
 
-        return back()->with('success', __('Email broadcast queued successfully.'));
+        return back()->with('success', __('Email broadcast queued successfully. Keep the queue worker running to send group broadcasts.'));
     }
 
     private function recordFailedEmail(string $recipient, string $subject, string $mailer, Throwable $e): void
@@ -632,6 +655,36 @@ class EmailController extends Controller
             User::ROLE_ADMIN => __('Admins'),
             User::ROLE_SETTINGS_MANAGER => __('Settings managers'),
         ];
+    }
+
+    private function broadcastRecipientCount(string $audienceType, ?string $audienceRole, ?User $targetUser, string $purpose): int
+    {
+        $query = User::query()
+            ->whereNotNull('email')
+            ->where('email', '!=', '')
+            ->whereNotNull('email_verified_at')
+            ->where(function ($q): void {
+                $q->where('email_notifications', true)
+                    ->orWhereNull('email_notifications');
+            });
+
+        if ($purpose === EmailBroadcast::PURPOSE_PROMOTIONAL) {
+            $query->where('marketing_consent', true);
+        }
+
+        if ($audienceType === EmailBroadcast::AUDIENCE_ROLE && $audienceRole) {
+            $query->where('role', $audienceRole);
+        }
+
+        if ($audienceType === EmailBroadcast::AUDIENCE_USER) {
+            if (! $targetUser) {
+                return 0;
+            }
+
+            $query->whereKey($targetUser->getKey());
+        }
+
+        return $query->count();
     }
 
     private function recentBroadcasts()
