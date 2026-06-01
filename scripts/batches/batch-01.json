@@ -1,0 +1,42 @@
+{
+    "If delivery becomes impossible due to unexpected events such as transportation issues, weather conditions, or other force majeure situations, the buyer will be informed and an alternative solution will be provided.": {
+        "ar": "إذا تعذّر التسليم بسبب أحداث غير متوقعة، مثل مشاكل النقل أو الأحوال الجوية أو غيرها من حالات القوة القاهرة، فسيتم إبلاغ المشتري وتقديم حل بديل.",
+        "ku": "ئەگەر گەیاندن مەحاڵ بێت بەهۆی ڕووداوی چاوەڕواننەکراو، وەک کێشەی گواستنەوە، باری کەشوهەوا، یان هەر دۆخێکی هێزی ناپێچانە، کڕیار ئاگادار دەکرێتەوە و چارەسەرێکی جێگرەوە دەخرێتە بەردەستی."
+    },
+    "Upon termination, access rights end immediately, while provisions relating to payment obligations, legal rights, and liability limitations remain in effect.": {
+        "ar": "عند الإنهاء، تنتهي حقوق الوصول فورًا، بينما تبقى الأحكام المتعلقة بالتزامات الدفع والحقوق القانونية وحدود المسؤولية سارية المفعول.",
+        "ku": "لە کاتی کۆتاییپێهێنان، مافی دەستگەیشتن دەستبەجێ کۆتایی دێت، بەڵام ئەو بەندانەی پەیوەندیدارن بە بەرپرسیارێتییەکانی پارەدان، مافە یاساییەکان و سنوورەکانی لێپرسراوەیی بەردەوام دەبن."
+    },
+    "To the maximum extent permitted by law, Yalla Spare will not be liable for indirect, incidental, special, consequential, or punitive damages arising from or related to platform use.": {
+        "ar": "إلى أقصى حدّ يسمح به القانون، لن تكون يلا سبير مسؤولة عن أيّ أضرار غير مباشرة أو عرضية أو خاصة أو تبعية أو عقابية ناجمة عن استخدام المنصة أو متعلقة به.",
+        "ku": "تا ئەو ڕادەی یاسا ڕێگەی پێ دەدات، یەڵا سپێر بەرپرسیار نابێت لە هیچ زیانێکی ناڕاستەوخۆ، ڕێکەوتی، تایبەت، شوێنکەوتە یان سزایی کە لە بەکارهێنانی پلاتفۆڕم پەیدا دەبێت یان پەیوەستە بەو."
+    },
+    "However, no method of transmission over the internet or electronic storage is completely secure, and we cannot guarantee absolute security.": {
+        "ar": "ومع ذلك، فإنه لا توجد طريقة لنقل البيانات عبر الإنترنت أو لتخزينها إلكترونيًا تكون آمنة بشكل كامل، ولا يمكننا ضمان أمان مطلق.",
+        "ku": "لەگەڵ ئەوەشدا، هیچ ڕێگایەکی گواستنەوەی داتا لە ڕێی ئینتەرنێت یاخود کۆگاکردنی ئەلیکترۆنی بە تەواوی پارێزراو نییە، و ناتوانین پارێزراویی تەواو دەستەبەر بکەین."
+    },
+    "Paid features, subscription plans, or service fees are billed according to your active commercial agreement, including applicable invoicing cycles, taxes, and payment methods.": {
+        "ar": "تُحتسب فواتير الميزات المدفوعة وخطط الاشتراك ورسوم الخدمة وفقًا لاتفاقيتك التجارية النشطة، بما في ذلك دورات الفوترة والضرائب وطرق الدفع المعمول بها.",
+        "ku": "خاسیەتە پارەدراوەکان، پلانەکانی بەشداربوون، یاخود کرێی خزمەتگوزاری بەپێی ڕێککەوتنە بازرگانییە چالاکەکەت ئەژمار دەکرێن، لەوانە سووڕی بەفاکتورکردن، باج و شێوازی پارەدانە کار پێکراوەکان."
+    },
+    "We value the privacy of our customers and are committed to protecting your personal information. Any information you provide to us is handled with care and is not sold, rented, or shared with third parties for commercial purposes.": {
+        "ar": "نحن نُقدّر خصوصية عملائنا ونلتزم بحماية معلوماتك الشخصية. يتم التعامل مع أي معلومات تقدّمها لنا بعناية ولا يتم بيعها أو تأجيرها أو مشاركتها مع أطراف ثالثة لأغراض تجارية.",
+        "ku": "ئێمە بایەخ بە تایبەتمەندیی کڕیارەکانمان دەدەین و پابەندین بە پاراستنی زانیاریی کەسیت. هەر زانیارییەک بە ئێمە بدەیت، بە وردی هەڵدەسووترێت و نە دەفرۆشرێت، نە بە کرێ دەدرێت، نە بۆ مەبەستی بازرگانی بە لایەنی سێیەم هاوبەش دەکرێت."
+    },
+    "Create a new coupon, jump into the management table, and review the active window from one surface. This header now acts as a decision layer, not just a title block.": {
+        "ar": "أنشئ قسيمة جديدة، وانتقل إلى جدول الإدارة، وراجع النافذة النشطة من شاشة واحدة. تعمل هذه الترويسة الآن كطبقة قرار، وليست مجرد كتلة عنوان.",
+        "ku": "کوپۆنێکی نوێ دروست بکە، بڕۆ بۆ ناو خشتەی بەڕێوەبردن، و پەنجەرە چالاکەکە لە یەک شاشە پێداچوونەوەی پێ بکە. ئەم سەردێڕە ئێستا وەک چینێکی بڕیار کار دەکات، نەک تەنها بلۆکی ناونیشان."
+    },
+    "On mobile it stacks into one column; on desktop it keeps a balanced control-panel layout.": {
+        "ar": "على الهاتف المحمول يتراصّ في عمود واحد؛ وعلى سطح المكتب يحافظ على تخطيط لوحة تحكم متوازن.",
+        "ku": "لەسەر مۆبایل لە یەک ستوون ڕیز دەبێت؛ لەسەر دێسکتۆپ شێوازی پانێلی کۆنترۆڵی هاوسەنگ دەپارێزێت."
+    },
+    "Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.": {
+        "ar": "بمجرد حذف حسابك، سيتم حذف جميع موارده وبياناته نهائيًا. يرجى إدخال كلمة المرور لتأكيد رغبتك في حذف حسابك نهائيًا.",
+        "ku": "کاتێک هەژمارەکەت بسڕێتەوە، هەموو سەرچاوەکانی و داتاکانی بە شێوەیەکی هەمیشەیی دەسڕێنەوە. تکایە وشەی نهێنی خۆت بنووسە بۆ پشتڕاستکردنەوەی ئەوەی دەتەوێت هەژمارەکەت بە شێوەیەکی هەمیشەیی بسڕیتەوە."
+    },
+    "These terms are governed by and construed in accordance with applicable local laws, without regard to conflict of law principles.": {
+        "ar": "تخضع هذه الشروط للقوانين المحلية المعمول بها وتُفسَّر وفقًا لها، دون النظر إلى مبادئ تنازع القوانين.",
+        "ku": "ئەم مەرجانە ڕێکدەخرێن و لێکدەدرێنەوە بەپێی یاسا ناوخۆییە کارپێکراوەکان، بێ ئەوەی سەرنج بدرێت بە بنەماکانی ناکۆکیی یاسا."
+    }
+}

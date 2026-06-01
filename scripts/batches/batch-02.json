@@ -1,0 +1,126 @@
+{
+    "Total liability for claims related to the service is limited to the amount paid by you for the applicable service period preceding the event giving rise to the claim.": {
+        "ar": "تقتصر المسؤولية الإجمالية عن المطالبات المتعلقة بالخدمة على المبلغ الذي دفعته خلال فترة الخدمة المعمول بها السابقة للحدث الذي أدى إلى المطالبة.",
+        "ku": "بەرپرسیارێتیی گشتی بۆ سکاڵا پەیوەندیدارەکانی خزمەتگوزاری سنووردارە بەو بڕە پارەی کە لە ماوەی خزمەتگوزاری کارپێکراودا پێش ئەو ڕووداوەی هۆکاری سکاڵاکە بووە تۆ دایکتووە."
+    },
+    "You must not misuse the service, attempt unauthorized access, interfere with platform operations, or use the service to distribute harmful, fraudulent, or infringing content.": {
+        "ar": "يجب ألّا تُسيء استخدام الخدمة أو تحاول الوصول غير المصرح به أو تتدخل في عمليات المنصة أو تستخدم الخدمة لتوزيع محتوى ضار أو احتيالي أو مخالف.",
+        "ku": "نابێت خراپ بەکارهێنانی خزمەتگوزاری بکەیت، یان هەوڵی دەستگەیشتنی نا‌ڕێپێدراو بدەیت، یان دەست تێوەربدەیت لە کارەکانی پلاتفۆڕم، یان خزمەتگوزاری بەکاربهێنیت بۆ بڵاوکردنەوەی ناوەڕۆکی زیانبەخش، ساختە یاخود سەرپێچیکار."
+    },
+    "Any dispute arising from or related to these terms will be subject to the exclusive jurisdiction of the competent courts in the governing legal venue.": {
+        "ar": "تخضع أي نزاعات تنشأ عن هذه الشروط أو تتعلق بها للاختصاص القضائي الحصري للمحاكم المختصة في الجهة القانونية الحاكمة.",
+        "ku": "هەر ناکۆکییەک کە لە ئەم مەرجانە سەرهەڵبدات یاخود پەیوەستە بەو، دەکەوێتە ژێر دەسەڵاتی تایبەتی دادگا شیاوەکانی شوێنی یاسایی پەیڕەوکراو."
+    },
+    "By accessing or using Yalla Spare, you agree to use the platform only for lawful business activities and in a manner consistent with these terms and applicable regulations.": {
+        "ar": "بدخولك إلى يلا سبير أو استخدامك لها، فإنك توافق على استخدام المنصة فقط في أنشطة تجارية مشروعة وبأسلوب يتوافق مع هذه الشروط واللوائح المعمول بها.",
+        "ku": "بە چوونەژوورەوە یاخود بەکارهێنانی یەڵا سپێر، تۆ ڕازی دەبیت پلاتفۆڕم تەنها بۆ چالاکیی بازرگانیی یاسایی بەکاربهێنیت و بە شێوەیەک کە لەگەڵ ئەم مەرجانە و ڕێسا کارپێکراوەکان گونجاو بێت."
+    },
+    "Cookies are small data files stored on your device by your browser. You may disable cookies in your browser settings, but some parts of the website may not function properly if cookies are disabled.": {
+        "ar": "ملفات تعريف الارتباط هي ملفات بيانات صغيرة يخزنها متصفحك على جهازك. يمكنك تعطيلها من إعدادات المتصفح، ولكن قد لا تعمل بعض أجزاء الموقع بشكل صحيح إذا تم تعطيلها.",
+        "ku": "کووکی فایلی داتای بچووکن کە لەلایەن وێبگەڕەکەتەوە لەسەر ئامێرەکەت هەڵدەگیرێن. دەتوانیت لە ڕێکخستنەکانی وێبگەڕەکەت ناچالاکیان بکەیت، بەڵام لەوانەیە هەندێک بەشی ماڵپەڕەکە بە دروستی کار نەکات ئەگەر کووکی ناچالاک بکرێن."
+    },
+    "Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.": {
+        "ar": "بمجرد حذف حسابك، سيتم حذف جميع موارده وبياناته نهائيًا. قبل حذف حسابك، يرجى تنزيل أي بيانات أو معلومات ترغب في الاحتفاظ بها.",
+        "ku": "کاتێک هەژمارەکەت بسڕێتەوە، هەموو سەرچاوەکانی و داتاکانی بە شێوەیەکی هەمیشەیی دەسڕێنەوە. پێش سڕینەوەی هەژمارەکەت، تکایە هەر داتا یاخود زانیارییەک کە دەتەوێت بیپارێزیت دایبگرە."
+    },
+    "SSL helps encrypt the connection between your browser and our website, reducing the risk of unauthorized access to your data.": {
+        "ar": "يساعد بروتوكول SSL في تشفير الاتصال بين متصفحك وموقعنا، مما يقلل من خطر الوصول غير المصرح به إلى بياناتك.",
+        "ku": "SSL یارمەتیدەرە لە کۆدکردنی پەیوەندی نێوان وێبگەڕەکەت و ماڵپەڕەکەمان، کە مەترسیی دەستگەیشتنی نا‌ڕێپێدراو بۆ داتاکانت کەم دەکاتەوە."
+    },
+    "The seller agrees to deliver the purchased product in a complete and undamaged condition according to the specifications provided during the order process.": {
+        "ar": "يوافق البائع على تسليم المنتج الذي تم شراؤه بحالة كاملة وغير تالفة وفقًا للمواصفات المقدمة أثناء عملية الطلب.",
+        "ku": "فرۆشیار ڕازی دەبێت کاڵای کڕاو بە حاڵەتێکی تەواو و بێ زیان بگەیەنێت بەپێی ئەو تایبەتمەندییانەی لە کاتی پرۆسەی داواکردنەکەدا پێشکەش کراون."
+    },
+    "Track revenue performance across the selected window, spot momentum shifts, and review who drives the highest value across products, customers, and dealers.": {
+        "ar": "تتبّع أداء الإيرادات خلال النافذة المحددة، ورصد تحولات الزخم، وراجع مَن يحقق أعلى قيمة عبر المنتجات والعملاء والوكلاء.",
+        "ku": "پەرفۆرمانسی داهات لە ماوەی هەڵبژێردراودا شوێن بکەوە، گۆڕانکارییەکانی هێز بدۆزەرەوە، و پێداچوونەوە بکە بۆ ئەوەی کێ بەرزترین بەها لە بەرهەم، کڕیار و فرۆشیارەکاندا پێک‌دێنێت."
+    },
+    "You are responsible for maintaining account credential confidentiality and for all actions that occur under your account, whether authorized by you or not.": {
+        "ar": "أنت مسؤول عن الحفاظ على سرية بيانات اعتماد الحساب وعن جميع الأنشطة التي تحدث ضمن حسابك، سواء أكنت قد أذنت بها أم لا.",
+        "ku": "تۆ بەرپرسیاریت لە پاراستنی نهێنیی زانیارییەکانی هەژمار و لە هەموو ئەو کردارانەی لە ژێر هەژمارەکەتدا ڕوودەدەن، چ ڕێگەت پێدابن چ نا."
+    },
+    "All content on this website, including text, images, graphics, logos, and other materials, belongs to the website owner or the original content creator where applicable.": {
+        "ar": "جميع المحتويات في هذا الموقع، بما في ذلك النصوص والصور والرسومات والشعارات وغيرها من المواد، تخص مالك الموقع أو منشئ المحتوى الأصلي حيثما ينطبق ذلك.",
+        "ku": "هەموو ناوەڕۆکی ئەم ماڵپەڕە، لەوانە دەق، وێنە، ڕەسم، لۆگۆ و کەرەستەکانی تر، موڵکی خاوەنی ماڵپەڕەکەن یاخود دروستکەری سەرەکیی ناوەڕۆکەکە، لە کاتی پێویستدا."
+    },
+    "Customer satisfaction is very important to us. We try to handle all return and exchange requests fairly and transparently. Please read the following conditions before requesting a return or exchange.": {
+        "ar": "رضا العملاء مهم جدًا بالنسبة لنا. نسعى للتعامل مع جميع طلبات الإرجاع والاستبدال بإنصاف وشفافية. يرجى قراءة الشروط التالية قبل تقديم طلب إرجاع أو استبدال.",
+        "ku": "ڕەزامەندیی کڕیار زۆر گرنگە لای ئێمە. هەوڵدەدەین هەموو داواکارییەکانی گەڕاندنەوە و گۆڕینەوە بە دادپەروەری و ڕوونی چارەسەر بکەین. تکایە پێش ئەوەی داوای گەڕاندنەوە یاخود گۆڕینەوە بکەیت، مەرجەکانی خوارەوە بخوێنەوە."
+    },
+    "Manage campaigns from one panel, identify the strongest channel, and control discount flows with more clarity, speed, and confidence.": {
+        "ar": "أدر الحملات من لوحة واحدة، وحدد القناة الأقوى، وتحكم في تدفقات الخصم بمزيد من الوضوح والسرعة والثقة.",
+        "ku": "لە یەک پانێل کەمپینەکان بەڕێوەببە، بەهێزترین کەناڵ دیاری بکە، و کۆنترۆڵی ڕەوتی داشکاندنەکان بکە بە ڕوونی، خێرایی و متمانەی زیاتر."
+    },
+    "Once the returned item is received and inspected, we will notify you about the approval or rejection of your refund.": {
+        "ar": "بمجرد استلام المنتج المرتجع وفحصه، سنخطرك بالموافقة على استرداد المبلغ أو رفضه.",
+        "ku": "کاتێک کاڵای گەڕاوە وەربگیرێت و پشکنین بکرێت، ئاگادارت دەکەینەوە لە پەسەندکردن یاخود ڕەتکردنەوەی گەڕاندنەوەی پارەکەت."
+    },
+    "Our website may contain links to external websites. Please note that we are not responsible for the privacy practices or content of third-party websites.": {
+        "ar": "قد يحتوي موقعنا على روابط لمواقع خارجية. يرجى ملاحظة أننا لسنا مسؤولين عن ممارسات الخصوصية أو محتوى مواقع الطرف الثالث.",
+        "ku": "لەوانەیە ماڵپەڕەکەمان لینکی ماڵپەڕی دەرەکی لەخۆ بگرێت. تکایە سەرنج بدە کە ئێمە بەرپرسیار نین لە کارەکانی تایبەتمەندی یاخود ناوەڕۆکی ماڵپەڕەکانی لایەنی سێیەم."
+    },
+    "Percent mode works better for broad campaigns. Fixed amount is stronger when you need predictable monetary impact.": {
+        "ar": "يعمل وضع النسبة المئوية بشكل أفضل للحملات الواسعة. أمّا المبلغ الثابت فيكون أقوى عندما تحتاج إلى تأثير مالي يمكن توقعه.",
+        "ku": "شێوازی ڕێژەی سەدی باشتر کار دەکات بۆ کەمپینە بەرفراوانەکان. بڕی جێگیر بەهێزترە کاتێک کاریگەریی داراییەکی پێشبینیپێکراوت دەوێت."
+    },
+    "Review the visible dealer roster, compare network mix, and take direct action from a cleaner editor surface.": {
+        "ar": "راجع قائمة الوكلاء المعروضة، وقارن تركيبة الشبكة، واتخذ إجراءات مباشرة من واجهة محرر أكثر بساطة.",
+        "ku": "لیستی فرۆشیارە دیارەکان پێداچوونەوەی پێ بکە، تێکەڵاوی تۆڕ بەراورد بکە، و کاری ڕاستەوخۆ بکە لە ڕووکارێکی ئەدیتۆری پاکترەوە."
+    },
+    "Tables and leaderboards below inherit the same premium visual language.": {
+        "ar": "ترث الجداول وقوائم الصدارة أدناه نفس اللغة البصرية الراقية.",
+        "ku": "خشتە و لیستە پێشەنگەکانی خوارەوە هەمان زمانی بینراوی بەرز وەردەگرن."
+    },
+    "The hero now carries data: the area that felt empty now presents a performance-focused summary.": {
+        "ar": "أصبحت منطقة الواجهة الرئيسية تحمل بيانات الآن: المساحة التي بدت فارغة باتت تعرض ملخصًا يركّز على الأداء.",
+        "ku": "ئێستا بەشی سەرەکی داتا هەڵدەگرێت: ئەو ناوچەیەی پێشتر بەتاڵ دیار بوو ئێستا کورتەیەکی ڕاستەوخۆ لەسەر پەرفۆرمانس پێشکەش دەکات."
+    },
+    "The top section now carries commercial context instead of feeling like a plain filter bar.": {
+        "ar": "أصبح القسم العلوي يحمل سياقًا تجاريًا بدلاً من أن يبدو مجرد شريط فلاتر بسيط.",
+        "ku": "بەشی سەرەوە ئێستا چوارچێوەی بازرگانی هەڵدەگرێت لە جیاتی ئەوەی تەنها وەک پشتێنێکی سادەی فلتەر دیار بێت."
+    },
+    "We may suspend or terminate account access where required to protect service integrity, address security risks, or enforce these terms in response to violations.": {
+        "ar": "يحق لنا تعليق أو إنهاء الوصول إلى الحساب عند الحاجة لحماية سلامة الخدمة أو معالجة المخاطر الأمنية أو فرض هذه الشروط ردًا على أي مخالفات.",
+        "ku": "بۆمان هەیە دەستگەیشتن بۆ هەژمار ڕابگرین یاخود کۆتایی پێبهێنین لە کاتی پێویستدا بۆ پاراستنی سەلامەتیی خزمەتگوزاری، چارەسەرکردنی مەترسییە ئەمنییەکان یاخود جێبەجێکردنی ئەم مەرجانە لە بەرامبەر سەرپێچییەکاندا."
+    },
+    "You agree to provide accurate account information and to promptly notify us of any suspected unauthorized use, credential compromise, or security incident.": {
+        "ar": "أنت توافق على تقديم معلومات حساب دقيقة وعلى إخطارنا فورًا بأي استخدام مشبوه أو غير مصرح به أو اختراق لبيانات الاعتماد أو حادثة أمنية.",
+        "ku": "تۆ ڕازی دەبیت زانیاریی دروست لەسەر هەژمار پێشکەش بکەیت و دەستبەجێ ئاگادارمان بکەیتەوە لە هەر بەکارهێنانێکی گومانلێکراو یاخود نا‌ڕێپێدراو، شکانی زانیاریی پشتڕاستکردنەوە، یاخود ڕووداوێکی ئەمنی."
+    },
+    "Changing the selection updates the theme immediately and saves your preference when you submit.": {
+        "ar": "يؤدي تغيير التحديد إلى تحديث المظهر فورًا، ويتم حفظ تفضيلاتك عند الإرسال.",
+        "ku": "گۆڕینی هەڵبژاردنەکە تەماشاکردنەکە دەستبەجێ نوێ دەکاتەوە، و کاتێک پێشکەشی دەکەیت، هەڵبژاردەکانت پاشەکەوت دەکرێن."
+    },
+    "Dedicated 2FA setup can be added next when you want the backend flow.": {
+        "ar": "يمكن إضافة إعداد المصادقة الثنائية المخصص لاحقًا عندما تحتاج إلى تدفق الواجهة الخلفية.",
+        "ku": "ڕێکخستنی تایبەتی 2FA دەکرێت دواتر زیاد بکرێت کاتێک ڕەوتی پشتەوەت دەوێت."
+    },
+    "Enable only the updates that matter so your account stays useful without feeling noisy.": {
+        "ar": "فعّل فقط التحديثات المهمة لتظل حسابك مفيدًا دون أن يصبح مزعجًا.",
+        "ku": "تەنها ئەو نوێکارییانە چالاک بکە کە گرنگن، تاکو هەژمارەکەت بەسوود بمێنێتەوە بێ ئەوەی بێزارکەر بێت."
+    },
+    "Ensure your account is using a long, random password to stay secure.": {
+        "ar": "تأكد من أن حسابك يستخدم كلمة مرور طويلة وعشوائية للحفاظ على أمانه.",
+        "ku": "دڵنیا بە لەوەی هەژمارەکەت وشەی نهێنی درێژ و هەڕەمەکی بەکاردەهێنێت تاکو پارێزراو بمێنێتەوە."
+    },
+    "If the return is caused by our mistake (wrong item or defective product), the return shipping cost will be covered by us.": {
+        "ar": "إذا كان الإرجاع ناتجًا عن خطأ من جانبنا (منتج خاطئ أو معيب)، فسنتحمل تكلفة شحن الإرجاع.",
+        "ku": "ئەگەر گەڕاندنەوەکە بەهۆی هەڵەی ئێمەوە بێت (کاڵای هەڵە یاخود کاڵای زیاندار)، کرێی گەیاندنی گەڕاندنەوە لەلایەن ئێمەوە دەکوژرێتەوە."
+    },
+    "In case of any dispute related to this agreement, both parties agree to resolve the issue through communication and mutual agreement whenever possible.": {
+        "ar": "في حال نشوء أي نزاع متعلق بهذه الاتفاقية، يتفق الطرفان على حل المسألة من خلال التواصل والاتفاق المتبادل كلما أمكن ذلك.",
+        "ku": "لە کاتی سەرهەڵدانی هەر ناکۆکییەک کە پەیوەندیی بەم ڕێککەوتنەوە هەبێت، هەردوو لایەن ڕازی دەبن کێشەکە لە ڕێگەی پەیوەندی و ڕێککەوتنی هاوبەشەوە چارەسەر بکەن، هەرکات کە بکرێت."
+    },
+    "Our goal is to make it easier for customers to find the right parts quickly and safely through a simple and modern online shopping experience.": {
+        "ar": "هدفنا هو تسهيل العثور على القطع المناسبة بسرعة وأمان للعملاء، من خلال تجربة تسوق إلكتروني بسيطة وحديثة.",
+        "ku": "ئامانجمان ئەوەیە بۆ کڕیاران ئاسانتر بکەین کە بە خێرایی و سەلامەتییەوە پارچە گونجاوەکان بدۆزنەوە، لە ڕێگەی ئەزموونێکی کڕینی ئۆنلاینی سادە و سەردەمیانە."
+    },
+    "Our website may use cookies to improve user experience, remember preferences, and help us understand how visitors use the site.": {
+        "ar": "قد يستخدم موقعنا ملفات تعريف الارتباط لتحسين تجربة المستخدم وتذكّر التفضيلات ومساعدتنا في فهم كيفية استخدام الزوار للموقع.",
+        "ku": "لەوانەیە ماڵپەڕەکەمان کووکی بەکاربهێنێت بۆ باشترکردنی ئەزموونی بەکارهێنەر، یاد‌هێنانەوەی هەڵبژاردنەکان، و یارمەتیدانی ئێمە بۆ تێگەیشتن لەوەی سەردانیکەران چۆن ماڵپەڕەکە بەکاردەهێنن."
+    },
+    "Repeated refreshes usually extend the limit instead of clearing it.": {
+        "ar": "غالبًا ما تؤدي إعادة التحميل المتكررة إلى تمديد المهلة بدلاً من إزالتها.",
+        "ku": "زۆرجار نوێکردنەوەی دووبارە سنوورەکە درێژتر دەکاتەوە لە جیاتی ئەوەی لایببات."
+    }
+}
