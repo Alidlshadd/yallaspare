@@ -1,0 +1,30 @@
+{
+    "category_id": {
+        "ar": "category_id",
+        "ku": "category_id"
+    },
+    "category_slug": {
+        "ar": "category_slug",
+        "ku": "category_slug"
+    },
+    "name_en": {
+        "ar": "name_en",
+        "ku": "name_en"
+    },
+    "name_en, name_ar, name_ku, price, stock_quantity": {
+        "ar": "name_en, name_ar, name_ku, price, stock_quantity",
+        "ku": "name_en, name_ar, name_ku, price, stock_quantity"
+    },
+    "slug, description": {
+        "ar": "slug, description",
+        "ku": "slug, description"
+    },
+    "super_admin": {
+        "ar": "super_admin",
+        "ku": "super_admin"
+    },
+    "www.yallaspare.com": {
+        "ar": "www.yallaspare.com",
+        "ku": "www.yallaspare.com"
+    }
+}
