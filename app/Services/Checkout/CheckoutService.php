@@ -13,6 +13,7 @@ use App\Models\Setting;
 use App\Models\User;
 use App\Models\UserAddress;
 use App\Services\CouponService;
+use App\Services\Payments\PaymentService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -27,9 +28,10 @@ class CheckoutService
         User $user,
         UserAddress $address,
         ?string $notes,
-        string $couponCode
+        string $couponCode,
+        string $paymentMethod = PaymentService::METHOD_COD
     ): Order {
-        return DB::transaction(function () use ($cart, $user, $address, $notes, $couponCode): Order {
+        return DB::transaction(function () use ($cart, $user, $address, $notes, $couponCode, $paymentMethod): Order {
             $productIds = $cart->items
                 ->pluck('product_id')
                 ->filter()
@@ -64,7 +66,7 @@ class CheckoutService
                 ];
             }
 
-            $order = $this->createOrder($lineItems, $user, $address, $notes, $couponCode);
+            $order = $this->createOrder($lineItems, $user, $address, $notes, $couponCode, $paymentMethod);
 
             $cart->items()->delete();
             HeaderComposer::forgetCartCacheForUser((int) $user->id);
@@ -79,9 +81,10 @@ class CheckoutService
         User $user,
         UserAddress $address,
         ?string $notes,
-        string $couponCode
+        string $couponCode,
+        string $paymentMethod = PaymentService::METHOD_COD
     ): Order {
-        return DB::transaction(function () use ($product, $quantity, $user, $address, $notes, $couponCode): Order {
+        return DB::transaction(function () use ($product, $quantity, $user, $address, $notes, $couponCode, $paymentMethod): Order {
             $lockedProduct = Product::query()->whereKey($product->id)->lockForUpdate()->firstOrFail();
 
             if (! $lockedProduct->is_active) {
@@ -102,7 +105,7 @@ class CheckoutService
                     'unit_price' => $unitPrice,
                     'subtotal' => round($unitPrice * $quantity, 2),
                 ],
-            ], $user, $address, $notes, $couponCode);
+            ], $user, $address, $notes, $couponCode, $paymentMethod);
         });
     }
 
@@ -114,7 +117,8 @@ class CheckoutService
         User $user,
         UserAddress $address,
         ?string $notesInput,
-        string $couponCode
+        string $couponCode,
+        string $paymentMethod = PaymentService::METHOD_COD
     ): Order {
         $subtotalAmount = round(array_sum(array_map(
             fn (array $line): float => (float) $line['unit_price'] * (int) $line['quantity'],
@@ -135,6 +139,9 @@ class CheckoutService
         $discountAmount = round($couponDiscount + $couponShippingDiscount, 2);
         $grandTotal = round(max(0, $subtotalAmount + $shippingFee - $discountAmount), 2);
         $notes = $this->checkoutNotes($user, $notesInput);
+        $paymentStatus = $paymentMethod === PaymentService::METHOD_COD
+            ? Order::PAYMENT_PENDING
+            : Order::PAYMENT_PENDING_PAYMENT;
 
         $order = new Order();
         $order->forceFill([
@@ -148,8 +155,8 @@ class CheckoutService
             'grand_total' => $grandTotal,
             'total_amount' => $grandTotal,
             'status' => 'pending',
-            'payment_method' => 'cash_on_delivery',
-            'payment_status' => Order::PAYMENT_PENDING,
+            'payment_method' => $paymentMethod,
+            'payment_status' => $paymentStatus,
             'delivery_address' => trim(collect([$address->address_line1, $address->address_line2])->filter()->implode(', ')),
             'delivery_city' => $address->city,
             'delivery_phone' => $this->contactDestination($user, $address),

@@ -205,6 +205,22 @@
                                 {{ __('Current: :status', ['status' => $paymentMeta['label']]) }}
                             </span>
                         </div>
+                        @if($order->payments->isNotEmpty())
+                            <div class="mt-4 overflow-hidden rounded-xl border border-slate-200 dark:border-slate-800">
+                                @foreach($order->payments as $payment)
+                                    <div class="border-b border-slate-200 px-3 py-3 text-xs last:border-b-0 dark:border-slate-800">
+                                        <div class="flex items-center justify-between gap-3">
+                                            <span class="font-semibold uppercase text-slate-700 dark:text-slate-200">{{ $payment->provider }}</span>
+                                            <span class="rounded-full bg-slate-100 px-2 py-0.5 font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200">{{ __(ucfirst(str_replace('_', ' ', $payment->status))) }}</span>
+                                        </div>
+                                        <p class="mt-1 text-slate-500 dark:text-slate-400">{{ __('Provider ID: :id', ['id' => $payment->provider_payment_id ?: '-']) }}</p>
+                                        @if($payment->provider_transaction_id)
+                                            <p class="mt-1 text-slate-500 dark:text-slate-400">{{ __('Transaction: :id', ['id' => $payment->provider_transaction_id]) }}</p>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+                        @endif
                         <form method="POST" action="{{ route('admin.orders.update-payment', $order) }}" class="mt-4 space-y-3">
                             @csrf
                             @method('PATCH')

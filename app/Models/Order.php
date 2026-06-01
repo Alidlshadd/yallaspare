@@ -15,6 +15,7 @@ class Order extends Model
     public const STATUS_DELIVERED = 'delivered';
     public const STATUS_CANCELLED = 'cancelled';
     public const PAYMENT_PENDING = 'pending';
+    public const PAYMENT_PENDING_PAYMENT = 'pending_payment';
     public const PAYMENT_PAID = 'paid';
     public const PAYMENT_FAILED = 'failed';
     public const PAYMENT_REFUNDED = 'refunded';
@@ -77,6 +78,7 @@ class Order extends Model
     {
         return [
             self::PAYMENT_PENDING,
+            self::PAYMENT_PENDING_PAYMENT,
             self::PAYMENT_PAID,
             self::PAYMENT_FAILED,
             self::PAYMENT_REFUNDED,
@@ -97,6 +99,10 @@ class Order extends Model
         $normalized = self::normalizedPaymentStatus($status);
 
         return match ($normalized) {
+            self::PAYMENT_PENDING_PAYMENT => [
+                'label' => __('Pending payment'),
+                'class' => 'bg-sky-100 text-sky-800 border border-sky-200',
+            ],
             self::PAYMENT_PAID => [
                 'label' => __('Paid'),
                 'class' => 'bg-emerald-100 text-emerald-800 border border-emerald-200',
@@ -218,5 +224,15 @@ class Order extends Model
     public function returnRequests()
     {
         return $this->hasMany(ReturnRequest::class)->latest('id');
+    }
+
+    public function payments()
+    {
+        return $this->hasMany(Payment::class)->latest('id');
+    }
+
+    public function latestPayment()
+    {
+        return $this->hasOne(Payment::class)->latestOfMany();
     }
 }

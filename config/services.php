@@ -31,4 +31,22 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'fib' => [
+        'enabled' => env('FIB_PAYMENTS_ENABLED', false),
+        'base_url' => env('FIB_BASE_URL', 'https://fib.stage.fib.iq'),
+        'client_id' => env('FIB_CLIENT_ID'),
+        'client_secret' => env('FIB_CLIENT_SECRET'),
+        'webhook_token' => env('FIB_WEBHOOK_TOKEN'),
+    ],
+
+    'zaincash' => [
+        'enabled' => env('ZAINCASH_PAYMENTS_ENABLED', false),
+        'base_url' => env('ZAINCASH_BASE_URL', 'https://test.zaincash.iq'),
+        'merchant_id' => env('ZAINCASH_MERCHANT_ID'),
+        'msisdn' => env('ZAINCASH_MSISDN'),
+        'secret' => env('ZAINCASH_SECRET'),
+        'service_type' => env('ZAINCASH_SERVICE_TYPE', 'Yalla Spare order'),
+        'webhook_token' => env('ZAINCASH_WEBHOOK_TOKEN'),
+    ],
+
 ];

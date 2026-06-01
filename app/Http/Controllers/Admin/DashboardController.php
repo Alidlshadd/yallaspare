@@ -124,7 +124,7 @@ class DashboardController extends Controller
             $salesChangePercent = $this->percentageChange($todaySales, $yesterdaySales);
 
             $pendingOrders = Order::whereIn('status', ['pending', 'processing'])->count();
-            $unpaidOrders = Order::where('payment_status', Order::PAYMENT_PENDING)->count();
+            $unpaidOrders = Order::whereIn('payment_status', [Order::PAYMENT_PENDING, Order::PAYMENT_PENDING_PAYMENT])->count();
             $newCustomers = $currentMonthUsers;
             $todayPendingOrders = Order::query()
                 ->whereNull('archived_at')

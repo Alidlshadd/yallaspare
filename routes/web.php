@@ -31,6 +31,7 @@ use App\Http\Controllers\ProductReviewController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\LegalController;
+use App\Http\Controllers\PaymentReturnController;
 use App\Models\Setting;
 use App\Models\User;
 use App\Support\Branding;
@@ -122,6 +123,7 @@ Route::middleware(['auth', 'verified', 'customer.area'])->group(function () {
     Route::match(['get', 'post'], '/checkout/review', [CheckoutController::class, 'review'])->middleware('throttle:checkout-write')->name('checkout.review');
     Route::post('/checkout', [CheckoutController::class, 'store'])->middleware('throttle:checkout-write')->name('checkout.store');
     Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');
+    Route::get('/payments/{payment}/return', PaymentReturnController::class)->name('payments.return');
     Route::post('/shop/products/{product}/back-in-stock', [CatalogShopController::class, 'subscribeBackInStock'])->middleware('throttle:commerce-write')->name('shop.back-in-stock.store');
     Route::delete('/shop/products/{product}/back-in-stock', [CatalogShopController::class, 'unsubscribeBackInStock'])->middleware('throttle:commerce-write')->name('shop.back-in-stock.destroy');
     Route::post('/shop/products/{product}/reviews', [ProductReviewController::class, 'store'])->middleware('throttle:commerce-write')->name('shop.reviews.store');

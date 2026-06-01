@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\MobileController;
+use App\Http\Controllers\PaymentWebhookController;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,6 +19,10 @@ use App\Http\Controllers\Api\MobileController;
 Route::middleware(['auth:sanctum', 'verified'])->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/payments/{provider}/webhook', PaymentWebhookController::class)
+    ->middleware('throttle:60,1')
+    ->name('payments.webhook');
 
 Route::prefix('mobile')->group(function () {
     Route::post('/login', [MobileController::class, 'login'])->middleware('throttle:mobile-login');

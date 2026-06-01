@@ -40,9 +40,9 @@
         <section class="rounded-2xl border border-slate-200/70 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900/60">
             <h2 class="text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">{{ __('4. Payment Information') }}</h2>
             <div class="mt-4 space-y-3 text-base leading-relaxed text-slate-600 dark:text-slate-300">
-                <p>{{ __('Currently, our website does not process online payments.') }}</p>
-                <p>{{ __('All orders are placed through the website and payment is completed through cash on delivery or direct agreement with the customer.') }}</p>
-                <p>{{ __('Since online payment is not used, no credit card or online banking information is collected or stored on our website.') }}</p>
+                <p>{{ __('Orders may be paid by cash on delivery, direct agreement, or an enabled online payment provider.') }}</p>
+                <p>{{ __('Online payments are completed on the selected provider payment page or app. We do not collect or store card numbers, PINs, CVV codes, or banking credentials.') }}</p>
+                <p>{{ __('We store only payment status, provider reference numbers, and safe gateway responses needed to verify and support your order.') }}</p>
             </div>
         </section>
 

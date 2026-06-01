@@ -9,9 +9,11 @@ use App\Models\Setting;
 use App\Models\UserAddress;
 use App\Services\Checkout\CheckoutService;
 use App\Services\CouponService;
+use App\Services\Payments\PaymentService;
 use App\Support\UserCommunication;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class CheckoutController extends Controller
@@ -20,7 +22,10 @@ class CheckoutController extends Controller
     private const COUPON_SESSION_KEY = 'checkout.coupon_code';
     private const BUY_NOW_COUPON_SESSION_KEY = 'checkout.buy_now_coupon_code';
 
-    public function __construct(private readonly CheckoutService $checkoutService)
+    public function __construct(
+        private readonly CheckoutService $checkoutService,
+        private readonly PaymentService $paymentService,
+    )
     {
     }
 
@@ -73,6 +78,7 @@ class CheckoutController extends Controller
             'address_id' => ['required', 'integer'],
             'notes' => ['nullable', 'string', 'max:1000'],
             'coupon_code' => ['nullable', 'string', 'max:80'],
+            'payment_method' => ['nullable', Rule::in($this->paymentService->allowedCheckoutMethods())],
         ]);
 
         $user = $request->user();
@@ -82,6 +88,7 @@ class CheckoutController extends Controller
         $couponCode = $submittedCouponCode !== ''
             ? $submittedCouponCode
             : $couponService->normalizeCode((string) $request->session()->get(self::BUY_NOW_COUPON_SESSION_KEY, ''));
+        $paymentMethod = (string) ($data['payment_method'] ?? PaymentService::METHOD_COD);
 
         $address = UserAddress::query()
             ->where('user_id', $user->id)
@@ -98,10 +105,25 @@ class CheckoutController extends Controller
                 $user,
                 $address,
                 $data['notes'] ?? null,
-                $couponCode
+                $couponCode,
+                $paymentMethod
             );
         } catch (\RuntimeException $exception) {
             return back()->with('error', $exception->getMessage())->withInput();
+        }
+
+        if ($this->paymentService->isOnlineMethod($paymentMethod)) {
+            try {
+                $payment = $this->paymentService->start($placedOrder, $paymentMethod);
+            } catch (\Throwable) {
+                return redirect()
+                    ->route('account.orders.show', $placedOrder)
+                    ->with('error', __('Payment could not be started. Please contact support with your order number.'));
+            }
+
+            $request->session()->forget(self::BUY_NOW_COUPON_SESSION_KEY);
+
+            return redirect()->away((string) $payment->redirect_url);
         }
 
         $channels = UserCommunication::sendOrderPlaced($user, $placedOrder);
@@ -249,6 +271,7 @@ class CheckoutController extends Controller
             'grandTotal' => $grandTotal,
             'couponSummary' => $couponPreview,
             'currencySymbol' => $currencyLabel,
+            'paymentMethods' => $this->paymentService->checkoutMethods(),
         ]);
     }
 
@@ -262,7 +285,9 @@ class CheckoutController extends Controller
         $data = $request->validate([
             'address_id' => ['nullable', 'integer'],
             'notes' => ['nullable', 'string', 'max:1000'],
+            'payment_method' => ['nullable', Rule::in($this->paymentService->allowedCheckoutMethods())],
         ]);
+        $paymentMethod = (string) ($data['payment_method'] ?? PaymentService::METHOD_COD);
 
         $addressQuery = UserAddress::query()->where('user_id', auth()->id());
         $selectedAddressId = isset($data['address_id']) ? (int) $data['address_id'] : null;
@@ -298,10 +323,26 @@ class CheckoutController extends Controller
                 $user,
                 $address,
                 $data['notes'] ?? null,
-                $couponCode
+                $couponCode,
+                $paymentMethod
             );
         } catch (\RuntimeException $exception) {
             return back()->with('error', $exception->getMessage());
+        }
+
+        if ($this->paymentService->isOnlineMethod($paymentMethod)) {
+            try {
+                $payment = $this->paymentService->start($placedOrder, $paymentMethod);
+            } catch (\Throwable) {
+                return redirect()
+                    ->route('account.orders.show', $placedOrder)
+                    ->with('error', __('Payment could not be started. Please contact support with your order number.'));
+            }
+
+            $request->session()->forget(self::REVIEW_SESSION_KEY);
+            $request->session()->forget(self::COUPON_SESSION_KEY);
+
+            return redirect()->away((string) $payment->redirect_url);
         }
 
         $channels = [];
@@ -413,6 +454,7 @@ class CheckoutController extends Controller
             'defaultAddress' => $defaultAddress,
             'selectedAddressId' => $selectedAddressId,
             'defaultDeliveryNote' => $notes,
+            'paymentMethods' => $this->paymentService->checkoutMethods(),
         ]);
     }
 

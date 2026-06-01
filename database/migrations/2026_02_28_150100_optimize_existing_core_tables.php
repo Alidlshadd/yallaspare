@@ -124,7 +124,7 @@ return new class extends Migration
                     $table->string('currency_code', 3)->default('IQD')->after('shipping_amount');
                 }
                 if (!Schema::hasColumn('orders', 'payment_status')) {
-                    $table->enum('payment_status', ['pending', 'paid', 'partially_paid', 'failed', 'refunded'])->default('pending')->after('payment_method');
+                    $table->enum('payment_status', ['pending', 'pending_payment', 'paid', 'partially_paid', 'failed', 'refunded'])->default('pending')->after('payment_method');
                 }
                 if (!Schema::hasColumn('orders', 'paid_at')) {
                     $table->timestamp('paid_at')->nullable()->after('payment_status');

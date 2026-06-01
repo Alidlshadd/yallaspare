@@ -154,6 +154,7 @@ class OrderController extends Controller
             'statusHistory' => fn ($q) => $q->limit(20)->with(['changedBy:id,name']),
             'adminNotes' => fn ($q) => $q->limit(20)->with(['user:id,name']),
             'returnRequests' => fn ($q) => $q->limit(10)->with(['user:id,name,email']),
+            'payments' => fn ($q) => $q->limit(10),
         ]);
 
         return view('admin.orders.show', [
