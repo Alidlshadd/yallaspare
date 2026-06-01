@@ -73,7 +73,39 @@
                 @endforeach
             </div>
 
-            <div class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900"
+                 x-data="{
+                    selected: [],
+                    allIds: @js($orders->pluck('id')->all()),
+                    toggleAll(e) { this.selected = e.target.checked ? [...this.allIds] : []; },
+                    allSelected() { return this.allIds.length > 0 && this.selected.length === this.allIds.length; },
+                 }">
+                <div x-show="selected.length > 0" x-cloak
+                     class="flex flex-wrap items-center gap-3 border-b border-blue-200 bg-blue-50 px-4 py-3 dark:border-blue-900/50 dark:bg-blue-900/20">
+                    <span class="text-sm font-semibold text-blue-900 dark:text-blue-100">
+                        <span x-text="selected.length"></span> {{ __('selected') }}
+                    </span>
+                    <form method="POST" action="{{ route('admin.orders.bulk-status') }}"
+                          @submit="if (!confirm('{{ __('Apply this status change to the selected orders?') }}')) $event.preventDefault()"
+                          class="ml-auto flex flex-wrap items-center gap-2">
+                        @csrf
+                        <template x-for="id in selected" :key="id">
+                            <input type="hidden" name="order_ids[]" :value="id">
+                        </template>
+                        <select name="status" required class="rounded-md border-slate-300 bg-white py-1.5 text-xs text-slate-900 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                            <option value="">{{ __('Set status…') }}</option>
+                            @foreach($statusOptions as $status)
+                                <option value="{{ $status }}">{{ \App\Models\Order::statusMeta((string) $status)['label'] }}</option>
+                            @endforeach
+                        </select>
+                        <button type="submit" class="rounded-md bg-blue-600 px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-700">
+                            {{ __('Apply') }}
+                        </button>
+                        <button type="button" @click="selected = []" class="rounded-md bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+                            {{ __('Clear') }}
+                        </button>
+                    </form>
+                </div>
                 <div class="border-b border-slate-200 p-4 dark:border-slate-800">
                     <form method="GET" action="{{ route('admin.orders.index') }}" class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(18rem,2fr)_minmax(13rem,1fr)_minmax(13rem,1fr)_auto]">
                         @if($currentAttention !== '')
@@ -109,6 +141,13 @@
                     <table class="min-w-[76rem] divide-y divide-slate-200 dark:divide-slate-800">
                         <thead class="bg-slate-50 dark:bg-slate-800/70">
                             <tr>
+                                <th class="w-10 px-4 py-3">
+                                    <input type="checkbox"
+                                           class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-900"
+                                           @change="toggleAll($event)"
+                                           :checked="allSelected()"
+                                           aria-label="{{ __('Select all') }}">
+                                </th>
                                 <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Order') }}</th>
                                 <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('User / Dealer') }}</th>
                                 <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Items') }}</th>
@@ -127,7 +166,14 @@
                                     $paymentMeta = \App\Models\Order::paymentStatusMeta((string) $order->payment_status);
                                     $allowedTransitions = $transitionOptions[$order->id] ?? [$order->status];
                                 @endphp
-                                <tr>
+                                <tr :class="selected.includes({{ $order->id }}) ? 'bg-blue-50/40 dark:bg-blue-900/10' : ''">
+                                    <td class="w-10 px-4 py-4">
+                                        <input type="checkbox"
+                                               class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 dark:border-slate-600 dark:bg-slate-900"
+                                               value="{{ $order->id }}"
+                                               x-model.number="selected"
+                                               aria-label="{{ __('Select order #:order', ['order' => $order->order_number]) }}">
+                                    </td>
                                     <td class="px-4 py-4">
                                         <p class="max-w-[13rem] break-words text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $order->order_number }}</p>
                                         <p class="text-xs text-slate-500 dark:text-slate-400">ID #{{ $order->id }}</p>
@@ -212,7 +258,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="8" class="px-6 py-12 text-center">
+                                    <td colspan="9" class="px-6 py-12 text-center">
                                         <p class="text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('No orders found for the current filter.') }}</p>
                                     </td>
                                 </tr>
