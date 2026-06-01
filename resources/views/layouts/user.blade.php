@@ -10,24 +10,25 @@
     $cartCount = isset($cartCount) ? (int) $cartCount : $headerCartCount;
     $wishlistCount = $headerWishlistCount;
     $authUser = auth()->user();
-    $userInitial = strtoupper(substr((string) ($authUser->name ?? 'U'), 0, 1));
-    $userProfilePhotoUrl = !empty($authUser?->profile_photo_path)
-        ? asset('storage/' . ltrim((string) $authUser->profile_photo_path, '/'))
+    $customerUser = $authUser && ! $authUser->isAdminPanelUser() ? $authUser : null;
+    $isCustomerAuthenticated = $customerUser !== null;
+    $userInitial = strtoupper(substr((string) ($customerUser->name ?? 'U'), 0, 1));
+    $userProfilePhotoUrl = !empty($customerUser?->profile_photo_path)
+        ? asset('storage/' . ltrim((string) $customerUser->profile_photo_path, '/'))
         : null;
-    $fontSizePreference = auth()->check() ? (auth()->user()->font_size_preference ?? 'default') : 'default';
-    $reducedMotion = auth()->check() ? (bool) (auth()->user()->reduced_motion ?? false) : false;
-    $highContrastMode = auth()->check() ? (bool) (auth()->user()->high_contrast_mode ?? false) : false;
+    $fontSizePreference = $isCustomerAuthenticated ? ($customerUser->font_size_preference ?? 'default') : 'default';
+    $reducedMotion = $isCustomerAuthenticated ? (bool) ($customerUser->reduced_motion ?? false) : false;
+    $highContrastMode = $isCustomerAuthenticated ? (bool) ($customerUser->high_contrast_mode ?? false) : false;
     $currencyLabel = (string) ($systemSettings['currency_code'] ?? 'IQD');
 
     $cartCount = max(0, (int) $cartCount);
     $cartRef = $cartRef ?? $headerCartRef ?? '#17-3118';
     $cartTotalFormatted = $cartTotalFormatted ?? $headerCartTotalFormatted ?? trim($currencyLabel . ' ' . number_format($headerCartSubtotal, 2));
-    $isAuthenticated = auth()->check();
-    $storeHomeUrl = $isAuthenticated ? route('user.shop.home') : route('home');
-    $cartUrl = $isAuthenticated
+    $storeHomeUrl = $isCustomerAuthenticated ? route('user.shop.home') : route('home');
+    $cartUrl = $isCustomerAuthenticated
         ? (Route::has('cart.index') ? route('cart.index') : (Route::has('user.cart.index') ? route('user.cart.index') : url('/user/cart')))
         : route('login');
-    $wishlistUrl = $isAuthenticated
+    $wishlistUrl = $isCustomerAuthenticated
         ? (Route::has('user.wishlist.index') ? route('user.wishlist.index') : url('/user/wishlist'))
         : route('login');
     $isUserHomeRoute = request()->routeIs('user.shop.home');
@@ -55,7 +56,7 @@
         @include('partials.seo-locale')
         @stack('head')
         @php
-            $themePreference = auth()->check() ? (auth()->user()->theme_preference ?? 'light') : 'light';
+            $themePreference = $isCustomerAuthenticated ? ($customerUser->theme_preference ?? 'light') : 'light';
             $themePreference = in_array($themePreference, ['light', 'dark'], true) ? $themePreference : 'light';
         @endphp
         <script>
@@ -66,7 +67,7 @@
                     let storedThemeValue = localStorage.getItem('user-theme');
                     let storedTheme = normalizeTheme(storedThemeValue);
                     const serverTheme = @js($themePreference);
-                    const isAuthenticated = @js(auth()->check());
+                    const isAuthenticated = @js($isCustomerAuthenticated);
 
                     if (storedTheme === 'dark' && localStorage.getItem(lightDefaultResetKey) !== '1') {
                         storedThemeValue = 'light';
@@ -131,7 +132,7 @@
                             <div class="flex items-center gap-2">
                                 <x-language-switcher variant="dark" />
 
-                            @auth
+                            @if ($isCustomerAuthenticated)
                                 <div class="relative" data-header-account>
                                     <button
                                         type="button"
@@ -141,13 +142,13 @@
                                         aria-haspopup="menu"
                                     >
                                         @if($userProfilePhotoUrl)
-                                            <img src="{{ $userProfilePhotoUrl }}" alt="{{ __(':name profile photo', ['name' => $authUser->name ?? __('User')]) }}" class="h-7 w-7 rounded-full object-cover border border-white/30">
+                                            <img src="{{ $userProfilePhotoUrl }}" alt="{{ __(':name profile photo', ['name' => $customerUser->name ?? __('User')]) }}" class="h-7 w-7 rounded-full object-cover border border-white/30">
                                         @else
                                             <span class="inline-flex h-7 w-7 items-center justify-center rounded-full bg-white text-[11px] font-semibold text-primary">
                                                 {{ $userInitial }}
                                             </span>
                                         @endif
-                                        <span>{{ auth()->user()->name ?? __('Account') }}</span>
+                                        <span>{{ $customerUser->name ?? __('Account') }}</span>
                                         <svg class="h-4 w-4 text-white/65 transition-transform" data-header-account-icon viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                             <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.126l3.71-3.895a.75.75 0 1 1 1.08 1.04l-4.25 4.46a.75.75 0 0 1-1.08 0l-4.25-4.46a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd" />
                                         </svg>
@@ -159,8 +160,8 @@
                                         role="menu"
                                     >
                                         <div class="rounded-2xl border border-slate-100 px-4 py-3 dark:border-slate-800">
-                                            <p class="truncate text-sm font-semibold">{{ auth()->user()->name ?? __('User') }}</p>
-                                            <p class="truncate text-xs text-slate-500 dark:text-slate-400">{{ auth()->user()->email ?? '' }}</p>
+                                            <p class="truncate text-sm font-semibold">{{ $customerUser->name ?? __('User') }}</p>
+                                            <p class="truncate text-xs text-slate-500 dark:text-slate-400">{{ $customerUser->email ?? '' }}</p>
                                         </div>
                                         <div class="mt-2 space-y-1">
                                             <a href="{{ route('user.account.edit') }}" class="flex rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-primary/30" role="menuitem">
@@ -187,7 +188,7 @@
                                         {{ __('Register') }}
                                     </a>
                                 </div>
-                            @endauth
+                            @endif
                             </div>
                         </div>
                     </div>
@@ -209,7 +210,7 @@
                             <div class="flex shrink-0 items-center gap-1.5">
                                 <x-language-switcher variant="dark" />
 
-                            @auth
+                            @if ($isCustomerAuthenticated)
                             <div class="relative" data-header-account>
                                 <button
                                     type="button"
@@ -219,13 +220,13 @@
                                     aria-haspopup="menu"
                                 >
                                     @if($userProfilePhotoUrl)
-                                            <img src="{{ $userProfilePhotoUrl }}" alt="{{ __(':name profile photo', ['name' => $authUser->name ?? __('User')]) }}" class="h-6 w-6 rounded-full object-cover border border-white/30 sm:h-7 sm:w-7">
+                                            <img src="{{ $userProfilePhotoUrl }}" alt="{{ __(':name profile photo', ['name' => $customerUser->name ?? __('User')]) }}" class="h-6 w-6 rounded-full object-cover border border-white/30 sm:h-7 sm:w-7">
                                         @else
                                             <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-white text-[10px] font-semibold text-primary sm:h-7 sm:w-7 sm:text-[11px]">
                                             {{ $userInitial }}
                                         </span>
                                     @endif
-                                    <span class="hidden sm:block">{{ auth()->user()->name ?? __('Account') }}</span>
+                                    <span class="hidden sm:block">{{ $customerUser->name ?? __('Account') }}</span>
                                     <svg class="h-4 w-4 text-white/65 transition-transform" data-header-account-icon viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                         <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.126l3.71-3.895a.75.75 0 1 1 1.08 1.04l-4.25 4.46a.75.75 0 0 1-1.08 0l-4.25-4.46a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd" />
                                     </svg>
@@ -237,8 +238,8 @@
                                     role="menu"
                                 >
                                     <div class="rounded-2xl border border-slate-100 px-4 py-3 dark:border-slate-800">
-                                        <p class="truncate text-sm font-semibold">{{ auth()->user()->name ?? __('User') }}</p>
-                                        <p class="truncate text-xs text-slate-500 dark:text-slate-400">{{ auth()->user()->email ?? '' }}</p>
+                                        <p class="truncate text-sm font-semibold">{{ $customerUser->name ?? __('User') }}</p>
+                                        <p class="truncate text-xs text-slate-500 dark:text-slate-400">{{ $customerUser->email ?? '' }}</p>
                                     </div>
                                     <div class="mt-2 space-y-1">
                                         <a href="{{ route('user.account.edit') }}" class="flex rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-primary/30" role="menuitem">
@@ -260,7 +261,7 @@
                                 <a href="{{ route('login') }}" class="inline-flex h-8 items-center rounded-lg border border-white/10 bg-white/10 px-2.5 text-xs font-medium text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25 sm:h-9 sm:rounded-xl sm:px-3 sm:text-sm">
                                     {{ __('Login') }}
                                 </a>
-                            @endauth
+                            @endif
                                 <button
                                     type="button"
                                     class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25 sm:h-9 sm:w-9 sm:rounded-xl"
@@ -307,7 +308,7 @@
                         </form>
 
                         <div class="flex items-center justify-end gap-1.5 sm:gap-2">
-                            @auth
+                            @if ($isCustomerAuthenticated)
                                 <a
                                     href="{{ $cartUrl }}"
                                     class="relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25 sm:h-10 sm:w-10 sm:rounded-xl"
@@ -340,7 +341,7 @@
                                 >
                                     {{ __('Register') }}
                                 </a>
-                            @endauth
+                            @endif
 
                             <a
                                 href="{{ url('/support') }}"
@@ -357,7 +358,7 @@
 
                     <div class="hidden py-3 lg:grid lg:grid-cols-[minmax(11rem,0.75fr)_minmax(30rem,1.45fr)_minmax(11rem,0.75fr)] lg:items-center lg:gap-5">
                         <div class="justify-self-start">
-                            @auth
+                            @if ($isCustomerAuthenticated)
                                 <a
                                     href="{{ $cartUrl }}"
                                     class="inline-flex min-w-[10.5rem] items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
@@ -385,7 +386,7 @@
                                 <span class="inline-flex min-w-[10.5rem] items-center justify-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white">
                                     {{ __('Guest browsing') }}
                                 </span>
-                            @endauth
+                            @endif
                         </div>
 
                         <form method="GET" action="{{ route('shop.index') }}" class="w-full min-w-0 justify-self-center" data-search-autocomplete data-search-autocomplete-url="{{ route('shop.autocomplete') }}">
@@ -418,7 +419,7 @@
 
                         <div class="justify-self-end">
                             <div class="flex items-center gap-2">
-                                @auth
+                                @if ($isCustomerAuthenticated)
                                     <a
                                         href="{{ $wishlistUrl }}"
                                         class="inline-flex h-10 items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
@@ -441,7 +442,7 @@
                                     <a href="{{ route('register') }}" class="inline-flex h-10 items-center rounded-full bg-white px-4 text-sm font-semibold text-primary transition duration-200 hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40">
                                         {{ __('Register') }}
                                     </a>
-                                @endauth
+                                @endif
 
                                 <a
                                     href="{{ url('/support') }}"

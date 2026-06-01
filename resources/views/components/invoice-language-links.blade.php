@@ -20,7 +20,7 @@
 @endphp
 
 <details {{ $attributes->merge(['class' => 'group relative inline-block text-left']) }}>
-    <summary class="inline-flex cursor-pointer list-none items-center justify-center gap-2 bg-primary font-semibold text-white shadow-sm transition hover:bg-[#10105c] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 [&::-webkit-details-marker]:hidden {{ $summaryClasses }}">
+    <summary class="inline-flex cursor-pointer list-none items-center justify-center gap-2 whitespace-nowrap bg-primary font-semibold text-white shadow-sm transition hover:bg-[#10105c] focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 [&::-webkit-details-marker]:hidden {{ $summaryClasses }}">
         <i class="fas fa-file-pdf"></i>
         <span>{{ __('Invoice') }}</span>
         <i class="fas fa-chevron-down text-[10px] transition group-open:rotate-180"></i>

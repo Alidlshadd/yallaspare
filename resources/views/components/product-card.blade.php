@@ -5,11 +5,13 @@
 ])
 
 @php
+    $authUser = auth()->user();
+    $customerUser = $authUser && ! $authUser->isAdminPanelUser() ? $authUser : null;
     $currencySymbol = (string) \App\Models\Setting::getValue('currency_code', 'IQD');
     $productName = $product->name ?? $product->localized_name ?? $product->name_en ?? __('Product');
     $stockCode = $product->stock_code ?? $product->sku ?? __('No SKU');
     $pricing = method_exists($product, 'pricingFor')
-        ? $product->pricingFor(auth()->user())
+        ? $product->pricingFor($customerUser)
         : [
             'base_price' => (float) data_get($product, 'base_price', data_get($product, 'price', 0)),
             'price' => (float) data_get($product, 'price', 0),
@@ -45,7 +47,7 @@
 
     @if ($showWishlist)
         <div class="absolute right-4 top-4 z-20">
-            @auth
+            @if ($customerUser)
                 @if ($isWishlisted)
                     <form method="POST" action="{{ route('user.wishlist.destroy', $product) }}">
                         @csrf
@@ -74,7 +76,7 @@
                         </button>
                     </form>
                 @endif
-            @endauth
+            @endif
         </div>
     @endif
 
@@ -161,7 +163,7 @@
         </p>
     </div>
 
-    @auth
+    @if ($customerUser)
         <form method="POST" action="{{ route('cart.add', $product->id) }}" class="relative z-20 mt-4">
             @csrf
             <button
@@ -180,5 +182,5 @@
         >
             {{ $inStock ? __('Login or Register to Order') : __('Out of Stock') }}
         </a>
-    @endauth
+    @endif
 </article>

@@ -53,13 +53,13 @@
 
             <div class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <div class="border-b border-slate-200 p-4 dark:border-slate-800">
-                    <form method="GET" action="{{ route('admin.orders.index') }}" class="grid grid-cols-1 md:grid-cols-5 gap-3">
+                    <form method="GET" action="{{ route('admin.orders.index') }}" class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-[minmax(18rem,2fr)_minmax(13rem,1fr)_minmax(13rem,1fr)_auto]">
                         <input
                             type="text"
                             name="search"
                             value="{{ request('search') }}"
                             placeholder="{{ __('Search order #, city, phone, user...') }}"
-                            class="md:col-span-2 rounded-lg border-slate-300 bg-white text-sm text-slate-900 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                            class="rounded-lg border-slate-300 bg-white text-sm text-slate-900 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 sm:col-span-2 xl:col-span-1"
                         >
                         <select name="status" class="rounded-lg border-slate-300 bg-white text-sm text-slate-900 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             <option value="">{{ __('All Statuses') }}</option>
@@ -74,14 +74,14 @@
                             <option value="user" @selected(($association ?? '') === 'user')>{{ __('Retail Users') }}</option>
                             <option value="dealer" @selected(($association ?? '') === 'dealer')>{{ __('Dealers') }}</option>
                         </select>
-                        <button type="submit" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">
+                        <button type="submit" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 sm:col-span-2 xl:col-span-1">
                             {{ __('Apply Filters') }}
                         </button>
                     </form>
                 </div>
 
                 <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800">
+                    <table class="min-w-[76rem] divide-y divide-slate-200 dark:divide-slate-800">
                         <thead class="bg-slate-50 dark:bg-slate-800/70">
                             <tr>
                                 <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Order') }}</th>
@@ -102,12 +102,12 @@
                                 @endphp
                                 <tr>
                                     <td class="px-4 py-4">
-                                        <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $order->order_number }}</p>
+                                        <p class="max-w-[13rem] break-words text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $order->order_number }}</p>
                                         <p class="text-xs text-slate-500 dark:text-slate-400">ID #{{ $order->id }}</p>
                                     </td>
                                     <td class="px-4 py-4">
                                         <p class="text-sm font-medium text-slate-900 dark:text-slate-100">{{ $order->user?->name ?? __('Guest customer') }}</p>
-                                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ $order->user?->email ?? '-' }}</p>
+                                        <p class="max-w-[12rem] break-words text-xs text-slate-500 dark:text-slate-400">{{ $order->user?->email ?? '-' }}</p>
                                         @if($order->user)
                                             <span class="mt-1 inline-flex rounded-full px-2 py-0.5 text-xs font-semibold {{ $isDealer ? 'bg-violet-100 text-violet-700' : 'bg-slate-100 text-slate-700' }}">
                                                 {{ $isDealer ? __('Dealer') : __('User') }}
@@ -126,15 +126,15 @@
                                         <p class="text-xs text-slate-500 dark:text-slate-400">{{ $order->created_at?->format('h:i A') }}</p>
                                     </td>
                                     <td class="px-4 py-4">
-                                        <div class="flex justify-end gap-2">
-                                            <a href="{{ route('admin.orders.show', $order) }}" class="rounded-md bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">
+                                        <div class="flex min-w-[23rem] flex-wrap justify-end gap-2">
+                                            <a href="{{ route('admin.orders.show', $order) }}" class="whitespace-nowrap rounded-md bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">
                                                 {{ __('View') }}
                                             </a>
                                             <x-invoice-language-links :order="$order" route-name="admin.orders.invoice" mode="inline" size="xs" />
                                             <form method="POST" action="{{ route('admin.orders.update-status', $order) }}" class="flex items-center gap-1">
                                                 @csrf
                                                 @method('PATCH')
-                                                <select name="status" class="rounded-md border-slate-300 bg-white py-1 text-xs text-slate-900 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                                <select name="status" class="min-w-[8.5rem] rounded-md border-slate-300 bg-white py-1 text-xs text-slate-900 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                                     {{-- Show all real statuses from one source of truth.
                                                          Workflow restrictions stay enforced by:
                                                          1) disabled options in UI
@@ -149,7 +149,7 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                                <button type="submit" class="rounded-md bg-blue-600 px-2 py-1.5 text-xs font-semibold text-white hover:bg-blue-700">
+                                                <button type="submit" class="whitespace-nowrap rounded-md bg-blue-600 px-2 py-1.5 text-xs font-semibold text-white hover:bg-blue-700">
                                                     {{ __('Save') }}
                                                 </button>
                                             </form>
@@ -157,7 +157,7 @@
                                                 <form method="POST" action="{{ route('admin.orders.destroy', $order) }}" data-danger-confirm data-danger-title="{{ __('Archive Order') }}" data-danger-description="{{ __('The order will be hidden from the active order list but kept for financial history and audit review.') }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button type="submit" class="rounded-md bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700 hover:bg-amber-100">
+                                                    <button type="submit" class="whitespace-nowrap rounded-md bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700 hover:bg-amber-100">
                                                         {{ __('Archive') }}
                                                     </button>
                                                 </form>

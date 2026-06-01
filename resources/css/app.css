@@ -67,6 +67,19 @@
         overflow-wrap: anywhere;
     }
 
+    select:not([multiple]):not([size]) {
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='%2364748b'%3E%3Cpath fill-rule='evenodd' d='M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.126l3.71-3.895a.75.75 0 1 1 1.08 1.04l-4.25 4.46a.75.75 0 0 1-1.08 0l-4.25-4.46a.75.75 0 0 1 .02-1.06Z' clip-rule='evenodd'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-size: 1rem 1rem;
+        background-position: right 0.875rem center;
+        padding-inline-end: 2.5rem !important;
+    }
+
+    [dir='rtl'] select:not([multiple]):not([size]) {
+        background-position: left 0.875rem center;
+    }
+
     [x-cloak] {
         display: none !important;
     }
@@ -360,6 +373,11 @@
         box-shadow: -18px 0 50px -35px rgba(15, 23, 42, 0.75);
     }
 
+    [dir='rtl'] .admin-shell {
+        --sidebar-width-expanded: 18.5rem;
+        --admin-sidebar-expanded: var(--sidebar-width-expanded);
+    }
+
     .admin-sidebar.admin-sidebar-open {
         transform: translate3d(0, 0, 0);
         pointer-events: auto;
@@ -430,6 +448,18 @@
         flex-shrink: 0;
     }
 
+    [dir='rtl'] .admin-shell :is(th, td) {
+        text-align: right;
+    }
+
+    [dir='rtl'] .admin-shell :is(.text-left, .sm\:text-left, .md\:text-left, .lg\:text-left) {
+        text-align: right;
+    }
+
+    [dir='rtl'] .admin-shell :is(.text-right, .sm\:text-right, .md\:text-right, .lg\:text-right) {
+        text-align: left;
+    }
+
     .admin-sidebar-header {
         position: relative;
         display: flex;
@@ -494,6 +524,12 @@
         white-space: nowrap;
         transform: translateX(0);
         transition: opacity 180ms ease, max-width 220ms ease, transform 220ms ease;
+    }
+
+    [dir='rtl'] .admin-nav-label {
+        max-width: 14rem;
+        white-space: normal;
+        line-height: 1.35;
     }
 
     [dir='rtl'] .admin-sidebar-brand-copy,

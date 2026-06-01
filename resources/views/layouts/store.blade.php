@@ -56,6 +56,8 @@
 <body class="min-h-screen">
     @php
         $headerCartCount = (int) ($headerCartCount ?? $cartCount ?? 0);
+        $authUser = auth()->user();
+        $isCustomerAuthenticated = $authUser && ! $authUser->isAdminPanelUser();
     @endphp
 
     <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
@@ -116,7 +118,7 @@
                             {{ $headerCartCount }}
                         </span>
                     </a>
-                    @auth
+                    @if ($isCustomerAuthenticated)
                         <a href="{{ route('account.index') }}" class="inline-flex items-center justify-center rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-900/5 hover:text-slate-950 sm:rounded-2xl sm:px-4 sm:py-2.5">
                             {{ __('Account') }}
                         </a>
@@ -133,7 +135,7 @@
                         <a href="{{ route('register') }}" class="inline-flex items-center justify-center rounded-xl bg-slate-950 px-3 py-2 text-sm font-semibold text-white transition hover:bg-slate-800 sm:rounded-2xl sm:px-4 sm:py-2.5">
                             {{ __('Register') }}
                         </a>
-                    @endauth
+                    @endif
                 </nav>
             </div>
         </div>

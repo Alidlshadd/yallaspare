@@ -362,7 +362,7 @@
                     data-admin-main
                 >
                     <header class="admin-topbar sticky top-0 z-20 bg-white/90 backdrop-blur border-b border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
-                        <div class="flex h-16 min-w-0 items-center justify-between gap-3 px-3 sm:px-6 lg:px-8">
+                        <div class="flex min-h-16 min-w-0 items-center justify-between gap-3 px-3 py-2 sm:px-6 lg:px-8">
                             <div class="flex min-w-0 items-center gap-3">
                                 <button
                                     type="button"
@@ -386,9 +386,9 @@
                                 >
                                     <i class="fas fa-bars"></i>
                                 </button>
-                                <div class="hidden sm:block">
+                                <div class="hidden min-w-0 flex-1 sm:block">
                                     @if (isset($header))
-                                        <div class="text-lg font-semibold text-slate-900 dark:text-slate-100">
+                                        <div class="text-lg font-semibold leading-snug text-slate-900 dark:text-slate-100">
                                             {{ $header }}
                                         </div>
                                     @else

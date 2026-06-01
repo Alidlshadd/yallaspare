@@ -14,6 +14,8 @@
         $heroSubtitle = __(trim((string) data_get($heroSettings ?? [], 'subtitle', '')) ?: 'Browse saved categories, filter by vehicle, and shop available parts from one clean catalog.');
         $heroButtonLabel = __(trim((string) data_get($heroSettings ?? [], 'button_label', '')) ?: 'Shop now');
         $heroButtonUrl = trim((string) data_get($heroSettings ?? [], 'button_url', '')) ?: route('shop.index');
+        $authUser = auth()->user();
+        $isCustomerAuthenticated = $authUser && ! $authUser->isAdminPanelUser();
     @endphp
 
     <div class="space-y-6 sm:space-y-8 lg:space-y-10">
@@ -192,7 +194,7 @@
                                     -{{ $discountPercent }}%
                                 </span>
                             @endif
-                            @auth
+                            @if ($isCustomerAuthenticated)
                                 @php
                                     $productId = (int) data_get($product, 'id');
                                     $storeUrl = route('user.wishlist.store', $productId);
@@ -228,7 +230,7 @@
                                         <path d="m12 20.25-1.45-1.32C5.4 14.36 2.25 11.5 2.25 7.97c0-2.48 1.95-4.47 4.43-4.47 1.4 0 2.75.65 3.57 1.66.82-1.01 2.17-1.66 3.57-1.66 2.48 0 4.43 1.99 4.43 4.47 0 3.53-3.15 6.39-8.3 10.96L12 20.25Z" />
                                     </svg>
                                 </span>
-                            @endauth
+                            @endif
                             @if (data_get($product, 'image'))
                                 <a href="{{ data_get($product, 'detail_url') }}" class="block h-full w-full">
                                     <img src="{{ data_get($product, 'image') }}" alt="{{ data_get($product, 'name') }}" class="h-full w-full object-contain" loading="lazy">
@@ -556,4 +558,3 @@
         })();
     </script>
 @endpush
-

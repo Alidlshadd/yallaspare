@@ -23,6 +23,8 @@ class ShopController extends Controller
 {
     public function home(): View
     {
+        $authUser = auth()->user();
+        $customerUser = $authUser && ! $authUser->isAdminPanelUser() ? $authUser : null;
         $locale = app()->getLocale();
         $nameField = match (true) {
             str_starts_with($locale, 'ar') => 'name_ar',
@@ -82,7 +84,7 @@ class ShopController extends Controller
             $featuredProducts = $featuredProductsQuery
                 ->take(8)
                 ->get()
-                ->map(function (Product $product) use ($nameField) {
+                ->map(function (Product $product) use ($nameField, $customerUser) {
                     $models = collect($product->compatible_models ?? [])
                         ->map(fn ($item) => is_array($item) ? ($item['name'] ?? reset($item)) : $item)
                         ->filter()
@@ -93,7 +95,7 @@ class ShopController extends Controller
                         ? asset('storage/' . ltrim($imagePath, '/'))
                         : null;
 
-                    $pricing = $product->pricingFor(auth()->user());
+                    $pricing = $product->pricingFor($customerUser);
 
                     return [
                         'id' => $product->id,
@@ -113,9 +115,9 @@ class ShopController extends Controller
                     ];
                 });
 
-            if (auth()->check() && Schema::hasTable('wishlists')) {
+            if ($customerUser && Schema::hasTable('wishlists')) {
                 $wishlistedProductIds = Wishlist::query()
-                    ->where('user_id', auth()->id())
+                    ->where('user_id', $customerUser->id)
                     ->whereIn('product_id', $featuredProducts->pluck('id'))
                     ->pluck('product_id')
                     ->map(fn ($id) => (int) $id)
@@ -186,6 +188,8 @@ class ShopController extends Controller
 
     public function shop(Request $request): View
     {
+        $authUser = auth()->user();
+        $customerUser = $authUser && ! $authUser->isAdminPanelUser() ? $authUser : null;
         $productsQuery = Product::query()
             ->with('category')
             ->where('is_active', true);
@@ -306,9 +310,9 @@ class ShopController extends Controller
         $products = $productsQuery->paginate(12)->withQueryString();
 
         $wishlistedProductIds = [];
-        if (auth()->check() && Schema::hasTable('wishlists')) {
+        if ($customerUser && Schema::hasTable('wishlists')) {
             $wishlistedProductIds = Wishlist::query()
-                ->where('user_id', auth()->id())
+                ->where('user_id', $customerUser->id)
                 ->whereIn('product_id', $products->pluck('id'))
                 ->pluck('product_id')
                 ->map(fn ($id) => (int) $id)
