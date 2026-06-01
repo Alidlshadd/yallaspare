@@ -141,6 +141,7 @@ class OrderController extends Controller
             'statusOptions' => Order::allowedStatuses(),
             'transitionOptions' => $transitionOptions,
             'association' => $association,
+            'attention' => $attention,
         ]);
     }
 
