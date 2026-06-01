@@ -350,6 +350,20 @@ class OrderController extends Controller
 
             $lockedOrder->forceFill(['status' => $status])->save();
 
+            // Cash-on-delivery orders settle at the moment of delivery: physical handover
+            // == payment received. Auto-flip payment_status to paid so the admin doesn't
+            // have to do a second click and so revenue reports stay accurate.
+            if (
+                $status === Order::STATUS_DELIVERED
+                && strtolower((string) $lockedOrder->payment_method) === 'cash_on_delivery'
+                && $lockedOrder->payment_status !== Order::PAYMENT_PAID
+            ) {
+                $lockedOrder->forceFill(['payment_status' => Order::PAYMENT_PAID])->save();
+                AdminLogger::log('order.payment_auto_marked_paid', $lockedOrder, [
+                    'reason' => 'cash_on_delivery_delivered',
+                ]);
+            }
+
             $lockedOrder->statusHistory()->create([
                 'from_status' => $previousStatus,
                 'to_status' => $status,
@@ -513,6 +527,18 @@ class OrderController extends Controller
                 }
 
                 $order->forceFill(['status' => $targetStatus])->save();
+
+                // Same COD auto-settle rule as the single-row updateStatus path
+                if (
+                    $targetStatus === Order::STATUS_DELIVERED
+                    && strtolower((string) $order->payment_method) === 'cash_on_delivery'
+                    && $order->payment_status !== Order::PAYMENT_PAID
+                ) {
+                    $order->forceFill(['payment_status' => Order::PAYMENT_PAID])->save();
+                    AdminLogger::log('order.payment_auto_marked_paid', $order, [
+                        'reason' => 'cash_on_delivery_delivered_bulk',
+                    ]);
+                }
 
                 $order->statusHistory()->create([
                     'from_status' => $previousStatus,
