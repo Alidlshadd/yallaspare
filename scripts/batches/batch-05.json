@@ -1,0 +1,302 @@
+{
+    "Configure alert thresholds used across the dashboard.": {
+        "ar": "اضبط حدود التنبيهات المستخدمة عبر لوحة التحكم.",
+        "ku": "سنوورەکانی هۆشدارییە بەکارهاتووەکان لە سەرتاسەری داشبۆرد ڕێک بخە."
+    },
+    "Configure branding, currency, and inventory defaults.": {
+        "ar": "اضبط الهوية البصرية والعملة والإعدادات الافتراضية للمخزون.",
+        "ku": "براند، دراو و بنەماکانی کۆگا ڕێک بخە."
+    },
+    "Confirm product, address, phone, and totals. If everything is correct, place the order.": {
+        "ar": "أكّد المنتج والعنوان والهاتف والإجمالي. إذا كان كل شيء صحيحًا، فضع الطلب.",
+        "ku": "کاڵا، ناونیشان، تەلەفۆن و کۆتاکان پشتڕاست بکەرەوە. ئەگەر هەموو شتێک دروستە، داواکارییەکە بنێرە."
+    },
+    "Critical blockers like login or checkout failures": {
+        "ar": "العوائق الحرجة مثل إخفاقات تسجيل الدخول أو الدفع",
+        "ku": "بەربەستە گرنگەکان وەک شکستی چوونەژوورەوە یاخود پارەدان"
+    },
+    "Customer satisfaction is always our top priority.": {
+        "ar": "رضا العملاء هو أولويتنا القصوى دائمًا.",
+        "ku": "ڕەزامەندیی کڕیار هەمیشە سەرەکیترین ئامانجمانە."
+    },
+    "Day-by-day totals for the selected window.": {
+        "ar": "الإجماليات اليومية للنافذة المحددة.",
+        "ku": "کۆتای ڕۆژانە بۆ پەنجەرەی هەڵبژێردراو."
+    },
+    "Deleting your account is permanent and cannot be undone.": {
+        "ar": "حذف حسابك إجراء دائم ولا يمكن التراجع عنه.",
+        "ku": "سڕینەوەی هەژمارەکەت کارێکی هەمیشەییە و ناتوانرێت پاشگەز بکرێتەوە."
+    },
+    "Drag & drop or click to upload": {
+        "ar": "اسحب وأفلت أو انقر للرفع",
+        "ku": "ڕابکێشە و دایبنێ یاخود کلیک بکە بۆ بەرزکردنەوە"
+    },
+    "For delivery inquiries or product availability, please contact us before placing your order.": {
+        "ar": "للاستفسار عن التسليم أو توفر المنتج، يرجى التواصل معنا قبل تقديم طلبك.",
+        "ku": "بۆ پرسیار لەسەر گەیاندن یاخود بەردەستبوونی کاڵا، تکایە پێش دانانی داواکارییەکەت پەیوەندیمان پێوە بکە."
+    },
+    "Get in touch with Yalla Spare customer support for products, orders, delivery, and business inquiries.": {
+        "ar": "تواصل مع دعم عملاء يلا سبير للاستفسارات حول المنتجات والطلبات والتوصيل والأعمال.",
+        "ku": "پەیوەندی بە پشتگیریی کڕیاری یەڵا سپێرەوە بکە بۆ پرسیار لەسەر کاڵا، داواکاری، گەیاندن و کاروباری بازرگانی."
+    },
+    "Header format is flexible (example:": {
+        "ar": "تنسيق الترويسة مرن (مثال:",
+        "ku": "فۆڕماتی سەردێڕ گونجاوە (نموونە:"
+    },
+    "Hear about discounts, campaigns, and featured offers.": {
+        "ar": "اطّلع على الخصومات والحملات والعروض المميزة.",
+        "ku": "زانیاری وەرگرە سەبارەت بە داشکاندنەکان، کەمپینەکان و پێشنیارە تایبەتەکان."
+    },
+    "Helpful details: account email, order or invoice reference, error message, and clear reproduction steps.": {
+        "ar": "تفاصيل مفيدة: بريد الحساب، ومرجع الطلب أو الفاتورة، ورسالة الخطأ، وخطوات إعادة إنتاج واضحة.",
+        "ku": "ووردەکارییە بەسوودەکان: ئیمەیڵی هەژمار، ژمارەی داواکاری یاخود فاکتور، پەیامی هەڵە، و هەنگاوی ڕوونی دووبارەکردنەوە."
+    },
+    "If approved, the refund will be processed through the original payment method.": {
+        "ar": "في حال الموافقة، ستتم معالجة استرداد المبلغ عبر طريقة الدفع الأصلية.",
+        "ku": "ئەگەر پەسەند کرا، گەڕاندنەوەی پارەکە لە ڕێگەی هەمان شێوازی پارەدانی سەرەکییەوە جێبەجێ دەکرێت."
+    },
+    "If the system still rejects the session, support can help verify the account state.": {
+        "ar": "إذا استمر النظام في رفض الجلسة، يمكن لفريق الدعم المساعدة في التحقق من حالة الحساب.",
+        "ku": "ئەگەر سیستەم هێشتا دانیشتنەکە ڕەت بکاتەوە، پشتگیری دەتوانێت یارمەتیدەر بێت لە پشتڕاستکردنەوەی دۆخی هەژمار."
+    },
+    "If you receive a damaged product or the wrong item, please contact us within 24 hours of delivery.": {
+        "ar": "إذا استلمت منتجًا تالفًا أو صنفًا خاطئًا، يرجى التواصل معنا خلال 24 ساعة من التسليم.",
+        "ku": "ئەگەر کاڵایەکی زیاندار یاخود کاڵایەکی هەڵە وەرگرتیت، تکایە لە ماوەی 24 کاتژمێردا لە دوای گەیاندنەوە پەیوەندیمان پێوە بکە."
+    },
+    "If you request an exchange, the replacement product will be shipped after the returned item is received and inspected.": {
+        "ar": "في حال طلبت الاستبدال، سيتم شحن المنتج البديل بعد استلام الصنف المرتجع وفحصه.",
+        "ku": "ئەگەر داوای گۆڕینەوە بکەیت، کاڵای جێگرەوە دوای وەرگرتن و پشکنینی کاڵای گەڕاوە دەنێردرێت."
+    },
+    "Include the page address and the action you were taking before the error appeared.": {
+        "ar": "أرفق عنوان الصفحة والإجراء الذي كنت تقوم به قبل ظهور الخطأ.",
+        "ku": "ناونیشانی پەڕە و ئەو کردارەی پێشتر دەتکرد لەخۆبگرە پێش ئەوەی هەڵەکە دەربکەوێت."
+    },
+    "Information about returns, exchanges, and refund conditions for orders.": {
+        "ar": "معلومات حول الإرجاع والاستبدال وشروط استرداد المبالغ للطلبات.",
+        "ku": "زانیاری سەبارەت بە گەڕاندنەوە، گۆڕینەوە و مەرجەکانی گەڕاندنەوەی پارە بۆ داواکارییەکان."
+    },
+    "Keep SKUs consistent for faster imports.": {
+        "ar": "حافظ على اتساق رموز SKU لتسريع عمليات الاستيراد.",
+        "ku": "SKUـەکان جێگیر بپارێزە بۆ هاوردەکردنی خێراتر."
+    },
+    "Keep logos square for best results in the sidebar.": {
+        "ar": "حافظ على الشعارات مربعة الشكل للحصول على أفضل النتائج في الشريط الجانبي.",
+        "ku": "لۆگۆکان بە شێوەی چوارگۆشە بهێڵەرەوە بۆ باشترین ئەنجام لە لاتەنیشت."
+    },
+    "Limit animation and movement-heavy transitions.": {
+        "ar": "حُدّ من الرسوم المتحركة والانتقالات المليئة بالحركة.",
+        "ku": "ئەنیمەیشن و گواستنەوە جوڵە-قورسەکان سنووردار بکە."
+    },
+    "Make the interface easier to read and more comfortable during long sessions.": {
+        "ar": "اجعل الواجهة أسهل في القراءة وأكثر راحة خلال الجلسات الطويلة.",
+        "ku": "ڕووکار ئاسانتر بکە بۆ خوێندنەوە و ئاسوودەتر لە کاتی دانیشتنە درێژەکاندا."
+    },
+    "Manage login protection, two-step preferences, and session timeout rules.": {
+        "ar": "أدِر حماية تسجيل الدخول وتفضيلات التحقق بخطوتين وقواعد انتهاء مهلة الجلسة.",
+        "ku": "پاراستنی چوونەژوورەوە، هەڵبژاردنەکانی دوو-هەنگاوی و یاسایەکانی بەسەرچوونی دانیشتن بەڕێوەببە."
+    },
+    "Mirrors, bumpers, trim": {
+        "ar": "المرايا، الصدّامات، الإطار التزييني",
+        "ku": "ئاوێنە، بەمپەر، چوارچێوەی ڕازاندنەوە"
+    },
+    "Orders are shipped through reliable delivery partners to ensure safe and fast delivery.": {
+        "ar": "يتم شحن الطلبات عبر شركاء توصيل موثوقين لضمان تسليم آمن وسريع.",
+        "ku": "داواکارییەکان لە ڕێگەی هاوبەشانی گەیاندنی متمانەپێکراوەوە دەنێردرێن بۆ دڵنیابوون لە گەیاندنی سەلامەت و خێرا."
+    },
+    "Pads, discs, sensors": {
+        "ar": "بطانات الفرامل، الأقراص، الحساسات",
+        "ku": "پاد، دیسک، هەستەوەرەکان"
+    },
+    "Percent rules should stay within margin tolerance.": {
+        "ar": "ينبغي أن تبقى قواعد النسبة المئوية ضمن حدّ التسامح في الهامش.",
+        "ku": "یاسایەکانی ڕێژەی سەدی پێویستە لە ناو سنووری بەرگەگرتنی بەرژەوەندیدا بمێنن."
+    },
+    "Pick the language used for labels, menus, and account messages.": {
+        "ar": "اختر اللغة المستخدمة للتسميات والقوائم ورسائل الحساب.",
+        "ku": "ئەو زمانە هەڵبژێرە کە بۆ نووسەرە، لیستەکان و نامەکانی هەژمار بەکاردێت."
+    },
+    "Pistons, gaskets, timing parts": {
+        "ar": "المكابس، الجوانات، قطع التوقيت",
+        "ku": "پیستۆن، گاسکێت، پارچەکانی تایمینگ"
+    },
+    "Please note that delivery times may vary depending on shipping conditions and holidays.": {
+        "ar": "يرجى ملاحظة أن أوقات التسليم قد تختلف باختلاف ظروف الشحن والعطلات الرسمية.",
+        "ku": "تکایە سەرنج بدە کاتەکانی گەیاندن لەوانەیە جیاواز بن بەپێی مەرجەکانی گەیاندن و پشووە فەرمییەکان."
+    },
+    "Product naming, categorization, and descriptions.": {
+        "ar": "تسمية المنتجات والتصنيف والأوصاف.",
+        "ku": "ناونانی کاڵا، پۆلێنکردن و پێناسەکان."
+    },
+    "Products that do not meet these conditions may not be accepted for return.": {
+        "ar": "قد لا يتم قبول إرجاع المنتجات التي لا تستوفي هذه الشروط.",
+        "ku": "ئەو کاڵایانەی ئەم مەرجانە ناگرنە ئەستۆ، لەوانەیە بۆ گەڕاندنەوە وەرنەگیرێن."
+    },
+    "Radiator, fan, coolant parts": {
+        "ar": "الرادييتر، المروحة، قطع التبريد",
+        "ku": "ڕادییەتەر، پانکە، پارچەکانی سارد‌کەرەوە"
+    },
+    "Receive delivery progress, order confirmations, and status changes.": {
+        "ar": "استلم تقدّم التسليم وتأكيدات الطلب وتغييرات الحالة.",
+        "ku": "پێشڕەویی گەیاندن، پشتڕاستکردنەوەکانی داواکاری و گۆڕانکارییەکانی دۆخ وەربگرە."
+    },
+    "Refresh the page, then repeat the last step from a fresh session state.": {
+        "ar": "أعد تحميل الصفحة، ثم كرّر الخطوة الأخيرة من حالة جلسة جديدة.",
+        "ku": "پەڕەکە نوێ بکەرەوە، پاشان دوا هەنگاو لە دۆخێکی نوێی دانیشتنەوە دووبارە بکەرەوە."
+    },
+    "Replace images with high-resolution shots.": {
+        "ar": "استبدل الصور بلقطات عالية الدقة.",
+        "ku": "وێنەکان بگۆڕە بە وێنە بەرزی-ڕەزۆلوشنەکان."
+    },
+    "Replace the existing product image if needed.": {
+        "ar": "استبدل صورة المنتج الحالية عند الحاجة.",
+        "ku": "وێنەی هەنووکەییی کاڵا بگۆڕە لە کاتی پێویستدا."
+    },
+    "Returns may not be accepted in the following situations:": {
+        "ar": "قد لا يتم قبول الإرجاع في الحالات التالية:",
+        "ku": "گەڕاندنەوە لەوانەیە لە دۆخەکانی خوارەوەدا وەرنەگیرێت:"
+    },
+    "Review dealers, filter the roster, and make changes from the directory without extra dashboard noise.": {
+        "ar": "راجع الوكلاء وصفِّ القائمة وأجرِ التغييرات من الدليل دون ضوضاء إضافية في لوحة التحكم.",
+        "ku": "فرۆشیارەکان پێداچوونەوەی پێ بکە، لیستەکە فلتەر بکە، و گۆڕانکارییەکان لە ڕێنووسەوە بکە بەبێ هاتوهاوارێکی زیادە لە داشبۆرد."
+    },
+    "Sensors, lighting, wiring": {
+        "ar": "الحساسات، الإضاءة، الأسلاك",
+        "ku": "هەستەوەر، ڕووناکی، تەلەکان"
+    },
+    "Set the currency format shown to customers.": {
+        "ar": "حدّد تنسيق العملة الذي يظهر للعملاء.",
+        "ku": "فۆڕماتی دراو دیاری بکە کە بۆ کڕیاران نیشاندەدرێت."
+    },
+    "Set the usage cap and validity window before publishing.": {
+        "ar": "حدّد حدّ الاستخدام ونافذة الصلاحية قبل النشر.",
+        "ku": "سنووری بەکارهێنان و پەنجەرەی کارا دیاری بکە پێش بڵاوکردنەوە."
+    },
+    "Stop retrying for a short period": {
+        "ar": "توقّف عن إعادة المحاولة لفترة قصيرة",
+        "ku": "هەوڵدانەوە بۆ ماوەیەکی کورت ڕابگرە"
+    },
+    "Store delivery destinations for faster checkout and cleaner order handling": {
+        "ar": "احفظ وجهات التسليم لتسريع الدفع وتنظيم الطلبات بشكل أوضح",
+        "ku": "شوێنەکانی گەیاندن پاشەکەوت بکە بۆ پارەدانی خێراتر و بەڕێوەبردنی پاکتری داواکاری"
+    },
+    "Submit the form again only after the page has fully reloaded.": {
+        "ar": "أعد إرسال النموذج فقط بعد إعادة تحميل الصفحة بالكامل.",
+        "ku": "تەنها دوای ئەوەی پەڕەکە بە تەواوی نوێبووەتەوە فۆڕمەکە دووبارە بنێرە."
+    },
+    "Support monitors requests during core business hours.": {
+        "ar": "يراقب فريق الدعم الطلبات خلال ساعات العمل الرئيسية.",
+        "ku": "پشتگیری داواکارییەکان لە کاتی کارکردنی سەرەکیدا چاودێری دەکات."
+    },
+    "Switch back to an allowed path": {
+        "ar": "ارجع إلى مسار مسموح به",
+        "ku": "بگەڕێرەوە بۆ ڕێگایەکی ڕێگەپێدراو"
+    },
+    "Temporary access restriction request routed to support.": {
+        "ar": "تم توجيه طلب تقييد وصول مؤقت إلى فريق الدعم.",
+        "ku": "داواکاریی سنووردارکردنی کاتیی دەستگەیشتن بۆ پشتگیری نێردرا."
+    },
+    "The information entered during the order process will be considered valid for communication and delivery.": {
+        "ar": "تُعتبر المعلومات التي تم إدخالها أثناء عملية الطلب صالحة للتواصل والتسليم.",
+        "ku": "ئەو زانیارییەی لە کاتی پرۆسەی داواکاریدا داخڵ کراوە، بۆ پەیوەندی و گەیاندن کارا دادەنرێت."
+    },
+    "The item must be unused and not installed": {
+        "ar": "يجب أن يكون الصنف غير مستخدم وغير مركّب",
+        "ku": "کاڵاکە دەبێت بەکارنەهاتوو و دانەنراو بێت"
+    },
+    "The product must not be damaged due to improper installation or misuse": {
+        "ar": "يجب ألا يكون المنتج تالفًا بسبب التركيب غير الصحيح أو إساءة الاستخدام",
+        "ku": "کاڵاکە نابێت زیانی بەرکەوتبێت بەهۆی دامەزراندنی نادروست یاخود خراپ بەکارهێنان"
+    },
+    "The seller is not responsible if the delivery cannot be completed due to incorrect address or contact information provided by the buyer.": {
+        "ar": "البائع غير مسؤول إذا تعذّر إتمام التسليم بسبب عنوان أو معلومات اتصال غير صحيحة قدّمها المشتري.",
+        "ku": "فرۆشیار بەرپرسیار نییە ئەگەر گەیاندن تەواو نەکرێت بەهۆی ناونیشان یاخود زانیاریی پەیوەندیی نادروستی پێشکەشکراو لەلایەن کڕیار."
+    },
+    "The service is up enough to answer, but it is not ready to process normal storefront requests yet.": {
+        "ar": "الخدمة جاهزة بما يكفي للاستجابة، لكنها ليست مستعدة بعد لمعالجة طلبات الواجهة الاعتيادية.",
+        "ku": "خزمەتگوزاری بەشێوەیەک چالاکە کە وەڵامبداتەوە، بەڵام هێشتا ئامادە نییە بۆ چارەسەرکردنی داواکارییە ئاسایییەکانی فرۆشگا."
+    },
+    "The session may not be authenticated, or the user may have been signed out before reaching the page.": {
+        "ar": "قد لا تكون الجلسة موثَّقة، أو قد يكون المستخدم قد سُجِّل خروجه قبل الوصول إلى الصفحة.",
+        "ku": "لەوانەیە دانیشتن پشتڕاست نەکرابێت، یاخود بەکارهێنەر پێش گەیشتن بە پەڕەکە چووبێتە دەرەوە."
+    },
+    "This information is stored securely and is used only for order processing, customer support, and service improvement.": {
+        "ar": "تُخزَّن هذه المعلومات بشكل آمن وتُستخدم فقط لمعالجة الطلبات ودعم العملاء وتحسين الخدمة.",
+        "ku": "ئەم زانیاریانە بە شێوەیەکی پارێزراو هەڵدەگیرێن و تەنها بۆ چارەسەرکردنی داواکاری، پشتگیریی کڕیار و باشترکردنی خزمەتگوزاری بەکاردێن."
+    },
+    "This is a secure area of the application. Please confirm your password before continuing.": {
+        "ar": "هذه منطقة آمنة من التطبيق. يرجى تأكيد كلمة المرور قبل المتابعة.",
+        "ku": "ئەمە ناوچەیەکی پارێزراوی ئەپڵیکەیشنە. تکایە پێش بەردەوام بوون وشەی نهێنی پشتڕاست بکەرەوە."
+    },
+    "This status is often temporary and clears once maintenance or recovery finishes.": {
+        "ar": "غالبًا ما تكون هذه الحالة مؤقتة وتختفي بمجرد انتهاء أعمال الصيانة أو الاستعادة.",
+        "ku": "زۆرجار ئەم دۆخە کاتییە و کاتێک چاکسازی یاخود گەڕاندنەوە کۆتایی دێت لادەچێت."
+    },
+    "This updates interface language for your signed-in experience and related account notices.": {
+        "ar": "يحدّث هذا لغة الواجهة لتجربتك بعد تسجيل الدخول والإشعارات المرتبطة بحسابك.",
+        "ku": "ئەمە زمانی ڕووکار نوێ دەکاتەوە بۆ ئەزموونی چوونەژوورەوەت و ئاگاداری پەیوەستەکانی هەژمار."
+    },
+    "Track stock levels and alert thresholds.": {
+        "ar": "تتبّع مستويات المخزون وحدود التنبيهات.",
+        "ku": "ئاستی کۆگا و سنوورەکانی هۆشداری شوێن بکەوە."
+    },
+    "Try changing the filter or clearing your search.": {
+        "ar": "حاول تغيير الفلتر أو مسح بحثك.",
+        "ku": "هەوڵبدە فلتەرەکە بگۆڕیت یاخود گەڕانەکەت پاک بکەیتەوە."
+    },
+    "Typical first response for normal support tickets.": {
+        "ar": "زمن الاستجابة الأولى المعتاد لتذاكر الدعم الاعتيادية.",
+        "ku": "وەڵامی یەکەمی ئاسایی بۆ تیکێتی پشتگیریی ئاسایی."
+    },
+    "Unexpected server-side failure": {
+        "ar": "إخفاق غير متوقع من جانب الخادم",
+        "ku": "شکستێکی چاوەڕواننەکراو لە لای سێرڤەرەوە"
+    },
+    "Use a stable storefront entry point when checking if service has returned.": {
+        "ar": "استخدم نقطة دخول مستقرة في الواجهة عند التحقق من عودة الخدمة.",
+        "ku": "خاڵێکی چوونەژوورەوەی جێگیری فرۆشگا بەکاربهێنە کاتێک پشکنین دەکەیت کە ئایا خزمەتگوزاری گەڕاوەتەوە."
+    },
+    "Use the home or shop pages once the throttle window has cooled down.": {
+        "ar": "استخدم صفحات الرئيسية أو المتجر بمجرد انقضاء نافذة التقييد.",
+        "ku": "پەڕەکانی سەرەکی یاخود فرۆشگا بەکاربهێنە کاتێک پەنجەرەی سنووردارکردن سارد بووەتەوە."
+    },
+    "Use the home or shop routes to continue browsing without interruption.": {
+        "ar": "استخدم مسارات الرئيسية أو المتجر لمتابعة التصفح دون انقطاع.",
+        "ku": "ڕێگاکانی ماڵپەری سەرەکی یاخود فرۆشگا بەکاربهێنە بۆ بەردەوامبوون لە گەڕان بەبێ بڕانەوە."
+    },
+    "Use the option that matches your issue so your request reaches the right team faster.": {
+        "ar": "استخدم الخيار الذي يطابق مشكلتك حتى يصل طلبك إلى الفريق المناسب بسرعة.",
+        "ku": "ئەو هەڵبژاردەیە بەکاربهێنە کە لەگەڵ کێشەکەتدا یەکدەگرێتەوە تاکو داواکارییەکەت خێراتر بگاتە تیمی گونجاو."
+    },
+    "Use the shop to search by SKU, part name, or category instead of the invalid URL.": {
+        "ar": "استخدم المتجر للبحث برمز SKU أو اسم القطعة أو الفئة بدلاً من الرابط غير الصالح.",
+        "ku": "فرۆشگا بەکاربهێنە بۆ گەڕان بەپێی SKU، ناوی پارچە یاخود پۆل لە جیاتی URLـی نادروست."
+    },
+    "Use your saved preferences more aggressively to reduce steps during checkout.": {
+        "ar": "استخدم تفضيلاتك المحفوظة بشكل أكثر شمولاً لتقليل الخطوات أثناء الدفع.",
+        "ku": "هەڵبژاردنە پاشەکەوتکراوەکانت بە شێوەیەکی فراوانتر بەکاربهێنە بۆ کەمکردنەوەی هەنگاوەکان لە کاتی پارەداندا."
+    },
+    "Wait briefly before retrying": {
+        "ar": "انتظر قليلاً قبل إعادة المحاولة",
+        "ku": "ماوەیەکی کورت چاوەڕێ بکە پێش هەوڵدانەوە"
+    },
+    "We are an online auto spare parts store dedicated to providing reliable and high-quality automotive parts for different vehicle brands and models.": {
+        "ar": "نحن متجر إلكتروني لقطع غيار السيارات مكرّس لتوفير قطع غيار موثوقة وعالية الجودة لمختلف العلامات التجارية وموديلات المركبات.",
+        "ku": "ئێمە فرۆشگایەکی ئۆنلاینی پارچە یەدەکی ئۆتۆمۆبیلین کە تەرخان کراوین بۆ دابینکردنی پارچە یەدەکی متمانەپێکراو و کوالیتی بەرز بۆ براند و مۆدێلە جیاوازەکانی ئۆتۆمۆبیل."
+    },
+    "We value the privacy of our customers and are committed to protecting your personal information while providing a safe and reliable shopping experience.": {
+        "ar": "نُقدّر خصوصية عملائنا ونلتزم بحماية معلوماتك الشخصية مع توفير تجربة تسوّق آمنة وموثوقة.",
+        "ku": "ئێمە بایەخ بە تایبەتمەندیی کڕیارەکانمان دەدەین و پابەندین بە پاراستنی زانیاریی کەسیت لەگەڵ پێشکەشکردنی ئەزموونێکی کڕینی پارێزراو و متمانەپێکراو."
+    },
+    "When you place an order on our website, we may ask for certain personal details such as your name, phone number, address, and email address in order to process and deliver your order.": {
+        "ar": "عند تقديم طلب على موقعنا، قد نطلب بعض التفاصيل الشخصية مثل اسمك ورقم هاتفك وعنوانك وبريدك الإلكتروني لمعالجة طلبك وتسليمه.",
+        "ku": "کاتێک داواکارییەک لەسەر ماڵپەڕەکەمان دادەنێیت، لەوانەیە داوای هەندێک ووردەکاریی کەسی بکەین وەک ناو، ژمارەی تەلەفۆن، ناونیشان و ئیمەیڵ بۆ چارەسەرکردن و گەیاندنی داواکارییەکەت."
+    },
+    "Yes. Include your account details and invoice reference in your email so we can route your request and resolve it faster.": {
+        "ar": "نعم. أرفق تفاصيل حسابك ومرجع الفاتورة في بريدك الإلكتروني حتى نتمكن من توجيه طلبك وحلّه بسرعة أكبر.",
+        "ku": "بەڵێ. ووردەکارییەکانی هەژمارەکەت و ژمارەی فاکتورەکە لە ئیمەیڵەکەتدا لەخۆبگرە تاکو بتوانین داواکارییەکەت ڕابسپێرین و خێراتر چارەسەری بکەین."
+    },
+    "e.g., Bosch, Denso": {
+        "ar": "مثل: بوش، دنسو",
+        "ku": "وەک: بۆش، دێنسۆ"
+    }
+}
