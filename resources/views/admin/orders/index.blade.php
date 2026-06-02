@@ -166,6 +166,70 @@
             border-color: rgba(255,255,255,0.15);
             box-shadow: 0 4px 12px -3px var(--accent-glow);
         }
+        .orders-page .op-card {
+            background: var(--surface-raised);
+            border: 1px solid var(--border-default);
+            border-radius: 14px;
+            overflow: hidden;
+        }
+        .orders-page .op-filter {
+            padding: 14px;
+            border-bottom: 1px solid var(--border-default);
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 10px;
+        }
+        @media (max-width: 900px) {
+            .orders-page .op-filter { grid-template-columns: 1fr; }
+        }
+        .orders-page .op-input,
+        .orders-page .op-select {
+            background: var(--surface-input);
+            border: 1px solid var(--border-default);
+            color: var(--text-body);
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-family: inherit;
+            width: 100%;
+        }
+        .orders-page .op-input::placeholder { color: var(--text-disabled); }
+        .orders-page .op-input:focus,
+        .orders-page .op-select:focus { outline: 1px solid var(--accent-from); border-color: var(--accent-from); }
+        .orders-page .op-dates { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .orders-page .op-dates label {
+            display: flex; flex-direction: column;
+            font-size: 10px; font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase; letter-spacing: .05em;
+            gap: 4px;
+        }
+        .orders-page .op-actions {
+            display: flex; gap: 8px;
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border-default);
+        }
+        .orders-page .op-btn-primary {
+            background: linear-gradient(135deg, var(--accent-from), var(--accent-to));
+            color: white;
+            padding: 7px 14px;
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.08);
+            text-decoration: none;
+        }
+        .orders-page .op-btn-ghost {
+            background: transparent;
+            border: 1px solid var(--border-default);
+            color: var(--text-muted);
+            padding: 7px 14px;
+            border-radius: 7px;
+            font-size: 11px;
+            font-weight: 500;
+            text-decoration: none;
+        }
+        .orders-page .op-btn-ghost:hover { color: var(--text-body); border-color: #475569; }
     </style>
 
     @php
@@ -216,7 +280,7 @@
                 @endforeach
             </div>
 
-            <div class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900"
+            <div class="op-card"
                  x-data="{
                     selected: [],
                     allIds: @js($orders->pluck('id')->all()),
@@ -249,55 +313,40 @@
                         </button>
                     </form>
                 </div>
-                <div class="border-b border-slate-200 p-4 dark:border-slate-800">
-                    <form method="GET" action="{{ route('admin.orders.index') }}" class="grid grid-cols-1 gap-3 sm:grid-cols-2 xl:grid-cols-3">
-                        @if($currentAttention !== '')
-                            <input type="hidden" name="attention" value="{{ $currentAttention }}">
-                        @endif
-                        <input
-                            type="text"
-                            name="search"
-                            value="{{ request('search') }}"
-                            placeholder="{{ __('Search order #, city, phone, user...') }}"
-                            class="rounded-lg border-slate-300 bg-white text-sm text-slate-900 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 sm:col-span-2 xl:col-span-3"
-                        >
-                        <select name="status" class="rounded-lg border-slate-300 bg-white text-sm text-slate-900 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                            <option value="">{{ __('All Statuses') }}</option>
-                            @foreach($statusOptions as $status)
-                                <option value="{{ $status }}" @selected(request('status') === $status)>
-                                    {{ \App\Models\Order::statusMeta((string) $status)['label'] }}
-                                </option>
-                            @endforeach
-                        </select>
-                        <select name="association" class="rounded-lg border-slate-300 bg-white text-sm text-slate-900 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                            <option value="">{{ __('All Users') }}</option>
-                            <option value="user" @selected(($association ?? '') === 'user')>{{ __('Retail Users') }}</option>
-                            <option value="dealer" @selected(($association ?? '') === 'dealer')>{{ __('Dealers') }}</option>
-                        </select>
-                        <div class="grid grid-cols-2 gap-2">
-                            <label class="flex flex-col text-xs font-medium text-slate-600 dark:text-slate-400">
-                                {{ __('From') }}
-                                <input type="date" name="from" value="{{ request('from') }}"
-                                       class="mt-1 rounded-lg border-slate-300 bg-white text-sm text-slate-900 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                            </label>
-                            <label class="flex flex-col text-xs font-medium text-slate-600 dark:text-slate-400">
-                                {{ __('To') }}
-                                <input type="date" name="to" value="{{ request('to') }}"
-                                       class="mt-1 rounded-lg border-slate-300 bg-white text-sm text-slate-900 focus:border-blue-500 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                            </label>
-                        </div>
-                        <div class="flex gap-2 sm:col-span-2 xl:col-span-3">
-                            <button type="submit" class="rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800">
-                                {{ __('Apply Filters') }}
-                            </button>
-                            @if(request()->hasAny(['search', 'status', 'association', 'from', 'to']))
-                                <a href="{{ route('admin.orders.index', $currentAttention !== '' ? ['attention' => $currentAttention] : []) }}"
-                                   class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">
-                                    {{ __('Clear') }}
-                                </a>
-                            @endif
-                        </div>
-                    </form>
+                <div class="op-filter">
+                    @if($currentAttention !== '')
+                        <input type="hidden" name="attention" value="{{ $currentAttention }}" form="orders-filter-form">
+                    @endif
+                    <input form="orders-filter-form" class="op-input" type="text" name="search"
+                           value="{{ request('search') }}"
+                           placeholder="{{ __('Search order #, city, phone, user...') }}">
+                    <select form="orders-filter-form" name="status" class="op-select">
+                        <option value="">{{ __('All Statuses') }}</option>
+                        @foreach($statusOptions as $status)
+                            <option value="{{ $status }}" @selected(request('status') === $status)>
+                                {{ \App\Models\Order::statusMeta((string) $status)['label'] }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <div class="op-dates">
+                        <label>{{ __('From') }}<input form="orders-filter-form" class="op-input" type="date" name="from" value="{{ request('from') }}"></label>
+                        <label>{{ __('To') }}<input form="orders-filter-form" class="op-input" type="date" name="to" value="{{ request('to') }}"></label>
+                    </div>
+                    <select form="orders-filter-form" name="association" class="op-select" style="grid-column: span 1;">
+                        <option value="">{{ __('All Users') }}</option>
+                        <option value="user" @selected(($association ?? '') === 'user')>{{ __('Retail Users') }}</option>
+                        <option value="dealer" @selected(($association ?? '') === 'dealer')>{{ __('Dealers') }}</option>
+                    </select>
+                </div>
+                <div class="op-actions">
+                    <form id="orders-filter-form" method="GET" action="{{ route('admin.orders.index') }}" style="display:contents"></form>
+                    <button form="orders-filter-form" type="submit" class="op-btn-primary">{{ __('Apply Filters') }}</button>
+                    @if(request()->hasAny(['search', 'status', 'association', 'from', 'to']))
+                        <a class="op-btn-ghost"
+                           href="{{ route('admin.orders.index', $currentAttention !== '' ? ['attention' => $currentAttention] : []) }}">
+                            {{ __('Clear') }}
+                        </a>
+                    @endif
                 </div>
 
                 <div class="overflow-x-auto">
