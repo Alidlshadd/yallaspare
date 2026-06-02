@@ -26,22 +26,22 @@
     <style>
         .orders-page {
             /* ─── tokens ─── */
-            --surface-base: #131a2e;
-            --surface-raised: #1c2438;
-            --surface-elevated: #1f283f;
-            --surface-input: #131a2e;
-            --border-default: #2a3553;
-            --border-row: #232b42;
-            --border-checkbox: #475569;
+            --surface-base: #111827;
+            --surface-raised: #1e293b;
+            --surface-elevated: #243147;
+            --surface-input: #172033;
+            --border-default: #334155;
+            --border-row: #2b3a50;
+            --border-checkbox: #64748b;
             --text-primary: #f8fafc;
-            --text-body: #e6ecf5;
+            --text-body: #e2e8f0;
             --text-secondary: #cbd5e1;
-            --text-muted: #8a95b0;
-            --text-faint: #6b7794;
-            --text-disabled: #525f7d;
-            --accent-from: #0891b2;
-            --accent-to: #0e7490;
-            --accent-glow: rgba(8,145,178,0.35);
+            --text-muted: #94a3b8;
+            --text-faint: #8796ad;
+            --text-disabled: #64748b;
+            --accent-from: #06b6d4;
+            --accent-to: #0891b2;
+            --accent-glow: rgba(6,182,212,0.28);
 
             background: var(--surface-base);
             color: var(--text-body);
@@ -71,7 +71,7 @@
             font-weight: 500;
         }
         .orders-page .op-hdr .sub b {
-            color: #fcd34d;
+            color: #f59e0b;
             font-weight: 600;
         }
         .orders-page .op-export {
@@ -81,8 +81,8 @@
             border-radius: 8px;
             font-size: 12px;
             font-weight: 600;
-            box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 4px 14px -4px var(--accent-glow);
-            border: 1px solid rgba(255,255,255,0.08);
+            box-shadow: 0 1px 0 rgba(255,255,255,0.10) inset, 0 10px 24px -18px var(--accent-glow);
+            border: 1px solid rgba(103,232,249,0.24);
             display: inline-flex;
             align-items: center;
             gap: 8px;
@@ -108,13 +108,14 @@
             padding: 14px 16px;
             position: relative;
             overflow: hidden;
+            box-shadow: 0 1px 0 rgba(255,255,255,0.035) inset, 0 16px 36px -30px rgba(0,0,0,0.55);
         }
         .orders-page .op-stat::before {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0;
             height: 2px;
-            background: var(--stat-a, #475569);
+            background: var(--stat-a, #64748b);
             opacity: 0.7;
         }
         .orders-page .op-stat .l {
@@ -134,11 +135,11 @@
             text-shadow: 0 0 12px var(--stat-glow, transparent);
         }
         .orders-page .op-stat.tot   { --stat-vc: var(--text-primary); }
-        .orders-page .op-stat.warn  { --stat-a: #d97706; --stat-vc: #fcd34d; --stat-glow: rgba(252,211,77,0.18); }
-        .orders-page .op-stat.idx   { --stat-a: #6366f1; --stat-vc: #c4b5fd; --stat-glow: rgba(196,181,253,0.18); }
-        .orders-page .op-stat.info  { --stat-a: #0284c7; --stat-vc: #93c5fd; --stat-glow: rgba(147,197,253,0.18); }
-        .orders-page .op-stat.ok    { --stat-a: #10b981; --stat-vc: #6ee7b7; --stat-glow: rgba(110,231,183,0.18); }
-        .orders-page .op-stat.err   { --stat-a: #dc2626; --stat-vc: #fda4af; --stat-glow: rgba(253,164,175,0.15); }
+        .orders-page .op-stat.warn  { --stat-a: #f59e0b; --stat-vc: #f59e0b; --stat-glow: rgba(245,158,11,0.16); }
+        .orders-page .op-stat.idx   { --stat-a: #8b5cf6; --stat-vc: #c4b5fd; --stat-glow: rgba(139,92,246,0.16); }
+        .orders-page .op-stat.info  { --stat-a: #38bdf8; --stat-vc: #7dd3fc; --stat-glow: rgba(56,189,248,0.16); }
+        .orders-page .op-stat.ok    { --stat-a: #22c55e; --stat-vc: #86efac; --stat-glow: rgba(34,197,94,0.16); }
+        .orders-page .op-stat.err   { --stat-a: #ef4444; --stat-vc: #fca5a5; --stat-glow: rgba(239,68,68,0.14); }
         .orders-page .op-chips {
             display: flex;
             gap: 8px;
@@ -157,24 +158,26 @@
             text-decoration: none;
         }
         .orders-page .op-chip:hover {
-            border-color: #475569;
+            border-color: #06b6d4;
             color: var(--text-secondary);
         }
         .orders-page .op-chip.on {
             background: linear-gradient(135deg, var(--accent-from), var(--accent-to));
             color: white;
-            border-color: rgba(255,255,255,0.15);
-            box-shadow: 0 4px 12px -3px var(--accent-glow);
+            border-color: rgba(103,232,249,0.28);
+            box-shadow: 0 10px 24px -18px var(--accent-glow);
         }
         .orders-page .op-card {
             background: var(--surface-raised);
             border: 1px solid var(--border-default);
             border-radius: 14px;
             overflow: hidden;
+            box-shadow: 0 1px 0 rgba(255,255,255,0.035) inset, 0 18px 44px -34px rgba(0,0,0,0.62);
         }
         .orders-page .op-filter {
             padding: 14px;
             border-bottom: 1px solid var(--border-default);
+            background: var(--surface-input);
             display: grid;
             grid-template-columns: 2fr 1fr 1fr;
             gap: 10px;
@@ -195,7 +198,7 @@
         }
         .orders-page .op-input::placeholder { color: var(--text-disabled); }
         .orders-page .op-input:focus,
-        .orders-page .op-select:focus { outline: 1px solid var(--accent-from); border-color: var(--accent-from); }
+        .orders-page .op-select:focus { outline: none; border-color: var(--accent-from); box-shadow: 0 0 0 3px rgba(6,182,212,0.18); }
         .orders-page .op-dates { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .orders-page .op-dates label {
             display: flex; flex-direction: column;
@@ -229,20 +232,20 @@
             font-weight: 500;
             text-decoration: none;
         }
-        .orders-page .op-btn-ghost:hover { color: var(--text-body); border-color: #475569; }
+        .orders-page .op-btn-ghost:hover { color: var(--text-body); border-color: #06b6d4; background: rgba(6,182,212,0.06); }
         .orders-page .op-bulk {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             gap: 12px;
-            background: linear-gradient(90deg, rgba(8,145,178,0.18), rgba(8,145,178,0.06));
-            border-bottom: 1px solid rgba(56,189,248,0.2);
+            background: linear-gradient(90deg, rgba(6,182,212,0.16), rgba(6,182,212,0.06));
+            border-bottom: 1px solid rgba(56,189,248,0.24);
             padding: 12px 14px;
         }
         .orders-page .op-bulk .count {
             font-size: 12px;
             font-weight: 700;
-            color: #93c5fd;
+            color: #38bdf8;
         }
         .orders-page .op-bulk form { display: flex; align-items: center; gap: 8px; margin-left: auto; }
         .orders-page .op-bulk select {
@@ -260,7 +263,7 @@
             font-size: 12px;
         }
         .orders-page .op-tbl thead th {
-            background: var(--surface-elevated);
+            background: var(--surface-input);
             color: var(--text-muted);
             font-size: 10px;
             text-transform: uppercase;
@@ -271,11 +274,12 @@
             border-bottom: 1px solid var(--border-default);
         }
         .orders-page .op-tbl tbody tr {
+            background: var(--surface-raised);
             border-bottom: 1px solid var(--border-row);
             transition: background .12s ease;
         }
         .orders-page .op-tbl tbody tr:last-child { border-bottom: none; }
-        .orders-page .op-tbl tbody tr:hover { background: rgba(255,255,255,0.015); }
+        .orders-page .op-tbl tbody tr:hover { background: #263449; }
         .orders-page .op-tbl td { padding: 13px 14px; vertical-align: middle; }
         .orders-page .op-tbl .num { font-weight: 600; color: var(--text-primary); display: block; font-size: 12px; margin-bottom: 2px; }
         .orders-page .op-tbl .id  { font-family: 'JetBrains Mono', ui-monospace, monospace; color: var(--text-muted); font-size: 10px; }
@@ -315,23 +319,23 @@
             opacity: 0.85;
         }
         /* Order statuses (match Order model status constants) */
-        .orders-page .op-pill.pending    { background: rgba(217,119,6,0.18);  color: #fcd34d; border-color: rgba(252,211,77,0.25); }
-        .orders-page .op-pill.processing { background: rgba(99,102,241,0.18); color: #c4b5fd; border-color: rgba(196,181,253,0.28); }
-        .orders-page .op-pill.shipped    { background: rgba(2,132,199,0.20);  color: #93c5fd; border-color: rgba(147,197,253,0.28); }
-        .orders-page .op-pill.delivered  { background: rgba(16,185,129,0.22); color: #86efac; border-color: rgba(134,239,172,0.30); }
-        .orders-page .op-pill.cancelled  { background: rgba(220,38,38,0.18);  color: #fda4af; border-color: rgba(253,164,175,0.25); }
+        .orders-page .op-pill.pending    { background: rgba(245,158,11,0.14); color: #f59e0b; border-color: rgba(245,158,11,0.32); }
+        .orders-page .op-pill.processing { background: rgba(139,92,246,0.14); color: #c4b5fd; border-color: rgba(139,92,246,0.32); }
+        .orders-page .op-pill.shipped    { background: rgba(56,189,248,0.14); color: #38bdf8; border-color: rgba(56,189,248,0.32); }
+        .orders-page .op-pill.delivered  { background: rgba(34,197,94,0.14); color: #22c55e; border-color: rgba(34,197,94,0.32); }
+        .orders-page .op-pill.cancelled  { background: rgba(239,68,68,0.14); color: #f87171; border-color: rgba(239,68,68,0.32); }
         /* Payment statuses */
-        .orders-page .op-pill.paid       { background: rgba(16,185,129,0.18); color: #6ee7b7; border-color: rgba(110,231,183,0.25); }
-        .orders-page .op-pill.failed     { background: rgba(220,38,38,0.18);  color: #fda4af; border-color: rgba(253,164,175,0.25); }
-        .orders-page .op-pill.refunded   { background: rgba(100,116,139,0.20); color: #cbd5e1; border-color: rgba(203,213,225,0.25); }
+        .orders-page .op-pill.paid       { background: rgba(34,197,94,0.14); color: #22c55e; border-color: rgba(34,197,94,0.30); }
+        .orders-page .op-pill.failed     { background: rgba(239,68,68,0.14); color: #f87171; border-color: rgba(239,68,68,0.30); }
+        .orders-page .op-pill.refunded   { background: rgba(148,163,184,0.14); color: #cbd5e1; border-color: rgba(203,213,225,0.24); }
 
         .orders-page .op-alert {
             display: inline-flex;
             align-items: center;
             gap: 3px;
-            background: rgba(220,38,38,0.14);
-            color: #fda4af;
-            border: 1px solid rgba(253,164,175,0.25);
+            background: rgba(239,68,68,0.14);
+            color: #fca5a5;
+            border: 1px solid rgba(239,68,68,0.30);
             font-size: 9px;
             font-weight: 700;
             padding: 2px 7px;
@@ -341,12 +345,12 @@
             letter-spacing: .05em;
         }
         .orders-page .op-alert.warn {
-            background: rgba(217,119,6,0.14);
-            color: #fcd34d;
-            border-color: rgba(252,211,77,0.25);
+            background: rgba(245,158,11,0.14);
+            color: #f59e0b;
+            border-color: rgba(245,158,11,0.30);
         }
 
-        .orders-page .op-row-selected { background: rgba(8,145,178,0.06); }
+        .orders-page .op-row-selected { background: rgba(6,182,212,0.12) !important; }
 
         .orders-page .op-acts { display: flex; gap: 4px; justify-content: flex-end; align-items: center; }
         .orders-page .op-icon {
@@ -360,7 +364,7 @@
             text-decoration: none;
             cursor: pointer;
         }
-        .orders-page .op-icon:hover { color: #93c5fd; border-color: #475569; }
+        .orders-page .op-icon:hover { color: #38bdf8; border-color: #06b6d4; background: #263449; }
         .orders-page .op-icon svg { width: 13px; height: 13px; }
 
         /* Kebab dropdown */
@@ -372,7 +376,7 @@
             background: var(--surface-elevated);
             border: 1px solid var(--border-default);
             border-radius: 10px;
-            box-shadow: 0 12px 32px -8px rgba(0,0,0,0.5);
+            box-shadow: 0 18px 44px -28px rgba(0,0,0,0.65);
             padding: 6px;
             z-index: 30;
         }
@@ -409,13 +413,13 @@
             padding: 8px 10px;
             border-radius: 6px;
             background: transparent;
-            color: #fda4af;
+            color: #fca5a5;
             font-size: 11px;
             font-weight: 600;
             border: none;
             cursor: pointer;
         }
-        .orders-page .op-menu .danger:hover { background: rgba(220,38,38,0.12); }
+        .orders-page .op-menu .danger:hover { background: rgba(239,68,68,0.12); }
         .orders-page .op-menu hr { border: 0; border-top: 1px solid var(--border-default); margin: 4px 0; }
 
         .orders-page .op-pag {
@@ -447,7 +451,7 @@
             font-weight: 600;
             text-decoration: none;
         }
-        .orders-page .op-pag a:hover { color: var(--text-body); border-color: #475569; }
+        .orders-page .op-pag a:hover { color: var(--text-body); border-color: #06b6d4; background: #263449; }
         .orders-page .op-pag .active span,
         .orders-page .op-pag span[aria-current="page"] {
             background: linear-gradient(135deg, var(--accent-from), var(--accent-to));

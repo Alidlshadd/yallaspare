@@ -308,7 +308,7 @@
     }
 
     .dark .admin-shell :is(input, select, textarea) {
-        background-color: var(--admin-surface);
+        background-color: var(--admin-input);
         color: var(--admin-text-strong);
         border-color: var(--admin-border);
     }
@@ -317,8 +317,8 @@
         opacity: 1;
     }
     .dark .admin-shell :is(input, select, textarea):focus {
-        border-color: #8d9bff;
-        box-shadow: 0 0 0 3px rgba(141, 155, 255, 0.25);
+        border-color: #06b6d4;
+        box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.18);
         outline: none;
     }
     .dark .admin-shell :is(select) option {
@@ -467,7 +467,7 @@
         gap: 0.5rem;
         min-height: 4.25rem;
         padding: 0.625rem 0.75rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        border-bottom: 1px solid rgba(148, 163, 184, 0.14);
     }
 
     .admin-sidebar-logo {
@@ -500,7 +500,7 @@
     }
 
     .admin-sidebar-logo:hover {
-        background-color: rgba(255, 255, 255, 0.06);
+        background-color: rgba(30, 41, 59, 0.56);
     }
 
     .admin-sidebar-logo .app-logo-mark {
@@ -578,7 +578,7 @@
     .admin-nav-link:focus-visible,
     .admin-profile-link:focus-visible,
     .admin-sidebar-logo:focus-visible {
-        box-shadow: 0 0 0 3px rgba(148, 163, 184, 0.35);
+        box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.24);
     }
 
     .admin-profile-link,
@@ -596,13 +596,13 @@
     .admin-profile-link {
         margin: 0.75rem;
         padding: 0.75rem;
-        border: 1px solid rgba(255, 255, 255, 0.08);
-        background-color: rgba(255, 255, 255, 0.03);
+        border: 1px solid rgba(148, 163, 184, 0.14);
+        background-color: rgba(30, 41, 59, 0.34);
     }
 
     .admin-profile-link:hover,
     .admin-nav-link:hover {
-        background-color: rgba(30, 41, 59, 0.82);
+        background-color: rgba(30, 41, 59, 0.72);
         color: #fff;
     }
 
@@ -615,7 +615,7 @@
     }
 
     .admin-nav-link.is-active {
-        background-color: rgba(30, 41, 59, 0.96);
+        background-color: rgba(30, 41, 59, 0.84);
         color: #fff;
     }
 
@@ -626,7 +626,7 @@
         inset-inline-start: 0;
         width: 3px;
         border-radius: 9999px;
-        background-color: #93c5fd;
+        background-color: #06b6d4;
     }
 
     .admin-nav-icon {
@@ -637,14 +637,14 @@
         align-items: center;
         justify-content: center;
         border-radius: 0.625rem;
-        background-color: rgba(30, 41, 59, 0.86);
-        color: #dbeafe;
+        background-color: rgba(30, 41, 59, 0.66);
+        color: #a5f3fc;
         transition: background-color 160ms ease, transform 220ms ease;
     }
 
     .admin-nav-link.is-active .admin-nav-icon,
     .admin-nav-link:hover .admin-nav-icon {
-        background-color: rgba(51, 65, 85, 0.95);
+        background-color: rgba(6, 182, 212, 0.18);
     }
 
     @media (min-width: 1024px) {
@@ -755,7 +755,7 @@
             opacity: 0;
             white-space: nowrap;
             border-radius: 0.625rem;
-            background-color: #020617;
+            background-color: #172033;
             color: #fff;
             padding: 0.45rem 0.65rem;
             font-size: 0.75rem;
@@ -896,20 +896,37 @@
     }
 
     .dark .admin-shell {
-        --admin-bg: #151515;
-        --admin-surface: #1a1b1d;
-        --admin-surface-strong: #202225;
-        --admin-surface-hover: #26292e;
-        --admin-card: #1d1f22;
-        --admin-sidebar: #18191b;
-        --admin-border: #2e3136;
-        --admin-border-soft: #272a2f;
-        --admin-text: #eceff3;
-        --admin-text-strong: #f7f8fa;
-        --admin-text-muted: #cfd5de;
-        --admin-text-soft: #a6adb8;
-        --admin-shadow: 0 1px 0 rgba(255, 255, 255, 0.035), 0 20px 45px -28px rgba(0, 0, 0, 0.78);
-        --admin-shadow-soft: 0 1px 0 rgba(255, 255, 255, 0.035), 0 12px 30px -26px rgba(0, 0, 0, 0.72);
+        --admin-bg: #0f172a;
+        --admin-surface: #111827;
+        --admin-surface-strong: #1e293b;
+        --admin-surface-hover: #263449;
+        --admin-card: #1e293b;
+        --admin-input: #172033;
+        --admin-sidebar: #0b1220;
+        --admin-border: #334155;
+        --admin-border-soft: #263244;
+        --admin-text: #f8fafc;
+        --admin-text-strong: #f8fafc;
+        --admin-text-muted: #cbd5e1;
+        --admin-text-soft: #94a3b8;
+        --admin-accent: #06b6d4;
+        --admin-accent-hover: #0891b2;
+        --admin-shadow: 0 1px 0 rgba(255, 255, 255, 0.04), 0 22px 48px -34px rgba(0, 0, 0, 0.68);
+        --admin-shadow-soft: 0 1px 0 rgba(255, 255, 255, 0.035), 0 14px 34px -30px rgba(0, 0, 0, 0.62);
+        background-color: var(--admin-bg);
+    }
+
+    .dark .admin-shell .admin-main {
+        background-color: var(--admin-surface);
+    }
+
+    .dark .admin-shell .admin-sidebar {
+        background-color: var(--admin-sidebar);
+    }
+
+    .dark .admin-shell .admin-topbar {
+        background-color: rgba(17, 24, 39, 0.88);
+        border-color: var(--admin-border-soft);
     }
 
     .dark .admin-shell .bg-white {
@@ -929,10 +946,10 @@
         background-color: var(--admin-surface);
     }
     .dark .admin-shell .dark\:bg-slate-900\/80 {
-        background-color: rgba(26, 27, 29, 0.88);
+        background-color: rgba(17, 24, 39, 0.88);
     }
     .dark .admin-shell .dark\:bg-slate-800\/60 {
-        background-color: rgba(32, 34, 37, 0.6);
+        background-color: rgba(30, 41, 59, 0.62);
     }
     .dark .admin-shell .border-slate-200 {
         border-color: var(--admin-border);
@@ -941,7 +958,7 @@
         border-color: var(--admin-border);
     }
     .dark .admin-shell .dark\:border-slate-700 {
-        border-color: #34383f;
+        border-color: #334155;
     }
     .dark .admin-shell .border-white\/10 {
         border-color: var(--admin-border-soft);
@@ -962,16 +979,16 @@
         color: var(--admin-text-soft);
     }
     .dark .admin-shell .text-slate-400 {
-        color: #9aa3b2;
+        color: #94a3b8;
     }
     .dark .admin-shell .dark\:text-slate-300 {
         color: var(--admin-text-muted);
     }
     .dark .admin-shell .dark\:text-slate-400 {
-        color: #a6adb8;
+        color: #94a3b8;
     }
     .dark .admin-shell .dark\:text-slate-500 {
-        color: #9aa3b2;
+        color: #94a3b8;
     }
     .dark .admin-shell .shadow-sm {
         box-shadow: var(--admin-shadow-soft);
@@ -980,7 +997,7 @@
         box-shadow: var(--admin-shadow);
     }
     .dark .admin-shell .hover\:shadow-sm:hover {
-        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04), 0 16px 36px -26px rgba(0, 0, 0, 0.8);
+        box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04), 0 18px 40px -32px rgba(0, 0, 0, 0.68);
     }
 
     .dark .admin-shell .bg-slate-800 {
@@ -993,13 +1010,13 @@
         background-color: var(--admin-surface-hover);
     }
     .dark .admin-shell .bg-slate-800\/80 {
-        background-color: rgba(32, 34, 37, 0.85);
+        background-color: rgba(30, 41, 59, 0.86);
     }
     .dark .admin-shell .bg-slate-800\/70 {
-        background-color: rgba(32, 34, 37, 0.75);
+        background-color: rgba(30, 41, 59, 0.76);
     }
     .dark .admin-shell .bg-slate-800\/60 {
-        background-color: rgba(32, 34, 37, 0.6);
+        background-color: rgba(30, 41, 59, 0.62);
     }
     .dark .admin-shell .dark\:hover\:bg-slate-800:hover,
     .dark .admin-shell .dark\:hover\:bg-slate-900:hover {
@@ -1007,71 +1024,71 @@
     }
 
     .dark .admin-shell .bg-indigo-600 {
-        background-color: #5c6fd8;
+        background-color: #06b6d4;
     }
     .dark .admin-shell .text-indigo-600 {
-        color: #96a3ff;
+        color: #22d3ee;
     }
     .dark .admin-shell .bg-emerald-500 {
-        background-color: #3ab59a;
+        background-color: #22c55e;
     }
     .dark .admin-shell .text-emerald-500 {
-        color: #64d3b9;
+        color: #22c55e;
     }
     .dark .admin-shell .text-amber-500 {
-        color: #f0be7b;
+        color: #f59e0b;
     }
     .dark .admin-shell .text-rose-500 {
-        color: #f09aa4;
+        color: #ef4444;
     }
     .dark .admin-shell .bg-rose-900\/20 {
-        background-color: rgba(150, 70, 80, 0.18);
+        background-color: rgba(239, 68, 68, 0.14);
     }
     .dark .admin-shell .bg-emerald-900\/30 {
-        background-color: rgba(30, 112, 98, 0.22);
+        background-color: rgba(34, 197, 94, 0.14);
     }
     .dark .admin-shell .dark\:text-slate-100 {
         color: var(--admin-text-strong);
     }
 
     .dark .admin-shell [class*='bg-gradient-to-'] {
-        filter: saturate(0.68) brightness(0.98);
+        filter: saturate(0.82) brightness(1.02);
     }
 
     /* Cover legacy admin pages still using gray utilities without dark variants */
     .dark .admin-shell .bg-gray-50 {
-        background-color: #161a20;
+        background-color: #111827;
     }
     .dark .admin-shell .bg-gray-100 {
-        background-color: #1b2028;
+        background-color: #172033;
     }
     .dark .admin-shell .bg-gray-200 {
-        background-color: #2a3039;
+        background-color: #1e293b;
     }
     .dark .admin-shell .border-gray-100 {
-        border-color: #2a3039;
+        border-color: #263244;
     }
     .dark .admin-shell .border-gray-200 {
-        border-color: #343b45;
+        border-color: #334155;
     }
     .dark .admin-shell .text-gray-500 {
-        color: #a6adb8;
+        color: #94a3b8;
     }
     .dark .admin-shell .text-gray-600 {
-        color: #b3bac5;
+        color: #cbd5e1;
     }
     .dark .admin-shell .text-gray-700 {
-        color: #d2d7df;
+        color: #e2e8f0;
     }
     .dark .admin-shell .text-gray-800,
     .dark .admin-shell .text-gray-900 {
-        color: #f1f4f8;
+        color: #f8fafc;
     }
     .dark .admin-shell .hover\:bg-gray-100:hover {
-        background-color: #202631;
+        background-color: #1e293b;
     }
     .dark .admin-shell .hover\:bg-gray-200:hover {
-        background-color: #2b3240;
+        background-color: #263449;
     }
 
     /* Ensure user-facing pages stay readable in dark mode even on legacy utility usage */
