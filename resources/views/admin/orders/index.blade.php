@@ -2,16 +2,17 @@
     <x-slot name="header">
         <div class="orders-page" style="background: transparent; min-height: 0;">
             <div class="op-hdr">
-                <div>
+                <div class="op-hdr-text">
                     <h1>{{ __('Orders Management') }}</h1>
                     <p class="sub">
                         {{ __(':total total', ['total' => number_format($stats['total'] ?? 0)]) }}
                         @if(($stats['pending'] ?? 0) > 0)
-                            · <b>{{ __(':n need attention', ['n' => $stats['pending']]) }}</b>
+                            <span class="dot-sep">·</span>
+                            <b>{{ __(':n need attention', ['n' => $stats['pending']]) }}</b>
                         @endif
                     </p>
                 </div>
-                <a class="op-export" href="{{ route('admin.orders.export-excel', array_filter([
+                <a class="op-btn op-btn-primary op-btn-md" href="{{ route('admin.orders.export-excel', array_filter([
                         'from' => request('from'),
                         'to' => request('to'),
                         'status' => request('status'),
@@ -25,33 +26,47 @@
 
     <style>
         .orders-page {
-            /* ─── tokens ─── */
+            /* Surfaces */
             --surface-page: var(--admin-surface, #111827);
             --surface-card: var(--admin-card, #1e293b);
             --surface-muted: var(--admin-input, #172033);
             --surface-elevated: #202b3d;
-            --surface-hover: var(--admin-surface-hover, #263449);
+            --surface-hover: #1f2a3e;
+            /* Borders */
             --border-default: var(--admin-border, #334155);
             --border-soft: var(--admin-border-soft, #263244);
-            --border-row: rgba(148, 163, 184, 0.14);
+            --border-row: rgba(148, 163, 184, 0.10);
             --border-checkbox: #64748b;
+            /* Text */
             --text-primary: var(--admin-text-strong, #f8fafc);
             --text-body: var(--admin-text, #e2e8f0);
             --text-secondary: var(--admin-text-muted, #cbd5e1);
             --text-muted: var(--admin-text-soft, #94a3b8);
             --text-faint: #8796ad;
             --text-disabled: #64748b;
+            /* Accent */
             --accent: var(--admin-accent, #06b6d4);
             --accent-hover: var(--admin-accent-hover, #0891b2);
             --accent-text: #67e8f9;
-            --accent-soft: rgba(6, 182, 212, 0.12);
-            --accent-border: rgba(103, 232, 249, 0.26);
+            --accent-soft: rgba(6, 182, 212, 0.10);
+            --accent-soft-strong: rgba(6, 182, 212, 0.14);
+            --accent-border: rgba(103, 232, 249, 0.24);
+            /* Status */
             --status-pending: #f59e0b;
             --status-processing: #8b5cf6;
             --status-shipped: #38bdf8;
             --status-delivered: #22c55e;
             --status-cancelled: #ef4444;
-            --shadow-card: 0 1px 0 rgba(255,255,255,0.035) inset, 0 16px 38px -32px rgba(0,0,0,0.58);
+            /* Shadows */
+            --shadow-card: 0 1px 0 rgba(255,255,255,0.03) inset, 0 14px 32px -30px rgba(0,0,0,0.55);
+            --shadow-hover: 0 1px 0 rgba(255,255,255,0.05) inset, 0 20px 44px -28px rgba(0,0,0,0.65);
+            /* Sizes */
+            --h-sm: 32px;
+            --h-md: 36px;
+            --r-sm: 6px;
+            --r-md: 8px;
+            --r-lg: 12px;
+            --r-xl: 14px;
 
             background: transparent;
             color: var(--text-body);
@@ -59,74 +74,124 @@
             min-height: 0;
         }
         .orders-page * { box-sizing: border-box; }
+
+        /* ──────────── Header ──────────── */
         .orders-page .op-hdr {
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
+            align-items: center;
+            gap: 16px;
             margin-bottom: 22px;
-            padding: 0 0 18px;
+            padding-bottom: 18px;
             border-bottom: 1px solid var(--border-soft);
         }
+        .orders-page .op-hdr-text { min-width: 0; }
         .orders-page .op-hdr h1 {
             margin: 0;
             font-size: 22px;
             font-weight: 700;
             color: var(--text-primary);
-            letter-spacing: -0.025em;
+            letter-spacing: -0.02em;
+            line-height: 1.2;
         }
         .orders-page .op-hdr .sub {
-            margin: 5px 0 0;
+            margin: 6px 0 0;
             font-size: 12px;
             color: var(--text-muted);
             font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
         }
         .orders-page .op-hdr .sub b {
             color: var(--status-pending);
             font-weight: 600;
         }
-        .orders-page .op-export {
-            background: var(--accent);
-            color: white;
-            padding: 9px 16px;
-            border-radius: 8px;
-            font-size: 12px;
-            font-weight: 600;
-            box-shadow: 0 1px 0 rgba(255,255,255,0.12) inset, 0 14px 28px -22px rgba(6,182,212,0.55);
-            border: 1px solid var(--accent-border);
+        .orders-page .op-hdr .sub .dot-sep { color: var(--text-disabled); }
+        @media (max-width: 640px) {
+            .orders-page .op-hdr { flex-direction: column; align-items: stretch; }
+            .orders-page .op-hdr h1 { font-size: 20px; }
+        }
+
+        /* ──────────── Buttons ──────────── */
+        .orders-page .op-btn {
             display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 8px;
+            border-radius: var(--r-md);
+            font-size: 12px;
+            font-weight: 600;
+            font-family: inherit;
             text-decoration: none;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: background .15s ease, border-color .15s ease, color .15s ease, transform .15s ease;
+            white-space: nowrap;
+            line-height: 1;
         }
-        .orders-page .op-export:hover { background: var(--accent-hover); }
-        .orders-page .op-export svg { width: 14px; height: 14px; }
+        .orders-page .op-btn-sm { height: var(--h-sm); padding: 0 12px; font-size: 11.5px; }
+        .orders-page .op-btn-md { height: var(--h-md); padding: 0 16px; }
+        .orders-page .op-btn-primary {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent-border);
+            box-shadow: 0 1px 0 rgba(255,255,255,0.10) inset;
+        }
+        .orders-page .op-btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+        .orders-page .op-btn-primary:active { transform: translateY(0); }
+        .orders-page .op-btn-ghost {
+            background: transparent;
+            color: var(--text-muted);
+            border-color: var(--border-soft);
+        }
+        .orders-page .op-btn-ghost:hover { color: var(--text-body); border-color: var(--border-default); background: var(--surface-hover); }
+        .orders-page .op-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+
+        /* ──────────── Stats ──────────── */
         .orders-page .op-stats {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 12px;
+            margin-bottom: 18px;
         }
-        @media (max-width: 900px) {
-            .orders-page .op-stats { grid-template-columns: repeat(3, 1fr); }
-        }
-        @media (max-width: 540px) {
-            .orders-page .op-stats { grid-template-columns: repeat(2, 1fr); }
+        @media (max-width: 1100px) { .orders-page .op-stats { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 700px) { .orders-page .op-stats { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 480px) {
+            .orders-page .op-stats {
+                display: flex;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+                margin: 0 -16px 18px;
+                padding: 0 16px;
+                gap: 10px;
+                scrollbar-width: none;
+            }
+            .orders-page .op-stats::-webkit-scrollbar { display: none; }
+            .orders-page .op-stat { min-width: 150px; scroll-snap-align: start; }
         }
         .orders-page .op-stat {
-            background: linear-gradient(180deg, var(--surface-card), var(--surface-muted));
+            background: var(--surface-card);
             border: 1px solid var(--border-soft);
-            border-radius: 12px;
+            border-radius: var(--r-lg);
             padding: 14px 16px;
             position: relative;
             overflow: hidden;
             box-shadow: var(--shadow-card);
+            transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+        }
+        .orders-page .op-stat:hover {
+            transform: translateY(-1px);
+            border-color: var(--border-default);
+            box-shadow: var(--shadow-hover);
         }
         .orders-page .op-stat::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0;
-            height: 2px;
-            background: var(--stat-a, var(--border-checkbox));
+            top: 0; left: 12px; right: 12px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--stat-a, var(--border-checkbox)), transparent);
             opacity: 0.9;
         }
         .orders-page .op-stat .l {
@@ -137,19 +202,22 @@
             font-weight: 600;
         }
         .orders-page .op-stat .v {
-            font-size: 22px;
+            font-size: 26px;
             font-weight: 700;
-            margin-top: 6px;
+            margin-top: 8px;
             line-height: 1;
             color: var(--text-primary);
             font-variant-numeric: tabular-nums;
+            letter-spacing: -0.02em;
         }
-        .orders-page .op-stat.tot   { --stat-vc: var(--text-primary); }
+        .orders-page .op-stat.tot   { --stat-a: var(--text-secondary); }
         .orders-page .op-stat.warn  { --stat-a: var(--status-pending); }
         .orders-page .op-stat.idx   { --stat-a: var(--status-processing); }
         .orders-page .op-stat.info  { --stat-a: var(--status-shipped); }
         .orders-page .op-stat.ok    { --stat-a: var(--status-delivered); }
         .orders-page .op-stat.err   { --stat-a: var(--status-cancelled); }
+
+        /* ──────────── Attention chips ──────────── */
         .orders-page .op-chips {
             display: flex;
             gap: 8px;
@@ -161,11 +229,12 @@
             border: 1px solid var(--border-soft);
             padding: 7px 14px;
             border-radius: 999px;
-            font-size: 11px;
-            font-weight: 600;
+            font-size: 11.5px;
+            font-weight: 500;
             color: var(--text-muted);
-            transition: all .15s ease;
+            transition: background .15s ease, color .15s ease, border-color .15s ease;
             text-decoration: none;
+            line-height: 1.2;
         }
         .orders-page .op-chip:hover {
             background: var(--surface-hover);
@@ -173,84 +242,112 @@
             color: var(--text-secondary);
         }
         .orders-page .op-chip.on {
-            background: var(--accent-soft);
+            background: var(--accent-soft-strong);
             color: var(--accent-text);
             border-color: var(--accent-border);
-            box-shadow: none;
+            font-weight: 600;
         }
+
+        /* ──────────── Card shell ──────────── */
         .orders-page .op-card {
             background: var(--surface-card);
             border: 1px solid var(--border-soft);
-            border-radius: 14px;
+            border-radius: var(--r-xl);
             overflow: hidden;
             box-shadow: var(--shadow-card);
         }
+
+        /* ──────────── Filter form ──────────── */
+        .orders-page .op-filter-form { background: var(--surface-muted); border-bottom: 1px solid var(--border-soft); }
         .orders-page .op-filter {
             padding: 14px;
-            border-bottom: 1px solid var(--border-soft);
-            background: var(--surface-muted);
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr;
+            grid-template-columns: repeat(12, 1fr);
             gap: 10px;
         }
-        @media (max-width: 900px) {
-            .orders-page .op-filter { grid-template-columns: 1fr; }
+        .orders-page .op-filter > .f-search    { grid-column: span 4; }
+        .orders-page .op-filter > .f-status    { grid-column: span 2; }
+        .orders-page .op-filter > .f-date      { grid-column: span 2; }
+        .orders-page .op-filter > .f-assoc     { grid-column: span 2; }
+        @media (max-width: 1100px) {
+            .orders-page .op-filter > .f-search { grid-column: span 12; }
+            .orders-page .op-filter > .f-status,
+            .orders-page .op-filter > .f-assoc  { grid-column: span 6; }
+            .orders-page .op-filter > .f-date   { grid-column: span 6; }
+        }
+        @media (max-width: 640px) {
+            .orders-page .op-filter > * { grid-column: span 12 !important; }
+        }
+        .orders-page .f-label {
+            display: block;
+            font-size: 10px;
+            font-weight: 600;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            margin-bottom: 5px;
         }
         .orders-page .op-input,
         .orders-page .op-select {
             background: var(--surface-page);
             border: 1px solid var(--border-default);
             color: var(--text-body);
-            padding: 8px 12px;
-            border-radius: 8px;
-            font-size: 12px;
+            height: var(--h-md);
+            padding: 0 12px;
+            border-radius: var(--r-md);
+            font-size: 12.5px;
             font-family: inherit;
             width: 100%;
+            color-scheme: dark;
+            transition: border-color .15s ease, box-shadow .15s ease;
         }
         .orders-page .op-input::placeholder { color: var(--text-disabled); }
         .orders-page .op-input:focus,
-        .orders-page .op-select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(6,182,212,0.18); }
-        .orders-page .op-dates { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-        .orders-page .op-dates label {
-            display: flex; flex-direction: column;
-            font-size: 10px; font-weight: 600;
-            color: var(--text-muted);
-            text-transform: uppercase; letter-spacing: .05em;
-            gap: 4px;
+        .orders-page .op-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(6,182,212,0.22);
         }
+        .orders-page .op-input::-webkit-calendar-picker-indicator {
+            filter: invert(0.7) brightness(1.2);
+            cursor: pointer;
+            opacity: 0.7;
+        }
+        .orders-page .op-input::-webkit-calendar-picker-indicator:hover { opacity: 1; }
+        .orders-page .op-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            padding-right: 30px;
+        }
+        [dir='rtl'] .orders-page .op-select {
+            background-position: left 10px center;
+            padding-right: 12px;
+            padding-left: 30px;
+        }
+        .orders-page .op-dates {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+
         .orders-page .op-actions {
-            display: flex; gap: 8px;
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
             padding: 12px 14px;
             border-bottom: 1px solid var(--border-soft);
+            background: var(--surface-muted);
         }
-        .orders-page .op-btn-primary {
-            background: var(--accent);
-            color: white;
-            padding: 7px 14px;
-            border-radius: 7px;
-            font-size: 11px;
-            font-weight: 600;
-            border: 1px solid var(--accent-border);
-            text-decoration: none;
-        }
-        .orders-page .op-btn-primary:hover { background: var(--accent-hover); }
-        .orders-page .op-btn-ghost {
-            background: transparent;
-            border: 1px solid var(--border-soft);
-            color: var(--text-muted);
-            padding: 7px 14px;
-            border-radius: 7px;
-            font-size: 11px;
-            font-weight: 500;
-            text-decoration: none;
-        }
-        .orders-page .op-btn-ghost:hover { color: var(--text-body); border-color: var(--border-default); background: var(--surface-hover); }
+
+        /* ──────────── Bulk action bar ──────────── */
         .orders-page .op-bulk {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             gap: 12px;
-            background: var(--accent-soft);
+            background: var(--accent-soft-strong);
             border-bottom: 1px solid var(--accent-border);
             padding: 12px 14px;
         }
@@ -260,15 +357,25 @@
             color: var(--accent-text);
         }
         .orders-page .op-bulk form { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+        [dir='rtl'] .orders-page .op-bulk form { margin-left: 0; margin-right: auto; }
         .orders-page .op-bulk select {
             background: var(--surface-page);
             border: 1px solid var(--border-default);
             color: var(--text-body);
-            padding: 6px 10px;
-            border-radius: 7px;
-            font-size: 11px;
+            height: var(--h-sm);
+            padding: 0 10px;
+            border-radius: var(--r-sm);
+            font-size: 11.5px;
+            color-scheme: dark;
         }
+
+        /* ──────────── Table ──────────── */
         .orders-page .op-table-wrap { overflow-x: auto; }
+        .orders-page .op-table-wrap::-webkit-scrollbar { height: 8px; }
+        .orders-page .op-table-wrap::-webkit-scrollbar-thumb {
+            background: var(--border-default);
+            border-radius: 4px;
+        }
         .orders-page .op-tbl {
             width: 100%;
             border-collapse: collapse;
@@ -281,10 +388,17 @@
             text-transform: uppercase;
             letter-spacing: .08em;
             font-weight: 700;
-            padding: 11px 14px;
+            padding: 12px 14px;
             text-align: left;
             border-bottom: 1px solid var(--border-default);
+            white-space: nowrap;
         }
+        [dir='rtl'] .orders-page .op-tbl thead th { text-align: right; }
+        .orders-page .op-tbl thead th.ralign,
+        .orders-page .op-tbl tbody td.ralign { text-align: right; }
+        [dir='rtl'] .orders-page .op-tbl thead th.ralign,
+        [dir='rtl'] .orders-page .op-tbl tbody td.ralign { text-align: left; }
+
         .orders-page .op-tbl tbody tr {
             background: var(--surface-card);
             border-bottom: 1px solid var(--border-row);
@@ -292,149 +406,216 @@
         }
         .orders-page .op-tbl tbody tr:last-child { border-bottom: none; }
         .orders-page .op-tbl tbody tr:hover { background: var(--surface-hover); }
-        .orders-page .op-tbl td { padding: 13px 14px; vertical-align: middle; }
-        .orders-page .op-tbl .num { font-weight: 600; color: var(--text-primary); display: block; font-size: 12px; margin-bottom: 2px; }
+        .orders-page .op-tbl td { padding: 14px 16px; vertical-align: middle; }
+        .orders-page .op-tbl .num {
+            font-weight: 600;
+            color: var(--text-primary);
+            display: block;
+            font-size: 12.5px;
+            margin-bottom: 2px;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -0.01em;
+        }
         .orders-page .op-tbl .id  { font-family: 'JetBrains Mono', ui-monospace, monospace; color: var(--text-muted); font-size: 10px; }
-        .orders-page .op-tbl .who { color: var(--text-body); font-weight: 500; font-size: 12px; }
-        .orders-page .op-tbl .em  { color: var(--text-faint); font-size: 10px; }
-        .orders-page .op-tbl .ttl { font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; text-align: right; }
+        .orders-page .op-tbl .who { color: var(--text-body); font-weight: 500; font-size: 12.5px; }
+        .orders-page .op-tbl .em  { color: var(--text-faint); font-size: 10.5px; margin-top: 1px; }
+        .orders-page .op-tbl .ttl { font-weight: 700; color: var(--text-primary); font-variant-numeric: tabular-nums; font-size: 12.5px; }
         .orders-page .op-tbl .ttl .cy { color: var(--text-faint); font-weight: 400; font-size: 10px; margin-left: 3px; }
+        [dir='rtl'] .orders-page .op-tbl .ttl .cy { margin-left: 0; margin-right: 3px; }
         .orders-page .op-tbl .meth { color: var(--text-disabled); font-size: 9.5px; margin-top: 3px; font-family: 'JetBrains Mono', monospace; }
+        .orders-page .op-tbl .items-cnt { color: var(--text-secondary); font-variant-numeric: tabular-nums; }
         .orders-page .op-tbl input[type="checkbox"] {
-            width: 14px; height: 14px;
+            width: 15px; height: 15px;
             accent-color: var(--accent);
             border-radius: 3px;
             background: var(--surface-muted);
             border: 1.5px solid var(--border-checkbox);
             cursor: pointer;
         }
-        .orders-page .op-tbl .date-d  { color: var(--text-secondary); font-size: 11px; }
-        .orders-page .op-tbl .date-t  { color: var(--text-faint); font-size: 9px; margin-top: 2px; }
-        .orders-page .op-tbl .empty   { color: var(--text-secondary); font-size: 12px; text-align: center; padding: 48px 16px; }
+        .orders-page .op-tbl .date-d { color: var(--text-secondary); font-size: 11.5px; font-variant-numeric: tabular-nums; }
+        .orders-page .op-tbl .date-t { color: var(--text-faint); font-size: 9.5px; margin-top: 2px; font-variant-numeric: tabular-nums; }
 
+        /* Empty state */
+        .orders-page .op-empty {
+            padding: 56px 16px;
+            text-align: center;
+        }
+        .orders-page .op-empty .ico {
+            width: 44px; height: 44px;
+            margin: 0 auto 12px;
+            border-radius: 12px;
+            background: var(--surface-muted);
+            border: 1px solid var(--border-soft);
+            display: flex; align-items: center; justify-content: center;
+            color: var(--text-muted);
+        }
+        .orders-page .op-empty .ico svg { width: 22px; height: 22px; }
+        .orders-page .op-empty .title { color: var(--text-primary); font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+        .orders-page .op-empty .help  { color: var(--text-muted); font-size: 12px; }
+
+        /* ──────────── Status pills ──────────── */
         .orders-page .op-pill {
             display: inline-flex;
             align-items: center;
-            gap: 5px;
-            padding: 3.5px 10px;
+            gap: 6px;
+            padding: 4px 10px;
             border-radius: 999px;
             font-size: 10.5px;
             font-weight: 600;
             border: 1px solid;
+            line-height: 1.2;
+            letter-spacing: .01em;
+            white-space: nowrap;
         }
         .orders-page .op-pill::before {
             content: '';
             width: 5px; height: 5px;
             border-radius: 50%;
             background: currentColor;
-            box-shadow: 0 0 6px currentColor;
-            opacity: 0.85;
+            opacity: 0.9;
+            flex-shrink: 0;
         }
-        /* Order statuses (match Order model status constants) */
-        .orders-page .op-pill.pending    { background: rgba(245,158,11,0.12); color: var(--status-pending); border-color: rgba(245,158,11,0.30); }
-        .orders-page .op-pill.processing { background: rgba(139,92,246,0.12); color: #c4b5fd; border-color: rgba(139,92,246,0.30); }
-        .orders-page .op-pill.shipped    { background: rgba(56,189,248,0.12); color: var(--status-shipped); border-color: rgba(56,189,248,0.30); }
-        .orders-page .op-pill.delivered  { background: rgba(34,197,94,0.12); color: var(--status-delivered); border-color: rgba(34,197,94,0.30); }
-        .orders-page .op-pill.cancelled  { background: rgba(239,68,68,0.12); color: #f87171; border-color: rgba(239,68,68,0.30); }
-        /* Payment statuses */
-        .orders-page .op-pill.paid       { background: rgba(34,197,94,0.12); color: var(--status-delivered); border-color: rgba(34,197,94,0.28); }
-        .orders-page .op-pill.failed     { background: rgba(239,68,68,0.12); color: #f87171; border-color: rgba(239,68,68,0.28); }
-        .orders-page .op-pill.refunded   { background: rgba(148,163,184,0.12); color: var(--text-secondary); border-color: rgba(203,213,225,0.22); }
+        .orders-page .op-pill.pending    { background: rgba(245,158,11,0.10); color: var(--status-pending); border-color: rgba(245,158,11,0.26); }
+        .orders-page .op-pill.processing { background: rgba(139,92,246,0.10); color: #c4b5fd; border-color: rgba(139,92,246,0.26); }
+        .orders-page .op-pill.shipped    { background: rgba(56,189,248,0.10); color: var(--status-shipped); border-color: rgba(56,189,248,0.26); }
+        .orders-page .op-pill.delivered  { background: rgba(34,197,94,0.10); color: var(--status-delivered); border-color: rgba(34,197,94,0.26); }
+        .orders-page .op-pill.cancelled  { background: rgba(239,68,68,0.10); color: #f87171; border-color: rgba(239,68,68,0.26); }
+        .orders-page .op-pill.paid       { background: rgba(34,197,94,0.10); color: var(--status-delivered); border-color: rgba(34,197,94,0.26); }
+        .orders-page .op-pill.failed     { background: rgba(239,68,68,0.10); color: #f87171; border-color: rgba(239,68,68,0.26); }
+        .orders-page .op-pill.refunded   { background: rgba(148,163,184,0.10); color: var(--text-secondary); border-color: rgba(203,213,225,0.20); }
 
+        /* Inline tag (e.g. user/dealer) — flat, no dot */
+        .orders-page .op-tag {
+            display: inline-flex;
+            align-items: center;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 9.5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+            border: 1px solid;
+            margin-top: 6px;
+        }
+        .orders-page .op-tag.user   { background: rgba(56,189,248,0.10); color: var(--status-shipped); border-color: rgba(56,189,248,0.26); }
+        .orders-page .op-tag.dealer { background: rgba(139,92,246,0.10); color: #c4b5fd; border-color: rgba(139,92,246,0.26); }
+
+        /* Row alerts (cancellation/return) */
         .orders-page .op-alert {
             display: inline-flex;
             align-items: center;
-            gap: 3px;
-            background: rgba(239,68,68,0.14);
+            gap: 4px;
+            background: rgba(239,68,68,0.12);
             color: #fca5a5;
-            border: 1px solid rgba(239,68,68,0.30);
-            font-size: 9px;
+            border: 1px solid rgba(239,68,68,0.26);
+            font-size: 9.5px;
             font-weight: 700;
             padding: 2px 7px;
             border-radius: 4px;
-            margin-top: 5px;
+            margin-top: 6px;
             text-transform: uppercase;
             letter-spacing: .05em;
         }
         .orders-page .op-alert.warn {
-            background: rgba(245,158,11,0.14);
+            background: rgba(245,158,11,0.12);
             color: #f59e0b;
-            border-color: rgba(245,158,11,0.30);
+            border-color: rgba(245,158,11,0.26);
         }
 
         .orders-page .op-row-selected { background: var(--accent-soft) !important; }
 
-        .orders-page .op-acts { display: flex; gap: 4px; justify-content: flex-end; align-items: center; }
+        /* ──────────── Action icons + kebab ──────────── */
+        .orders-page .op-acts {
+            display: flex;
+            gap: 6px;
+            justify-content: flex-end;
+            align-items: center;
+        }
+        [dir='rtl'] .orders-page .op-acts { justify-content: flex-start; }
         .orders-page .op-icon {
-            width: 28px; height: 28px;
-            display: flex; align-items: center; justify-content: center;
-            border-radius: 6px;
+            width: 32px; height: 32px;
+            display: inline-flex; align-items: center; justify-content: center;
+            border-radius: var(--r-sm);
             background: var(--surface-elevated);
             border: 1px solid var(--border-soft);
             color: var(--text-muted);
-            transition: all .12s ease;
+            transition: color .12s ease, border-color .12s ease, background .12s ease, transform .12s ease;
             text-decoration: none;
             cursor: pointer;
         }
-        .orders-page .op-icon:hover { color: var(--accent-text); border-color: var(--accent-border); background: var(--surface-hover); }
-        .orders-page .op-icon svg { width: 13px; height: 13px; }
-
-        /* Kebab dropdown */
-        .orders-page .op-menu {
-            position: absolute;
-            right: 0;
-            margin-top: 6px;
-            min-width: 220px;
-            background: var(--surface-elevated);
-            border: 1px solid var(--border-soft);
-            border-radius: 10px;
-            box-shadow: 0 18px 44px -28px rgba(0,0,0,0.65);
-            padding: 6px;
-            z-index: 30;
+        .orders-page .op-icon:hover {
+            color: var(--accent-text);
+            border-color: var(--accent-border);
+            background: var(--surface-hover);
+            transform: translateY(-1px);
         }
-        .orders-page .op-menu .head {
+        .orders-page .op-icon svg { width: 14px; height: 14px; }
+
+        /* Kebab dropdown (teleported to <body>) */
+        .op-menu {
+            position: fixed;
+            width: 240px;
+            background: var(--admin-card, #1e293b);
+            border: 1px solid var(--admin-border-soft, #263244);
+            border-radius: 10px;
+            box-shadow: 0 24px 48px -28px rgba(0,0,0,0.75), 0 1px 0 rgba(255,255,255,0.04) inset;
+            padding: 6px;
+            z-index: 60;
+            font-family: 'Inter', system-ui, sans-serif;
+            color: var(--admin-text, #f8fafc);
+        }
+        .op-menu .head {
             font-size: 10px;
             text-transform: uppercase;
             letter-spacing: .06em;
-            color: var(--text-faint);
-            padding: 6px 10px 4px;
+            color: var(--admin-text-soft, #94a3b8);
+            padding: 8px 10px 4px;
             font-weight: 700;
         }
-        .orders-page .op-menu form { display: flex; align-items: center; gap: 6px; padding: 6px 8px; }
-        .orders-page .op-menu select {
-            flex: 1;
-            background: var(--surface-page);
-            border: 1px solid var(--border-default);
-            color: var(--text-body);
-            padding: 6px 8px;
+        .op-menu form { display: flex; align-items: center; gap: 6px; padding: 4px 6px 8px; }
+        .op-menu select {
+            flex: 1 1 auto;
+            min-width: 0;
+            background: var(--admin-surface, #111827);
+            border: 1px solid var(--admin-border, #334155);
+            color: var(--admin-text, #f8fafc);
+            height: 30px;
+            padding: 0 8px;
             border-radius: 6px;
-            font-size: 11px;
+            font-size: 11.5px;
+            color-scheme: dark;
         }
-        .orders-page .op-menu button[type="submit"] {
-            background: var(--accent);
+        .op-menu button[type="submit"] {
+            background: var(--admin-accent, #06b6d4);
             color: white;
-            padding: 6px 10px;
+            height: 30px;
+            padding: 0 12px;
             border-radius: 6px;
-            font-size: 11px;
+            font-size: 11.5px;
             font-weight: 600;
-            border: 1px solid var(--accent-border);
+            border: 1px solid rgba(103,232,249,0.24);
+            cursor: pointer;
+            transition: background .15s ease;
         }
-        .orders-page .op-menu button[type="submit"]:hover { background: var(--accent-hover); }
-        .orders-page .op-menu .danger {
+        .op-menu button[type="submit"]:hover { background: var(--admin-accent-hover, #0891b2); }
+        .op-menu hr { border: 0; border-top: 1px solid var(--admin-border-soft, #263244); margin: 4px 0; }
+        .op-menu .danger {
             display: block; width: 100%;
             text-align: left;
             padding: 8px 10px;
             border-radius: 6px;
             background: transparent;
             color: #fca5a5;
-            font-size: 11px;
+            font-size: 11.5px;
             font-weight: 600;
             border: none;
             cursor: pointer;
+            transition: background .15s ease;
         }
-        .orders-page .op-menu .danger:hover { background: rgba(239,68,68,0.12); }
-        .orders-page .op-menu hr { border: 0; border-top: 1px solid var(--border-soft); margin: 4px 0; }
+        [dir='rtl'] .op-menu .danger { text-align: right; }
+        .op-menu .danger:hover { background: rgba(239,68,68,0.10); }
 
+        /* ──────────── Pagination ──────────── */
         .orders-page .op-pag {
             display: flex;
             justify-content: space-between;
@@ -442,27 +623,30 @@
             padding: 14px 16px;
             border-top: 1px solid var(--border-soft);
             color: var(--text-muted);
-            font-size: 11px;
+            font-size: 11.5px;
+            background: var(--surface-card);
+            gap: 12px;
+            flex-wrap: wrap;
         }
         .orders-page .op-pag nav { display: flex; }
         .orders-page .op-pag svg { width: 14px; height: 14px; }
-        /* Laravel default pagination uses Tailwind classes — override key ones */
         .orders-page .op-pag .pagination,
         .orders-page .op-pag ul {
-            display: flex; gap: 4px; list-style: none; margin: 0; padding: 0;
+            display: flex; gap: 6px; list-style: none; margin: 0; padding: 0;
         }
         .orders-page .op-pag a,
         .orders-page .op-pag span {
             display: inline-flex; align-items: center; justify-content: center;
-            min-width: 28px; height: 28px;
-            padding: 0 8px;
-            border-radius: 6px;
+            min-width: 32px; height: 32px;
+            padding: 0 10px;
+            border-radius: var(--r-sm);
             background: var(--surface-elevated);
             border: 1px solid var(--border-soft);
             color: var(--text-muted);
-            font-size: 11px;
+            font-size: 11.5px;
             font-weight: 600;
             text-decoration: none;
+            transition: color .12s ease, border-color .12s ease, background .12s ease;
         }
         .orders-page .op-pag a:hover { color: var(--text-body); border-color: var(--border-default); background: var(--surface-hover); }
         .orders-page .op-pag .active span,
@@ -476,27 +660,54 @@
             opacity: 0.4;
             cursor: not-allowed;
         }
+
+        /* ──────────── Flash messages ──────────── */
+        .orders-page .op-flash {
+            margin-bottom: 16px;
+            border-radius: var(--r-md);
+            padding: 10px 14px;
+            font-size: 12.5px;
+            font-weight: 500;
+            border: 1px solid;
+        }
+        .orders-page .op-flash.ok {
+            background: rgba(34,197,94,0.10);
+            border-color: rgba(34,197,94,0.26);
+            color: #86efac;
+        }
+        .orders-page .op-flash.err {
+            background: rgba(239,68,68,0.10);
+            border-color: rgba(239,68,68,0.26);
+            color: #fca5a5;
+        }
+
+        /* ──────────── Responsive column hiding ──────────── */
+        @media (max-width: 1023px) {
+            .orders-page .col-items,
+            .orders-page .op-tbl .meth { display: none !important; }
+        }
+        @media (max-width: 640px) {
+            .orders-page .col-date { display: none !important; }
+            .orders-page .op-tbl td { padding: 12px 12px; }
+        }
     </style>
 
     @php
         $currencyLabel = (string) ($systemSettings['currency_label'] ?? 'IQD');
         $currencyDecimals = (int) ($systemSettings['currency_decimals'] ?? 0);
+        $hasActiveFilters = request()->hasAny(['search', 'status', 'association', 'from', 'to']);
     @endphp
 
     <div class="orders-page py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             @if(session('success'))
-                <div class="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-900/20 dark:text-emerald-300">
-                    {{ session('success') }}
-                </div>
+                <div class="op-flash ok">{{ session('success') }}</div>
             @endif
-
             @if(session('error'))
-                <div class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-rose-900/50 dark:bg-rose-900/20 dark:text-rose-300">
-                    {{ session('error') }}
-                </div>
+                <div class="op-flash err">{{ session('error') }}</div>
             @endif
 
+            {{-- Stats cards --}}
             <div class="op-stats">
                 <div class="op-stat tot"><div class="l">{{ __('Total') }}</div><div class="v">{{ number_format($stats['total'] ?? 0) }}</div></div>
                 <div class="op-stat warn"><div class="l">{{ __('Pending') }}</div><div class="v">{{ number_format($stats['pending'] ?? 0) }}</div></div>
@@ -506,6 +717,7 @@
                 <div class="op-stat err"><div class="l">{{ __('Cancelled') }}</div><div class="v">{{ number_format($stats['cancelled'] ?? 0) }}</div></div>
             </div>
 
+            {{-- Attention chips --}}
             @php
                 $currentAttention = $attention ?? '';
                 $attentionChips = [
@@ -533,7 +745,8 @@
                     toggleAll(e) { this.selected = e.target.checked ? [...this.allIds] : []; },
                     allSelected() { return this.allIds.length > 0 && this.selected.length === this.allIds.length; },
                  }">
-                <div x-show="selected.length > 0" x-cloak class="op-bulk">
+                {{-- Bulk action bar --}}
+                <div x-show="selected.length > 0" x-cloak x-transition.opacity class="op-bulk">
                     <span class="count"><span x-text="selected.length"></span> {{ __('selected') }}</span>
                     <form method="POST" action="{{ route('admin.orders.bulk-status') }}"
                           @submit="if (!confirm('{{ __('Apply this status change to the selected orders?') }}')) $event.preventDefault()">
@@ -547,46 +760,63 @@
                                 <option value="{{ $status }}">{{ \App\Models\Order::statusMeta((string) $status)['label'] }}</option>
                             @endforeach
                         </select>
-                        <button type="submit" class="op-btn-primary">{{ __('Apply') }}</button>
-                        <button type="button" @click="selected = []" class="op-btn-ghost">{{ __('Clear') }}</button>
+                        <button type="submit" class="op-btn op-btn-primary op-btn-sm">{{ __('Apply') }}</button>
+                        <button type="button" @click="selected = []" class="op-btn op-btn-ghost op-btn-sm">{{ __('Clear') }}</button>
                     </form>
                 </div>
-                <div class="op-filter">
-                    @if($currentAttention !== '')
-                        <input type="hidden" name="attention" value="{{ $currentAttention }}" form="orders-filter-form">
-                    @endif
-                    <input form="orders-filter-form" class="op-input" type="text" name="search"
-                           value="{{ request('search') }}"
-                           placeholder="{{ __('Search order #, city, phone, user...') }}">
-                    <select form="orders-filter-form" name="status" class="op-select">
-                        <option value="">{{ __('All Statuses') }}</option>
-                        @foreach($statusOptions as $status)
-                            <option value="{{ $status }}" @selected(request('status') === $status)>
-                                {{ \App\Models\Order::statusMeta((string) $status)['label'] }}
-                            </option>
-                        @endforeach
-                    </select>
-                    <div class="op-dates">
-                        <label>{{ __('From') }}<input form="orders-filter-form" class="op-input" type="date" name="from" value="{{ request('from') }}"></label>
-                        <label>{{ __('To') }}<input form="orders-filter-form" class="op-input" type="date" name="to" value="{{ request('to') }}"></label>
-                    </div>
-                    <select form="orders-filter-form" name="association" class="op-select" style="grid-column: span 1;">
-                        <option value="">{{ __('All Users') }}</option>
-                        <option value="user" @selected(($association ?? '') === 'user')>{{ __('Retail Users') }}</option>
-                        <option value="dealer" @selected(($association ?? '') === 'dealer')>{{ __('Dealers') }}</option>
-                    </select>
-                </div>
-                <div class="op-actions">
-                    <form id="orders-filter-form" method="GET" action="{{ route('admin.orders.index') }}" style="display:contents"></form>
-                    <button form="orders-filter-form" type="submit" class="op-btn-primary">{{ __('Apply Filters') }}</button>
-                    @if(request()->hasAny(['search', 'status', 'association', 'from', 'to']))
-                        <a class="op-btn-ghost"
-                           href="{{ route('admin.orders.index', $currentAttention !== '' ? ['attention' => $currentAttention] : []) }}">
-                            {{ __('Clear') }}
-                        </a>
-                    @endif
-                </div>
 
+                {{-- Filter form --}}
+                <form method="GET" action="{{ route('admin.orders.index') }}" class="op-filter-form">
+                    @if($currentAttention !== '')
+                        <input type="hidden" name="attention" value="{{ $currentAttention }}">
+                    @endif
+                    <div class="op-filter">
+                        <div class="f-search">
+                            <label class="f-label" for="filter-search">{{ __('Search') }}</label>
+                            <input id="filter-search" class="op-input" type="text" name="search"
+                                   value="{{ request('search') }}"
+                                   placeholder="{{ __('Search order #, city, phone, user...') }}">
+                        </div>
+                        <div class="f-status">
+                            <label class="f-label" for="filter-status">{{ __('Status') }}</label>
+                            <select id="filter-status" name="status" class="op-select">
+                                <option value="">{{ __('All Statuses') }}</option>
+                                @foreach($statusOptions as $status)
+                                    <option value="{{ $status }}" @selected(request('status') === $status)>
+                                        {{ \App\Models\Order::statusMeta((string) $status)['label'] }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="f-date">
+                            <label class="f-label" for="filter-from">{{ __('From') }}</label>
+                            <input id="filter-from" class="op-input" type="date" name="from" value="{{ request('from') }}">
+                        </div>
+                        <div class="f-date">
+                            <label class="f-label" for="filter-to">{{ __('To') }}</label>
+                            <input id="filter-to" class="op-input" type="date" name="to" value="{{ request('to') }}">
+                        </div>
+                        <div class="f-assoc">
+                            <label class="f-label" for="filter-assoc">{{ __('User Type') }}</label>
+                            <select id="filter-assoc" name="association" class="op-select">
+                                <option value="">{{ __('All Users') }}</option>
+                                <option value="user" @selected(($association ?? '') === 'user')>{{ __('Retail Users') }}</option>
+                                <option value="dealer" @selected(($association ?? '') === 'dealer')>{{ __('Dealers') }}</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="op-actions">
+                        @if($hasActiveFilters)
+                            <a class="op-btn op-btn-ghost op-btn-sm"
+                               href="{{ route('admin.orders.index', $currentAttention !== '' ? ['attention' => $currentAttention] : []) }}">
+                                {{ __('Clear') }}
+                            </a>
+                        @endif
+                        <button type="submit" class="op-btn op-btn-primary op-btn-sm">{{ __('Apply Filters') }}</button>
+                    </div>
+                </form>
+
+                {{-- Table --}}
                 <div class="op-table-wrap">
                     <table class="op-tbl">
                         <thead>
@@ -599,12 +829,12 @@
                                 </th>
                                 <th>{{ __('Order') }}</th>
                                 <th>{{ __('User / Dealer') }}</th>
-                                <th>{{ __('Items') }}</th>
-                                <th style="text-align:right">{{ __('Total') }}</th>
+                                <th class="col-items">{{ __('Items') }}</th>
+                                <th class="ralign">{{ __('Total') }}</th>
                                 <th>{{ __('Payment') }}</th>
                                 <th>{{ __('Status') }}</th>
-                                <th>{{ __('Date') }}</th>
-                                <th style="text-align:right">{{ __('Actions') }}</th>
+                                <th class="col-date">{{ __('Date') }}</th>
+                                <th class="ralign">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -614,6 +844,7 @@
                                     $statusMeta = \App\Models\Order::statusMeta((string) $order->status);
                                     $paymentMeta = \App\Models\Order::paymentStatusMeta((string) $order->payment_status);
                                     $allowedTransitions = $transitionOptions[$order->id] ?? [$order->status];
+                                    $canArchive = auth()->user()?->role === \App\Models\User::ROLE_SUPER_ADMIN;
                                 @endphp
                                 <tr :class="selected.includes({{ $order->id }}) ? 'op-row-selected' : ''">
                                     <td>
@@ -636,11 +867,11 @@
                                         <div class="who">{{ $order->user?->name ?? __('Guest customer') }}</div>
                                         <div class="em">{{ $order->user?->email ?? '-' }}</div>
                                         @if($order->user)
-                                            <span class="op-pill {{ $isDealer ? 'processing' : 'shipped' }}" style="margin-top:4px">{{ $isDealer ? __('Dealer') : __('User') }}</span>
+                                            <span class="op-tag {{ $isDealer ? 'dealer' : 'user' }}">{{ $isDealer ? __('Dealer') : __('User') }}</span>
                                         @endif
                                     </td>
-                                    <td style="color: var(--text-secondary)">{{ $order->items_count }}</td>
-                                    <td class="ttl">{{ number_format((float) $order->total_amount, $currencyDecimals) }}<span class="cy">{{ $currencyLabel }}</span></td>
+                                    <td class="col-items items-cnt">{{ $order->items_count }}</td>
+                                    <td class="ttl ralign">{{ number_format((float) $order->total_amount, $currencyDecimals) }}<span class="cy">{{ $currencyLabel }}</span></td>
                                     <td>
                                         <span class="op-pill {{ $order->payment_status }}">{{ $paymentMeta['label'] }}</span>
                                         @if($order->payment_method)
@@ -650,57 +881,92 @@
                                     <td>
                                         <span class="op-pill {{ $order->status }}">{{ $statusMeta['label'] }}</span>
                                     </td>
-                                    <td>
+                                    <td class="col-date">
                                         <div class="date-d">{{ $order->created_at?->format('M d, Y') }}</div>
                                         <div class="date-t">{{ $order->created_at?->format('h:i A') }}</div>
                                     </td>
-                                    <td>
+                                    <td class="ralign">
                                         <div class="op-acts">
-                                            <a class="op-icon" href="{{ route('admin.orders.show', $order) }}" title="{{ __('View') }}">
+                                            <a class="op-icon" href="{{ route('admin.orders.show', $order) }}" title="{{ __('View') }}" aria-label="{{ __('View order') }}">
                                                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                             </a>
-                                            <a class="op-icon" href="{{ route('admin.orders.invoice', $order) }}" title="{{ __('Invoice') }}">
+                                            <a class="op-icon" href="{{ route('admin.orders.invoice', $order) }}" title="{{ __('Invoice') }}" aria-label="{{ __('Download invoice') }}">
                                                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                             </a>
-                                            <div x-data="{ open: false }" @click.outside="open = false" style="position: relative;">
-                                                <button class="op-icon" @click="open = !open" type="button" title="{{ __('More') }}">
+                                            <div x-data="{
+                                                    open: false,
+                                                    x: 0, y: 0,
+                                                    toggle(ev) {
+                                                        if (this.open) { this.open = false; return; }
+                                                        const r = ev.currentTarget.getBoundingClientRect();
+                                                        const menuW = 240;
+                                                        const menuH = {{ $canArchive ? 200 : 140 }};
+                                                        let left = r.right - menuW;
+                                                        if (document.documentElement.dir === 'rtl') { left = r.left; }
+                                                        if (left < 8) left = 8;
+                                                        if (left + menuW > window.innerWidth - 8) left = window.innerWidth - menuW - 8;
+                                                        let top = r.bottom + 6;
+                                                        if (top + menuH > window.innerHeight - 8) top = r.top - menuH - 6;
+                                                        this.x = left; this.y = top;
+                                                        this.open = true;
+                                                    }
+                                                 }"
+                                                 @keydown.escape.window="open = false"
+                                                 @scroll.window="open = false"
+                                                 @resize.window="open = false">
+                                                <button class="op-icon" @click.stop="toggle($event)" type="button" title="{{ __('More') }}" aria-label="{{ __('More actions') }}">
                                                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></svg>
                                                 </button>
-                                                <div class="op-menu" x-show="open" x-cloak x-transition>
-                                                    <div class="head">{{ __('Update Status') }}</div>
-                                                    <form method="POST" action="{{ route('admin.orders.update-status', $order) }}">
-                                                        @csrf
-                                                        @method('PATCH')
-                                                        <select name="status">
-                                                            @foreach($statusOptions as $status)
-                                                                <option value="{{ $status }}"
-                                                                        @selected($order->status === $status)
-                                                                        @disabled(!in_array($status, $allowedTransitions, true))>
-                                                                    {{ \App\Models\Order::statusMeta((string) $status)['label'] }}
-                                                                </option>
-                                                            @endforeach
-                                                        </select>
-                                                        <button type="submit">{{ __('Save') }}</button>
-                                                    </form>
-                                                    @if(auth()->user()?->role === \App\Models\User::ROLE_SUPER_ADMIN)
-                                                        <hr>
-                                                        <form method="POST" action="{{ route('admin.orders.destroy', $order) }}"
-                                                              data-danger-confirm
-                                                              data-danger-title="{{ __('Archive Order') }}"
-                                                              data-danger-description="{{ __('The order will be hidden from the active order list but kept for financial history and audit review.') }}">
+                                                <template x-teleport="body">
+                                                    <div class="op-menu"
+                                                         x-show="open"
+                                                         x-cloak
+                                                         x-transition.opacity.duration.120ms
+                                                         :style="`top:${y}px; left:${x}px;`"
+                                                         @click.outside="open = false">
+                                                        <div class="head">{{ __('Update Status') }}</div>
+                                                        <form method="POST" action="{{ route('admin.orders.update-status', $order) }}">
                                                             @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="danger">{{ __('Archive Order') }}</button>
+                                                            @method('PATCH')
+                                                            <select name="status">
+                                                                @foreach($statusOptions as $status)
+                                                                    <option value="{{ $status }}"
+                                                                            @selected($order->status === $status)
+                                                                            @disabled(!in_array($status, $allowedTransitions, true))>
+                                                                        {{ \App\Models\Order::statusMeta((string) $status)['label'] }}
+                                                                    </option>
+                                                                @endforeach
+                                                            </select>
+                                                            <button type="submit">{{ __('Save') }}</button>
                                                         </form>
-                                                    @endif
-                                                </div>
+                                                        @if($canArchive)
+                                                            <hr>
+                                                            <form method="POST" action="{{ route('admin.orders.destroy', $order) }}"
+                                                                  data-danger-confirm
+                                                                  data-danger-title="{{ __('Archive Order') }}"
+                                                                  data-danger-description="{{ __('The order will be hidden from the active order list but kept for financial history and audit review.') }}">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="danger">{{ __('Archive Order') }}</button>
+                                                            </form>
+                                                        @endif
+                                                    </div>
+                                                </template>
                                             </div>
                                         </div>
                                     </td>
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="9" class="empty">{{ __('No orders found for the current filter.') }}</td>
+                                    <td colspan="9">
+                                        <div class="op-empty">
+                                            <div class="ico">
+                                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0l-2.293 5.16a1 1 0 01-.914.59H7.207a1 1 0 01-.914-.59L4 13m16 0h-5.114a1 1 0 00-.894.553l-.829 1.658a1 1 0 01-.894.553h-2.538a1 1 0 01-.894-.553l-.829-1.658A1 1 0 008.114 13H4"/></svg>
+                                            </div>
+                                            <div class="title">{{ __('No orders found') }}</div>
+                                            <div class="help">{{ __('Try adjusting your filters or clearing them to see all orders.') }}</div>
+                                        </div>
+                                    </td>
                                 </tr>
                             @endforelse
                         </tbody>
