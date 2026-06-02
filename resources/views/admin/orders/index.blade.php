@@ -347,6 +347,76 @@
         }
 
         .orders-page .op-row-selected { background: rgba(8,145,178,0.06); }
+
+        .orders-page .op-acts { display: flex; gap: 4px; justify-content: flex-end; align-items: center; }
+        .orders-page .op-icon {
+            width: 28px; height: 28px;
+            display: flex; align-items: center; justify-content: center;
+            border-radius: 6px;
+            background: var(--surface-elevated);
+            border: 1px solid var(--border-default);
+            color: var(--text-muted);
+            transition: all .12s ease;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .orders-page .op-icon:hover { color: #93c5fd; border-color: #475569; }
+        .orders-page .op-icon svg { width: 13px; height: 13px; }
+
+        /* Kebab dropdown */
+        .orders-page .op-menu {
+            position: absolute;
+            right: 0;
+            margin-top: 6px;
+            min-width: 220px;
+            background: var(--surface-elevated);
+            border: 1px solid var(--border-default);
+            border-radius: 10px;
+            box-shadow: 0 12px 32px -8px rgba(0,0,0,0.5);
+            padding: 6px;
+            z-index: 30;
+        }
+        .orders-page .op-menu .head {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            color: var(--text-faint);
+            padding: 6px 10px 4px;
+            font-weight: 700;
+        }
+        .orders-page .op-menu form { display: flex; align-items: center; gap: 6px; padding: 6px 8px; }
+        .orders-page .op-menu select {
+            flex: 1;
+            background: var(--surface-input);
+            border: 1px solid var(--border-default);
+            color: var(--text-body);
+            padding: 6px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+        }
+        .orders-page .op-menu button[type="submit"] {
+            background: linear-gradient(135deg, var(--accent-from), var(--accent-to));
+            color: white;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.08);
+        }
+        .orders-page .op-menu .danger {
+            display: block; width: 100%;
+            text-align: left;
+            padding: 8px 10px;
+            border-radius: 6px;
+            background: transparent;
+            color: #fda4af;
+            font-size: 11px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+        }
+        .orders-page .op-menu .danger:hover { background: rgba(220,38,38,0.12); }
+        .orders-page .op-menu hr { border: 0; border-top: 1px solid var(--border-default); margin: 4px 0; }
     </style>
 
     @php
@@ -526,7 +596,47 @@
                                         <div class="date-t">{{ $order->created_at?->format('h:i A') }}</div>
                                     </td>
                                     <td>
-                                        {{-- Actions column rebuilt in Task 9 --}}
+                                        <div class="op-acts">
+                                            <a class="op-icon" href="{{ route('admin.orders.show', $order) }}" title="{{ __('View') }}">
+                                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                            </a>
+                                            <a class="op-icon" href="{{ route('admin.orders.invoice', $order) }}" title="{{ __('Invoice') }}">
+                                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                            </a>
+                                            <div x-data="{ open: false }" @click.outside="open = false" style="position: relative;">
+                                                <button class="op-icon" @click="open = !open" type="button" title="{{ __('More') }}">
+                                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><circle cx="5" cy="12" r="1.2"/><circle cx="12" cy="12" r="1.2"/><circle cx="19" cy="12" r="1.2"/></svg>
+                                                </button>
+                                                <div class="op-menu" x-show="open" x-cloak x-transition>
+                                                    <div class="head">{{ __('Update Status') }}</div>
+                                                    <form method="POST" action="{{ route('admin.orders.update-status', $order) }}">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <select name="status">
+                                                            @foreach($statusOptions as $status)
+                                                                <option value="{{ $status }}"
+                                                                        @selected($order->status === $status)
+                                                                        @disabled(!in_array($status, $allowedTransitions, true))>
+                                                                    {{ \App\Models\Order::statusMeta((string) $status)['label'] }}
+                                                                </option>
+                                                            @endforeach
+                                                        </select>
+                                                        <button type="submit">{{ __('Save') }}</button>
+                                                    </form>
+                                                    @if(auth()->user()?->role === \App\Models\User::ROLE_SUPER_ADMIN)
+                                                        <hr>
+                                                        <form method="POST" action="{{ route('admin.orders.destroy', $order) }}"
+                                                              data-danger-confirm
+                                                              data-danger-title="{{ __('Archive Order') }}"
+                                                              data-danger-description="{{ __('The order will be hidden from the active order list but kept for financial history and audit review.') }}">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="danger">{{ __('Archive Order') }}</button>
+                                                        </form>
+                                                    @endif
+                                                </div>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             @empty
