@@ -18,12 +18,43 @@
             </a>
         </div>
     </x-slot>
+
+    @push('styles')
+    <style>
+        .orders-page {
+            /* ─── tokens ─── */
+            --surface-base: #131a2e;
+            --surface-raised: #1c2438;
+            --surface-elevated: #1f283f;
+            --surface-input: #131a2e;
+            --border-default: #2a3553;
+            --border-row: #232b42;
+            --border-checkbox: #475569;
+            --text-primary: #f8fafc;
+            --text-body: #e6ecf5;
+            --text-secondary: #cbd5e1;
+            --text-muted: #8a95b0;
+            --text-faint: #6b7794;
+            --text-disabled: #525f7d;
+            --accent-from: #0891b2;
+            --accent-to: #0e7490;
+            --accent-glow: rgba(8,145,178,0.35);
+
+            background: var(--surface-base);
+            color: var(--text-body);
+            font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+            min-height: 100vh;
+        }
+        .orders-page * { box-sizing: border-box; }
+    </style>
+    @endpush
+
     @php
         $currencyLabel = (string) ($systemSettings['currency_label'] ?? 'IQD');
         $currencyDecimals = (int) ($systemSettings['currency_decimals'] ?? 0);
     @endphp
 
-    <div class="py-8">
+    <div class="orders-page py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             @if(session('success'))
                 <div class="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-900/20 dark:text-emerald-300">
