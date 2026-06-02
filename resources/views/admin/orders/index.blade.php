@@ -26,27 +26,37 @@
     <style>
         .orders-page {
             /* ─── tokens ─── */
-            --surface-base: #111827;
-            --surface-raised: #1e293b;
-            --surface-elevated: #243147;
-            --surface-input: #172033;
-            --border-default: #334155;
-            --border-row: #2b3a50;
+            --surface-page: var(--admin-surface, #111827);
+            --surface-card: var(--admin-card, #1e293b);
+            --surface-muted: var(--admin-input, #172033);
+            --surface-elevated: #202b3d;
+            --surface-hover: var(--admin-surface-hover, #263449);
+            --border-default: var(--admin-border, #334155);
+            --border-soft: var(--admin-border-soft, #263244);
+            --border-row: rgba(148, 163, 184, 0.14);
             --border-checkbox: #64748b;
-            --text-primary: #f8fafc;
-            --text-body: #e2e8f0;
-            --text-secondary: #cbd5e1;
-            --text-muted: #94a3b8;
+            --text-primary: var(--admin-text-strong, #f8fafc);
+            --text-body: var(--admin-text, #e2e8f0);
+            --text-secondary: var(--admin-text-muted, #cbd5e1);
+            --text-muted: var(--admin-text-soft, #94a3b8);
             --text-faint: #8796ad;
             --text-disabled: #64748b;
-            --accent-from: #06b6d4;
-            --accent-to: #0891b2;
-            --accent-glow: rgba(6,182,212,0.28);
+            --accent: var(--admin-accent, #06b6d4);
+            --accent-hover: var(--admin-accent-hover, #0891b2);
+            --accent-text: #67e8f9;
+            --accent-soft: rgba(6, 182, 212, 0.12);
+            --accent-border: rgba(103, 232, 249, 0.26);
+            --status-pending: #f59e0b;
+            --status-processing: #8b5cf6;
+            --status-shipped: #38bdf8;
+            --status-delivered: #22c55e;
+            --status-cancelled: #ef4444;
+            --shadow-card: 0 1px 0 rgba(255,255,255,0.035) inset, 0 16px 38px -32px rgba(0,0,0,0.58);
 
-            background: var(--surface-base);
+            background: transparent;
             color: var(--text-body);
             font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
-            min-height: 100vh;
+            min-height: 0;
         }
         .orders-page * { box-sizing: border-box; }
         .orders-page .op-hdr {
@@ -55,7 +65,7 @@
             align-items: flex-end;
             margin-bottom: 22px;
             padding: 0 0 18px;
-            border-bottom: 1px solid var(--border-default);
+            border-bottom: 1px solid var(--border-soft);
         }
         .orders-page .op-hdr h1 {
             margin: 0;
@@ -71,23 +81,24 @@
             font-weight: 500;
         }
         .orders-page .op-hdr .sub b {
-            color: #f59e0b;
+            color: var(--status-pending);
             font-weight: 600;
         }
         .orders-page .op-export {
-            background: linear-gradient(135deg, var(--accent-from), var(--accent-to));
+            background: var(--accent);
             color: white;
             padding: 9px 16px;
             border-radius: 8px;
             font-size: 12px;
             font-weight: 600;
-            box-shadow: 0 1px 0 rgba(255,255,255,0.10) inset, 0 10px 24px -18px var(--accent-glow);
-            border: 1px solid rgba(103,232,249,0.24);
+            box-shadow: 0 1px 0 rgba(255,255,255,0.12) inset, 0 14px 28px -22px rgba(6,182,212,0.55);
+            border: 1px solid var(--accent-border);
             display: inline-flex;
             align-items: center;
             gap: 8px;
             text-decoration: none;
         }
+        .orders-page .op-export:hover { background: var(--accent-hover); }
         .orders-page .op-export svg { width: 14px; height: 14px; }
         .orders-page .op-stats {
             display: grid;
@@ -102,21 +113,21 @@
             .orders-page .op-stats { grid-template-columns: repeat(2, 1fr); }
         }
         .orders-page .op-stat {
-            background: var(--surface-raised);
-            border: 1px solid var(--border-default);
+            background: linear-gradient(180deg, var(--surface-card), var(--surface-muted));
+            border: 1px solid var(--border-soft);
             border-radius: 12px;
             padding: 14px 16px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 1px 0 rgba(255,255,255,0.035) inset, 0 16px 36px -30px rgba(0,0,0,0.55);
+            box-shadow: var(--shadow-card);
         }
         .orders-page .op-stat::before {
             content: '';
             position: absolute;
             top: 0; left: 0; right: 0;
             height: 2px;
-            background: var(--stat-a, #64748b);
-            opacity: 0.7;
+            background: var(--stat-a, var(--border-checkbox));
+            opacity: 0.9;
         }
         .orders-page .op-stat .l {
             font-size: 10px;
@@ -130,16 +141,15 @@
             font-weight: 700;
             margin-top: 6px;
             line-height: 1;
-            color: var(--stat-vc, var(--text-primary));
+            color: var(--text-primary);
             font-variant-numeric: tabular-nums;
-            text-shadow: 0 0 12px var(--stat-glow, transparent);
         }
         .orders-page .op-stat.tot   { --stat-vc: var(--text-primary); }
-        .orders-page .op-stat.warn  { --stat-a: #f59e0b; --stat-vc: #f59e0b; --stat-glow: rgba(245,158,11,0.16); }
-        .orders-page .op-stat.idx   { --stat-a: #8b5cf6; --stat-vc: #c4b5fd; --stat-glow: rgba(139,92,246,0.16); }
-        .orders-page .op-stat.info  { --stat-a: #38bdf8; --stat-vc: #7dd3fc; --stat-glow: rgba(56,189,248,0.16); }
-        .orders-page .op-stat.ok    { --stat-a: #22c55e; --stat-vc: #86efac; --stat-glow: rgba(34,197,94,0.16); }
-        .orders-page .op-stat.err   { --stat-a: #ef4444; --stat-vc: #fca5a5; --stat-glow: rgba(239,68,68,0.14); }
+        .orders-page .op-stat.warn  { --stat-a: var(--status-pending); }
+        .orders-page .op-stat.idx   { --stat-a: var(--status-processing); }
+        .orders-page .op-stat.info  { --stat-a: var(--status-shipped); }
+        .orders-page .op-stat.ok    { --stat-a: var(--status-delivered); }
+        .orders-page .op-stat.err   { --stat-a: var(--status-cancelled); }
         .orders-page .op-chips {
             display: flex;
             gap: 8px;
@@ -147,8 +157,8 @@
             margin-bottom: 16px;
         }
         .orders-page .op-chip {
-            background: var(--surface-raised);
-            border: 1px solid var(--border-default);
+            background: var(--surface-card);
+            border: 1px solid var(--border-soft);
             padding: 7px 14px;
             border-radius: 999px;
             font-size: 11px;
@@ -158,26 +168,27 @@
             text-decoration: none;
         }
         .orders-page .op-chip:hover {
-            border-color: #06b6d4;
+            background: var(--surface-hover);
+            border-color: var(--border-default);
             color: var(--text-secondary);
         }
         .orders-page .op-chip.on {
-            background: linear-gradient(135deg, var(--accent-from), var(--accent-to));
-            color: white;
-            border-color: rgba(103,232,249,0.28);
-            box-shadow: 0 10px 24px -18px var(--accent-glow);
+            background: var(--accent-soft);
+            color: var(--accent-text);
+            border-color: var(--accent-border);
+            box-shadow: none;
         }
         .orders-page .op-card {
-            background: var(--surface-raised);
-            border: 1px solid var(--border-default);
+            background: var(--surface-card);
+            border: 1px solid var(--border-soft);
             border-radius: 14px;
             overflow: hidden;
-            box-shadow: 0 1px 0 rgba(255,255,255,0.035) inset, 0 18px 44px -34px rgba(0,0,0,0.62);
+            box-shadow: var(--shadow-card);
         }
         .orders-page .op-filter {
             padding: 14px;
-            border-bottom: 1px solid var(--border-default);
-            background: var(--surface-input);
+            border-bottom: 1px solid var(--border-soft);
+            background: var(--surface-muted);
             display: grid;
             grid-template-columns: 2fr 1fr 1fr;
             gap: 10px;
@@ -187,7 +198,7 @@
         }
         .orders-page .op-input,
         .orders-page .op-select {
-            background: var(--surface-input);
+            background: var(--surface-page);
             border: 1px solid var(--border-default);
             color: var(--text-body);
             padding: 8px 12px;
@@ -198,7 +209,7 @@
         }
         .orders-page .op-input::placeholder { color: var(--text-disabled); }
         .orders-page .op-input:focus,
-        .orders-page .op-select:focus { outline: none; border-color: var(--accent-from); box-shadow: 0 0 0 3px rgba(6,182,212,0.18); }
+        .orders-page .op-select:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px rgba(6,182,212,0.18); }
         .orders-page .op-dates { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .orders-page .op-dates label {
             display: flex; flex-direction: column;
@@ -210,21 +221,22 @@
         .orders-page .op-actions {
             display: flex; gap: 8px;
             padding: 12px 14px;
-            border-bottom: 1px solid var(--border-default);
+            border-bottom: 1px solid var(--border-soft);
         }
         .orders-page .op-btn-primary {
-            background: linear-gradient(135deg, var(--accent-from), var(--accent-to));
+            background: var(--accent);
             color: white;
             padding: 7px 14px;
             border-radius: 7px;
             font-size: 11px;
             font-weight: 600;
-            border: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid var(--accent-border);
             text-decoration: none;
         }
+        .orders-page .op-btn-primary:hover { background: var(--accent-hover); }
         .orders-page .op-btn-ghost {
             background: transparent;
-            border: 1px solid var(--border-default);
+            border: 1px solid var(--border-soft);
             color: var(--text-muted);
             padding: 7px 14px;
             border-radius: 7px;
@@ -232,24 +244,24 @@
             font-weight: 500;
             text-decoration: none;
         }
-        .orders-page .op-btn-ghost:hover { color: var(--text-body); border-color: #06b6d4; background: rgba(6,182,212,0.06); }
+        .orders-page .op-btn-ghost:hover { color: var(--text-body); border-color: var(--border-default); background: var(--surface-hover); }
         .orders-page .op-bulk {
             display: flex;
             flex-wrap: wrap;
             align-items: center;
             gap: 12px;
-            background: linear-gradient(90deg, rgba(6,182,212,0.16), rgba(6,182,212,0.06));
-            border-bottom: 1px solid rgba(56,189,248,0.24);
+            background: var(--accent-soft);
+            border-bottom: 1px solid var(--accent-border);
             padding: 12px 14px;
         }
         .orders-page .op-bulk .count {
             font-size: 12px;
             font-weight: 700;
-            color: #38bdf8;
+            color: var(--accent-text);
         }
         .orders-page .op-bulk form { display: flex; align-items: center; gap: 8px; margin-left: auto; }
         .orders-page .op-bulk select {
-            background: var(--surface-input);
+            background: var(--surface-page);
             border: 1px solid var(--border-default);
             color: var(--text-body);
             padding: 6px 10px;
@@ -263,7 +275,7 @@
             font-size: 12px;
         }
         .orders-page .op-tbl thead th {
-            background: var(--surface-input);
+            background: var(--surface-muted);
             color: var(--text-muted);
             font-size: 10px;
             text-transform: uppercase;
@@ -274,12 +286,12 @@
             border-bottom: 1px solid var(--border-default);
         }
         .orders-page .op-tbl tbody tr {
-            background: var(--surface-raised);
+            background: var(--surface-card);
             border-bottom: 1px solid var(--border-row);
             transition: background .12s ease;
         }
         .orders-page .op-tbl tbody tr:last-child { border-bottom: none; }
-        .orders-page .op-tbl tbody tr:hover { background: #263449; }
+        .orders-page .op-tbl tbody tr:hover { background: var(--surface-hover); }
         .orders-page .op-tbl td { padding: 13px 14px; vertical-align: middle; }
         .orders-page .op-tbl .num { font-weight: 600; color: var(--text-primary); display: block; font-size: 12px; margin-bottom: 2px; }
         .orders-page .op-tbl .id  { font-family: 'JetBrains Mono', ui-monospace, monospace; color: var(--text-muted); font-size: 10px; }
@@ -290,9 +302,9 @@
         .orders-page .op-tbl .meth { color: var(--text-disabled); font-size: 9.5px; margin-top: 3px; font-family: 'JetBrains Mono', monospace; }
         .orders-page .op-tbl input[type="checkbox"] {
             width: 14px; height: 14px;
-            accent-color: var(--accent-from);
+            accent-color: var(--accent);
             border-radius: 3px;
-            background: var(--surface-elevated);
+            background: var(--surface-muted);
             border: 1.5px solid var(--border-checkbox);
             cursor: pointer;
         }
@@ -319,15 +331,15 @@
             opacity: 0.85;
         }
         /* Order statuses (match Order model status constants) */
-        .orders-page .op-pill.pending    { background: rgba(245,158,11,0.14); color: #f59e0b; border-color: rgba(245,158,11,0.32); }
-        .orders-page .op-pill.processing { background: rgba(139,92,246,0.14); color: #c4b5fd; border-color: rgba(139,92,246,0.32); }
-        .orders-page .op-pill.shipped    { background: rgba(56,189,248,0.14); color: #38bdf8; border-color: rgba(56,189,248,0.32); }
-        .orders-page .op-pill.delivered  { background: rgba(34,197,94,0.14); color: #22c55e; border-color: rgba(34,197,94,0.32); }
-        .orders-page .op-pill.cancelled  { background: rgba(239,68,68,0.14); color: #f87171; border-color: rgba(239,68,68,0.32); }
+        .orders-page .op-pill.pending    { background: rgba(245,158,11,0.12); color: var(--status-pending); border-color: rgba(245,158,11,0.30); }
+        .orders-page .op-pill.processing { background: rgba(139,92,246,0.12); color: #c4b5fd; border-color: rgba(139,92,246,0.30); }
+        .orders-page .op-pill.shipped    { background: rgba(56,189,248,0.12); color: var(--status-shipped); border-color: rgba(56,189,248,0.30); }
+        .orders-page .op-pill.delivered  { background: rgba(34,197,94,0.12); color: var(--status-delivered); border-color: rgba(34,197,94,0.30); }
+        .orders-page .op-pill.cancelled  { background: rgba(239,68,68,0.12); color: #f87171; border-color: rgba(239,68,68,0.30); }
         /* Payment statuses */
-        .orders-page .op-pill.paid       { background: rgba(34,197,94,0.14); color: #22c55e; border-color: rgba(34,197,94,0.30); }
-        .orders-page .op-pill.failed     { background: rgba(239,68,68,0.14); color: #f87171; border-color: rgba(239,68,68,0.30); }
-        .orders-page .op-pill.refunded   { background: rgba(148,163,184,0.14); color: #cbd5e1; border-color: rgba(203,213,225,0.24); }
+        .orders-page .op-pill.paid       { background: rgba(34,197,94,0.12); color: var(--status-delivered); border-color: rgba(34,197,94,0.28); }
+        .orders-page .op-pill.failed     { background: rgba(239,68,68,0.12); color: #f87171; border-color: rgba(239,68,68,0.28); }
+        .orders-page .op-pill.refunded   { background: rgba(148,163,184,0.12); color: var(--text-secondary); border-color: rgba(203,213,225,0.22); }
 
         .orders-page .op-alert {
             display: inline-flex;
@@ -350,7 +362,7 @@
             border-color: rgba(245,158,11,0.30);
         }
 
-        .orders-page .op-row-selected { background: rgba(6,182,212,0.12) !important; }
+        .orders-page .op-row-selected { background: var(--accent-soft) !important; }
 
         .orders-page .op-acts { display: flex; gap: 4px; justify-content: flex-end; align-items: center; }
         .orders-page .op-icon {
@@ -358,13 +370,13 @@
             display: flex; align-items: center; justify-content: center;
             border-radius: 6px;
             background: var(--surface-elevated);
-            border: 1px solid var(--border-default);
+            border: 1px solid var(--border-soft);
             color: var(--text-muted);
             transition: all .12s ease;
             text-decoration: none;
             cursor: pointer;
         }
-        .orders-page .op-icon:hover { color: #38bdf8; border-color: #06b6d4; background: #263449; }
+        .orders-page .op-icon:hover { color: var(--accent-text); border-color: var(--accent-border); background: var(--surface-hover); }
         .orders-page .op-icon svg { width: 13px; height: 13px; }
 
         /* Kebab dropdown */
@@ -374,7 +386,7 @@
             margin-top: 6px;
             min-width: 220px;
             background: var(--surface-elevated);
-            border: 1px solid var(--border-default);
+            border: 1px solid var(--border-soft);
             border-radius: 10px;
             box-shadow: 0 18px 44px -28px rgba(0,0,0,0.65);
             padding: 6px;
@@ -391,7 +403,7 @@
         .orders-page .op-menu form { display: flex; align-items: center; gap: 6px; padding: 6px 8px; }
         .orders-page .op-menu select {
             flex: 1;
-            background: var(--surface-input);
+            background: var(--surface-page);
             border: 1px solid var(--border-default);
             color: var(--text-body);
             padding: 6px 8px;
@@ -399,14 +411,15 @@
             font-size: 11px;
         }
         .orders-page .op-menu button[type="submit"] {
-            background: linear-gradient(135deg, var(--accent-from), var(--accent-to));
+            background: var(--accent);
             color: white;
             padding: 6px 10px;
             border-radius: 6px;
             font-size: 11px;
             font-weight: 600;
-            border: 1px solid rgba(255,255,255,0.08);
+            border: 1px solid var(--accent-border);
         }
+        .orders-page .op-menu button[type="submit"]:hover { background: var(--accent-hover); }
         .orders-page .op-menu .danger {
             display: block; width: 100%;
             text-align: left;
@@ -420,14 +433,14 @@
             cursor: pointer;
         }
         .orders-page .op-menu .danger:hover { background: rgba(239,68,68,0.12); }
-        .orders-page .op-menu hr { border: 0; border-top: 1px solid var(--border-default); margin: 4px 0; }
+        .orders-page .op-menu hr { border: 0; border-top: 1px solid var(--border-soft); margin: 4px 0; }
 
         .orders-page .op-pag {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 14px 16px;
-            border-top: 1px solid var(--border-default);
+            border-top: 1px solid var(--border-soft);
             color: var(--text-muted);
             font-size: 11px;
         }
@@ -445,16 +458,16 @@
             padding: 0 8px;
             border-radius: 6px;
             background: var(--surface-elevated);
-            border: 1px solid var(--border-default);
+            border: 1px solid var(--border-soft);
             color: var(--text-muted);
             font-size: 11px;
             font-weight: 600;
             text-decoration: none;
         }
-        .orders-page .op-pag a:hover { color: var(--text-body); border-color: #06b6d4; background: #263449; }
+        .orders-page .op-pag a:hover { color: var(--text-body); border-color: var(--border-default); background: var(--surface-hover); }
         .orders-page .op-pag .active span,
         .orders-page .op-pag span[aria-current="page"] {
-            background: linear-gradient(135deg, var(--accent-from), var(--accent-to));
+            background: var(--accent);
             color: white;
             border-color: rgba(255,255,255,0.15);
         }
