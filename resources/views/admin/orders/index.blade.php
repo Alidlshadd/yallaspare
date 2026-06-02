@@ -1,21 +1,25 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <div>
-                <h2 class="font-semibold text-2xl text-gray-800 dark:text-slate-100">{{ __('Orders Management') }}</h2>
-                <p class="text-sm text-gray-500 dark:text-slate-400">{{ __('Track orders, update status, and review customer or dealer activity.') }}</p>
+        <div class="orders-page" style="background: transparent; min-height: 0;">
+            <div class="op-hdr">
+                <div>
+                    <h1>{{ __('Orders Management') }}</h1>
+                    <p class="sub">
+                        {{ __(':total total', ['total' => number_format($stats['total'] ?? 0)]) }}
+                        @if(($stats['pending'] ?? 0) > 0)
+                            · <b>{{ __(':n need attention', ['n' => $stats['pending']]) }}</b>
+                        @endif
+                    </p>
+                </div>
+                <a class="op-export" href="{{ route('admin.orders.export-excel', array_filter([
+                        'from' => request('from'),
+                        'to' => request('to'),
+                        'status' => request('status'),
+                    ], fn ($v) => $v !== null && $v !== '')) }}">
+                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+                    {{ __('Export Excel (.xlsx)') }}
+                </a>
             </div>
-            <a href="{{ route('admin.orders.export-excel', array_filter([
-                    'from' => request('from'),
-                    'to' => request('to'),
-                    'status' => request('status'),
-                ], fn ($v) => $v !== null && $v !== '')) }}"
-               class="inline-flex items-center gap-2 self-start rounded-lg bg-emerald-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-emerald-700 md:self-auto">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/>
-                </svg>
-                {{ __('Export Excel (.xlsx)') }}
-            </a>
         </div>
     </x-slot>
 
@@ -45,6 +49,46 @@
             min-height: 100vh;
         }
         .orders-page * { box-sizing: border-box; }
+        .orders-page .op-hdr {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            margin-bottom: 22px;
+            padding: 0 0 18px;
+            border-bottom: 1px solid var(--border-default);
+        }
+        .orders-page .op-hdr h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.025em;
+        }
+        .orders-page .op-hdr .sub {
+            margin: 5px 0 0;
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+        .orders-page .op-hdr .sub b {
+            color: #fcd34d;
+            font-weight: 600;
+        }
+        .orders-page .op-export {
+            background: linear-gradient(135deg, var(--accent-from), var(--accent-to));
+            color: white;
+            padding: 9px 16px;
+            border-radius: 8px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 1px 0 rgba(255,255,255,0.08) inset, 0 4px 14px -4px var(--accent-glow);
+            border: 1px solid rgba(255,255,255,0.08);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+        .orders-page .op-export svg { width: 14px; height: 14px; }
     </style>
 
     @php
