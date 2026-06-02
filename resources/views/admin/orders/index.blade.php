@@ -139,6 +139,33 @@
         .orders-page .op-stat.info  { --stat-a: #0284c7; --stat-vc: #93c5fd; --stat-glow: rgba(147,197,253,0.18); }
         .orders-page .op-stat.ok    { --stat-a: #10b981; --stat-vc: #6ee7b7; --stat-glow: rgba(110,231,183,0.18); }
         .orders-page .op-stat.err   { --stat-a: #dc2626; --stat-vc: #fda4af; --stat-glow: rgba(253,164,175,0.15); }
+        .orders-page .op-chips {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+        .orders-page .op-chip {
+            background: var(--surface-raised);
+            border: 1px solid var(--border-default);
+            padding: 7px 14px;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: all .15s ease;
+            text-decoration: none;
+        }
+        .orders-page .op-chip:hover {
+            border-color: #475569;
+            color: var(--text-secondary);
+        }
+        .orders-page .op-chip.on {
+            background: linear-gradient(135deg, var(--accent-from), var(--accent-to));
+            color: white;
+            border-color: rgba(255,255,255,0.15);
+            box-shadow: 0 4px 12px -3px var(--accent-glow);
+        }
     </style>
 
     @php
@@ -179,13 +206,11 @@
                     'open_returns'           => __('Return requests'),
                 ];
             @endphp
-            <div class="mb-4 flex flex-wrap gap-2">
+            <div class="op-chips">
                 @foreach($attentionChips as $value => $label)
                     @php $isActive = $currentAttention === $value; @endphp
                     <a href="{{ request()->fullUrlWithQuery(['attention' => $value === '' ? null : $value, 'page' => null]) }}"
-                       class="rounded-full border px-3 py-1.5 text-xs font-semibold transition {{ $isActive
-                            ? 'border-blue-600 bg-blue-600 text-white shadow-sm'
-                            : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800' }}">
+                       class="op-chip @if($isActive) on @endif">
                         {{ $label }}
                     </a>
                 @endforeach
