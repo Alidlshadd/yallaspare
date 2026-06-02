@@ -89,6 +89,56 @@
             text-decoration: none;
         }
         .orders-page .op-export svg { width: 14px; height: 14px; }
+        .orders-page .op-stats {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 900px) {
+            .orders-page .op-stats { grid-template-columns: repeat(3, 1fr); }
+        }
+        @media (max-width: 540px) {
+            .orders-page .op-stats { grid-template-columns: repeat(2, 1fr); }
+        }
+        .orders-page .op-stat {
+            background: var(--surface-raised);
+            border: 1px solid var(--border-default);
+            border-radius: 12px;
+            padding: 14px 16px;
+            position: relative;
+            overflow: hidden;
+        }
+        .orders-page .op-stat::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 2px;
+            background: var(--stat-a, #475569);
+            opacity: 0.7;
+        }
+        .orders-page .op-stat .l {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: .08em;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        .orders-page .op-stat .v {
+            font-size: 22px;
+            font-weight: 700;
+            margin-top: 6px;
+            line-height: 1;
+            color: var(--stat-vc, var(--text-primary));
+            font-variant-numeric: tabular-nums;
+            text-shadow: 0 0 12px var(--stat-glow, transparent);
+        }
+        .orders-page .op-stat.tot   { --stat-vc: var(--text-primary); }
+        .orders-page .op-stat.warn  { --stat-a: #d97706; --stat-vc: #fcd34d; --stat-glow: rgba(252,211,77,0.18); }
+        .orders-page .op-stat.idx   { --stat-a: #6366f1; --stat-vc: #c4b5fd; --stat-glow: rgba(196,181,253,0.18); }
+        .orders-page .op-stat.info  { --stat-a: #0284c7; --stat-vc: #93c5fd; --stat-glow: rgba(147,197,253,0.18); }
+        .orders-page .op-stat.ok    { --stat-a: #10b981; --stat-vc: #6ee7b7; --stat-glow: rgba(110,231,183,0.18); }
+        .orders-page .op-stat.err   { --stat-a: #dc2626; --stat-vc: #fda4af; --stat-glow: rgba(253,164,175,0.15); }
     </style>
 
     @php
@@ -110,31 +160,13 @@
                 </div>
             @endif
 
-            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-6 gap-4 mb-6">
-                <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <p class="text-xs uppercase text-slate-500 dark:text-slate-400">{{ __('Total') }}</p>
-                    <p class="mt-2 text-2xl font-bold text-slate-900 dark:text-slate-100">{{ number_format($stats['total'] ?? 0) }}</p>
-                </div>
-                <div class="rounded-2xl border border-amber-200 bg-amber-50 p-5 shadow-sm dark:border-amber-900/50 dark:bg-amber-900/20">
-                    <p class="text-xs uppercase text-amber-700 dark:text-amber-300">{{ __('Pending') }}</p>
-                    <p class="mt-2 text-2xl font-bold text-amber-800 dark:text-amber-200">{{ number_format($stats['pending'] ?? 0) }}</p>
-                </div>
-                <div class="rounded-2xl border border-blue-200 bg-blue-50 p-5 shadow-sm dark:border-blue-900/50 dark:bg-blue-900/20">
-                    <p class="text-xs uppercase text-blue-700 dark:text-blue-300">{{ __('Processing') }}</p>
-                    <p class="mt-2 text-2xl font-bold text-blue-800 dark:text-blue-200">{{ number_format($stats['processing'] ?? 0) }}</p>
-                </div>
-                <div class="rounded-2xl border border-indigo-200 bg-indigo-50 p-5 shadow-sm dark:border-indigo-900/50 dark:bg-indigo-900/20">
-                    <p class="text-xs uppercase text-indigo-700 dark:text-indigo-300">{{ __('Shipped') }}</p>
-                    <p class="mt-2 text-2xl font-bold text-indigo-800 dark:text-indigo-200">{{ number_format($stats['shipped'] ?? 0) }}</p>
-                </div>
-                <div class="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 shadow-sm dark:border-emerald-900/50 dark:bg-emerald-900/20">
-                    <p class="text-xs uppercase text-emerald-700 dark:text-emerald-300">{{ __('Delivered') }}</p>
-                    <p class="mt-2 text-2xl font-bold text-emerald-800 dark:text-emerald-200">{{ number_format($stats['delivered'] ?? 0) }}</p>
-                </div>
-                <div class="rounded-2xl border border-rose-200 bg-rose-50 p-5 shadow-sm dark:border-rose-900/50 dark:bg-rose-900/20">
-                    <p class="text-xs uppercase text-rose-700 dark:text-rose-300">{{ __('Cancelled') }}</p>
-                    <p class="mt-2 text-2xl font-bold text-rose-800 dark:text-rose-200">{{ number_format($stats['cancelled'] ?? 0) }}</p>
-                </div>
+            <div class="op-stats">
+                <div class="op-stat tot"><div class="l">{{ __('Total') }}</div><div class="v">{{ number_format($stats['total'] ?? 0) }}</div></div>
+                <div class="op-stat warn"><div class="l">{{ __('Pending') }}</div><div class="v">{{ number_format($stats['pending'] ?? 0) }}</div></div>
+                <div class="op-stat idx"><div class="l">{{ __('Processing') }}</div><div class="v">{{ number_format($stats['processing'] ?? 0) }}</div></div>
+                <div class="op-stat info"><div class="l">{{ __('Shipped') }}</div><div class="v">{{ number_format($stats['shipped'] ?? 0) }}</div></div>
+                <div class="op-stat ok"><div class="l">{{ __('Delivered') }}</div><div class="v">{{ number_format($stats['delivered'] ?? 0) }}</div></div>
+                <div class="op-stat err"><div class="l">{{ __('Cancelled') }}</div><div class="v">{{ number_format($stats['cancelled'] ?? 0) }}</div></div>
             </div>
 
             @php
