@@ -22,3 +22,5 @@ yarn-error.log
 /storage/pail
 /storage/backups/db/*.sql
 .superpowers/
+/.claude
+*.backup-pre-fix
