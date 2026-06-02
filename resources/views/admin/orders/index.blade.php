@@ -19,7 +19,6 @@
         </div>
     </x-slot>
 
-    @push('styles')
     <style>
         .orders-page {
             /* ─── tokens ─── */
@@ -47,7 +46,6 @@
         }
         .orders-page * { box-sizing: border-box; }
     </style>
-    @endpush
 
     @php
         $currencyLabel = (string) ($systemSettings['currency_label'] ?? 'IQD');
