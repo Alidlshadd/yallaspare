@@ -295,6 +295,58 @@
         .orders-page .op-tbl .date-d  { color: var(--text-secondary); font-size: 11px; }
         .orders-page .op-tbl .date-t  { color: var(--text-faint); font-size: 9px; margin-top: 2px; }
         .orders-page .op-tbl .empty   { color: var(--text-secondary); font-size: 12px; text-align: center; padding: 48px 16px; }
+
+        .orders-page .op-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3.5px 10px;
+            border-radius: 999px;
+            font-size: 10.5px;
+            font-weight: 600;
+            border: 1px solid;
+        }
+        .orders-page .op-pill::before {
+            content: '';
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: currentColor;
+            box-shadow: 0 0 6px currentColor;
+            opacity: 0.85;
+        }
+        /* Order statuses (match Order model status constants) */
+        .orders-page .op-pill.pending    { background: rgba(217,119,6,0.18);  color: #fcd34d; border-color: rgba(252,211,77,0.25); }
+        .orders-page .op-pill.processing { background: rgba(99,102,241,0.18); color: #c4b5fd; border-color: rgba(196,181,253,0.28); }
+        .orders-page .op-pill.shipped    { background: rgba(2,132,199,0.20);  color: #93c5fd; border-color: rgba(147,197,253,0.28); }
+        .orders-page .op-pill.delivered  { background: rgba(16,185,129,0.22); color: #86efac; border-color: rgba(134,239,172,0.30); }
+        .orders-page .op-pill.cancelled  { background: rgba(220,38,38,0.18);  color: #fda4af; border-color: rgba(253,164,175,0.25); }
+        /* Payment statuses */
+        .orders-page .op-pill.paid       { background: rgba(16,185,129,0.18); color: #6ee7b7; border-color: rgba(110,231,183,0.25); }
+        .orders-page .op-pill.failed     { background: rgba(220,38,38,0.18);  color: #fda4af; border-color: rgba(253,164,175,0.25); }
+        .orders-page .op-pill.refunded   { background: rgba(100,116,139,0.20); color: #cbd5e1; border-color: rgba(203,213,225,0.25); }
+
+        .orders-page .op-alert {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            background: rgba(220,38,38,0.14);
+            color: #fda4af;
+            border: 1px solid rgba(253,164,175,0.25);
+            font-size: 9px;
+            font-weight: 700;
+            padding: 2px 7px;
+            border-radius: 4px;
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+        .orders-page .op-alert.warn {
+            background: rgba(217,119,6,0.14);
+            color: #fcd34d;
+            border-color: rgba(252,211,77,0.25);
+        }
+
+        .orders-page .op-row-selected { background: rgba(8,145,178,0.06); }
     </style>
 
     @php
