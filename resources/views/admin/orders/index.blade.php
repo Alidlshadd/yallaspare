@@ -417,6 +417,48 @@
         }
         .orders-page .op-menu .danger:hover { background: rgba(220,38,38,0.12); }
         .orders-page .op-menu hr { border: 0; border-top: 1px solid var(--border-default); margin: 4px 0; }
+
+        .orders-page .op-pag {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            border-top: 1px solid var(--border-default);
+            color: var(--text-muted);
+            font-size: 11px;
+        }
+        .orders-page .op-pag nav { display: flex; }
+        .orders-page .op-pag svg { width: 14px; height: 14px; }
+        /* Laravel default pagination uses Tailwind classes — override key ones */
+        .orders-page .op-pag .pagination,
+        .orders-page .op-pag ul {
+            display: flex; gap: 4px; list-style: none; margin: 0; padding: 0;
+        }
+        .orders-page .op-pag a,
+        .orders-page .op-pag span {
+            display: inline-flex; align-items: center; justify-content: center;
+            min-width: 28px; height: 28px;
+            padding: 0 8px;
+            border-radius: 6px;
+            background: var(--surface-elevated);
+            border: 1px solid var(--border-default);
+            color: var(--text-muted);
+            font-size: 11px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+        .orders-page .op-pag a:hover { color: var(--text-body); border-color: #475569; }
+        .orders-page .op-pag .active span,
+        .orders-page .op-pag span[aria-current="page"] {
+            background: linear-gradient(135deg, var(--accent-from), var(--accent-to));
+            color: white;
+            border-color: rgba(255,255,255,0.15);
+        }
+        .orders-page .op-pag .disabled span,
+        .orders-page .op-pag span[aria-disabled="true"] {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
     </style>
 
     @php
@@ -649,7 +691,12 @@
                 </div>
 
                 @if($orders->hasPages())
-                    <div class="border-t border-slate-200 px-4 py-4 dark:border-slate-800">
+                    <div class="op-pag">
+                        <span>{{ __('Showing :from–:to of :total orders', [
+                            'from' => $orders->firstItem() ?? 0,
+                            'to' => $orders->lastItem() ?? 0,
+                            'total' => $orders->total(),
+                        ]) }}</span>
                         {{ $orders->links() }}
                     </div>
                 @endif
