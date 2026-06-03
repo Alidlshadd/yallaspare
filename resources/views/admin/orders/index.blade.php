@@ -452,28 +452,43 @@
             font-weight: 700;
             color: var(--accent-text);
         }
-        .orders-page .op-bulk form { display: flex; align-items: center; gap: 10px; margin-left: auto; }
+        .orders-page .op-bulk form { display: flex; align-items: end; gap: 12px; margin-left: auto; }
         [dir='rtl'] .orders-page .op-bulk form { margin-left: 0; margin-right: auto; }
+        .orders-page .op-bulk-field {
+            display: grid;
+            gap: 5px;
+            min-width: 260px;
+        }
+        .orders-page .op-bulk-label {
+            color: var(--accent-text);
+            font-size: 10.5px;
+            font-weight: 750;
+            letter-spacing: .09em;
+            line-height: 1;
+            text-transform: uppercase;
+        }
         .orders-page .op-bulk select {
-            background: var(--surface-page);
-            border: 1px solid var(--border-default);
-            color: var(--text-body);
-            height: 42px;
-            min-width: 220px;
-            padding: 0 38px 0 14px;
-            border-radius: var(--r-md);
-            font-size: 13.5px;
-            font-weight: 600;
+            background-color: #ffffff;
+            border: 1px solid rgba(6,182,212,0.35);
+            color: #0f172a;
+            height: 46px;
+            width: 100%;
+            min-width: 260px;
+            padding: 0 42px 0 16px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 650;
             appearance: none;
             background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%230891b2' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
             background-repeat: no-repeat;
-            background-position: right 14px center;
-            color-scheme: dark;
+            background-position: right 16px center;
+            box-shadow: 0 1px 0 rgba(255,255,255,0.80) inset, 0 10px 24px -22px rgba(15,23,42,0.42);
+            color-scheme: light;
             transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
         }
         [dir='rtl'] .orders-page .op-bulk select {
-            padding: 0 14px 0 38px;
-            background-position: left 14px center;
+            padding: 0 16px 0 42px;
+            background-position: left 16px center;
         }
         .orders-page .op-bulk select:focus {
             outline: none;
@@ -744,6 +759,39 @@
         }
         [dir='rtl'] .op-menu .danger { text-align: right; }
         .op-menu .danger:hover { background: rgba(239,68,68,0.10); }
+        .op-invoice-menu {
+            width: min(218px, calc(100vw - 16px));
+            padding: 8px;
+        }
+        .op-invoice-menu .invoice-lang {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            padding: 10px 12px;
+            border-radius: 8px;
+            color: var(--admin-text, #f8fafc);
+            font-size: 12.5px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background .15s ease, color .15s ease;
+        }
+        .op-invoice-menu .invoice-lang:hover {
+            background: rgba(6,182,212,0.12);
+            color: #67e8f9;
+        }
+        .op-invoice-menu .invoice-code {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 34px;
+            height: 24px;
+            border-radius: 999px;
+            background: rgba(6,182,212,0.14);
+            color: #67e8f9;
+            font-size: 11px;
+            letter-spacing: .04em;
+        }
 
         /* ──────────── Pagination ──────────── */
         .orders-page .op-pag {
@@ -943,6 +991,9 @@
             color: #0f172a;
             color-scheme: light;
         }
+        .orders-page .op-bulk select {
+            border-color: rgba(6,182,212,0.35);
+        }
         .orders-page .op-input::placeholder { color: #94a3b8; }
         .orders-page .op-actions {
             background: #f8fafc;
@@ -1017,6 +1068,15 @@
             box-shadow: 0 24px 48px -30px rgba(15,23,42,0.32), 0 1px 0 rgba(255,255,255,0.85) inset;
         }
         .op-menu .head { color: #64748b; }
+        .op-invoice-menu .invoice-lang { color: #0f172a; }
+        .op-invoice-menu .invoice-lang:hover {
+            background: #ecfeff;
+            color: #0891b2;
+        }
+        .op-invoice-menu .invoice-code {
+            background: #cffafe;
+            color: #0e7490;
+        }
         .op-menu select {
             background: #f8fafc;
             border-color: #cbd5e1;
@@ -1158,6 +1218,12 @@
             color: var(--text-body);
             color-scheme: dark;
         }
+        .dark .orders-page .op-bulk select {
+            background-color: #172033;
+            border-color: rgba(103,232,249,0.28);
+            color: #f8fafc;
+            box-shadow: 0 1px 0 rgba(255,255,255,0.04) inset;
+        }
         .dark .orders-page .op-input::placeholder { color: var(--text-disabled); }
         .dark .orders-page .op-table-wrap { background: var(--surface-card); }
         .dark .orders-page .op-tbl thead th {
@@ -1226,6 +1292,15 @@
             box-shadow: 0 24px 48px -28px rgba(0,0,0,0.75), 0 1px 0 rgba(255,255,255,0.04) inset;
         }
         .dark .op-menu .head { color: var(--admin-text-soft, #94a3b8); }
+        .dark .op-invoice-menu .invoice-lang { color: var(--admin-text, #f8fafc); }
+        .dark .op-invoice-menu .invoice-lang:hover {
+            background: rgba(6,182,212,0.12);
+            color: #67e8f9;
+        }
+        .dark .op-invoice-menu .invoice-code {
+            background: rgba(6,182,212,0.14);
+            color: #67e8f9;
+        }
         .dark .op-menu select {
             background: var(--admin-surface, #111827);
             border-color: var(--admin-border, #334155);
@@ -1267,6 +1342,10 @@
                 width: 100%;
                 margin-left: 0;
                 flex-wrap: wrap;
+            }
+            .orders-page .op-bulk-field {
+                min-width: 100%;
+                width: 100%;
             }
             .orders-page .op-bulk select {
                 min-width: 100%;
@@ -1372,12 +1451,15 @@
                         <template x-for="id in selected" :key="id">
                             <input type="hidden" name="order_ids[]" :value="id">
                         </template>
-                        <select name="status" required aria-label="{{ __('Bulk status') }}">
-                            <option value="">{{ __('Choose status') }}</option>
-                            @foreach($statusOptions as $status)
-                                <option value="{{ $status }}">{{ \App\Models\Order::statusMeta((string) $status)['label'] }}</option>
-                            @endforeach
-                        </select>
+                        <div class="op-bulk-field">
+                            <label class="op-bulk-label" for="bulk-status-select">{{ __('Bulk status') }}</label>
+                            <select id="bulk-status-select" name="status" required>
+                                <option value="">{{ __('Choose status') }}</option>
+                                @foreach($statusOptions as $status)
+                                    <option value="{{ $status }}">{{ \App\Models\Order::statusMeta((string) $status)['label'] }}</option>
+                                @endforeach
+                            </select>
+                        </div>
                         <button type="submit" class="op-btn op-btn-primary op-btn-sm">{{ __('Apply') }}</button>
                         <button type="button" @click="selected = []" class="op-btn op-btn-ghost op-btn-sm">{{ __('Clear') }}</button>
                     </form>
@@ -1508,9 +1590,53 @@
                                             <a class="op-icon" href="{{ route('admin.orders.show', $order) }}" title="{{ __('View') }}" aria-label="{{ __('View order') }}">
                                                 <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
                                             </a>
-                                            <a class="op-icon" href="{{ route('admin.orders.invoice', $order) }}" title="{{ __('Invoice') }}" aria-label="{{ __('Download invoice') }}">
-                                                <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                                            </a>
+                                            <div x-data="{
+                                                    open: false,
+                                                    x: 0, y: 0,
+                                                    toggle(ev) {
+                                                        if (this.open) { this.open = false; return; }
+                                                        const r = ev.currentTarget.getBoundingClientRect();
+                                                        const menuW = 218;
+                                                        const menuH = 174;
+                                                        let left = r.right - menuW;
+                                                        if (document.documentElement.dir === 'rtl') { left = r.left; }
+                                                        if (left < 8) left = 8;
+                                                        if (left + menuW > window.innerWidth - 8) left = window.innerWidth - menuW - 8;
+                                                        let top = r.bottom + 6;
+                                                        if (top + menuH > window.innerHeight - 8) top = r.top - menuH - 6;
+                                                        this.x = left; this.y = top;
+                                                        this.open = true;
+                                                    }
+                                                 }"
+                                                 @keydown.escape.window="open = false"
+                                                 @scroll.window="open = false"
+                                                 @resize.window="open = false">
+                                                <button class="op-icon" @click.stop="toggle($event)" type="button" title="{{ __('Invoice') }}" aria-label="{{ __('Choose invoice language') }}">
+                                                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                                                </button>
+                                                <template x-teleport="body">
+                                                    <div class="op-menu op-invoice-menu"
+                                                         x-show="open"
+                                                         x-cloak
+                                                         x-transition.opacity.duration.120ms
+                                                         :style="`top:${y}px; left:${x}px;`"
+                                                         @click.outside="open = false">
+                                                        <div class="head">{{ __('Invoice language') }}</div>
+                                                        <a class="invoice-lang" href="{{ route('admin.orders.invoice', ['order' => $order, 'lang' => 'en']) }}">
+                                                            <span>{{ __('English') }}</span>
+                                                            <span class="invoice-code">EN</span>
+                                                        </a>
+                                                        <a class="invoice-lang" href="{{ route('admin.orders.invoice', ['order' => $order, 'lang' => 'ar']) }}">
+                                                            <span>{{ __('Arabic') }}</span>
+                                                            <span class="invoice-code">AR</span>
+                                                        </a>
+                                                        <a class="invoice-lang" href="{{ route('admin.orders.invoice', ['order' => $order, 'lang' => 'ku']) }}">
+                                                            <span>{{ __('Kurdish') }}</span>
+                                                            <span class="invoice-code">KU</span>
+                                                        </a>
+                                                    </div>
+                                                </template>
+                                            </div>
                                             <div x-data="{
                                                     open: false,
                                                     x: 0, y: 0,
