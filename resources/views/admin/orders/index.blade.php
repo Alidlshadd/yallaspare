@@ -788,12 +788,239 @@
             color: #fca5a5;
         }
 
+        /* Light operations skin */
+        .orders-page {
+            --surface-page: #f6f8fb;
+            --surface-card: #ffffff;
+            --surface-muted: #f8fafc;
+            --surface-elevated: #eef3f8;
+            --surface-hover: #f1f5f9;
+            --border-default: #d7e0ea;
+            --border-soft: #e2e8f0;
+            --border-row: #e8eef5;
+            --border-checkbox: #94a3b8;
+            --text-primary: #0f172a;
+            --text-body: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --text-faint: #64748b;
+            --text-disabled: #94a3b8;
+            --accent-text: #0891b2;
+            --accent-soft: rgba(6,182,212,0.09);
+            --accent-soft-strong: rgba(6,182,212,0.13);
+            --accent-border: rgba(6,182,212,0.24);
+            --shadow-card: 0 1px 2px rgba(15,23,42,0.04), 0 18px 42px -34px rgba(15,23,42,0.38);
+            --shadow-hover: 0 2px 8px rgba(15,23,42,0.06), 0 22px 54px -34px rgba(15,23,42,0.42);
+            background:
+                radial-gradient(circle at 4% 0%, rgba(6,182,212,0.10), transparent 30%),
+                radial-gradient(circle at 94% 8%, rgba(139,92,246,0.08), transparent 28%),
+                linear-gradient(180deg, #f8fbff 0%, #eef4f8 100%);
+        }
+        .orders-page .op-hero {
+            background:
+                linear-gradient(135deg, rgba(255,255,255,0.98), rgba(239,248,252,0.96) 58%, rgba(246,248,255,0.98)),
+                #fff;
+            border-color: rgba(148,163,184,0.24);
+        }
+        .orders-page .op-hero::before {
+            background:
+                linear-gradient(rgba(15,23,42,0.035) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(15,23,42,0.028) 1px, transparent 1px);
+        }
+        .orders-page .op-hero::after { background: radial-gradient(circle, rgba(6,182,212,0.14), transparent 62%); }
+        .orders-page .op-live-chip {
+            background: rgba(255,255,255,0.72);
+            border-color: rgba(148,163,184,0.26);
+            color: #334155;
+        }
+        .orders-page .op-btn-ghost {
+            background: #fff;
+            color: #475569;
+            border-color: #dbe3ed;
+        }
+        .orders-page .op-btn-ghost:hover {
+            color: #0f172a;
+            background: #f8fafc;
+            border-color: #cbd5e1;
+        }
+        .orders-page .op-stats {
+            gap: 0;
+            padding: 8px;
+            background: rgba(255,255,255,0.92);
+            border: 1px solid rgba(148,163,184,0.24);
+            border-radius: 18px;
+            box-shadow: var(--shadow-card);
+        }
+        .orders-page .op-stat {
+            background: transparent;
+            border: 0;
+            border-radius: 12px;
+            box-shadow: none;
+            min-height: 92px;
+        }
+        .orders-page .op-stat + .op-stat { border-left: 1px solid #e8eef5; }
+        [dir='rtl'] .orders-page .op-stat + .op-stat {
+            border-left: 0;
+            border-right: 1px solid #e8eef5;
+        }
+        .orders-page .op-stat:hover {
+            background: #f8fafc;
+            box-shadow: none;
+        }
+        .orders-page .op-stat::before {
+            left: 16px;
+            right: auto;
+            width: 34px;
+            background: var(--stat-a, #94a3b8);
+            opacity: .85;
+        }
+        [dir='rtl'] .orders-page .op-stat::before { left: auto; right: 16px; }
+        .orders-page .op-stat::after {
+            width: 54px;
+            height: 54px;
+            right: 12px;
+            bottom: 12px;
+            opacity: .16;
+        }
+        [dir='rtl'] .orders-page .op-stat::after { right: auto; left: 12px; }
+        .orders-page .op-stat .l { color: #64748b; }
+        .orders-page .op-stat .v { color: #0f172a; font-size: 28px; }
+        .orders-page .op-chip {
+            background: rgba(255,255,255,0.92);
+            border-color: rgba(148,163,184,0.28);
+            color: #475569;
+        }
+        .orders-page .op-chip:hover {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #0f172a;
+        }
+        .orders-page .op-chip.on {
+            background: #cffafe;
+            color: #0e7490;
+            border-color: #a5f3fc;
+        }
+        .orders-page .op-card {
+            background: #ffffff;
+            border-color: rgba(148,163,184,0.24);
+            box-shadow: var(--shadow-card);
+        }
+        .orders-page .op-filter-form {
+            background: #f8fafc;
+            border-bottom-color: #e2e8f0;
+        }
+        .orders-page .f-label {
+            color: #64748b;
+        }
+        .orders-page .op-input,
+        .orders-page .op-select,
+        .orders-page .op-bulk select {
+            background-color: #ffffff;
+            border-color: #cbd5e1;
+            color: #0f172a;
+            color-scheme: light;
+        }
+        .orders-page .op-input::placeholder { color: #94a3b8; }
+        .orders-page .op-actions {
+            background: #f8fafc;
+            border-bottom-color: #e2e8f0;
+        }
+        .orders-page .op-table-wrap {
+            background: #fff;
+        }
+        .orders-page .op-tbl thead th {
+            background: #f8fafc;
+            color: #64748b;
+            border-bottom-color: #dbe3ed;
+        }
+        .orders-page .op-tbl tbody tr,
+        .orders-page .op-tbl tbody tr:nth-child(even) {
+            background: #ffffff;
+            border-bottom-color: #edf2f7;
+        }
+        .orders-page .op-tbl tbody tr:hover { background: #f8fafc; }
+        .orders-page .op-tbl td { color: #1e293b; }
+        .orders-page .op-tbl .num,
+        .orders-page .op-tbl .ttl,
+        .orders-page .op-tbl .who { color: #0f172a; }
+        .orders-page .op-tbl .id,
+        .orders-page .op-tbl .em,
+        .orders-page .op-tbl .date-t,
+        .orders-page .op-tbl .meth { color: #64748b; }
+        .orders-page .op-tbl .date-d,
+        .orders-page .op-tbl .items-cnt,
+        .orders-page .op-tbl .ttl .cy { color: #475569; }
+        .orders-page .op-tbl input[type="checkbox"] {
+            background: #fff;
+            border-color: #94a3b8;
+        }
+        .orders-page .op-icon {
+            background: #f1f5f9;
+            border-color: #e2e8f0;
+            color: #64748b;
+        }
+        .orders-page .op-icon:hover {
+            background: #e0f7fb;
+            border-color: #a5f3fc;
+            color: #0891b2;
+        }
+        .orders-page .op-pag {
+            background: #ffffff;
+            border-top-color: #e2e8f0;
+            color: #64748b;
+        }
+        .orders-page .op-pag a,
+        .orders-page .op-pag span {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            color: #475569;
+        }
+        .orders-page .op-pag a:hover {
+            background: #eef2f7;
+            color: #0f172a;
+            border-color: #cbd5e1;
+        }
+        .orders-page .op-empty .ico {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+            color: #64748b;
+        }
+        .orders-page .op-empty .title { color: #0f172a; }
+        .orders-page .op-empty .help { color: #64748b; }
+        .op-menu {
+            background: #ffffff;
+            border-color: #dbe3ed;
+            color: #0f172a;
+            box-shadow: 0 24px 48px -30px rgba(15,23,42,0.32), 0 1px 0 rgba(255,255,255,0.85) inset;
+        }
+        .op-menu .head { color: #64748b; }
+        .op-menu select {
+            background: #f8fafc;
+            border-color: #cbd5e1;
+            color: #0f172a;
+            color-scheme: light;
+        }
+        .op-menu hr { border-top-color: #e2e8f0; }
+        .op-menu .danger:hover { background: #fef2f2; }
+
         /* ──────────── Responsive column hiding ──────────── */
         @media (max-width: 1023px) {
             .orders-page .col-items,
             .orders-page .op-tbl .meth { display: none !important; }
         }
         @media (max-width: 640px) {
+            .orders-page .op-stats {
+                padding: 0 16px;
+                background: transparent;
+                border: 0;
+                box-shadow: none;
+            }
+            .orders-page .op-stat {
+                background: #fff;
+                border: 1px solid rgba(148,163,184,0.24);
+                box-shadow: var(--shadow-card);
+            }
+            .orders-page .op-stat + .op-stat { border-left: 1px solid rgba(148,163,184,0.24); }
             .orders-page .col-date { display: none !important; }
             .orders-page .op-tbl td { padding: 12px 12px; }
         }
