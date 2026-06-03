@@ -435,13 +435,20 @@
             display: flex;
             flex-wrap: wrap;
             align-items: center;
-            gap: 12px;
+            gap: 14px;
             background: var(--accent-soft-strong);
             border-bottom: 1px solid var(--accent-border);
-            padding: 12px 14px;
+            padding: 14px 16px;
         }
         .orders-page .op-bulk .count {
-            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            min-height: 32px;
+            padding: 0 10px;
+            border-radius: 999px;
+            background: rgba(6,182,212,0.10);
+            border: 1px solid rgba(6,182,212,0.18);
+            font-size: 12.5px;
             font-weight: 700;
             color: var(--accent-text);
         }
@@ -451,11 +458,27 @@
             background: var(--surface-page);
             border: 1px solid var(--border-default);
             color: var(--text-body);
-            height: var(--h-sm);
-            padding: 0 12px;
-            border-radius: var(--r-sm);
-            font-size: 12.5px;
+            height: 42px;
+            min-width: 220px;
+            padding: 0 38px 0 14px;
+            border-radius: var(--r-md);
+            font-size: 13.5px;
+            font-weight: 600;
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='13' height='13' viewBox='0 0 24 24' fill='none' stroke='%230891b2' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
             color-scheme: dark;
+            transition: border-color .15s ease, box-shadow .15s ease, background-color .15s ease;
+        }
+        [dir='rtl'] .orders-page .op-bulk select {
+            padding: 0 14px 0 38px;
+            background-position: left 14px center;
+        }
+        .orders-page .op-bulk select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(6,182,212,0.20);
         }
 
         /* ──────────── Table ──────────── */
@@ -1237,6 +1260,21 @@
                 border-color: rgba(148,163,184,0.14);
             }
             .dark .orders-page .op-stat + .op-stat { border-left-color: rgba(148,163,184,0.14); }
+            .orders-page .op-bulk {
+                align-items: stretch;
+            }
+            .orders-page .op-bulk form {
+                width: 100%;
+                margin-left: 0;
+                flex-wrap: wrap;
+            }
+            .orders-page .op-bulk select {
+                min-width: 100%;
+                width: 100%;
+            }
+            .orders-page .op-bulk .op-btn {
+                flex: 1 1 0;
+            }
             .orders-page .col-date { display: none !important; }
             .orders-page .op-tbl td { padding: 12px 12px; }
         }
@@ -1334,8 +1372,8 @@
                         <template x-for="id in selected" :key="id">
                             <input type="hidden" name="order_ids[]" :value="id">
                         </template>
-                        <select name="status" required>
-                            <option value="">{{ __('Set status...') }}</option>
+                        <select name="status" required aria-label="{{ __('Bulk status') }}">
+                            <option value="">{{ __('Choose status') }}</option>
                             @foreach($statusOptions as $status)
                                 <option value="{{ $status }}">{{ \App\Models\Order::statusMeta((string) $status)['label'] }}</option>
                             @endforeach
