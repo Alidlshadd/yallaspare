@@ -48,4 +48,31 @@ class AdminTwoFactorSecurityTest extends TestCase
             ->get(route('admin.dashboard'))
             ->assertOk();
     }
+
+    public function test_admin_two_factor_blocks_legacy_profile_and_password_routes_until_verified(): void
+    {
+        config(['security.admin_two_factor.enabled' => true]);
+
+        $admin = User::factory()->create([
+            'role' => User::ROLE_SUPER_ADMIN,
+            'email_verified_at' => now(),
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('profile.edit'))
+            ->assertRedirect(route('admin.two-factor.challenge'));
+
+        $this->actingAs($admin)
+            ->put(route('password.update'), [
+                'current_password' => 'password',
+                'password' => 'new-password1',
+                'password_confirmation' => 'new-password1',
+            ])
+            ->assertRedirect(route('admin.two-factor.challenge'));
+
+        $this->withSession(['admin_2fa.verified_user_id' => $admin->id])
+            ->actingAs($admin)
+            ->get(route('profile.edit'))
+            ->assertOk();
+    }
 }

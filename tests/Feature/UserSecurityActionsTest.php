@@ -58,6 +58,35 @@ class UserSecurityActionsTest extends TestCase
         $this->get(route('user.settings.security'))->assertOk();
     }
 
+    public function test_email_two_factor_blocks_legacy_profile_and_password_routes_until_verified(): void
+    {
+        $user = User::factory()->create(['two_factor_preference' => 'email']);
+
+        $this->actingAs($user)
+            ->get(route('profile.edit'))
+            ->assertRedirect(route('user.two-factor.challenge'));
+
+        $this->actingAs($user)
+            ->patch(route('profile.update'), [
+                'name' => 'Bypass Attempt',
+                'email' => 'bypass@example.com',
+            ])
+            ->assertRedirect(route('user.two-factor.challenge'));
+
+        $this->actingAs($user)
+            ->put(route('password.update'), [
+                'current_password' => 'password',
+                'password' => 'new-password1',
+                'password_confirmation' => 'new-password1',
+            ])
+            ->assertRedirect(route('user.two-factor.challenge'));
+
+        $this->withSession(['user_2fa.verified_user_id' => $user->id])
+            ->actingAs($user)
+            ->get(route('profile.edit'))
+            ->assertOk();
+    }
+
     public function test_global_signout_removes_other_sessions_and_mobile_tokens(): void
     {
         $user = User::factory()->create();

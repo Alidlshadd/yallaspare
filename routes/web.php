@@ -201,7 +201,7 @@ Route::get('/dashboard', function () {
 | PROFILE
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'verified'])->prefix('profile')->name('profile.')->group(function () {
+Route::middleware(['auth', 'verified', 'user.2fa', 'admin.2fa'])->prefix('profile')->name('profile.')->group(function () {
     Route::get('/', [ProfileController::class, 'edit'])->name('edit');
     Route::patch('/', [ProfileController::class, 'update'])->name('update');
     Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
