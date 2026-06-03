@@ -1,31 +1,5 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="orders-page" style="background: transparent; min-height: 0;">
-            <div class="op-hdr">
-                <div class="op-hdr-text">
-                    <h1>{{ __('Orders Management') }}</h1>
-                    <p class="sub">
-                        {{ __(':total total', ['total' => number_format($stats['total'] ?? 0)]) }}
-                        @if(($stats['pending'] ?? 0) > 0)
-                            <span class="dot-sep">·</span>
-                            <b>{{ __(':n need attention', ['n' => $stats['pending']]) }}</b>
-                        @endif
-                    </p>
-                </div>
-                <a class="op-btn op-btn-primary op-btn-md" href="{{ route('admin.orders.export-excel', array_filter([
-                        'search' => request('search'),
-                        'from' => request('from'),
-                        'to' => request('to'),
-                        'status' => request('status'),
-                        'association' => request('association'),
-                        'attention' => request('attention'),
-                    ], fn ($v) => $v !== null && $v !== '')) }}">
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
-                    {{ __('Export Excel (.xlsx)') }}
-                </a>
-            </div>
-        </div>
-    </x-slot>
+    <x-slot name="header">{{ __('Orders Management') }}</x-slot>
 
     <style>
         .orders-page {
@@ -33,8 +7,8 @@
             --surface-page: var(--admin-surface, #111827);
             --surface-card: var(--admin-card, #1e293b);
             --surface-muted: var(--admin-input, #172033);
-            --surface-elevated: #202b3d;
-            --surface-hover: #1f2a3e;
+            --surface-elevated: #243249;
+            --surface-hover: #263449;
             /* Borders */
             --border-default: var(--admin-border, #334155);
             --border-soft: var(--admin-border-soft, #263244);
@@ -61,8 +35,8 @@
             --status-delivered: #22c55e;
             --status-cancelled: #ef4444;
             /* Shadows */
-            --shadow-card: 0 1px 0 rgba(255,255,255,0.03) inset, 0 14px 32px -30px rgba(0,0,0,0.55);
-            --shadow-hover: 0 1px 0 rgba(255,255,255,0.05) inset, 0 20px 44px -28px rgba(0,0,0,0.65);
+            --shadow-card: 0 1px 0 rgba(255,255,255,0.04) inset, 0 24px 58px -42px rgba(0,0,0,0.72);
+            --shadow-hover: 0 1px 0 rgba(255,255,255,0.06) inset, 0 28px 68px -42px rgba(0,0,0,0.78);
             /* Sizes */
             --h-sm: 32px;
             --h-md: 36px;
@@ -71,36 +45,92 @@
             --r-lg: 12px;
             --r-xl: 14px;
 
-            background: transparent;
+            position: relative;
+            background:
+                radial-gradient(circle at 12% 0%, rgba(6,182,212,0.09), transparent 34%),
+                radial-gradient(circle at 90% 8%, rgba(139,92,246,0.08), transparent 28%),
+                transparent;
             color: var(--text-body);
             font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
             min-height: 0;
         }
         .orders-page * { box-sizing: border-box; }
+        .orders-page .op-wrap { position: relative; z-index: 1; }
 
         /* ──────────── Header ──────────── */
+        .orders-page .op-hero {
+            position: relative;
+            overflow: hidden;
+            margin-bottom: 18px;
+            padding: 20px;
+            border-radius: 18px;
+            background:
+                linear-gradient(135deg, rgba(30,41,59,0.98), rgba(17,32,51,0.96) 58%, rgba(17,24,39,0.98)),
+                var(--surface-card);
+            border: 1px solid rgba(148,163,184,0.16);
+            box-shadow: var(--shadow-card);
+        }
+        .orders-page .op-hero::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                linear-gradient(rgba(148,163,184,0.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(148,163,184,0.035) 1px, transparent 1px);
+            background-size: 28px 28px;
+            mask-image: linear-gradient(90deg, rgba(0,0,0,0.8), transparent 72%);
+            pointer-events: none;
+        }
+        .orders-page .op-hero::after {
+            content: '';
+            position: absolute;
+            width: 280px;
+            height: 280px;
+            right: -120px;
+            top: -150px;
+            background: radial-gradient(circle, rgba(6,182,212,0.18), transparent 62%);
+            pointer-events: none;
+        }
         .orders-page .op-hdr {
+            position: relative;
+            z-index: 1;
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 16px;
-            margin-bottom: 22px;
-            padding-bottom: 18px;
-            border-bottom: 1px solid var(--border-soft);
         }
         .orders-page .op-hdr-text { min-width: 0; }
+        .orders-page .op-kicker {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            color: var(--accent-text);
+            font-size: 10.5px;
+            font-weight: 700;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+        .orders-page .op-kicker::before {
+            content: '';
+            width: 7px;
+            height: 7px;
+            border-radius: 999px;
+            background: var(--accent);
+            box-shadow: 0 0 0 4px rgba(6,182,212,0.13);
+        }
         .orders-page .op-hdr h1 {
             margin: 0;
-            font-size: 22px;
-            font-weight: 700;
+            font-size: clamp(26px, 3vw, 34px);
+            font-weight: 760;
             color: var(--text-primary);
-            letter-spacing: -0.02em;
+            letter-spacing: 0;
             line-height: 1.2;
         }
         .orders-page .op-hdr .sub {
-            margin: 6px 0 0;
-            font-size: 12px;
-            color: var(--text-muted);
+            margin: 9px 0 0;
+            font-size: 13px;
+            color: var(--text-secondary);
             font-weight: 500;
             display: flex;
             align-items: center;
@@ -112,9 +142,40 @@
             font-weight: 600;
         }
         .orders-page .op-hdr .sub .dot-sep { color: var(--text-disabled); }
+        .orders-page .op-hero-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: flex-end;
+        }
+        .orders-page .op-live-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            height: var(--h-md);
+            padding: 0 12px;
+            border-radius: 999px;
+            background: rgba(15,23,42,0.42);
+            border: 1px solid rgba(148,163,184,0.16);
+            color: var(--text-secondary);
+            font-size: 11.5px;
+            font-weight: 650;
+            white-space: nowrap;
+        }
+        .orders-page .op-live-chip::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: var(--status-delivered);
+        }
         @media (max-width: 640px) {
+            .orders-page .op-hero { padding: 16px; border-radius: 14px; }
             .orders-page .op-hdr { flex-direction: column; align-items: stretch; }
-            .orders-page .op-hdr h1 { font-size: 20px; }
+            .orders-page .op-hero-actions { justify-content: stretch; }
+            .orders-page .op-hero-actions > * { width: 100%; }
+            .orders-page .op-live-chip { justify-content: center; }
         }
 
         /* ──────────── Buttons ──────────── */
@@ -137,12 +198,12 @@
         .orders-page .op-btn-sm { height: var(--h-sm); padding: 0 12px; font-size: 11.5px; }
         .orders-page .op-btn-md { height: var(--h-md); padding: 0 16px; }
         .orders-page .op-btn-primary {
-            background: var(--accent);
+            background: linear-gradient(180deg, #22d3ee, var(--accent-hover));
             color: #fff;
             border-color: var(--accent-border);
-            box-shadow: 0 1px 0 rgba(255,255,255,0.10) inset;
+            box-shadow: 0 1px 0 rgba(255,255,255,0.18) inset, 0 14px 24px -20px rgba(6,182,212,0.95);
         }
-        .orders-page .op-btn-primary:hover { background: var(--accent-hover); transform: translateY(-1px); }
+        .orders-page .op-btn-primary:hover { background: linear-gradient(180deg, #06b6d4, var(--accent-hover)); transform: translateY(-1px); }
         .orders-page .op-btn-primary:active { transform: translateY(0); }
         .orders-page .op-btn-ghost {
             background: transparent;
@@ -164,7 +225,7 @@
             display: grid;
             grid-template-columns: repeat(6, 1fr);
             gap: 12px;
-            margin-bottom: 18px;
+            margin-bottom: 20px;
         }
         @media (max-width: 1100px) { .orders-page .op-stats { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 700px) { .orders-page .op-stats { grid-template-columns: repeat(2, 1fr); } }
@@ -182,10 +243,12 @@
             .orders-page .op-stat { min-width: 150px; scroll-snap-align: start; }
         }
         .orders-page .op-stat {
-            background: var(--surface-card);
-            border: 1px solid var(--border-soft);
-            border-radius: var(--r-lg);
-            padding: 14px 16px;
+            background:
+                linear-gradient(180deg, rgba(36,50,73,0.94), rgba(30,41,59,0.96)),
+                var(--surface-card);
+            border: 1px solid rgba(148,163,184,0.14);
+            border-radius: 14px;
+            padding: 16px;
             position: relative;
             overflow: hidden;
             box-shadow: var(--shadow-card);
@@ -193,7 +256,7 @@
         }
         .orders-page .op-stat:hover {
             transform: translateY(-1px);
-            border-color: var(--border-default);
+            border-color: rgba(148,163,184,0.26);
             box-shadow: var(--shadow-hover);
         }
         .orders-page .op-stat::before {
@@ -204,6 +267,17 @@
             background: linear-gradient(90deg, transparent, var(--stat-a, var(--border-checkbox)), transparent);
             opacity: 0.9;
         }
+        .orders-page .op-stat::after {
+            content: '';
+            position: absolute;
+            right: -34px;
+            bottom: -42px;
+            width: 96px;
+            height: 96px;
+            border-radius: 50%;
+            background: color-mix(in srgb, var(--stat-a, #94a3b8) 18%, transparent);
+            opacity: .45;
+        }
         .orders-page .op-stat .l {
             font-size: 10px;
             text-transform: uppercase;
@@ -212,8 +286,10 @@
             font-weight: 600;
         }
         .orders-page .op-stat .v {
-            font-size: 26px;
-            font-weight: 700;
+            position: relative;
+            z-index: 1;
+            font-size: 30px;
+            font-weight: 760;
             margin-top: 8px;
             line-height: 1;
             color: var(--text-primary);
@@ -235,7 +311,7 @@
             margin-bottom: 16px;
         }
         .orders-page .op-chip {
-            background: var(--surface-card);
+            background: rgba(30,41,59,0.76);
             border: 1px solid var(--border-soft);
             padding: 7px 14px;
             border-radius: 999px;
@@ -260,17 +336,20 @@
 
         /* ──────────── Card shell ──────────── */
         .orders-page .op-card {
-            background: var(--surface-card);
-            border: 1px solid var(--border-soft);
-            border-radius: var(--r-xl);
+            background: linear-gradient(180deg, rgba(30,41,59,0.98), rgba(30,41,59,0.94));
+            border: 1px solid rgba(148,163,184,0.16);
+            border-radius: 18px;
             overflow: hidden;
             box-shadow: var(--shadow-card);
         }
 
         /* ──────────── Filter form ──────────── */
-        .orders-page .op-filter-form { background: var(--surface-muted); border-bottom: 1px solid var(--border-soft); }
+        .orders-page .op-filter-form {
+            background: linear-gradient(180deg, rgba(23,32,51,0.98), rgba(17,32,51,0.94));
+            border-bottom: 1px solid rgba(148,163,184,0.12);
+        }
         .orders-page .op-filter {
-            padding: 14px;
+            padding: 16px;
             display: grid;
             grid-template-columns: repeat(12, 1fr);
             gap: 10px;
@@ -299,10 +378,10 @@
         }
         .orders-page .op-input,
         .orders-page .op-select {
-            background: var(--surface-page);
-            border: 1px solid var(--border-default);
+            background: rgba(15,23,42,0.62);
+            border: 1px solid rgba(148,163,184,0.18);
             color: var(--text-body);
-            height: var(--h-md);
+            height: 40px;
             padding: 0 12px;
             border-radius: var(--r-md);
             font-size: 12.5px;
@@ -346,9 +425,9 @@
             display: flex;
             gap: 8px;
             justify-content: flex-end;
-            padding: 12px 14px;
-            border-bottom: 1px solid var(--border-soft);
-            background: var(--surface-muted);
+            padding: 0 16px 16px;
+            border-bottom: 1px solid rgba(148,163,184,0.12);
+            background: rgba(17,32,51,0.94);
         }
 
         /* ──────────── Bulk action bar ──────────── */
@@ -393,7 +472,7 @@
             font-size: 12px;
         }
         .orders-page .op-tbl thead th {
-            background: var(--surface-muted);
+            background: #172033;
             color: var(--text-muted);
             font-size: 10px;
             text-transform: uppercase;
@@ -414,10 +493,11 @@
         [dir='rtl'] .orders-page .op-tbl tbody td.ralign { text-align: left; }
 
         .orders-page .op-tbl tbody tr {
-            background: var(--surface-card);
+            background: #1e293b;
             border-bottom: 1px solid var(--border-row);
             transition: background .12s ease;
         }
+        .orders-page .op-tbl tbody tr:nth-child(even) { background: #202c40; }
         .orders-page .op-tbl tbody tr:last-child { border-bottom: none; }
         .orders-page .op-tbl tbody tr:hover { background: var(--surface-hover); }
         .orders-page .op-tbl td { padding: 14px 16px; vertical-align: middle; }
@@ -726,13 +806,43 @@
     @endphp
 
     <div class="orders-page py-8">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="op-wrap max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             @if(session('success'))
                 <div class="op-flash ok">{{ session('success') }}</div>
             @endif
             @if(session('error'))
                 <div class="op-flash err">{{ session('error') }}</div>
             @endif
+
+            <div class="op-hero">
+                <div class="op-hdr">
+                    <div class="op-hdr-text">
+                        <div class="op-kicker">{{ __('Order Operations') }}</div>
+                        <h1>{{ __('Orders Management') }}</h1>
+                        <p class="sub">
+                            {{ __(':total total orders', ['total' => number_format($stats['total'] ?? 0)]) }}
+                            @if(($stats['pending'] ?? 0) > 0)
+                                <span class="dot-sep">&middot;</span>
+                                <b>{{ __(':n need attention', ['n' => $stats['pending']]) }}</b>
+                            @endif
+                        </p>
+                    </div>
+                    <div class="op-hero-actions">
+                        <span class="op-live-chip">{{ __('Live order queue') }}</span>
+                        <a class="op-btn op-btn-primary op-btn-md" href="{{ route('admin.orders.export-excel', array_filter([
+                                'search' => request('search'),
+                                'from' => request('from'),
+                                'to' => request('to'),
+                                'status' => request('status'),
+                                'association' => request('association'),
+                                'attention' => request('attention'),
+                            ], fn ($v) => $v !== null && $v !== '')) }}">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
+                            {{ __('Export Excel (.xlsx)') }}
+                        </a>
+                    </div>
+                </div>
+            </div>
 
             {{-- Stats cards --}}
             <div class="op-stats">
