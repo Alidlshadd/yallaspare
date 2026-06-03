@@ -38,8 +38,8 @@
             --shadow-card: 0 1px 0 rgba(255,255,255,0.04) inset, 0 24px 58px -42px rgba(0,0,0,0.72);
             --shadow-hover: 0 1px 0 rgba(255,255,255,0.06) inset, 0 28px 68px -42px rgba(0,0,0,0.78);
             /* Sizes */
-            --h-sm: 32px;
-            --h-md: 36px;
+            --h-sm: 38px;
+            --h-md: 42px;
             --r-sm: 6px;
             --r-md: 8px;
             --r-lg: 12px;
@@ -185,8 +185,8 @@
             justify-content: center;
             gap: 8px;
             border-radius: var(--r-md);
-            font-size: 12px;
-            font-weight: 600;
+            font-size: 13px;
+            font-weight: 650;
             font-family: inherit;
             text-decoration: none;
             cursor: pointer;
@@ -195,8 +195,8 @@
             white-space: nowrap;
             line-height: 1;
         }
-        .orders-page .op-btn-sm { height: var(--h-sm); padding: 0 12px; font-size: 11.5px; }
-        .orders-page .op-btn-md { height: var(--h-md); padding: 0 16px; }
+        .orders-page .op-btn-sm { height: var(--h-sm); padding: 0 16px; font-size: 12.5px; }
+        .orders-page .op-btn-md { height: var(--h-md); padding: 0 18px; font-size: 13px; }
         .orders-page .op-btn-primary {
             background: linear-gradient(180deg, #22d3ee, var(--accent-hover));
             color: #fff;
@@ -349,10 +349,10 @@
             border-bottom: 1px solid rgba(148,163,184,0.12);
         }
         .orders-page .op-filter {
-            padding: 16px;
+            padding: 18px;
             display: grid;
             grid-template-columns: repeat(12, 1fr);
-            gap: 10px;
+            gap: 12px;
         }
         .orders-page .op-filter > .f-search    { grid-column: span 4; }
         .orders-page .op-filter > .f-status    { grid-column: span 2; }
@@ -369,22 +369,22 @@
         }
         .orders-page .f-label {
             display: block;
-            font-size: 10px;
+            font-size: 11px;
             font-weight: 600;
             color: var(--text-muted);
             text-transform: uppercase;
             letter-spacing: .06em;
-            margin-bottom: 5px;
+            margin-bottom: 7px;
         }
         .orders-page .op-input,
         .orders-page .op-select {
             background: rgba(15,23,42,0.62);
             border: 1px solid rgba(148,163,184,0.18);
             color: var(--text-body);
-            height: 40px;
-            padding: 0 12px;
+            height: 44px;
+            padding: 0 14px;
             border-radius: var(--r-md);
-            font-size: 12.5px;
+            font-size: 13.5px;
             font-family: inherit;
             width: 100%;
             color-scheme: dark;
@@ -407,13 +407,13 @@
             appearance: none;
             background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
             background-repeat: no-repeat;
-            background-position: right 10px center;
-            padding-right: 30px;
+            background-position: right 14px center;
+            padding-right: 38px;
         }
         [dir='rtl'] .orders-page .op-select {
-            background-position: left 10px center;
-            padding-right: 12px;
-            padding-left: 30px;
+            background-position: left 14px center;
+            padding-right: 14px;
+            padding-left: 38px;
         }
         .orders-page .op-dates {
             display: grid;
@@ -423,9 +423,9 @@
 
         .orders-page .op-actions {
             display: flex;
-            gap: 8px;
+            gap: 10px;
             justify-content: flex-end;
-            padding: 0 16px 16px;
+            padding: 0 18px 18px;
             border-bottom: 1px solid rgba(148,163,184,0.12);
             background: rgba(17,32,51,0.94);
         }
@@ -445,16 +445,16 @@
             font-weight: 700;
             color: var(--accent-text);
         }
-        .orders-page .op-bulk form { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+        .orders-page .op-bulk form { display: flex; align-items: center; gap: 10px; margin-left: auto; }
         [dir='rtl'] .orders-page .op-bulk form { margin-left: 0; margin-right: auto; }
         .orders-page .op-bulk select {
             background: var(--surface-page);
             border: 1px solid var(--border-default);
             color: var(--text-body);
             height: var(--h-sm);
-            padding: 0 10px;
+            padding: 0 12px;
             border-radius: var(--r-sm);
-            font-size: 11.5px;
+            font-size: 12.5px;
             color-scheme: dark;
         }
 
@@ -650,7 +650,7 @@
         /* Kebab dropdown (teleported to <body>) */
         .op-menu {
             position: fixed;
-            width: min(240px, calc(100vw - 16px));
+            width: min(270px, calc(100vw - 16px));
             background: var(--admin-card, #1e293b);
             border: 1px solid var(--admin-border-soft, #263244);
             border-radius: 10px;
@@ -661,24 +661,24 @@
             color: var(--admin-text, #f8fafc);
         }
         .op-menu .head {
-            font-size: 10px;
+            font-size: 11px;
             text-transform: uppercase;
             letter-spacing: .06em;
             color: var(--admin-text-soft, #94a3b8);
             padding: 8px 10px 4px;
             font-weight: 700;
         }
-        .op-menu form { display: flex; align-items: center; gap: 6px; padding: 4px 6px 8px; }
+        .op-menu form { display: flex; align-items: center; gap: 8px; padding: 6px 8px 10px; }
         .op-menu select {
             flex: 1 1 auto;
             min-width: 0;
             background: var(--admin-surface, #111827);
             border: 1px solid var(--admin-border, #334155);
             color: var(--admin-text, #f8fafc);
-            height: 30px;
-            padding: 0 8px;
-            border-radius: 6px;
-            font-size: 11.5px;
+            height: 38px;
+            padding: 0 10px;
+            border-radius: 8px;
+            font-size: 12.5px;
             color-scheme: dark;
             transition: border-color .15s ease, box-shadow .15s ease;
         }
@@ -690,10 +690,10 @@
         .op-menu button[type="submit"] {
             background: var(--admin-accent, #06b6d4);
             color: white;
-            height: 30px;
-            padding: 0 12px;
-            border-radius: 6px;
-            font-size: 11.5px;
+            height: 38px;
+            padding: 0 14px;
+            border-radius: 8px;
+            font-size: 12.5px;
             font-weight: 600;
             border: 1px solid rgba(103,232,249,0.24);
             cursor: pointer;
@@ -709,11 +709,11 @@
         .op-menu .danger {
             display: block; width: 100%;
             text-align: left;
-            padding: 8px 10px;
-            border-radius: 6px;
+            padding: 10px 12px;
+            border-radius: 8px;
             background: transparent;
             color: #fca5a5;
-            font-size: 11.5px;
+            font-size: 12.5px;
             font-weight: 600;
             border: none;
             cursor: pointer;
@@ -1479,8 +1479,8 @@
                                                     toggle(ev) {
                                                         if (this.open) { this.open = false; return; }
                                                         const r = ev.currentTarget.getBoundingClientRect();
-                                                        const menuW = 240;
-                                                        const menuH = {{ $canArchive ? 200 : 140 }};
+                                                        const menuW = 270;
+                                                        const menuH = {{ $canArchive ? 220 : 160 }};
                                                         let left = r.right - menuW;
                                                         if (document.documentElement.dir === 'rtl') { left = r.left; }
                                                         if (left < 8) left = 8;
