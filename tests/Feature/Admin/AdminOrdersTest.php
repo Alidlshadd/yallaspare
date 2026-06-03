@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Schema;
 use Maatwebsite\Excel\Facades\Excel;
 use Tests\TestCase;
 
@@ -136,5 +137,40 @@ class AdminOrdersTest extends TestCase
         Excel::assertDownloaded('orders.xlsx', function (OrdersExport $export) use ($match) {
             return $export->query()->pluck('order_number')->all() === [$match->order_number];
         });
+    }
+
+    public function test_order_details_render_when_optional_payment_table_is_missing(): void
+    {
+        $admin = User::factory()->create([
+            'role' => User::ROLE_ADMIN,
+            'email_verified_at' => now(),
+        ]);
+
+        $customer = User::factory()->create([
+            'email_verified_at' => now(),
+        ]);
+
+        $order = Order::forceCreate([
+            'user_id' => $customer->id,
+            'order_number' => 'ORD-WITHOUT-PAYMENTS-TABLE',
+            'subtotal_amount' => 50000,
+            'shipping_fee' => 0,
+            'discount_amount' => 0,
+            'grand_total' => 50000,
+            'total_amount' => 50000,
+            'status' => Order::STATUS_PENDING,
+            'payment_method' => 'cash_on_delivery',
+            'payment_status' => Order::PAYMENT_PENDING,
+            'delivery_address' => 'Baghdad demo address',
+            'delivery_city' => 'Baghdad',
+            'delivery_phone' => '07700000000',
+        ]);
+
+        Schema::dropIfExists('payments');
+
+        $this->actingAs($admin)
+            ->get(route('admin.orders.show', $order))
+            ->assertOk()
+            ->assertSee('ORD-WITHOUT-PAYMENTS-TABLE');
     }
 }

@@ -18,6 +18,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
@@ -147,15 +148,32 @@ class OrderController extends Controller
 
     public function show(Order $order): View
     {
-        $order->load([
+        $relations = [
             'user:id,name,email,phone,role,dealer_status,dealer_discount',
             'items' => fn ($q) => $q->select(['id', 'order_id', 'product_id', 'quantity', 'unit_price', 'subtotal'])
                 ->with(['product:id,name_en,name_ar,name_ku,sku,brand,image']),
-            'statusHistory' => fn ($q) => $q->limit(20)->with(['changedBy:id,name']),
-            'adminNotes' => fn ($q) => $q->limit(20)->with(['user:id,name']),
-            'returnRequests' => fn ($q) => $q->limit(10)->with(['user:id,name,email']),
-            'payments' => fn ($q) => $q->limit(10),
-        ]);
+        ];
+
+        $optionalRelations = [
+            'order_status_histories' => ['statusHistory', fn ($q) => $q->limit(20)->with(['changedBy:id,name'])],
+            'order_admin_notes' => ['adminNotes', fn ($q) => $q->limit(20)->with(['user:id,name'])],
+            'return_requests' => ['returnRequests', fn ($q) => $q->limit(10)->with(['user:id,name,email'])],
+            'payments' => ['payments', fn ($q) => $q->limit(10)],
+        ];
+
+        foreach ($optionalRelations as $table => [$relation, $loader]) {
+            if (Schema::hasTable($table)) {
+                $relations[$relation] = $loader;
+            }
+        }
+
+        $order->load($relations);
+
+        foreach ($optionalRelations as $table => [$relation]) {
+            if (! Schema::hasTable($table)) {
+                $order->setRelation($relation, collect());
+            }
+        }
 
         return view('admin.orders.show', [
             'order' => $order,
