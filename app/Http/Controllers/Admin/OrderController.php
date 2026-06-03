@@ -434,9 +434,12 @@ class OrderController extends Controller
         try {
             return Excel::download(
                 new OrdersExport([
+                    'search' => $request->query('search'),
                     'from' => $request->query('from'),
                     'to' => $request->query('to'),
                     'status' => $request->query('status'),
+                    'association' => $request->query('association'),
+                    'attention' => $request->query('attention'),
                 ]),
                 'orders.xlsx'
             );

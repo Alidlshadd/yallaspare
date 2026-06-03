@@ -2,12 +2,14 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Exports\OrdersExport;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Maatwebsite\Excel\Facades\Excel;
 use Tests\TestCase;
 
 class AdminOrdersTest extends TestCase
@@ -62,5 +64,77 @@ class AdminOrdersTest extends TestCase
         $response->assertOk();
         $response->assertSee('ORD-PRESENTATION-001');
         $response->assertSee('Presentation Brake Pad');
+    }
+
+    public function test_order_export_uses_the_active_order_filters(): void
+    {
+        Excel::fake();
+
+        $admin = User::factory()->create([
+            'role' => User::ROLE_ADMIN,
+            'email_verified_at' => now(),
+        ]);
+
+        $dealer = User::factory()->create([
+            'role' => User::ROLE_DEALER,
+            'email_verified_at' => now(),
+        ]);
+
+        $retail = User::factory()->create([
+            'role' => User::ROLE_USER,
+            'email_verified_at' => now(),
+        ]);
+
+        $makeOrder = function (array $attributes): Order {
+            return Order::forceCreate(array_merge([
+                'subtotal_amount' => 50000,
+                'shipping_fee' => 0,
+                'discount_amount' => 0,
+                'grand_total' => 50000,
+                'total_amount' => 50000,
+                'payment_method' => 'cash_on_delivery',
+                'payment_status' => Order::PAYMENT_PENDING,
+                'delivery_address' => 'Baghdad test address',
+                'delivery_city' => 'Baghdad',
+                'delivery_phone' => '07700000000',
+            ], $attributes));
+        };
+
+        $match = $makeOrder([
+            'user_id' => $dealer->id,
+            'order_number' => 'ORD-EXPORT-MATCH',
+            'status' => Order::STATUS_PROCESSING,
+        ]);
+
+        $makeOrder([
+            'user_id' => $retail->id,
+            'order_number' => 'ORD-EXPORT-MATCH-RETAIL',
+            'status' => Order::STATUS_PROCESSING,
+        ]);
+
+        $makeOrder([
+            'user_id' => $dealer->id,
+            'order_number' => 'ORD-EXPORT-MATCH-PENDING',
+            'status' => Order::STATUS_PENDING,
+        ]);
+
+        $makeOrder([
+            'user_id' => $dealer->id,
+            'order_number' => 'ORD-EXPORT-MATCH-ARCHIVED',
+            'status' => Order::STATUS_PROCESSING,
+            'archived_at' => now(),
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.orders.export-excel', [
+                'search' => 'EXPORT-MATCH',
+                'status' => Order::STATUS_PROCESSING,
+                'association' => 'dealer',
+            ]))
+            ->assertOk();
+
+        Excel::assertDownloaded('orders.xlsx', function (OrdersExport $export) use ($match) {
+            return $export->query()->pluck('order_number')->all() === [$match->order_number];
+        });
     }
 }

@@ -13,9 +13,12 @@
                     </p>
                 </div>
                 <a class="op-btn op-btn-primary op-btn-md" href="{{ route('admin.orders.export-excel', array_filter([
+                        'search' => request('search'),
                         'from' => request('from'),
                         'to' => request('to'),
                         'status' => request('status'),
+                        'association' => request('association'),
+                        'attention' => request('attention'),
                     ], fn ($v) => $v !== null && $v !== '')) }}">
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
                     {{ __('Export Excel (.xlsx)') }}
@@ -148,6 +151,13 @@
         }
         .orders-page .op-btn-ghost:hover { color: var(--text-body); border-color: var(--border-default); background: var(--surface-hover); }
         .orders-page .op-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+        .orders-page .op-btn:focus-visible,
+        .orders-page .op-chip:focus-visible,
+        .orders-page .op-icon:focus-visible {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(6,182,212,0.22);
+        }
 
         /* ──────────── Stats ──────────── */
         .orders-page .op-stats {
@@ -370,7 +380,7 @@
         }
 
         /* ──────────── Table ──────────── */
-        .orders-page .op-table-wrap { overflow-x: auto; }
+        .orders-page .op-table-wrap { overflow-x: auto; scrollbar-gutter: stable; }
         .orders-page .op-table-wrap::-webkit-scrollbar { height: 8px; }
         .orders-page .op-table-wrap::-webkit-scrollbar-thumb {
             background: var(--border-default);
@@ -378,6 +388,7 @@
         }
         .orders-page .op-tbl {
             width: 100%;
+            min-width: 980px;
             border-collapse: collapse;
             font-size: 12px;
         }
@@ -392,6 +403,9 @@
             text-align: left;
             border-bottom: 1px solid var(--border-default);
             white-space: nowrap;
+            position: sticky;
+            top: 0;
+            z-index: 2;
         }
         [dir='rtl'] .orders-page .op-tbl thead th { text-align: right; }
         .orders-page .op-tbl thead th.ralign,
@@ -481,10 +495,12 @@
         .orders-page .op-pill.delivered  { background: rgba(34,197,94,0.10); color: var(--status-delivered); border-color: rgba(34,197,94,0.26); }
         .orders-page .op-pill.cancelled  { background: rgba(239,68,68,0.10); color: #f87171; border-color: rgba(239,68,68,0.26); }
         .orders-page .op-pill.paid       { background: rgba(34,197,94,0.10); color: var(--status-delivered); border-color: rgba(34,197,94,0.26); }
+        .orders-page .op-pill.pending_payment,
+        .orders-page .op-pill.pending-payment { background: rgba(56,189,248,0.10); color: var(--status-shipped); border-color: rgba(56,189,248,0.26); }
         .orders-page .op-pill.failed     { background: rgba(239,68,68,0.10); color: #f87171; border-color: rgba(239,68,68,0.26); }
         .orders-page .op-pill.refunded   { background: rgba(148,163,184,0.10); color: var(--text-secondary); border-color: rgba(203,213,225,0.20); }
 
-        /* Inline tag (e.g. user/dealer) — flat, no dot */
+        /* Inline tag (e.g. user/dealer) - flat, no dot */
         .orders-page .op-tag {
             display: inline-flex;
             align-items: center;
@@ -554,7 +570,7 @@
         /* Kebab dropdown (teleported to <body>) */
         .op-menu {
             position: fixed;
-            width: 240px;
+            width: min(240px, calc(100vw - 16px));
             background: var(--admin-card, #1e293b);
             border: 1px solid var(--admin-border-soft, #263244);
             border-radius: 10px;
@@ -584,6 +600,12 @@
             border-radius: 6px;
             font-size: 11.5px;
             color-scheme: dark;
+            transition: border-color .15s ease, box-shadow .15s ease;
+        }
+        .op-menu select:focus {
+            outline: none;
+            border-color: var(--admin-accent, #06b6d4);
+            box-shadow: 0 0 0 2px rgba(6,182,212,0.20);
         }
         .op-menu button[type="submit"] {
             background: var(--admin-accent, #06b6d4);
@@ -598,6 +620,11 @@
             transition: background .15s ease;
         }
         .op-menu button[type="submit"]:hover { background: var(--admin-accent-hover, #0891b2); }
+        .op-menu button[type="submit"]:focus-visible,
+        .op-menu .danger:focus-visible {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(6,182,212,0.20);
+        }
         .op-menu hr { border: 0; border-top: 1px solid var(--admin-border-soft, #263244); margin: 4px 0; }
         .op-menu .danger {
             display: block; width: 100%;
@@ -755,7 +782,7 @@
                             <input type="hidden" name="order_ids[]" :value="id">
                         </template>
                         <select name="status" required>
-                            <option value="">{{ __('Set status…') }}</option>
+                            <option value="">{{ __('Set status...') }}</option>
                             @foreach($statusOptions as $status)
                                 <option value="{{ $status }}">{{ \App\Models\Order::statusMeta((string) $status)['label'] }}</option>
                             @endforeach
@@ -857,10 +884,10 @@
                                         <span class="num">{{ $order->order_number }}</span>
                                         <span class="id">#{{ $order->id }}</span>
                                         @if($order->cancellation_requested_at && $order->status !== \App\Models\Order::STATUS_CANCELLED)
-                                            <div class="op-alert"><span>⚠</span>{{ __('Cancellation Requested') }}</div>
+                                            <div class="op-alert"><span aria-hidden="true">!</span>{{ __('Cancellation Requested') }}</div>
                                         @endif
                                         @if(($order->open_returns_count ?? 0) > 0)
-                                            <div class="op-alert warn"><span>↩</span>{{ __('Return requests') }}</div>
+                                            <div class="op-alert warn"><span aria-hidden="true">R</span>{{ __('Return requests') }}</div>
                                         @endif
                                     </td>
                                     <td>
@@ -975,7 +1002,7 @@
 
                 @if($orders->hasPages())
                     <div class="op-pag">
-                        <span>{{ __('Showing :from–:to of :total orders', [
+                        <span>{{ __('Showing :from-:to of :total orders', [
                             'from' => $orders->firstItem() ?? 0,
                             'to' => $orders->lastItem() ?? 0,
                             'total' => $orders->total(),
