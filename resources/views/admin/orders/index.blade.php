@@ -1003,6 +1003,215 @@
         .op-menu hr { border-top-color: #e2e8f0; }
         .op-menu .danger:hover { background: #fef2f2; }
 
+        .dark .orders-page {
+            --surface-page: var(--admin-surface, #111827);
+            --surface-card: var(--admin-card, #1e293b);
+            --surface-muted: var(--admin-input, #172033);
+            --surface-elevated: #243249;
+            --surface-hover: #263449;
+            --border-default: var(--admin-border, #334155);
+            --border-soft: var(--admin-border-soft, #263244);
+            --border-row: rgba(148, 163, 184, 0.10);
+            --border-checkbox: #64748b;
+            --text-primary: var(--admin-text-strong, #f8fafc);
+            --text-body: var(--admin-text, #e2e8f0);
+            --text-secondary: var(--admin-text-muted, #cbd5e1);
+            --text-muted: var(--admin-text-soft, #94a3b8);
+            --text-faint: #8796ad;
+            --text-disabled: #64748b;
+            --accent-text: #67e8f9;
+            --accent-soft: rgba(6, 182, 212, 0.10);
+            --accent-soft-strong: rgba(6, 182, 212, 0.14);
+            --accent-border: rgba(103, 232, 249, 0.24);
+            --shadow-card: 0 1px 0 rgba(255,255,255,0.04) inset, 0 24px 58px -42px rgba(0,0,0,0.72);
+            --shadow-hover: 0 1px 0 rgba(255,255,255,0.06) inset, 0 28px 68px -42px rgba(0,0,0,0.78);
+            background:
+                radial-gradient(circle at 12% 0%, rgba(6,182,212,0.09), transparent 34%),
+                radial-gradient(circle at 90% 8%, rgba(139,92,246,0.08), transparent 28%),
+                transparent;
+        }
+        .dark .orders-page .op-hero {
+            background:
+                linear-gradient(135deg, rgba(30,41,59,0.98), rgba(17,32,51,0.96) 58%, rgba(17,24,39,0.98)),
+                var(--surface-card);
+            border-color: rgba(148,163,184,0.16);
+        }
+        .dark .orders-page .op-hero::before {
+            background:
+                linear-gradient(rgba(148,163,184,0.045) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(148,163,184,0.035) 1px, transparent 1px);
+        }
+        .dark .orders-page .op-hero::after { background: radial-gradient(circle, rgba(6,182,212,0.18), transparent 62%); }
+        .dark .orders-page .op-live-chip {
+            background: rgba(15,23,42,0.42);
+            border-color: rgba(148,163,184,0.16);
+            color: var(--text-secondary);
+        }
+        .dark .orders-page .op-btn-ghost {
+            background: transparent;
+            color: var(--text-muted);
+            border-color: var(--border-soft);
+        }
+        .dark .orders-page .op-btn-ghost:hover {
+            color: var(--text-body);
+            border-color: var(--border-default);
+            background: var(--surface-hover);
+        }
+        .dark .orders-page .op-stats {
+            gap: 12px;
+            padding: 0;
+            background: transparent;
+            border: 0;
+            border-radius: 0;
+            box-shadow: none;
+        }
+        .dark .orders-page .op-stat {
+            background:
+                linear-gradient(180deg, rgba(36,50,73,0.94), rgba(30,41,59,0.96)),
+                var(--surface-card);
+            border: 1px solid rgba(148,163,184,0.14);
+            border-radius: 14px;
+            box-shadow: var(--shadow-card);
+            min-height: auto;
+        }
+        .dark .orders-page .op-stat + .op-stat { border-left: 1px solid rgba(148,163,184,0.14); }
+        [dir='rtl'] .dark .orders-page .op-stat + .op-stat { border-right: 1px solid rgba(148,163,184,0.14); }
+        .dark .orders-page .op-stat:hover {
+            background:
+                linear-gradient(180deg, rgba(38,52,73,0.98), rgba(31,42,62,0.98)),
+                var(--surface-card);
+            border-color: rgba(148,163,184,0.26);
+            box-shadow: var(--shadow-hover);
+        }
+        .dark .orders-page .op-stat::before {
+            left: 12px;
+            right: 12px;
+            width: auto;
+            background: linear-gradient(90deg, transparent, var(--stat-a, var(--border-checkbox)), transparent);
+            opacity: .9;
+        }
+        [dir='rtl'] .dark .orders-page .op-stat::before { left: 12px; right: 12px; }
+        .dark .orders-page .op-stat::after {
+            width: 96px;
+            height: 96px;
+            right: -34px;
+            bottom: -42px;
+            opacity: .45;
+        }
+        [dir='rtl'] .dark .orders-page .op-stat::after { right: auto; left: -34px; }
+        .dark .orders-page .op-stat .l { color: var(--text-muted); }
+        .dark .orders-page .op-stat .v { color: var(--text-primary); font-size: 30px; }
+        .dark .orders-page .op-chip {
+            background: rgba(30,41,59,0.76);
+            border-color: var(--border-soft);
+            color: var(--text-muted);
+        }
+        .dark .orders-page .op-chip:hover {
+            background: var(--surface-hover);
+            border-color: var(--border-default);
+            color: var(--text-secondary);
+        }
+        .dark .orders-page .op-chip.on {
+            background: var(--accent-soft-strong);
+            color: var(--accent-text);
+            border-color: var(--accent-border);
+        }
+        .dark .orders-page .op-card {
+            background: linear-gradient(180deg, rgba(30,41,59,0.98), rgba(30,41,59,0.94));
+            border-color: rgba(148,163,184,0.16);
+            box-shadow: var(--shadow-card);
+        }
+        .dark .orders-page .op-filter-form,
+        .dark .orders-page .op-actions {
+            background: linear-gradient(180deg, rgba(23,32,51,0.98), rgba(17,32,51,0.94));
+            border-bottom-color: rgba(148,163,184,0.12);
+        }
+        .dark .orders-page .f-label { color: var(--text-muted); }
+        .dark .orders-page .op-input,
+        .dark .orders-page .op-select,
+        .dark .orders-page .op-bulk select {
+            background-color: rgba(15,23,42,0.62);
+            border-color: rgba(148,163,184,0.18);
+            color: var(--text-body);
+            color-scheme: dark;
+        }
+        .dark .orders-page .op-input::placeholder { color: var(--text-disabled); }
+        .dark .orders-page .op-table-wrap { background: var(--surface-card); }
+        .dark .orders-page .op-tbl thead th {
+            background: #172033;
+            color: var(--text-muted);
+            border-bottom-color: var(--border-default);
+        }
+        .dark .orders-page .op-tbl tbody tr {
+            background: #1e293b;
+            border-bottom-color: var(--border-row);
+        }
+        .dark .orders-page .op-tbl tbody tr:nth-child(even) { background: #202c40; }
+        .dark .orders-page .op-tbl tbody tr:hover { background: var(--surface-hover); }
+        .dark .orders-page .op-tbl td { color: var(--text-body); }
+        .dark .orders-page .op-tbl .num,
+        .dark .orders-page .op-tbl .ttl,
+        .dark .orders-page .op-tbl .who { color: var(--text-primary); }
+        .dark .orders-page .op-tbl .id,
+        .dark .orders-page .op-tbl .em,
+        .dark .orders-page .op-tbl .date-t,
+        .dark .orders-page .op-tbl .meth { color: var(--text-faint); }
+        .dark .orders-page .op-tbl .date-d,
+        .dark .orders-page .op-tbl .items-cnt,
+        .dark .orders-page .op-tbl .ttl .cy { color: var(--text-secondary); }
+        .dark .orders-page .op-tbl input[type="checkbox"] {
+            background: var(--surface-muted);
+            border-color: var(--border-checkbox);
+        }
+        .dark .orders-page .op-icon {
+            background: var(--surface-elevated);
+            border-color: var(--border-soft);
+            color: var(--text-muted);
+        }
+        .dark .orders-page .op-icon:hover {
+            background: var(--surface-hover);
+            border-color: var(--accent-border);
+            color: var(--accent-text);
+        }
+        .dark .orders-page .op-pag {
+            background: var(--surface-card);
+            border-top-color: var(--border-soft);
+            color: var(--text-muted);
+        }
+        .dark .orders-page .op-pag a,
+        .dark .orders-page .op-pag span {
+            background: var(--surface-elevated);
+            border-color: var(--border-soft);
+            color: var(--text-muted);
+        }
+        .dark .orders-page .op-pag a:hover {
+            background: var(--surface-hover);
+            border-color: var(--border-default);
+            color: var(--text-body);
+        }
+        .dark .orders-page .op-empty .ico {
+            background: var(--surface-muted);
+            border-color: var(--border-soft);
+            color: var(--text-muted);
+        }
+        .dark .orders-page .op-empty .title { color: var(--text-primary); }
+        .dark .orders-page .op-empty .help { color: var(--text-muted); }
+        .dark .op-menu {
+            background: var(--admin-card, #1e293b);
+            border-color: var(--admin-border-soft, #263244);
+            color: var(--admin-text, #f8fafc);
+            box-shadow: 0 24px 48px -28px rgba(0,0,0,0.75), 0 1px 0 rgba(255,255,255,0.04) inset;
+        }
+        .dark .op-menu .head { color: var(--admin-text-soft, #94a3b8); }
+        .dark .op-menu select {
+            background: var(--admin-surface, #111827);
+            border-color: var(--admin-border, #334155);
+            color: var(--admin-text, #f8fafc);
+            color-scheme: dark;
+        }
+        .dark .op-menu hr { border-top-color: var(--admin-border-soft, #263244); }
+        .dark .op-menu .danger:hover { background: rgba(239,68,68,0.10); }
+
         /* ──────────── Responsive column hiding ──────────── */
         @media (max-width: 1023px) {
             .orders-page .col-items,
@@ -1021,6 +1230,13 @@
                 box-shadow: var(--shadow-card);
             }
             .orders-page .op-stat + .op-stat { border-left: 1px solid rgba(148,163,184,0.24); }
+            .dark .orders-page .op-stat {
+                background:
+                    linear-gradient(180deg, rgba(36,50,73,0.94), rgba(30,41,59,0.96)),
+                    var(--surface-card);
+                border-color: rgba(148,163,184,0.14);
+            }
+            .dark .orders-page .op-stat + .op-stat { border-left-color: rgba(148,163,184,0.14); }
             .orders-page .col-date { display: none !important; }
             .orders-page .op-tbl td { padding: 12px 12px; }
         }
