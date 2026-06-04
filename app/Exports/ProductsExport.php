@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Product;
+use App\Support\SpreadsheetSanitizer;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -59,7 +60,7 @@ class ProductsExport implements FromCollection, WithHeadings, ShouldAutoSize, Wi
     {
         return $this->products()
             ->map(function (Product $product): array {
-                return [
+                return SpreadsheetSanitizer::row([
                     '',
                     (string) ($product->name_en ?? ''),
                     (string) ($product->name_ar ?? ''),
@@ -76,7 +77,7 @@ class ProductsExport implements FromCollection, WithHeadings, ShouldAutoSize, Wi
                     (string) ($product->description_ar ?? ''),
                     (string) ($product->description_ku ?? ''),
                     (string) ($product->category?->name_en ?? ''),
-                ];
+                ]);
             });
     }
 

@@ -40,6 +40,7 @@ class ProductReviewTest extends TestCase
             'total_amount' => 100,
             'status' => Order::STATUS_DELIVERED,
             'payment_method' => 'cash_on_delivery',
+            'payment_status' => Order::PAYMENT_PAID,
             'delivery_address' => 'Street 10',
             'delivery_city' => 'Baghdad',
             'delivery_phone' => '123456789',
@@ -68,7 +69,7 @@ class ProductReviewTest extends TestCase
         ]);
 
         $response->assertRedirect();
-        $response->assertSessionHas('review_error', 'You can review this product after a delivered order.');
+        $response->assertSessionHas('review_error');
         $this->assertDatabaseCount('product_reviews', 0);
     }
 

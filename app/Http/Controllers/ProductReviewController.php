@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductReview;
+use App\Services\Reviews\ProductReviewEligibilityService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
 class ProductReviewController extends Controller
 {
-    public function store(Request $request, Product $product): RedirectResponse
+    public function store(Request $request, Product $product, ProductReviewEligibilityService $eligibility): RedirectResponse
     {
         abort_unless($product->is_active, 404);
 
@@ -20,23 +20,9 @@ class ProductReviewController extends Controller
             'comment' => ['nullable', 'string', 'max:1500'],
         ]);
 
-        $hasDeliveredOrder = $request->user()
-            ->orders()
-            ->where('status', Order::STATUS_DELIVERED)
-            ->whereHas('items', fn ($query) => $query->where('product_id', $product->id))
-            ->exists();
-
-        if (! $hasDeliveredOrder) {
-            return back()->with('review_error', __('You can review this product after a delivered order.'));
-        }
-
-        $alreadyReviewed = ProductReview::query()
-            ->where('product_id', $product->id)
-            ->where('user_id', $request->user()->id)
-            ->exists();
-
-        if ($alreadyReviewed) {
-            return back()->with('review_error', __('You have already reviewed this product.'));
+        $rejectionReason = $eligibility->rejectionReason($request->user(), $product);
+        if ($rejectionReason !== null) {
+            return back()->with('review_error', $rejectionReason);
         }
 
         ProductReview::query()->create([

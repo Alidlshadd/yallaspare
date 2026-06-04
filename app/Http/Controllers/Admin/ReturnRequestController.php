@@ -6,12 +6,15 @@ use App\Exports\ReturnsExport;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\ReturnRequest;
+use App\Models\User;
+use App\Services\Returns\ReturnRefundService;
 use App\Support\AdminLogger;
 use App\Support\SqlSafe;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
@@ -80,7 +83,7 @@ class ReturnRequestController extends Controller
         ]);
     }
 
-    public function update(Request $request, ReturnRequest $return): RedirectResponse
+    public function update(Request $request, ReturnRequest $return, ReturnRefundService $refunds): RedirectResponse
     {
         $data = $request->validate([
             'status' => ['required', 'in:' . implode(',', ReturnRequest::allowedStatuses())],
@@ -88,23 +91,21 @@ class ReturnRequestController extends Controller
             'refund_amount' => ['nullable', 'numeric', 'min:0', 'max:100000000'],
         ]);
 
-        $return->update([
-            'status' => $data['status'],
-            'admin_note' => trim((string) ($data['admin_note'] ?? '')) ?: null,
-            'refund_amount' => isset($data['refund_amount']) ? round((float) $data['refund_amount'], 2) : $return->refund_amount,
-            'resolved_at' => in_array($data['status'], [ReturnRequest::STATUS_REJECTED, ReturnRequest::STATUS_REFUNDED, ReturnRequest::STATUS_CLOSED], true)
-                ? now()
-                : null,
-        ]);
-
         if ($data['status'] === ReturnRequest::STATUS_REFUNDED) {
-            $return->order?->forceFill(['payment_status' => Order::PAYMENT_REFUNDED])->save();
+            abort_unless($request->user()?->hasPermission(User::PERMISSION_FINANCE_MANAGE), 403);
         }
 
-        AdminLogger::log('return_request.updated', $return, [
-            'status' => $data['status'],
-            'order_number' => $return->order?->order_number,
-        ]);
+        try {
+            $refunds->updateStatus(
+                $return,
+                (string) $data['status'],
+                $data['admin_note'] ?? null,
+                isset($data['refund_amount']) ? (float) $data['refund_amount'] : null,
+                $request->user()
+            );
+        } catch (ValidationException $exception) {
+            return back()->withErrors($exception->errors())->withInput();
+        }
 
         return back()->with('success', __('Return request updated.'));
     }
@@ -129,7 +130,7 @@ class ReturnRequestController extends Controller
         }
     }
 
-    public function bulkUpdate(Request $request): RedirectResponse
+    public function bulkUpdate(Request $request, ReturnRefundService $refunds): RedirectResponse
     {
         $data = $request->validate([
             'return_ids' => ['required', 'array', 'min:1', 'max:200'],
@@ -138,49 +139,43 @@ class ReturnRequestController extends Controller
             'admin_note' => ['nullable', 'string', 'max:2000'],
         ]);
 
+        if ($data['status'] === ReturnRequest::STATUS_REFUNDED) {
+            abort_unless($request->user()?->hasPermission(User::PERMISSION_FINANCE_MANAGE), 403);
+        }
+
         $updated = 0;
         $skipped = 0;
         $skippedReasons = [];
 
         foreach (array_unique($data['return_ids']) as $returnId) {
-            $outcome = DB::transaction(function () use ($returnId, $data): array {
-                $return = ReturnRequest::query()
-                    ->whereKey($returnId)
-                    ->with('order:id,order_number')
-                    ->lockForUpdate()
-                    ->first();
+            $return = ReturnRequest::query()->find($returnId);
+            if (! $return) {
+                $outcome = ['outcome' => 'skipped', 'reason' => "Return #{$returnId} not found"];
+            } elseif ((string) $return->status === $data['status']) {
+                $outcome = ['outcome' => 'skipped', 'reason' => "Return #{$return->id} already {$data['status']}"];
+            } else {
+                try {
+                    $note = trim((string) ($data['admin_note'] ?? ''));
+                    if ($note !== '' && trim((string) $return->admin_note) !== '') {
+                        $note = trim((string) $return->admin_note) . "\n---\n" . $note;
+                    }
 
-                if (! $return) {
-                    return ['outcome' => 'skipped', 'reason' => "Return #{$returnId} not found"];
+                    $refunds->updateStatus(
+                        $return,
+                        (string) $data['status'],
+                        $note !== '' ? $note : null,
+                        null,
+                        $request->user()
+                    );
+
+                    $outcome = ['outcome' => 'updated'];
+                } catch (ValidationException $exception) {
+                    $outcome = [
+                        'outcome' => 'skipped',
+                        'reason' => "Return #{$return->id}: " . implode(' ', $exception->validator->errors()->all()),
+                    ];
                 }
-
-                $previousStatus = (string) $return->status;
-                if ($previousStatus === $data['status']) {
-                    return ['outcome' => 'skipped', 'reason' => "Return #{$return->id} already {$data['status']}"];
-                }
-
-                $return->status = $data['status'];
-                if (! empty($data['admin_note'])) {
-                    $existing = trim((string) $return->admin_note);
-                    $return->admin_note = $existing !== ''
-                        ? $existing . "\n---\n" . $data['admin_note']
-                        : $data['admin_note'];
-                }
-
-                if (in_array($data['status'], [ReturnRequest::STATUS_REFUNDED, ReturnRequest::STATUS_CLOSED, ReturnRequest::STATUS_REJECTED], true)) {
-                    $return->resolved_at = now();
-                }
-
-                $return->save();
-
-                AdminLogger::log('return.status_changed_bulk', $return, [
-                    'from' => $previousStatus,
-                    'to' => $data['status'],
-                    'order_number' => $return->order?->order_number,
-                ]);
-
-                return ['outcome' => 'updated'];
-            });
+            }
 
             if ($outcome['outcome'] === 'updated') {
                 $updated++;

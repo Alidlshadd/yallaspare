@@ -24,8 +24,15 @@ use App\Mail\SupportContactRequestMail;
 use App\Models\Wishlist;
 use App\Rules\PhoneNumber;
 use App\Services\CheckoutTotals;
+use App\Services\Checkout\CheckoutService;
 use App\Services\CouponService;
+use App\Services\Inventory\InventoryAdjustmentService;
 use App\Services\InvoiceRenderer;
+use App\Services\Orders\OrderStatusService;
+use App\Services\Payments\PaymentService;
+use App\Services\Reviews\ProductReviewEligibilityService;
+use App\Services\Returns\ReturnRefundService;
+use App\Services\Security\UserPrivilegeService;
 use App\Support\SqlSafe;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -87,7 +94,11 @@ class MobileController extends Controller
         }
 
         try {
-            $token = $user->createToken('mobile')->plainTextToken;
+            $token = $user->createToken(
+                'mobile',
+                $this->mobileTokenAbilities($user),
+                now()->addMinutes((int) config('sanctum.expiration', 60 * 24 * 14))
+            )->plainTextToken;
         } catch (\Throwable $e) {
             Log::error('Mobile login token creation failed', [
                 'user_id' => $user->id,
@@ -156,7 +167,11 @@ class MobileController extends Controller
         $request->user()?->currentAccessToken()?->delete();
 
         return response()->json([
-            'token' => $request->user()->createToken('mobile')->plainTextToken,
+            'token' => $request->user()->createToken(
+                'mobile',
+                $this->mobileTokenAbilities($request->user()),
+                now()->addMinutes((int) config('sanctum.expiration', 60 * 24 * 14))
+            )->plainTextToken,
             'user' => $this->userPayload($request->user()),
         ]);
     }
@@ -969,66 +984,53 @@ class MobileController extends Controller
         return response()->json(['message' => __('Removed.')]);
     }
 
-    public function checkout(Request $request, CouponService $coupons)
+    public function checkout(Request $request, PaymentService $payments, CheckoutService $checkout)
     {
         $data = $request->validate([
             'address_id' => ['nullable', 'integer'],
             'coupon_code' => ['nullable', 'string', 'max:60'],
-            'payment_method' => ['nullable', Rule::in(['cash_on_delivery', 'zaincash', 'fastpay', 'bank_transfer'])],
+            'notes' => ['nullable', 'string', 'max:1000'],
+            'payment_method' => ['nullable', Rule::in($payments->allowedCheckoutMethods())],
         ]);
-        $cart = $this->cartFor($request->user())->load('items.product');
+        $user = $request->user();
+        $cart = $this->cartFor($user)->load('items.product');
         abort_if($cart->items->isEmpty(), 422, __('errors.cart_empty'));
 
-        $address = $this->resolveOrderAddress($request->user(), $data['address_id'] ?? null);
+        $address = $this->resolveOrderAddress($user, $data['address_id'] ?? null);
         abort_if(! $address, 422, __('errors.delivery_address_required'));
         $this->abortIfAddressPhoneInvalid($address);
-        foreach ($cart->items as $item) {
-            abort_if(! $item->product || ! $item->product->is_active, 422, __('errors.cart_contains_unavailable'));
-            abort_if((int) $item->product->stock_quantity < (int) $item->quantity, 422, __('Insufficient stock for :product.', ['product' => $item->product->localizedName()]));
+
+        $paymentMethod = (string) ($data['payment_method'] ?? PaymentService::METHOD_COD);
+        $couponCode = app(CouponService::class)->normalizeCode((string) ($data['coupon_code'] ?? ''));
+        try {
+            $order = $checkout->placeCartOrder(
+                $cart,
+                $user,
+                $address,
+                $data['notes'] ?? null,
+                $couponCode,
+                $paymentMethod
+            );
+        } catch (\RuntimeException $exception) {
+            abort(422, $exception->getMessage());
         }
 
-        $subtotal = $cart->items->sum(fn (CartItem $item) => $item->quantity * $item->product->priceFor($request->user()));
-        $shipping = 5000.0;
-        $coupon = $data['coupon_code'] ?? null;
-        $preview = $coupon ? $coupons->preview($coupon, (float) $subtotal, $request->user()) : null;
-        $discount = $preview && $preview['valid'] ? (float) $preview['discount'] : 0.0;
-        $total = max(0, (float) $subtotal + $shipping - $discount);
-
-        $order = new Order();
-        $order->forceFill([
-            'user_id' => $request->user()->id,
-            'order_number' => 'ORD-' . now()->format('Ymd') . '-' . strtoupper(Str::random(5)),
-            'subtotal_amount' => $subtotal,
-            'shipping_fee' => $shipping,
-            'discount_amount' => $discount,
-            'coupon_code' => $preview && $preview['valid'] ? $preview['code'] : null,
-            'grand_total' => $total,
-            'total_amount' => $total,
-            'status' => Order::STATUS_PENDING,
-            'payment_method' => $data['payment_method'] ?? 'cash_on_delivery',
-            'payment_status' => Order::PAYMENT_PENDING,
-            'delivery_address' => $address->address_line1,
-            'delivery_city' => $address->city,
-            'delivery_phone' => $address->phone,
-        ])->save();
-
-        foreach ($cart->items as $item) {
-            $unit = $item->product->priceFor($request->user());
-            $order->items()->create([
-                'product_id' => $item->product_id,
-                'quantity' => $item->quantity,
-                'unit_price' => $unit,
-                'subtotal' => $unit * $item->quantity,
-            ]);
-        }
-
-        $cart->items()->delete();
-        HeaderComposer::forgetCartCacheForUser((int) $request->user()->id);
-
-        return response()->json([
+        $payload = [
             'cart' => $this->cartPayload($cart->fresh('items.product'), $request->user()),
             'order' => $this->orderPayload($order->fresh('items.product')),
-        ]);
+        ];
+
+        if ($payments->isOnlineMethod($paymentMethod)) {
+            $payment = $payments->start($order, $paymentMethod);
+            $payload['payment'] = [
+                'id' => $payment->id,
+                'provider' => $payment->provider,
+                'status' => $payment->status,
+                'redirect_url' => $payment->redirect_url,
+            ];
+        }
+
+        return response()->json($payload);
     }
 
     public function checkoutReview(Request $request, CouponService $coupons, CheckoutTotals $totals)
@@ -1128,78 +1130,58 @@ class MobileController extends Controller
         return response()->json(['data' => $payload]);
     }
 
-    public function buyNowPlace(Request $request, string $idOrSlug, CouponService $coupons, CheckoutTotals $totals)
+    public function buyNowPlace(Request $request, string $idOrSlug, PaymentService $payments, CheckoutService $checkout)
     {
         $data = $request->validate([
             'quantity' => ['required', 'integer', 'min:1', 'max:99'],
             'address_id' => ['nullable', 'integer'],
             'notes' => ['nullable', 'string', 'max:1000'],
             'coupon_code' => ['nullable', 'string', 'max:80'],
-            'payment_method' => ['nullable', Rule::in(['cash_on_delivery', 'zaincash', 'fastpay', 'bank_transfer'])],
+            'payment_method' => ['nullable', Rule::in($payments->allowedCheckoutMethods())],
         ]);
 
         $user = $request->user();
         $product = $this->findProduct($idOrSlug);
-        abort_unless($product->is_active, 422, __('errors.product_unavailable'));
 
         $quantity = (int) $data['quantity'];
-        abort_if((int) $product->stock_quantity < $quantity, 422, __('errors.stock_insufficient'));
-
         $address = $this->resolveOrderAddress($user, $data['address_id'] ?? null);
         abort_if(! $address, 422, __('errors.delivery_address_required'));
         $this->abortIfAddressPhoneInvalid($address);
 
-        $unitPrice = (float) $product->priceFor($user);
-        $shippingFee = (float) Setting::getValue('shipping_fee', 5000);
-        $code = $coupons->normalizeCode((string) ($data['coupon_code'] ?? ''));
-        $subtotalForCoupon = round($unitPrice * $quantity, 2);
-        $couponPreview = null;
-        if ($code !== '') {
-            $couponPreview = $coupons->preview($code, $subtotalForCoupon, $user);
-            abort_if(
-                ! (bool) ($couponPreview['valid'] ?? false),
-                422,
-                (string) ($couponPreview['message'] ?? __('Coupon could not be applied.')),
+        $paymentMethod = (string) ($data['payment_method'] ?? PaymentService::METHOD_COD);
+        $couponCode = app(CouponService::class)->normalizeCode((string) ($data['coupon_code'] ?? ''));
+        try {
+            $order = $checkout->placeBuyNowOrder(
+                $product,
+                $quantity,
+                $user,
+                $address,
+                $data['notes'] ?? null,
+                $couponCode,
+                $paymentMethod
             );
+        } catch (\RuntimeException $exception) {
+            $message = str_starts_with($exception->getMessage(), 'Insufficient stock')
+                ? __('errors.stock_insufficient')
+                : $exception->getMessage();
+            abort(422, $message);
         }
 
-        $computed = $totals->compute(
-            [['quantity' => $quantity, 'unit_price' => $unitPrice]],
-            $shippingFee,
-            $couponPreview,
-        );
-
-        $order = new Order();
-        $order->forceFill([
-            'user_id' => $user->id,
-            'order_number' => 'ORD-' . now()->format('Ymd') . '-' . strtoupper(Str::random(5)),
-            'subtotal_amount' => $computed['subtotal'],
-            'shipping_fee' => $computed['shipping_fee'],
-            'discount_amount' => $computed['discount_amount'],
-            'coupon_code' => ($couponPreview['valid'] ?? false) ? (string) ($couponPreview['code'] ?? '') : null,
-            'grand_total' => $computed['grand_total'],
-            'total_amount' => $computed['grand_total'],
-            'status' => Order::STATUS_PENDING,
-            'payment_method' => $data['payment_method'] ?? 'cash_on_delivery',
-            'payment_status' => Order::PAYMENT_PENDING,
-            'delivery_address' => $address->address_line1,
-            'delivery_city' => $address->city,
-            'delivery_phone' => $address->phone,
-            'notes' => trim((string) ($data['notes'] ?? '')) !== '' ? (string) $data['notes'] : null,
-        ])->save();
-
-        $order->items()->create([
-            'product_id' => $product->id,
-            'quantity' => $quantity,
-            'unit_price' => $unitPrice,
-            'subtotal' => round($unitPrice * $quantity, 2),
-        ]);
-
-        $product->update(['stock_quantity' => (int) $product->stock_quantity - $quantity]);
-
-        return response()->json([
+        $payload = [
             'order' => $this->orderPayload($order->fresh('items.product')),
-        ]);
+        ];
+
+        if ($payments->isOnlineMethod($paymentMethod)) {
+            $payment = $payments->start($order, $paymentMethod);
+            $payload['payment'] = [
+                'id' => $payment->id,
+                'provider' => $payment->provider,
+                'status' => $payment->status,
+                'redirect_url' => $payment->redirect_url,
+            ];
+        }
+
+        return response()->json($payload);
     }
 
     private function couponSummaryFor(?array $couponPreview): array
@@ -1357,13 +1339,21 @@ class MobileController extends Controller
         ]);
     }
 
-    public function storeReview(Request $request, string $idOrSlug)
+    public function storeReview(Request $request, string $idOrSlug, ProductReviewEligibilityService $eligibility)
     {
         $product = $this->findProduct($idOrSlug);
         $data = $request->validate([
             'rating' => ['required', 'integer', 'min:1', 'max:5'],
             'comment' => ['nullable', 'string', 'max:2000'],
         ]);
+
+        if (! $eligibility->canReview($request->user(), $product)) {
+            abort(403, __('You can review this product after a paid delivered order.'));
+        }
+
+        if ($eligibility->hasReviewed($request->user(), $product)) {
+            abort(422, __('You have already reviewed this product.'));
+        }
 
         $review = $product->reviews()->create([
             'user_id' => $request->user()->id,
@@ -1440,7 +1430,7 @@ class MobileController extends Controller
         return response()->json(['message' => __('Cancellation request submitted.')]);
     }
 
-    public function requestReturn(Request $request, Order $order)
+    public function requestReturn(Request $request, Order $order, ReturnRefundService $refunds)
     {
         abort_unless($order->user_id === $request->user()->id, 403);
         $data = $request->validate([
@@ -1448,6 +1438,8 @@ class MobileController extends Controller
             'notes' => ['nullable', 'string', 'max:2000'],
             'attachment' => ['nullable', 'string', 'max:500'],
         ]);
+
+        $refunds->assertReturnCanBeRequested($order);
 
         $order->returnRequests()->create([
             'user_id' => $request->user()->id,
@@ -1617,7 +1609,7 @@ class MobileController extends Controller
             ->values()]);
     }
 
-    public function dealerUpdateStock(Request $request, string $idOrSlug)
+    public function dealerUpdateStock(Request $request, string $idOrSlug, InventoryAdjustmentService $inventory)
     {
         $this->requireDealer($request);
         $product = $this->findProduct($idOrSlug);
@@ -1626,7 +1618,7 @@ class MobileController extends Controller
         }
 
         $data = $request->validate(['stock_quantity' => ['required', 'integer', 'min:0']]);
-        $product->update(['stock_quantity' => (int) $data['stock_quantity']]);
+        $product = $inventory->setStock($product, (int) $data['stock_quantity'], $request->user(), 'mobile-dealer', 'Dealer stock update');
 
         return response()->json(['data' => $this->productPayload($product->fresh(['category', 'images', 'reviews', 'vehicleFitments.brand', 'vehicleFitments.model']), $request->user())]);
     }
@@ -1751,32 +1743,38 @@ class MobileController extends Controller
         return response()->json(['data' => $payload]);
     }
 
-    public function adminUpdateProduct(Request $request, string $idOrSlug)
+    public function adminUpdateProduct(Request $request, string $idOrSlug, InventoryAdjustmentService $inventory)
     {
         $this->requirePermission($request, User::PERMISSION_PRODUCTS_MANAGE);
         $product = $this->findProduct($idOrSlug);
         $data = $request->validate(['stock_quantity' => ['required', 'integer', 'min:0']]);
-        $product->update(['stock_quantity' => (int) $data['stock_quantity']]);
+        $product = $inventory->setStock($product, (int) $data['stock_quantity'], $request->user(), 'mobile-admin', 'Mobile admin product stock update');
 
         return response()->json(['data' => $this->productPayload($product->fresh(['category', 'images', 'reviews', 'vehicleFitments.brand', 'vehicleFitments.model']), $request->user())]);
     }
 
-    public function adminUpdateOrderStatus(Request $request, Order $order)
+    public function adminUpdateOrderStatus(Request $request, Order $order, OrderStatusService $statuses)
     {
         $this->requirePermission($request, User::PERMISSION_ORDERS_MANAGE);
         $data = $request->validate(['status' => ['required', Rule::in(Order::allowedStatuses())]]);
-        $order->forceFill(['status' => $data['status']])->save();
+        try {
+            $statuses->changeStatus($order, (string) $data['status'], $request->user());
+        } catch (\RuntimeException $exception) {
+            abort(422, $exception->getMessage());
+        }
 
         return response()->json(['data' => $this->orderPayload($order->fresh('items.product.category', 'items.product.images', 'items.product.reviews', 'user'))]);
     }
 
-    public function adminUpdateUserRole(Request $request, User $user)
+    public function adminUpdateUserRole(Request $request, User $user, UserPrivilegeService $privileges)
     {
         $authUser = $this->requirePermission($request, User::PERMISSION_USERS_MANAGE);
         $data = $request->validate(['role' => ['required', Rule::in(User::allowedRoles())]]);
         $role = User::normalizeRole($data['role']);
 
-        if (($user->isSuperAdmin() || $role === User::ROLE_SUPER_ADMIN) && ! $authUser->isSuperAdmin()) {
+        try {
+            $privileges->assertCanAssignRoleAndPermissions($authUser, $user, $role);
+        } catch (\Illuminate\Auth\Access\AuthorizationException) {
             abort(403);
         }
 
@@ -1797,13 +1795,20 @@ class MobileController extends Controller
         return response()->json(['user' => $this->userPayload($user->fresh())]);
     }
 
-    public function adminUpdateDealer(Request $request, User $user)
+    public function adminUpdateDealer(Request $request, User $user, UserPrivilegeService $privileges)
     {
-        $this->requirePermission($request, User::PERMISSION_DEALERS_MANAGE);
+        $authUser = $this->requirePermission($request, User::PERMISSION_DEALERS_MANAGE);
         $data = $request->validate([
             'dealer_status' => ['required', Rule::in(User::allowedDealerStatuses())],
             'dealer_discount' => ['required', 'numeric', 'min:0', 'max:100'],
         ]);
+
+        try {
+            $privileges->assertCanManageDealerLifecycle($authUser, $user);
+        } catch (\Illuminate\Auth\Access\AuthorizationException) {
+            abort(403);
+        }
+
         $user->forceFill([
             'role' => User::ROLE_DEALER,
             'dealer_status' => $data['dealer_status'],
@@ -1813,7 +1818,7 @@ class MobileController extends Controller
         return response()->json(['user' => $this->userPayload($user->fresh())]);
     }
 
-    public function adminCreateInventoryMovement(Request $request)
+    public function adminCreateInventoryMovement(Request $request, InventoryAdjustmentService $inventory)
     {
         $this->requirePermission($request, User::PERMISSION_STOCK_MANAGE);
         $data = $request->validate([
@@ -1822,24 +1827,16 @@ class MobileController extends Controller
             'quantity' => ['required', 'integer', 'min:1'],
             'note' => ['nullable', 'string', 'max:1000'],
         ]);
-        $product = Product::query()->findOrFail($data['product_id']);
-        $before = (int) $product->stock_quantity;
-        $after = $data['type'] === InventoryMovement::TYPE_IN
-            ? $before + (int) $data['quantity']
-            : max(0, $before - (int) $data['quantity']);
-        $product->update(['stock_quantity' => $after]);
-        InventoryMovement::query()->create([
-            'product_id' => $product->id,
-            'user_id' => $request->user()->id,
-            'type' => $data['type'],
-            'quantity' => (int) $data['quantity'],
-            'stock_before' => $before,
-            'stock_after' => $after,
-            'reference' => 'mobile-admin',
-            'note' => $data['note'] ?? null,
-        ]);
+        $product = $inventory->move(
+            Product::query()->findOrFail($data['product_id']),
+            (string) $data['type'],
+            (int) $data['quantity'],
+            $request->user(),
+            'mobile-admin',
+            $data['note'] ?? null
+        );
 
-        return response()->json(['data' => ['product_id' => $product->id, 'stock_quantity' => $after]], 201);
+        return response()->json(['data' => ['product_id' => $product->id, 'stock_quantity' => (int) $product->stock_quantity]], 201);
     }
 
     private function recordRecentlyViewedProduct(User $user, Product $product): void
@@ -2034,8 +2031,22 @@ class MobileController extends Controller
     {
         $user = $request->user();
         abort_unless($user && $user->hasPermission($permission), 403);
+        $token = $user->currentAccessToken();
+
+        // Web sessions remain protected by admin.2fa. Personal access tokens
+        // must carry a dedicated mobile-admin ability issued after step-up.
+        if ($token && ! $token->can((string) config('security.mobile_admin.required_token_ability', 'admin:mobile'))) {
+            abort(403);
+        }
 
         return $user;
+    }
+
+    private function mobileTokenAbilities(User $user): array
+    {
+        return $user->isAdminPanelUser()
+            ? ['mobile:read', 'mobile:write']
+            : ['mobile:read', 'mobile:write'];
     }
 
     private function permissionForAdminSection(string $section): ?string

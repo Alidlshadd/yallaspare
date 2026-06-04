@@ -115,7 +115,7 @@ class ZainCashPaymentService implements PaymentProviderInterface
     {
         $expected = (string) config('services.zaincash.webhook_token', '');
         if ($expected === '') {
-            return true;
+            return ! app()->environment('production');
         }
 
         $provided = (string) (

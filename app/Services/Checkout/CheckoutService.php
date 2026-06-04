@@ -52,6 +52,10 @@ class CheckoutService
                     continue;
                 }
 
+                if (! $product->is_active) {
+                    throw new \RuntimeException(__('errors.cart_contains_unavailable'));
+                }
+
                 if ($product->stock_quantity < $item->quantity) {
                     throw new \RuntimeException(__('Insufficient stock for :product.', ['product' => $product->name]));
                 }
@@ -64,6 +68,10 @@ class CheckoutService
                     'unit_price' => $unitPrice,
                     'subtotal' => round($unitPrice * $item->quantity, 2),
                 ];
+            }
+
+            if ($lineItems === []) {
+                throw new \RuntimeException(__('errors.cart_empty'));
             }
 
             $order = $this->createOrder($lineItems, $user, $address, $notes, $couponCode, $paymentMethod);

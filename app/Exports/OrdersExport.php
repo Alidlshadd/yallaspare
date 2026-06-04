@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Models\Order;
 use App\Models\User;
+use App\Support\SpreadsheetSanitizer;
 use App\Support\SqlSafe;
 use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\FromQuery;
@@ -84,7 +85,7 @@ class OrdersExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSi
 
     public function map($order): array
     {
-        return [
+        return SpreadsheetSanitizer::row([
             $order->id,
             (string) $order->order_number,
             (string) $order->status,
@@ -101,7 +102,7 @@ class OrdersExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSi
             (string) ($order->delivery_city ?? ''),
             (string) ($order->delivery_phone ?? ''),
             optional($order->created_at)->format('Y-m-d H:i'),
-        ];
+        ]);
     }
 
     public function styles(Worksheet $sheet): array

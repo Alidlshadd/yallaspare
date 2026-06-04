@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\User;
+use App\Support\SpreadsheetSanitizer;
 use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -45,7 +46,7 @@ class UsersExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSiz
 
     public function map($user): array
     {
-        return [
+        return SpreadsheetSanitizer::row([
             $user->id,
             (string) ($user->name ?? ''),
             (string) ($user->email ?? ''),
@@ -56,7 +57,7 @@ class UsersExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoSiz
             $user->email_verified_at ? 'yes' : 'no',
             (string) ($user->locale_preference ?? ''),
             optional($user->created_at)->format('Y-m-d H:i'),
-        ];
+        ]);
     }
 
     public function styles(Worksheet $sheet): array

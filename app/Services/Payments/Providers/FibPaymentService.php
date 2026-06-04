@@ -86,7 +86,7 @@ class FibPaymentService implements PaymentProviderInterface
     {
         $expected = (string) config('services.fib.webhook_token', '');
         if ($expected === '') {
-            return true;
+            return ! app()->environment('production');
         }
 
         $provided = (string) (

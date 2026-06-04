@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\ReturnRequest;
+use App\Support\SpreadsheetSanitizer;
 use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -49,7 +50,7 @@ class ReturnsExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoS
 
     public function map($return): array
     {
-        return [
+        return SpreadsheetSanitizer::row([
             $return->id,
             (string) ($return->order?->order_number ?? ''),
             (string) ($return->type ?? ''),
@@ -62,7 +63,7 @@ class ReturnsExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoS
             optional($return->requested_at)->format('Y-m-d H:i'),
             optional($return->resolved_at)->format('Y-m-d H:i'),
             optional($return->created_at)->format('Y-m-d H:i'),
-        ];
+        ]);
     }
 
     public function styles(Worksheet $sheet): array

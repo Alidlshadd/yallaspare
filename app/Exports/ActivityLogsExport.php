@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Support\SpreadsheetSanitizer;
 use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -53,7 +54,7 @@ class ActivityLogsExport implements FromQuery, WithHeadings, WithMapping, Should
         $attributes = (array) ($properties['attributes'] ?? []);
         $old = (array) ($properties['old'] ?? []);
 
-        return [
+        return SpreadsheetSanitizer::row([
             $activity->id,
             (string) ($activity->log_name ?? ''),
             (string) ($activity->event ?? ''),
@@ -65,7 +66,7 @@ class ActivityLogsExport implements FromQuery, WithHeadings, WithMapping, Should
             $attributes !== [] ? json_encode($attributes, JSON_UNESCAPED_UNICODE) : '',
             $old !== [] ? json_encode($old, JSON_UNESCAPED_UNICODE) : '',
             optional($activity->created_at)->format('Y-m-d H:i'),
-        ];
+        ]);
     }
 
     public function styles(Worksheet $sheet): array

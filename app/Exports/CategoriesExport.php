@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Category;
+use App\Support\SpreadsheetSanitizer;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -49,7 +50,7 @@ class CategoriesExport implements FromCollection, WithHeadings, ShouldAutoSize, 
     {
         return $this->categories()
             ->map(function (Category $category): array {
-                return [
+                return SpreadsheetSanitizer::row([
                     '',
                     (int) $category->id,
                     (string) ($category->name_en ?? ''),
@@ -60,7 +61,7 @@ class CategoriesExport implements FromCollection, WithHeadings, ShouldAutoSize, 
                     (int) ($category->products_count ?? 0),
                     $category->created_at?->format('Y-m-d H:i:s') ?? '',
                     $category->updated_at?->format('Y-m-d H:i:s') ?? '',
-                ];
+                ]);
             });
     }
 

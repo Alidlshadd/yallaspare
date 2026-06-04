@@ -44,6 +44,23 @@ return [
         'code_ttl_minutes' => (int) env('USER_TWO_FACTOR_CODE_TTL', 10),
     ],
 
+    'mobile_admin' => [
+        // Ordinary mobile login tokens intentionally do not receive this ability.
+        // Admin-capable mobile tokens should be issued only after a fresh step-up
+        // challenge so a stolen long-lived customer token cannot call admin APIs.
+        'required_token_ability' => env('MOBILE_ADMIN_TOKEN_ABILITY', 'admin:mobile'),
+    ],
+
+    'notification_webhooks' => [
+        // Comma-separated host allowlist for outbound SMS/WhatsApp providers.
+        // Keep this explicit in production so admin-editable settings cannot
+        // become an SSRF primitive against the origin network.
+        'allowed_hosts' => array_values(array_filter(array_map(
+            'trim',
+            explode(',', (string) env('NOTIFICATION_WEBHOOK_ALLOWED_HOSTS', ''))
+        ))),
+    ],
+
     'email_verification' => [
         'max_attempts' => (int) env('EMAIL_VERIFICATION_MAX_ATTEMPTS', 5),
     ],

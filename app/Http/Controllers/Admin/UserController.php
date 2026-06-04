@@ -6,12 +6,17 @@ use App\Exports\UsersExport;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Rules\PhoneNumber;
+use App\Services\Security\UserPrivilegeService;
+use App\Support\AdminLogger;
 use App\Support\SqlSafe;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
@@ -143,7 +148,7 @@ class UserController extends Controller
         ]);
     }
 
-    public function updateDetails(Request $request, User $user): RedirectResponse
+    public function updateDetails(Request $request, User $user, UserPrivilegeService $privileges): RedirectResponse
     {
         $this->authorize('manage-users');
 
@@ -161,6 +166,18 @@ class UserController extends Controller
 
         $newRole = User::normalizeRole($data['role']);
         $authUser = $request->user();
+
+        try {
+            $privileges->assertCanAssignRoleAndPermissions($authUser, $user, $newRole, $data['permissions'] ?? []);
+        } catch (AuthorizationException $exception) {
+            AdminLogger::log('security.role_permission_change_blocked', $user, [
+                'attempted_role' => $newRole,
+                'attempted_permissions' => User::normalizePermissions($data['permissions'] ?? []),
+                'actor_role' => $authUser->role,
+            ]);
+
+            return back()->with('error', $exception->getMessage());
+        }
 
         if ((int) $authUser->id === (int) $user->id && $newRole !== User::ROLE_SUPER_ADMIN) {
             return back()->with('error', __('You cannot demote your own super admin account.'));
@@ -181,9 +198,7 @@ class UserController extends Controller
         $dealerDiscount = $newRole === User::ROLE_DEALER
             ? round((float) ($data['dealer_discount'] ?? 0), 2)
             : 0;
-        $permissions = $newRole === User::ROLE_SUPER_ADMIN
-            ? null
-            : User::normalizePermissions($data['permissions'] ?? []);
+        $permissions = $privileges->permissionsForAssignment($authUser, $newRole, $data['permissions'] ?? []);
 
         $user->fill([
             'name' => trim($data['name']),
@@ -207,7 +222,7 @@ class UserController extends Controller
         return back()->with('success', __('User details updated successfully.'));
     }
 
-    public function updateRole(Request $request, User $user): RedirectResponse
+    public function updateRole(Request $request, User $user, UserPrivilegeService $privileges): RedirectResponse
     {
         $this->authorize('updateRole', $user);
 
@@ -217,6 +232,17 @@ class UserController extends Controller
 
         $newRole = User::normalizeRole($data['role']);
         $authUser = $request->user();
+
+        try {
+            $privileges->assertCanAssignRoleAndPermissions($authUser, $user, $newRole);
+        } catch (AuthorizationException $exception) {
+            AdminLogger::log('security.role_permission_change_blocked', $user, [
+                'attempted_role' => $newRole,
+                'actor_role' => $authUser->role,
+            ]);
+
+            return back()->with('error', $exception->getMessage());
+        }
 
         if ((int) $authUser->id === (int) $user->id && $newRole !== User::ROLE_SUPER_ADMIN) {
             return back()->with('error', __('You cannot demote your own super admin account.'));
@@ -238,25 +264,66 @@ class UserController extends Controller
         return back()->with('success', __('User role updated successfully.'));
     }
 
-    public function updatePassword(Request $request, User $user): RedirectResponse
+    public function updatePassword(Request $request, User $user, UserPrivilegeService $privileges): RedirectResponse
     {
         $this->authorize('manage-users');
+        $actor = $request->user();
 
         $data = $request->validate([
             'password' => ['required', 'confirmed', Password::defaults()],
         ]);
 
-        $user->forceFill([
-            'password' => Hash::make($data['password']),
-            'remember_token' => Str::random(60),
-        ])->save();
+        try {
+            $privileges->assertCanResetPassword($actor, $user);
+        } catch (AuthorizationException $exception) {
+            AdminLogger::log('security.password_reset_blocked', $user, [
+                'actor_role' => $actor?->role,
+                'target_role' => $user->role,
+            ]);
+
+            return back()->with('error', $exception->getMessage());
+        }
+
+        DB::transaction(function () use ($user, $data, $actor): void {
+            $user->forceFill([
+                'password' => Hash::make($data['password']),
+                'remember_token' => Str::random(60),
+            ])->save();
+
+            // A privileged password reset must invalidate every active session
+            // and token for the target account, otherwise an attacker who already
+            // holds a session can continue using it after the password changes.
+            $user->tokens()->delete();
+            if (Schema::hasTable('sessions')) {
+                DB::table('sessions')->where('user_id', $user->id)->delete();
+            }
+
+            AdminLogger::log('security.password_reset_completed', $user, [
+                'actor_role' => $actor?->role,
+                'target_role' => $user->role,
+                'sessions_revoked' => Schema::hasTable('sessions'),
+                'sanctum_tokens_revoked' => true,
+            ]);
+        });
 
         return back()->with('success', __('User password updated successfully.'));
     }
 
-    public function destroy(Request $request, User $user): RedirectResponse
+    public function destroy(Request $request, User $user, UserPrivilegeService $privileges): RedirectResponse
     {
         $this->authorize('delete', $user);
+        $actor = $request->user();
+
+        try {
+            $privileges->assertCanDelete($actor, $user);
+        } catch (AuthorizationException $exception) {
+            AdminLogger::log('security.user_delete_blocked', $user, [
+                'actor_role' => $actor?->role,
+                'target_role' => $user->role,
+            ]);
+
+            return back()->with('error', $exception->getMessage());
+        }
 
         if ((int) $request->user()->id === (int) $user->id) {
             return back()->with('error', __('You cannot delete your own account.'));

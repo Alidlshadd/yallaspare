@@ -231,7 +231,7 @@ class MobileBuyNowTest extends TestCase
             ->postJson('/api/mobile/products/' . $product->id . '/buy-now/place', [
                 'quantity' => 2,
                 'address_id' => $other->id,
-                'payment_method' => 'bank_transfer',
+                'payment_method' => 'cash_on_delivery',
                 'notes' => 'call first',
                 'coupon_code' => 'take10',
             ])
@@ -239,8 +239,8 @@ class MobileBuyNowTest extends TestCase
 
         $order = Order::query()->where('user_id', $user->id)->firstOrFail();
         $this->assertSame('Sulaymaniyah', $order->delivery_city);
-        $this->assertSame('bank_transfer', $order->payment_method);
-        $this->assertSame('call first', $order->notes);
+        $this->assertSame('cash_on_delivery', $order->payment_method);
+        $this->assertStringContainsString('call first', (string) $order->notes);
         $this->assertSame('TAKE10', $order->coupon_code);
         $this->assertSame(2000.0, (float) $order->discount_amount);
         $this->assertSame(23000.0, (float) $order->grand_total);

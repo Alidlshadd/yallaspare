@@ -33,6 +33,21 @@ class SendEmailBroadcastJob implements ShouldQueue
             return;
         }
 
+        $admin = $broadcast->admin;
+        // Security: queued admin actions are re-authorized at execution time so a
+        // stale queued job cannot send mail after the initiating admin is demoted.
+        // Legacy/system broadcasts may have no admin_id and are limited by the
+        // recipient consent filters below.
+        if ($broadcast->admin_id !== null && (! $admin || ! $admin->hasPermission(User::PERMISSION_SETTINGS_MANAGE))) {
+            $broadcast->forceFill([
+                'status' => EmailBroadcast::STATUS_FAILED,
+                'last_error' => 'Broadcast blocked: initiating admin no longer has email/settings permission.',
+                'completed_at' => now(),
+            ])->save();
+
+            return;
+        }
+
         $broadcast->forceFill([
             'status' => EmailBroadcast::STATUS_SENDING,
             'started_at' => now(),

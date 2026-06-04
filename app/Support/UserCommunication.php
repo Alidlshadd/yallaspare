@@ -6,6 +6,7 @@ use App\Mail\OperationalNotificationMail;
 use App\Models\Order;
 use App\Models\Setting;
 use App\Models\User;
+use App\Services\Security\WebhookSecurityService;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
@@ -142,7 +143,7 @@ class UserCommunication
         } catch (\Throwable $exception) {
             Log::error('Email notification failed', $context + [
                 'mailer' => $mailer,
-                'recipient' => $email,
+                'recipient_hash' => self::recipientHash($email),
                 'subject' => $subject,
                 'error' => $exception->getMessage(),
             ]);
@@ -152,7 +153,7 @@ class UserCommunication
 
         Log::info('Email notification dispatched', $context + [
             'mailer' => $mailer,
-            'recipient' => $email,
+            'recipient_hash' => self::recipientHash($email),
             'subject' => $subject,
             'queued' => true,
         ]);
@@ -166,16 +167,24 @@ class UserCommunication
 
         if ($url === '') {
             Log::info(Str::before($settingKey, '_provider') . ' notification queued', $context + [
-                'recipient' => $recipient,
-                'message' => $message,
+                'recipient_hash' => self::recipientHash($recipient),
                 'transport' => 'log',
             ]);
 
             return true;
         }
 
+        if (! app(WebhookSecurityService::class)->isAllowed($url)) {
+            Log::warning('Notification webhook blocked by SSRF policy', $context + [
+                'setting' => $settingKey,
+                'recipient_hash' => self::recipientHash($recipient),
+            ]);
+
+            return false;
+        }
+
         try {
-            Http::timeout(8)->post($url, [
+            Http::timeout(8)->withoutRedirecting()->post($url, [
                 'recipient' => $recipient,
                 'message' => $message,
                 'context' => $context,
@@ -183,14 +192,14 @@ class UserCommunication
 
             Log::info('Notification webhook dispatched', $context + [
                 'setting' => $settingKey,
-                'recipient' => $recipient,
+                'recipient_hash' => self::recipientHash($recipient),
             ]);
 
             return true;
         } catch (\Throwable $exception) {
             Log::error('Notification webhook failed', $context + [
                 'setting' => $settingKey,
-                'recipient' => $recipient,
+                'recipient_hash' => self::recipientHash($recipient),
                 'error' => $exception->getMessage(),
             ]);
 
@@ -235,5 +244,10 @@ class UserCommunication
         }
 
         return $defaultMailer;
+    }
+
+    private static function recipientHash(string $recipient): string
+    {
+        return hash('sha256', strtolower(trim($recipient)));
     }
 }

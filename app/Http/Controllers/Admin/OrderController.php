@@ -13,6 +13,7 @@ use App\Support\AdminLogger;
 use App\Support\Branding;
 use App\Support\SqlSafe;
 use App\Support\UserCommunication;
+use App\Services\Orders\OrderStatusService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -268,6 +269,8 @@ class OrderController extends Controller
 
     public function updatePayment(Request $request, Order $order): RedirectResponse
     {
+        abort_unless($request->user()?->hasPermission(User::PERMISSION_FINANCE_MANAGE), 403);
+
         $data = $request->validate([
             'payment_status' => ['required', 'string', 'max:32'],
             'payment_reference' => ['nullable', 'string', 'max:255'],
@@ -275,10 +278,16 @@ class OrderController extends Controller
 
         $paymentStatus = Order::normalizedPaymentStatus($data['payment_status']);
 
-        $order->forceFill([
-            'payment_status' => $paymentStatus,
-            'payment_reference' => trim((string) ($data['payment_reference'] ?? '')) ?: null,
-        ])->save();
+        DB::transaction(function () use ($order, $paymentStatus, $data): void {
+            $lockedOrder = Order::query()->whereKey($order->id)->lockForUpdate()->firstOrFail();
+
+            // Manual payment edits are exceptional finance operations. Online
+            // providers still remain the source of truth through PaymentService.
+            $lockedOrder->forceFill([
+                'payment_status' => $paymentStatus,
+                'payment_reference' => trim((string) ($data['payment_reference'] ?? '')) ?: null,
+            ])->save();
+        });
 
         AdminLogger::log('order.payment_updated', $order, [
             'payment_status' => $paymentStatus,
@@ -288,7 +297,7 @@ class OrderController extends Controller
         return back()->with('success', __('Order #:order payment updated.', ['order' => $order->order_number]));
     }
 
-    public function updateStatus(Request $request, Order $order): RedirectResponse
+    public function updateStatus(Request $request, Order $order, OrderStatusService $statuses): RedirectResponse
     {
         $data = $request->validate([
             'status' => ['required', 'string', 'max:32'],
@@ -300,113 +309,10 @@ class OrderController extends Controller
             return back()->with('error', __('Invalid order status.'));
         }
 
-        $currentStatus = (string) $order->status;
-        if (!Order::canTransition($currentStatus, $status)) {
-            $allowed = Order::nextStatuses($currentStatus);
-            $allowedText = empty($allowed)
-                ? 'No transitions allowed from current state.'
-                : 'Allowed transitions: ' . implode(', ', array_map(
-                    fn ($s) => ucfirst(str_replace('_', ' ', $s)),
-                    $allowed
-                )) . '.';
-            return back()->with('error', __('Invalid status transition. :steps', ['steps' => $allowedText]));
-        }
-
-        $updatedOrder = DB::transaction(function () use ($order, $status): ?Order {
-            $lockedOrder = Order::query()
-                ->whereKey($order->id)
-                ->with(['items:id,order_id,product_id,quantity', 'user:id,name,email,phone,notify_order_updates,email_notifications,sms_notifications,whatsapp_notifications'])
-                ->lockForUpdate()
-                ->firstOrFail();
-
-            $previousStatus = (string) $lockedOrder->status;
-
-            if ($previousStatus === $status) {
-                return null;
-            }
-
-            if (!Order::canTransition($previousStatus, $status)) {
-                return null;
-            }
-
-            if (
-                $status === Order::STATUS_CANCELLED
-                && $previousStatus !== Order::STATUS_CANCELLED
-                && $previousStatus !== Order::STATUS_DELIVERED
-            ) {
-                foreach ($lockedOrder->items as $item) {
-                    if (!$item->product_id) {
-                        continue;
-                    }
-
-                    $product = Product::query()
-                        ->whereKey($item->product_id)
-                        ->lockForUpdate()
-                        ->first();
-
-                    if (!$product) {
-                        continue;
-                    }
-
-                    $quantity = (int) $item->quantity;
-                    $stockBefore = (int) $product->stock_quantity;
-                    $stockAfter = $stockBefore + $quantity;
-
-                    $product->update(['stock_quantity' => $stockAfter]);
-
-                    InventoryMovement::query()->create([
-                        'product_id' => $product->id,
-                        'user_id' => auth()->id(),
-                        'type' => InventoryMovement::TYPE_IN,
-                        'quantity' => $quantity,
-                        'stock_before' => $stockBefore,
-                        'stock_after' => $stockAfter,
-                        'reference' => $lockedOrder->order_number,
-                        'note' => 'Order cancelled - stock restored',
-                    ]);
-                }
-            }
-
-            $lockedOrder->forceFill(['status' => $status])->save();
-
-            // Cash-on-delivery orders settle at the moment of delivery: physical handover
-            // == payment received. Auto-flip payment_status to paid so the admin doesn't
-            // have to do a second click and so revenue reports stay accurate.
-            if (
-                $status === Order::STATUS_DELIVERED
-                && strtolower((string) $lockedOrder->payment_method) === 'cash_on_delivery'
-                && $lockedOrder->payment_status !== Order::PAYMENT_PAID
-            ) {
-                $lockedOrder->forceFill(['payment_status' => Order::PAYMENT_PAID])->save();
-                AdminLogger::log('order.payment_auto_marked_paid', $lockedOrder, [
-                    'reason' => 'cash_on_delivery_delivered',
-                ]);
-            }
-
-            $lockedOrder->statusHistory()->create([
-                'from_status' => $previousStatus,
-                'to_status' => $status,
-                'changed_by' => auth()->id(),
-                'note' => null,
-                'created_at' => now(),
-            ]);
-
-            AdminLogger::log('order.status_changed', $lockedOrder, [
-                'from' => $previousStatus,
-                'to' => $status,
-            ]);
-            $lockedOrder->setAttribute('previous_status_for_notification', $previousStatus);
-
-            return $lockedOrder;
-        });
-
-        if ($updatedOrder && $updatedOrder->user) {
-            UserCommunication::sendOrderStatusUpdated(
-                $updatedOrder->user,
-                $updatedOrder,
-                (string) $updatedOrder->getAttribute('previous_status_for_notification'),
-                (string) $updatedOrder->status
-            );
+        try {
+            $statuses->changeStatus($order, $status, $request->user());
+        } catch (\RuntimeException $exception) {
+            return back()->with('error', $exception->getMessage());
         }
 
         return back()->with('success', __('Order #:order status updated to :status.', ['order' => $order->order_number, 'status' => __(ucfirst(str_replace('_', ' ', $status)))]));

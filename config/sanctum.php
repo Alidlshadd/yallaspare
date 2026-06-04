@@ -46,7 +46,9 @@ return [
     |
     */
 
-    'expiration' => null,
+    // Mobile bearer tokens must not be valid forever. First-party web sessions
+    // are unaffected by this setting; it only constrains personal access tokens.
+    'expiration' => env('SANCTUM_TOKEN_EXPIRATION', 60 * 24 * 14),
 
     /*
     |--------------------------------------------------------------------------
@@ -61,7 +63,7 @@ return [
     |
     */
 
-    'token_prefix' => env('SANCTUM_TOKEN_PREFIX', ''),
+    'token_prefix' => env('SANCTUM_TOKEN_PREFIX', 'ysp_'),
 
     /*
     |--------------------------------------------------------------------------

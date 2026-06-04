@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\ProductReview;
+use App\Support\SpreadsheetSanitizer;
 use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -45,7 +46,7 @@ class ReviewsExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoS
 
     public function map($review): array
     {
-        return [
+        return SpreadsheetSanitizer::row([
             $review->id,
             (string) ($review->product?->name_en ?? ''),
             (string) ($review->user?->name ?? ''),
@@ -55,7 +56,7 @@ class ReviewsExport implements FromQuery, WithHeadings, WithMapping, ShouldAutoS
             (string) ($review->comment ?? ''),
             $review->is_approved ? 'yes' : 'no',
             optional($review->created_at)->format('Y-m-d H:i'),
-        ];
+        ]);
     }
 
     public function styles(Worksheet $sheet): array

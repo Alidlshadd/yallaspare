@@ -51,15 +51,30 @@ class CouponService
             return;
         }
 
-        DB::table('coupons')->where('id', $coupon->id)->increment('used_count');
+        DB::transaction(function () use ($coupon, $userId, $orderId, $discountAmount): void {
+            // Checkout may run concurrently across web and mobile. Lock the coupon
+            // row before incrementing so global and per-user limits cannot be
+            // overspent by parallel requests.
+            $lockedCoupon = Coupon::query()
+                ->whereKey($coupon->id)
+                ->lockForUpdate()
+                ->firstOrFail();
 
-        CouponUsage::query()->create([
-            'coupon_id' => $coupon->id,
-            'user_id' => $userId,
-            'order_id' => $orderId,
-            'discount_amount' => $discountAmount,
-            'used_at' => now(),
-        ]);
+            $validation = $this->validateCoupon($lockedCoupon, PHP_FLOAT_MAX, User::query()->find($userId));
+            if ($validation === 'Coupon usage limit has been reached.' || $validation === 'You have already used this coupon.') {
+                throw new \RuntimeException($validation);
+            }
+
+            $lockedCoupon->increment('used_count');
+
+            CouponUsage::query()->create([
+                'coupon_id' => $lockedCoupon->id,
+                'user_id' => $userId,
+                'order_id' => $orderId,
+                'discount_amount' => $discountAmount,
+                'used_at' => now(),
+            ]);
+        });
     }
 
     public function syncLegacySettingCoupon(): void
