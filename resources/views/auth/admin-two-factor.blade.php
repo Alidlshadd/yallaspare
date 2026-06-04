@@ -57,12 +57,14 @@
                 position: relative;
                 min-height: 100vh;
                 overflow: hidden;
+                isolation: isolate;
             }
 
             .admin-verify-shell::before {
                 content: '';
                 position: absolute;
                 inset: 0;
+                z-index: 0;
                 pointer-events: none;
                 background-image:
                     linear-gradient(rgba(148, 163, 184, 0.085) 1px, transparent 1px),
@@ -76,6 +78,7 @@
                 content: '';
                 position: absolute;
                 inset: 0;
+                z-index: 0;
                 pointer-events: none;
                 background-image: radial-gradient(rgba(248, 250, 252, 0.12) 1px, transparent 1px);
                 background-size: 3px 3px;
@@ -84,6 +87,9 @@
             }
 
             .admin-auth-card {
+                position: relative;
+                z-index: 2;
+                pointer-events: auto;
                 background:
                     linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.018)),
                     var(--admin-auth-card);
@@ -96,6 +102,9 @@
             }
 
             .admin-security-panel {
+                position: relative;
+                z-index: 2;
+                pointer-events: auto;
                 background:
                     linear-gradient(180deg, rgba(6, 182, 212, 0.11), rgba(239, 68, 68, 0.035)),
                     rgba(15, 23, 42, 0.60);
@@ -109,6 +118,8 @@
             }
 
             .admin-otp-box {
+                pointer-events: auto;
+                touch-action: manipulation;
                 height: 3.75rem;
                 border-radius: 1rem;
                 border: 1px solid var(--admin-auth-border);
@@ -137,6 +148,8 @@
             }
 
             .admin-auth-button {
+                pointer-events: auto;
+                touch-action: manipulation;
                 background: linear-gradient(180deg, var(--admin-auth-accent), var(--admin-auth-accent-hover));
                 box-shadow: 0 1px 0 rgba(255, 255, 255, 0.18) inset, 0 20px 38px -26px rgba(6, 182, 212, 0.82);
                 transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
@@ -160,6 +173,7 @@
             }
 
             .admin-auth-reveal {
+                opacity: 1;
                 animation: admin-auth-reveal 520ms cubic-bezier(0.22, 1, 0.36, 1) both;
             }
 
