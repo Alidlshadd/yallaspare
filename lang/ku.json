@@ -939,6 +939,7 @@
     "Hero Title": "ناونیشانی سەرەکی",
     "Hero Video": "ڤیدیۆی سەرەکی",
     "Hero video must be 50MB or smaller.": "ڤیدیۆی سەرەکی دەبێت 50MB یان کەمتر بێت.",
+    "Hero video upload failed. Please upload an MP4 video under 50MB. If it still fails, encode it as H.264/AAC MP4.": "بارکردنی ڤیدیۆی سەرەکی شکستی هێنا. تکایە ڤیدیۆی MP4 لە ژێر 50MB بار بکە. ئەگەر هێشتا شکستی هێنا، بە فۆرماتی H.264/AAC MP4 دووبارە کۆدی بکە.",
     "Hero video upload failed. Please select a valid MP4 file.": "بارکردنی ڤیدیۆی سەرەکی شکستی هێنا. تکایە فایلێکی دروستی MP4 هەڵبژێرە.",
     "Hidden": "شاراوە",
     "Hide Details": "شاردنەوەی وردەکارییەکان",

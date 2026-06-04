@@ -939,6 +939,7 @@
     "Hero Title": "عنوان الواجهة الرئيسية",
     "Hero Video": "فيديو الواجهة الرئيسية",
     "Hero video must be 50MB or smaller.": "يجب أن يكون فيديو الواجهة الرئيسية 50MB أو أقل.",
+    "Hero video upload failed. Please upload an MP4 video under 50MB. If it still fails, encode it as H.264/AAC MP4.": "فشل رفع فيديو الواجهة الرئيسية. يرجى رفع فيديو MP4 بحجم أقل من 50MB. إذا استمر الفشل، أعد ترميزه بصيغة H.264/AAC MP4.",
     "Hero video upload failed. Please select a valid MP4 file.": "فشل رفع فيديو الواجهة الرئيسية. يرجى اختيار ملف MP4 صالح.",
     "Hidden": "مخفي",
     "Hide Details": "إخفاء التفاصيل",

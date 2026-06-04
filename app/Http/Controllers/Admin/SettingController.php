@@ -78,15 +78,16 @@ class SettingController extends Controller
             'storefront_hero_video' => [
                 'nullable',
                 'file',
-                'mimes:mp4',
                 'max:' . self::HERO_VIDEO_MAX_KILOBYTES,
+                'mimes:mp4',
+                'mimetypes:video/mp4,video/quicktime,application/mp4,video/x-m4v,application/octet-stream',
                 function (string $attribute, mixed $value, \Closure $fail): void {
                     if (! $value instanceof UploadedFile) {
                         return;
                     }
 
                     if (! $this->isSafeMp4Upload($value)) {
-                        $fail(__('Hero video upload failed. Please select a valid MP4 file.'));
+                        $fail($this->heroVideoUploadErrorMessage());
                     }
                 },
             ],
@@ -113,7 +114,10 @@ class SettingController extends Controller
                     $request,
                     $request->file('storefront_hero_video'),
                     'validation_failed',
-                    ['errors' => $validator->errors()->get('storefront_hero_video')]
+                    [
+                        'errors' => $validator->errors()->get('storefront_hero_video'),
+                        'validation_errors' => $validator->errors()->get('storefront_hero_video'),
+                    ]
                 );
             }
 
@@ -171,12 +175,14 @@ class SettingController extends Controller
         $heroImage = (string) Setting::getValue('storefront_hero_image', '');
         $heroVideo = (string) Setting::getValue('storefront_hero_video', '');
 
-        if ($request->boolean('remove_storefront_hero_video')) {
+        $hasHeroVideoUpload = $request->hasFile('storefront_hero_video');
+
+        if ($request->boolean('remove_storefront_hero_video') && ! $hasHeroVideoUpload) {
             $this->deleteManagedHeroMedia($heroVideo);
             $heroVideo = '';
         }
 
-        if ($request->hasFile('storefront_hero_video')) {
+        if ($hasHeroVideoUpload) {
             $uploadedHeroVideo = $request->file('storefront_hero_video');
             $this->logHeroVideoUploadAttempt($request, $uploadedHeroVideo);
 
@@ -185,7 +191,7 @@ class SettingController extends Controller
 
                 return back()
                     ->withInput()
-                    ->withErrors(['storefront_hero_video' => __('Hero video upload failed. Please select a valid MP4 file.')]);
+                    ->withErrors(['storefront_hero_video' => $this->heroVideoUploadErrorMessage()]);
             }
 
             try {
@@ -407,32 +413,7 @@ class SettingController extends Controller
             return false;
         }
 
-        return $this->hasMp4FtypSignature($realPath)
-            && ! $this->containsDangerousUploadSignature($realPath);
-    }
-
-    private function hasMp4FtypSignature(string $path): bool
-    {
-        $handle = @fopen($path, 'rb');
-        if ($handle === false) {
-            return false;
-        }
-
-        $header = (string) fread($handle, 64);
-        fclose($handle);
-
-        if (strlen($header) < 12 || substr($header, 4, 4) !== 'ftyp') {
-            return false;
-        }
-
-        $brandBytes = substr($header, 8, 56);
-        foreach (['isom', 'iso2', 'mp41', 'mp42', 'avc1', 'dash', 'M4V '] as $brand) {
-            if (str_contains($brandBytes, $brand)) {
-                return true;
-            }
-        }
-
-        return false;
+        return ! $this->containsDangerousUploadSignature($realPath);
     }
 
     private function containsDangerousUploadSignature(string $path): bool
@@ -510,13 +491,20 @@ class SettingController extends Controller
             'php_memory_limit' => ini_get('memory_limit'),
             'upload_tmp_path_readable' => $readablePath,
             'original_name' => $this->uploadedFileValue($uploadedVideo, 'getClientOriginalName'),
+            'original_filename' => $this->uploadedFileValue($uploadedVideo, 'getClientOriginalName'),
             'client_mime' => $this->uploadedFileValue($uploadedVideo, 'getClientMimeType'),
             'detected_mime' => $readablePath ? $this->uploadedFileValue($uploadedVideo, 'getMimeType') : null,
             'extension' => $this->uploadedFileValue($uploadedVideo, 'getClientOriginalExtension'),
             'size' => $this->uploadedFileValue($uploadedVideo, 'getSize'),
+            'size_bytes' => $this->uploadedFileValue($uploadedVideo, 'getSize'),
             'upload_error' => $this->uploadedFileValue($uploadedVideo, 'getError'),
             'upload_error_message' => $this->uploadedFileValue($uploadedVideo, 'getErrorMessage'),
         ];
+    }
+
+    private function heroVideoUploadErrorMessage(): string
+    {
+        return __('Hero video upload failed. Please upload an MP4 video under 50MB. If it still fails, encode it as H.264/AAC MP4.');
     }
 
     private function uploadedFileValue(?UploadedFile $uploadedVideo, string $method): mixed

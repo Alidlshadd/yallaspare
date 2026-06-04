@@ -939,6 +939,7 @@
     "Hero Title": "Hero Title",
     "Hero Video": "Hero Video",
     "Hero video must be 50MB or smaller.": "Hero video must be 50MB or smaller.",
+    "Hero video upload failed. Please upload an MP4 video under 50MB. If it still fails, encode it as H.264/AAC MP4.": "Hero video upload failed. Please upload an MP4 video under 50MB. If it still fails, encode it as H.264/AAC MP4.",
     "Hero video upload failed. Please select a valid MP4 file.": "Hero video upload failed. Please select a valid MP4 file.",
     "Hidden": "Hidden",
     "Hide Details": "Hide Details",

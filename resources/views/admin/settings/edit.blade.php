@@ -314,7 +314,7 @@
 
                 const name = file.name.toLowerCase();
                 if (!name.endsWith('.mp4')) {
-                    showClientError(@json(__('Hero video upload failed. Please select a valid MP4 file.')));
+                    showClientError(@json(__('Hero video upload failed. Please upload an MP4 video under 50MB. If it still fails, encode it as H.264/AAC MP4.')));
                     return false;
                 }
 
