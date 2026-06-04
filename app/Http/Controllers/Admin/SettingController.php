@@ -86,7 +86,7 @@ class SettingController extends Controller
                         return;
                     }
 
-                    if (! $this->isSafeMp4Upload($value)) {
+                    if (! $this->heroVideoSafetyReport($value)['safe']) {
                         $fail($this->heroVideoUploadErrorMessage());
                     }
                 },
@@ -117,6 +117,9 @@ class SettingController extends Controller
                     [
                         'errors' => $validator->errors()->get('storefront_hero_video'),
                         'validation_errors' => $validator->errors()->get('storefront_hero_video'),
+                        'failed_rules' => $validator->failed(),
+                        'failed_rule_names' => array_keys($validator->failed()['storefront_hero_video'] ?? []),
+                        'hero_video_safety' => $this->heroVideoSafetyReport($request->file('storefront_hero_video')),
                     ]
                 );
             }
@@ -399,49 +402,87 @@ class SettingController extends Controller
         return $storedPath;
     }
 
-    private function isSafeMp4Upload(UploadedFile $uploadedVideo): bool
+    /**
+     * @return array<string, mixed>
+     */
+    private function heroVideoSafetyReport(UploadedFile $uploadedVideo): array
     {
         $realPath = $uploadedVideo->getRealPath();
+        $extension = strtolower($uploadedVideo->getClientOriginalExtension());
+        $size = $uploadedVideo->getSize();
+        $readablePath = is_string($realPath) && $realPath !== '' && is_readable($realPath);
+
+        $report = [
+            'safe' => false,
+            'custom_reason' => null,
+            'upload_valid' => $uploadedVideo->isValid(),
+            'real_path_available' => $realPath !== false,
+            'readable' => $readablePath,
+            'extension' => $extension,
+            'size_bytes' => $size,
+            'max_bytes' => self::HERO_VIDEO_MAX_BYTES,
+            'first_bytes_hex' => null,
+            'mp4_ftyp_offset' => null,
+            'mp4_ftyp_found' => false,
+            'leading_dangerous_signature_found' => false,
+            'leading_dangerous_signature' => null,
+            'full_stream_dangerous_signature_scan' => 'not_used_binary_false_positive_risk',
+        ];
 
         if (! $uploadedVideo->isValid()
             || $realPath === false
-            || ! is_readable($realPath)
+            || ! $readablePath
             || strtolower($uploadedVideo->getClientOriginalExtension()) !== 'mp4'
-            || $uploadedVideo->getSize() <= 0
-            || $uploadedVideo->getSize() > self::HERO_VIDEO_MAX_BYTES
+            || $size <= 0
+            || $size > self::HERO_VIDEO_MAX_BYTES
         ) {
-            return false;
+            $report['custom_reason'] = match (true) {
+                ! $uploadedVideo->isValid() => 'php_upload_invalid',
+                $realPath === false => 'missing_real_path',
+                ! $readablePath => 'temp_file_unreadable',
+                $extension !== 'mp4' => 'extension_not_mp4',
+                $size <= 0 => 'empty_file',
+                $size > self::HERO_VIDEO_MAX_BYTES => 'file_too_large',
+                default => 'basic_safety_check_failed',
+            };
+
+            return $report;
         }
 
-        return ! $this->containsDangerousUploadSignature($realPath);
-    }
+        $header = @file_get_contents($realPath, false, null, 0, 4096);
+        if (! is_string($header) || $header === '') {
+            $report['custom_reason'] = 'header_unreadable';
 
-    private function containsDangerousUploadSignature(string $path): bool
-    {
-        $handle = @fopen($path, 'rb');
-        if ($handle === false) {
-            return true;
+            return $report;
         }
 
-        $tail = '';
-        while (! feof($handle)) {
-            $chunk = $tail . (string) fread($handle, 1024 * 1024);
-            $lowerChunk = strtolower($chunk);
+        $report['first_bytes_hex'] = bin2hex(substr($header, 0, 32));
+        $lowerHeader = strtolower($header);
 
-            foreach (['<?php', '<?=', '<? ', '<script', '<html', '#!/usr/bin/env php'] as $signature) {
-                if (str_contains($lowerChunk, $signature)) {
-                    fclose($handle);
+        foreach (['<?php', '<?=', '<? ', '<script', '<html', '#!/usr/bin/env php'] as $signature) {
+            if (str_starts_with(ltrim($lowerHeader), $signature)) {
+                $report['leading_dangerous_signature_found'] = true;
+                $report['leading_dangerous_signature'] = $signature;
+                $report['custom_reason'] = 'leading_dangerous_signature';
 
-                    return true;
-                }
+                return $report;
             }
-
-            $tail = substr($chunk, -32);
         }
 
-        fclose($handle);
+        $ftypOffset = strpos($header, 'ftyp');
+        $report['mp4_ftyp_offset'] = $ftypOffset === false ? null : $ftypOffset;
+        $report['mp4_ftyp_found'] = $ftypOffset !== false;
 
-        return false;
+        if ($ftypOffset === false) {
+            $report['custom_reason'] = 'missing_mp4_ftyp_box';
+
+            return $report;
+        }
+
+        $report['safe'] = true;
+        $report['custom_reason'] = 'passed';
+
+        return $report;
     }
 
     private function logHeroVideoUploadAttempt(Request $request, ?UploadedFile $uploadedVideo): void

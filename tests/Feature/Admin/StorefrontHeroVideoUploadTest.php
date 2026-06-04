@@ -59,6 +59,33 @@ class StorefrontHeroVideoUploadTest extends TestCase
         Storage::disk('public')->assertExists($storedPath);
     }
 
+    public function test_storefront_hero_video_accepts_valid_mp4_with_text_like_bytes_inside_stream(): void
+    {
+        Storage::fake('public');
+        $user = $this->settingsManager();
+        $video = $this->fakeMp4Upload(
+            '12983897_3840_2160_30fps.mp4',
+            'video/mp4',
+            $this->fakeMp4Bytes() . str_repeat("\0", 1024) . '<script'
+        );
+
+        $response = $this
+            ->withSession([
+                'admin_2fa.verified_user_id' => $user->id,
+                'auth.password_confirmed_at' => time(),
+            ])
+            ->actingAs($user)
+            ->put(route('admin.settings.update'), array_merge($this->validPayload(), [
+                'storefront_hero_video' => $video,
+            ]));
+
+        $response->assertRedirect(route('admin.settings.edit'));
+
+        $storedPath = (string) Setting::getValue('storefront_hero_video');
+        $this->assertMatchesRegularExpression('#^home/hero/[0-9a-f-]+\.mp4$#', $storedPath);
+        Storage::disk('public')->assertExists($storedPath);
+    }
+
     public function test_storefront_hero_video_rejects_oversized_file(): void
     {
         Storage::fake('public');
@@ -132,6 +159,30 @@ class StorefrontHeroVideoUploadTest extends TestCase
         Storage::disk('public')->assertMissing('home/hero/hero.mp4');
     }
 
+    public function test_storefront_hero_video_rejects_mp4_without_ftyp_container_marker(): void
+    {
+        Storage::fake('public');
+        $user = $this->settingsManager();
+        $video = UploadedFile::fake()->createWithContent('hero.mp4', str_repeat("\0", 1024));
+
+        $response = $this
+            ->withSession([
+                'admin_2fa.verified_user_id' => $user->id,
+                'auth.password_confirmed_at' => time(),
+            ])
+            ->actingAs($user)
+            ->from(route('admin.settings.edit'))
+            ->put(route('admin.settings.update'), array_merge($this->validPayload(), [
+                'storefront_hero_video' => $video,
+            ]));
+
+        $response
+            ->assertRedirect(route('admin.settings.edit'))
+            ->assertSessionHasErrors('storefront_hero_video');
+
+        $this->assertSame('', (string) Setting::getValue('storefront_hero_video'));
+    }
+
     public function test_failed_storefront_hero_video_upload_does_not_delete_current_video(): void
     {
         Storage::fake('public');
@@ -187,10 +238,10 @@ class StorefrontHeroVideoUploadTest extends TestCase
         ];
     }
 
-    private function fakeMp4Upload(string $name, string $mimeType = 'video/mp4'): UploadedFile
+    private function fakeMp4Upload(string $name, string $mimeType = 'video/mp4', ?string $bytes = null): UploadedFile
     {
         $path = tempnam(sys_get_temp_dir(), 'hero-mp4-');
-        file_put_contents($path, $this->fakeMp4Bytes());
+        file_put_contents($path, $bytes ?? $this->fakeMp4Bytes());
 
         return new UploadedFile($path, $name, $mimeType, null, true);
     }
