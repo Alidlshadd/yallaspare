@@ -6,7 +6,7 @@
     $description = trim($__env->yieldContent('meta_description'));
     $description = $description !== ''
         ? $description
-        : __('Yalla Spare auto parts catalog, orders, and customer support.');
+        : __('YallaSpare is an auto spare parts platform built for Iraq, helping customers find trusted parts, check vehicle compatibility, order easily, and get reliable support.');
     $siteLogoUrl = (string) ($systemSettings['site_logo_url'] ?? '');
     $siteLogoIconUrl = $siteLogoUrl !== ''
         ? (str_starts_with($siteLogoUrl, 'http://') || str_starts_with($siteLogoUrl, 'https://')
