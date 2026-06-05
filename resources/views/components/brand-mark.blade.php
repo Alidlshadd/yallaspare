@@ -9,7 +9,7 @@
 ])
 
 @php
-    $resolvedAlt = (string) ($alt ?: ($brand . ' logo'));
+    $resolvedAlt = (string) ($alt ?: 'Yalla Spare logo');
     $initials = \App\Support\Branding::initials((string) $brand);
 @endphp
 

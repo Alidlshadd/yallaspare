@@ -33,7 +33,7 @@ class Branding
                 ? (string) filemtime($fullPath)
                 : md5($storagePath);
 
-            return '/storage/' . ltrim($storagePath, '/') . '?v=' . $version;
+            return '/brand/logo?v=' . rawurlencode($version);
         }
 
         $publicPath = self::publicPathFromValue($value);
