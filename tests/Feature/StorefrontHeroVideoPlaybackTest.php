@@ -34,7 +34,13 @@ class StorefrontHeroVideoPlaybackTest extends TestCase
         $this->assertStringContainsString('webkit-playsinline', $videoTag);
         $this->assertStringContainsString('preload="auto"', $videoTag);
         $this->assertStringContainsString('disablepictureinpicture', $videoTag);
+        $this->assertStringContainsString('disableremoteplayback', $videoTag);
         $this->assertStringContainsString('x-webkit-airplay="deny"', $videoTag);
         $this->assertStringNotContainsString('controls', $videoTag);
+        $this->assertStringContainsString('window.setInterval', $html);
+        $this->assertStringContainsString('video.controls = false', $html);
+        $this->assertStringContainsString("'touchstart'", $html);
+        $this->assertStringContainsString("'orientationchange'", $html);
+        $this->assertStringContainsString('hero-background-video::-webkit-media-controls-start-playback-button', $html);
     }
 }

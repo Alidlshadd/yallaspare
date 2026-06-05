@@ -11,6 +11,9 @@ class SiteIconHeadTest extends TestCase
 {
     use RefreshDatabase;
 
+    private const PUBLIC_SEO_TITLE = 'YallaSpare | Auto Spare Parts Platform in Iraq';
+    private const PUBLIC_SEO_DESCRIPTION = 'YallaSpare is an auto spare parts platform built for Iraq, helping customers find trusted parts, check vehicle compatibility, order easily, and get reliable support.';
+
     private string $logoPath = 'settings/test-head-logo.png';
 
     protected function tearDown(): void
@@ -47,6 +50,12 @@ class SiteIconHeadTest extends TestCase
         $this->assertStringContainsString('property="og:image"', $head);
         $this->assertStringContainsString('icons/yallaspare-og-preview.png?v=20260605', $head);
         $this->assertStringContainsString('name="twitter:image"', $head);
+        $this->assertStringContainsString('<title>' . self::PUBLIC_SEO_TITLE . '</title>', $head);
+        $this->assertStringContainsString('name="description" content="' . self::PUBLIC_SEO_DESCRIPTION . '"', $head);
+        $this->assertStringContainsString('property="og:title" content="' . self::PUBLIC_SEO_TITLE . '"', $head);
+        $this->assertStringContainsString('property="og:description" content="' . self::PUBLIC_SEO_DESCRIPTION . '"', $head);
+        $this->assertStringContainsString('name="twitter:title" content="' . self::PUBLIC_SEO_TITLE . '"', $head);
+        $this->assertStringContainsString('name="twitter:description" content="' . self::PUBLIC_SEO_DESCRIPTION . '"', $head);
     }
 
     public function test_public_head_does_not_reference_old_cube_fallback_assets(): void

@@ -26,7 +26,7 @@
             <div class="relative h-[170px] overflow-hidden sm:h-[210px] lg:h-[250px]">
                 @if ($heroVideoUrl)
                     <video
-                        class="h-full w-full object-cover pointer-events-none"
+                        class="hero-background-video h-full w-full object-cover pointer-events-none"
                         data-hero-background-video
                         autoplay
                         muted
@@ -35,6 +35,7 @@
                         webkit-playsinline
                         preload="auto"
                         disablepictureinpicture
+                        disableremoteplayback
                         x-webkit-airplay="deny"
                         aria-hidden="true"
                         tabindex="-1"
@@ -331,13 +332,24 @@
     </div>
 
     @push('scripts')
+        <style>
+            .hero-background-video::-webkit-media-controls,
+            .hero-background-video::-webkit-media-controls-panel,
+            .hero-background-video::-webkit-media-controls-play-button,
+            .hero-background-video::-webkit-media-controls-start-playback-button {
+                display: none !important;
+                -webkit-appearance: none;
+                opacity: 0;
+                pointer-events: none;
+            }
+        </style>
         <script>
             (() => {
                 const videos = document.querySelectorAll('[data-hero-background-video]');
 
-                const playHeroVideo = (video) => {
+                const prepareHeroVideo = (video) => {
                     if (!(video instanceof HTMLVideoElement)) {
-                        return;
+                        return false;
                     }
 
                     video.muted = true;
@@ -345,12 +357,30 @@
                     video.loop = true;
                     video.autoplay = true;
                     video.playsInline = true;
+                    video.controls = false;
                     video.setAttribute('muted', '');
                     video.setAttribute('autoplay', '');
                     video.setAttribute('loop', '');
                     video.setAttribute('playsinline', '');
                     video.setAttribute('webkit-playsinline', '');
+                    video.setAttribute('disablepictureinpicture', '');
+                    video.setAttribute('disableremoteplayback', '');
+                    video.setAttribute('x-webkit-airplay', 'deny');
+                    video.setAttribute('aria-hidden', 'true');
+                    video.setAttribute('tabindex', '-1');
                     video.removeAttribute('controls');
+
+                    return true;
+                };
+
+                const playHeroVideo = (video) => {
+                    if (!prepareHeroVideo(video) || document.hidden) {
+                        return;
+                    }
+
+                    if (video.ended) {
+                        video.currentTime = 0;
+                    }
 
                     const playPromise = video.play();
                     if (playPromise && typeof playPromise.catch === 'function') {
@@ -358,23 +388,67 @@
                     }
                 };
 
+                const restartHeroVideo = (video, delay = 80) => {
+                    window.setTimeout(() => playHeroVideo(video), delay);
+                };
+
+                const resumeAllHeroVideos = () => {
+                    videos.forEach((video) => playHeroVideo(video));
+                };
+
                 videos.forEach((video) => {
                     playHeroVideo(video);
 
-                    video.addEventListener('loadedmetadata', () => playHeroVideo(video));
-                    video.addEventListener('canplay', () => playHeroVideo(video));
-                    video.addEventListener('pause', () => {
-                        if (!document.hidden) {
-                            window.setTimeout(() => playHeroVideo(video), 120);
-                        }
+                    [
+                        'loadedmetadata',
+                        'loadeddata',
+                        'canplay',
+                        'canplaythrough',
+                        'playing',
+                    ].forEach((eventName) => {
+                        video.addEventListener(eventName, () => playHeroVideo(video), { passive: true });
+                    });
+
+                    [
+                        'pause',
+                        'ended',
+                        'stalled',
+                        'suspend',
+                        'waiting',
+                        'emptied',
+                        'abort',
+                    ].forEach((eventName) => {
+                        video.addEventListener(eventName, () => restartHeroVideo(video), { passive: true });
                     });
                 });
 
                 document.addEventListener('visibilitychange', () => {
                     if (!document.hidden) {
-                        videos.forEach(playHeroVideo);
+                        resumeAllHeroVideos();
                     }
                 });
+
+                ['pageshow', 'focus', 'resize', 'orientationchange'].forEach((eventName) => {
+                    window.addEventListener(eventName, resumeAllHeroVideos, { passive: true });
+                });
+
+                ['touchstart', 'pointerdown', 'scroll'].forEach((eventName) => {
+                    window.addEventListener(eventName, () => resumeAllHeroVideos(), { passive: true });
+                });
+
+                window.setInterval(() => {
+                    if (document.hidden) {
+                        return;
+                    }
+
+                    videos.forEach((video) => {
+                        prepareHeroVideo(video);
+
+                        if (video.paused || video.ended || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) {
+                            playHeroVideo(video);
+                        }
+                    });
+                }, 1200);
             })();
 
             document.querySelectorAll('[data-vehicle-finder]').forEach((form) => {

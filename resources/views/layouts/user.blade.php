@@ -51,7 +51,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <title>@yield('title', $brand)</title>
+        <title>@yield('title', __('YallaSpare | Auto Spare Parts Platform in Iraq'))</title>
         <meta name="description" content="@yield('meta_description', __('YallaSpare is an auto spare parts platform built for Iraq, helping customers find trusted parts, check vehicle compatibility, order easily, and get reliable support.'))">
         @include('partials.brand-head')
         @include('partials.seo-locale')

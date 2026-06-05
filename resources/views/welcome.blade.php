@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>{{ __('YallaSpare | Auto Spare Parts Platform in Iraq') }}</title>
+    <meta name="description" content="{{ __('YallaSpare is an auto spare parts platform built for Iraq, helping customers find trusted parts, check vehicle compatibility, order easily, and get reliable support.') }}">
     @include('partials.brand-head')
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
@@ -92,4 +93,3 @@
     @include('partials.site-footer')
 </body>
 </html>
-

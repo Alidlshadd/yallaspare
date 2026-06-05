@@ -1,8 +1,9 @@
 @php
     $iconVersion = '20260605';
     $siteName = (string) ($systemSettings['site_name'] ?? config('app.name', 'YallaSpare'));
+    $defaultMetaTitle = __('YallaSpare | Auto Spare Parts Platform in Iraq');
     $pageTitle = trim($__env->yieldContent('title'));
-    $metaTitle = $pageTitle !== '' ? $pageTitle : $siteName;
+    $metaTitle = $pageTitle !== '' ? $pageTitle : $defaultMetaTitle;
     $description = trim($__env->yieldContent('meta_description'));
     $description = $description !== ''
         ? $description
