@@ -23,11 +23,18 @@
             <div class="relative h-[170px] overflow-hidden sm:h-[210px] lg:h-[250px]">
                 @if ($heroVideoUrl)
                     <video
-                        class="h-full w-full object-cover"
+                        class="h-full w-full object-cover pointer-events-none"
+                        data-hero-background-video
                         autoplay
                         muted
                         loop
                         playsinline
+                        webkit-playsinline
+                        preload="auto"
+                        disablepictureinpicture
+                        x-webkit-airplay="deny"
+                        aria-hidden="true"
+                        tabindex="-1"
                         @if ($heroImageUrl) poster="{{ $heroImageUrl }}" @endif
                     >
                         <source src="{{ $heroVideoUrl }}" type="video/mp4">
@@ -322,6 +329,51 @@
 
     @push('scripts')
         <script>
+            (() => {
+                const videos = document.querySelectorAll('[data-hero-background-video]');
+
+                const playHeroVideo = (video) => {
+                    if (!(video instanceof HTMLVideoElement)) {
+                        return;
+                    }
+
+                    video.muted = true;
+                    video.defaultMuted = true;
+                    video.loop = true;
+                    video.autoplay = true;
+                    video.playsInline = true;
+                    video.setAttribute('muted', '');
+                    video.setAttribute('autoplay', '');
+                    video.setAttribute('loop', '');
+                    video.setAttribute('playsinline', '');
+                    video.setAttribute('webkit-playsinline', '');
+                    video.removeAttribute('controls');
+
+                    const playPromise = video.play();
+                    if (playPromise && typeof playPromise.catch === 'function') {
+                        playPromise.catch(() => {});
+                    }
+                };
+
+                videos.forEach((video) => {
+                    playHeroVideo(video);
+
+                    video.addEventListener('loadedmetadata', () => playHeroVideo(video));
+                    video.addEventListener('canplay', () => playHeroVideo(video));
+                    video.addEventListener('pause', () => {
+                        if (!document.hidden) {
+                            window.setTimeout(() => playHeroVideo(video), 120);
+                        }
+                    });
+                });
+
+                document.addEventListener('visibilitychange', () => {
+                    if (!document.hidden) {
+                        videos.forEach(playHeroVideo);
+                    }
+                });
+            })();
+
             document.querySelectorAll('[data-vehicle-finder]').forEach((form) => {
                 const brandSelect = form.querySelector('[data-vehicle-brand]');
                 const modelSelect = form.querySelector('[data-vehicle-model]');
