@@ -25,8 +25,21 @@
         <section class="mx-auto w-full overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-950 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:shadow-black/10 sm:rounded-3xl">
             <div class="relative h-[170px] overflow-hidden sm:h-[210px] lg:h-[250px]">
                 @if ($heroVideoUrl)
+                    @if ($heroImageUrl)
+                        <img
+                            src="{{ $heroImageUrl }}"
+                            alt="{{ __('Auto parts banner') }}"
+                            class="absolute inset-0 h-full w-full object-cover"
+                            data-hero-video-fallback
+                        >
+                    @else
+                        <div
+                            class="absolute inset-0 h-full w-full bg-[linear-gradient(135deg,#070740_0%,#111827_52%,#1f2937_100%)]"
+                            data-hero-video-fallback
+                        ></div>
+                    @endif
                     <video
-                        class="hero-background-video h-full w-full object-cover pointer-events-none"
+                        class="hero-background-video absolute inset-0 h-full w-full object-cover pointer-events-none opacity-0 transition-opacity duration-300"
                         data-hero-background-video
                         autoplay
                         muted
@@ -349,6 +362,15 @@
                 const videos = Array.from(document.querySelectorAll('[data-hero-background-video]'));
                 const progressState = new WeakMap();
 
+                const setHeroVideoVisible = (video, visible) => {
+                    if (!(video instanceof HTMLVideoElement)) {
+                        return;
+                    }
+
+                    video.classList.toggle('opacity-100', visible);
+                    video.classList.toggle('opacity-0', !visible);
+                };
+
                 const prepareHeroVideo = (video) => {
                     if (!(video instanceof HTMLVideoElement)) {
                         return false;
@@ -380,6 +402,7 @@
 
                 const playHeroVideo = (video, options = {}) => {
                     if (!prepareHeroVideo(video) || document.hidden) {
+                        setHeroVideoVisible(video, false);
                         return;
                     }
 
@@ -396,6 +419,7 @@
                     const playPromise = video.play();
                     if (playPromise && typeof playPromise.catch === 'function') {
                         playPromise.catch(() => {
+                            setHeroVideoVisible(video, false);
                             if (!document.hidden) {
                                 window.setTimeout(() => playHeroVideo(video), 250);
                             }
@@ -404,6 +428,7 @@
                 };
 
                 const restartHeroVideo = (video, delay = 40, options = {}) => {
+                    setHeroVideoVisible(video, false);
                     window.setTimeout(() => playHeroVideo(video, options), delay);
                 };
 
@@ -431,11 +456,15 @@
                     let frozenCount = progressed ? 0 : previous.frozenCount + 1;
 
                     if (unhealthy || frozenCount >= 3) {
+                        setHeroVideoVisible(video, false);
+
                         const shouldReload = video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE
                             || video.readyState === HTMLMediaElement.HAVE_NOTHING;
 
                         playHeroVideo(video, { reload: shouldReload, restart: video.ended });
                         frozenCount = 0;
+                    } else if (!video.paused && video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+                        setHeroVideoVisible(video, true);
                     }
 
                     progressState.set(video, {
@@ -453,9 +482,16 @@
                         'loadeddata',
                         'canplay',
                         'canplaythrough',
-                        'playing',
                     ].forEach((eventName) => {
                         video.addEventListener(eventName, () => playHeroVideo(video), { passive: true });
+                    });
+
+                    ['playing', 'timeupdate'].forEach((eventName) => {
+                        video.addEventListener(eventName, () => {
+                            if (!video.paused && video.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) {
+                                setHeroVideoVisible(video, true);
+                            }
+                        }, { passive: true });
                     });
 
                     [

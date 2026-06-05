@@ -15,7 +15,9 @@ class StorefrontHeroVideoPlaybackTest extends TestCase
     {
         Storage::fake('public');
         Storage::disk('public')->put('home/hero/current.mp4', 'mp4');
+        Storage::disk('public')->put('home/hero/poster.jpg', 'poster');
         Setting::setValue('storefront_hero_video', 'home/hero/current.mp4');
+        Setting::setValue('storefront_hero_image', 'home/hero/poster.jpg');
 
         $response = $this->get(route('user.shop.home'));
 
@@ -38,8 +40,14 @@ class StorefrontHeroVideoPlaybackTest extends TestCase
         $this->assertStringContainsString('controlslist="nodownload nofullscreen noremoteplayback"', $videoTag);
         $this->assertStringContainsString('x-webkit-airplay="deny"', $videoTag);
         $this->assertDoesNotMatchRegularExpression('/\scontrols(\s|>|=)/i', $videoTag);
+        $this->assertStringContainsString('opacity-0', $videoTag);
+        $this->assertStringContainsString('data-hero-video-fallback', $html);
+        $this->assertStringContainsString('home/hero/poster.jpg', $html);
         $this->assertStringContainsString('window.setInterval', $html);
         $this->assertStringContainsString('}, 500);', $html);
+        $this->assertStringContainsString('setHeroVideoVisible', $html);
+        $this->assertStringContainsString("video.classList.toggle('opacity-100', visible)", $html);
+        $this->assertStringContainsString("video.classList.toggle('opacity-0', !visible)", $html);
         $this->assertStringContainsString('video.controls = false', $html);
         $this->assertStringContainsString('video.volume = 0', $html);
         $this->assertStringContainsString('video.playbackRate = 1', $html);
