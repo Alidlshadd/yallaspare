@@ -51,6 +51,178 @@ class AdminProductsCrudTest extends TestCase
         $response->assertSee('storage/products/test-product.jpg');
     }
 
+    public function test_products_index_active_filter_shows_only_active_products(): void
+    {
+        $user = $this->adminUser();
+        $category = $this->createCategory();
+
+        Product::factory()->create([
+            'category_id' => $category->id,
+            'name_en' => 'Visible Active Product',
+            'sku' => 'SKU-FILTER-ACTIVE',
+            'is_active' => true,
+        ]);
+        Product::factory()->create([
+            'category_id' => $category->id,
+            'name_en' => 'Hidden Inactive Product',
+            'sku' => 'SKU-FILTER-INACTIVE-HIDDEN',
+            'is_active' => false,
+        ]);
+
+        $response = $this->actingAs($user)->get(route('admin.products.index', ['status' => 'active']));
+
+        $response->assertOk();
+        $response->assertSee('SKU-FILTER-ACTIVE');
+        $response->assertDontSee('SKU-FILTER-INACTIVE-HIDDEN');
+    }
+
+    public function test_products_index_inactive_filter_shows_only_inactive_products(): void
+    {
+        $user = $this->adminUser();
+        $category = $this->createCategory();
+
+        Product::factory()->create([
+            'category_id' => $category->id,
+            'name_en' => 'Hidden Active Product',
+            'sku' => 'SKU-FILTER-ACTIVE-HIDDEN',
+            'is_active' => true,
+        ]);
+        Product::factory()->create([
+            'category_id' => $category->id,
+            'name_en' => 'Visible Inactive Product',
+            'sku' => 'SKU-FILTER-INACTIVE',
+            'is_active' => false,
+        ]);
+
+        $response = $this->actingAs($user)->get(route('admin.products.index', ['status' => 'inactive']));
+
+        $response->assertOk();
+        $response->assertSee('SKU-FILTER-INACTIVE');
+        $response->assertDontSee('SKU-FILTER-ACTIVE-HIDDEN');
+    }
+
+    public function test_products_index_low_stock_filter_excludes_out_of_stock_products(): void
+    {
+        $user = $this->adminUser();
+        $category = $this->createCategory();
+        \App\Models\Setting::setValue('low_stock_threshold', '5');
+
+        Product::factory()->create([
+            'category_id' => $category->id,
+            'sku' => 'SKU-FILTER-LOW-STOCK',
+            'stock_quantity' => 3,
+        ]);
+        Product::factory()->create([
+            'category_id' => $category->id,
+            'sku' => 'SKU-FILTER-OUT-HIDDEN',
+            'stock_quantity' => 0,
+        ]);
+        Product::factory()->create([
+            'category_id' => $category->id,
+            'sku' => 'SKU-FILTER-STOCKED-HIDDEN',
+            'stock_quantity' => 8,
+        ]);
+
+        $response = $this->actingAs($user)->get(route('admin.products.index', ['status' => 'low_stock']));
+
+        $response->assertOk();
+        $response->assertSee('SKU-FILTER-LOW-STOCK');
+        $response->assertDontSee('SKU-FILTER-OUT-HIDDEN');
+        $response->assertDontSee('SKU-FILTER-STOCKED-HIDDEN');
+    }
+
+    public function test_products_index_out_of_stock_filter_shows_only_zero_stock_products(): void
+    {
+        $user = $this->adminUser();
+        $category = $this->createCategory();
+
+        Product::factory()->create([
+            'category_id' => $category->id,
+            'sku' => 'SKU-FILTER-OUT-STOCK',
+            'stock_quantity' => 0,
+        ]);
+        Product::factory()->create([
+            'category_id' => $category->id,
+            'sku' => 'SKU-FILTER-LOW-HIDDEN',
+            'stock_quantity' => 2,
+        ]);
+
+        $response = $this->actingAs($user)->get(route('admin.products.index', ['status' => 'out_of_stock']));
+
+        $response->assertOk();
+        $response->assertSee('SKU-FILTER-OUT-STOCK');
+        $response->assertDontSee('SKU-FILTER-LOW-HIDDEN');
+    }
+
+    public function test_products_index_pagination_preserves_status_filter(): void
+    {
+        $user = $this->adminUser();
+        $category = $this->createCategory();
+
+        for ($i = 1; $i <= 12; $i++) {
+            Product::factory()->create([
+                'category_id' => $category->id,
+                'sku' => sprintf('SKU-INACTIVE-PAGE-%02d', $i),
+                'is_active' => false,
+            ]);
+        }
+
+        $response = $this->actingAs($user)->get(route('admin.products.index', ['status' => 'inactive']));
+
+        $response->assertOk();
+        $this->assertStringContainsString('status=inactive', $response->getContent());
+        $this->assertStringContainsString('page=2', $response->getContent());
+    }
+
+    public function test_products_index_search_and_brand_work_with_status_filter(): void
+    {
+        $user = $this->adminUser();
+        $category = $this->createCategory();
+
+        Product::factory()->create([
+            'category_id' => $category->id,
+            'name_en' => 'Brake Filter Match',
+            'sku' => 'SKU-SEARCH-INACTIVE-MATCH',
+            'brand' => 'Bosch',
+            'is_active' => false,
+        ]);
+        Product::factory()->create([
+            'category_id' => $category->id,
+            'name_en' => 'Brake Filter Active',
+            'sku' => 'SKU-SEARCH-ACTIVE-HIDDEN',
+            'brand' => 'Bosch',
+            'is_active' => true,
+        ]);
+        Product::factory()->create([
+            'category_id' => $category->id,
+            'name_en' => 'Brake Filter Wrong Brand',
+            'sku' => 'SKU-SEARCH-BRAND-HIDDEN',
+            'brand' => 'Denso',
+            'is_active' => false,
+        ]);
+
+        $response = $this->actingAs($user)->get(route('admin.products.index', [
+            'status' => 'inactive',
+            'search' => 'brake',
+            'brand' => 'Bosch',
+        ]));
+
+        $response->assertOk();
+        $response->assertSee('SKU-SEARCH-INACTIVE-MATCH');
+        $response->assertDontSee('SKU-SEARCH-ACTIVE-HIDDEN');
+        $response->assertDontSee('SKU-SEARCH-BRAND-HIDDEN');
+    }
+
+    public function test_products_index_inactive_empty_state_is_specific(): void
+    {
+        $user = $this->adminUser();
+
+        $response = $this->actingAs($user)->get(route('admin.products.index', ['status' => 'inactive']));
+
+        $response->assertOk();
+        $response->assertSee('No inactive products found.');
+    }
+
     public function test_products_index_uses_stable_pagination_order(): void
     {
         $user = $this->adminUser();

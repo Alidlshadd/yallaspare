@@ -37,7 +37,7 @@
 
             <!-- HEADER + ADD BUTTON -->
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-lg font-semibold dark:text-slate-100">{{ __('All Products') }}</h3>
+                <h3 class="text-lg font-semibold dark:text-slate-100">{{ $statusTabs[$status]['label'] ?? __('All Products') }}</h3>
 
                <a href="{{ route('admin.products.create') }}"
 
@@ -114,6 +114,7 @@
             @php
                 $currentSort = $sort ?? request('sort', 'id');
                 $currentDir = $direction ?? request('dir', 'desc');
+                $currentStatus = $status ?? request('status', 'all');
                 $sortUrl = function ($field) use ($currentSort, $currentDir) {
                     $dir = $currentSort === $field && $currentDir === 'asc' ? 'desc' : 'asc';
                     return route('admin.products.index', array_merge(request()->except('page'), [
@@ -121,10 +122,31 @@
                         'dir' => $dir,
                     ]));
                 };
+                $statusUrl = function ($statusKey) {
+                    return route('admin.products.index', array_merge(request()->except('page', 'status', 'low_stock'), [
+                        'status' => $statusKey,
+                    ]));
+                };
             @endphp
+
+            <div class="mb-4 flex flex-wrap gap-2">
+                @foreach($statusTabs as $statusKey => $tab)
+                    @php
+                        $isSelected = $currentStatus === $statusKey;
+                    @endphp
+                    <a
+                        href="{{ $statusUrl($statusKey) }}"
+                        class="inline-flex items-center gap-2 rounded-full border px-3 py-2 text-sm font-semibold transition {{ $isSelected ? 'border-cyan-300 bg-cyan-100 text-cyan-800 shadow-sm shadow-cyan-900/5 dark:border-cyan-400/40 dark:bg-cyan-400/15 dark:text-cyan-100' : 'border-slate-200 bg-white text-slate-600 hover:border-cyan-200 hover:bg-cyan-50 hover:text-cyan-800 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-cyan-500/30 dark:hover:bg-cyan-500/10 dark:hover:text-cyan-100' }}"
+                    >
+                        <span>{{ $tab['label'] }}</span>
+                        <span class="rounded-full px-2 py-0.5 text-xs {{ $isSelected ? 'bg-white/70 text-cyan-900 dark:bg-cyan-300/20 dark:text-cyan-50' : 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400' }}">{{ $tab['count'] }}</span>
+                    </a>
+                @endforeach
+            </div>
 
             <!-- SEARCH + FILTER -->
             <form method="GET" action="{{ route('admin.products.index') }}" class="mb-4 flex flex-wrap gap-2 items-center">
+                <input type="hidden" name="status" value="{{ $currentStatus }}">
                 <input type="text"
                        name="search"
                        value="{{ request('search') }}"
@@ -141,11 +163,15 @@
                     @endforeach
                 </select>
 
-                <label class="inline-flex items-center text-sm text-gray-700 dark:text-slate-300">
-                    <input type="checkbox" name="low_stock" value="1" class="rounded border-gray-300 dark:border-slate-600 dark:bg-slate-900"
-                           {{ request('low_stock') ? 'checked' : '' }}>
-                    <span class="ml-2">{{ __('Low stock only') }} (&lt;= {{ $lowStockThreshold }})</span>
-                </label>
+                <select name="brand" class="rounded border border-gray-300 bg-white px-3 py-2 text-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                    <option value="">{{ __('All Brands') }}</option>
+                    @foreach($brands as $brand)
+                        <option value="{{ $brand }}"
+                            {{ (string)request('brand') === (string)$brand ? 'selected' : '' }}>
+                            {{ $brand }}
+                        </option>
+                    @endforeach
+                </select>
 
                 <button type="submit"
                         class="bg-gray-800 text-white px-4 py-2 rounded">
@@ -278,7 +304,7 @@
                         @empty
                             <tr>
                                 <td colspan="10" class="p-4 text-center text-gray-500 dark:text-slate-400">
-                                    {{ __('No products found.') }}
+                                    {{ $statusTabs[$currentStatus]['empty'] ?? __('No products found.') }}
                                 </td>
                             </tr>
                         @endforelse
@@ -294,4 +320,3 @@
         </div>
     </div>
 </x-app-layout>
-

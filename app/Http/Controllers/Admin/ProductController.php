@@ -30,6 +30,13 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $lowStockThreshold = max((int) Setting::getValue('low_stock_threshold', config('inventory.low_stock_threshold', 5)), 0);
+        $legacyLowStockFilter = $request->boolean('low_stock') && ! $request->filled('status');
+        $status = strtolower(trim((string) $request->query('status', $legacyLowStockFilter ? 'low_stock' : 'all')));
+        $allowedStatuses = ['all', 'active', 'inactive', 'low_stock', 'out_of_stock'];
+        if (! in_array($status, $allowedStatuses, true)) {
+            $status = 'all';
+        }
+
         $query = Product::query()
             ->select([
                 'id',
@@ -64,8 +71,24 @@ class ProductController extends Controller
             $query->where('category_id', $request->category_id);
         }
 
-        if ($request->boolean('low_stock')) {
-            $query->where('stock_quantity', '<=', $lowStockThreshold);
+        $brand = trim((string) $request->query('brand', ''));
+        if ($brand !== '') {
+            $query->where('brand', $brand);
+        }
+
+        match ($status) {
+            'active' => $query->where('is_active', true),
+            'inactive' => $query->where('is_active', false),
+            'low_stock' => $query
+                ->where('stock_quantity', '>', 0)
+                ->where('stock_quantity', '<=', $lowStockThreshold),
+            'out_of_stock' => $query->where('stock_quantity', 0),
+            default => null,
+        };
+
+        if ($legacyLowStockFilter) {
+            $request->query->set('status', 'low_stock');
+            $request->query->remove('low_stock');
         }
 
         $allowedSorts = [
@@ -94,11 +117,46 @@ class ProductController extends Controller
         $categories = Cache::remember('admin:products:categories:v1', now()->addSeconds($metaCacheTtl), function () {
             return Category::query()->select(['id', 'name_en', 'name_ar', 'name_ku', 'slug'])->orderBy('name_en')->get();
         });
+        $brands = Cache::remember('admin:products:brands:v1', now()->addSeconds($metaCacheTtl), function () {
+            return Product::query()
+                ->whereNotNull('brand')
+                ->where('brand', '<>', '')
+                ->distinct()
+                ->orderBy('brand')
+                ->pluck('brand');
+        });
         $lowStockCount = Cache::remember(
-            "admin:products:low-stock-count:v1:threshold:{$lowStockThreshold}",
+            "admin:products:low-stock-count:v2:threshold:{$lowStockThreshold}",
             now()->addSeconds(min($metaCacheTtl, 120)),
-            fn () => Product::where('stock_quantity', '<=', $lowStockThreshold)->count()
+            fn () => Product::where('stock_quantity', '>', 0)->where('stock_quantity', '<=', $lowStockThreshold)->count()
         );
+        $statusTabs = [
+            'all' => [
+                'label' => __('All Products'),
+                'count' => Product::query()->count(),
+                'empty' => __('No products found.'),
+            ],
+            'active' => [
+                'label' => __('Active'),
+                'count' => Product::query()->where('is_active', true)->count(),
+                'empty' => __('No active products found.'),
+            ],
+            'inactive' => [
+                'label' => __('Inactive'),
+                'count' => Product::query()->where('is_active', false)->count(),
+                'empty' => __('No inactive products found.'),
+            ],
+            'low_stock' => [
+                'label' => __('Low Stock'),
+                'count' => $lowStockCount,
+                'empty' => __('No low stock products found.'),
+            ],
+            'out_of_stock' => [
+                'label' => __('Out of Stock'),
+                'count' => Product::query()->where('stock_quantity', 0)->count(),
+                'empty' => __('No out of stock products found.'),
+            ],
+        ];
         $currencySymbol = (string) Setting::getValue('currency_symbol', 'IQD');
         $currencyCode = (string) Setting::getValue('currency_code', 'IQD');
         $currencyLabel = $currencyCode !== '' ? $currencyCode : $currencySymbol;
@@ -107,8 +165,11 @@ class ProductController extends Controller
         return view('admin.products.index', compact(
             'products',
             'categories',
+            'brands',
             'sort',
             'direction',
+            'status',
+            'statusTabs',
             'lowStockThreshold',
             'lowStockCount',
             'currencySymbol',
