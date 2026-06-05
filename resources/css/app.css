@@ -384,15 +384,21 @@
     }
 
     .admin-sidebar-backdrop {
+        display: none;
         z-index: 80;
-        pointer-events: auto;
+        pointer-events: none;
         backdrop-filter: blur(4px);
         -webkit-backdrop-filter: blur(4px);
         touch-action: none;
     }
 
-    .admin-sidebar-backdrop[hidden] {
-        display: none !important;
+    .admin-sidebar-backdrop.is-open {
+        display: block;
+        pointer-events: auto;
+    }
+
+    .admin-sidebar-backdrop[hidden]:not(.is-open) {
+        display: none;
         pointer-events: none !important;
     }
 

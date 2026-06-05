@@ -170,6 +170,7 @@ const initAdminSidebarShell = (shell) => {
 
         if (backdrop) {
             backdrop.hidden = !drawerOpen;
+            backdrop.classList.toggle('is-open', drawerOpen);
         }
 
         setScrollLock(drawerOpen);
