@@ -6,6 +6,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>@yield('title', config('app.name', 'Yalla Spare'))</title>
         <meta name="description" content="@yield('meta_description', 'Yalla Spare legal and support information.')">
+        @include('partials.brand-head')
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 

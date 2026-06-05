@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <title>{{ __('YallaSpare') }}</title>
+    @include('partials.brand-head')
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -91,5 +92,4 @@
     @include('partials.site-footer')
 </body>
 </html>
-
 

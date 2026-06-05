@@ -53,6 +53,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>@yield('title', $brand)</title>
         <meta name="description" content="@yield('meta_description', __('Yalla Spare auto parts catalog, support, and legal information.'))">
+        @include('partials.brand-head')
         @include('partials.seo-locale')
         @stack('head')
         @php

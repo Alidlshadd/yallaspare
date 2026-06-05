@@ -21,6 +21,7 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>{{ $heading }} | {{ $systemSettings['site_name'] ?? 'YallaSpare' }}</title>
+    @include('partials.brand-head')
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 

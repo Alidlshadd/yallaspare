@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8">
     <title>{{ $invoiceNumber }}</title>
+    @include('partials.brand-head')
     <style>
         @page {
             margin: 26px 30px 58px;
