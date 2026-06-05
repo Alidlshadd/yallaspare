@@ -36,6 +36,7 @@
                         preload="auto"
                         disablepictureinpicture
                         disableremoteplayback
+                        controlslist="nodownload nofullscreen noremoteplayback"
                         x-webkit-airplay="deny"
                         aria-hidden="true"
                         tabindex="-1"
@@ -345,7 +346,8 @@
         </style>
         <script>
             (() => {
-                const videos = document.querySelectorAll('[data-hero-background-video]');
+                const videos = Array.from(document.querySelectorAll('[data-hero-background-video]'));
+                const progressState = new WeakMap();
 
                 const prepareHeroVideo = (video) => {
                     if (!(video instanceof HTMLVideoElement)) {
@@ -358,6 +360,8 @@
                     video.autoplay = true;
                     video.playsInline = true;
                     video.controls = false;
+                    video.volume = 0;
+                    video.playbackRate = 1;
                     video.setAttribute('muted', '');
                     video.setAttribute('autoplay', '');
                     video.setAttribute('loop', '');
@@ -365,6 +369,7 @@
                     video.setAttribute('webkit-playsinline', '');
                     video.setAttribute('disablepictureinpicture', '');
                     video.setAttribute('disableremoteplayback', '');
+                    video.setAttribute('controlslist', 'nodownload nofullscreen noremoteplayback');
                     video.setAttribute('x-webkit-airplay', 'deny');
                     video.setAttribute('aria-hidden', 'true');
                     video.setAttribute('tabindex', '-1');
@@ -373,27 +378,71 @@
                     return true;
                 };
 
-                const playHeroVideo = (video) => {
+                const playHeroVideo = (video, options = {}) => {
                     if (!prepareHeroVideo(video) || document.hidden) {
                         return;
                     }
 
-                    if (video.ended) {
+                    if (options.reload && video.readyState === HTMLMediaElement.HAVE_NOTHING) {
+                        try {
+                            video.load();
+                        } catch (error) {}
+                    }
+
+                    if (video.ended || options.restart) {
                         video.currentTime = 0;
                     }
 
                     const playPromise = video.play();
                     if (playPromise && typeof playPromise.catch === 'function') {
-                        playPromise.catch(() => {});
+                        playPromise.catch(() => {
+                            if (!document.hidden) {
+                                window.setTimeout(() => playHeroVideo(video), 250);
+                            }
+                        });
                     }
                 };
 
-                const restartHeroVideo = (video, delay = 80) => {
-                    window.setTimeout(() => playHeroVideo(video), delay);
+                const restartHeroVideo = (video, delay = 40, options = {}) => {
+                    window.setTimeout(() => playHeroVideo(video, options), delay);
                 };
 
                 const resumeAllHeroVideos = () => {
                     videos.forEach((video) => playHeroVideo(video));
+                };
+
+                const recoverFrozenHeroVideo = (video) => {
+                    if (!prepareHeroVideo(video) || document.hidden) {
+                        return;
+                    }
+
+                    const now = Date.now();
+                    const currentTime = Number.isFinite(video.currentTime) ? video.currentTime : 0;
+                    const previous = progressState.get(video) || {
+                        checkedAt: now,
+                        currentTime,
+                        frozenCount: 0,
+                    };
+                    const progressed = Math.abs(currentTime - previous.currentTime) > 0.04;
+                    const unhealthy = video.paused
+                        || video.ended
+                        || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA
+                        || video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE;
+                    let frozenCount = progressed ? 0 : previous.frozenCount + 1;
+
+                    if (unhealthy || frozenCount >= 3) {
+                        const shouldReload = video.networkState === HTMLMediaElement.NETWORK_NO_SOURCE
+                            || video.readyState === HTMLMediaElement.HAVE_NOTHING;
+
+                        playHeroVideo(video, { reload: shouldReload, restart: video.ended });
+                        frozenCount = 0;
+                    }
+
+                    progressState.set(video, {
+                        checkedAt: now,
+                        currentTime,
+                        frozenCount,
+                    });
                 };
 
                 videos.forEach((video) => {
@@ -420,6 +469,20 @@
                     ].forEach((eventName) => {
                         video.addEventListener(eventName, () => restartHeroVideo(video), { passive: true });
                     });
+
+                    ['volumechange', 'ratechange'].forEach((eventName) => {
+                        video.addEventListener(eventName, () => restartHeroVideo(video), { passive: true });
+                    });
+
+                    ['webkitbeginfullscreen', 'enterpictureinpicture'].forEach((eventName) => {
+                        video.addEventListener(eventName, (event) => {
+                            if (typeof event.preventDefault === 'function') {
+                                event.preventDefault();
+                            }
+
+                            restartHeroVideo(video);
+                        });
+                    });
                 });
 
                 document.addEventListener('visibilitychange', () => {
@@ -432,7 +495,7 @@
                     window.addEventListener(eventName, resumeAllHeroVideos, { passive: true });
                 });
 
-                ['touchstart', 'pointerdown', 'scroll'].forEach((eventName) => {
+                ['touchstart', 'touchend', 'pointerdown', 'pointerup', 'click', 'scroll'].forEach((eventName) => {
                     window.addEventListener(eventName, () => resumeAllHeroVideos(), { passive: true });
                 });
 
@@ -442,13 +505,9 @@
                     }
 
                     videos.forEach((video) => {
-                        prepareHeroVideo(video);
-
-                        if (video.paused || video.ended || video.readyState < HTMLMediaElement.HAVE_CURRENT_DATA) {
-                            playHeroVideo(video);
-                        }
+                        recoverFrozenHeroVideo(video);
                     });
-                }, 1200);
+                }, 500);
             })();
 
             document.querySelectorAll('[data-vehicle-finder]').forEach((form) => {

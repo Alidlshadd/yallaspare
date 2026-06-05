@@ -35,12 +35,21 @@ class StorefrontHeroVideoPlaybackTest extends TestCase
         $this->assertStringContainsString('preload="auto"', $videoTag);
         $this->assertStringContainsString('disablepictureinpicture', $videoTag);
         $this->assertStringContainsString('disableremoteplayback', $videoTag);
+        $this->assertStringContainsString('controlslist="nodownload nofullscreen noremoteplayback"', $videoTag);
         $this->assertStringContainsString('x-webkit-airplay="deny"', $videoTag);
-        $this->assertStringNotContainsString('controls', $videoTag);
+        $this->assertDoesNotMatchRegularExpression('/\scontrols(\s|>|=)/i', $videoTag);
         $this->assertStringContainsString('window.setInterval', $html);
+        $this->assertStringContainsString('}, 500);', $html);
         $this->assertStringContainsString('video.controls = false', $html);
+        $this->assertStringContainsString('video.volume = 0', $html);
+        $this->assertStringContainsString('video.playbackRate = 1', $html);
+        $this->assertStringContainsString('recoverFrozenHeroVideo', $html);
+        $this->assertStringContainsString('frozenCount >= 3', $html);
         $this->assertStringContainsString("'touchstart'", $html);
+        $this->assertStringContainsString("'touchend'", $html);
         $this->assertStringContainsString("'orientationchange'", $html);
+        $this->assertStringContainsString("'webkitbeginfullscreen'", $html);
+        $this->assertStringContainsString("'enterpictureinpicture'", $html);
         $this->assertStringContainsString('hero-background-video::-webkit-media-controls-start-playback-button', $html);
     }
 }
