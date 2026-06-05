@@ -67,13 +67,37 @@ class AppServiceProvider extends ServiceProvider
 
         Password::defaults(fn (): Password => Password::min(8)->letters()->numbers());
 
+        View::composer('*', function ($view): void {
+            $view->with('systemSettings', $this->systemSettings());
+        });
+
+        Category::observe(AdminAuditObserver::class);
+        Category::observe(CategoryCacheObserver::class);
+        CartItem::observe(CartItemCacheObserver::class);
+        Product::observe(AdminAuditObserver::class);
+        User::observe(AdminAuditObserver::class);
+        Wishlist::observe(WishlistCacheObserver::class);
+        Order::observe(AdminAuditObserver::class);
+
+        View::composer(['layouts.user', 'layouts.store'], HeaderComposer::class);
+    }
+
+    /**
+     * Resolve shared settings when a view is rendered, not when the service
+     * provider boots. Long-running workers and admin save redirects can
+     * otherwise keep a stale empty logo URL while /brand/logo serves correctly.
+     *
+     * @return array<string, mixed>
+     */
+    private function systemSettings(): array
+    {
         try {
             if (Schema::hasTable('settings')) {
                 $settings = Setting::allWithDefaults();
             } else {
                 $settings = Setting::defaults();
             }
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             $settings = Setting::defaults();
         }
 
@@ -97,16 +121,6 @@ class AppServiceProvider extends ServiceProvider
             $settings['site_logo_url'] .= $separator . 'sv=' . urlencode($settings['site_logo_version']);
         }
 
-        View::share('systemSettings', $settings);
-
-        Category::observe(AdminAuditObserver::class);
-        Category::observe(CategoryCacheObserver::class);
-        CartItem::observe(CartItemCacheObserver::class);
-        Product::observe(AdminAuditObserver::class);
-        User::observe(AdminAuditObserver::class);
-        Wishlist::observe(WishlistCacheObserver::class);
-        Order::observe(AdminAuditObserver::class);
-
-        View::composer(['layouts.user', 'layouts.store'], HeaderComposer::class);
+        return $settings;
     }
 }
