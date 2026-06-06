@@ -27,6 +27,7 @@
 
             <form id="productForm" method="POST" action="{{ route('admin.products.store') }}" enctype="multipart/form-data" class="space-y-6">
                 @csrf
+                <input type="hidden" name="return_to" value="{{ old('return_to', $returnTo) }}">
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="lg:col-span-2 space-y-6">
@@ -253,7 +254,7 @@
                     <div class="max-w-6xl mx-auto flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                         <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Make sure all required fields are completed before saving.') }}</p>
                         <div class="flex items-center gap-3">
-                            <a href="{{ route('admin.products.index') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Cancel') }}</a>
+                            <a href="{{ $returnTo }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Cancel') }}</a>
                             <button id="productSubmit" type="submit" class="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100">
                                 <span class="hidden h-4 w-4 animate-spin rounded-full border-2 border-white/60 border-t-white dark:border-slate-900/60 dark:border-t-slate-900" data-spinner></span>
                                 <span data-label>{{ __('Save Product') }}</span>

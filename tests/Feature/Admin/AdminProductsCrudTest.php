@@ -295,6 +295,31 @@ class AdminProductsCrudTest extends TestCase
         ]);
     }
 
+    public function test_admin_create_returns_to_original_products_filter(): void
+    {
+        $user = $this->adminUser();
+        $category = $this->createCategory();
+
+        $payload = [
+            'name_en' => 'Active Oil Filter',
+            'name_ar' => 'Active Oil Filter',
+            'name_ku' => 'Active Oil Filter',
+            'description_en' => 'Test description',
+            'price' => 15000,
+            'dealer_price' => 12000,
+            'stock_quantity' => 20,
+            'sku' => 'SKU-TEST-RETURN-CREATE',
+            'brand' => 'Bosch',
+            'category_id' => $category->id,
+            'is_active' => true,
+            'return_to' => route('admin.products.index', ['status' => 'active']),
+        ];
+
+        $response = $this->actingAs($user)->post(route('admin.products.store'), $payload);
+
+        $response->assertRedirect('/admin/products?status=active');
+    }
+
     public function test_admin_can_update_product(): void
     {
         $user = $this->adminUser();
@@ -406,6 +431,22 @@ class AdminProductsCrudTest extends TestCase
         $this->assertDatabaseMissing('products', [
             'id' => $product->id,
         ]);
+    }
+
+    public function test_admin_delete_returns_to_original_products_filter(): void
+    {
+        $user = $this->adminUser();
+        $category = $this->createCategory();
+        $product = Product::factory()->create([
+            'category_id' => $category->id,
+            'sku' => 'SKU-TEST-RETURN-DELETE',
+        ]);
+
+        $response = $this->actingAs($user)->delete(route('admin.products.destroy', $product), [
+            'return_to' => route('admin.products.index', ['status' => 'active']),
+        ]);
+
+        $response->assertRedirect('/admin/products?status=active');
     }
 
     public function test_admin_archives_product_when_it_has_order_history(): void

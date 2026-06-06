@@ -178,7 +178,7 @@ class ProductController extends Controller
         ));
     }
 
-    public function create()
+    public function create(Request $request)
     {
         $categories = Category::orderBy('name_en')->get();
 
@@ -187,8 +187,9 @@ class ProductController extends Controller
         $currencyLabel = $currencyCode !== '' ? $currencyCode : $currencySymbol;
         $currencyDecimals = strtoupper($currencyCode) === 'IQD' ? 0 : 2;
         $lowStockThreshold = max((int) Setting::getValue('low_stock_threshold', config('inventory.low_stock_threshold', 5)), 0);
+        $returnTo = $this->productsIndexReturnUrl($request);
 
-        return view('admin.products.create', compact('categories', 'currencySymbol', 'currencyCode', 'currencyLabel', 'currencyDecimals', 'lowStockThreshold'));
+        return view('admin.products.create', compact('categories', 'currencySymbol', 'currencyCode', 'currencyLabel', 'currencyDecimals', 'lowStockThreshold', 'returnTo'));
     }
 
     public function store(StoreProductRequest $request)
@@ -242,7 +243,7 @@ class ProductController extends Controller
 
         $this->storeGalleryImages($request, $product, $imagePath ? 1 : 0);
 
-        $redirect = redirect()->route('admin.products.index')
+        $redirect = redirect()->to($this->productsIndexReturnUrl($request))
             ->with('success', __('Product added successfully'));
 
         if ($dealerPrice !== null && $dealerPrice >= $basePrice) {
@@ -363,12 +364,14 @@ class ProductController extends Controller
         return $redirect;
     }
 
-    public function destroy(Product $product)
+    public function destroy(Request $request, Product $product)
     {
+        $returnTo = $this->productsIndexReturnUrl($request);
+
         if ($product->orderItems()->exists()) {
             $product->forceFill(['is_active' => false])->save();
 
-            return redirect()->route('admin.products.index')
+            return redirect()->to($returnTo)
                 ->with('success', __('Product is linked to existing orders, so it was archived instead of deleted.'));
         }
 
@@ -378,11 +381,11 @@ class ProductController extends Controller
             }
             $product->delete();
         } catch (QueryException $e) {
-            return redirect()->route('admin.products.index')
+            return redirect()->to($returnTo)
                 ->with('error', __('Product could not be deleted because it is linked to existing records.'));
         }
 
-        return redirect()->route('admin.products.index')
+        return redirect()->to($returnTo)
             ->with('success', __('Product deleted successfully'));
     }
 
@@ -528,7 +531,7 @@ class ProductController extends Controller
 
             if (!empty($errors)) {
                 return redirect()
-                    ->route('admin.products.index')
+                    ->to($this->productsIndexReturnUrl($request))
                     ->with('error', __('Import validation failed. No rows were imported.'))
                     ->with('import_errors', $errors);
             }
@@ -582,7 +585,7 @@ class ProductController extends Controller
             }
 
             return redirect()
-                ->route('admin.products.index')
+                ->to($this->productsIndexReturnUrl($request))
                 ->with('success', $message)
                 ->with('import_errors', $errors);
         } catch (\Throwable $e) {

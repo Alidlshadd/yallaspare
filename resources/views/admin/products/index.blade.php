@@ -33,13 +33,14 @@
 
             @php
                 $importErrors = session('import_errors', []);
+                $currentProductsUrl = request()->fullUrl();
             @endphp
 
             <!-- HEADER + ADD BUTTON -->
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-lg font-semibold dark:text-slate-100">{{ $statusTabs[$status]['label'] ?? __('All Products') }}</h3>
 
-               <a href="{{ route('admin.products.create') }}"
+               <a href="{{ route('admin.products.create', ['return_to' => $currentProductsUrl]) }}"
 
                    class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded">
                     {{ __('+ Add Product') }}
@@ -51,6 +52,7 @@
                     <h4 class="font-semibold text-gray-800 mb-3 dark:text-slate-100">{{ __('Bulk Import') }}</h4>
                     <form method="POST" action="{{ route('admin.products.import') }}" enctype="multipart/form-data" class="flex flex-col md:flex-row md:items-center gap-3">
                         @csrf
+                        <input type="hidden" name="return_to" value="{{ $currentProductsUrl }}">
                         <input type="file" name="import_file" accept=".csv,.txt,.xls,.xlsx" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" required>
                         <button type="submit" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-sm font-semibold transition">
                             {{ __('Import File') }}
@@ -292,6 +294,7 @@
                                           class="inline">
                                         @csrf
                                         @method('DELETE')
+                                        <input type="hidden" name="return_to" value="{{ $currentProductsUrl }}">
 
                                         <button type="submit"
                                                 class="text-red-600 hover:underline dark:text-red-400">
