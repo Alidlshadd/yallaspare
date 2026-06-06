@@ -372,6 +372,9 @@ class AdminProductsCrudTest extends TestCase
             ->assertOk()
             ->assertSee('admin-products-table')
             ->assertSee('product-name-clamp')
+            ->assertSee('w-full table-fixed')
+            ->assertSee('md:min-w-0')
+            ->assertDontSee('min-w-[1320px]')
             ->assertSee('20 units');
     }
 
