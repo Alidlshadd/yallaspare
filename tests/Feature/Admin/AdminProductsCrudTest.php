@@ -9,6 +9,7 @@ use App\Models\Product;
 use App\Models\ProductReview;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\UploadedFile;
 use Tests\TestCase;
 
 class AdminProductsCrudTest extends TestCase
@@ -293,6 +294,85 @@ class AdminProductsCrudTest extends TestCase
             'sku' => 'SKU-TEST-01',
             'category_id' => $category->id,
         ]);
+    }
+
+    public function test_admin_created_product_with_stock_20_shows_20_on_index(): void
+    {
+        $user = $this->adminUser();
+        $category = $this->createCategory();
+
+        $payload = [
+            'name_en' => 'Exact Stock Product',
+            'name_ar' => 'Exact Stock Product',
+            'name_ku' => 'Exact Stock Product',
+            'description_en' => 'Test description',
+            'price' => 15000,
+            'dealer_price' => 12000,
+            'stock_quantity' => 20,
+            'sku' => 'SKU-EXACT-STOCK-20',
+            'brand' => 'Bosch',
+            'category_id' => $category->id,
+            'is_active' => true,
+        ];
+
+        $this->actingAs($user)->post(route('admin.products.store'), $payload)
+            ->assertRedirect(route('admin.products.index'));
+
+        $product = Product::query()->where('sku', 'SKU-EXACT-STOCK-20')->firstOrFail();
+        $this->assertSame(20, (int) $product->stock_quantity);
+        $this->assertSame(0, $product->inventoryMovements()->count());
+        $this->assertSame(0, $product->orderItems()->count());
+
+        $this->actingAs($user)
+            ->get(route('admin.products.index', ['search' => 'SKU-EXACT-STOCK-20']))
+            ->assertOk()
+            ->assertSee('20 units');
+    }
+
+    public function test_admin_imported_product_with_stock_20_shows_20_on_index(): void
+    {
+        $user = $this->adminUser();
+        $category = $this->createCategory();
+        $csv = implode("\n", [
+            'name_en,name_ar,name_ku,price,stock_quantity,sku,brand,category_id,is_active',
+            'Imported Stock Product,Imported Stock Product,Imported Stock Product,15000,20,SKU-IMPORT-STOCK-20,Bosch,' . $category->id . ',1',
+        ]);
+
+        $this->actingAs($user)->post(route('admin.products.import'), [
+            'import_file' => UploadedFile::fake()->createWithContent('products.csv', $csv),
+        ])->assertRedirect(route('admin.products.index'));
+
+        $product = Product::query()->where('sku', 'SKU-IMPORT-STOCK-20')->firstOrFail();
+        $this->assertSame(20, (int) $product->stock_quantity);
+        $this->assertSame(0, $product->inventoryMovements()->count());
+        $this->assertSame(0, $product->orderItems()->count());
+
+        $this->actingAs($user)
+            ->get(route('admin.products.index', ['search' => 'SKU-IMPORT-STOCK-20']))
+            ->assertOk()
+            ->assertSee('20 units');
+    }
+
+    public function test_products_index_renders_long_table_content(): void
+    {
+        $user = $this->adminUser();
+        $category = $this->createCategory();
+        Product::factory()->create([
+            'category_id' => $category->id,
+            'name_en' => 'Very Long Product Name For Admin Table Balance With Several Descriptive Words',
+            'sku' => 'SKU-LONG-CONTENT-1234567890-ABCDEFG',
+            'brand' => 'Very Long Brand Name That Should Truncate Cleanly',
+            'price' => 123456789,
+            'dealer_price' => 98765432,
+            'stock_quantity' => 20,
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('admin.products.index', ['search' => 'SKU-LONG-CONTENT']))
+            ->assertOk()
+            ->assertSee('admin-products-table')
+            ->assertSee('product-name-clamp')
+            ->assertSee('20 units');
     }
 
     public function test_admin_create_returns_to_original_products_filter(): void

@@ -36,6 +36,15 @@
                 $currentProductsUrl = request()->fullUrl();
             @endphp
 
+            <style>
+                .admin-products-table .product-name-clamp {
+                    display: -webkit-box;
+                    -webkit-line-clamp: 2;
+                    -webkit-box-orient: vertical;
+                    overflow: hidden;
+                }
+            </style>
+
             <!-- HEADER + ADD BUTTON -->
             <div class="flex justify-between items-center mb-6">
                 <h3 class="text-lg font-semibold dark:text-slate-100">{{ $statusTabs[$status]['label'] ?? __('All Products') }}</h3>
@@ -187,41 +196,53 @@
 
             <!-- TABLE -->
             <div class="overflow-x-auto rounded bg-white shadow dark:bg-slate-900 dark:ring-1 dark:ring-slate-800">
-                <table class="min-w-[980px] w-full text-left">
-                    <thead class="bg-gray-100 dark:bg-slate-800/70 dark:text-slate-300">
+                <table class="admin-products-table min-w-[1320px] w-full table-fixed text-left text-sm">
+                    <colgroup>
+                        <col class="w-[72px]">
+                        <col class="w-[88px]">
+                        <col class="w-[300px]">
+                        <col class="w-[170px]">
+                        <col class="w-[150px]">
+                        <col class="w-[110px]">
+                        <col class="w-[140px]">
+                        <col class="w-[170px]">
+                        <col class="w-[180px]">
+                        <col class="w-[140px]">
+                    </colgroup>
+                    <thead class="bg-gray-100 text-xs uppercase tracking-wide text-gray-600 dark:bg-slate-800/70 dark:text-slate-300">
                         <tr>
-                            <th class="p-3">
+                            <th class="px-4 py-3 font-semibold">
                                 <a href="{{ $sortUrl('id') }}" class="hover:underline">{{ __('ID') }}</a>
                             </th>
-                            <th>{{ __('Image') }}</th>
-                            <th>
+                            <th class="px-4 py-3 font-semibold">{{ __('Image') }}</th>
+                            <th class="px-4 py-3 font-semibold">
                                 <a href="{{ $sortUrl('name_en') }}" class="hover:underline">{{ __('Name') }}</a>
                             </th>
-                            <th>
+                            <th class="px-4 py-3 font-semibold">
                                 <a href="{{ $sortUrl('sku') }}" class="hover:underline">{{ __('SKU') }}</a>
                             </th>
-                            <th>
+                            <th class="px-4 py-3 font-semibold">
                                 <a href="{{ $sortUrl('brand') }}" class="hover:underline">{{ __('Brand') }}</a>
                             </th>
-                            <th>
+                            <th class="px-4 py-3 font-semibold">
                                 <a href="{{ $sortUrl('is_active') }}" class="hover:underline">{{ __('Status') }}</a>
                             </th>
-                            <th>
+                            <th class="px-4 py-3 text-right font-semibold">
                                 <a href="{{ $sortUrl('price') }}" class="hover:underline">{{ __('Price') }}</a>
                             </th>
-                            <th>{{ __('Dealer Price') }}</th>
-                            <th>
+                            <th class="px-4 py-3 text-right font-semibold">{{ __('Dealer Price') }}</th>
+                            <th class="px-4 py-3 font-semibold">
                                 <a href="{{ $sortUrl('stock_quantity') }}" class="hover:underline">{{ __('Stock') }}</a>
                             </th>
-                            <th class="text-right pr-4">{{ __('Action') }}</th>
+                            <th class="px-4 py-3 text-right font-semibold">{{ __('Action') }}</th>
                         </tr>
                     </thead>
 
                     <tbody>
                         @forelse($products as $product)
                             <tr class="border-t hover:bg-gray-50 dark:border-slate-800 dark:hover:bg-slate-800/60">
-                                <td class="p-3 dark:text-slate-200">{{ $product->id }}</td>
-                                <td>
+                                <td class="px-4 py-3 align-middle font-medium tabular-nums text-slate-700 dark:text-slate-200">{{ $product->id }}</td>
+                                <td class="px-4 py-3 align-middle">
                                     @if($product->image)
                                         <img
                                             src="{{ asset('storage/' . ltrim((string) $product->image, '/')) }}"
@@ -235,22 +256,30 @@
                                         </div>
                                     @endif
                                 </td>
-                                <td class="dark:text-slate-100">{{ $product->name }}</td>
-                                <td class="dark:text-slate-300">{{ $product->sku }}</td>
-                                <td class="dark:text-slate-300">{{ $product->brand ?? '-' }}</td>
-                                <td>
+                                <td class="px-4 py-3 align-middle">
+                                    <div class="product-name-clamp font-medium leading-5 text-slate-900 dark:text-slate-100">{{ $product->name }}</div>
+                                </td>
+                                <td class="px-4 py-3 align-middle">
+                                    <span class="block break-words font-mono text-xs leading-5 text-slate-700 dark:text-slate-300">{{ $product->sku }}</span>
+                                </td>
+                                <td class="px-4 py-3 align-middle">
+                                    <span class="block truncate text-slate-700 dark:text-slate-300" title="{{ $product->brand ?? '-' }}">{{ $product->brand ?? '-' }}</span>
+                                </td>
+                                <td class="px-4 py-3 align-middle">
                                     <span class="px-2 py-1 text-xs rounded {{ $product->is_active ? 'bg-green-100 text-green-700 dark:bg-green-950/30 dark:text-green-300' : 'bg-gray-200 text-gray-600 dark:bg-slate-800 dark:text-slate-300' }}">
                                         {{ $product->is_active ? __('Active') : __('Inactive') }}
                                     </span>
                                 </td>
-                                <td class="dark:text-slate-200">{{ $currencyLabel }} {{ number_format($product->price, $currencyDecimals) }}</td>
-                                <td>
+                                <td class="px-4 py-3 align-middle text-right tabular-nums text-slate-800 dark:text-slate-200">
+                                    <span class="whitespace-nowrap">{{ $currencyLabel }} {{ number_format($product->price, $currencyDecimals) }}</span>
+                                </td>
+                                <td class="px-4 py-3 align-middle text-right">
                                     @if($product->dealer_price !== null)
-                                        <span class="inline-flex items-center px-2 py-1 text-xs rounded bg-indigo-100 text-indigo-700 font-semibold">
+                                        <span class="inline-flex items-center whitespace-nowrap px-2 py-1 text-xs rounded bg-indigo-100 text-indigo-700 font-semibold">
                                             {{ $currencyLabel }} {{ number_format($product->dealer_price, $currencyDecimals) }}
                                         </span>
                                         @if((float) $product->dealer_price >= (float) $product->price)
-                                            <span class="ml-2 inline-flex items-center px-2 py-1 text-xs rounded bg-amber-100 text-amber-800 font-semibold">
+                                            <span class="mt-1 inline-flex items-center whitespace-nowrap px-2 py-1 text-xs rounded bg-amber-100 text-amber-800 font-semibold">
                                                 {{ __('Margin warning') }}
                                             </span>
                                         @endif
@@ -258,26 +287,27 @@
                                         <span class="text-xs text-gray-500 dark:text-slate-400">{{ __('Use dealer discount') }}</span>
                                     @endif
                                 </td>
-                                <td>
-                                    <span class="{{ $product->stock_quantity <= $lowStockThreshold ? 'text-red-700 font-semibold dark:text-red-300' : 'text-gray-800 dark:text-slate-200' }}">
+                                <td class="px-4 py-3 align-middle">
+                                    <span class="block whitespace-nowrap tabular-nums {{ $product->stock_quantity <= $lowStockThreshold ? 'text-red-700 font-semibold dark:text-red-300' : 'text-gray-800 dark:text-slate-200' }}">
                                         {{ __(':count units', ['count' => $product->stock_quantity]) }}
                                     </span>
                                     @if($product->stock_quantity === 0)
-                                        <span class="ml-2 inline-block px-2 py-1 text-xs rounded bg-red-200 text-red-800 font-semibold">
+                                        <span class="mt-1 inline-block whitespace-nowrap px-2 py-1 text-xs rounded bg-red-200 text-red-800 font-semibold">
                                             {{ __('Out of stock') }}
                                         </span>
                                     @elseif($product->stock_quantity <= $lowStockThreshold)
-                                        <span class="ml-2 inline-block px-2 py-1 text-xs rounded bg-amber-100 text-amber-800 font-semibold">
+                                        <span class="mt-1 inline-block whitespace-nowrap px-2 py-1 text-xs rounded bg-amber-100 text-amber-800 font-semibold">
                                             {{ __('Low stock') }}
                                         </span>
                                     @else
-                                        <span class="ml-2 inline-block px-2 py-1 text-xs rounded bg-emerald-100 text-emerald-700">
+                                        <span class="mt-1 inline-block whitespace-nowrap px-2 py-1 text-xs rounded bg-emerald-100 text-emerald-700">
                                             {{ __('In stock') }}
                                         </span>
                                     @endif
                                 </td>
 
-                                <td class="text-right pr-4 space-x-4">
+                                <td class="px-4 py-3 align-middle text-right">
+                                    <div class="inline-flex items-center justify-end gap-3 whitespace-nowrap">
 
                                     <!-- EDIT -->
                                     <a href="{{ route('admin.products.edit', ['product' => $product, 'return_to' => request()->fullUrl()]) }}"
@@ -301,6 +331,7 @@
                                             {{ __('Delete') }}
                                         </button>
                                     </form>
+                                    </div>
 
                                 </td>
                             </tr>
