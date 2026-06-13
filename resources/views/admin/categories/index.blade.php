@@ -41,7 +41,7 @@
             <div class="mb-4 grid grid-cols-1 xl:grid-cols-3 gap-4">
                 <div class="xl:col-span-2 bg-white rounded-xl border border-gray-200 p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <h4 class="font-semibold text-gray-800 mb-3 dark:text-slate-100">{{ __('Bulk Import') }}</h4>
-                    <form method="POST" action="{{ route('admin.categories.import') }}" enctype="multipart/form-data" class="flex flex-col md:flex-row md:items-center gap-3">
+                    <form method="POST" action="{{ route('admin.categories.import') }}" enctype="multipart/form-data" class="flex flex-col md:flex-row md:items-center gap-3" data-loading-form data-loading-message="Uploading, please wait..." data-loading-button-text="Uploading...">
                         @csrf
                         <input type="file" name="import_file" accept=".csv,.txt,.xls,.xlsx" class="w-full rounded-lg border border-gray-300 bg-white px-3 py-2 text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" required>
                         <button type="submit" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-lg text-sm font-semibold transition">

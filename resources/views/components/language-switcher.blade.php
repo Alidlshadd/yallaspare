@@ -46,7 +46,7 @@
         aria-label="{{ __('Language') }}"
     >
         @foreach ($locales as $locale => $language)
-            <form method="POST" action="{{ route('language.switch', $locale) }}">
+            <form method="POST" action="{{ route('language.switch', $locale) }}" data-loading-skip="true">
                 @csrf
                 <input type="hidden" name="redirect_to" value="{{ url()->full() }}">
                 <button

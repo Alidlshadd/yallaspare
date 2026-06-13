@@ -44,7 +44,15 @@
                             <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Manage site identity and visuals that appear across the storefront.') }}</p>
                         </div>
                         <div class="p-6">
-                            <form method="POST" action="{{ route('admin.settings.update') }}" enctype="multipart/form-data" class="space-y-6" data-admin-settings-form>
+                            <form
+                                method="POST"
+                                action="{{ route('admin.settings.update') }}"
+                                enctype="multipart/form-data"
+                                class="space-y-6"
+                                data-admin-settings-form
+                                data-loading-form
+                                data-loading-button-text="Saving..."
+                            >
                                 @csrf
                                 @method('PUT')
 

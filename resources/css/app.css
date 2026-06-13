@@ -377,6 +377,166 @@
         transform: translateY(-1px);
     }
 
+    .ys-loading-overlay {
+        --ys-loading-bg: rgba(248, 250, 252, 0.96);
+        --ys-loading-card: rgba(255, 255, 255, 0.88);
+        --ys-loading-border: rgba(226, 232, 240, 0.92);
+        --ys-loading-text: #070740;
+        --ys-loading-muted: #64748b;
+        --ys-loading-accent: #06b6d4;
+        --ys-loading-ring: rgba(7, 7, 64, 0.14);
+        align-items: center;
+        justify-content: center;
+        color: var(--ys-loading-text);
+        opacity: 1;
+        transition: opacity 180ms ease, visibility 180ms ease;
+    }
+
+    .ys-loading-overlay.is-hidden {
+        visibility: hidden;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .ys-loading-overlay-full {
+        position: fixed;
+        inset: 0;
+        z-index: 10050;
+        display: flex;
+        min-height: 100dvh;
+        padding: 1.25rem;
+        background:
+            radial-gradient(circle at 50% 42%, rgba(6, 182, 212, 0.10), transparent 28%),
+            var(--ys-loading-bg);
+        backdrop-filter: blur(10px);
+    }
+
+    .ys-loading-overlay-compact {
+        position: absolute;
+        inset: 0;
+        z-index: 30;
+        display: flex;
+        min-height: 12rem;
+        border-radius: inherit;
+        background: var(--ys-loading-bg);
+    }
+
+    .ys-loading-card {
+        display: flex;
+        min-width: min(18rem, calc(100vw - 2rem));
+        max-width: 22rem;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        border: 1px solid var(--ys-loading-border);
+        border-radius: 1.25rem;
+        background: var(--ys-loading-card);
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 24px 70px -42px rgba(7, 7, 64, 0.45);
+    }
+
+    .ys-loading-brand {
+        display: inline-flex;
+        min-width: 0;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+    }
+
+    .ys-loading-logo {
+        display: inline-flex;
+        height: 2.75rem;
+        width: 2.75rem;
+        flex: 0 0 auto;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        border-radius: 0.95rem;
+        background: rgba(7, 7, 64, 0.06);
+    }
+
+    .ys-loading-logo-image {
+        height: 100%;
+        width: auto;
+        object-fit: contain;
+    }
+
+    .ys-loading-logo-fallback {
+        display: inline-flex;
+        height: 100%;
+        width: 100%;
+        align-items: center;
+        justify-content: center;
+        border-radius: inherit;
+        background: #070740;
+    }
+
+    .ys-loading-logo-fallback-text {
+        font-size: 0.7rem;
+        font-weight: 800;
+        letter-spacing: 0.14em;
+        color: #ffffff;
+    }
+
+    .ys-loading-brand-name {
+        max-width: 13rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        font-size: 1.05rem;
+        font-weight: 800;
+        letter-spacing: -0.02em;
+    }
+
+    .ys-loading-ring {
+        height: 2.4rem;
+        width: 2.4rem;
+        border-radius: 9999px;
+        border: 3px solid var(--ys-loading-ring);
+        border-top-color: var(--ys-loading-accent);
+        border-right-color: rgba(7, 7, 64, 0.42);
+        animation: ysLoadingSpin 760ms linear infinite;
+    }
+
+    .ys-loading-message {
+        margin: 0;
+        color: var(--ys-loading-muted);
+        font-size: 0.82rem;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+    }
+
+    .ys-button-loading {
+        cursor: wait;
+    }
+
+    .ys-button-spinner {
+        display: none;
+        height: 1em;
+        width: 1em;
+        flex: 0 0 auto;
+        border-radius: 9999px;
+        border: 2px solid currentColor;
+        border-right-color: transparent;
+        opacity: 0.88;
+        animation: ysLoadingSpin 680ms linear infinite;
+    }
+
+    .ys-button-loading .ys-button-spinner {
+        display: inline-block;
+    }
+
+    .ys-button-loading > .ys-button-spinner:first-child {
+        margin-inline-end: 0.5rem;
+    }
+
+    @keyframes ysLoadingSpin {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
     @keyframes cartBadgeBump {
         0% {
             transform: scale(1);
@@ -402,6 +562,15 @@
 
         .cart-toast {
             transition: none;
+        }
+
+        .ys-loading-overlay {
+            transition: none;
+        }
+
+        .ys-loading-ring,
+        .ys-button-spinner {
+            animation: none;
         }
     }
 
@@ -1022,6 +1191,22 @@
         --admin-shadow: 0 1px 0 rgba(255, 255, 255, 0.04), 0 22px 48px -34px rgba(0, 0, 0, 0.68);
         --admin-shadow-soft: 0 1px 0 rgba(255, 255, 255, 0.035), 0 14px 34px -30px rgba(0, 0, 0, 0.62);
         background-color: var(--admin-bg);
+    }
+
+    .dark .ys-loading-overlay,
+    .user-theme-dark .ys-loading-overlay {
+        --ys-loading-bg: rgba(5, 7, 38, 0.96);
+        --ys-loading-card: rgba(7, 11, 31, 0.88);
+        --ys-loading-border: rgba(148, 163, 184, 0.18);
+        --ys-loading-text: #ffffff;
+        --ys-loading-muted: #cbd5e1;
+        --ys-loading-accent: #22d3ee;
+        --ys-loading-ring: rgba(255, 255, 255, 0.14);
+    }
+
+    .dark .ys-loading-logo,
+    .user-theme-dark .ys-loading-logo {
+        background: rgba(255, 255, 255, 0.08);
     }
 
     .dark .admin-shell .admin-main {

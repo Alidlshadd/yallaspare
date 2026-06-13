@@ -127,7 +127,15 @@
                         @endif
                     </form>
 
-                    <form action="{{ route('checkout.store') }}" method="POST" class="mt-4 space-y-3">
+                    <form
+                        action="{{ route('checkout.store') }}"
+                        method="POST"
+                        class="mt-4 space-y-3"
+                        data-loading-form
+                        data-loading-kind="checkout"
+                        data-loading-message="Placing your order securely..."
+                        data-loading-button-text="Placing order..."
+                    >
                         @csrf
                         <input type="hidden" name="address_id" value="{{ $address->id }}">
                         <input type="hidden" name="notes" value="{{ $notes }}">

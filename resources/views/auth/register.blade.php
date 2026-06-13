@@ -11,7 +11,7 @@
     :panel-button-href="route('login')"
     panel-exit-direction="right"
 >
-    <form method="POST" action="{{ route('register') }}" class="mt-5 space-y-4" data-auth-form>
+    <form method="POST" action="{{ route('register') }}" class="mt-5 space-y-4" data-auth-form data-loading-button-text="Processing...">
         @csrf
 
         <div>

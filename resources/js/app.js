@@ -502,14 +502,188 @@ const initAddToCartAnimations = () => {
     });
 };
 
+const initLoadingSystem = () => {
+    if (window.YallaLoadingInitialized) {
+        return;
+    }
+
+    window.YallaLoadingInitialized = true;
+
+    const globalLoader = document.querySelector('[data-loading-overlay]');
+    let showTimer = null;
+    let fallbackTimer = null;
+
+    const setLoaderMessage = (message) => {
+        const messageElement = globalLoader?.querySelector('[data-loading-message]');
+        if (messageElement && message) {
+            messageElement.textContent = message;
+        }
+    };
+
+    const hideGlobalLoader = () => {
+        window.clearTimeout(showTimer);
+        window.clearTimeout(fallbackTimer);
+        showTimer = null;
+        fallbackTimer = null;
+
+        if (!globalLoader) {
+            return;
+        }
+
+        globalLoader.classList.add('is-hidden');
+        globalLoader.setAttribute('aria-hidden', 'true');
+        document.documentElement.classList.remove('ys-loading-active');
+    };
+
+    const showGlobalLoader = (message = 'Loading', delay = 120, timeout = 15000) => {
+        if (!globalLoader) {
+            return;
+        }
+
+        window.clearTimeout(showTimer);
+        window.clearTimeout(fallbackTimer);
+        setLoaderMessage(message);
+
+        showTimer = window.setTimeout(() => {
+            globalLoader.classList.remove('is-hidden');
+            globalLoader.setAttribute('aria-hidden', 'false');
+            document.documentElement.classList.add('ys-loading-active');
+
+            fallbackTimer = window.setTimeout(() => {
+                hideGlobalLoader();
+            }, timeout);
+        }, delay);
+    };
+
+    window.YallaLoading = {
+        show: showGlobalLoader,
+        hide: hideGlobalLoader,
+    };
+
+    const shouldSkipFormLoading = (form) => {
+        if (!form || form.dataset.loadingSkip === 'true' || form.dataset.loading === 'false') {
+            return true;
+        }
+
+        if (form.matches('.js-add-cart-form, .js-wishlist-form')) {
+            return true;
+        }
+
+        if (form.target && form.target !== '_self') {
+            return true;
+        }
+
+        if ((form.getAttribute('method') || 'get').toLowerCase() === 'get') {
+            return true;
+        }
+
+        return !(
+            form.matches('[data-loading-form], [data-auth-form]')
+            || form.querySelector('input[type="file"]')
+        );
+    };
+
+    const preserveSubmitterValue = (form, submitter) => {
+        if (!submitter?.name || submitter.disabled) {
+            return;
+        }
+
+        const mirror = document.createElement('input');
+        mirror.type = 'hidden';
+        mirror.name = submitter.name;
+        mirror.value = submitter.value || '';
+        mirror.dataset.loadingSubmitterMirror = 'true';
+        form.appendChild(mirror);
+    };
+
+    const markButtonLoading = (button) => {
+        if (!(button instanceof HTMLButtonElement)) {
+            return;
+        }
+
+        if (!Array.from(button.children).some((child) => child.classList?.contains('ys-button-spinner'))) {
+            const spinner = document.createElement('span');
+            spinner.className = 'ys-button-spinner';
+            spinner.setAttribute('aria-hidden', 'true');
+            button.prepend(spinner);
+        }
+
+        const loadingText = button.dataset.loadingText || button.closest('form')?.dataset.loadingButtonText;
+        const textNode = Array.from(button.childNodes).find((node) => node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== '');
+        if (loadingText && !button.dataset.loadingOriginalText) {
+            button.dataset.loadingOriginalText = button.textContent.trim();
+            if (textNode) {
+                textNode.textContent = ` ${loadingText}`;
+            } else {
+                button.append(document.createTextNode(` ${loadingText}`));
+            }
+        }
+
+        button.classList.add('ys-button-loading');
+        button.disabled = true;
+        button.setAttribute('aria-busy', 'true');
+    };
+
+    const markFormSubmitting = (form, submitter) => {
+        if (form.dataset.loadingSubmitting === '1') {
+            return false;
+        }
+
+        form.dataset.loadingSubmitting = '1';
+        preserveSubmitterValue(form, submitter);
+
+        const buttons = submitter instanceof HTMLButtonElement
+            ? [submitter]
+            : Array.from(form.querySelectorAll('button[type="submit"], button:not([type])'));
+
+        buttons.forEach(markButtonLoading);
+
+        return true;
+    };
+
+    document.addEventListener('submit', (event) => {
+        const form = event.target instanceof HTMLFormElement ? event.target : null;
+        if (!form || event.defaultPrevented || shouldSkipFormLoading(form)) {
+            return;
+        }
+
+        const submitter = event.submitter || document.activeElement;
+        if (!markFormSubmitting(form, submitter)) {
+            event.preventDefault();
+            return;
+        }
+
+        const hasFile = Array.from(form.querySelectorAll('input[type="file"]')).some((input) => input.files?.length > 0);
+        const shouldShowOverlay = form.dataset.loadingOverlay === 'true' || hasFile || form.dataset.loadingKind === 'checkout';
+        if (shouldShowOverlay) {
+            const fallbackMessage = form.dataset.loadingKind === 'checkout'
+                ? 'Placing your order securely...'
+                : (hasFile ? 'Uploading, please wait...' : 'Processing, please wait...');
+            showGlobalLoader(form.dataset.loadingMessage || fallbackMessage, 80, 15000);
+        }
+    });
+
+    window.addEventListener('pageshow', hideGlobalLoader);
+    window.addEventListener('load', hideGlobalLoader);
+    document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') {
+            hideGlobalLoader();
+        }
+    });
+
+    hideGlobalLoader();
+};
+
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', () => {
         initAdminSidebars();
         initAddToCartAnimations();
+        initLoadingSystem();
     }, { once: true });
 } else {
     initAdminSidebars();
     initAddToCartAnimations();
+    initLoadingSystem();
 }
 
 Alpine.start();

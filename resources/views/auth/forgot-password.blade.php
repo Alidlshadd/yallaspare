@@ -13,7 +13,7 @@
 >
     <x-auth-session-status class="mt-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300" :status="session('status')" />
 
-    <form method="POST" action="{{ route('password.email') }}" class="mt-5 space-y-4" data-auth-form>
+    <form method="POST" action="{{ route('password.email') }}" class="mt-5 space-y-4" data-auth-form data-loading-button-text="Sending...">
         @csrf
 
         <div>

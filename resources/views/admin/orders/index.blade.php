@@ -1446,6 +1446,8 @@
                 <div x-show="selected.length > 0" x-cloak x-transition.opacity class="op-bulk">
                     <span class="count"><span x-text="selected.length"></span> {{ __('selected') }}</span>
                     <form method="POST" action="{{ route('admin.orders.bulk-status') }}"
+                          data-loading-form
+                          data-loading-button-text="Processing..."
                           @submit="if (!confirm('{{ __('Apply this status change to the selected orders?') }}')) $event.preventDefault()">
                         @csrf
                         <template x-for="id in selected" :key="id">
@@ -1669,7 +1671,7 @@
                                                          :style="`top:${y}px; left:${x}px;`"
                                                          @click.outside="open = false">
                                                         <div class="head">{{ __('Update Status') }}</div>
-                                                        <form method="POST" action="{{ route('admin.orders.update-status', $order) }}">
+                                                        <form method="POST" action="{{ route('admin.orders.update-status', $order) }}" data-loading-form data-loading-button-text="Saving...">
                                                             @csrf
                                                             @method('PATCH')
                                                             <select name="status">

@@ -149,7 +149,7 @@
                                 {{ __('Current: :status', ['status' => $currentMeta['label']]) }}
                             </span>
                         </div>
-                        <form method="POST" action="{{ route('admin.orders.update-status', $order) }}" class="mt-4 space-y-3">
+                        <form method="POST" action="{{ route('admin.orders.update-status', $order) }}" class="mt-4 space-y-3" data-loading-form data-loading-button-text="Saving...">
                             @csrf
                             @method('PATCH')
                             <select name="status" class="w-full rounded-lg border-slate-300 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">

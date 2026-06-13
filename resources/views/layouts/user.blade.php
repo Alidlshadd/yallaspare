@@ -109,6 +109,8 @@
         </style>
     </head>
     <body class="{{ $bodyClasses }}" x-data="{ accountOpen: false, mobileNavOpen: false }">
+        <x-loading-overlay message="{{ __('Processing, please wait...') }}" variant="full" />
+
         <div class="{{ $shellClasses }}">
             <header data-store-header class="relative sticky top-0 z-40 border-0 bg-[linear-gradient(180deg,#070740_0%,#0a0d3f_100%)] text-white shadow-none transition-transform duration-300 ease-out will-change-transform" style="margin-top:0;border-top:0">
                 @php

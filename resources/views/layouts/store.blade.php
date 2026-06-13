@@ -55,6 +55,8 @@
     </style>
 </head>
 <body class="min-h-screen">
+    <x-loading-overlay message="{{ __('Processing, please wait...') }}" variant="full" />
+
     @php
         $headerCartCount = (int) ($headerCartCount ?? $cartCount ?? 0);
         $authUser = auth()->user();

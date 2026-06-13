@@ -95,6 +95,8 @@
     </style>
 </head>
 <body class="min-h-screen bg-slate-50 text-slate-950 antialiased selection:bg-red-600 selection:text-white dark:bg-slate-950 dark:text-white">
+    <x-loading-overlay message="{{ __('Processing, please wait...') }}" variant="full" />
+
     <div class="fixed right-4 top-4 z-50">
         <x-language-switcher />
     </div>
@@ -213,15 +215,6 @@
             });
         });
 
-        document.querySelectorAll('[data-auth-form]').forEach((form) => {
-            form.addEventListener('submit', () => {
-                const submitButtons = form.querySelectorAll('button[type="submit"]');
-                submitButtons.forEach((button) => {
-                    button.disabled = true;
-                    button.classList.add('opacity-70', 'cursor-not-allowed');
-                });
-            });
-        });
     </script>
     @include('partials.language-switcher-script')
 </body>

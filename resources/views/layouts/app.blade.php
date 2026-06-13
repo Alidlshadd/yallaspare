@@ -67,6 +67,8 @@
         @endif
     </head>
     <body class="font-sans antialiased bg-slate-100 text-slate-900 dark:bg-slate-900 dark:text-slate-100">
+        <x-loading-overlay message="{{ __('Processing, please wait...') }}" variant="full" />
+
         @if(request()->routeIs('admin.*'))
             @php
                 $isRtl = in_array(app()->getLocale(), ['ar', 'ku'], true);

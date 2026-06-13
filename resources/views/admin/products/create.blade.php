@@ -25,7 +25,7 @@
                 </div>
             @endif
 
-            <form id="productForm" method="POST" action="{{ route('admin.products.store') }}" enctype="multipart/form-data" class="space-y-6">
+            <form id="productForm" method="POST" action="{{ route('admin.products.store') }}" enctype="multipart/form-data" class="space-y-6" data-loading-form data-loading-button-text="Saving...">
                 @csrf
                 <input type="hidden" name="return_to" value="{{ old('return_to', $returnTo) }}">
 
