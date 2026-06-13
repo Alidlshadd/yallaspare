@@ -52,9 +52,9 @@
                             $maxQuantity = $product ? min(99, max(1, (int) $product->stock_quantity)) : 1;
                         @endphp
 
-                        <article class="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-900/5 transition duration-200 hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md hover:shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 dark:hover:border-primary/30 dark:hover:shadow-black/20 sm:p-6">
-                            <div class="flex items-start gap-6">
-                                <div class="flex h-24 w-24 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-950">
+                        <article class="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm shadow-slate-900/5 transition duration-200 hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md hover:shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 dark:hover:border-primary/30 dark:hover:shadow-black/20 sm:rounded-3xl sm:p-6">
+                            <div class="flex min-w-0 flex-col gap-4 min-[480px]:flex-row min-[480px]:items-start sm:gap-6">
+                                <div class="flex h-20 w-20 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-950 sm:h-24 sm:w-24">
                                     <img
                                         src="{{ $product?->image ? asset('storage/' . ltrim((string) $product->image, '/')) : '/images/placeholder-product.png' }}"
                                         alt="{{ $product?->name ?? __('Product image') }}"
@@ -62,7 +62,7 @@
                                     >
                                 </div>
 
-                                <div class="flex-1 space-y-4">
+                                <div class="min-w-0 flex-1 space-y-4">
                                     <div class="flex flex-col gap-5">
                                         <div class="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                                             <div class="min-w-0">
@@ -80,9 +80,9 @@
                                                 </h2>
                                             </div>
 
-                                            <div class="rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-950">
+                                            <div class="w-full rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-950 lg:w-auto">
                                                 <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Line Total') }}</p>
-                                                <p class="mt-1 text-lg font-semibold tracking-[-0.02em] text-slate-950 dark:text-white">
+                                                <p class="mt-1 break-all text-lg font-semibold tracking-[-0.02em] text-slate-950 dark:text-white">
                                                     {{ number_format($lineTotal, 2) }} {{ $currencySymbol }}
                                                 </p>
                                             </div>
@@ -158,7 +158,7 @@
                                                 </div>
                                             </form>
 
-                                            <form action="{{ route('cart.remove', $item) }}" method="POST" class="flex justify-end">
+                                            <form action="{{ route('cart.remove', $item) }}" method="POST" class="flex justify-start lg:justify-end">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button

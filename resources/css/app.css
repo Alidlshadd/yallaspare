@@ -307,6 +307,121 @@
         background-color: var(--primary);
     }
 
+    .user-shell {
+        min-width: 0;
+        overflow-x: hidden;
+    }
+
+    .user-shell :is(main, section, article, aside, form, fieldset, .grid, .flex) {
+        min-width: 0;
+    }
+
+    .user-shell :is(img, video, canvas, svg) {
+        max-width: 100%;
+    }
+
+    .user-shell :is(.break-mobile, .app-logo-text) {
+        overflow-wrap: anywhere;
+    }
+
+    @media (max-width: 640px) {
+        .user-shell main {
+            overflow-x: clip;
+        }
+
+        .user-shell .app-logo {
+            min-width: 0;
+        }
+
+        .user-shell .app-logo-text {
+            max-width: min(42vw, 11rem);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+
+    .cart-flyer {
+        position: fixed;
+        z-index: 9999;
+        border-radius: 1rem;
+        object-fit: contain;
+        pointer-events: none;
+        background: #ffffff;
+        box-shadow: 0 18px 36px -18px rgba(15, 23, 42, 0.45);
+        opacity: 0.96;
+        transform: translate3d(0, 0, 0) scale(1);
+        transition: transform 720ms cubic-bezier(0.22, 1, 0.36, 1), opacity 720ms ease;
+        will-change: transform, opacity;
+    }
+
+    .cart-badge-bump {
+        animation: cartBadgeBump 560ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .cart-toast {
+        position: fixed;
+        inset-inline: 1rem;
+        bottom: 1rem;
+        z-index: 10000;
+        margin-inline: auto;
+        max-width: 24rem;
+        border-radius: 0.875rem;
+        background: #070b1f;
+        color: #ffffff;
+        padding: 0.875rem 1rem;
+        font-size: 0.875rem;
+        font-weight: 700;
+        text-align: center;
+        box-shadow: 0 24px 55px -28px rgba(2, 6, 23, 0.75);
+        opacity: 0;
+        transform: translateY(0.75rem) scale(0.98);
+        transition: opacity 180ms ease, transform 180ms ease;
+        pointer-events: none;
+    }
+
+    .cart-toast.is-visible {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+
+    .cart-button-added {
+        background-color: #15803d !important;
+        color: #ffffff !important;
+    }
+
+    @keyframes cartBadgeBump {
+        0% {
+            transform: scale(1);
+        }
+
+        35% {
+            transform: scale(1.45);
+        }
+
+        70% {
+            transform: scale(0.9);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .cart-flyer {
+            display: none;
+        }
+
+        .cart-badge-bump {
+            animation: none;
+        }
+
+        .cart-toast {
+            transition: none;
+        }
+    }
+
     .dark .admin-shell :is(input, select, textarea) {
         background-color: var(--admin-input);
         color: var(--admin-text-strong);

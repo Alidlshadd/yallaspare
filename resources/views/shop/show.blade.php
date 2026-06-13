@@ -112,7 +112,7 @@
             </div>
         @endif
 
-        <section class="rounded-3xl border border-slate-200/80 bg-white p-4 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:p-6 lg:p-8">
+        <section class="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:rounded-3xl sm:p-6 lg:p-8">
             <nav class="mb-6 flex flex-wrap items-center gap-2 text-xs font-medium text-slate-500 dark:text-slate-400 sm:text-sm">
                 <a href="{{ route('home') }}" class="transition hover:text-slate-900 dark:hover:text-white">{{ __('Home') }}</a>
                 <span>/</span>
@@ -127,8 +127,8 @@
 
             <div class="grid grid-cols-1 gap-6 lg:grid-cols-2">
                 <aside class="space-y-4">
-                    <div class="group overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10">
-                        <div class="aspect-square w-full overflow-hidden bg-slate-50 p-6 dark:bg-slate-950 sm:p-8">
+                    <div class="group overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:rounded-3xl">
+                        <div class="aspect-square w-full overflow-hidden bg-slate-50 p-4 dark:bg-slate-950 sm:p-8">
                             <img
                                 id="product-main-image"
                                 src="{{ $imageUrl }}"
@@ -155,10 +155,10 @@
 
                 <article class="space-y-5">
                     <div class="space-y-2">
-                        <p class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">
+                        <p class="break-mobile text-xs font-semibold uppercase tracking-[0.08em] text-slate-500 dark:text-slate-400 sm:tracking-[0.12em]">
                             {{ $brand }} | {{ __('SKU:') }} {{ $sku }} | {{ __('OEM:') }} {{ $oem }} | {{ __('Part:') }} {{ $partNumber }}
                         </p>
-                        <h1 class="text-3xl font-semibold tracking-[-0.03em] text-slate-950 dark:text-white sm:text-4xl">{{ $name }}</h1>
+                        <h1 class="break-mobile text-2xl font-semibold tracking-[-0.03em] text-slate-950 dark:text-white sm:text-4xl">{{ $name }}</h1>
                         <p class="text-sm leading-7 text-slate-600 dark:text-slate-300">
                             {{ $description ?: __('High-quality spare part engineered for reliable performance and daily workshop use.') }}
                         </p>
@@ -206,8 +206,8 @@
                         <div class="flex flex-wrap items-end gap-3">
                             <div>
                                 <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ $hasDiscount ? __('Discounted Price') : __('Price') }}</p>
-                                <div class="mt-1 flex items-end gap-2">
-                                    <p class="text-4xl font-bold tracking-[-0.03em] text-primary dark:text-white">{{ number_format($currentPrice, 2) }}</p>
+                                <div class="mt-1 flex flex-wrap items-end gap-2">
+                                    <p class="break-all text-3xl font-bold tracking-[-0.03em] text-primary dark:text-white sm:text-4xl">{{ number_format($currentPrice, 2) }}</p>
                                     <span class="pb-1 text-sm font-semibold uppercase tracking-[0.1em] text-slate-600 dark:text-slate-300">{{ $currencySymbol }}</span>
                                 </div>
                             </div>
@@ -234,10 +234,10 @@
                         <div class="mt-4 space-y-2.5">
                             @auth
                                 @if ($inStock)
-                                    <form action="{{ route('cart.add', $product) }}" method="POST" id="purchase-form" class="space-y-2.5">
+                                    <form action="{{ route('cart.add', $product) }}" method="POST" id="purchase-form" class="js-add-cart-form space-y-2.5">
                                         @csrf
                                         <input type="hidden" name="quantity" id="purchase-qty-hidden" value="1">
-                                        <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#0a0d55]">
+                                        <button type="submit" class="js-add-cart-button inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#0a0d55] disabled:cursor-wait disabled:opacity-80">
                                             {{ __('Add to Cart') }}
                                         </button>
                                         <button

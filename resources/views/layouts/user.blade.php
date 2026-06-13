@@ -195,8 +195,8 @@
                     </div>
 
                     <div class="space-y-2 py-2 lg:hidden">
-                        <div class="flex items-center justify-between gap-2">
-                            <a href="{{ $storeHomeUrl }}" class="app-logo app-logo-dark app-logo-user focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25">
+                        <div class="flex min-w-0 items-center justify-between gap-2">
+                            <a href="{{ $storeHomeUrl }}" class="app-logo app-logo-dark app-logo-user min-w-0 flex-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25">
                                 <x-brand-mark
                                     :logo-url="$brandLogoUrl"
                                     :brand="$brand"
@@ -208,7 +208,7 @@
                                 <span class="app-logo-text">{{ $brand }}</span>
                             </a>
 
-                            <div class="flex shrink-0 items-center gap-1.5">
+                            <div class="flex max-w-[64vw] shrink-0 items-center justify-end gap-1.5">
                                 <x-language-switcher variant="dark" />
 
                             @if ($isCustomerAuthenticated)
@@ -235,7 +235,7 @@
 
                                 <div
                                     data-header-account-menu
-                                    class="absolute {{ $isRtl ? 'left-0' : 'right-0' }} top-full z-50 mt-3 hidden w-56 overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-2 text-slate-900 shadow-2xl shadow-slate-900/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:shadow-black/30"
+                                    class="absolute {{ $isRtl ? 'left-0' : 'right-0' }} top-full z-50 mt-3 hidden w-56 max-w-[calc(100vw-2rem)] overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-2 text-slate-900 shadow-2xl shadow-slate-900/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:shadow-black/30"
                                     role="menu"
                                 >
                                     <div class="rounded-2xl border border-slate-100 px-4 py-3 dark:border-slate-800">
@@ -357,7 +357,7 @@
                         </div>
                     </div>
 
-                    <div class="hidden py-3 lg:grid lg:grid-cols-[minmax(11rem,0.75fr)_minmax(30rem,1.45fr)_minmax(11rem,0.75fr)] lg:items-center lg:gap-5">
+                    <div class="hidden py-3 lg:grid lg:grid-cols-[minmax(0,0.75fr)_minmax(24rem,1.45fr)_minmax(0,0.75fr)] lg:items-center lg:gap-5">
                         <div class="justify-self-start">
                             @if ($isCustomerAuthenticated)
                                 <a
