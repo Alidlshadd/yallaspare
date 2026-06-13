@@ -69,9 +69,9 @@
     <header class="store-fade sticky top-0 z-40 px-3 sm:px-6 lg:px-8" x-data="{ storeMenuOpen: false }">
         <div class="mx-auto w-full max-w-7xl">
             <div class="rounded-2xl border border-white/60 bg-white/85 px-3 py-2 shadow-[0_18px_50px_-34px_rgba(15,23,42,0.42)] backdrop-blur-2xl sm:rounded-3xl sm:px-5 sm:py-3">
-                <div class="flex items-center justify-between gap-3">
-                    <div class="header-logo-area min-h-0">
-                        <a href="{{ route('home') }}" class="app-logo app-logo-light app-logo-user">
+                <div class="flex min-w-0 items-center justify-between gap-3">
+                    <div class="header-logo-area min-h-0 min-w-0 flex-1">
+                        <a href="{{ route('home') }}" class="app-logo app-logo-light app-logo-user min-w-0">
                             <x-brand-mark
                                 :logo-url="$systemSettings['site_logo_url'] ?? null"
                                 :brand="$systemSettings['site_name'] ?? 'YallaSpare'"

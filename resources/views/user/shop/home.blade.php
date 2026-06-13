@@ -738,47 +738,6 @@
                 });
             });
 
-            document.querySelectorAll('.js-add-cart-form').forEach((form) => {
-                form.addEventListener('submit', async (event) => {
-                    event.preventDefault();
-
-                    const button = form.querySelector('.js-add-cart-button');
-                    if (button) button.disabled = true;
-
-                    try {
-                        const response = await fetch(form.action, {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': csrfToken,
-                                'X-Requested-With': 'XMLHttpRequest',
-                                'Accept': 'application/json',
-                            },
-                            body: new FormData(form),
-                            credentials: 'same-origin',
-                        });
-
-                        if (!response.ok) {
-                            throw new Error('Cart request failed');
-                        }
-
-                        let payload = null;
-                        let nextCount = currentCartCount() + 1;
-                        const contentType = response.headers.get('content-type') || '';
-                        if (contentType.includes('application/json')) {
-                            payload = await response.json();
-                            if (Number.isInteger(payload?.cart_count)) {
-                                nextCount = payload.cart_count;
-                            }
-                        }
-
-                        setCartSummary(nextCount, payload);
-                    } catch (error) {
-                        form.submit();
-                    } finally {
-                        if (button) button.disabled = false;
-                    }
-                });
-            });
         })();
     </script>
 @endpush

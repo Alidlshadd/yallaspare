@@ -41,7 +41,7 @@
 
     <div
         data-header-dropdown-menu
-        class="absolute {{ $isRtl ? 'left-0' : 'right-0' }} top-full z-50 mt-2 hidden w-44 rounded-2xl p-2 {{ $menuClasses }}"
+        class="absolute {{ $isRtl ? 'left-0' : 'right-0' }} top-full z-50 mt-2 hidden w-44 max-w-[calc(100vw-2rem)] rounded-2xl p-2 {{ $menuClasses }}"
         role="menu"
         aria-label="{{ __('Language') }}"
     >
