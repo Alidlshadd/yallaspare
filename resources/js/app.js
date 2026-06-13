@@ -370,7 +370,7 @@ const bumpCartBadge = () => {
 };
 
 const showCartToast = (message) => {
-    const text = message || 'Product added to cart.';
+    const text = message || 'Added to cart successfully';
     const existing = document.querySelector('.cart-toast');
 
     if (existing) {
@@ -402,7 +402,7 @@ const setTemporaryButtonSuccess = (button) => {
 
     const originalText = button.dataset.originalText || button.textContent.trim();
     button.dataset.originalText = originalText;
-    button.textContent = 'Added';
+    button.textContent = button.dataset.addedText || 'Added ✓';
     button.classList.add('cart-button-added');
 
     window.clearTimeout(Number(button.dataset.resetTimer || 0));
@@ -411,62 +411,6 @@ const setTemporaryButtonSuccess = (button) => {
         button.classList.remove('cart-button-added');
         delete button.dataset.resetTimer;
     }, 1500));
-};
-
-const findProductImage = (form) => {
-    const container = form.closest('article') || form.closest('section') || document;
-    const image = container.querySelector('img');
-
-    return image instanceof HTMLImageElement && image.currentSrc ? image : null;
-};
-
-const animateProductToCart = (form) => {
-    const sourceImage = findProductImage(form);
-    const target = findVisibleElement(cartBadges());
-
-    if (!sourceImage || !target) {
-        bumpCartBadge();
-        return;
-    }
-
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        bumpCartBadge();
-        return;
-    }
-
-    const sourceRect = sourceImage.getBoundingClientRect();
-    const targetRect = target.getBoundingClientRect();
-
-    if (sourceRect.width <= 0 || sourceRect.height <= 0) {
-        bumpCartBadge();
-        return;
-    }
-
-    const flyerSize = Math.min(92, Math.max(48, Math.min(sourceRect.width, sourceRect.height)));
-    const flyer = document.createElement('img');
-    flyer.src = sourceImage.currentSrc;
-    flyer.alt = '';
-    flyer.setAttribute('aria-hidden', 'true');
-    flyer.className = 'cart-flyer';
-    flyer.style.width = `${flyerSize}px`;
-    flyer.style.height = `${flyerSize}px`;
-    flyer.style.left = `${sourceRect.left + (sourceRect.width / 2) - (flyerSize / 2)}px`;
-    flyer.style.top = `${sourceRect.top + (sourceRect.height / 2) - (flyerSize / 2)}px`;
-
-    document.body.appendChild(flyer);
-
-    const deltaX = targetRect.left + (targetRect.width / 2) - (sourceRect.left + (sourceRect.width / 2));
-    const deltaY = targetRect.top + (targetRect.height / 2) - (sourceRect.top + (sourceRect.height / 2));
-
-    window.requestAnimationFrame(() => {
-        flyer.style.transform = `translate3d(${deltaX}px, ${deltaY}px, 0) scale(0.18) rotate(10deg)`;
-        flyer.style.opacity = '0.15';
-    });
-
-    window.setTimeout(() => {
-        flyer.remove();
-        bumpCartBadge();
-    }, 760);
 };
 
 const initAddToCartAnimations = () => {
@@ -520,16 +464,23 @@ const initAddToCartAnimations = () => {
                 credentials: 'same-origin',
             });
 
-            if (!response.ok) {
-                throw new Error('Cart request failed');
-            }
-
             let payload = null;
             let nextCount = currentCartCount() + 1;
             const contentType = response.headers.get('content-type') || '';
 
             if (contentType.includes('application/json')) {
-                payload = await response.json();
+                try {
+                    payload = await response.json();
+                } catch (error) {
+                    payload = null;
+                }
+            }
+
+            if (!response.ok) {
+                throw new Error(payload?.message || 'Could not add product. Please try again.');
+            }
+
+            if (payload) {
                 if (Number.isInteger(payload?.cart_count)) {
                     nextCount = payload.cart_count;
                 }
@@ -537,10 +488,10 @@ const initAddToCartAnimations = () => {
 
             setCartSummary(nextCount, payload);
             setTemporaryButtonSuccess(button);
-            showCartToast(payload?.message);
-            animateProductToCart(form);
+            showCartToast(payload?.message || 'Added to cart successfully');
+            bumpCartBadge();
         } catch (error) {
-            showCartToast('Could not add product. Please try again.');
+            showCartToast(error?.message || 'Could not add product. Please try again.');
         } finally {
             window.scrollTo(0, previousScrollY);
             if (button) {

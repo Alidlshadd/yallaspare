@@ -108,7 +108,7 @@ class CartController extends Controller
 
         $message = $wasLimited
             ? __('Only :quantity available. Cart quantity was set to :quantity.', ['quantity' => $cartQuantity])
-            : __('Product added to cart.');
+            : __('Added to cart successfully');
 
         if ($buyNow) {
             return redirect()->route('cart.index')->with($wasLimited ? 'error' : 'success', $wasLimited ? $message : __('Product added. Review and place your order.'));

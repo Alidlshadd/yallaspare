@@ -1,18 +1,4 @@
 <style>
-    .cart-flyer {
-        position: fixed;
-        z-index: 9999;
-        border-radius: 1rem;
-        object-fit: contain;
-        pointer-events: none;
-        background: #ffffff;
-        box-shadow: 0 18px 36px -18px rgba(15, 23, 42, 0.45);
-        opacity: 0.96;
-        transform: translate3d(0, 0, 0) scale(1);
-        transition: transform 720ms cubic-bezier(0.22, 1, 0.36, 1), opacity 720ms ease;
-        will-change: transform, opacity;
-    }
-
     .cart-toast {
         position: fixed;
         inset-inline: 1rem;
@@ -42,6 +28,7 @@
     .cart-button-added {
         background-color: #15803d !important;
         color: #ffffff !important;
+        transform: translateY(-1px);
     }
 
     .cart-badge-bump {
@@ -56,7 +43,6 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
-        .cart-flyer { display: none; }
         .cart-toast { transition: none; }
         .cart-badge-bump { animation: none; }
     }
@@ -112,7 +98,7 @@
             toast.className = 'cart-toast';
             toast.setAttribute('role', 'status');
             toast.setAttribute('aria-live', 'polite');
-            toast.textContent = message || 'Product added to cart.';
+            toast.textContent = message || 'Added to cart successfully';
             document.body.appendChild(toast);
             window.requestAnimationFrame(() => toast.classList.add('is-visible'));
             window.setTimeout(() => {
@@ -130,7 +116,7 @@
             if (!button) return;
             const original = button.dataset.originalText || button.textContent.trim();
             button.dataset.originalText = original;
-            button.textContent = 'Added';
+            button.textContent = button.dataset.addedText || 'Added ✓';
             button.classList.add('cart-button-added');
             window.clearTimeout(Number(button.dataset.resetTimer || 0));
             button.dataset.resetTimer = String(window.setTimeout(() => {
@@ -139,42 +125,6 @@
                 delete button.dataset.resetTimer;
             }, 1500));
         };
-        const animateToCart = (form) => {
-            const image = (form.closest('article') || form.closest('section') || document).querySelector('img');
-            const target = visible(cartBadges());
-            if (!(image instanceof HTMLImageElement) || !image.currentSrc || !target || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                bumpBadge();
-                return;
-            }
-            const sourceRect = image.getBoundingClientRect();
-            const targetRect = target.getBoundingClientRect();
-            if (sourceRect.width <= 0 || sourceRect.height <= 0) {
-                bumpBadge();
-                return;
-            }
-            const size = Math.min(92, Math.max(48, Math.min(sourceRect.width, sourceRect.height)));
-            const flyer = document.createElement('img');
-            flyer.src = image.currentSrc;
-            flyer.alt = '';
-            flyer.setAttribute('aria-hidden', 'true');
-            flyer.className = 'cart-flyer';
-            flyer.style.width = `${size}px`;
-            flyer.style.height = `${size}px`;
-            flyer.style.left = `${sourceRect.left + (sourceRect.width / 2) - (size / 2)}px`;
-            flyer.style.top = `${sourceRect.top + (sourceRect.height / 2) - (size / 2)}px`;
-            document.body.appendChild(flyer);
-            const dx = targetRect.left + (targetRect.width / 2) - (sourceRect.left + (sourceRect.width / 2));
-            const dy = targetRect.top + (targetRect.height / 2) - (sourceRect.top + (sourceRect.height / 2));
-            window.requestAnimationFrame(() => {
-                flyer.style.transform = `translate3d(${dx}px, ${dy}px, 0) scale(0.18) rotate(10deg)`;
-                flyer.style.opacity = '0.15';
-            });
-            window.setTimeout(() => {
-                flyer.remove();
-                bumpBadge();
-            }, 760);
-        };
-
         document.addEventListener('submit', async (event) => {
             const form = event.target instanceof HTMLFormElement ? event.target : event.target?.closest?.('form');
             if (!form || !form.classList.contains('js-add-cart-form')) {
@@ -207,14 +157,21 @@
                     credentials: 'same-origin',
                 });
 
-                if (!response.ok) {
-                    throw new Error('Cart request failed');
-                }
-
                 let payload = null;
                 let nextCount = currentCartCount() + 1;
                 if ((response.headers.get('content-type') || '').includes('application/json')) {
-                    payload = await response.json();
+                    try {
+                        payload = await response.json();
+                    } catch (error) {
+                        payload = null;
+                    }
+                }
+
+                if (!response.ok) {
+                    throw new Error(payload?.message || 'Could not add product. Please try again.');
+                }
+
+                if (payload) {
                     if (Number.isInteger(payload?.cart_count)) {
                         nextCount = payload.cart_count;
                     }
@@ -222,10 +179,10 @@
 
                 setCartSummary(nextCount, payload);
                 markButtonAdded(button);
-                showToast(payload?.message);
-                animateToCart(form);
+                showToast(payload?.message || 'Added to cart successfully');
+                bumpBadge();
             } catch (error) {
-                showToast('Could not add product. Please try again.');
+                showToast(error?.message || 'Could not add product. Please try again.');
             } finally {
                 window.scrollTo(0, previousScrollY);
                 if (button) {

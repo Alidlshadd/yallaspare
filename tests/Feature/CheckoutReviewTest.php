@@ -218,6 +218,32 @@ class CheckoutReviewTest extends TestCase
         ]);
     }
 
+    public function test_cart_add_returns_json_summary_for_ajax_requests(): void
+    {
+        $user = User::factory()->create();
+        $category = Category::factory()->create();
+        $product = Product::factory()->create([
+            'category_id' => $category->id,
+            'stock_quantity' => 8,
+            'price' => 25000,
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($user)
+            ->postJson(route('cart.add', $product), [
+                'quantity' => 1,
+            ])
+            ->assertOk()
+            ->assertJsonPath('ok', true)
+            ->assertJsonPath('cart_count', 1)
+            ->assertJsonPath('message', 'Added to cart successfully');
+
+        $this->assertDatabaseHas('cart_items', [
+            'product_id' => $product->id,
+            'quantity' => 1,
+        ]);
+    }
+
     public function test_cart_update_limits_quantity_to_available_stock(): void
     {
         [$user, , $product] = $this->makeCheckoutContext();
