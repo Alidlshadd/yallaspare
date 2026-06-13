@@ -369,6 +369,50 @@ const bumpCartBadge = () => {
     });
 };
 
+const showCartToast = (message) => {
+    const text = message || 'Product added to cart.';
+    const existing = document.querySelector('.cart-toast');
+
+    if (existing) {
+        existing.remove();
+    }
+
+    const toast = document.createElement('div');
+    toast.className = 'cart-toast';
+    toast.setAttribute('role', 'status');
+    toast.setAttribute('aria-live', 'polite');
+    toast.textContent = text;
+
+    document.body.appendChild(toast);
+
+    window.requestAnimationFrame(() => {
+        toast.classList.add('is-visible');
+    });
+
+    window.setTimeout(() => {
+        toast.classList.remove('is-visible');
+        window.setTimeout(() => toast.remove(), 220);
+    }, 2200);
+};
+
+const setTemporaryButtonSuccess = (button) => {
+    if (!button) {
+        return;
+    }
+
+    const originalText = button.dataset.originalText || button.textContent.trim();
+    button.dataset.originalText = originalText;
+    button.textContent = 'Added';
+    button.classList.add('cart-button-added');
+
+    window.clearTimeout(Number(button.dataset.resetTimer || 0));
+    button.dataset.resetTimer = String(window.setTimeout(() => {
+        button.textContent = originalText;
+        button.classList.remove('cart-button-added');
+        delete button.dataset.resetTimer;
+    }, 1500));
+};
+
 const findProductImage = (form) => {
     const container = form.closest('article') || form.closest('section') || document;
     const image = container.querySelector('img');
@@ -484,6 +528,8 @@ const initAddToCartAnimations = () => {
                 }
 
                 setCartSummary(nextCount, payload);
+                setTemporaryButtonSuccess(button);
+                showCartToast(payload?.message);
                 animateProductToCart(form);
             } catch (error) {
                 form.submit();
