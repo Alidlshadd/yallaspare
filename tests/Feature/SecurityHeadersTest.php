@@ -11,6 +11,7 @@ class SecurityHeadersTest extends TestCase
         $this->get('/')
             ->assertHeader('X-Content-Type-Options', 'nosniff')
             ->assertHeader('X-Frame-Options', 'DENY')
+            ->assertHeader('X-XSS-Protection', '1; mode=block')
             ->assertHeader('X-DNS-Prefetch-Control', 'off')
             ->assertHeader('X-Download-Options', 'noopen')
             ->assertHeader('X-Permitted-Cross-Domain-Policies', 'none')

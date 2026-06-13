@@ -14,6 +14,7 @@ class SecurityHeaders
 
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('X-Frame-Options', 'DENY');
+        $response->headers->set('X-XSS-Protection', '1; mode=block');
         $response->headers->set('X-DNS-Prefetch-Control', 'off');
         $response->headers->set('X-Download-Options', 'noopen');
         $response->headers->set('X-Permitted-Cross-Domain-Policies', 'none');
