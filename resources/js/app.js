@@ -444,7 +444,7 @@ const initAddToCartAnimations = () => {
 
         const button = form.querySelector('.js-add-cart-button');
         const formData = new FormData(form);
-        const action = submitter?.formAction || form.action;
+        const action = submitter?.hasAttribute?.('formaction') ? submitter.formAction : form.action;
         const previousScrollY = window.scrollY || document.documentElement.scrollTop || 0;
 
         if (button) {

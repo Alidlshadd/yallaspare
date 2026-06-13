@@ -146,7 +146,9 @@
             }
 
             try {
-                const response = await fetch(submitter?.formAction || form.action, {
+                const action = submitter?.hasAttribute?.('formaction') ? submitter.formAction : form.action;
+
+                const response = await fetch(action, {
                     method: 'POST',
                     headers: {
                         'X-CSRF-TOKEN': csrfToken,
