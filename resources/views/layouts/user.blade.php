@@ -1104,6 +1104,7 @@
                 });
             })();
         </script>
+        @include('partials.cart-feedback-script')
         @stack('scripts')
     </body>
 </html>

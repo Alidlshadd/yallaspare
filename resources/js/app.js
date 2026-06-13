@@ -470,76 +470,84 @@ const animateProductToCart = (form) => {
 };
 
 const initAddToCartAnimations = () => {
+    if (window.YallaCartFeedbackInitialized) {
+        return;
+    }
+
     const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
     if (!csrfToken) {
         return;
     }
 
-    document.querySelectorAll('.js-add-cart-form').forEach((form) => {
-        if (form.dataset.cartAnimationReady === '1') {
+    window.YallaCartFeedbackInitialized = true;
+
+    document.addEventListener('submit', async (event) => {
+        const form = event.target instanceof HTMLFormElement
+            ? event.target
+            : event.target?.closest?.('form');
+
+        if (!form || !form.classList.contains('js-add-cart-form')) {
             return;
         }
 
-        form.dataset.cartAnimationReady = '1';
+        const submitter = event.submitter;
 
-        form.addEventListener('submit', async (event) => {
-            const submitter = event.submitter;
+        if (submitter && !submitter.classList.contains('js-add-cart-button')) {
+            return;
+        }
 
-            if (submitter && !submitter.classList.contains('js-add-cart-button')) {
-                return;
+        event.preventDefault();
+
+        const button = form.querySelector('.js-add-cart-button');
+        const formData = new FormData(form);
+        const action = submitter?.formAction || form.action;
+        const previousScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+
+        if (button) {
+            button.disabled = true;
+            button.setAttribute('aria-busy', 'true');
+        }
+
+        try {
+            const response = await fetch(action, {
+                method: 'POST',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                },
+                body: formData,
+                credentials: 'same-origin',
+            });
+
+            if (!response.ok) {
+                throw new Error('Cart request failed');
             }
 
-            event.preventDefault();
+            let payload = null;
+            let nextCount = currentCartCount() + 1;
+            const contentType = response.headers.get('content-type') || '';
 
-            const button = form.querySelector('.js-add-cart-button');
-            const formData = new FormData(form);
-            const action = submitter?.formAction || form.action;
+            if (contentType.includes('application/json')) {
+                payload = await response.json();
+                if (Number.isInteger(payload?.cart_count)) {
+                    nextCount = payload.cart_count;
+                }
+            }
 
+            setCartSummary(nextCount, payload);
+            setTemporaryButtonSuccess(button);
+            showCartToast(payload?.message);
+            animateProductToCart(form);
+        } catch (error) {
+            showCartToast('Could not add product. Please try again.');
+        } finally {
+            window.scrollTo(0, previousScrollY);
             if (button) {
-                button.disabled = true;
-                button.setAttribute('aria-busy', 'true');
+                button.disabled = false;
+                button.removeAttribute('aria-busy');
             }
-
-            try {
-                const response = await fetch(action, {
-                    method: 'POST',
-                    headers: {
-                        'X-CSRF-TOKEN': csrfToken,
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'application/json',
-                    },
-                    body: formData,
-                    credentials: 'same-origin',
-                });
-
-                if (!response.ok) {
-                    throw new Error('Cart request failed');
-                }
-
-                let payload = null;
-                let nextCount = currentCartCount() + 1;
-                const contentType = response.headers.get('content-type') || '';
-
-                if (contentType.includes('application/json')) {
-                    payload = await response.json();
-                    if (Number.isInteger(payload?.cart_count)) {
-                        nextCount = payload.cart_count;
-                    }
-                }
-
-                setCartSummary(nextCount, payload);
-                setTemporaryButtonSuccess(button);
-                showCartToast(payload?.message);
-                animateProductToCart(form);
-            } catch (error) {
-                form.submit();
-            } finally {
-                if (button) {
-                    button.disabled = false;
-                    button.removeAttribute('aria-busy');
-                }
-            }
-        });
+        }
     });
 };
 
