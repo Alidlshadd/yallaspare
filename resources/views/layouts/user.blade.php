@@ -118,9 +118,9 @@
                 @endphp
 
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                    <div class="hidden h-14 items-center lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-4">
+                    <div class="hidden h-11 items-center lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-4">
                         <div></div>
-                        <a href="{{ $storeHomeUrl }}" class="app-logo app-logo-dark app-logo-user justify-self-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25">
+                        <a href="{{ $storeHomeUrl }}" class="app-logo app-logo-dark app-logo-user app-logo-compact justify-self-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25">
                             <x-brand-mark
                                 :logo-url="$brandLogoUrl"
                                 :brand="$brand"
@@ -196,9 +196,9 @@
                         </div>
                     </div>
 
-                    <div class="space-y-2 py-2 lg:hidden">
+                    <div class="space-y-1.5 py-1.5 lg:hidden">
                         <div class="flex items-center justify-between gap-2">
-                            <a href="{{ $storeHomeUrl }}" class="app-logo app-logo-dark app-logo-user focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25">
+                            <a href="{{ $storeHomeUrl }}" class="app-logo app-logo-dark app-logo-user app-logo-compact focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25">
                                 <x-brand-mark
                                     :logo-url="$brandLogoUrl"
                                     :brand="$brand"
@@ -359,16 +359,16 @@
                         </div>
                     </div>
 
-                    <div class="hidden py-3 lg:grid lg:grid-cols-[minmax(11rem,0.75fr)_minmax(30rem,1.45fr)_minmax(11rem,0.75fr)] lg:items-center lg:gap-5">
+                    <div class="hidden py-1.5 lg:grid lg:grid-cols-[minmax(11rem,0.75fr)_minmax(30rem,1.45fr)_minmax(11rem,0.75fr)] lg:items-center lg:gap-4">
                         <div class="justify-self-start">
                             @if ($isCustomerAuthenticated)
                                 <a
                                     href="{{ $cartUrl }}"
-                                    class="inline-flex min-w-[10.5rem] items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 py-1.5 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
+                                    class="inline-flex min-w-[10rem] items-center gap-2.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
                                     aria-label="{{ __('Cart summary') }}"
                                 >
-                                    <span class="relative inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-white">
-                                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                    <span class="relative inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/10 text-white">
+                                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.836L5.61 7.5m0 0h12.84a1.125 1.125 0 0 1 1.089 1.41l-1.12 4.5a1.125 1.125 0 0 1-1.09.84H8.382a1.125 1.125 0 0 1-1.09-.84L5.61 7.5Zm0 0L4.5 4.125M8.25 18.75a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5Zm9 0a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5Z" />
                                         </svg>
                                         <span class="absolute -top-1 {{ $isRtl ? '-left-1' : '-right-1' }} inline-flex min-w-[1.2rem] items-center justify-center rounded-full bg-orange-500 px-1.5 py-0.5 text-[10px] font-semibold leading-none text-white" data-cart-count-badge data-cart-count-value="{{ $cartCount }}" aria-hidden="true">
@@ -386,16 +386,16 @@
                                     </span>
                                 </a>
                             @else
-                                <span class="inline-flex min-w-[10.5rem] items-center justify-center rounded-full border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-white">
+                                <span class="inline-flex min-w-[10rem] items-center justify-center rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm font-semibold text-white">
                                     {{ __('Guest browsing') }}
                                 </span>
                             @endif
                         </div>
 
                         <form method="GET" action="{{ route('shop.index') }}" class="w-full min-w-0 justify-self-center" data-search-autocomplete data-search-autocomplete-url="{{ route('shop.autocomplete') }}">
-                            <div class="relative mx-auto w-full max-w-[38rem]">
-                                <span class="pointer-events-none absolute inset-y-0 left-5 flex items-center text-white/55">
-                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                            <div class="relative mx-auto w-full max-w-[36rem]">
+                                <span class="pointer-events-none absolute inset-y-0 left-4 flex items-center text-white/55">
+                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35" />
                                         <circle cx="11" cy="11" r="6" />
                                     </svg>
@@ -408,11 +408,11 @@
                                     aria-label="{{ __('Search catalog') }}"
                                     autocomplete="off"
                                     data-search-autocomplete-input
-                                    class="block h-11 w-full rounded-full border border-white/10 bg-white/10 py-2.5 pl-14 pr-28 text-sm text-white outline-none transition duration-200 placeholder:text-white/45 focus:border-white/20 focus:bg-white/15 focus:ring-4 focus:ring-white/10"
+                                    class="block h-9 w-full rounded-full border border-white/10 bg-white/10 py-2 pl-11 pr-24 text-sm text-white outline-none transition duration-200 placeholder:text-white/45 focus:border-white/20 focus:bg-white/15 focus:ring-4 focus:ring-white/10"
                                 />
                                 <button
                                     type="submit"
-                                    class="absolute {{ $isRtl ? 'left-1.5' : 'right-1.5' }} top-1.5 inline-flex h-8 items-center justify-center rounded-full bg-white px-4 text-sm font-semibold text-primary transition duration-200 hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
+                                    class="absolute {{ $isRtl ? 'left-1' : 'right-1' }} top-1 inline-flex h-7 items-center justify-center rounded-full bg-white px-3.5 text-sm font-semibold text-primary transition duration-200 hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40"
                                 >
                                     {{ __('Search') }}
                                 </button>
@@ -425,10 +425,10 @@
                                 @if ($isCustomerAuthenticated)
                                     <a
                                         href="{{ $wishlistUrl }}"
-                                        class="inline-flex h-10 items-center gap-3 rounded-full border border-white/10 bg-white/5 px-4 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
+                                        class="inline-flex h-9 items-center gap-2.5 rounded-full border border-white/10 bg-white/5 px-3 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
                                         aria-label="{{ __('Wishlist') }}"
                                     >
-                                        <span class="relative inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/10 text-white">
+                                        <span class="relative inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/10 text-white">
                                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12.001 20.727 10.59 19.44C5.58 14.905 2.25 11.89 2.25 8.188 2.25 5.173 4.612 2.812 7.626 2.812c1.704 0 3.34.793 4.375 2.037a5.755 5.755 0 0 1 4.373-2.037c3.016 0 5.376 2.361 5.376 5.376 0 3.702-3.328 6.717-8.339 11.252L12 20.727Z" />
                                             </svg>
@@ -439,17 +439,17 @@
                                         <span class="text-sm font-semibold">{{ __('Wishlist') }}</span>
                                     </a>
                                 @else
-                                    <a href="{{ route('login') }}" class="inline-flex h-10 items-center rounded-full border border-white/10 bg-white/5 px-4 text-sm font-semibold text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25">
+                                    <a href="{{ route('login') }}" class="inline-flex h-9 items-center rounded-full border border-white/10 bg-white/5 px-3.5 text-sm font-semibold text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25">
                                         {{ __('Login') }}
                                     </a>
-                                    <a href="{{ route('register') }}" class="inline-flex h-10 items-center rounded-full bg-white px-4 text-sm font-semibold text-primary transition duration-200 hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40">
+                                    <a href="{{ route('register') }}" class="inline-flex h-9 items-center rounded-full bg-white px-3.5 text-sm font-semibold text-primary transition duration-200 hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40">
                                         {{ __('Register') }}
                                     </a>
                                 @endif
 
                                 <a
                                     href="{{ url('/support') }}"
-                                    class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
+                                    class="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
                                 aria-label="{{ __('Support') }}"
                                 >
                                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -463,7 +463,7 @@
                 </div>
 
                 <nav
-                    class="pb-2 pt-1 text-white lg:pb-2.5 lg:pt-1.5"
+                    class="pb-1 pt-0 text-white lg:pb-1.5 lg:pt-0"
                     aria-label="{{ __('Main navigation') }}"
                     x-data="{
                         categoriesOpen: false,
@@ -508,20 +508,20 @@
                             >
                                 <a
                                     href="{{ $storeHomeUrl }}"
-                                    class="inline-flex items-center rounded-xl px-3 py-1.5 text-sm font-medium transition duration-200 {{ request()->routeIs('user.shop.home') ? 'bg-white text-primary' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
+                                    class="inline-flex items-center rounded-xl px-3 py-1 text-sm font-medium transition duration-200 {{ request()->routeIs('user.shop.home') ? 'bg-white text-primary' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
                                 >
                                     {{ __('Home') }}
                                 </a>
                                 <a
                                     href="{{ route('shop.index') }}"
-                                    class="inline-flex items-center rounded-xl px-3 py-1.5 text-sm font-medium transition duration-200 {{ request()->routeIs('shop.index') || request()->routeIs('user.shop.index') ? 'bg-white text-primary' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
+                                    class="inline-flex items-center rounded-xl px-3 py-1 text-sm font-medium transition duration-200 {{ request()->routeIs('shop.index') || request()->routeIs('user.shop.index') ? 'bg-white text-primary' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
                                 >
                                     {{ __('Shop') }}
                                 </a>
 
                                 <a
                                     href="{{ route('categories.index') }}"
-                                    class="inline-flex items-center gap-1 rounded-xl px-3 py-1.5 text-sm font-medium transition duration-200 {{ request()->routeIs('categories.*') ? 'bg-white text-primary' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
+                                    class="inline-flex items-center gap-1 rounded-xl px-3 py-1 text-sm font-medium transition duration-200 {{ request()->routeIs('categories.*') ? 'bg-white text-primary' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
                                     data-store-categories-trigger
                                     aria-expanded="false"
                                     aria-haspopup="menu"
@@ -534,13 +534,13 @@
 
                                 <a
                                     href="{{ route('legal.about') }}"
-                                    class="inline-flex items-center rounded-xl px-3 py-1.5 text-sm font-medium text-white/80 transition duration-200 hover:bg-white/10 hover:text-white"
+                                    class="inline-flex items-center rounded-xl px-3 py-1 text-sm font-medium text-white/80 transition duration-200 hover:bg-white/10 hover:text-white"
                                 >
                                     {{ __('About Us') }}
                                 </a>
                                 <a
                                     href="{{ route('legal.contact') }}"
-                                    class="inline-flex items-center rounded-xl px-3 py-1.5 text-sm font-medium text-white/80 transition duration-200 hover:bg-white/10 hover:text-white"
+                                    class="inline-flex items-center rounded-xl px-3 py-1 text-sm font-medium text-white/80 transition duration-200 hover:bg-white/10 hover:text-white"
                                 >
                                     {{ __('Contact') }}
                                 </a>

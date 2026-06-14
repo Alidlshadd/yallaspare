@@ -160,6 +160,27 @@
         letter-spacing: 0.015em;
     }
 
+    .app-logo-compact {
+        min-height: 40px;
+        padding: 0.25rem 0.5rem;
+        gap: 0.5rem;
+    }
+
+    .app-logo-compact .app-logo-mark {
+        height: 36px;
+        width: 36px;
+    }
+
+    .app-logo-compact .app-logo-mark img {
+        height: 36px;
+        max-width: 36px;
+    }
+
+    .app-logo-compact .app-logo-text {
+        font-size: 18px;
+        line-height: 1;
+    }
+
     @media (max-width: 640px) {
         .app-logo {
             min-height: 40px;
@@ -193,6 +214,26 @@
 
         .app-logo-user .app-logo-text {
             font-size: 16px;
+        }
+
+        .app-logo-compact {
+            min-height: 36px;
+            padding: 0.125rem 0.25rem;
+            gap: 0.35rem;
+        }
+
+        .app-logo-compact .app-logo-mark {
+            height: 32px;
+            width: 32px;
+        }
+
+        .app-logo-compact .app-logo-mark img {
+            height: 32px;
+            max-width: 32px;
+        }
+
+        .app-logo-compact .app-logo-text {
+            font-size: 15px;
         }
     }
 
