@@ -125,6 +125,9 @@
                 delete button.dataset.resetTimer;
             }, 1500));
         };
+        const t = (key, fallback) => (window.YallaI18n && window.YallaI18n[key]) || fallback;
+        const Loader = () => window.YallaLoading || null;
+
         document.addEventListener('submit', async (event) => {
             const form = event.target instanceof HTMLFormElement ? event.target : event.target?.closest?.('form');
             if (!form || !form.classList.contains('js-add-cart-form')) {
@@ -139,11 +142,30 @@
             event.preventDefault();
 
             const button = form.querySelector('.js-add-cart-button');
-            const previousScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+
+            // Synchronous double-click guard: runs before fetch starts.
+            if (button && (button.dataset.inFlight === 'true' || button.dataset.cooldownActive === 'true')) {
+                return;
+            }
             if (button) {
+                button.dataset.inFlight = 'true';
+            }
+
+            const previousScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+            const loader = Loader();
+
+            if (loader) {
+                loader.setButtonLoading(button, true, t('adding', 'Adding...'));
+            } else if (button) {
                 button.disabled = true;
                 button.setAttribute('aria-busy', 'true');
             }
+
+            if (loader) {
+                loader.showSlowRequestLoading();
+            }
+
+            let inCooldown = false;
 
             try {
                 const action = submitter?.hasAttribute?.('formaction') ? submitter.formAction : form.action;
@@ -158,6 +180,20 @@
                     body: new FormData(form),
                     credentials: 'same-origin',
                 });
+
+                if (loader) {
+                    loader.hideSlowRequestLoading();
+                }
+
+                if (response.status === 429) {
+                    const headerValue = parseInt(response.headers.get('Retry-After'), 10);
+                    const seconds = Number.isFinite(headerValue) && headerValue > 0 ? headerValue : 10;
+                    inCooldown = true;
+                    if (loader) {
+                        loader.showRateLimitCooldown(seconds, button);
+                    }
+                    return;
+                }
 
                 let payload = null;
                 let nextCount = currentCartCount() + 1;
@@ -179,17 +215,31 @@
                     }
                 }
 
+                if (loader) {
+                    loader.setButtonLoading(button, false);
+                }
                 setCartSummary(nextCount, payload);
                 markButtonAdded(button);
                 showToast(payload?.message || 'Added to cart successfully');
                 bumpBadge();
             } catch (error) {
+                if (loader) {
+                    loader.hideSlowRequestLoading();
+                    loader.setButtonLoading(button, false);
+                }
                 showToast(error?.message || 'Could not add product. Please try again.');
             } finally {
                 window.scrollTo(0, previousScrollY);
                 if (button) {
-                    button.disabled = false;
-                    button.removeAttribute('aria-busy');
+                    delete button.dataset.inFlight;
+                    if (!inCooldown && button.dataset.cooldownActive !== 'true') {
+                        if (loader) {
+                            loader.setButtonLoading(button, false);
+                        } else {
+                            button.disabled = false;
+                            button.removeAttribute('aria-busy');
+                        }
+                    }
                 }
             }
         }, true);

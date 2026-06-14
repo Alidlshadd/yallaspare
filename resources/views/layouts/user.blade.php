@@ -109,6 +109,13 @@
         </style>
     </head>
     <body class="{{ $bodyClasses }}" x-data="{ accountOpen: false, mobileNavOpen: false }">
+        <script>
+            window.YallaI18n = Object.assign(window.YallaI18n || {}, {
+                adding: @json(__('Adding...')),
+                processing: @json(__('Processing your request...')),
+                waitBeforeRetry: @json(__('Please wait before trying again.')),
+            });
+        </script>
         <x-loading-overlay message="{{ __('Processing, please wait...') }}" variant="full" />
 
         <div class="{{ $shellClasses }}">

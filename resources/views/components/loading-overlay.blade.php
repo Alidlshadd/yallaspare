@@ -32,10 +32,11 @@
                 />
                 <span class="ys-loading-brand-name">{{ $brand }}</span>
             </div>
+        @else
+            <div class="ys-loading-ring" aria-hidden="true"></div>
         @endif
 
-        <div class="ys-loading-ring" aria-hidden="true"></div>
-        <p class="ys-loading-message" data-loading-message>{{ $messageText }}</p>
+        <p class="sr-only" data-loading-message>{{ $messageText }}</p>
         <span class="sr-only">{{ __('Loading') }}</span>
     </div>
 </div>

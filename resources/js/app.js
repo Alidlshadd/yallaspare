@@ -425,6 +425,9 @@ const initAddToCartAnimations = () => {
 
     window.YallaCartFeedbackInitialized = true;
 
+    const cartT = (key, fallback) => (window.YallaI18n && window.YallaI18n[key]) || fallback;
+    const Loader = () => window.YallaLoading || null;
+
     document.addEventListener('submit', async (event) => {
         const form = event.target instanceof HTMLFormElement
             ? event.target
@@ -443,14 +446,34 @@ const initAddToCartAnimations = () => {
         event.preventDefault();
 
         const button = form.querySelector('.js-add-cart-button');
+
+        // Synchronous double-click guard: runs before fetch starts.
+        if (button && (button.dataset.inFlight === 'true' || button.dataset.cooldownActive === 'true')) {
+            return;
+        }
+        if (button) {
+            button.dataset.inFlight = 'true';
+        }
+
         const formData = new FormData(form);
         const action = submitter?.hasAttribute?.('formaction') ? submitter.formAction : form.action;
         const previousScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+        const loader = Loader();
 
-        if (button) {
+        // Level 1: button text + disabled state immediately.
+        if (loader) {
+            loader.setButtonLoading(button, true, cartT('adding', 'Adding...'));
+        } else if (button) {
             button.disabled = true;
             button.setAttribute('aria-busy', 'true');
         }
+
+        // Level 2: schedule branded overlay only if request > 400ms.
+        if (loader) {
+            loader.showSlowRequestLoading();
+        }
+
+        let inCooldown = false;
 
         try {
             const response = await fetch(action, {
@@ -463,6 +486,21 @@ const initAddToCartAnimations = () => {
                 body: formData,
                 credentials: 'same-origin',
             });
+
+            if (loader) {
+                loader.hideSlowRequestLoading();
+            }
+
+            // Level 3: rate limit — branded cooldown, NOT the toast/error flow.
+            if (response.status === 429) {
+                const headerValue = parseInt(response.headers.get('Retry-After'), 10);
+                const seconds = Number.isFinite(headerValue) && headerValue > 0 ? headerValue : 10;
+                inCooldown = true;
+                if (loader) {
+                    loader.showRateLimitCooldown(seconds, button);
+                }
+                return;
+            }
 
             let payload = null;
             let nextCount = currentCartCount() + 1;
@@ -486,17 +524,32 @@ const initAddToCartAnimations = () => {
                 }
             }
 
+            // Restore Level 1 text before success animation captures original.
+            if (loader) {
+                loader.setButtonLoading(button, false);
+            }
             setCartSummary(nextCount, payload);
             setTemporaryButtonSuccess(button);
             showCartToast(payload?.message || 'Added to cart successfully');
             bumpCartBadge();
         } catch (error) {
+            if (loader) {
+                loader.hideSlowRequestLoading();
+                loader.setButtonLoading(button, false);
+            }
             showCartToast(error?.message || 'Could not add product. Please try again.');
         } finally {
             window.scrollTo(0, previousScrollY);
             if (button) {
-                button.disabled = false;
-                button.removeAttribute('aria-busy');
+                delete button.dataset.inFlight;
+                if (!inCooldown && button.dataset.cooldownActive !== 'true') {
+                    if (loader) {
+                        loader.setButtonLoading(button, false);
+                    } else {
+                        button.disabled = false;
+                        button.removeAttribute('aria-busy');
+                    }
+                }
             }
         }
     });
@@ -555,9 +608,90 @@ const initLoadingSystem = () => {
         }, delay);
     };
 
+    const t = (key, fallback) => (window.YallaI18n && window.YallaI18n[key]) || fallback;
+
+    const setButtonLoading = (button, isLoading, loadingText = null) => {
+        if (!button) return;
+        if (isLoading) {
+            if (loadingText && !button.dataset.loadingPreviousText) {
+                button.dataset.loadingPreviousText = button.textContent;
+                button.textContent = loadingText;
+            }
+            button.disabled = true;
+            button.setAttribute('aria-busy', 'true');
+        } else {
+            if (button.dataset.loadingPreviousText !== undefined) {
+                button.textContent = button.dataset.loadingPreviousText;
+                delete button.dataset.loadingPreviousText;
+            }
+            button.disabled = false;
+            button.removeAttribute('aria-busy');
+        }
+    };
+
+    const showSlowRequestLoading = (message) => {
+        showGlobalLoader(message || t('processing', 'Processing your request...'), 800);
+    };
+
+    const hideSlowRequestLoading = () => {
+        hideGlobalLoader();
+    };
+
+    let cooldownInterval = null;
+    let cooldownButton = null;
+
+    const clearCooldownState = () => {
+        if (cooldownInterval) {
+            window.clearInterval(cooldownInterval);
+            cooldownInterval = null;
+        }
+        if (cooldownButton) {
+            delete cooldownButton.dataset.cooldownActive;
+            setButtonLoading(cooldownButton, false);
+            cooldownButton = null;
+        }
+    };
+
+    const showRateLimitCooldown = (seconds, button) => {
+        // Cancel any pending slow-request show timer; the cooldown takes over immediately.
+        hideGlobalLoader();
+        clearCooldownState();
+
+        let remaining = Math.max(1, Math.floor(Number(seconds)) || 10);
+        // sr-only message — visually nothing changes during countdown.
+        setLoaderMessage(t('waitBeforeRetry', 'Please wait before trying again.'));
+
+        if (globalLoader) {
+            window.clearTimeout(showTimer);
+            window.clearTimeout(fallbackTimer);
+            globalLoader.classList.remove('is-hidden');
+            globalLoader.setAttribute('aria-hidden', 'false');
+            document.documentElement.classList.add('ys-loading-active');
+        }
+
+        if (button) {
+            cooldownButton = button;
+            button.dataset.cooldownActive = 'true';
+            setButtonLoading(button, true);
+        }
+
+        cooldownInterval = window.setInterval(() => {
+            remaining -= 1;
+            if (remaining <= 0) {
+                hideGlobalLoader();
+                clearCooldownState();
+            }
+            // No visible re-render — countdown is hidden from the user.
+        }, 1000);
+    };
+
     window.YallaLoading = {
         show: showGlobalLoader,
         hide: hideGlobalLoader,
+        setButtonLoading,
+        showSlowRequestLoading,
+        hideSlowRequestLoading,
+        showRateLimitCooldown,
     };
 
     const shouldSkipFormLoading = (form) => {

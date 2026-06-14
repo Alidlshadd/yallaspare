@@ -419,18 +419,11 @@
     }
 
     .ys-loading-overlay {
-        --ys-loading-bg: rgba(248, 250, 252, 0.96);
-        --ys-loading-card: rgba(255, 255, 255, 0.88);
-        --ys-loading-border: rgba(226, 232, 240, 0.92);
-        --ys-loading-text: #070740;
-        --ys-loading-muted: #64748b;
-        --ys-loading-accent: #06b6d4;
-        --ys-loading-ring: rgba(7, 7, 64, 0.14);
         align-items: center;
         justify-content: center;
-        color: var(--ys-loading-text);
+        color: #ffffff;
         opacity: 1;
-        transition: opacity 180ms ease, visibility 180ms ease;
+        transition: opacity 240ms ease, visibility 240ms ease;
     }
 
     .ys-loading-overlay.is-hidden {
@@ -445,11 +438,10 @@
         z-index: 10050;
         display: flex;
         min-height: 100dvh;
-        padding: 1.25rem;
-        background:
-            radial-gradient(circle at 50% 42%, rgba(6, 182, 212, 0.10), transparent 28%),
-            var(--ys-loading-bg);
-        backdrop-filter: blur(10px);
+        padding: 1.5rem;
+        background: rgba(7, 11, 31, 0.72);
+        backdrop-filter: blur(22px) saturate(140%);
+        -webkit-backdrop-filter: blur(22px) saturate(140%);
     }
 
     .ys-loading-overlay-compact {
@@ -459,47 +451,94 @@
         display: flex;
         min-height: 12rem;
         border-radius: inherit;
-        background: var(--ys-loading-bg);
+        background: rgba(7, 11, 31, 0.72);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
     }
 
     .ys-loading-card {
+        position: relative;
         display: flex;
-        min-width: min(18rem, calc(100vw - 2rem));
-        max-width: 22rem;
         flex-direction: column;
         align-items: center;
-        gap: 1rem;
-        border: 1px solid var(--ys-loading-border);
-        border-radius: 1.25rem;
-        background: var(--ys-loading-card);
-        padding: 1.5rem;
+        gap: 1.5rem;
+        padding: 2.25rem 2.5rem;
+        min-width: min(18rem, calc(100vw - 2rem));
+        max-width: 22rem;
+        background: linear-gradient(155deg, #0b1133 0%, #050726 100%);
+        border-radius: 1.75rem;
+        box-shadow:
+            0 30px 90px -20px rgba(0, 0, 0, 0.7),
+            0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+            0 1px 0 rgba(255, 255, 255, 0.08) inset;
+        overflow: hidden;
         text-align: center;
-        box-shadow: 0 24px 70px -42px rgba(7, 7, 64, 0.45);
+    }
+
+    .ys-loading-card::before,
+    .ys-loading-card::after {
+        content: '';
+        position: absolute;
+        pointer-events: none;
+        filter: blur(24px);
+        z-index: 0;
+    }
+
+    .ys-loading-card::before {
+        top: -30%;
+        left: -20%;
+        width: 60%;
+        height: 60%;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.32), transparent 60%);
+    }
+
+    .ys-loading-card::after {
+        bottom: -25%;
+        right: -20%;
+        width: 55%;
+        height: 55%;
+        background: radial-gradient(circle, rgba(232, 93, 42, 0.20), transparent 60%);
     }
 
     .ys-loading-brand {
+        position: relative;
+        z-index: 1;
         display: inline-flex;
-        min-width: 0;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
-        gap: 0.75rem;
+        gap: 1rem;
+        min-width: 0;
     }
 
     .ys-loading-logo {
+        position: relative;
         display: inline-flex;
-        height: 2.75rem;
-        width: 2.75rem;
+        height: 5.5rem;
+        width: 5.5rem;
         flex: 0 0 auto;
         align-items: center;
         justify-content: center;
-        overflow: hidden;
-        border-radius: 0.95rem;
-        background: rgba(7, 7, 64, 0.06);
+        overflow: visible;
+        border-radius: 9999px;
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    .ys-loading-logo::before {
+        content: '';
+        position: absolute;
+        inset: -6px;
+        border-radius: 9999px;
+        border: 2px solid rgba(255, 255, 255, 0.08);
+        border-top-color: rgba(124, 140, 255, 0.95);
+        border-right-color: rgba(124, 140, 255, 0.5);
+        animation: ysLoadingSpin 1.2s linear infinite;
+        pointer-events: none;
     }
 
     .ys-loading-logo-image {
-        height: 100%;
+        height: 62%;
         width: auto;
+        max-width: 62%;
         object-fit: contain;
     }
 
@@ -510,42 +549,38 @@
         align-items: center;
         justify-content: center;
         border-radius: inherit;
-        background: #070740;
+        background: transparent;
     }
 
     .ys-loading-logo-fallback-text {
-        font-size: 0.7rem;
+        font-size: 0.75rem;
         font-weight: 800;
         letter-spacing: 0.14em;
         color: #ffffff;
     }
 
     .ys-loading-brand-name {
-        max-width: 13rem;
+        font-size: 1.0625rem;
+        font-weight: 800;
+        letter-spacing: -0.015em;
+        line-height: 1;
+        color: #ffffff;
+        max-width: 14rem;
         overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
-        font-size: 1.05rem;
-        font-weight: 800;
-        letter-spacing: -0.02em;
     }
 
     .ys-loading-ring {
+        position: relative;
+        z-index: 1;
         height: 2.4rem;
         width: 2.4rem;
         border-radius: 9999px;
-        border: 3px solid var(--ys-loading-ring);
-        border-top-color: var(--ys-loading-accent);
-        border-right-color: rgba(7, 7, 64, 0.42);
-        animation: ysLoadingSpin 760ms linear infinite;
-    }
-
-    .ys-loading-message {
-        margin: 0;
-        color: var(--ys-loading-muted);
-        font-size: 0.82rem;
-        font-weight: 700;
-        letter-spacing: 0.02em;
+        border: 3px solid rgba(255, 255, 255, 0.08);
+        border-top-color: rgba(124, 140, 255, 0.95);
+        border-right-color: rgba(124, 140, 255, 0.5);
+        animation: ysLoadingSpin 1.2s linear infinite;
     }
 
     .ys-button-loading {
@@ -610,6 +645,7 @@
         }
 
         .ys-loading-ring,
+        .ys-loading-logo::before,
         .ys-button-spinner {
             animation: none;
         }
