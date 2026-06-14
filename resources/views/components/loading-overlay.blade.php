@@ -6,12 +6,13 @@
 
 @php
     $variant = in_array($variant, ['compact', 'full'], true) ? $variant : 'compact';
+    $variantClass = $variant === 'full' ? 'ys-loading-overlay-full' : 'ys-loading-overlay-compact';
     $brand = (string) ($systemSettings['site_name'] ?? 'YallaSpare');
     $messageText = (string) ($message ?: __('Loading'));
 @endphp
 
 <div
-    {{ $attributes->merge(['class' => 'ys-loading-overlay ys-loading-overlay-' . $variant . ' is-hidden']) }}
+    {{ $attributes->merge(['class' => 'ys-loading-overlay ' . $variantClass . ' is-hidden']) }}
     data-loading-overlay
     role="status"
     aria-live="polite"
