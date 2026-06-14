@@ -75,6 +75,11 @@ class PdfArabicText
             return $text;
         }
 
+        // Collapse lam + alef pairs into a single ligature glyph BEFORE shaping
+        // (logical order, before the reverse). The ligature char then enters the
+        // shape loop like any other right-joining Arabic letter.
+        $chars = self::collapseLamAlef($chars);
+
         $shaped = [];
         $count = count($chars);
 
@@ -103,6 +108,41 @@ class PdfArabicText
         }
 
         return implode('', array_reverse($shaped));
+    }
+
+    /**
+     * @param  array<int, string>  $chars
+     * @return array<int, string>
+     */
+    private static function collapseLamAlef(array $chars): array
+    {
+        $result = [];
+        $count = count($chars);
+
+        for ($i = 0; $i < $count; $i++) {
+            $char = $chars[$i];
+
+            if (self::ord($char) === 0x0644 && $i + 1 < $count) {
+                $next = self::ord($chars[$i + 1]);
+                $ligature = match ($next) {
+                    0x0622 => 0xFEF5, // ل + آ  (LAM WITH ALEF MADDA)
+                    0x0623 => 0xFEF7, // ل + أ  (LAM WITH ALEF HAMZA ABOVE)
+                    0x0625 => 0xFEF9, // ل + إ  (LAM WITH ALEF HAMZA BELOW)
+                    0x0627 => 0xFEFB, // ل + ا  (LAM WITH ALEF)
+                    default => null,
+                };
+
+                if ($ligature !== null) {
+                    $result[] = self::chr($ligature);
+                    $i++; // consume the alef
+                    continue;
+                }
+            }
+
+            $result[] = $char;
+        }
+
+        return $result;
     }
 
     private static function previousArabicLetter(array $chars, int $index): ?string
@@ -212,5 +252,15 @@ class PdfArabicText
         0x06C6 => ['isolated' => 0xFBD9, 'final' => 0xFBDA],
         0x06CC => ['isolated' => 0xFBFC, 'final' => 0xFBFD, 'initial' => 0xFBFE, 'medial' => 0xFBFF],
         0x06D0 => ['isolated' => 0xFBE4, 'final' => 0xFBE5, 'initial' => 0xFBE6, 'medial' => 0xFBE7],
+
+        // Kurdish / additional letters that were missing — caused disconnects in KU text.
+        0x06D5 => ['isolated' => 0x06D5, 'final' => 0x06D5], // ARABIC LETTER AE (ə) — right-joining
+        0x0640 => ['isolated' => 0x0640, 'final' => 0x0640, 'initial' => 0x0640, 'medial' => 0x0640], // ARABIC TATWEEL — dual-joining connector
+
+        // Lam-Alef ligature glyphs produced by collapseLamAlef() — final or isolated only.
+        0xFEFB => ['isolated' => 0xFEFB, 'final' => 0xFEFC], // LAM WITH ALEF
+        0xFEF5 => ['isolated' => 0xFEF5, 'final' => 0xFEF6], // LAM WITH ALEF MADDA ABOVE
+        0xFEF7 => ['isolated' => 0xFEF7, 'final' => 0xFEF8], // LAM WITH ALEF HAMZA ABOVE
+        0xFEF9 => ['isolated' => 0xFEF9, 'final' => 0xFEFA], // LAM WITH ALEF HAMZA BELOW
     ];
 }

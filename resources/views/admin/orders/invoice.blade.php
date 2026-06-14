@@ -30,6 +30,35 @@
         body.rtl {
             direction: rtl;
             text-align: right;
+            font-size: 13.5px;
+            line-height: 1.65;
+        }
+
+        body.rtl .invoice-title {
+            font-size: 28px;
+        }
+
+        body.rtl .items-table td,
+        body.rtl .items-table th {
+            padding: 11px 10px;
+        }
+
+        body.rtl .summary-table {
+            width: 340px;
+        }
+
+        body.rtl .summary-table td {
+            padding: 11px 13px;
+        }
+
+        body.rtl .print-note,
+        body.rtl .invoice-policies {
+            padding: 12px 14px;
+        }
+
+        body.rtl .info-card {
+            padding: 15px 16px;
+            min-height: 130px;
         }
 
         body.rtl table,
@@ -299,12 +328,21 @@
             font-weight: 700;
         }
 
-        .invoice-policies p {
-            margin: 0 0 6px;
+        .invoice-policies p,
+        .print-note p {
+            margin: 0;
         }
 
-        .invoice-policies p:last-child {
-            margin-bottom: 0;
+        .invoice-policies p + p,
+        .print-note p + p {
+            margin-top: 2px;
+        }
+
+        /* Vertical breath between different policy blocks
+           (return → warranty): each policy has 2 paragraphs,
+           so the 3rd paragraph starts a new policy block. */
+        .invoice-policies p:nth-of-type(3) {
+            margin-top: 8px;
         }
 
         .footer {
@@ -427,20 +465,25 @@
         </tr>
     </table>
 
-    <div class="print-note {{ $pdfRtlClass }}">
-        <strong class="navy">{{ $pdfText(__('invoice.shipping_copy')) }}:</strong>
-        {{ $pdfText(__('invoice.shipping_copy_note')) }}
+    <div class="print-note">
+        <p class="{{ $pdfRtlClass }}">
+            <strong class="navy">{{ $pdfText(__('invoice.shipping_copy')) }}:</strong>
+            {{ $pdfText(__('invoice.shipping_copy_note_line_1')) }}
+        </p>
+        <p class="{{ $pdfRtlClass }}">{{ $pdfText(__('invoice.shipping_copy_note_line_2')) }}</p>
     </div>
 
     <div class="invoice-policies">
         <p class="{{ $pdfRtlClass }}">
             <span class="invoice-policies-title">{{ $pdfText(__('invoice.return_exchange_title')) }}:</span>
-            {{ $pdfText(__('invoice.return_exchange_note')) }}
+            {{ $pdfText(__('invoice.return_exchange_note_line_1')) }}
         </p>
+        <p class="{{ $pdfRtlClass }}">{{ $pdfText(__('invoice.return_exchange_note_line_2')) }}</p>
         <p class="{{ $pdfRtlClass }}">
             <span class="invoice-policies-title">{{ $pdfText(__('invoice.warranty_title')) }}:</span>
-            {{ $pdfText(__('invoice.warranty_note')) }}
+            {{ $pdfText(__('invoice.warranty_note_line_1')) }}
         </p>
+        <p class="{{ $pdfRtlClass }}">{{ $pdfText(__('invoice.warranty_note_line_2')) }}</p>
     </div>
 
     <div class="footer {{ $pdfRtlClass }}">
