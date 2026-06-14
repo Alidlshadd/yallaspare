@@ -61,40 +61,43 @@ class CartController extends Controller
 
     public function add(Request $request, Product $product): RedirectResponse|JsonResponse
     {
-        if (!$product->is_active) {
-            return back()->with('error', __('This product is not available right now.'));
-        }
-
         $data = $request->validate([
             'quantity' => ['nullable', 'integer', 'min:1', 'max:99'],
             'buy_now' => ['nullable', 'boolean'],
         ]);
         $quantity = (int) ($data['quantity'] ?? 1);
+
+        if (! auth()->check()) {
+            $this->storePendingAction(
+                $product->id,
+                $quantity,
+                $this->safeInternalUrl($request->headers->get('referer'))
+            );
+            session()->put('url.intended', route('cart.pending.resume'));
+
+            if ($request->expectsJson() || $request->ajax()) {
+                return response()->json([
+                    'ok' => false,
+                    'login_required' => true,
+                    'redirect' => route('login'),
+                    'message' => __('Please sign in or register to add items to your cart.'),
+                ], 401);
+            }
+
+            return redirect()->route('login')
+                ->with('status', __('Please sign in or register to add items to your cart.'));
+        }
+
+        if (!$product->is_active) {
+            return back()->with('error', __('This product is not available right now.'));
+        }
+
         $buyNow = $request->boolean('buy_now');
 
         $cart = Cart::query()->firstOrCreate(['user_id' => auth()->id()]);
 
         try {
-            [$wasLimited, $cartQuantity] = DB::transaction(function () use ($cart, $product, $quantity): array {
-                $lockedProduct = Product::query()->whereKey($product->id)->lockForUpdate()->firstOrFail();
-                $maxQuantity = $this->maxPurchasableQuantity($lockedProduct);
-
-                if (! $lockedProduct->is_active || $maxQuantity < 1) {
-                    throw new \RuntimeException(__('This product is not available right now.'));
-                }
-
-                $item = CartItem::query()->firstOrNew([
-                    'cart_id' => $cart->id,
-                    'product_id' => $lockedProduct->id,
-                ]);
-
-                $currentQty = $item->exists ? (int) $item->quantity : 0;
-                $requestedTotal = $currentQty + $quantity;
-                $item->quantity = min($maxQuantity, $requestedTotal);
-                $item->save();
-
-                return [$item->quantity < $requestedTotal, (int) $item->quantity];
-            });
+            [$wasLimited, $cartQuantity] = $this->performAuthenticatedAdd($cart, $product, $quantity);
         } catch (\RuntimeException $exception) {
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
@@ -189,6 +192,106 @@ class CartController extends Controller
         $item->delete();
 
         return back()->with('success', __('Item removed from cart.'));
+    }
+
+    public function resumePending(Request $request): RedirectResponse
+    {
+        $pending = session()->pull('pending_cart_action');
+
+        if (! is_array($pending)) {
+            return redirect()->route('user.shop.home');
+        }
+
+        $expiresAt = (int) ($pending['expires_at'] ?? 0);
+        if ($expiresAt < now()->timestamp) {
+            return redirect()->route('user.shop.home')
+                ->with('error', __('Your add-to-cart session expired. Please try again.'));
+        }
+
+        $safeRedirect = $this->safeInternalUrl($pending['redirect_to'] ?? null);
+        $product = Product::query()->find($pending['product_id'] ?? null);
+
+        if (! $product || ! $product->is_active || $this->maxPurchasableQuantity($product) < 1) {
+            return redirect()->to($safeRedirect)
+                ->with('error', __('The item you were adding is no longer available.'));
+        }
+
+        $quantity = max(1, min(99, (int) ($pending['quantity'] ?? 1)));
+        $cart = Cart::query()->firstOrCreate(['user_id' => auth()->id()]);
+
+        try {
+            [$wasLimited, $cartQuantity] = $this->performAuthenticatedAdd($cart, $product, $quantity);
+        } catch (\RuntimeException $exception) {
+            return redirect()->to($safeRedirect)->with('error', $exception->getMessage());
+        }
+
+        $message = $wasLimited
+            ? __('Only :quantity available. Cart quantity was set to :quantity.', ['quantity' => $cartQuantity])
+            : __('Added to cart successfully');
+
+        return redirect()->route('cart.index')->with($wasLimited ? 'error' : 'success', $message);
+    }
+
+    private function storePendingAction(int $productId, int $quantity, string $redirectTo): void
+    {
+        session()->put('pending_cart_action', [
+            'product_id' => $productId,
+            'quantity' => max(1, min(99, $quantity)),
+            'redirect_to' => $redirectTo,
+            'expires_at' => now()->addMinutes(30)->timestamp,
+        ]);
+    }
+
+    private function safeInternalUrl(?string $url): string
+    {
+        $fallback = route('user.shop.home');
+
+        if (! is_string($url) || $url === '') {
+            return $fallback;
+        }
+
+        // Protocol-relative URLs (//evil.com/...) are dangerous.
+        if (str_starts_with($url, '//')) {
+            return $fallback;
+        }
+
+        // Same-origin relative paths.
+        if (str_starts_with($url, '/')) {
+            return $url;
+        }
+
+        $appHost = parse_url((string) config('app.url'), PHP_URL_HOST);
+        $urlHost = parse_url($url, PHP_URL_HOST);
+
+        if ($appHost && $urlHost && strcasecmp($appHost, $urlHost) === 0) {
+            return $url;
+        }
+
+        return $fallback;
+    }
+
+    private function performAuthenticatedAdd(Cart $cart, Product $product, int $quantity): array
+    {
+        return DB::transaction(function () use ($cart, $product, $quantity): array {
+            $lockedProduct = Product::query()->whereKey($product->id)->lockForUpdate()->firstOrFail();
+            $maxQuantity = $this->maxPurchasableQuantity($lockedProduct);
+
+            if (! $lockedProduct->is_active || $maxQuantity < 1) {
+                throw new \RuntimeException(__('This product is not available right now.'));
+            }
+
+            $item = CartItem::query()->firstOrNew([
+                'cart_id' => $cart->id,
+                'product_id' => $lockedProduct->id,
+            ]);
+
+            $currentQty = $item->exists ? (int) $item->quantity : 0;
+            $requestedTotal = $currentQty + $quantity;
+            $item->quantity = min($maxQuantity, $requestedTotal);
+            $item->save();
+
+            return [$item->quantity < $requestedTotal, (int) $item->quantity];
+        });
     }
 
     private function maxPurchasableQuantity(Product $product): int

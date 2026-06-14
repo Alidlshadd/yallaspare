@@ -112,9 +112,11 @@ Route::get('/brand/logo', function () {
     );
 })->name('brand.logo');
 
+Route::post('/cart/{product}', [CartController::class, 'add'])->middleware('throttle:commerce-write')->name('cart.add');
+
 Route::middleware(['auth', 'verified', 'customer.area', 'user.2fa'])->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    Route::post('/cart/{product}', [CartController::class, 'add'])->middleware('throttle:commerce-write')->name('cart.add');
+    Route::get('/cart/pending/resume', [CartController::class, 'resumePending'])->name('cart.pending.resume');
     Route::patch('/cart/items/{item}', [CartController::class, 'update'])->middleware('throttle:commerce-write')->name('cart.update');
     Route::delete('/cart/items/{item}', [CartController::class, 'remove'])->middleware('throttle:commerce-write')->name('cart.remove');
     Route::get('/checkout/options/{product}', [CheckoutController::class, 'options'])->name('checkout.options');

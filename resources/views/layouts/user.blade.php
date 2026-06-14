@@ -595,6 +595,21 @@
                 </nav>
             </header>
 
+            @if (! request()->routeIs('cart.*') && (session('success') || session('error')))
+                <div class="mx-auto mt-4 w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+                    @if (session('success'))
+                        <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+                    @if (session('error'))
+                        <div class="@if (session('success')) mt-2 @endif rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+                </div>
+            @endif
+
             <main class="{{ $mainClasses }}">
                 @yield('content')
             </main>
