@@ -1,6 +1,5 @@
 ﻿@extends('layouts.user')
 
-@section('title', __('YallaSpare | Auto Spare Parts Platform in Iraq'))
 @section('meta_description', __('YallaSpare is an auto spare parts platform built for Iraq, helping customers find trusted parts, check vehicle compatibility, order easily, and get reliable support.'))
 
 @section('content')
