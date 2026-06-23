@@ -35,6 +35,65 @@
         </style>
 
         @if(request()->routeIs('admin.*'))
+            <style>
+                /* HYBRID A+C ADMIN TOPBAR */
+                .admin-topbar {
+                    background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%) !important;
+                    border-bottom: 0 !important;
+                    backdrop-filter: none !important;
+                    position: sticky; top: 0; z-index: 20;
+                    overflow: hidden;
+                }
+                .admin-topbar::before {
+                    content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.45;
+                    background-image:
+                        repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 18px),
+                        repeating-linear-gradient(45deg, rgba(255,255,255,0.02) 0 1px, transparent 1px 18px);
+                }
+                .admin-topbar::after {
+                    content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 3px;
+                    background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+                }
+                .admin-topbar-hairline {
+                    position: absolute; top: 0; left: 0; right: 0; height: 1px;
+                    background: linear-gradient(90deg, transparent, rgba(251,191,36,0.45), transparent);
+                    z-index: 1;
+                }
+                .admin-topbar-glow {
+                    position: absolute; top: -72px; right: -72px; height: 168px; width: 168px;
+                    border-radius: 9999px; background: rgba(251,191,36,0.07); filter: blur(60px); pointer-events: none;
+                }
+                .emboss-badge {
+                    background:
+                        radial-gradient(circle at 30% 25%, rgba(255,255,255,0.22), transparent 60%),
+                        linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+                    box-shadow:
+                        inset 0 1px 0 rgba(255,255,255,0.45),
+                        inset 0 -2px 4px rgba(120,53,15,0.4),
+                        0 2px 6px rgba(245,158,11,0.30);
+                }
+                /* Visual reset for icon buttons — DOES NOT set display; each button controls its own visibility */
+                .topbar-action {
+                    align-items: center; justify-content: center;
+                    height: 36px; width: 36px; border-radius: 10px;
+                    border: 1px solid rgba(255,255,255,0.10); background: rgba(255,255,255,0.04);
+                    color: rgba(255,255,255,0.85); transition: all .15s ease;
+                }
+                .topbar-action:hover { background: rgba(255,255,255,0.10); color: white; }
+                .topbar-logout:hover {
+                    background: rgba(244,63,94,0.15); color: #fda4af; border-color: rgba(244,63,94,0.30);
+                }
+                /* Language switcher pill — restyled to match dark header */
+                .admin-topbar [data-header-dropdown] > button {
+                    height: 36px !important; border-radius: 10px !important;
+                }
+                .topbar-pulse-ring { position: relative; }
+                .topbar-pulse-ring::after {
+                    content: ""; position: absolute; inset: -4px; border-radius: 999px;
+                    border: 2px solid currentColor; opacity: 0.35; animation: tb-ring 1.6s ease-out infinite;
+                }
+                @keyframes tb-ring { 0% { transform: scale(0.6); opacity: 0.6; } 100% { transform: scale(1.6); opacity: 0; } }
+            </style>
             <script>
                 (function () {
                     try {
@@ -140,20 +199,6 @@
                             <i class="fas fa-xmark text-sm"></i>
                         </button>
                     </div>
-                    <a href="{{ route('admin.profile.edit') }}" class="admin-profile-link text-slate-100" data-admin-sidebar-profile-link data-admin-sidebar-tooltip="{{ __('Profile') }}">
-                        @if ($adminProfilePhotoUrl)
-                            <img src="{{ $adminProfilePhotoUrl }}" alt="{{ __(':name profile photo', ['name' => $adminUser->name]) }}" class="h-10 w-10 shrink-0 rounded-full border border-white/20 object-cover">
-                        @else
-                            <div class="w-10 h-10 rounded-full bg-indigo-600 text-white flex items-center justify-center font-semibold shrink-0">
-                                {{ $adminAvatarInitial }}
-                            </div>
-                        @endif
-                        <div class="admin-profile-details min-w-0" data-admin-sidebar-profile-details>
-                            <p class="truncate text-sm font-semibold text-slate-100">{{ $adminUser->name }}</p>
-                            <p class="text-xs text-slate-400">{{ __('Profile') }}</p>
-                        </div>
-                    </a>
-
                     <nav class="admin-nav space-y-1.5" aria-label="{{ __('Admin sections') }}">
                         @php
                             $navItem = function (bool $active) {
@@ -364,64 +409,77 @@
                     class="admin-main min-h-screen flex flex-col"
                     data-admin-main
                 >
-                    <header class="admin-topbar sticky top-0 z-20 bg-white/90 backdrop-blur border-b border-slate-200 dark:bg-slate-900/80 dark:border-slate-800">
-                        <div class="flex min-h-16 min-w-0 items-center justify-between gap-3 px-3 py-2 sm:px-6 lg:px-8">
-                            <div class="flex min-w-0 items-center gap-3">
+                    <header class="admin-topbar">
+                        <div class="admin-topbar-hairline"></div>
+                        <div class="admin-topbar-glow"></div>
+
+                        <div class="relative flex min-w-0 items-center justify-between gap-3 px-3 sm:px-5 lg:px-7" style="min-height: 64px; padding-top: 10px; padding-bottom: 10px;">
+                            {{-- LEFT: menu + YS badge + brand --}}
+                            <div class="flex min-w-0 items-center gap-2 shrink-0">
+                                {{-- Desktop expand (visibility controlled by app.css — hidden until sidebar collapsed) --}}
                                 <button
                                     type="button"
-                                    class="admin-sidebar-top-expand h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:bg-slate-100 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
+                                    class="admin-sidebar-top-expand topbar-action"
                                     aria-expanded="false"
                                     aria-controls="admin-sidebar"
                                     aria-label="{{ __('Expand sidebar') }}"
                                     title="{{ __('Expand sidebar') }}"
                                     data-admin-sidebar-expand
                                 >
-                                    <i class="fas {{ $isRtl ? 'fa-angles-left' : 'fa-angles-right' }}"></i>
+                                    <i class="fas {{ $isRtl ? 'fa-angles-left' : 'fa-angles-right' }} text-sm"></i>
                                 </button>
+                                {{-- Mobile menu toggle --}}
                                 <button
                                     type="button"
-                                    class="admin-mobile-sidebar-toggle lg:hidden inline-flex items-center justify-center h-10 w-10 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                                    class="admin-mobile-sidebar-toggle topbar-action inline-flex lg:hidden"
                                     aria-expanded="false"
                                     aria-controls="admin-sidebar"
                                     aria-label="{{ __('Expand sidebar') }}"
                                     title="{{ __('Expand sidebar') }}"
                                     data-admin-mobile-sidebar-toggle
                                 >
-                                    <i class="fas fa-bars"></i>
+                                    <i class="fas fa-bars text-sm"></i>
                                 </button>
-                                <div class="hidden min-w-0 flex-1 sm:block">
-                                    @if (isset($header))
-                                        <div class="text-lg font-semibold leading-snug text-slate-900 dark:text-slate-100">
-                                            {{ $header }}
-                                        </div>
-                                    @else
-                                        <div class="text-lg font-semibold text-slate-900 dark:text-slate-100">{{ __('Admin Panel') }}</div>
-                                    @endif
-                                </div>
                             </div>
 
-                            <div class="admin-topbar-actions flex min-w-0 items-center gap-2 sm:gap-3">
-                                <x-language-switcher variant="light" />
+                            {{-- CENTER: page header slot --}}
+                            <div class="hidden md:flex flex-1 items-center justify-center min-w-0 px-3">
+                                @if (isset($header))
+                                    <div class="min-w-0 max-w-full text-white text-center">
+                                        {{ $header }}
+                                    </div>
+                                @else
+                                    <div class="text-sm font-black text-white tracking-tight uppercase">{{ __('Admin Panel') }}</div>
+                                @endif
+                            </div>
+
+                            {{-- RIGHT: actions — all 36px tall, consistent spacing --}}
+                            <div class="admin-topbar-actions flex min-w-0 items-center gap-1.5 shrink-0">
+                                {{-- Language switcher (dark variant, hidden on small) --}}
+                                <div class="hidden sm:flex">
+                                    <x-language-switcher variant="dark" />
+                                </div>
 
                                 <button
                                     id="adminThemeToggle"
                                     type="button"
-                                    class="inline-flex items-center justify-center h-10 w-10 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                                    class="topbar-action inline-flex"
                                     aria-label="{{ __('Toggle dark mode') }}"
                                 >
-                                    <i id="adminThemeIcon" class="fas fa-moon"></i>
+                                    <i id="adminThemeIcon" class="fas fa-moon text-[13px]"></i>
                                 </button>
                                 <div class="relative">
                                     <button
                                         id="adminNotificationsButton"
                                         type="button"
-                                        class="relative inline-flex items-center justify-center h-10 w-10 rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                                        class="topbar-action inline-flex relative"
                                         aria-label="{{ __('Notifications') }}"
                                     >
-                                        <i class="fas fa-bell"></i>
+                                        <i class="fas fa-bell text-[13px]"></i>
                                         <span
                                             id="adminNotificationsBadge"
-                                            class="hidden absolute -top-1 {{ $isRtl ? '-left-1' : '-right-1' }} min-w-[18px] h-[18px] px-1 rounded-full bg-red-600 text-white text-[10px] font-semibold items-center justify-center"
+                                            class="hidden absolute -top-0.5 {{ $isRtl ? '-left-0.5' : '-right-0.5' }} min-w-[15px] h-[15px] px-1 rounded-full bg-rose-500 text-white text-[9px] font-bold items-center justify-center"
+                                            style="font-family: 'JetBrains Mono', ui-monospace, monospace;"
                                         >
                                             0
                                         </span>
@@ -475,26 +533,29 @@
 
                                 <a
                                     href="{{ route('admin.profile.edit') }}"
-                                    class="inline-flex items-center gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm text-slate-600 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                                    class="inline-flex items-center gap-2 pl-1 pr-2 sm:pr-3 rounded-lg border border-amber-400/30 bg-amber-400/[0.06] hover:bg-amber-400/10 transition shrink-0"
+                                    style="height: 36px;"
+                                    title="{{ __('Profile') }}"
                                 >
                                     @if ($adminProfilePhotoUrl)
-                                        <img src="{{ $adminProfilePhotoUrl }}" alt="{{ __(':name profile photo', ['name' => $adminUser->name]) }}" class="h-6 w-6 rounded-full object-cover">
+                                        <img src="{{ $adminProfilePhotoUrl }}" alt="{{ __(':name profile photo', ['name' => $adminUser->name]) }}" class="h-7 w-7 rounded-md object-cover">
                                     @else
-                                        <span class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-indigo-600 text-xs font-semibold text-white">
+                                        <span class="h-7 w-7 rounded-md grid place-items-center emboss-badge text-[#04042a] text-[11px] font-black" style="font-family: 'JetBrains Mono', ui-monospace, monospace;">
                                             {{ $adminAvatarInitial }}
                                         </span>
                                     @endif
-                                    <span class="hidden md:inline">{{ __('Profile') }}</span>
+                                    <span class="hidden lg:inline text-xs font-bold text-white leading-none">{{ __('Profile') }}</span>
                                 </a>
 
-                                <form method="POST" action="{{ route('logout') }}">
+                                <form method="POST" action="{{ route('logout') }}" class="hidden sm:block">
                                     @csrf
                                     <button
                                         type="submit"
-                                        class="inline-flex items-center gap-2 px-3 py-2 text-sm rounded-md border border-slate-200 text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800"
+                                        class="topbar-action topbar-logout inline-flex"
+                                        aria-label="{{ __('Log Out') }}"
+                                        title="{{ __('Log Out') }}"
                                     >
-                                        <i class="fas fa-right-from-bracket"></i>
-                                        <span class="hidden sm:inline">{{ __('Log Out') }}</span>
+                                        <i class="fas fa-right-from-bracket text-[13px]"></i>
                                     </button>
                                 </form>
                             </div>

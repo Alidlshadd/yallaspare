@@ -1,13 +1,18 @@
 <x-app-layout>
 <x-slot name="header">
-    <div class="flex items-center justify-between">
-        <h2 class="font-semibold text-2xl text-gray-800 dark:text-slate-100">
-            <i class="fas fa-chart-line mr-2"></i> {{ __('Admin Dashboard') }}
-        </h2>
-        <div class="text-sm text-gray-600 dark:text-slate-400">
-            <i class="far fa-calendar-alt mr-2"></i>
-            {{ now()->format('l, F d, Y') }}
+    <div class="inline-flex flex-col items-center leading-none">
+        <div class="inline-flex items-center gap-1.5">
+            <span class="h-px w-4 bg-gradient-to-r from-transparent to-amber-400/60"></span>
+            <span class="text-[9px] uppercase tracking-[0.28em] text-amber-300 font-bold inline-flex items-center gap-1.5" style="font-family: 'JetBrains Mono', ui-monospace, monospace;">
+                <span class="topbar-pulse-ring text-emerald-400 inline-flex h-1 w-1 rounded-full bg-emerald-400"></span>
+                {{ __('ADMIN · LIVE') }}
+            </span>
+            <span class="h-px w-4 bg-gradient-to-l from-transparent to-amber-400/60"></span>
         </div>
+        <h2 class="text-base sm:text-lg font-black text-white tracking-tight mt-1">{{ __('Dashboard') }}</h2>
+        <p class="text-[9px] uppercase tracking-widest text-white/45 font-bold mt-1" style="font-family: 'JetBrains Mono', ui-monospace, monospace;">
+            {{ now()->format('l, F d · Y') }}
+        </p>
     </div>
 </x-slot>
 
