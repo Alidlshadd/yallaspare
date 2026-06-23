@@ -136,6 +136,36 @@
                 $adminProfilePhotoUrl = !empty($adminUser?->profile_photo_path)
                     ? asset('storage/' . ltrim((string) $adminUser->profile_photo_path, '/'))
                     : null;
+
+                // Shared admin topbar page-title mapping — keeps every admin page header consistent
+                $adminPageTitlePatterns = [
+                    'admin.dashboard'              => __('Dashboard'),
+                    'admin.revenue.*'              => __('Revenue Analytics'),
+                    'admin.products.*'             => __('Products'),
+                    'admin.categories.*'           => __('Categories'),
+                    'admin.vehicle-fitments.*'     => __('Vehicle Finder'),
+                    'admin.reviews.*'              => __('Customer Reviews'),
+                    'admin.inventory.*'            => __('Inventory Movements'),
+                    'admin.orders.*'               => __('Orders Management'),
+                    'admin.returns.*'              => __('Returns & Refunds'),
+                    'admin.dealers.*'              => __('Dealers'),
+                    'admin.users.*'                => __('Users'),
+                    'admin.discounts.coupons.*'    => __('Coupon Management'),
+                    'admin.discounts.edit'         => __('Coupon Management'),
+                    'admin.discounts.rules'        => __('Discount Rules'),
+                    'admin.email.*'                => __('Email Center'),
+                    'admin.settings.*'             => __('Settings'),
+                    'admin.activity-logs.*'        => __('Activity Logs'),
+                    'admin.profile.*'              => __('Profile'),
+                    'admin.notifications.*'        => __('Notifications'),
+                ];
+                $adminPageTitle = __('Admin');
+                foreach ($adminPageTitlePatterns as $pattern => $title) {
+                    if (request()->routeIs($pattern)) {
+                        $adminPageTitle = $title;
+                        break;
+                    }
+                }
             @endphp
             <div
                 class="min-h-screen admin-shell"
@@ -442,15 +472,27 @@
                                 </button>
                             </div>
 
-                            {{-- CENTER: page header slot --}}
+                            {{-- CENTER: shared page title (auto-generated from route name for consistency) --}}
                             <div class="hidden md:flex flex-1 items-center justify-center min-w-0 px-3">
-                                @if (isset($header))
-                                    <div class="min-w-0 max-w-full text-white text-center">
-                                        {{ $header }}
+                                <div class="inline-flex flex-col items-center leading-none min-w-0 max-w-full">
+                                    <div class="inline-flex items-center gap-1.5">
+                                        <span class="h-px w-4 bg-gradient-to-r from-transparent to-amber-400/60"></span>
+                                        <span class="text-[9px] uppercase tracking-[0.28em] text-amber-300 font-bold inline-flex items-center gap-1.5" style="font-family: 'JetBrains Mono', ui-monospace, monospace;">
+                                            <span class="topbar-pulse-ring text-emerald-400 inline-flex h-1 w-1 rounded-full bg-emerald-400"></span>
+                                            {{ __('ADMIN · LIVE') }}
+                                        </span>
+                                        <span class="h-px w-4 bg-gradient-to-l from-transparent to-amber-400/60"></span>
                                     </div>
-                                @else
-                                    <div class="text-sm font-black text-white tracking-tight uppercase">{{ __('Admin Panel') }}</div>
-                                @endif
+                                    <h2 class="text-base lg:text-lg font-black text-white tracking-tight mt-1 whitespace-nowrap truncate max-w-full">{{ $adminPageTitle }}</h2>
+                                    <p class="text-[9px] uppercase tracking-widest text-white/45 font-bold mt-1 truncate max-w-full" style="font-family: 'JetBrains Mono', ui-monospace, monospace;">
+                                        {{ now()->format('l, F d · Y') }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            {{-- MOBILE: compact title --}}
+                            <div class="flex md:hidden flex-1 items-center justify-center min-w-0 px-2">
+                                <h2 class="text-sm font-black text-white tracking-tight whitespace-nowrap truncate max-w-full">{{ $adminPageTitle }}</h2>
                             </div>
 
                             {{-- RIGHT: actions — all 36px tall, consistent spacing --}}
