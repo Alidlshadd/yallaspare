@@ -100,37 +100,8 @@
 </style>
 
 <div class="bg-[#f3f4f7] dark:bg-slate-950 min-h-screen">
-<div class="py-8">
+<div class="py-6">
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-    {{-- ================= PAGE INTRO ================= --}}
-    <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between mb-5">
-        <div>
-            <div class="flex items-center gap-2 text-[11px] uppercase tracking-[0.24em] text-primary font-bold mb-2">
-                <span class="inline-block h-1 w-6 bg-gradient-to-r from-cyan-400 to-primary rounded-full"></span>
-                {{ __('Workshop overview') }}
-                <span class="text-slate-400 font-normal tracking-normal">· {{ __('Live operations dashboard') }}</span>
-            </div>
-            <h1 class="text-3xl md:text-4xl font-bold text-primary dark:text-slate-100 tracking-tight">{{ __('Dashboard') }}</h1>
-            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                {{ __('Business overview for') }} <span class="font-semibold text-slate-700 dark:text-slate-300">Yalla Spare</span> — {{ __('auto spare parts operations') }}
-            </p>
-        </div>
-        <div class="flex flex-wrap items-center gap-2">
-            <span class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-white border border-slate-200 text-xs text-slate-600 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300">
-                <i class="far fa-calendar"></i> {{ now()->format('l, F d, Y') }}
-            </span>
-            <span class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-50 border border-emerald-200 text-xs text-emerald-700 font-semibold dark:bg-emerald-900/20 dark:border-emerald-800/40 dark:text-emerald-300">
-                <span class="relative inline-flex h-2 w-2"><span class="absolute inset-0 rounded-full bg-emerald-500 animate-ping opacity-60"></span><span class="relative h-2 w-2 rounded-full bg-emerald-500"></span></span>
-                {{ __('Live') }} · {{ __('All systems normal') }}
-            </span>
-            @if(Route::has('admin.orders.index'))
-                <a href="{{ route('admin.orders.index') }}" class="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-gradient-to-r from-primary to-indigo-800 text-white text-xs font-semibold hover:shadow-lg transition">
-                    <i class="fas fa-bolt"></i> {{ __('Open orders') }}
-                </a>
-            @endif
-        </div>
-    </div>
 
     {{-- ================= TIME RANGE CONTROL ================= --}}
     <div class="mb-8 rounded-2xl bg-white border border-slate-200/70 dark:bg-slate-900 dark:border-slate-800 px-4 py-3 bento-shadow flex flex-wrap items-center justify-between gap-3">
