@@ -455,7 +455,7 @@
                             <div class="admin-topbar-glow"></div>
                         </div>
 
-                        <div class="relative z-10 flex min-w-0 items-center justify-between gap-3 px-3 sm:px-5 lg:px-7" style="min-height: 64px; padding-top: 10px; padding-bottom: 10px;">
+                        <div class="relative z-10 flex min-w-0 items-center justify-between gap-3 px-3 sm:px-5 lg:px-7" style="min-height: 72px; padding-top: 10px; padding-bottom: 10px;">
                             {{-- LEFT: menu + YS badge + brand --}}
                             <div class="flex min-w-0 items-center gap-2 shrink-0">
                                 {{-- Desktop expand (visibility controlled by app.css — hidden until sidebar collapsed) --}}
@@ -486,25 +486,20 @@
 
                             {{-- CENTER: shared page title (auto-generated from route name for consistency) --}}
                             <div class="hidden md:flex flex-1 items-center justify-center min-w-0 px-3">
-                                <div class="inline-flex flex-col items-center leading-none min-w-0 max-w-full">
-                                    <div class="inline-flex items-center gap-1.5">
-                                        <span class="h-px w-4 bg-gradient-to-r from-transparent to-amber-400/60"></span>
-                                        <span class="text-[9px] uppercase tracking-[0.28em] text-amber-300 font-bold inline-flex items-center gap-1.5" style="font-family: 'JetBrains Mono', ui-monospace, monospace;">
-                                            <span class="topbar-pulse-ring text-emerald-400 inline-flex h-1 w-1 rounded-full bg-emerald-400"></span>
-                                            {{ __('ADMIN · LIVE') }}
-                                        </span>
-                                        <span class="h-px w-4 bg-gradient-to-l from-transparent to-amber-400/60"></span>
+                                <div class="flex flex-col items-center leading-tight min-w-0 max-w-full">
+                                    <h2 class="text-lg md:text-xl lg:text-2xl font-black text-white tracking-tight whitespace-nowrap truncate max-w-full">{{ $adminPageTitle }}</h2>
+                                    <div class="mt-1 inline-flex items-center gap-2 text-[10px] lg:text-[11px] uppercase tracking-[0.2em] text-white/55 font-bold whitespace-nowrap truncate max-w-full" style="font-family: 'JetBrains Mono', ui-monospace, monospace;">
+                                        <span class="topbar-pulse-ring text-emerald-400 inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+                                        <span class="text-amber-300">{{ __('ADMIN · LIVE') }}</span>
+                                        <span class="text-white/25" aria-hidden="true">·</span>
+                                        <span>{{ now()->format('l, F d · Y') }}</span>
                                     </div>
-                                    <h2 class="text-base lg:text-lg font-black text-white tracking-tight mt-1 whitespace-nowrap truncate max-w-full">{{ $adminPageTitle }}</h2>
-                                    <p class="text-[9px] uppercase tracking-widest text-white/45 font-bold mt-1 truncate max-w-full" style="font-family: 'JetBrains Mono', ui-monospace, monospace;">
-                                        {{ now()->format('l, F d · Y') }}
-                                    </p>
                                 </div>
                             </div>
 
                             {{-- MOBILE: compact title --}}
                             <div class="flex md:hidden flex-1 items-center justify-center min-w-0 px-2">
-                                <h2 class="text-sm font-black text-white tracking-tight whitespace-nowrap truncate max-w-full">{{ $adminPageTitle }}</h2>
+                                <h2 class="text-base font-black text-white tracking-tight whitespace-nowrap truncate max-w-full">{{ $adminPageTitle }}</h2>
                             </div>
 
                             {{-- RIGHT: actions — all 36px tall, consistent spacing --}}
