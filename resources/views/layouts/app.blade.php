@@ -77,25 +77,49 @@
                         inset 0 -2px 4px rgba(120,53,15,0.4),
                         0 2px 6px rgba(245,158,11,0.30);
                 }
-                /* Visual reset for icon buttons — DOES NOT set display; each button controls its own visibility */
+                /* Icon buttons — neutral white-glass (default action) */
                 .topbar-action {
                     align-items: center; justify-content: center;
                     height: 36px; width: 36px; border-radius: 10px;
-                    border: 1px solid rgba(255,255,255,0.10); background: rgba(255,255,255,0.04);
-                    color: rgba(255,255,255,0.85); transition: all .15s ease;
+                    border: 1px solid rgba(255,255,255,0.10);
+                    background: rgba(255,255,255,0.04);
+                    color: rgba(255,255,255,0.85);
+                    transition: all .15s ease;
                 }
-                .topbar-action:hover { background: rgba(255,255,255,0.10); color: white; }
+                .topbar-action:hover {
+                    background: rgba(255,255,255,0.10);
+                    color: #fff;
+                    border-color: rgba(255,255,255,0.18);
+                }
+                /* Logout — semantic red (subtle idle hint, full red on hover) */
+                .topbar-logout { color: rgba(253,164,175,0.85); }
                 .topbar-logout:hover {
-                    background: rgba(244,63,94,0.15); color: #fda4af; border-color: rgba(244,63,94,0.30);
+                    background: rgba(244,63,94,0.18);
+                    border-color: rgba(244,63,94,0.55);
+                    color: #fecdd3;
                 }
-                /* Language switcher pill — restyled to match dark header */
+                /* Language switcher pill — neutral white-glass to match icon buttons */
                 .admin-topbar [data-header-dropdown] > button {
                     height: 36px !important; border-radius: 10px !important;
                     background: rgba(255,255,255,0.04) !important;
                     border-color: rgba(255,255,255,0.10) !important;
+                    color: rgba(255,255,255,0.90) !important;
                 }
                 .admin-topbar [data-header-dropdown] > button:hover {
                     background: rgba(255,255,255,0.10) !important;
+                    border-color: rgba(255,255,255,0.18) !important;
+                    color: #fff !important;
+                }
+                /* Profile — amber (focal premium action) */
+                .topbar-profile {
+                    border: 1px solid rgba(251,191,36,0.40);
+                    background: rgba(251,191,36,0.07);
+                    color: #fff;
+                    transition: all .15s ease;
+                }
+                .topbar-profile:hover {
+                    background: rgba(251,191,36,0.14);
+                    border-color: rgba(251,191,36,0.65);
                 }
                 .topbar-pulse-ring { position: relative; }
                 .topbar-pulse-ring::after {
@@ -582,7 +606,7 @@
 
                                 <a
                                     href="{{ route('admin.profile.edit') }}"
-                                    class="inline-flex items-center gap-2 pl-1 pr-2 sm:pr-3 rounded-lg border border-amber-400/30 bg-amber-400/[0.06] hover:bg-amber-400/10 transition shrink-0"
+                                    class="topbar-profile inline-flex items-center gap-2 pl-1 pr-2 sm:pr-3 rounded-lg shrink-0"
                                     style="height: 36px;"
                                     title="{{ __('Profile') }}"
                                 >
