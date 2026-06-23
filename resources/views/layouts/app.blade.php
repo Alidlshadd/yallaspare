@@ -127,6 +127,151 @@
                     border: 2px solid currentColor; opacity: 0.35; animation: tb-ring 1.6s ease-out infinite;
                 }
                 @keyframes tb-ring { 0% { transform: scale(0.6); opacity: 0.6; } 100% { transform: scale(1.6); opacity: 0; } }
+
+                /* ─────── ADMIN SIDEBAR — INSTRUMENT STACK ─────── */
+                .admin-shell .admin-sidebar {
+                    background:
+                        linear-gradient(180deg, #04042a 0%, #06063a 50%, #08084a 100%) !important;
+                    display: flex;
+                    flex-direction: column;
+                }
+                /* Thin amber hairline on the trailing edge — matches topbar's left amber bar */
+                .admin-shell .admin-sidebar::after {
+                    content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 1px;
+                    background: linear-gradient(180deg, transparent, rgba(251,191,36,0.35), transparent);
+                    pointer-events: none;
+                }
+                [dir='rtl'] .admin-shell .admin-sidebar::after {
+                    right: auto; left: 0;
+                }
+                .admin-shell .admin-sidebar-header {
+                    border-bottom-color: rgba(255,255,255,0.06) !important;
+                }
+                .admin-shell .admin-sidebar-meta {
+                    color: #fcd34d !important;
+                    font-family: ui-monospace, 'JetBrains Mono', monospace;
+                    letter-spacing: 0.22em !important;
+                }
+                .admin-shell .admin-sidebar-logo:hover {
+                    background-color: rgba(251,191,36,0.06) !important;
+                }
+
+                /* Nav layout — let footer be pushed to the bottom */
+                .admin-shell .admin-nav { flex: 1 0 auto; }
+
+                /* Section headers between nav groups */
+                .admin-nav-section {
+                    display: flex; align-items: center; gap: 8px;
+                    padding: 16px 18px 8px;
+                    font-size: 9px; font-weight: 900; letter-spacing: 0.28em;
+                    text-transform: uppercase; color: #fcd34d;
+                    font-family: ui-monospace, 'JetBrains Mono', monospace;
+                    user-select: none;
+                }
+                .admin-nav-section::after {
+                    content: ""; flex: 1; height: 1px;
+                    background: linear-gradient(90deg, rgba(251,191,36,0.35), transparent);
+                }
+                [dir='rtl'] .admin-nav-section::after {
+                    background: linear-gradient(270deg, rgba(251,191,36,0.35), transparent);
+                }
+                .admin-nav > .admin-nav-section:first-child { padding-top: 6px; }
+
+                /* Override existing cyan active state → amber instrument bar + soft halo */
+                .admin-shell .admin-nav-link.is-active {
+                    background: linear-gradient(90deg, rgba(251,191,36,0.18), rgba(251,191,36,0.04)) !important;
+                    color: #fff !important;
+                    box-shadow:
+                        inset 0 1px 0 rgba(255,255,255,0.06),
+                        0 6px 20px -8px rgba(251,191,36,0.35);
+                }
+                .admin-shell .admin-nav-link.is-active::before {
+                    background: linear-gradient(180deg, #fbbf24, #f59e0b) !important;
+                    width: 3px !important;
+                    inset-block: 0.5rem !important;
+                    box-shadow: 0 0 10px rgba(251,191,36,0.65);
+                    border-radius: 0 2px 2px 0 !important;
+                }
+                /* Simpler icon treatment — no cyan tile, just amber-cream icon */
+                .admin-shell .admin-nav-icon {
+                    background-color: transparent !important;
+                    color: rgba(255,255,255,0.55) !important;
+                    width: 1.75rem !important; height: 1.75rem !important; flex-basis: 1.75rem !important;
+                }
+                .admin-shell .admin-nav-link:hover .admin-nav-icon,
+                .admin-shell .admin-nav-link.is-active .admin-nav-icon {
+                    background-color: transparent !important;
+                    color: #fcd34d !important;
+                }
+                .admin-shell .admin-nav-link:hover {
+                    background-color: rgba(255,255,255,0.05) !important;
+                }
+
+                /* ─────── CLICK SWEEP ANIMATION (subtle amber light, left → right) ─────── */
+                .admin-nav-sweep-clip {
+                    position: absolute; inset: 0;
+                    overflow: hidden; pointer-events: none;
+                    border-radius: inherit;
+                }
+                .admin-nav-sweep {
+                    position: absolute; top: 0; left: -60%; width: 60%; height: 100%;
+                    background: linear-gradient(90deg, transparent, rgba(251,191,36,0.32), transparent);
+                    opacity: 0;
+                    will-change: left, opacity;
+                }
+                .admin-nav-link.admin-nav-sweep-active .admin-nav-sweep {
+                    animation: admin-nav-sweep 650ms ease-out forwards;
+                }
+                @keyframes admin-nav-sweep {
+                    0%   { left: -60%; opacity: 0; }
+                    12%  { opacity: 1; }
+                    88%  { opacity: 1; }
+                    100% { left: 100%; opacity: 0; }
+                }
+                /* RTL — sweep travels right → left */
+                [dir='rtl'] .admin-nav-sweep { left: auto; right: -60%; }
+                [dir='rtl'] .admin-nav-link.admin-nav-sweep-active .admin-nav-sweep {
+                    animation-name: admin-nav-sweep-rtl;
+                }
+                @keyframes admin-nav-sweep-rtl {
+                    0%   { right: -60%; opacity: 0; }
+                    12%  { opacity: 1; }
+                    88%  { opacity: 1; }
+                    100% { right: 100%; opacity: 0; }
+                }
+                @media (prefers-reduced-motion: reduce) {
+                    .admin-nav-link.admin-nav-sweep-active .admin-nav-sweep { animation: none; }
+                }
+
+                /* ─────── SIDEBAR FOOTER ─────── */
+                .admin-sidebar-footer {
+                    flex: 0 0 auto;
+                    margin-top: auto;
+                    padding: 12px 18px;
+                    border-top: 1px solid rgba(255,255,255,0.06);
+                    display: flex; align-items: center; justify-content: space-between; gap: 8px;
+                    font-family: ui-monospace, 'JetBrains Mono', monospace;
+                    font-size: 10px; color: rgba(255,255,255,0.45);
+                }
+                .admin-sidebar-status {
+                    display: inline-flex; align-items: center; gap: 6px;
+                    padding: 4px 8px; border-radius: 999px;
+                    background: rgba(16,185,129,0.10); color: #6ee7b7;
+                    border: 1px solid rgba(16,185,129,0.25);
+                    font-size: 9px; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase;
+                    white-space: nowrap;
+                }
+                .admin-sidebar-status-dot {
+                    width: 6px; height: 6px; border-radius: 999px; background: #34d399;
+                    box-shadow: 0 0 6px rgba(52,211,153,0.7);
+                }
+                /* Hide section headers and footer in collapsed sidebar */
+                .admin-shell.admin-sidebar-collapsed .admin-nav-section,
+                .admin-sidebar-precollapsed .admin-shell .admin-nav-section,
+                .admin-shell.admin-sidebar-collapsed .admin-sidebar-footer,
+                .admin-sidebar-precollapsed .admin-shell .admin-sidebar-footer {
+                    display: none;
+                }
             </style>
             <script>
                 (function () {
@@ -219,7 +364,7 @@
                 <aside
                     id="admin-sidebar"
                     data-admin-sidebar
-                    class="admin-sidebar fixed inset-y-0 bg-slate-900 text-slate-100 dark:bg-slate-900 h-screen overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-hide"
+                    class="admin-sidebar fixed inset-y-0 text-slate-100 h-screen overflow-y-auto overflow-x-hidden overscroll-contain scrollbar-hide"
                     aria-hidden="false"
                     aria-label="{{ __('Admin navigation') }}"
                 >
@@ -235,7 +380,7 @@
                             />
                             <span class="admin-sidebar-brand-block">
                                 <span class="admin-sidebar-brand-copy app-logo-text truncate" data-admin-sidebar-logo-text>{{ $systemSettings['site_name'] ?? 'YallaSpare' }}</span>
-                                <span class="admin-sidebar-meta text-[11px] uppercase tracking-widest text-slate-400" data-admin-sidebar-meta>{{ __('Admin') }}</span>
+                                <span class="admin-sidebar-meta text-[10px] uppercase tracking-widest" data-admin-sidebar-meta>{{ __('Admin · Live') }}</span>
                             </span>
                         </a>
                         <button
@@ -263,97 +408,38 @@
                             <i class="fas fa-xmark text-sm"></i>
                         </button>
                     </div>
+                    @php
+                        $navItem = function (bool $active) {
+                            return $active
+                                ? 'is-active text-white'
+                                : 'text-slate-300';
+                        };
+                        $adminUserForNav = auth()->user();
+                        $canCatalog    = $adminUserForNav?->can(\App\Models\User::PERMISSION_PRODUCTS_MANAGE);
+                        $canOrders     = $adminUserForNav?->can(\App\Models\User::PERMISSION_ORDERS_MANAGE);
+                        $canFinance    = $adminUserForNav?->can(\App\Models\User::PERMISSION_FINANCE_VIEW);
+                        $canStock      = $adminUserForNav?->can(\App\Models\User::PERMISSION_STOCK_MANAGE);
+                        $canDealers    = $adminUserForNav?->can('manage-dealers');
+                        $canFinanceMgr = $adminUserForNav?->can(\App\Models\User::PERMISSION_FINANCE_MANAGE);
+                        $canSettings   = $adminUserForNav?->can(\App\Models\User::PERMISSION_SETTINGS_MANAGE);
+                        $canUsersView  = $adminUserForNav?->can('viewAny', \App\Models\User::class);
+                        $canActLogs    = $adminUserForNav?->can(\App\Models\User::PERMISSION_ACTIVITY_LOGS_VIEW);
+                        $hasAnalytics  = $canFinance || $canStock;
+                        $hasMarketing  = $canFinanceMgr || $canSettings;
+                        $hasAdminGrp   = $canUsersView || $canSettings || $canActLogs;
+                    @endphp
                     <nav class="admin-nav space-y-1.5" aria-label="{{ __('Admin sections') }}">
-                        @php
-                            $navItem = function (bool $active) {
-                                return $active
-                                    ? 'is-active text-white'
-                                    : 'text-slate-300';
-                            };
-                        @endphp
+                        {{-- ── OPERATIONS ── --}}
+                        <div class="admin-nav-section" aria-hidden="true"><span>{{ __('Operations') }}</span></div>
                         <a
                             href="{{ route('admin.dashboard') }}"
                             class="admin-nav-link {{ $navItem(request()->routeIs('admin.dashboard')) }}"
                             data-admin-sidebar-tooltip="{{ __('Dashboard') }}"
                             @if(request()->routeIs('admin.dashboard')) aria-current="page" @endif
                         >
-                            <span class="admin-nav-icon" aria-hidden="true">
-                                <i class="fas fa-chart-line"></i>
-                            </span>
+                            <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-chart-line"></i></span>
                             <span class="admin-nav-label">{{ __('Dashboard') }}</span>
                         </a>
-                        @can(\App\Models\User::PERMISSION_FINANCE_VIEW)
-                            <a
-                                href="{{ route('admin.revenue.index') }}"
-                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.revenue.*')) }}"
-                                data-admin-sidebar-tooltip="{{ __('Revenue') }}"
-                                @if(request()->routeIs('admin.revenue.*')) aria-current="page" @endif
-                            >
-                                <span class="admin-nav-icon" aria-hidden="true">
-                                    <i class="fas fa-sack-dollar"></i>
-                                </span>
-                                <span class="admin-nav-label">{{ __('Revenue') }}</span>
-                            </a>
-                        @endcan
-                        @can(\App\Models\User::PERMISSION_PRODUCTS_MANAGE)
-                            <a
-                                href="{{ route('admin.products.index') }}"
-                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.products.*')) }}"
-                                data-admin-sidebar-tooltip="{{ __('Products') }}"
-                                @if(request()->routeIs('admin.products.*')) aria-current="page" @endif
-                            >
-                                <span class="admin-nav-icon" aria-hidden="true">
-                                    <i class="fas fa-box"></i>
-                                </span>
-                                <span class="admin-nav-label">{{ __('Products') }}</span>
-                            </a>
-                            <a
-                                href="{{ route('admin.categories.index') }}"
-                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.categories.*')) }}"
-                                data-admin-sidebar-tooltip="{{ __('Categories') }}"
-                                @if(request()->routeIs('admin.categories.*')) aria-current="page" @endif
-                            >
-                                <span class="admin-nav-icon" aria-hidden="true">
-                                    <i class="fas fa-layer-group"></i>
-                                </span>
-                                <span class="admin-nav-label">{{ __('Categories') }}</span>
-                            </a>
-                            <a
-                                href="{{ route('admin.vehicle-fitments.index') }}"
-                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.vehicle-fitments.*')) }}"
-                                data-admin-sidebar-tooltip="{{ __('Vehicle Finder') }}"
-                                @if(request()->routeIs('admin.vehicle-fitments.*')) aria-current="page" @endif
-                            >
-                                <span class="admin-nav-icon" aria-hidden="true">
-                                    <i class="fas fa-car-side"></i>
-                                </span>
-                                <span class="admin-nav-label">{{ __('Vehicle Finder') }}</span>
-                            </a>
-                            <a
-                                href="{{ route('admin.reviews.index') }}"
-                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.reviews.*')) }}"
-                                data-admin-sidebar-tooltip="{{ __('Customer Reviews') }}"
-                                @if(request()->routeIs('admin.reviews.*')) aria-current="page" @endif
-                            >
-                                <span class="admin-nav-icon" aria-hidden="true">
-                                    <i class="fas fa-star"></i>
-                                </span>
-                                <span class="admin-nav-label">{{ __('Customer Reviews') }}</span>
-                            </a>
-                        @endcan
-                        @can(\App\Models\User::PERMISSION_STOCK_MANAGE)
-                            <a
-                                href="{{ route('admin.inventory.index') }}"
-                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.inventory.*')) }}"
-                                data-admin-sidebar-tooltip="{{ __('Inventory') }}"
-                                @if(request()->routeIs('admin.inventory.*')) aria-current="page" @endif
-                            >
-                                <span class="admin-nav-icon" aria-hidden="true">
-                                    <i class="fas fa-warehouse"></i>
-                                </span>
-                                <span class="admin-nav-label">{{ __('Inventory') }}</span>
-                            </a>
-                        @endcan
                         @can(\App\Models\User::PERMISSION_ORDERS_MANAGE)
                             <a
                                 href="{{ route('admin.orders.index') }}"
@@ -361,9 +447,7 @@
                                 data-admin-sidebar-tooltip="{{ __('Orders Management') }}"
                                 @if(request()->routeIs('admin.orders.*')) aria-current="page" @endif
                             >
-                                <span class="admin-nav-icon" aria-hidden="true">
-                                    <i class="fas fa-receipt"></i>
-                                </span>
+                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-receipt"></i></span>
                                 <span class="admin-nav-label">{{ __('Orders Management') }}</span>
                             </a>
                             <a
@@ -372,100 +456,176 @@
                                 data-admin-sidebar-tooltip="{{ __('Returns & Refunds') }}"
                                 @if(request()->routeIs('admin.returns.*')) aria-current="page" @endif
                             >
-                                <span class="admin-nav-icon" aria-hidden="true">
-                                    <i class="fas fa-rotate-left"></i>
-                                </span>
+                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-rotate-left"></i></span>
                                 <span class="admin-nav-label">{{ __('Returns & Refunds') }}</span>
                             </a>
                         @endcan
-                        @can('manage-dealers')
+
+                        {{-- ── CATALOG ── --}}
+                        @if($canCatalog)
+                            <div class="admin-nav-section" aria-hidden="true"><span>{{ __('Catalog') }}</span></div>
+                            <a
+                                href="{{ route('admin.products.index') }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.products.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Products') }}"
+                                @if(request()->routeIs('admin.products.*')) aria-current="page" @endif
+                            >
+                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-box"></i></span>
+                                <span class="admin-nav-label">{{ __('Products') }}</span>
+                            </a>
+                            <a
+                                href="{{ route('admin.categories.index') }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.categories.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Categories') }}"
+                                @if(request()->routeIs('admin.categories.*')) aria-current="page" @endif
+                            >
+                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-layer-group"></i></span>
+                                <span class="admin-nav-label">{{ __('Categories') }}</span>
+                            </a>
+                            <a
+                                href="{{ route('admin.vehicle-fitments.index') }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.vehicle-fitments.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Vehicle Finder') }}"
+                                @if(request()->routeIs('admin.vehicle-fitments.*')) aria-current="page" @endif
+                            >
+                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-car-side"></i></span>
+                                <span class="admin-nav-label">{{ __('Vehicle Finder') }}</span>
+                            </a>
+                            <a
+                                href="{{ route('admin.reviews.index') }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.reviews.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Customer Reviews') }}"
+                                @if(request()->routeIs('admin.reviews.*')) aria-current="page" @endif
+                            >
+                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-star"></i></span>
+                                <span class="admin-nav-label">{{ __('Customer Reviews') }}</span>
+                            </a>
+                        @endif
+
+                        {{-- ── ANALYTICS ── --}}
+                        @if($hasAnalytics)
+                            <div class="admin-nav-section" aria-hidden="true"><span>{{ __('Analytics') }}</span></div>
+                            @can(\App\Models\User::PERMISSION_FINANCE_VIEW)
+                                <a
+                                    href="{{ route('admin.revenue.index') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.revenue.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Revenue') }}"
+                                    @if(request()->routeIs('admin.revenue.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-sack-dollar"></i></span>
+                                    <span class="admin-nav-label">{{ __('Revenue') }}</span>
+                                </a>
+                            @endcan
+                            @can(\App\Models\User::PERMISSION_STOCK_MANAGE)
+                                <a
+                                    href="{{ route('admin.inventory.index') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.inventory.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Inventory') }}"
+                                    @if(request()->routeIs('admin.inventory.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-warehouse"></i></span>
+                                    <span class="admin-nav-label">{{ __('Inventory') }}</span>
+                                </a>
+                            @endcan
+                        @endif
+
+                        {{-- ── PARTNERS ── --}}
+                        @if($canDealers)
+                            <div class="admin-nav-section" aria-hidden="true"><span>{{ __('Partners') }}</span></div>
                             <a
                                 href="{{ route('admin.dealers.index') }}"
                                 class="admin-nav-link {{ $navItem(request()->routeIs('admin.dealers.*')) }}"
                                 data-admin-sidebar-tooltip="{{ __('Dealers') }}"
                                 @if(request()->routeIs('admin.dealers.*')) aria-current="page" @endif
                             >
-                                <span class="admin-nav-icon" aria-hidden="true">
-                                    <i class="fas fa-handshake"></i>
-                                </span>
+                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-handshake"></i></span>
                                 <span class="admin-nav-label">{{ __('Dealers') }}</span>
                             </a>
-                        @endcan
-                        @can('viewAny', \App\Models\User::class)
-                            <a
-                                href="{{ route('admin.users.index') }}"
-                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.users.*')) }}"
-                                data-admin-sidebar-tooltip="{{ __('Users') }}"
-                                @if(request()->routeIs('admin.users.*')) aria-current="page" @endif
-                            >
-                                <span class="admin-nav-icon" aria-hidden="true">
-                                    <i class="fas fa-users"></i>
-                                </span>
-                                <span class="admin-nav-label">{{ __('Users') }}</span>
-                            </a>
-                        @endcan
-                        @can(\App\Models\User::PERMISSION_FINANCE_MANAGE)
-                            <a
-                                href="{{ route('admin.discounts.edit') }}"
-                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.discounts.edit') || request()->routeIs('admin.discounts.coupons.*')) }}"
-                                data-admin-sidebar-tooltip="{{ __('Coupon Management') }}"
-                                @if(request()->routeIs('admin.discounts.edit') || request()->routeIs('admin.discounts.coupons.*')) aria-current="page" @endif
-                            >
-                                <span class="admin-nav-icon" aria-hidden="true">
-                                    <i class="fas fa-tags"></i>
-                                </span>
-                                <span class="admin-nav-label">{{ __('Coupon Management') }}</span>
-                            </a>
-                            <a
-                                href="{{ route('admin.discounts.rules') }}"
-                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.discounts.rules')) }}"
-                                data-admin-sidebar-tooltip="{{ __('Discount Rules') }}"
-                                @if(request()->routeIs('admin.discounts.rules')) aria-current="page" @endif
-                            >
-                                <span class="admin-nav-icon" aria-hidden="true">
-                                    <i class="fas fa-percent"></i>
-                                </span>
-                                <span class="admin-nav-label">{{ __('Discount Rules') }}</span>
-                            </a>
-                        @endcan
-                        @can(\App\Models\User::PERMISSION_SETTINGS_MANAGE)
-                            <a
-                                href="{{ route('admin.email.index') }}"
-                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.email.*')) }}"
-                                data-admin-sidebar-tooltip="{{ __('Email Center') }}"
-                                @if(request()->routeIs('admin.email.*')) aria-current="page" @endif
-                            >
-                                <span class="admin-nav-icon" aria-hidden="true">
-                                    <i class="fas fa-envelope-open-text"></i>
-                                </span>
-                                <span class="admin-nav-label">{{ __('Email Center') }}</span>
-                            </a>
-                            <a
-                                href="{{ route('admin.settings.edit') }}"
-                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.settings.*')) }}"
-                                data-admin-sidebar-tooltip="{{ __('Settings') }}"
-                                @if(request()->routeIs('admin.settings.*')) aria-current="page" @endif
-                            >
-                                <span class="admin-nav-icon" aria-hidden="true">
-                                    <i class="fas fa-gear"></i>
-                                </span>
-                                <span class="admin-nav-label">{{ __('Settings') }}</span>
-                            </a>
-                        @endcan
-                        @can(\App\Models\User::PERMISSION_ACTIVITY_LOGS_VIEW)
-                            <a
-                                href="{{ route('admin.activity-logs.index') }}"
-                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.activity-logs.*')) }}"
-                                data-admin-sidebar-tooltip="{{ __('Activity Logs') }}"
-                                @if(request()->routeIs('admin.activity-logs.*')) aria-current="page" @endif
-                            >
-                                <span class="admin-nav-icon" aria-hidden="true">
-                                    <i class="fas fa-clipboard-list"></i>
-                                </span>
-                                <span class="admin-nav-label">{{ __('Activity Logs') }}</span>
-                            </a>
-                        @endcan
+                        @endif
+
+                        {{-- ── MARKETING ── --}}
+                        @if($hasMarketing)
+                            <div class="admin-nav-section" aria-hidden="true"><span>{{ __('Marketing') }}</span></div>
+                            @can(\App\Models\User::PERMISSION_FINANCE_MANAGE)
+                                <a
+                                    href="{{ route('admin.discounts.edit') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.discounts.edit') || request()->routeIs('admin.discounts.coupons.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Coupon Management') }}"
+                                    @if(request()->routeIs('admin.discounts.edit') || request()->routeIs('admin.discounts.coupons.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-tags"></i></span>
+                                    <span class="admin-nav-label">{{ __('Coupon Management') }}</span>
+                                </a>
+                                <a
+                                    href="{{ route('admin.discounts.rules') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.discounts.rules')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Discount Rules') }}"
+                                    @if(request()->routeIs('admin.discounts.rules')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-percent"></i></span>
+                                    <span class="admin-nav-label">{{ __('Discount Rules') }}</span>
+                                </a>
+                            @endcan
+                            @can(\App\Models\User::PERMISSION_SETTINGS_MANAGE)
+                                <a
+                                    href="{{ route('admin.email.index') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.email.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Email Center') }}"
+                                    @if(request()->routeIs('admin.email.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-envelope-open-text"></i></span>
+                                    <span class="admin-nav-label">{{ __('Email Center') }}</span>
+                                </a>
+                            @endcan
+                        @endif
+
+                        {{-- ── ADMIN ── --}}
+                        @if($hasAdminGrp)
+                            <div class="admin-nav-section" aria-hidden="true"><span>{{ __('Admin') }}</span></div>
+                            @can('viewAny', \App\Models\User::class)
+                                <a
+                                    href="{{ route('admin.users.index') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.users.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Users') }}"
+                                    @if(request()->routeIs('admin.users.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-users"></i></span>
+                                    <span class="admin-nav-label">{{ __('Users') }}</span>
+                                </a>
+                            @endcan
+                            @can(\App\Models\User::PERMISSION_SETTINGS_MANAGE)
+                                <a
+                                    href="{{ route('admin.settings.edit') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.settings.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Settings') }}"
+                                    @if(request()->routeIs('admin.settings.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-gear"></i></span>
+                                    <span class="admin-nav-label">{{ __('Settings') }}</span>
+                                </a>
+                            @endcan
+                            @can(\App\Models\User::PERMISSION_ACTIVITY_LOGS_VIEW)
+                                <a
+                                    href="{{ route('admin.activity-logs.index') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.activity-logs.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Activity Logs') }}"
+                                    @if(request()->routeIs('admin.activity-logs.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-clipboard-list"></i></span>
+                                    <span class="admin-nav-label">{{ __('Activity Logs') }}</span>
+                                </a>
+                            @endcan
+                        @endif
                     </nav>
+
+                    {{-- Sidebar footer — version + system status pill --}}
+                    <div class="admin-sidebar-footer" aria-hidden="true">
+                        <span class="admin-sidebar-version">v {{ config('app.version', '2.4.1') }}</span>
+                        <span class="admin-sidebar-status">
+                            <span class="admin-sidebar-status-dot"></span>
+                            <span>{{ __('All systems') }}</span>
+                        </span>
+                    </div>
                 </aside>
 
                 <!-- Main Content -->
@@ -996,6 +1156,49 @@
                             }
                         });
                     }, true);
+                })();
+
+                /* Sidebar click sweep — adds a brief amber light pass on click,
+                   restarts on each click, removes itself when the animation ends. */
+                (function () {
+                    const SWEEP_CLASS = 'admin-nav-sweep-active';
+                    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+                    const ensureSweepNode = (link) => {
+                        if (link.querySelector(':scope > .admin-nav-sweep-clip')) return;
+                        const clip = document.createElement('span');
+                        clip.className = 'admin-nav-sweep-clip';
+                        clip.setAttribute('aria-hidden', 'true');
+                        const sweep = document.createElement('span');
+                        sweep.className = 'admin-nav-sweep';
+                        clip.appendChild(sweep);
+                        link.insertBefore(clip, link.firstChild);
+                    };
+
+                    document.querySelectorAll('.admin-nav-link').forEach(ensureSweepNode);
+
+                    if (reduceMotion) {
+                        return;
+                    }
+
+                    document.addEventListener('click', (event) => {
+                        const target = event.target instanceof Element ? event.target : null;
+                        if (!target) return;
+                        const link = target.closest('.admin-nav-link');
+                        if (!link) return;
+                        ensureSweepNode(link);
+                        link.classList.remove(SWEEP_CLASS);
+                        // Force reflow so the animation restarts on rapid re-clicks.
+                        void link.offsetWidth;
+                        link.classList.add(SWEEP_CLASS);
+                        const clear = () => {
+                            link.classList.remove(SWEEP_CLASS);
+                            link.removeEventListener('animationend', clear);
+                        };
+                        link.addEventListener('animationend', clear);
+                        // Fallback in case the page navigates before animationend fires.
+                        setTimeout(clear, 800);
+                    });
                 })();
             </script>
         @endif
