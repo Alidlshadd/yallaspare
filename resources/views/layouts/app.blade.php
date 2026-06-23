@@ -41,8 +41,8 @@
                     background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%) !important;
                     border-bottom: 0 !important;
                     backdrop-filter: none !important;
-                    position: sticky; top: 0; z-index: 20;
-                    overflow: hidden;
+                    position: sticky; top: 0; z-index: 40;
+                    overflow: visible;
                 }
                 .admin-topbar::before {
                     content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.45;
@@ -53,6 +53,11 @@
                 .admin-topbar::after {
                     content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 3px;
                     background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+                }
+                /* Clip-only wrapper for decorations that extend past the header bounds.
+                   Header itself must stay overflow:visible so dropdowns can escape. */
+                .admin-topbar-decor {
+                    position: absolute; inset: 0; overflow: hidden; pointer-events: none; z-index: 0;
                 }
                 .admin-topbar-hairline {
                     position: absolute; top: 0; left: 0; right: 0; height: 1px;
@@ -86,6 +91,11 @@
                 /* Language switcher pill — restyled to match dark header */
                 .admin-topbar [data-header-dropdown] > button {
                     height: 36px !important; border-radius: 10px !important;
+                    background: rgba(255,255,255,0.04) !important;
+                    border-color: rgba(255,255,255,0.10) !important;
+                }
+                .admin-topbar [data-header-dropdown] > button:hover {
+                    background: rgba(255,255,255,0.10) !important;
                 }
                 .topbar-pulse-ring { position: relative; }
                 .topbar-pulse-ring::after {
@@ -440,10 +450,12 @@
                     data-admin-main
                 >
                     <header class="admin-topbar">
-                        <div class="admin-topbar-hairline"></div>
-                        <div class="admin-topbar-glow"></div>
+                        <div class="admin-topbar-decor" aria-hidden="true">
+                            <div class="admin-topbar-hairline"></div>
+                            <div class="admin-topbar-glow"></div>
+                        </div>
 
-                        <div class="relative flex min-w-0 items-center justify-between gap-3 px-3 sm:px-5 lg:px-7" style="min-height: 64px; padding-top: 10px; padding-bottom: 10px;">
+                        <div class="relative z-10 flex min-w-0 items-center justify-between gap-3 px-3 sm:px-5 lg:px-7" style="min-height: 64px; padding-top: 10px; padding-bottom: 10px;">
                             {{-- LEFT: menu + YS badge + brand --}}
                             <div class="flex min-w-0 items-center gap-2 shrink-0">
                                 {{-- Desktop expand (visibility controlled by app.css — hidden until sidebar collapsed) --}}
