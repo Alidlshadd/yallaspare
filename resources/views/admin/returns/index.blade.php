@@ -275,15 +275,14 @@
             @endphp
 
             @foreach($attentionTiles as $t)
-                <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 p-5 bento-shadow transition">
-                    <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r {{ $t['stripe'] }}"></div>
-                    <div class="flex items-center justify-between">
-                        <div class="text-[10px] uppercase tracking-widest font-bold text-slate-500 dark:text-slate-400">{{ $t['label'] }}</div>
-                        <div class="h-9 w-9 rounded-xl grid place-items-center {{ $t['ic_bg'] }} {{ $t['ic_fg'] }}">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">{!! $t['icon'] !!}</svg>
+                <div class="relative overflow-hidden rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 p-6 bento-shadow transition">
+                    <div class="flex items-center gap-3">
+                        <div class="h-10 w-10 rounded-xl grid place-items-center {{ $t['ic_bg'] }} {{ $t['ic_fg'] }}">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">{!! $t['icon'] !!}</svg>
                         </div>
+                        <div class="text-[10px] uppercase tracking-widest font-bold text-slate-500 dark:text-slate-400">{{ $t['label'] }}</div>
                     </div>
-                    <div class="num-display text-3xl font-black text-slate-900 dark:text-white mt-3">{{ number_format((int) $t['value']) }}</div>
+                    <div class="num-display text-3xl font-black text-slate-900 dark:text-white mt-4">{{ number_format((int) $t['value']) }}</div>
                     <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5">
                         <span class="inline-block w-1.5 h-1.5 rounded-full {{ $t['dot'] }}"></span> {{ $t['foot'] }}
                     </div>
@@ -317,15 +316,14 @@
             @endphp
 
             @foreach($footerTiles as $t)
-                <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 p-5 bento-shadow transition">
-                    <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r {{ $t['stripe'] }}"></div>
-                    <div class="flex items-center justify-between">
-                        <div class="text-[10px] uppercase tracking-widest font-bold text-slate-500 dark:text-slate-400">{{ $t['label'] }}</div>
-                        <div class="h-9 w-9 rounded-xl grid place-items-center {{ $t['ic_bg'] }} {{ $t['ic_fg'] }}">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">{!! $t['icon'] !!}</svg>
+                <div class="relative overflow-hidden rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 p-6 bento-shadow transition">
+                    <div class="flex items-center gap-3">
+                        <div class="h-10 w-10 rounded-xl grid place-items-center {{ $t['ic_bg'] }} {{ $t['ic_fg'] }}">
+                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">{!! $t['icon'] !!}</svg>
                         </div>
+                        <div class="text-[10px] uppercase tracking-widest font-bold text-slate-500 dark:text-slate-400">{{ $t['label'] }}</div>
                     </div>
-                    <div class="num-display text-3xl font-black text-slate-900 dark:text-white mt-3">{{ number_format((int) $t['value']) }}</div>
+                    <div class="num-display text-3xl font-black text-slate-900 dark:text-white mt-4">{{ number_format((int) $t['value']) }}</div>
                     <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5">
                         <span class="inline-block w-1.5 h-1.5 rounded-full {{ $t['dot'] }}"></span> {{ $t['foot'] }}
                     </div>
