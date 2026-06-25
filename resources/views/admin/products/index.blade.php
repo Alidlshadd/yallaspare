@@ -138,16 +138,21 @@
         .dark .prod-card:hover { border-color: #fbbf24; }
         .prod-card .img-wrap {
             position: relative;
-            height: 130px; border-radius: 12px;
+            height: 160px; border-radius: 12px;
             background: linear-gradient(135deg, #f8fafc, #f1f5f9);
             border: 1px solid #e3e9f1;
             display: grid; place-items: center;
             margin-bottom: 12px;
             overflow: hidden;
-            padding: 10px;
+            padding: 22px;
         }
         .dark .prod-card .img-wrap { background: linear-gradient(135deg, #1e293b, #0f172a); border-color: #334155; }
-        .prod-card .img-wrap img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
+        .prod-card .img-wrap img {
+            width: 100%; height: 100%;
+            object-fit: contain;
+            object-position: center;
+            display: block;
+        }
         .prod-card .img-wrap .placeholder { color: #94a3b8; font-size: 32px; }
         .prod-card .badge-tl { position: absolute; top: 8px; left: 8px; }
         .prod-card .badge-tr { position: absolute; top: 8px; right: 8px; }
