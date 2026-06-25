@@ -276,6 +276,7 @@
 
             @foreach($attentionTiles as $t)
                 <div class="relative overflow-hidden rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 p-6 bento-shadow transition">
+                    <div class="absolute top-0 bottom-0 left-0 w-[3px] bg-gradient-to-b {{ $t['stripe'] }}"></div>
                     <div class="flex items-center gap-3">
                         <div class="h-10 w-10 rounded-xl grid place-items-center {{ $t['ic_bg'] }} {{ $t['ic_fg'] }}">
                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">{!! $t['icon'] !!}</svg>
@@ -317,6 +318,7 @@
 
             @foreach($footerTiles as $t)
                 <div class="relative overflow-hidden rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 p-6 bento-shadow transition">
+                    <div class="absolute top-0 bottom-0 left-0 w-[3px] bg-gradient-to-b {{ $t['stripe'] }}"></div>
                     <div class="flex items-center gap-3">
                         <div class="h-10 w-10 rounded-xl grid place-items-center {{ $t['ic_bg'] }} {{ $t['ic_fg'] }}">
                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">{!! $t['icon'] !!}</svg>
