@@ -327,7 +327,12 @@
                         @endif
                     </p>
                 </div>
-                <div class="flex flex-wrap items-center gap-2">
+                <div class="flex flex-wrap items-center gap-2" x-data="{ importOpen: false }">
+                    <button type="button" @click="importOpen = true"
+                            class="inline-flex items-center gap-2 h-10 px-4 rounded-xl text-xs font-bold text-white bg-white/10 border border-white/15 hover:bg-white/15 backdrop-blur-sm transition">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M17 8l-5-5-5 5M12 3v12"/></svg>
+                        {{ __('Import') }}
+                    </button>
                     <a href="{{ route('admin.products.export-excel') }}"
                        class="inline-flex items-center gap-2 h-10 px-4 rounded-xl text-xs font-bold text-white bg-white/10 border border-white/15 hover:bg-white/15 backdrop-blur-sm transition">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
@@ -339,6 +344,75 @@
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                         {{ __('Add Product') }}
                     </a>
+
+                    {{-- Import modal --}}
+                    <template x-teleport="body">
+                        <div x-show="importOpen" x-cloak x-transition.opacity
+                             class="fixed inset-0 z-[100] grid place-items-center bg-black/60 backdrop-blur-sm p-4"
+                             @click.self="importOpen = false"
+                             @keydown.escape.window="importOpen = false">
+                            <div x-show="importOpen" x-transition
+                                 class="w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-2xl overflow-hidden text-slate-900 dark:text-slate-100">
+                                <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-slate-200 dark:border-slate-800 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900/60 dark:to-slate-900">
+                                    <div class="flex items-center gap-2.5">
+                                        <div class="h-9 w-9 rounded-xl bg-[#04042a] text-amber-300 grid place-items-center">
+                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
+                                        </div>
+                                        <div>
+                                            <div class="text-sm font-extrabold">{{ __('Bulk Import') }}</div>
+                                            <div class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('Upload CSV / XLSX to update or create products') }}</div>
+                                        </div>
+                                    </div>
+                                    <button type="button" @click="importOpen = false"
+                                            class="h-8 w-8 rounded-lg grid place-items-center text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+                                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                                    </button>
+                                </div>
+
+                                <form method="POST" action="{{ route('admin.products.import') }}" enctype="multipart/form-data"
+                                      class="p-5 space-y-3"
+                                      data-loading-form
+                                      data-loading-message="Uploading, please wait..."
+                                      data-loading-button-text="Uploading...">
+                                    @csrf
+                                    <input type="hidden" name="return_to" value="{{ $currentProductsUrl }}">
+
+                                    <div>
+                                        <label for="import-file" class="block text-[10.5px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('File') }}</label>
+                                        <input id="import-file" type="file" name="import_file" accept=".csv,.txt,.xls,.xlsx" required
+                                               class="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 file:mr-3 file:rounded-md file:border-0 file:bg-slate-200 file:px-3 file:py-1 file:text-xs file:font-bold dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
+                                    </div>
+
+                                    <div class="rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 p-3 text-[11px] leading-relaxed text-slate-600 dark:text-slate-300">
+                                        <div class="font-extrabold uppercase text-[10px] tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Requirements') }}</div>
+                                        <p>
+                                            {{ __('Supported files: CSV, TXT, XLS, XLSX.') }}
+                                        </p>
+                                        <p class="mt-1">
+                                            <b>{{ __('Required columns:') }}</b>
+                                            <span class="font-mono">name_en, name_ar, name_ku, price, stock_quantity</span>
+                                        </p>
+                                        <p class="mt-1">
+                                            <b>{{ __('Category:') }}</b>
+                                            {{ __('Use one of') }} <span class="font-mono">category_id</span>, <span class="font-mono">category_slug</span> {{ __('or') }} <span class="font-mono">category_name</span>.
+                                        </p>
+                                    </div>
+
+                                    <div class="flex justify-end gap-2 pt-2">
+                                        <button type="button" @click="importOpen = false"
+                                                class="inline-flex items-center gap-2 h-10 px-4 rounded-xl text-xs font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700 transition">
+                                            {{ __('Cancel') }}
+                                        </button>
+                                        <button type="submit"
+                                                class="inline-flex items-center gap-2 h-10 px-5 rounded-xl text-xs font-bold text-amber-300 bg-[#04042a] hover:bg-[#07073a] transition">
+                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M17 8l-5-5-5 5M12 3v12"/></svg>
+                                            {{ __('Upload & Import') }}
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </template>
                 </div>
             </div>
         </div>
@@ -404,53 +478,7 @@
             @endforeach
         </div>
 
-        {{-- ═════════════ Bulk Import + Export (always visible, side by side) ═════════════ --}}
-        <div class="mb-4 bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl bento-shadow overflow-hidden">
-            <div class="flex items-center gap-2.5 px-5 py-3 border-b border-slate-200/70 dark:border-slate-800 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900/60 dark:to-slate-900">
-                <div class="h-9 w-9 rounded-xl bg-[#04042a] text-amber-300 grid place-items-center">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
-                </div>
-                <div>
-                    <div class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Bulk Import & Export') }}</div>
-                    <div class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('Upload CSV/XLSX or download the full catalog') }}</div>
-                </div>
-            </div>
-            <div class="grid gap-4 px-5 py-4 md:grid-cols-2 items-start">
-                <div>
-                    <h4 class="text-[11px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-2">{{ __('Bulk Import') }}</h4>
-                    <form method="POST" action="{{ route('admin.products.import') }}" enctype="multipart/form-data"
-                          class="flex flex-col sm:flex-row sm:items-center gap-2"
-                          data-loading-form
-                          data-loading-message="Uploading, please wait..."
-                          data-loading-button-text="Uploading...">
-                        @csrf
-                        <input type="hidden" name="return_to" value="{{ $currentProductsUrl }}">
-                        <input type="file" name="import_file" accept=".csv,.txt,.xls,.xlsx" required
-                               class="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 file:mr-3 file:rounded-md file:border-0 file:bg-slate-200 file:px-3 file:py-1 file:text-xs file:font-bold dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
-                        <button type="submit" class="inline-flex items-center gap-2 h-10 px-4 rounded-lg text-xs font-bold text-amber-300 bg-[#04042a] hover:bg-[#07073a] transition whitespace-nowrap">
-                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M17 8l-5-5-5 5M12 3v12"/></svg>
-                            {{ __('Import') }}
-                        </button>
-                    </form>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
-                        {{ __('CSV / XLSX. Required:') }}
-                        <span class="font-mono text-slate-700 dark:text-slate-300">name_en, name_ar, name_ku, price, stock_quantity</span>
-                    </p>
-                </div>
-                <div>
-                    <h4 class="text-[11px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-2">{{ __('Export') }}</h4>
-                    <a href="{{ route('admin.products.export-excel') }}"
-                       class="inline-flex items-center justify-center gap-2 w-full h-10 rounded-lg text-xs font-bold text-[#04042a] shadow-md shadow-amber-500/30 transition hover:brightness-105"
-                       style="background: linear-gradient(180deg, #fbbf24, #f59e0b);">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
-                        {{ __('Export Excel (.xlsx)') }}
-                    </a>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
-                        {{ __('Download the full catalog as an Excel file with current filters applied.') }}
-                    </p>
-                </div>
-            </div>
-        </div>
+        {{-- Bulk Import & Export card removed — actions now live in the hero (Import modal + Export Excel button). --}}
 
         {{-- ═════════════ Import error report ═════════════ --}}
         @if(count($importErrors) > 0)
