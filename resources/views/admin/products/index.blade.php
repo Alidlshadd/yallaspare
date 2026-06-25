@@ -138,16 +138,17 @@
         .dark .prod-card:hover { border-color: #fbbf24; }
         .prod-card .img-wrap {
             position: relative;
-            height: 160px; border-radius: 12px;
+            height: 130px; border-radius: 12px;
             background: linear-gradient(135deg, #f8fafc, #f1f5f9);
             border: 1px solid #e3e9f1;
             display: grid; place-items: center;
             margin-bottom: 12px;
             overflow: hidden;
+            padding: 10px;
         }
         .dark .prod-card .img-wrap { background: linear-gradient(135deg, #1e293b, #0f172a); border-color: #334155; }
-        .prod-card .img-wrap img { width: 100%; height: 100%; object-fit: cover; }
-        .prod-card .img-wrap .placeholder { color: #94a3b8; font-size: 36px; }
+        .prod-card .img-wrap img { max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; }
+        .prod-card .img-wrap .placeholder { color: #94a3b8; font-size: 32px; }
         .prod-card .badge-tl { position: absolute; top: 8px; left: 8px; }
         .prod-card .badge-tr { position: absolute; top: 8px; right: 8px; }
         .prod-card .pname {
@@ -403,25 +404,22 @@
             @endforeach
         </div>
 
-        {{-- ═════════════ Bulk Import + Export (collapsible) ═════════════ --}}
-        <details class="tools mb-4 bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl bento-shadow overflow-hidden">
-            <summary class="flex items-center justify-between gap-3 px-5 py-3.5 cursor-pointer hover:bg-slate-50 dark:hover:bg-slate-800/40 transition">
-                <div class="flex items-center gap-2.5">
-                    <div class="h-9 w-9 rounded-xl bg-[#04042a] text-amber-300 grid place-items-center">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
-                    </div>
-                    <div>
-                        <div class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Bulk Import & Export') }}</div>
-                        <div class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('Upload CSV/XLSX or download the full catalog') }}</div>
-                    </div>
+        {{-- ═════════════ Bulk Import + Export (always visible, side by side) ═════════════ --}}
+        <div class="mb-4 bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl bento-shadow overflow-hidden">
+            <div class="flex items-center gap-2.5 px-5 py-3 border-b border-slate-200/70 dark:border-slate-800 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900/60 dark:to-slate-900">
+                <div class="h-9 w-9 rounded-xl bg-[#04042a] text-amber-300 grid place-items-center">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
                 </div>
-                <svg class="chev w-4 h-4 text-slate-400 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-            </summary>
-            <div class="grid gap-4 px-5 py-4 border-t border-slate-200/70 dark:border-slate-800 md:grid-cols-3">
-                <div class="md:col-span-2">
+                <div>
+                    <div class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Bulk Import & Export') }}</div>
+                    <div class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('Upload CSV/XLSX or download the full catalog') }}</div>
+                </div>
+            </div>
+            <div class="grid gap-4 px-5 py-4 md:grid-cols-2 items-start">
+                <div>
                     <h4 class="text-[11px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-2">{{ __('Bulk Import') }}</h4>
                     <form method="POST" action="{{ route('admin.products.import') }}" enctype="multipart/form-data"
-                          class="flex flex-col md:flex-row md:items-center gap-2"
+                          class="flex flex-col sm:flex-row sm:items-center gap-2"
                           data-loading-form
                           data-loading-message="Uploading, please wait..."
                           data-loading-button-text="Uploading...">
@@ -431,14 +429,12 @@
                                class="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 file:mr-3 file:rounded-md file:border-0 file:bg-slate-200 file:px-3 file:py-1 file:text-xs file:font-bold dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
                         <button type="submit" class="inline-flex items-center gap-2 h-10 px-4 rounded-lg text-xs font-bold text-amber-300 bg-[#04042a] hover:bg-[#07073a] transition whitespace-nowrap">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M17 8l-5-5-5 5M12 3v12"/></svg>
-                            {{ __('Import File') }}
+                            {{ __('Import') }}
                         </button>
                     </form>
-                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-2">
-                        {{ __('Supported files: CSV, TXT, XLS, XLSX.') }}
-                        <span class="text-slate-700 dark:text-slate-300 font-semibold">{{ __('Required columns:') }}</span>
-                        {{ __('name_en, name_ar, name_ku, price, stock_quantity') }}.
-                        {{ __('Category via category_id, category_slug, or category_name.') }}
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                        {{ __('CSV / XLSX. Required:') }}
+                        <span class="font-mono text-slate-700 dark:text-slate-300">name_en, name_ar, name_ku, price, stock_quantity</span>
                     </p>
                 </div>
                 <div>
@@ -449,9 +445,12 @@
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/></svg>
                         {{ __('Export Excel (.xlsx)') }}
                     </a>
+                    <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                        {{ __('Download the full catalog as an Excel file with current filters applied.') }}
+                    </p>
                 </div>
             </div>
-        </details>
+        </div>
 
         {{-- ═════════════ Import error report ═════════════ --}}
         @if(count($importErrors) > 0)
