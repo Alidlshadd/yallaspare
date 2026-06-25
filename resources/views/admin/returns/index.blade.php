@@ -60,50 +60,23 @@
         .bento-stripes { background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 14px); }
         .bento-shadow { box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06); }
         .bento-shadow:hover { box-shadow: 0 2px 6px rgba(7,7,64,0.08), 0 16px 36px rgba(7,7,64,0.10); }
+        .bento-shadow-lg { box-shadow: 0 10px 30px rgba(7,7,64,0.18), 0 30px 60px rgba(7,7,64,0.20); }
         .num-display { font-feature-settings: "tnum" 1, "lnum" 1; letter-spacing: -0.025em; }
+
+        .corner-brackets::before,
+        .corner-brackets::after {
+            content: ""; position: absolute; width: 14px; height: 14px;
+            border-color: rgba(255,255,255,0.35); border-style: solid; border-width: 0;
+            pointer-events: none;
+        }
+        .corner-brackets::before { top: 14px; left: 14px; border-top-width: 1.5px; border-left-width: 1.5px; }
+        .corner-brackets::after { bottom: 14px; right: 14px; border-bottom-width: 1.5px; border-right-width: 1.5px; }
 
         @keyframes ys-pulse {
             0%   { box-shadow: 0 0 0 0 rgba(251,191,36,0.55); }
             100% { box-shadow: 0 0 0 8px rgba(251,191,36,0); }
         }
         .ys-pulse-dot { animation: ys-pulse 1.6s ease-out infinite; }
-
-        /* Stat card identity colors via CSS vars */
-        .ret-stat {
-            position: relative; overflow: hidden;
-            background: #fff; border: 1px solid #e3e9f1; border-radius: 16px;
-            padding: 18px;
-            box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06);
-            transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-        }
-        .ret-stat:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(7,7,64,0.10); border-color: #cbd5e1; }
-        .ret-stat::before {
-            content: "";
-            position: absolute; top: 0; left: 0; right: 0; height: 3px;
-            background: var(--stat-grad, linear-gradient(90deg, #94a3b8, #64748b));
-        }
-        .ret-stat::after {
-            content: "";
-            position: absolute; right: -30px; bottom: -30px;
-            width: 110px; height: 110px; border-radius: 50%;
-            background: var(--stat-glow, rgba(148,163,184,0.10));
-            filter: blur(20px); pointer-events: none;
-        }
-        .dark .ret-stat { background: #0f172a; border-color: #1e293b; }
-        .dark .ret-stat:hover { border-color: #334155; }
-
-        .ret-stat.tot       { --stat-grad: linear-gradient(90deg, #1e293b, #04042a); --stat-glow: rgba(4,4,42,0.08); }
-        .ret-stat.open      { --stat-grad: linear-gradient(90deg, #fbbf24, #f59e0b); --stat-glow: rgba(245,158,11,0.16); }
-        .ret-stat.refunded  { --stat-grad: linear-gradient(90deg, #4ade80, #16a34a); --stat-glow: rgba(16,163,74,0.12); }
-        .ret-stat.closed    { --stat-grad: linear-gradient(90deg, #cbd5e1, #64748b); --stat-glow: rgba(100,116,139,0.10); }
-        .ret-stat.money {
-            --stat-grad: linear-gradient(90deg, #fbbf24, #f59e0b);
-            --stat-glow: rgba(245,158,11,0.20);
-            background: linear-gradient(180deg, #fffbeb, #fef3c7);
-            border-color: #fde68a;
-        }
-        .ret-stat.money::after { background: rgba(245,158,11,0.22); }
-        .dark .ret-stat.money { background: linear-gradient(180deg, rgba(245,158,11,0.10), rgba(245,158,11,0.05)); border-color: rgba(245,158,11,0.30); }
 
         /* Quick-filter chips */
         .ret-chip {
@@ -197,129 +170,167 @@
             </div>
         @endif
 
-        {{-- ═════════════ Hero ═════════════ --}}
-        <div class="relative overflow-hidden rounded-2xl mb-4 p-6 text-white"
-             style="background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);">
-            <div class="absolute inset-0 bento-stripes pointer-events-none opacity-50"></div>
-            <div class="absolute top-0 bottom-0 left-0 w-[3px]" style="background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);"></div>
-            <div class="absolute -top-16 -right-16 h-64 w-64 rounded-full bg-amber-400/10 blur-[60px] pointer-events-none"></div>
+        {{-- ═════════════════════════════════════════════════════════════ --}}
+        {{-- BENTO GRID: Refund Value hero + 4 attention tiles + 2 footer --}}
+        {{-- ═════════════════════════════════════════════════════════════ --}}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
 
-            <div class="relative flex flex-wrap items-center justify-between gap-4">
-                <div>
-                    <div class="font-mono text-[10px] font-extrabold uppercase tracking-[0.28em] text-amber-300">{{ __('Returns · Workflow') }}</div>
-                    <h1 class="text-3xl font-black mt-2 leading-tight">{{ __('Returns & Refunds') }}</h1>
-                    <p class="text-sm text-white/65 mt-2">
-                        {{ __('Showing :total requests', ['total' => number_format((int) ($stats['total'] ?? 0))]) }}
-                        @if(($stats['open'] ?? 0) > 0)
-                            <span class="text-white/35 mx-1">·</span>
-                            <b class="text-amber-300">{{ __(':n open', ['n' => number_format((int) $stats['open'])]) }}</b>
-                        @endif
-                        <span class="text-white/35 mx-1">·</span>
-                        {{ __('live') }}
-                    </p>
-                </div>
-                <span class="inline-flex items-center gap-2 px-3 h-10 rounded-full bg-white/10 border border-white/15 text-xs font-bold text-white/80 backdrop-blur-sm">
-                    <span class="relative inline-flex h-1.5 w-1.5">
-                        <span class="absolute inset-0 rounded-full bg-amber-300 ys-pulse-dot"></span>
-                        <span class="relative h-1.5 w-1.5 rounded-full bg-amber-300"></span>
-                    </span>
-                    {{ __('Operations') }}
-                </span>
-            </div>
-        </div>
+            {{-- ═══ HERO 2x2 — Total Refund Value ═══ --}}
+            <div class="relative sm:col-span-2 lg:col-span-2 lg:row-span-2 rounded-3xl text-white p-7 overflow-hidden bento-shadow-lg corner-brackets"
+                 style="background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);">
+                <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
+                <div class="absolute -top-24 -right-24 h-80 w-80 rounded-full bg-amber-400/20 blur-[80px] pointer-events-none"></div>
+                <div class="absolute -bottom-24 -left-12 h-64 w-64 rounded-full bg-cyan-400/15 blur-[80px] pointer-events-none"></div>
+                <div class="absolute top-0 left-0 right-0 h-[2px]" style="background: linear-gradient(90deg, #22d3ee, #fbbf24, #f59e0b);"></div>
 
-        {{-- ═════════════ Stat cards ═════════════ --}}
-        <div class="grid grid-cols-2 lg:grid-cols-5 gap-3 mb-4">
-            {{-- Total Requests --}}
-            <div class="ret-stat tot">
-                <div class="relative z-10 flex items-center justify-between gap-2">
-                    <div class="h-9 w-9 rounded-xl grid place-items-center bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+                <div class="relative flex items-start justify-between gap-4">
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] uppercase tracking-widest font-mono text-white/55 font-bold">{{ __('Refund Value') }}</span>
+                            <span class="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold text-amber-300 px-1.5 py-0.5 rounded bg-amber-400/10 border border-amber-400/20">
+                                <span class="relative inline-flex h-1.5 w-1.5">
+                                    <span class="absolute inset-0 rounded-full bg-amber-300 ys-pulse-dot"></span>
+                                    <span class="relative h-1.5 w-1.5 rounded-full bg-amber-300"></span>
+                                </span>
+                                LIVE
+                            </span>
+                        </div>
+                        <h2 class="mt-2 text-[13px] font-bold uppercase tracking-[0.15em] text-white/55">{{ __('Total Refund Value') }}</h2>
                     </div>
-                    <span class="inline-flex items-center gap-1 text-[10px] font-extrabold font-mono px-2 py-1 rounded-full bg-slate-100/80 text-slate-600 border border-slate-200 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700">
-                        {{ __('All') }}
-                    </span>
+                    <div class="h-12 w-12 rounded-2xl bg-white/10 border border-white/15 grid place-items-center backdrop-blur-sm shadow-inner">
+                        <svg class="w-5 h-5 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                        </svg>
+                    </div>
                 </div>
-                <div class="relative z-10 text-[10px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mt-3.5">{{ __('Total Requests') }}</div>
-                <div class="relative z-10 num-display text-3xl font-black text-slate-900 dark:text-white mt-1 leading-tight">{{ number_format((int) ($stats['total'] ?? 0)) }}</div>
-                <div class="relative z-10 text-[11px] text-slate-500 dark:text-slate-400 mt-2 pt-2 border-t border-dashed border-slate-200 dark:border-slate-800 flex items-center gap-1.5">
-                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-slate-400"></span>{{ __('Matching current view') }}
+
+                <div class="relative mt-7">
+                    <div class="flex items-baseline gap-2 flex-wrap">
+                        <span class="text-sm font-bold text-amber-300">{{ $currencyLabel }}</span>
+                        <span class="num-display text-5xl md:text-6xl font-black leading-none">{{ number_format((float) ($stats['refund_total'] ?? 0), $currencyDecimals) }}</span>
+                    </div>
+                    <p class="mt-3 text-xs text-white/55">{{ __('Sum of approved refunds') }}</p>
+                </div>
+
+                <div class="relative mt-6 pt-5 border-t border-dashed border-white/15 grid grid-cols-3 gap-4">
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-white/50">{{ __('Total Requests') }}</div>
+                        <div class="num-display text-xl font-black mt-1">{{ number_format((int) ($stats['total'] ?? 0)) }}</div>
+                    </div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-white/50">{{ __('Open Workflow') }}</div>
+                        <div class="num-display text-xl font-black mt-1 text-amber-300">{{ number_format((int) ($stats['open'] ?? 0)) }}</div>
+                    </div>
+                    <div>
+                        <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-white/50">{{ __('Closed') }}</div>
+                        <div class="num-display text-xl font-black mt-1">{{ number_format((int) ($stats['closed'] ?? 0)) }}</div>
+                    </div>
                 </div>
             </div>
 
-            {{-- Open Workflow --}}
-            <div class="ret-stat open">
-                <div class="relative z-10 flex items-center justify-between gap-2">
-                    <div class="h-9 w-9 rounded-xl grid place-items-center bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                    </div>
-                    <span class="inline-flex items-center gap-1 text-[10px] font-extrabold font-mono px-2 py-1 rounded-full bg-amber-100 text-amber-800 border border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/30">
-                        <i class="fas fa-circle-exclamation text-[9px]"></i> {{ __('Review') }}
-                    </span>
-                </div>
-                <div class="relative z-10 text-[10px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mt-3.5">{{ __('Open Workflow') }}</div>
-                <div class="relative z-10 num-display text-3xl font-black text-slate-900 dark:text-white mt-1 leading-tight">{{ number_format((int) ($stats['open'] ?? 0)) }}</div>
-                <div class="relative z-10 text-[11px] text-slate-500 dark:text-slate-400 mt-2 pt-2 border-t border-dashed border-slate-200 dark:border-slate-800 flex items-center gap-1.5">
-                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500"></span>{{ __('Requested / Approved / Received') }}
-                </div>
-            </div>
+            {{-- ═══ 4 attention tiles ═══ --}}
+            @php
+                $attentionTiles = [
+                    [
+                        'label' => __('Requested'),
+                        'value' => $statusCounts->get('requested', 0),
+                        'stripe' => 'from-amber-400 to-amber-500',
+                        'ic_bg' => 'bg-amber-100 dark:bg-amber-500/10',
+                        'ic_fg' => 'text-amber-700 dark:text-amber-300',
+                        'dot' => 'bg-amber-500',
+                        'foot' => __('Awaits decision'),
+                        'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+                    ],
+                    [
+                        'label' => __('Approved'),
+                        'value' => $statusCounts->get('approved', 0),
+                        'stripe' => 'from-blue-400 to-blue-500',
+                        'ic_bg' => 'bg-blue-100 dark:bg-blue-500/10',
+                        'ic_fg' => 'text-blue-700 dark:text-blue-300',
+                        'dot' => 'bg-blue-500',
+                        'foot' => __('Awaiting return'),
+                        'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+                    ],
+                    [
+                        'label' => __('Received'),
+                        'value' => $statusCounts->get('received', 0),
+                        'stripe' => 'from-cyan-400 to-cyan-500',
+                        'ic_bg' => 'bg-cyan-100 dark:bg-cyan-500/10',
+                        'ic_fg' => 'text-cyan-700 dark:text-cyan-300',
+                        'dot' => 'bg-cyan-500',
+                        'foot' => __('Item inspected'),
+                        'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>',
+                    ],
+                    [
+                        'label' => __('Refunded'),
+                        'value' => $statusCounts->get('refunded', $stats['refunded'] ?? 0),
+                        'stripe' => 'from-emerald-400 to-emerald-500',
+                        'ic_bg' => 'bg-emerald-100 dark:bg-emerald-500/10',
+                        'ic_fg' => 'text-emerald-700 dark:text-emerald-300',
+                        'dot' => 'bg-emerald-500',
+                        'foot' => __('Requests paid back'),
+                        'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>',
+                    ],
+                ];
+            @endphp
 
-            {{-- Refunded --}}
-            <div class="ret-stat refunded">
-                <div class="relative z-10 flex items-center justify-between gap-2">
-                    <div class="h-9 w-9 rounded-xl grid place-items-center bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            @foreach($attentionTiles as $t)
+                <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 p-5 bento-shadow transition">
+                    <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r {{ $t['stripe'] }}"></div>
+                    <div class="flex items-center justify-between">
+                        <div class="text-[10px] uppercase tracking-widest font-bold text-slate-500 dark:text-slate-400">{{ $t['label'] }}</div>
+                        <div class="h-9 w-9 rounded-xl grid place-items-center {{ $t['ic_bg'] }} {{ $t['ic_fg'] }}">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">{!! $t['icon'] !!}</svg>
+                        </div>
                     </div>
-                    <span class="inline-flex items-center gap-1 text-[10px] font-extrabold font-mono px-2 py-1 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/30">
-                        <i class="fas fa-check text-[9px]"></i> {{ __('Paid') }}
-                    </span>
+                    <div class="num-display text-3xl font-black text-slate-900 dark:text-white mt-3">{{ number_format((int) $t['value']) }}</div>
+                    <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5">
+                        <span class="inline-block w-1.5 h-1.5 rounded-full {{ $t['dot'] }}"></span> {{ $t['foot'] }}
+                    </div>
                 </div>
-                <div class="relative z-10 text-[10px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mt-3.5">{{ __('Refunded') }}</div>
-                <div class="relative z-10 num-display text-3xl font-black text-slate-900 dark:text-white mt-1 leading-tight">{{ number_format((int) ($stats['refunded'] ?? 0)) }}</div>
-                <div class="relative z-10 text-[11px] text-slate-500 dark:text-slate-400 mt-2 pt-2 border-t border-dashed border-slate-200 dark:border-slate-800 flex items-center gap-1.5">
-                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-emerald-500"></span>{{ __('Requests paid back') }}
-                </div>
-            </div>
+            @endforeach
 
-            {{-- Closed --}}
-            <div class="ret-stat closed">
-                <div class="relative z-10 flex items-center justify-between gap-2">
-                    <div class="h-9 w-9 rounded-xl grid place-items-center bg-slate-100 text-slate-600 dark:bg-slate-700/40 dark:text-slate-300">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/></svg>
-                    </div>
-                    <span class="inline-flex items-center gap-1 text-[10px] font-extrabold font-mono px-2 py-1 rounded-full bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-700/40 dark:text-slate-300 dark:border-slate-600">
-                        {{ __('Done') }}
-                    </span>
-                </div>
-                <div class="relative z-10 text-[10px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mt-3.5">{{ __('Closed') }}</div>
-                <div class="relative z-10 num-display text-3xl font-black text-slate-900 dark:text-white mt-1 leading-tight">{{ number_format((int) ($stats['closed'] ?? 0)) }}</div>
-                <div class="relative z-10 text-[11px] text-slate-500 dark:text-slate-400 mt-2 pt-2 border-t border-dashed border-slate-200 dark:border-slate-800 flex items-center gap-1.5">
-                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-slate-400"></span>{{ __('Rejected + Refunded + Closed') }}
-                </div>
-            </div>
+            {{-- ═══ 2 footer tiles: Rejected + Closed ═══ --}}
+            @php
+                $footerTiles = [
+                    [
+                        'label' => __('Rejected'),
+                        'value' => $statusCounts->get('rejected', 0),
+                        'stripe' => 'from-rose-400 to-rose-500',
+                        'ic_bg' => 'bg-rose-100 dark:bg-rose-500/10',
+                        'ic_fg' => 'text-rose-700 dark:text-rose-300',
+                        'dot' => 'bg-rose-500',
+                        'foot' => __('Declined requests'),
+                        'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>',
+                    ],
+                    [
+                        'label' => __('Closed'),
+                        'value' => $statusCounts->get('closed', 0),
+                        'stripe' => 'from-slate-400 to-slate-500',
+                        'ic_bg' => 'bg-slate-100 dark:bg-slate-700/40',
+                        'ic_fg' => 'text-slate-600 dark:text-slate-300',
+                        'dot' => 'bg-slate-400',
+                        'foot' => __('Archived workflow'),
+                        'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>',
+                    ],
+                ];
+            @endphp
 
-            {{-- Refund Value (amber hero stat) --}}
-            <div class="ret-stat money">
-                <div class="relative z-10 flex items-center justify-between gap-2">
-                    <div class="h-9 w-9 rounded-xl grid place-items-center text-amber-800" style="background: linear-gradient(135deg, #fef3c7, #fde68a);">
-                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            @foreach($footerTiles as $t)
+                <div class="relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 p-5 bento-shadow transition">
+                    <div class="absolute top-0 left-0 right-0 h-[3px] bg-gradient-to-r {{ $t['stripe'] }}"></div>
+                    <div class="flex items-center justify-between">
+                        <div class="text-[10px] uppercase tracking-widest font-bold text-slate-500 dark:text-slate-400">{{ $t['label'] }}</div>
+                        <div class="h-9 w-9 rounded-xl grid place-items-center {{ $t['ic_bg'] }} {{ $t['ic_fg'] }}">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">{!! $t['icon'] !!}</svg>
+                        </div>
                     </div>
-                    <span class="inline-flex items-center gap-1 text-[10px] font-extrabold font-mono px-2 py-1 rounded-full bg-amber-200/60 text-amber-900 border border-amber-300/60 dark:bg-amber-500/20 dark:text-amber-200 dark:border-amber-500/40">
-                        <span class="relative inline-flex h-1 w-1">
-                            <span class="absolute inset-0 rounded-full bg-amber-600 ys-pulse-dot opacity-70"></span>
-                            <span class="relative h-1 w-1 rounded-full bg-amber-600"></span>
-                        </span>
-                        LIVE
-                    </span>
+                    <div class="num-display text-3xl font-black text-slate-900 dark:text-white mt-3">{{ number_format((int) $t['value']) }}</div>
+                    <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5">
+                        <span class="inline-block w-1.5 h-1.5 rounded-full {{ $t['dot'] }}"></span> {{ $t['foot'] }}
+                    </div>
                 </div>
-                <div class="relative z-10 text-[10px] font-extrabold uppercase tracking-widest text-amber-800 dark:text-amber-300 mt-3.5">{{ __('Refund Value') }}</div>
-                <div class="relative z-10 num-display text-3xl font-black text-slate-900 dark:text-white mt-1 leading-tight">
-                    {{ number_format((float) ($stats['refund_total'] ?? 0), $currencyDecimals) }}<span class="text-xs text-amber-700 dark:text-amber-400 font-bold ms-1">{{ $currencyLabel }}</span>
-                </div>
-                <div class="relative z-10 text-[11px] text-slate-600 dark:text-slate-300 mt-2 pt-2 border-t border-dashed border-amber-300/60 dark:border-amber-500/30 flex items-center gap-1.5">
-                    <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500"></span>{{ __('Total approved refunds') }}
-                </div>
-            </div>
+            @endforeach
         </div>
 
         {{-- ═════════════ Filter card ═════════════ --}}
