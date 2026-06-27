@@ -24,10 +24,14 @@ class UserTwoFactorController extends Controller
 
         $mailAvailable = $this->ensureChallenge($request);
 
+        $challenge = $request->session()->get('user_2fa.challenge');
+        $codeExpiresAt = (int) ($challenge['expires_at'] ?? 0);
+
         return view('auth.user-two-factor', [
             'mailAvailable' => $mailAvailable,
             'resendCooldownSeconds' => $this->resendCooldownSeconds($request),
             'maskedEmail' => $this->maskedEmail((string) $user->email),
+            'codeExpiresAt' => $codeExpiresAt,
         ]);
     }
 
