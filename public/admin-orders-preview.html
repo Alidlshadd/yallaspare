@@ -1,0 +1,1113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Orders Management · 3 Visual Directions (Preview Only)</title>
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer">
+<style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+        font-family: 'Figtree', ui-sans-serif, system-ui, -apple-system, sans-serif;
+        background: #eef1f6;
+        color: #0f172a;
+        padding: 40px 24px 80px;
+        line-height: 1.5;
+    }
+    .wrap { max-width: 1280px; margin: 0 auto; }
+    .stack > * + * { margin-top: 64px; }
+    h1, h2, h3, p { margin: 0; }
+
+    /* ───── Intro ───── */
+    .intro { text-align: center; margin-bottom: 48px; }
+    .intro .tag {
+        font-family: ui-monospace, 'JetBrains Mono', monospace;
+        font-size: 11px; font-weight: 900; letter-spacing: 0.28em;
+        text-transform: uppercase; color: #f59e0b;
+    }
+    .intro h1 { font-size: 32px; font-weight: 900; color: #04042a; letter-spacing: -0.02em; margin-top: 10px; }
+    .intro p { font-size: 14px; color: #64748b; margin-top: 12px; max-width: 640px; margin-left: auto; margin-right: auto; }
+
+    /* ───── Option label header ───── */
+    .opt-head {
+        display: flex; align-items: center; gap: 14px;
+        padding: 18px 22px;
+        background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);
+        border-radius: 14px 14px 0 0;
+        position: relative; overflow: hidden;
+    }
+    .opt-head::before {
+        content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.45;
+        background-image:
+            repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 18px),
+            repeating-linear-gradient(45deg,  rgba(255,255,255,0.02) 0 1px, transparent 1px 18px);
+    }
+    .opt-head::after {
+        content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 3px;
+        background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+    }
+    .opt-num {
+        position: relative; z-index: 2;
+        width: 44px; height: 44px; border-radius: 12px;
+        background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.22), transparent 60%),
+                    linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), inset 0 -2px 4px rgba(120,53,15,0.4), 0 2px 6px rgba(245,158,11,0.30);
+        display: grid; place-items: center;
+        color: #04042a; font-weight: 900; font-size: 18px;
+    }
+    .opt-text { position: relative; z-index: 2; }
+    .opt-text .kicker { font-family: ui-monospace, monospace; font-size: 10px; font-weight: 900; letter-spacing: 0.28em; color: #fcd34d; text-transform: uppercase; }
+    .opt-text h2 { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -0.01em; margin-top: 4px; }
+    .opt-text p { font-size: 12.5px; color: rgba(255,255,255,0.65); margin-top: 4px; }
+
+    /* ───── Page shell ───── */
+    .page {
+        background: #f3f4f7;
+        border-radius: 0 0 18px 18px;
+        padding: 24px;
+        box-shadow: 0 30px 70px rgba(7,7,64,0.10);
+        position: relative;
+    }
+    .page-inner { max-width: 100%; margin: 0 auto; }
+
+    /* ───── Reusable bits ───── */
+    .num-display { font-feature-settings: "tnum" 1, "lnum" 1; letter-spacing: -0.025em; }
+    .bento-stripes {
+        background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 14px);
+    }
+    .bento-shadow { box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06); }
+    .bento-shadow-lg { box-shadow: 0 10px 30px rgba(7,7,64,0.10), 0 24px 50px rgba(7,7,64,0.10); }
+    .corner-brackets::before,
+    .corner-brackets::after {
+        content: ""; position: absolute; width: 14px; height: 14px;
+        border-color: rgba(255,255,255,0.35); border-style: solid; border-width: 0; pointer-events: none;
+    }
+    .corner-brackets::before { top: 14px; left: 14px; border-top-width: 1.5px; border-left-width: 1.5px; }
+    .corner-brackets::after { bottom: 14px; right: 14px; border-bottom-width: 1.5px; border-right-width: 1.5px; }
+    .corner-brackets-dark::before,
+    .corner-brackets-dark::after {
+        content: ""; position: absolute; width: 12px; height: 12px;
+        border-color: rgba(7,7,64,0.22); border-style: solid; border-width: 0; pointer-events: none;
+    }
+    .corner-brackets-dark::before { top: 12px; left: 12px; border-top-width: 1.5px; border-left-width: 1.5px; }
+    .corner-brackets-dark::after { bottom: 12px; right: 12px; border-bottom-width: 1.5px; border-right-width: 1.5px; }
+
+    /* ──── Status pill base ──── */
+    .pill {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 4px 10px; border-radius: 999px;
+        font-size: 10.5px; font-weight: 700; line-height: 1;
+        border: 1px solid; letter-spacing: 0.02em; white-space: nowrap;
+        font-family: 'Figtree', system-ui, sans-serif;
+    }
+    .pill::before { content:""; width:5px; height:5px; border-radius:50%; background: currentColor; }
+    .pill.pending    { background: #fef3c7; color: #b45309; border-color: #fcd34d; }
+    .pill.processing { background: #ede9fe; color: #6d28d9; border-color: #c4b5fd; }
+    .pill.shipped    { background: #dbeafe; color: #1d4ed8; border-color: #93c5fd; }
+    .pill.delivered  { background: #dcfce7; color: #15803d; border-color: #86efac; }
+    .pill.cancelled  { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
+    .pill.unpaid     { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
+    .pill.paid       { background: #dcfce7; color: #15803d; border-color: #86efac; }
+
+    /* Icon button base */
+    .ico-btn {
+        width: 34px; height: 34px;
+        display: inline-flex; align-items: center; justify-content: center;
+        border-radius: 9px; background: #fff;
+        border: 1px solid #e2e8f0; color: #475569;
+        transition: all .15s ease; text-decoration: none;
+    }
+    .ico-btn:hover { color: #04042a; border-color: #fcd34d; background: #fffbeb; }
+    .ico-btn.danger:hover { color: #b91c1c; border-color: #fca5a5; background: #fef2f2; }
+
+    /* ─────────────────────────────────────────────────────────────────── */
+    /* OPTION 1 — COMMAND TABLE                                            */
+    /* ─────────────────────────────────────────────────────────────────── */
+    .o1-hero {
+        position: relative; overflow: hidden;
+        padding: 22px 24px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);
+        color: #fff;
+    }
+    .o1-hero::before {
+        content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.45;
+        background-image:
+            repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 18px),
+            repeating-linear-gradient(45deg,  rgba(255,255,255,0.02) 0 1px, transparent 1px 18px);
+    }
+    .o1-hero::after {
+        content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 3px;
+        background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+    }
+    .o1-hero-row { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .o1-kicker { font-family: ui-monospace, monospace; font-size: 10px; font-weight: 900; letter-spacing: 0.28em; color: #fcd34d; text-transform: uppercase; }
+    .o1-hero h1 { font-size: 28px; font-weight: 900; margin-top: 6px; letter-spacing: -0.01em; }
+    .o1-hero .sub { font-size: 13px; color: rgba(255,255,255,0.65); margin-top: 6px; }
+    .o1-hero .sub b { color: #fcd34d; }
+    .o1-btn {
+        display: inline-flex; align-items: center; gap: 8px;
+        height: 40px; padding: 0 18px;
+        border-radius: 10px; font-size: 13px; font-weight: 700;
+        border: 1px solid; cursor: pointer; transition: all .15s ease;
+    }
+    .o1-btn.primary { background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #04042a; border-color: rgba(255,255,255,0.2); box-shadow: 0 8px 18px -10px rgba(245,158,11,0.7); }
+    .o1-btn.ghost   { background: rgba(255,255,255,0.06); color: #fff; border-color: rgba(255,255,255,0.18); }
+    .o1-btn.ghost:hover { background: rgba(255,255,255,0.10); }
+
+    .o1-stats {
+        margin-top: 16px;
+        display: grid; grid-template-columns: repeat(8, 1fr); gap: 10px;
+        padding: 12px;
+        background: #fff; border: 1px solid #e3e9f1;
+        border-radius: 18px;
+        box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06);
+    }
+    @media (max-width: 1100px) { .o1-stats { grid-template-columns: repeat(4, 1fr); } }
+    .o1-stat { padding: 14px 14px 12px; border-radius: 12px; position: relative; transition: all .18s ease; cursor: pointer; }
+    .o1-stat + .o1-stat::before { content: ""; position: absolute; top: 18px; bottom: 18px; left: -5px; width: 1px; background: #e2e8f0; }
+    @media (max-width: 1100px) { .o1-stat + .o1-stat::before { display: none; } }
+    .o1-stat:hover { background: #f8fafc; }
+    .o1-stat .ico-strip { width: 28px; height: 3px; border-radius: 99px; background: var(--stat-c, #94a3b8); margin-bottom: 12px; }
+    .o1-stat .lbl { font-size: 9.5px; font-weight: 800; letter-spacing: 0.10em; text-transform: uppercase; color: #64748b; }
+    .o1-stat .val { font-size: 24px; font-weight: 900; color: #04042a; margin-top: 4px; }
+    .o1-stat .delta { font-size: 10px; font-weight: 700; color: #15803d; margin-top: 2px; }
+    .o1-stat.tot   { --stat-c: #04042a; }
+    .o1-stat.warn  { --stat-c: #f59e0b; }
+    .o1-stat.proc  { --stat-c: #8b5cf6; }
+    .o1-stat.ship  { --stat-c: #2563eb; }
+    .o1-stat.deli  { --stat-c: #16a34a; }
+    .o1-stat.canc  { --stat-c: #dc2626; }
+    .o1-stat.unp   { --stat-c: #ef4444; }
+    .o1-stat.tdy   { --stat-c: #0891b2; }
+
+    .o1-filter {
+        margin-top: 16px;
+        background: #fff; border: 1px solid #e3e9f1; border-radius: 16px;
+        padding: 18px;
+        box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06);
+    }
+    .o1-filter-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .o1-filter-head .badge { width: 30px; height: 30px; border-radius: 9px; background: #04042a; color: #fcd34d; display: grid; place-items: center; font-size: 13px; }
+    .o1-filter-head h3 { font-size: 14px; font-weight: 800; color: #04042a; }
+    .o1-filter-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr 1fr; gap: 12px; align-items: end; }
+    @media (max-width: 1100px) { .o1-filter-grid { grid-template-columns: 1fr 1fr; } }
+    .o1-field label { display: block; font-size: 10.5px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: #64748b; margin-bottom: 6px; }
+    .o1-input, .o1-select {
+        height: 42px; width: 100%; border-radius: 10px; padding: 0 14px;
+        border: 1px solid #d7e0ea; background: #f8fafc; color: #0f172a;
+        font-size: 13px; font-family: inherit;
+    }
+    .o1-input:focus, .o1-select:focus { outline: none; border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,0.18); background: #fff; }
+    .o1-input::placeholder { color: #94a3b8; }
+    .o1-search-wrap { position: relative; }
+    .o1-search-wrap .ico { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+    .o1-search-wrap .o1-input { padding-left: 40px; }
+    .o1-filter-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; padding-top: 14px; border-top: 1px dashed #e2e8f0; }
+    .o1-btn-sm { height: 40px; padding: 0 18px; border-radius: 10px; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; border: 1px solid; cursor: pointer; transition: all .15s ease; }
+    .o1-btn-sm.apply { background: #04042a; color: #fff; border-color: #04042a; }
+    .o1-btn-sm.apply:hover { background: #07073a; }
+    .o1-btn-sm.reset { background: #fff; color: #475569; border-color: #d7e0ea; }
+    .o1-btn-sm.reset:hover { background: #f8fafc; }
+
+    .o1-table-card {
+        margin-top: 16px;
+        background: #fff; border: 1px solid #e3e9f1; border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06);
+    }
+    .o1-table-head {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 16px 20px; border-bottom: 1px solid #e3e9f1;
+        background: linear-gradient(180deg, #fafbfd, #fff);
+    }
+    .o1-table-head .ttl { font-size: 14px; font-weight: 800; color: #04042a; display: flex; align-items: center; gap: 10px; }
+    .o1-table-head .ttl::before { content: ""; width: 4px; height: 18px; border-radius: 99px; background: linear-gradient(180deg, #fbbf24, #f59e0b); }
+    .o1-table-head .meta { font-size: 11.5px; color: #64748b; font-family: ui-monospace, monospace; }
+    .o1-tbl-wrap { overflow-x: auto; }
+    .o1-tbl { width: 100%; min-width: 1000px; border-collapse: collapse; font-size: 13px; }
+    .o1-tbl thead th {
+        text-align: left; padding: 14px 18px;
+        font-size: 10px; font-weight: 800; letter-spacing: 0.10em;
+        text-transform: uppercase; color: #64748b;
+        background: #f8fafc; border-bottom: 1px solid #e3e9f1;
+    }
+    .o1-tbl tbody td { padding: 16px 18px; border-bottom: 1px solid #eef2f7; vertical-align: middle; }
+    .o1-tbl tbody tr:hover td { background: #fefce8; }
+    .o1-tbl .oid { font-family: ui-monospace, monospace; font-weight: 800; color: #04042a; font-size: 13px; }
+    .o1-tbl .oid-sub { font-family: ui-monospace, monospace; font-size: 10px; color: #94a3b8; margin-top: 2px; display: block; }
+    .o1-cust { display: flex; align-items: center; gap: 10px; }
+    .o1-cust .avatar { width: 34px; height: 34px; border-radius: 10px; background: #f1f5f9; color: #475569; display: grid; place-items: center; font-weight: 800; font-size: 12px; }
+    .o1-cust .name { font-weight: 700; color: #0f172a; font-size: 13px; }
+    .o1-cust .email { font-size: 11px; color: #94a3b8; }
+    .o1-tbl .phone { font-family: ui-monospace, monospace; font-size: 12px; color: #475569; }
+    .o1-tbl .ttl-amt { font-weight: 800; color: #04042a; font-variant-numeric: tabular-nums; }
+    .o1-tbl .ttl-amt .cy { font-size: 10px; color: #94a3b8; font-weight: 500; margin-left: 3px; }
+    .o1-tbl .date-d { font-size: 12px; color: #334155; font-variant-numeric: tabular-nums; }
+    .o1-tbl .date-t { font-size: 10px; color: #94a3b8; }
+    .o1-acts { display: flex; gap: 6px; justify-content: flex-end; }
+    .o1-pag {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 14px 20px; border-top: 1px solid #e3e9f1; background: #fafbfd;
+        font-size: 12px; color: #64748b;
+    }
+    .o1-pag .nums { display: flex; gap: 6px; }
+    .o1-pag .nums a, .o1-pag .nums span {
+        display: inline-flex; align-items: center; justify-content: center;
+        min-width: 34px; height: 34px; padding: 0 10px;
+        border-radius: 8px; background: #fff; border: 1px solid #e3e9f1;
+        color: #475569; font-weight: 700; font-size: 12px; text-decoration: none;
+    }
+    .o1-pag .nums .active { background: #04042a; color: #fcd34d; border-color: #04042a; }
+
+    /* ─────────────────────────────────────────────────────────────────── */
+    /* OPTION 2 — BENTO OPERATIONS                                         */
+    /* ─────────────────────────────────────────────────────────────────── */
+    .o2-bento {
+        display: grid; gap: 14px;
+        grid-template-columns: repeat(4, 1fr); grid-auto-rows: minmax(120px, auto);
+        margin-bottom: 16px;
+    }
+    @media (max-width: 900px) { .o2-bento { grid-template-columns: repeat(2, 1fr); } }
+
+    .o2-hero {
+        position: relative; overflow: hidden;
+        grid-column: span 2; grid-row: span 2;
+        background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);
+        color: #fff; border-radius: 20px; padding: 26px;
+    }
+    .o2-hero::before {
+        content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.5;
+        background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 16px);
+    }
+    .o2-hero::after { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, #22d3ee, #fbbf24, #f59e0b); }
+    .o2-hero .glow1 { position: absolute; top: -100px; right: -100px; height: 320px; width: 320px; border-radius: 999px; background: rgba(251,191,36,0.18); filter: blur(80px); }
+    .o2-hero .glow2 { position: absolute; bottom: -100px; left: -50px; height: 260px; width: 260px; border-radius: 999px; background: rgba(34,211,238,0.12); filter: blur(80px); }
+    .o2-hero-row { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; }
+    .o2-hero .kicker { font-family: ui-monospace, monospace; font-size: 10px; font-weight: 800; letter-spacing: 0.20em; color: rgba(255,255,255,0.55); text-transform: uppercase; }
+    .o2-hero .kicker b { color: #fcd34d; }
+    .o2-hero h2 { font-size: 13px; color: rgba(255,255,255,0.55); margin-top: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; }
+    .o2-hero .iconbox { width: 48px; height: 48px; border-radius: 14px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); display: grid; place-items: center; font-size: 18px; backdrop-filter: blur(8px); }
+    .o2-hero .big { position: relative; z-index: 2; margin-top: 26px; }
+    .o2-hero .big .cy { font-size: 14px; font-weight: 800; color: #fcd34d; }
+    .o2-hero .big .nm { font-size: 56px; font-weight: 900; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; margin-top: 4px; }
+    .o2-hero .delta { display: inline-flex; align-items: center; gap: 6px; margin-top: 18px; padding: 6px 12px; border-radius: 999px; background: rgba(34,197,94,0.18); color: #6ee7b7; font-size: 12px; font-weight: 800; border: 1px solid rgba(34,197,94,0.25); }
+    .o2-hero .meta-row { position: relative; z-index: 2; display: flex; gap: 24px; margin-top: 24px; padding-top: 18px; border-top: 1px dashed rgba(255,255,255,0.15); }
+    .o2-hero .meta-row .it .l { font-size: 10px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+    .o2-hero .meta-row .it .v { font-size: 20px; font-weight: 900; margin-top: 4px; }
+
+    .o2-tile {
+        position: relative; overflow: hidden;
+        background: #fff; border-radius: 16px; padding: 18px;
+        border: 1px solid #e3e9f1;
+        box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06);
+        transition: all .2s ease;
+    }
+    .o2-tile:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(7,7,64,0.10); }
+    .o2-tile .head { display: flex; justify-content: space-between; align-items: center; }
+    .o2-tile .head .lbl { font-size: 10px; font-weight: 800; letter-spacing: 0.10em; text-transform: uppercase; color: #64748b; }
+    .o2-tile .head .ic { width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; font-size: 13px; }
+    .o2-tile .val { font-size: 30px; font-weight: 900; color: #04042a; margin-top: 12px; letter-spacing: -0.02em; }
+    .o2-tile .foot { font-size: 11px; color: #64748b; margin-top: 6px; display: flex; align-items: center; gap: 6px; }
+    .o2-tile .stripe { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+    .o2-tile.amber  .ic { background: #fef3c7; color: #b45309; } .o2-tile.amber  .stripe { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+    .o2-tile.purple .ic { background: #ede9fe; color: #6d28d9; } .o2-tile.purple .stripe { background: linear-gradient(90deg, #a78bfa, #8b5cf6); }
+    .o2-tile.blue   .ic { background: #dbeafe; color: #1d4ed8; } .o2-tile.blue   .stripe { background: linear-gradient(90deg, #60a5fa, #2563eb); }
+    .o2-tile.green  .ic { background: #dcfce7; color: #15803d; } .o2-tile.green  .stripe { background: linear-gradient(90deg, #4ade80, #16a34a); }
+    .o2-tile.red    .ic { background: #fee2e2; color: #b91c1c; } .o2-tile.red    .stripe { background: linear-gradient(90deg, #f87171, #dc2626); }
+    .o2-tile.gray   .ic { background: #f1f5f9; color: #475569; } .o2-tile.gray   .stripe { background: linear-gradient(90deg, #cbd5e1, #64748b); }
+
+    .o2-filter {
+        background: #fff; border-radius: 16px; padding: 16px;
+        border: 1px solid #e3e9f1; box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06);
+        margin-bottom: 14px;
+        display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: 10px; align-items: center;
+    }
+    @media (max-width: 900px) { .o2-filter { grid-template-columns: 1fr 1fr; } }
+    .o2-filter .o2-search { position: relative; }
+    .o2-filter .o2-search .ic { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+    .o2-filter input, .o2-filter select {
+        height: 44px; border-radius: 12px; border: 1px solid #e3e9f1; background: #f8fafc;
+        padding: 0 14px; font-size: 13px; width: 100%; font-family: inherit; color: #0f172a;
+    }
+    .o2-filter .o2-search input { padding-left: 40px; }
+    .o2-filter input:focus, .o2-filter select:focus { outline: none; border-color: #fbbf24; box-shadow: 0 0 0 3px rgba(251,191,36,0.18); background: #fff; }
+    .o2-filter-actions { display: flex; gap: 8px; }
+    .o2-btn {
+        height: 44px; padding: 0 18px; border-radius: 12px; font-size: 13px; font-weight: 700;
+        display: inline-flex; align-items: center; gap: 8px; cursor: pointer; border: 1px solid;
+    }
+    .o2-btn.go { background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #04042a; border-color: rgba(0,0,0,0.05); }
+    .o2-btn.rst { background: #fff; color: #475569; border-color: #e3e9f1; }
+
+    .o2-list-card {
+        background: #fff; border-radius: 18px;
+        border: 1px solid #e3e9f1; overflow: hidden;
+        box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06);
+    }
+    .o2-list-head {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 18px 22px; border-bottom: 1px solid #eef2f7;
+    }
+    .o2-list-head .ttl { display: flex; align-items: center; gap: 12px; }
+    .o2-list-head .ttl-ico { width: 36px; height: 36px; border-radius: 10px; background: #04042a; color: #fcd34d; display: grid; place-items: center; }
+    .o2-list-head h3 { font-size: 15px; font-weight: 800; color: #04042a; }
+    .o2-list-head .sub { font-size: 11.5px; color: #64748b; font-family: ui-monospace, monospace; margin-top: 2px; }
+    .o2-list-head .chips { display: flex; gap: 6px; }
+    .o2-list-head .chip { padding: 6px 12px; border-radius: 999px; background: #f1f5f9; color: #475569; font-size: 11px; font-weight: 700; border: 1px solid #e2e8f0; cursor: pointer; }
+    .o2-list-head .chip.on { background: #04042a; color: #fcd34d; border-color: #04042a; }
+
+    .o2-tbl-wrap { overflow-x: auto; }
+    .o2-tbl { width: 100%; min-width: 1000px; border-collapse: collapse; font-size: 13px; }
+    .o2-tbl thead th {
+        text-align: left; padding: 12px 18px;
+        font-size: 10px; font-weight: 800; letter-spacing: 0.10em;
+        text-transform: uppercase; color: #94a3b8;
+        background: #fafbfd; border-bottom: 1px solid #eef2f7;
+    }
+    .o2-tbl tbody td { padding: 16px 18px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+    .o2-tbl tbody tr { transition: background .15s; }
+    .o2-tbl tbody tr:hover td { background: #fffbeb; }
+    .o2-tbl .oid { font-family: ui-monospace, monospace; font-weight: 800; color: #04042a; font-size: 13px; }
+    .o2-tbl .oid .sub { display: block; font-size: 10px; color: #94a3b8; font-weight: 400; margin-top: 2px; }
+    .o2-tbl .cust { display: flex; align-items: center; gap: 10px; }
+    .o2-tbl .cust .av { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #04042a, #0a0d3f); color: #fcd34d; display: grid; place-items: center; font-weight: 800; font-size: 13px; }
+    .o2-tbl .cust .nm { font-weight: 700; color: #0f172a; font-size: 13px; }
+    .o2-tbl .cust .em { font-size: 11px; color: #94a3b8; }
+    .o2-tbl .ph { font-family: ui-monospace, monospace; font-size: 12px; color: #475569; }
+    .o2-tbl .amt { font-weight: 800; color: #04042a; font-variant-numeric: tabular-nums; }
+    .o2-tbl .amt .cy { font-size: 10px; color: #94a3b8; font-weight: 500; margin-left: 3px; }
+    .o2-tbl .dt .d { font-size: 12px; color: #334155; font-variant-numeric: tabular-nums; }
+    .o2-tbl .dt .t { font-size: 10px; color: #94a3b8; }
+    .o2-tbl .acts { display: flex; gap: 6px; justify-content: flex-end; }
+
+    .o2-pag {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 14px 22px; border-top: 1px solid #eef2f7;
+        font-size: 12px; color: #64748b;
+    }
+
+    /* ─────────────────────────────────────────────────────────────────── */
+    /* OPTION 3 — INDUSTRIAL DISPATCH BOARD                                */
+    /* ─────────────────────────────────────────────────────────────────── */
+    .o3-board {
+        background:
+            repeating-linear-gradient(135deg, rgba(7,7,64,0.025) 0 1px, transparent 1px 22px),
+            repeating-linear-gradient(45deg, rgba(7,7,64,0.018) 0 1px, transparent 1px 22px),
+            #fafbfd;
+        border-radius: 22px;
+        padding: 4px;
+        border: 1px solid #e3e9f1;
+    }
+
+    .o3-header {
+        position: relative; overflow: hidden;
+        background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);
+        border-radius: 20px;
+        padding: 26px 28px;
+        color: #fff;
+    }
+    .o3-header::before {
+        content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.45;
+        background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 18px);
+    }
+    .o3-header::after { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, #fbbf24, transparent); }
+    .o3-h-grid { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .o3-tag { font-family: ui-monospace, monospace; font-size: 10px; font-weight: 900; letter-spacing: 0.32em; color: #fcd34d; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; }
+    .o3-tag::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #fbbf24; box-shadow: 0 0 12px #fbbf24; animation: o3pulse 1.6s ease-out infinite; }
+    @keyframes o3pulse { 0% { box-shadow: 0 0 0 0 rgba(251,191,36,0.5); } 100% { box-shadow: 0 0 0 12px rgba(251,191,36,0); } }
+    .o3-header h1 { font-size: 26px; font-weight: 900; letter-spacing: -0.01em; margin-top: 6px; }
+    .o3-header .sub { font-size: 12.5px; color: rgba(255,255,255,0.55); margin-top: 4px; font-family: ui-monospace, monospace; }
+
+    .o3-h-meta { display: flex; gap: 22px; }
+    .o3-h-meta .it { text-align: right; }
+    .o3-h-meta .it .l { font-family: ui-monospace, monospace; font-size: 9.5px; font-weight: 800; letter-spacing: 0.25em; color: rgba(255,255,255,0.45); text-transform: uppercase; }
+    .o3-h-meta .it .v { font-size: 20px; font-weight: 900; color: #fff; margin-top: 4px; font-variant-numeric: tabular-nums; }
+    .o3-h-meta .it .v.amber { color: #fcd34d; }
+
+    .o3-tickets {
+        margin: 14px 4px 0;
+        display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;
+    }
+    @media (max-width: 1100px) { .o3-tickets { grid-template-columns: repeat(2, 1fr); } }
+    .o3-ticket {
+        position: relative; overflow: hidden;
+        background: #fff; border: 1px solid #e3e9f1; border-radius: 14px;
+        padding: 16px 16px 14px 18px;
+        transition: all .15s ease;
+    }
+    .o3-ticket:hover { border-color: #fcd34d; transform: translateY(-1px); box-shadow: 0 12px 28px -16px rgba(7,7,64,0.20); }
+    .o3-ticket .bar { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--tc, #94a3b8); }
+    .o3-ticket .corners::before, .o3-ticket .corners::after {
+        content: ""; position: absolute; width: 10px; height: 10px;
+        border-color: var(--tc, #94a3b8); border-style: solid; border-width: 0; opacity: .5;
+    }
+    .o3-ticket .corners::before { top: 8px; right: 8px; border-top-width: 1.5px; border-right-width: 1.5px; }
+    .o3-ticket .corners::after { bottom: 8px; left: 8px; border-bottom-width: 1.5px; border-left-width: 1.5px; }
+    .o3-ticket .row1 { display: flex; justify-content: space-between; align-items: center; }
+    .o3-ticket .lbl { font-family: ui-monospace, monospace; font-size: 9.5px; font-weight: 800; letter-spacing: 0.20em; color: #64748b; text-transform: uppercase; }
+    .o3-ticket .code { font-family: ui-monospace, monospace; font-size: 9px; padding: 2px 6px; border-radius: 4px; background: #f1f5f9; color: #475569; font-weight: 700; }
+    .o3-ticket .val { font-size: 28px; font-weight: 900; color: #04042a; margin-top: 10px; line-height: 1; letter-spacing: -0.02em; }
+    .o3-ticket .foot { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; font-size: 11px; }
+    .o3-ticket .foot .delta { color: #15803d; font-weight: 700; }
+    .o3-ticket .foot .ic { color: var(--tc, #94a3b8); font-size: 13px; }
+    .o3-ticket.tot   { --tc: #04042a; }
+    .o3-ticket.warn  { --tc: #f59e0b; }
+    .o3-ticket.proc  { --tc: #8b5cf6; }
+    .o3-ticket.ship  { --tc: #2563eb; }
+    .o3-ticket.deli  { --tc: #16a34a; }
+    .o3-ticket.canc  { --tc: #dc2626; }
+    .o3-ticket.unp   { --tc: #ef4444; }
+    .o3-ticket.tdy   { --tc: #0891b2; }
+
+    .o3-control {
+        margin: 14px 4px 0;
+        background: #fff; border: 1px solid #e3e9f1; border-radius: 16px;
+        padding: 16px 18px;
+    }
+    .o3-control-head {
+        display: flex; align-items: center; gap: 10px;
+        font-family: ui-monospace, monospace; font-size: 10px; font-weight: 800;
+        letter-spacing: 0.25em; color: #64748b; text-transform: uppercase;
+        padding-bottom: 12px; border-bottom: 1px dashed #e3e9f1;
+        margin-bottom: 14px;
+    }
+    .o3-control-head .dot { width: 8px; height: 8px; border-radius: 50%; background: #f59e0b; }
+    .o3-control-grid { display: grid; grid-template-columns: 2.2fr 1fr 1fr 1fr auto; gap: 10px; align-items: end; }
+    @media (max-width: 1100px) { .o3-control-grid { grid-template-columns: 1fr 1fr; } }
+    .o3-control-grid .fld { display: flex; flex-direction: column; }
+    .o3-control-grid label { font-family: ui-monospace, monospace; font-size: 9.5px; font-weight: 800; letter-spacing: 0.18em; color: #64748b; text-transform: uppercase; margin-bottom: 6px; }
+    .o3-control-grid input, .o3-control-grid select {
+        height: 42px; border: 1px solid #d7e0ea; border-radius: 8px; background: #f8fafc;
+        padding: 0 14px; font-size: 13px; color: #0f172a; font-family: inherit; width: 100%;
+    }
+    .o3-control-grid input:focus, .o3-control-grid select:focus { outline: none; border-color: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,0.18); background: #fff; }
+    .o3-control-grid .dr { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .o3-control-actions { display: flex; gap: 8px; height: 42px; }
+    .o3-btn {
+        height: 42px; padding: 0 18px; border-radius: 8px;
+        font-size: 12.5px; font-weight: 800;
+        display: inline-flex; align-items: center; gap: 8px; cursor: pointer; border: 1px solid;
+        font-family: 'Figtree', sans-serif;
+    }
+    .o3-btn.go { background: #04042a; color: #fcd34d; border-color: #04042a; }
+    .o3-btn.go:hover { background: #07073a; }
+    .o3-btn.rst { background: #fff; color: #475569; border-color: #d7e0ea; }
+
+    .o3-dispatch {
+        margin: 14px 4px 4px;
+        background: #fff; border: 1px solid #e3e9f1; border-radius: 18px;
+        overflow: hidden;
+    }
+    .o3-dispatch-head {
+        display: flex; align-items: center; justify-content: space-between;
+        background: linear-gradient(180deg, #04042a, #0a0d3f);
+        color: #fff; padding: 14px 20px;
+    }
+    .o3-dispatch-head .lt { display: flex; align-items: center; gap: 10px; font-family: ui-monospace, monospace; font-size: 11px; font-weight: 800; letter-spacing: 0.20em; color: #fcd34d; text-transform: uppercase; }
+    .o3-dispatch-head .lt::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 8px #22c55e; }
+    .o3-dispatch-head .rt { display: flex; gap: 6px; font-family: ui-monospace, monospace; font-size: 11px; color: rgba(255,255,255,0.7); }
+
+    /* Ticket-style rows */
+    .o3-row {
+        display: grid; grid-template-columns: 14px 130px 1fr 130px 200px 110px 110px 140px;
+        align-items: center; gap: 12px;
+        padding: 14px 18px;
+        border-bottom: 1px solid #eef2f7;
+        background: #fff;
+        transition: background .15s ease;
+        position: relative;
+    }
+    .o3-row:hover { background: #fefce8; }
+    .o3-row .stripe { width: 4px; height: 56px; border-radius: 4px; background: var(--rc, #94a3b8); }
+    .o3-row.pending    { --rc: #f59e0b; }
+    .o3-row.processing { --rc: #8b5cf6; }
+    .o3-row.shipped    { --rc: #2563eb; }
+    .o3-row.delivered  { --rc: #16a34a; }
+    .o3-row.cancelled  { --rc: #dc2626; }
+    .o3-row .oid { font-family: ui-monospace, monospace; }
+    .o3-row .oid .main { font-weight: 800; color: #04042a; font-size: 13px; }
+    .o3-row .oid .sub { font-size: 10px; color: #94a3b8; margin-top: 2px; }
+    .o3-row .cust .nm { font-weight: 700; color: #0f172a; font-size: 13px; }
+    .o3-row .cust .em { font-size: 11px; color: #94a3b8; margin-top: 2px; display: flex; align-items: center; gap: 5px; }
+    .o3-row .ph { font-family: ui-monospace, monospace; font-size: 12px; color: #475569; }
+    .o3-row .ph i { color: #94a3b8; margin-right: 4px; }
+    .o3-row .stack { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+    .o3-row .amt { font-weight: 900; color: #04042a; font-variant-numeric: tabular-nums; font-size: 14px; }
+    .o3-row .amt .cy { font-size: 10px; color: #94a3b8; font-weight: 600; margin-left: 3px; }
+    .o3-row .dt { font-family: ui-monospace, monospace; font-size: 11px; color: #475569; }
+    .o3-row .acts { display: flex; gap: 6px; justify-content: flex-end; }
+    @media (max-width: 1280px) { .o3-row { grid-template-columns: 14px 110px 1fr 1fr; row-gap: 8px; } .o3-row .ph, .o3-row .dt, .o3-row .amt, .o3-row .stack { grid-column: auto; } }
+
+    .o3-pag {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 14px 20px; background: #fafbfd;
+        font-family: ui-monospace, monospace; font-size: 11px; color: #64748b;
+    }
+    .o3-pag .nums { display: flex; gap: 4px; }
+    .o3-pag .nums a, .o3-pag .nums span {
+        display: inline-flex; align-items: center; justify-content: center;
+        min-width: 32px; height: 32px; padding: 0 10px;
+        border-radius: 6px; background: #fff; border: 1px solid #e3e9f1;
+        color: #475569; font-weight: 700; font-size: 12px; text-decoration: none;
+        font-family: inherit;
+    }
+    .o3-pag .nums .active { background: #04042a; color: #fcd34d; border-color: #04042a; }
+
+    /* Empty states (shared per-option look but matching language) */
+    .empty { padding: 60px 16px; text-align: center; }
+    .empty .ic {
+        width: 56px; height: 56px; margin: 0 auto 16px;
+        border-radius: 16px; background: #f8fafc; border: 1px solid #e3e9f1;
+        display: grid; place-items: center; font-size: 22px; color: #94a3b8;
+    }
+    .empty h4 { font-size: 16px; font-weight: 800; color: #04042a; }
+    .empty p { font-size: 13px; color: #64748b; margin-top: 6px; max-width: 380px; margin-left: auto; margin-right: auto; }
+    .empty .cta {
+        margin-top: 14px;
+        display: inline-flex; align-items: center; gap: 8px;
+        height: 38px; padding: 0 16px; border-radius: 9px;
+        background: #04042a; color: #fcd34d;
+        font-size: 12.5px; font-weight: 800; cursor: pointer;
+        border: 0; text-decoration: none;
+        font-family: inherit;
+    }
+
+    /* Section divider title */
+    .preview-section-label {
+        margin: 28px 0 14px;
+        font-family: ui-monospace, monospace;
+        font-size: 11px; font-weight: 900; letter-spacing: 0.20em;
+        text-transform: uppercase; color: #64748b;
+        display: flex; align-items: center; gap: 10px;
+    }
+    .preview-section-label::before {
+        content: ""; width: 6px; height: 6px; border-radius: 50%; background: #f59e0b;
+    }
+    .preview-section-label::after {
+        content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, #cbd5e1, transparent);
+    }
+</style>
+</head>
+<body>
+<div class="wrap stack">
+
+    <!-- ── Intro ── -->
+    <div class="intro">
+        <div class="tag">YALLA SPARE · ADMIN · ORDERS</div>
+        <h1>Orders Management — 3 Visual Directions</h1>
+        <p>Pick one. All three use the dashboard's premium dark-navy + amber palette, white page background, soft shadows, rounded corners, and corner-bracket industrial accents. No real files have been changed.</p>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- OPTION 1 — COMMAND TABLE                                          -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section>
+        <div class="opt-head">
+            <div class="opt-num">1</div>
+            <div class="opt-text">
+                <div class="kicker">OPTION 1 · COMMAND TABLE</div>
+                <h2>Professional Orders Control Center</h2>
+                <p>Strong amber-strap hero · 8-stat horizontal panel · large premium table · serious admin-management feel</p>
+            </div>
+        </div>
+        <div class="page">
+            <div class="page-inner">
+
+                <!-- Hero strip -->
+                <div class="o1-hero">
+                    <div class="o1-hero-row">
+                        <div>
+                            <div class="o1-kicker">ORDERS · CONTROL CENTER</div>
+                            <h1>Orders Management</h1>
+                            <p class="sub">Showing <b>1,284 orders</b> · 18 need attention · live since 09:42</p>
+                        </div>
+                        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                            <button class="o1-btn ghost"><i class="fas fa-download"></i> Export CSV</button>
+                            <button class="o1-btn primary"><i class="fas fa-plus"></i> New Order</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats row -->
+                <div class="o1-stats">
+                    <div class="o1-stat tot"><div class="ico-strip"></div><div class="lbl">Total Orders</div><div class="val">1,284</div><div class="delta">+8.4% vs last month</div></div>
+                    <div class="o1-stat warn"><div class="ico-strip"></div><div class="lbl">Pending</div><div class="val">42</div><div class="delta" style="color:#b45309">Awaits review</div></div>
+                    <div class="o1-stat proc"><div class="ico-strip"></div><div class="lbl">Processing</div><div class="val">28</div><div class="delta" style="color:#6d28d9">In workshop</div></div>
+                    <div class="o1-stat ship"><div class="ico-strip"></div><div class="lbl">Shipped</div><div class="val">96</div><div class="delta">+12 today</div></div>
+                    <div class="o1-stat deli"><div class="ico-strip"></div><div class="lbl">Delivered</div><div class="val">1,094</div><div class="delta">+24 today</div></div>
+                    <div class="o1-stat canc"><div class="ico-strip"></div><div class="lbl">Cancelled</div><div class="val">24</div><div class="delta" style="color:#dc2626">−2 vs last week</div></div>
+                    <div class="o1-stat unp"><div class="ico-strip"></div><div class="lbl">Unpaid</div><div class="val">14</div><div class="delta" style="color:#dc2626">Action needed</div></div>
+                    <div class="o1-stat tdy"><div class="ico-strip"></div><div class="lbl">Today's Revenue</div><div class="val">2,840 <span style="font-size:12px; color:#94a3b8;">AED</span></div><div class="delta">+18% vs yesterday</div></div>
+                </div>
+
+                <!-- Filter card -->
+                <div class="o1-filter">
+                    <div class="o1-filter-head">
+                        <div class="badge"><i class="fas fa-sliders"></i></div>
+                        <h3>Filter Orders</h3>
+                    </div>
+                    <div class="o1-filter-grid">
+                        <div class="o1-field">
+                            <label>Search</label>
+                            <div class="o1-search-wrap">
+                                <i class="fas fa-search ico"></i>
+                                <input class="o1-input" placeholder="Order ID, customer name, phone or email…">
+                            </div>
+                        </div>
+                        <div class="o1-field">
+                            <label>Status</label>
+                            <select class="o1-select"><option>All statuses</option><option>Pending</option><option>Processing</option><option>Shipped</option><option>Delivered</option><option>Cancelled</option></select>
+                        </div>
+                        <div class="o1-field">
+                            <label>Payment</label>
+                            <select class="o1-select"><option>All payments</option><option>Paid</option><option>Unpaid</option></select>
+                        </div>
+                        <div class="o1-field">
+                            <label>From</label>
+                            <input class="o1-input" type="date" value="2026-06-01">
+                        </div>
+                        <div class="o1-field">
+                            <label>To</label>
+                            <input class="o1-input" type="date" value="2026-06-24">
+                        </div>
+                    </div>
+                    <div class="o1-filter-actions">
+                        <button class="o1-btn-sm reset"><i class="fas fa-rotate-left"></i> Reset</button>
+                        <button class="o1-btn-sm apply"><i class="fas fa-filter"></i> Apply filters</button>
+                    </div>
+                </div>
+
+                <!-- Table card -->
+                <div class="o1-table-card">
+                    <div class="o1-table-head">
+                        <div class="ttl">Orders <span style="font-size:12px; font-weight:500; color:#64748b;">(showing 8 of 1,284)</span></div>
+                        <div class="meta">Updated 09:42 · auto-refresh 30s</div>
+                    </div>
+                    <div class="o1-tbl-wrap">
+                        <table class="o1-tbl">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th>
+                                    <th>Customer</th>
+                                    <th>Phone</th>
+                                    <th>Status</th>
+                                    <th>Payment</th>
+                                    <th style="text-align:right;">Total</th>
+                                    <th>Date</th>
+                                    <th style="text-align:right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="oid">#YS-10284</span><span class="oid-sub">REF: 8492-AB</span></td>
+                                    <td><div class="o1-cust"><div class="avatar">AH</div><div><div class="name">Ahmed Hassan</div><div class="email">ahmed.h@example.ae</div></div></div></td>
+                                    <td><span class="phone">+971 50 123 4567</span></td>
+                                    <td><span class="pill pending">Pending</span></td>
+                                    <td><span class="pill unpaid">Unpaid</span></td>
+                                    <td style="text-align:right;"><span class="ttl-amt">1,248.00<span class="cy">AED</span></span></td>
+                                    <td><div class="date-d">24 Jun 2026</div><div class="date-t">09:32</div></td>
+                                    <td><div class="o1-acts"><a class="ico-btn" title="View"><i class="far fa-eye"></i></a><a class="ico-btn" title="Update status"><i class="fas fa-arrow-up-right-from-square"></i></a><a class="ico-btn" title="Invoice"><i class="far fa-file-pdf"></i></a><a class="ico-btn danger" title="Cancel"><i class="fas fa-xmark"></i></a></div></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="oid">#YS-10283</span><span class="oid-sub">REF: 8491-CK</span></td>
+                                    <td><div class="o1-cust"><div class="avatar">SF</div><div><div class="name">Sara Faisal</div><div class="email">sara.f@example.ae</div></div></div></td>
+                                    <td><span class="phone">+971 55 987 1100</span></td>
+                                    <td><span class="pill processing">Processing</span></td>
+                                    <td><span class="pill paid">Paid</span></td>
+                                    <td style="text-align:right;"><span class="ttl-amt">2,650.00<span class="cy">AED</span></span></td>
+                                    <td><div class="date-d">24 Jun 2026</div><div class="date-t">08:14</div></td>
+                                    <td><div class="o1-acts"><a class="ico-btn"><i class="far fa-eye"></i></a><a class="ico-btn"><i class="fas fa-arrow-up-right-from-square"></i></a><a class="ico-btn"><i class="far fa-file-pdf"></i></a><a class="ico-btn danger"><i class="fas fa-xmark"></i></a></div></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="oid">#YS-10282</span><span class="oid-sub">REF: 8490-DD</span></td>
+                                    <td><div class="o1-cust"><div class="avatar">KR</div><div><div class="name">Khalid Rashid</div><div class="email">khalid.r@example.ae</div></div></div></td>
+                                    <td><span class="phone">+971 52 444 2080</span></td>
+                                    <td><span class="pill shipped">Shipped</span></td>
+                                    <td><span class="pill paid">Paid</span></td>
+                                    <td style="text-align:right;"><span class="ttl-amt">920.00<span class="cy">AED</span></span></td>
+                                    <td><div class="date-d">23 Jun 2026</div><div class="date-t">17:48</div></td>
+                                    <td><div class="o1-acts"><a class="ico-btn"><i class="far fa-eye"></i></a><a class="ico-btn"><i class="fas fa-arrow-up-right-from-square"></i></a><a class="ico-btn"><i class="far fa-file-pdf"></i></a><a class="ico-btn danger"><i class="fas fa-xmark"></i></a></div></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="oid">#YS-10281</span><span class="oid-sub">REF: 8489-MN</span></td>
+                                    <td><div class="o1-cust"><div class="avatar">MA</div><div><div class="name">Mariam Adel</div><div class="email">m.adel@example.ae</div></div></div></td>
+                                    <td><span class="phone">+971 56 218 9430</span></td>
+                                    <td><span class="pill delivered">Delivered</span></td>
+                                    <td><span class="pill paid">Paid</span></td>
+                                    <td style="text-align:right;"><span class="ttl-amt">3,420.00<span class="cy">AED</span></span></td>
+                                    <td><div class="date-d">23 Jun 2026</div><div class="date-t">14:05</div></td>
+                                    <td><div class="o1-acts"><a class="ico-btn"><i class="far fa-eye"></i></a><a class="ico-btn"><i class="fas fa-arrow-up-right-from-square"></i></a><a class="ico-btn"><i class="far fa-file-pdf"></i></a></div></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="oid">#YS-10280</span><span class="oid-sub">REF: 8488-LP</span></td>
+                                    <td><div class="o1-cust"><div class="avatar">YZ</div><div><div class="name">Yousef Zaman</div><div class="email">yousef.z@example.ae</div></div></div></td>
+                                    <td><span class="phone">+971 50 777 1234</span></td>
+                                    <td><span class="pill cancelled">Cancelled</span></td>
+                                    <td><span class="pill unpaid">Unpaid</span></td>
+                                    <td style="text-align:right;"><span class="ttl-amt">480.00<span class="cy">AED</span></span></td>
+                                    <td><div class="date-d">22 Jun 2026</div><div class="date-t">19:12</div></td>
+                                    <td><div class="o1-acts"><a class="ico-btn"><i class="far fa-eye"></i></a><a class="ico-btn"><i class="far fa-file-pdf"></i></a></div></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="o1-pag">
+                        <div>Showing <b>1–8</b> of <b>1,284</b> orders</div>
+                        <div class="nums">
+                            <a>‹</a><span class="active">1</span><a>2</a><a>3</a><a>4</a><a>…</a><a>161</a><a>›</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty state demo -->
+                <div class="preview-section-label">Empty state preview</div>
+                <div class="o1-table-card">
+                    <div class="empty">
+                        <div class="ic"><i class="fas fa-box-open"></i></div>
+                        <h4>No orders found</h4>
+                        <p>Try adjusting your filters or clearing the date range. Once a customer places an order, it will show up here in real time.</p>
+                        <a class="cta"><i class="fas fa-rotate-left"></i> Reset filters</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- OPTION 2 — BENTO OPERATIONS                                       -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section>
+        <div class="opt-head">
+            <div class="opt-num">2</div>
+            <div class="opt-text">
+                <div class="kicker">OPTION 2 · BENTO OPERATIONS</div>
+                <h2>Modern Bento — matches Dashboard exactly</h2>
+                <p>Hero "Today's Revenue" tile + colored attention tiles + sleek list. Closest to the Dashboard visual language.</p>
+            </div>
+        </div>
+        <div class="page">
+            <div class="page-inner">
+
+                <!-- Bento grid -->
+                <div class="o2-bento">
+                    <!-- Hero (2x2): Today's Revenue + Total Orders -->
+                    <div class="o2-hero">
+                        <div class="glow1"></div><div class="glow2"></div>
+                        <div class="o2-hero-row">
+                            <div>
+                                <div class="kicker">TODAY · <b>LIVE</b></div>
+                                <h2>Today's Revenue</h2>
+                            </div>
+                            <div class="iconbox"><i class="fas fa-bolt" style="color:#fcd34d"></i></div>
+                        </div>
+                        <div class="big">
+                            <div class="cy">AED</div>
+                            <div class="nm">2,840<span style="color:rgba(255,255,255,0.4); font-size:30px;">.00</span></div>
+                            <div class="delta"><i class="fas fa-arrow-trend-up"></i> +18% vs yesterday</div>
+                        </div>
+                        <div class="meta-row">
+                            <div class="it"><div class="l">Total Orders</div><div class="v">1,284</div></div>
+                            <div class="it"><div class="l">Today</div><div class="v">36</div></div>
+                            <div class="it"><div class="l">Need attention</div><div class="v" style="color:#fcd34d;">18</div></div>
+                        </div>
+                    </div>
+
+                    <!-- 4 colored tiles -->
+                    <div class="o2-tile amber"><div class="stripe"></div><div class="head"><div class="lbl">Pending</div><div class="ic"><i class="far fa-clock"></i></div></div><div class="val">42</div><div class="foot"><i class="fas fa-circle" style="font-size:6px;color:#f59e0b"></i> Awaits admin review</div></div>
+                    <div class="o2-tile purple"><div class="stripe"></div><div class="head"><div class="lbl">Processing</div><div class="ic"><i class="fas fa-gears"></i></div></div><div class="val">28</div><div class="foot"><i class="fas fa-circle" style="font-size:6px;color:#8b5cf6"></i> In workshop</div></div>
+                    <div class="o2-tile blue"><div class="stripe"></div><div class="head"><div class="lbl">Shipped</div><div class="ic"><i class="fas fa-truck"></i></div></div><div class="val">96</div><div class="foot"><i class="fas fa-arrow-up" style="font-size:9px;color:#16a34a"></i> +12 today</div></div>
+                    <div class="o2-tile red"><div class="stripe"></div><div class="head"><div class="lbl">Unpaid</div><div class="ic"><i class="fas fa-circle-exclamation"></i></div></div><div class="val">14</div><div class="foot" style="color:#b91c1c"><i class="fas fa-triangle-exclamation"></i> Action needed</div></div>
+
+                    <!-- Bottom row: 4 small tiles -->
+                    <div class="o2-tile green"><div class="stripe"></div><div class="head"><div class="lbl">Delivered</div><div class="ic"><i class="fas fa-check"></i></div></div><div class="val">1,094</div><div class="foot"><i class="fas fa-arrow-up" style="font-size:9px;color:#16a34a"></i> +24 today</div></div>
+                    <div class="o2-tile gray"><div class="stripe"></div><div class="head"><div class="lbl">Cancelled</div><div class="ic"><i class="fas fa-ban"></i></div></div><div class="val">24</div><div class="foot"><i class="fas fa-arrow-down" style="font-size:9px;color:#16a34a"></i> −2 vs last week</div></div>
+                </div>
+
+                <!-- Inline filter row -->
+                <div class="o2-filter">
+                    <div class="o2-search">
+                        <i class="fas fa-search ic"></i>
+                        <input placeholder="Search Order ID, customer, phone, email…">
+                    </div>
+                    <select><option>All statuses</option><option>Pending</option><option>Processing</option><option>Shipped</option><option>Delivered</option><option>Cancelled</option></select>
+                    <select><option>All payments</option><option>Paid</option><option>Unpaid</option></select>
+                    <input type="date" value="2026-06-24">
+                    <div class="o2-filter-actions">
+                        <button class="o2-btn rst" title="Reset"><i class="fas fa-rotate-left"></i></button>
+                        <button class="o2-btn go"><i class="fas fa-filter"></i> Filter</button>
+                    </div>
+                </div>
+
+                <!-- Orders list card -->
+                <div class="o2-list-card">
+                    <div class="o2-list-head">
+                        <div class="ttl">
+                            <div class="ttl-ico"><i class="fas fa-list"></i></div>
+                            <div>
+                                <h3>Recent Orders</h3>
+                                <div class="sub">8 visible · 1,284 total · auto-sync 30s</div>
+                            </div>
+                        </div>
+                        <div class="chips">
+                            <button class="chip on">All</button>
+                            <button class="chip">Today</button>
+                            <button class="chip">Need attention</button>
+                            <button class="chip">Unpaid</button>
+                        </div>
+                    </div>
+                    <div class="o2-tbl-wrap">
+                        <table class="o2-tbl">
+                            <thead>
+                                <tr>
+                                    <th>Order ID</th><th>Customer</th><th>Phone</th>
+                                    <th>Status</th><th>Payment</th>
+                                    <th style="text-align:right;">Total</th><th>Date</th>
+                                    <th style="text-align:right;">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><span class="oid">#YS-10284<span class="sub">REF: 8492-AB</span></span></td>
+                                    <td><div class="cust"><div class="av">AH</div><div><div class="nm">Ahmed Hassan</div><div class="em">ahmed.h@example.ae</div></div></div></td>
+                                    <td><span class="ph">+971 50 123 4567</span></td>
+                                    <td><span class="pill pending">Pending</span></td>
+                                    <td><span class="pill unpaid">Unpaid</span></td>
+                                    <td style="text-align:right;"><span class="amt">1,248.00<span class="cy">AED</span></span></td>
+                                    <td class="dt"><div class="d">24 Jun 2026</div><div class="t">09:32</div></td>
+                                    <td><div class="acts"><a class="ico-btn"><i class="far fa-eye"></i></a><a class="ico-btn"><i class="fas fa-arrow-up-right-from-square"></i></a><a class="ico-btn"><i class="far fa-file-pdf"></i></a><a class="ico-btn danger"><i class="fas fa-xmark"></i></a></div></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="oid">#YS-10283<span class="sub">REF: 8491-CK</span></span></td>
+                                    <td><div class="cust"><div class="av">SF</div><div><div class="nm">Sara Faisal</div><div class="em">sara.f@example.ae</div></div></div></td>
+                                    <td><span class="ph">+971 55 987 1100</span></td>
+                                    <td><span class="pill processing">Processing</span></td>
+                                    <td><span class="pill paid">Paid</span></td>
+                                    <td style="text-align:right;"><span class="amt">2,650.00<span class="cy">AED</span></span></td>
+                                    <td class="dt"><div class="d">24 Jun 2026</div><div class="t">08:14</div></td>
+                                    <td><div class="acts"><a class="ico-btn"><i class="far fa-eye"></i></a><a class="ico-btn"><i class="fas fa-arrow-up-right-from-square"></i></a><a class="ico-btn"><i class="far fa-file-pdf"></i></a><a class="ico-btn danger"><i class="fas fa-xmark"></i></a></div></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="oid">#YS-10282<span class="sub">REF: 8490-DD</span></span></td>
+                                    <td><div class="cust"><div class="av">KR</div><div><div class="nm">Khalid Rashid</div><div class="em">khalid.r@example.ae</div></div></div></td>
+                                    <td><span class="ph">+971 52 444 2080</span></td>
+                                    <td><span class="pill shipped">Shipped</span></td>
+                                    <td><span class="pill paid">Paid</span></td>
+                                    <td style="text-align:right;"><span class="amt">920.00<span class="cy">AED</span></span></td>
+                                    <td class="dt"><div class="d">23 Jun 2026</div><div class="t">17:48</div></td>
+                                    <td><div class="acts"><a class="ico-btn"><i class="far fa-eye"></i></a><a class="ico-btn"><i class="fas fa-arrow-up-right-from-square"></i></a><a class="ico-btn"><i class="far fa-file-pdf"></i></a><a class="ico-btn danger"><i class="fas fa-xmark"></i></a></div></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="oid">#YS-10281<span class="sub">REF: 8489-MN</span></span></td>
+                                    <td><div class="cust"><div class="av">MA</div><div><div class="nm">Mariam Adel</div><div class="em">m.adel@example.ae</div></div></div></td>
+                                    <td><span class="ph">+971 56 218 9430</span></td>
+                                    <td><span class="pill delivered">Delivered</span></td>
+                                    <td><span class="pill paid">Paid</span></td>
+                                    <td style="text-align:right;"><span class="amt">3,420.00<span class="cy">AED</span></span></td>
+                                    <td class="dt"><div class="d">23 Jun 2026</div><div class="t">14:05</div></td>
+                                    <td><div class="acts"><a class="ico-btn"><i class="far fa-eye"></i></a><a class="ico-btn"><i class="fas fa-arrow-up-right-from-square"></i></a><a class="ico-btn"><i class="far fa-file-pdf"></i></a></div></td>
+                                </tr>
+                                <tr>
+                                    <td><span class="oid">#YS-10280<span class="sub">REF: 8488-LP</span></span></td>
+                                    <td><div class="cust"><div class="av">YZ</div><div><div class="nm">Yousef Zaman</div><div class="em">yousef.z@example.ae</div></div></div></td>
+                                    <td><span class="ph">+971 50 777 1234</span></td>
+                                    <td><span class="pill cancelled">Cancelled</span></td>
+                                    <td><span class="pill unpaid">Unpaid</span></td>
+                                    <td style="text-align:right;"><span class="amt">480.00<span class="cy">AED</span></span></td>
+                                    <td class="dt"><div class="d">22 Jun 2026</div><div class="t">19:12</div></td>
+                                    <td><div class="acts"><a class="ico-btn"><i class="far fa-eye"></i></a><a class="ico-btn"><i class="far fa-file-pdf"></i></a></div></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="o2-pag">
+                        <div>Showing <b>1–8</b> of <b>1,284</b> orders</div>
+                        <div class="nums" style="display:flex; gap:6px;">
+                            <a class="ico-btn"><i class="fas fa-chevron-left"></i></a>
+                            <span style="display:inline-flex; align-items:center; justify-content:center; min-width:34px; height:34px; border-radius:9px; background:#04042a; color:#fcd34d; font-weight:800;">1</span>
+                            <a class="ico-btn" style="color:#475569;">2</a>
+                            <a class="ico-btn" style="color:#475569;">3</a>
+                            <a class="ico-btn"><i class="fas fa-chevron-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Empty state demo -->
+                <div class="preview-section-label">Empty state preview</div>
+                <div class="o2-list-card">
+                    <div class="empty">
+                        <div class="ic"><i class="fas fa-box-open"></i></div>
+                        <h4>No orders found</h4>
+                        <p>Adjust your filters or pick a wider date range. New orders appear here automatically.</p>
+                        <a class="cta"><i class="fas fa-rotate-left"></i> Reset filters</a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- OPTION 3 — INDUSTRIAL DISPATCH BOARD                              -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section>
+        <div class="opt-head">
+            <div class="opt-num">3</div>
+            <div class="opt-text">
+                <div class="kicker">OPTION 3 · INDUSTRIAL DISPATCH BOARD</div>
+                <h2>Workshop / Dispatch Control feel</h2>
+                <p>Corner-bracket "operation tickets" · status stripe on every order row · mono codes · most distinctly Yalla Spare.</p>
+            </div>
+        </div>
+        <div class="page">
+            <div class="page-inner">
+                <div class="o3-board">
+
+                    <!-- Header -->
+                    <div class="o3-header">
+                        <div class="o3-h-grid">
+                            <div>
+                                <div class="o3-tag">DISPATCH · CONTROL BOARD</div>
+                                <h1>Orders Management</h1>
+                                <div class="sub">SYS · YS-ADMIN · OPS-LIVE · 09:42:18 GST</div>
+                            </div>
+                            <div class="o3-h-meta">
+                                <div class="it"><div class="l">Total</div><div class="v">1,284</div></div>
+                                <div class="it"><div class="l">Today</div><div class="v amber">36</div></div>
+                                <div class="it"><div class="l">Attention</div><div class="v" style="color:#fca5a5;">18</div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stat tickets (8) -->
+                    <div class="o3-tickets">
+                        <div class="o3-ticket tot"><div class="bar"></div><div class="corners"></div><div class="row1"><div class="lbl">Total Orders</div><div class="code">YS-T01</div></div><div class="val">1,284</div><div class="foot"><span class="delta">+8.4%</span><i class="fas fa-cube ic"></i></div></div>
+                        <div class="o3-ticket warn"><div class="bar"></div><div class="corners"></div><div class="row1"><div class="lbl">Pending</div><div class="code">YS-P02</div></div><div class="val">42</div><div class="foot"><span class="delta" style="color:#b45309">Awaits review</span><i class="far fa-clock ic"></i></div></div>
+                        <div class="o3-ticket proc"><div class="bar"></div><div class="corners"></div><div class="row1"><div class="lbl">Processing</div><div class="code">YS-W03</div></div><div class="val">28</div><div class="foot"><span class="delta" style="color:#6d28d9">In workshop</span><i class="fas fa-gears ic"></i></div></div>
+                        <div class="o3-ticket ship"><div class="bar"></div><div class="corners"></div><div class="row1"><div class="lbl">Shipped</div><div class="code">YS-S04</div></div><div class="val">96</div><div class="foot"><span class="delta">+12 today</span><i class="fas fa-truck ic"></i></div></div>
+                        <div class="o3-ticket deli"><div class="bar"></div><div class="corners"></div><div class="row1"><div class="lbl">Delivered</div><div class="code">YS-D05</div></div><div class="val">1,094</div><div class="foot"><span class="delta">+24 today</span><i class="fas fa-flag-checkered ic"></i></div></div>
+                        <div class="o3-ticket canc"><div class="bar"></div><div class="corners"></div><div class="row1"><div class="lbl">Cancelled</div><div class="code">YS-X06</div></div><div class="val">24</div><div class="foot"><span class="delta" style="color:#dc2626">−2 wk</span><i class="fas fa-ban ic"></i></div></div>
+                        <div class="o3-ticket unp"><div class="bar"></div><div class="corners"></div><div class="row1"><div class="lbl">Unpaid</div><div class="code">YS-U07</div></div><div class="val">14</div><div class="foot"><span class="delta" style="color:#dc2626">Action req.</span><i class="fas fa-circle-exclamation ic"></i></div></div>
+                        <div class="o3-ticket tdy"><div class="bar"></div><div class="corners"></div><div class="row1"><div class="lbl">Today Rev.</div><div class="code">YS-R08</div></div><div class="val">2,840<span style="font-size:11px;color:#94a3b8; margin-left:4px;">AED</span></div><div class="foot"><span class="delta">+18% d/d</span><i class="fas fa-coins ic"></i></div></div>
+                    </div>
+
+                    <!-- Control panel (filters) -->
+                    <div class="o3-control">
+                        <div class="o3-control-head">
+                            <div class="dot"></div>
+                            CONTROL · FILTER PANEL
+                            <span style="font-family: inherit; color:#94a3b8; margin-left:auto; letter-spacing:0;">/admin/orders</span>
+                        </div>
+                        <div class="o3-control-grid">
+                            <div class="fld"><label>QUERY</label><input placeholder="Order ID · Customer · Phone · Email"></div>
+                            <div class="fld"><label>STATUS</label><select><option>All</option><option>Pending</option><option>Processing</option><option>Shipped</option><option>Delivered</option><option>Cancelled</option></select></div>
+                            <div class="fld"><label>PAYMENT</label><select><option>All</option><option>Paid</option><option>Unpaid</option></select></div>
+                            <div class="fld"><label>DATE RANGE</label><div class="dr"><input type="date" value="2026-06-01"><input type="date" value="2026-06-24"></div></div>
+                            <div class="fld"><label style="opacity:0;">.</label><div class="o3-control-actions"><button class="o3-btn rst"><i class="fas fa-rotate-left"></i> RESET</button><button class="o3-btn go"><i class="fas fa-filter"></i> FILTER</button></div></div>
+                        </div>
+                    </div>
+
+                    <!-- Dispatch list -->
+                    <div class="o3-dispatch">
+                        <div class="o3-dispatch-head">
+                            <div class="lt">DISPATCH LOG · LIVE</div>
+                            <div class="rt"><span>SHOWING 1–8 / 1284</span><span>·</span><span>SYNC 30s</span></div>
+                        </div>
+
+                        <div class="o3-row pending">
+                            <div class="stripe"></div>
+                            <div class="oid"><div class="main">#YS-10284</div><div class="sub">REF · 8492-AB</div></div>
+                            <div class="cust"><div class="nm">Ahmed Hassan</div><div class="em"><i class="far fa-envelope"></i> ahmed.h@example.ae</div></div>
+                            <div class="ph"><i class="fas fa-phone"></i> +971 50 123 4567</div>
+                            <div class="stack"><span class="pill pending">Pending</span><span class="pill unpaid">Unpaid</span></div>
+                            <div class="amt">1,248.00<span class="cy">AED</span></div>
+                            <div class="dt">24 JUN<br>09:32</div>
+                            <div class="acts"><a class="ico-btn" title="View"><i class="far fa-eye"></i></a><a class="ico-btn" title="Update"><i class="fas fa-arrow-up-right-from-square"></i></a><a class="ico-btn" title="Invoice"><i class="far fa-file-pdf"></i></a><a class="ico-btn danger" title="Cancel"><i class="fas fa-xmark"></i></a></div>
+                        </div>
+
+                        <div class="o3-row processing">
+                            <div class="stripe"></div>
+                            <div class="oid"><div class="main">#YS-10283</div><div class="sub">REF · 8491-CK</div></div>
+                            <div class="cust"><div class="nm">Sara Faisal</div><div class="em"><i class="far fa-envelope"></i> sara.f@example.ae</div></div>
+                            <div class="ph"><i class="fas fa-phone"></i> +971 55 987 1100</div>
+                            <div class="stack"><span class="pill processing">Processing</span><span class="pill paid">Paid</span></div>
+                            <div class="amt">2,650.00<span class="cy">AED</span></div>
+                            <div class="dt">24 JUN<br>08:14</div>
+                            <div class="acts"><a class="ico-btn"><i class="far fa-eye"></i></a><a class="ico-btn"><i class="fas fa-arrow-up-right-from-square"></i></a><a class="ico-btn"><i class="far fa-file-pdf"></i></a><a class="ico-btn danger"><i class="fas fa-xmark"></i></a></div>
+                        </div>
+
+                        <div class="o3-row shipped">
+                            <div class="stripe"></div>
+                            <div class="oid"><div class="main">#YS-10282</div><div class="sub">REF · 8490-DD</div></div>
+                            <div class="cust"><div class="nm">Khalid Rashid</div><div class="em"><i class="far fa-envelope"></i> khalid.r@example.ae</div></div>
+                            <div class="ph"><i class="fas fa-phone"></i> +971 52 444 2080</div>
+                            <div class="stack"><span class="pill shipped">Shipped</span><span class="pill paid">Paid</span></div>
+                            <div class="amt">920.00<span class="cy">AED</span></div>
+                            <div class="dt">23 JUN<br>17:48</div>
+                            <div class="acts"><a class="ico-btn"><i class="far fa-eye"></i></a><a class="ico-btn"><i class="fas fa-arrow-up-right-from-square"></i></a><a class="ico-btn"><i class="far fa-file-pdf"></i></a><a class="ico-btn danger"><i class="fas fa-xmark"></i></a></div>
+                        </div>
+
+                        <div class="o3-row delivered">
+                            <div class="stripe"></div>
+                            <div class="oid"><div class="main">#YS-10281</div><div class="sub">REF · 8489-MN</div></div>
+                            <div class="cust"><div class="nm">Mariam Adel</div><div class="em"><i class="far fa-envelope"></i> m.adel@example.ae</div></div>
+                            <div class="ph"><i class="fas fa-phone"></i> +971 56 218 9430</div>
+                            <div class="stack"><span class="pill delivered">Delivered</span><span class="pill paid">Paid</span></div>
+                            <div class="amt">3,420.00<span class="cy">AED</span></div>
+                            <div class="dt">23 JUN<br>14:05</div>
+                            <div class="acts"><a class="ico-btn"><i class="far fa-eye"></i></a><a class="ico-btn"><i class="fas fa-arrow-up-right-from-square"></i></a><a class="ico-btn"><i class="far fa-file-pdf"></i></a></div>
+                        </div>
+
+                        <div class="o3-row cancelled">
+                            <div class="stripe"></div>
+                            <div class="oid"><div class="main">#YS-10280</div><div class="sub">REF · 8488-LP</div></div>
+                            <div class="cust"><div class="nm">Yousef Zaman</div><div class="em"><i class="far fa-envelope"></i> yousef.z@example.ae</div></div>
+                            <div class="ph"><i class="fas fa-phone"></i> +971 50 777 1234</div>
+                            <div class="stack"><span class="pill cancelled">Cancelled</span><span class="pill unpaid">Unpaid</span></div>
+                            <div class="amt">480.00<span class="cy">AED</span></div>
+                            <div class="dt">22 JUN<br>19:12</div>
+                            <div class="acts"><a class="ico-btn"><i class="far fa-eye"></i></a><a class="ico-btn"><i class="far fa-file-pdf"></i></a></div>
+                        </div>
+
+                        <div class="o3-pag">
+                            <div>SHOWING <b style="color:#04042a;">1–8</b> / <b style="color:#04042a;">1,284</b> ORDERS</div>
+                            <div class="nums">
+                                <a>‹</a><span class="active">1</span><a>2</a><a>3</a><a>…</a><a>161</a><a>›</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Empty state demo -->
+                    <div class="preview-section-label" style="margin-left:4px;">Empty state preview</div>
+                    <div class="o3-dispatch" style="margin: 0 4px;">
+                        <div class="o3-dispatch-head" style="background: linear-gradient(180deg, #04042a, #0a0d3f);">
+                            <div class="lt" style="color:#fcd34d;">DISPATCH LOG · EMPTY</div>
+                            <div class="rt">NO MATCHING ORDERS</div>
+                        </div>
+                        <div class="empty">
+                            <div class="ic"><i class="fas fa-box-open"></i></div>
+                            <h4>No orders found</h4>
+                            <p>The control panel returned no results. Try widening the date range or clearing the status filter.</p>
+                            <a class="cta"><i class="fas fa-rotate-left"></i> Reset filters</a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Closing note -->
+    <div style="text-align:center; padding-top: 12px;">
+        <p style="font-size:13px; color:#64748b;">When you decide, just reply with <b style="color:#04042a;">Option 1</b>, <b style="color:#04042a;">Option 2</b>, or <b style="color:#04042a;">Option 3</b>.</p>
+        <p style="font-size:11px; color:#94a3b8; margin-top:6px; font-family: ui-monospace, monospace; letter-spacing: 0.1em;">PREVIEW ONLY · NO REAL FILES CHANGED YET</p>
+    </div>
+
+</div>
+</body>
+</html>

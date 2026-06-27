@@ -1,0 +1,713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Sidebar · 3 Visual Directions (Preview Only)</title>
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer">
+<style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+        font-family: 'Figtree', ui-sans-serif, system-ui, -apple-system, sans-serif;
+        background: #020617;
+        color: #f1f5f9;
+        padding: 32px 24px;
+        line-height: 1.5;
+    }
+    .container { max-width: 1280px; margin: 0 auto; }
+
+    button, a { font: inherit; cursor: pointer; border: 0; background: none; text-decoration: none; color: inherit; padding: 0; }
+
+    h1, h2, h3, p { margin: 0; }
+    .section-tag { font-size: 11px; font-weight: 900; color: #fcd34d; text-transform: uppercase; letter-spacing: 0.28em; font-family: ui-monospace, monospace; }
+    .section-title { font-size: 22px; font-weight: 800; color: #fff; letter-spacing: -0.02em; }
+    .section-blurb { font-size: 13px; color: #94a3b8; margin: 10px 0 18px 0; max-width: 720px; }
+
+    .emboss {
+        background:
+            radial-gradient(circle at 30% 25%, rgba(255,255,255,0.22), transparent 60%),
+            linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.45),
+            inset 0 -2px 4px rgba(120,53,15,0.4),
+            0 2px 6px rgba(245,158,11,0.30);
+        color: #04042a;
+        display: grid; place-items: center;
+        font-weight: 900;
+    }
+
+    /* 3-column layout for side-by-side comparison */
+    .grid-3 { display: grid; grid-template-columns: 1fr; gap: 28px; }
+    @media (min-width: 1024px) { .grid-3 { grid-template-columns: repeat(3, 1fr); } }
+
+    .sidebar-frame {
+        background: #0f172a;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.45);
+        min-height: 720px;
+        display: flex; flex-direction: column;
+    }
+
+    /* =================================================================== */
+    /* FINAL — Option A structure + Option C subtle active glow            */
+    /* =================================================================== */
+    .final-frame {
+        width: 288px;
+        min-height: 760px;
+        border-radius: 16px;
+        overflow: hidden;
+        box-shadow: 0 30px 70px rgba(0,0,0,0.5);
+        background: linear-gradient(180deg, #04042a 0%, #06063a 50%, #08084a 100%);
+        position: relative;
+        display: flex; flex-direction: column;
+    }
+    .final-frame::before {
+        content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.45;
+        background-image:
+            repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 18px),
+            repeating-linear-gradient(45deg,  rgba(255,255,255,0.02) 0 1px, transparent 1px 18px);
+    }
+    .final-frame::after {
+        content: ""; position: absolute; top: 0; right: 0; bottom: 0; width: 1px;
+        background: linear-gradient(180deg, transparent, rgba(251,191,36,0.4), transparent);
+    }
+    .final-inner { position: relative; z-index: 1; display: flex; flex-direction: column; height: 100%; }
+
+    .final-frame .head {
+        padding: 20px 18px;
+        border-bottom: 1px solid rgba(255,255,255,0.06);
+        display: flex; align-items: center; gap: 12px;
+    }
+    .final-frame .logo { width: 40px; height: 40px; border-radius: 9px; font-size: 14px; }
+    .final-frame .brand-stack { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+    .final-frame .brand { font-size: 15px; font-weight: 900; color: #fff; letter-spacing: -0.01em; }
+    .final-frame .brand-sub {
+        font-size: 9px; font-weight: 800; color: #fcd34d;
+        text-transform: uppercase; letter-spacing: 0.22em;
+        font-family: ui-monospace, monospace;
+    }
+
+    .final-frame .group-head {
+        display: flex; align-items: center; gap: 8px;
+        padding: 18px 18px 8px;
+        font-size: 9px; font-weight: 900; letter-spacing: 0.28em;
+        text-transform: uppercase; color: #fcd34d;
+        font-family: ui-monospace, monospace;
+    }
+    .final-frame .group-head::after {
+        content: ""; flex: 1; height: 1px;
+        background: linear-gradient(90deg, rgba(251,191,36,0.35), transparent);
+    }
+
+    .final-frame .nav { display: flex; flex-direction: column; padding: 0 10px; gap: 2px; }
+    .final-frame .nav-item {
+        position: relative;
+        display: flex; align-items: center; gap: 12px;
+        padding: 10px 12px 10px 16px;
+        border-radius: 8px;
+        color: rgba(255,255,255,0.78);
+        font-size: 13px; font-weight: 500;
+        transition: all 150ms ease;
+    }
+    .final-frame .nav-item:hover {
+        background: rgba(255,255,255,0.05);
+        color: #fff;
+    }
+    .final-frame .nav-item .ic { width: 18px; text-align: center; font-size: 13px; color: rgba(255,255,255,0.55); transition: color 150ms ease; }
+    .final-frame .nav-item:hover .ic { color: #fde68a; }
+
+    /* Active item: A's amber left bar + C's soft halo glow underneath */
+    .final-frame .nav-item.active {
+        background: linear-gradient(90deg, rgba(251,191,36,0.18), rgba(251,191,36,0.04));
+        color: #fff; font-weight: 700;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.06),
+            0 6px 20px -8px rgba(251,191,36,0.35);
+    }
+    .final-frame .nav-item.active::before {
+        content: ""; position: absolute; left: 0; top: 6px; bottom: 6px; width: 3px;
+        background: linear-gradient(180deg, #fbbf24, #f59e0b);
+        border-radius: 0 2px 2px 0;
+        box-shadow: 0 0 10px rgba(251,191,36,0.65);
+    }
+    .final-frame .nav-item.active .ic { color: #fcd34d; }
+
+    .final-frame .foot {
+        margin-top: auto;
+        padding: 14px 18px;
+        border-top: 1px solid rgba(255,255,255,0.06);
+        display: flex; align-items: center; justify-content: space-between;
+        font-family: ui-monospace, monospace;
+        font-size: 10px; color: rgba(255,255,255,0.45);
+    }
+    .final-frame .status-pill {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 4px 8px; border-radius: 999px;
+        background: rgba(16,185,129,0.10); color: #6ee7b7;
+        border: 1px solid rgba(16,185,129,0.25);
+        font-size: 9px; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase;
+    }
+    .final-frame .status-pill .dot {
+        width: 6px; height: 6px; border-radius: 999px; background: #34d399;
+        box-shadow: 0 0 6px rgba(52,211,153,0.7);
+    }
+
+    /* Annotation labels for the FINAL panel */
+    .annotated { display: grid; grid-template-columns: auto 1fr; gap: 28px; align-items: start; }
+    @media (max-width: 768px) { .annotated { grid-template-columns: 1fr; } }
+    .ann-list { padding-top: 4px; }
+    .ann-row { display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px dashed rgba(255,255,255,0.06); }
+    .ann-row:last-child { border-bottom: 0; }
+    .ann-bullet {
+        flex: 0 0 22px; width: 22px; height: 22px; border-radius: 999px;
+        background: rgba(251,191,36,0.15); color: #fcd34d;
+        display: grid; place-items: center;
+        font-size: 11px; font-weight: 900;
+        border: 1px solid rgba(251,191,36,0.3);
+    }
+    .ann-body { font-size: 13px; color: #cbd5e1; line-height: 1.55; }
+    .ann-body strong { color: #fff; font-weight: 700; }
+
+    /* =================================================================== */
+    /* OPTION A — INDUSTRIAL INSTRUMENT STACK                              */
+    /* Same dark navy + amber palette as the topbar.                       */
+    /* Each item is an instrument plate; active = bright amber left bar.   */
+    /* =================================================================== */
+    .opA {
+        background: linear-gradient(180deg, #04042a 0%, #06063a 50%, #08084a 100%);
+        position: relative;
+    }
+    .opA::before {
+        content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.45;
+        background-image:
+            repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 18px),
+            repeating-linear-gradient(45deg,  rgba(255,255,255,0.02) 0 1px, transparent 1px 18px);
+    }
+    .opA::after {
+        content: ""; position: absolute; top: 0; right: 0; bottom: 0; width: 1px;
+        background: linear-gradient(180deg, transparent, rgba(251,191,36,0.4), transparent);
+    }
+    .opA-content { position: relative; z-index: 1; padding: 0; display: flex; flex-direction: column; height: 100%; }
+
+    .opA .head {
+        padding: 20px 18px;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        display: flex; align-items: center; gap: 10px;
+    }
+    .opA .logo {
+        width: 38px; height: 38px; border-radius: 8px;
+        font-size: 14px;
+    }
+    .opA .brand-stack { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+    .opA .brand { font-size: 15px; font-weight: 900; color: #fff; letter-spacing: -0.01em; }
+    .opA .brand-sub {
+        font-size: 9px; font-weight: 800; color: #fcd34d;
+        text-transform: uppercase; letter-spacing: 0.22em;
+        font-family: ui-monospace, monospace;
+    }
+
+    .opA .group-head {
+        display: flex; align-items: center; gap: 8px;
+        padding: 16px 18px 8px;
+        font-size: 9px; font-weight: 900; letter-spacing: 0.28em;
+        text-transform: uppercase; color: #fcd34d;
+        font-family: ui-monospace, monospace;
+    }
+    .opA .group-head::after {
+        content: ""; flex: 1; height: 1px;
+        background: linear-gradient(90deg, rgba(251,191,36,0.35), transparent);
+    }
+
+    .opA .nav { display: flex; flex-direction: column; padding: 0 10px; gap: 2px; }
+    .opA .nav-item {
+        position: relative;
+        display: flex; align-items: center; gap: 12px;
+        padding: 10px 12px 10px 16px;
+        border-radius: 8px;
+        color: rgba(255,255,255,0.78);
+        font-size: 13px; font-weight: 500;
+        transition: all 150ms ease;
+    }
+    .opA .nav-item:hover {
+        background: rgba(255,255,255,0.05);
+        color: #fff;
+    }
+    .opA .nav-item .ic { width: 18px; text-align: center; font-size: 13px; color: rgba(255,255,255,0.55); }
+    .opA .nav-item:hover .ic { color: #fde68a; }
+    .opA .nav-item.active {
+        background: linear-gradient(90deg, rgba(251,191,36,0.14), rgba(251,191,36,0.02));
+        color: #fff; font-weight: 700;
+    }
+    .opA .nav-item.active::before {
+        content: ""; position: absolute; left: 0; top: 6px; bottom: 6px; width: 3px;
+        background: linear-gradient(180deg, #fbbf24, #f59e0b);
+        border-radius: 0 2px 2px 0;
+        box-shadow: 0 0 8px rgba(251,191,36,0.55);
+    }
+    .opA .nav-item.active .ic { color: #fcd34d; }
+
+    .opA .foot {
+        margin-top: auto;
+        padding: 14px 18px;
+        border-top: 1px solid rgba(255,255,255,0.05);
+        display: flex; align-items: center; justify-content: space-between;
+        font-family: ui-monospace, monospace;
+        font-size: 10px; color: rgba(255,255,255,0.45);
+    }
+    .opA .status-pill {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 4px 8px; border-radius: 999px;
+        background: rgba(16,185,129,0.10); color: #6ee7b7;
+        border: 1px solid rgba(16,185,129,0.25);
+        font-size: 9px; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase;
+    }
+    .opA .status-pill .dot {
+        width: 6px; height: 6px; border-radius: 999px; background: #34d399;
+        box-shadow: 0 0 6px rgba(52,211,153,0.7);
+    }
+
+    /* =================================================================== */
+    /* OPTION B — EDITORIAL VERTICAL                                       */
+    /* Strong typographic section headers, generous spacing,               */
+    /* thick amber LEFT bar on active.                                     */
+    /* =================================================================== */
+    .opB { background: #0a1024; display: flex; flex-direction: column; height: 100%; }
+    .opB .head {
+        padding: 24px 22px 20px;
+        display: flex; align-items: center; gap: 12px;
+    }
+    .opB .logo { width: 42px; height: 42px; border-radius: 10px; font-size: 16px; }
+    .opB .brand-stack { display: flex; flex-direction: column; line-height: 1.05; }
+    .opB .brand { font-size: 18px; font-weight: 900; color: #fff; letter-spacing: -0.025em; }
+    .opB .brand-sub { font-size: 11px; font-weight: 700; color: #94a3b8; letter-spacing: 0.02em; }
+
+    .opB .group-head {
+        padding: 28px 22px 10px;
+        font-size: 14px; font-weight: 900; color: #fff;
+        text-transform: uppercase; letter-spacing: -0.01em;
+        position: relative;
+    }
+    .opB .group-head::after {
+        content: ""; position: absolute; left: 22px; right: 22px; bottom: 4px;
+        height: 1px;
+        background: linear-gradient(90deg, rgba(251,191,36,0.55), transparent);
+    }
+    .opB .group-num {
+        font-family: ui-monospace, monospace;
+        font-size: 10px; color: #fcd34d;
+        margin-left: 8px; font-weight: 700; letter-spacing: 0.05em;
+    }
+
+    .opB .nav { display: flex; flex-direction: column; }
+    .opB .nav-item {
+        position: relative;
+        display: flex; align-items: center; gap: 14px;
+        padding: 14px 22px;
+        color: rgba(255,255,255,0.70);
+        font-size: 14px; font-weight: 500;
+        transition: all 150ms ease;
+    }
+    .opB .nav-item:hover {
+        background: rgba(255,255,255,0.03);
+        color: #fff;
+    }
+    .opB .nav-item .ic { width: 18px; text-align: center; font-size: 14px; color: rgba(255,255,255,0.45); }
+    .opB .nav-item:hover .ic { color: rgba(255,255,255,0.85); }
+    .opB .nav-item.active {
+        background: linear-gradient(90deg, rgba(251,191,36,0.10), transparent);
+        color: #fff; font-weight: 700;
+    }
+    .opB .nav-item.active::before {
+        content: ""; position: absolute; left: 0; top: 8px; bottom: 8px; width: 5px;
+        background: linear-gradient(180deg, #fbbf24, #f59e0b);
+    }
+    .opB .nav-item.active .ic { color: #fcd34d; }
+
+    .opB .foot {
+        margin-top: auto;
+        padding: 18px 22px;
+        border-top: 1px solid rgba(255,255,255,0.05);
+    }
+    .opB .foot-row {
+        display: flex; align-items: center; gap: 10px;
+    }
+    .opB .foot-avatar { width: 36px; height: 36px; border-radius: 10px; font-size: 13px; }
+    .opB .foot-name { font-size: 13px; font-weight: 800; color: #fff; line-height: 1.1; }
+    .opB .foot-role { font-size: 11px; color: #94a3b8; line-height: 1.1; }
+
+    /* =================================================================== */
+    /* OPTION C — GLASS FLOATING TILES                                     */
+    /* Each item is a rounded pill that gently lifts; active item has a    */
+    /* soft amber halo glow beneath it.                                    */
+    /* =================================================================== */
+    .opC {
+        background:
+            radial-gradient(circle at 50% 0%, rgba(251,191,36,0.06), transparent 50%),
+            linear-gradient(180deg, #0a0e1f 0%, #060816 100%);
+        display: flex; flex-direction: column; height: 100%;
+        padding: 16px;
+    }
+    .opC .head {
+        padding: 12px 14px 20px;
+        display: flex; align-items: center; gap: 12px;
+    }
+    .opC .logo { width: 40px; height: 40px; border-radius: 999px; font-size: 15px; }
+    .opC .brand-stack { display: flex; flex-direction: column; line-height: 1.1; }
+    .opC .brand { font-size: 16px; font-weight: 800; color: #fff; }
+    .opC .brand-sub { font-size: 11px; color: #94a3b8; font-weight: 600; }
+
+    .opC .group-head {
+        display: flex; align-items: center; gap: 8px;
+        padding: 16px 14px 8px;
+        font-size: 11px; font-weight: 700; color: #94a3b8;
+        text-transform: uppercase; letter-spacing: 0.18em;
+    }
+    .opC .group-head::before {
+        content: ""; width: 4px; height: 4px; border-radius: 999px;
+        background: rgba(251,191,36,0.6);
+    }
+
+    .opC .nav { display: flex; flex-direction: column; gap: 4px; padding: 0 6px; }
+    .opC .nav-item {
+        position: relative;
+        display: flex; align-items: center; gap: 12px;
+        padding: 10px 14px;
+        border-radius: 999px;
+        color: rgba(255,255,255,0.72);
+        font-size: 13px; font-weight: 500;
+        transition: all 200ms ease;
+        border: 1px solid transparent;
+    }
+    .opC .nav-item:hover {
+        background: rgba(255,255,255,0.05);
+        border-color: rgba(255,255,255,0.08);
+        color: #fff;
+        transform: translateX(2px);
+    }
+    .opC .nav-item .ic { width: 18px; text-align: center; font-size: 13px; color: rgba(255,255,255,0.50); }
+    .opC .nav-item:hover .ic { color: #fde68a; }
+    .opC .nav-item.active {
+        background:
+            linear-gradient(180deg, rgba(251,191,36,0.18), rgba(251,191,36,0.05));
+        border-color: rgba(251,191,36,0.30);
+        color: #fff; font-weight: 700;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.10),
+            0 8px 20px -6px rgba(251,191,36,0.45);
+    }
+    .opC .nav-item.active::after {
+        content: ""; position: absolute; left: 18px; right: 18px; bottom: -10px; height: 10px;
+        background: radial-gradient(ellipse at center, rgba(251,191,36,0.30), transparent 70%);
+        filter: blur(6px);
+        pointer-events: none;
+    }
+    .opC .nav-item.active .ic { color: #fcd34d; }
+
+    .opC .foot {
+        margin-top: auto;
+        padding: 14px 10px 6px;
+    }
+    .opC .foot-card {
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.08);
+        border-radius: 16px;
+        padding: 12px;
+        display: flex; align-items: center; gap: 10px;
+        backdrop-filter: blur(10px);
+    }
+    .opC .foot-avatar { width: 36px; height: 36px; border-radius: 999px; font-size: 13px; }
+    .opC .foot-name { font-size: 13px; font-weight: 700; color: #fff; line-height: 1.1; }
+    .opC .foot-role { font-size: 11px; color: #94a3b8; line-height: 1.1; }
+
+    footer { text-align: center; font-size: 12px; color: #64748b; padding-top: 28px; border-top: 1px solid #1e293b; margin-top: 32px; }
+    code { font-family: ui-monospace, monospace; background: #0f172a; padding: 2px 6px; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<div class="container">
+
+    <header style="margin-bottom: 32px;">
+        <p class="section-tag" style="color: #34d399;">✓ FINAL · approved direction · awaiting your OK to apply</p>
+        <h1 style="font-size: 30px; font-weight: 900; color: #fff; margin: 6px 0 10px 0; letter-spacing: -0.025em;">Admin Sidebar · Instrument Stack + Subtle Glow</h1>
+        <p style="font-size: 14px; color: #94a3b8; margin: 0; max-width: 760px;">Option A's industrial structure is the base. The active item additionally picks up a subtle soft halo from Option C — gentle, not flashy. Everything else stays restrained and consistent with the topbar.</p>
+    </header>
+
+    <!-- ============================================================ -->
+    <!-- FINAL · what will be applied to the real sidebar              -->
+    <!-- ============================================================ -->
+    <section style="margin-bottom: 56px;">
+        <div class="annotated">
+            <div class="final-frame">
+                <div class="final-inner">
+                    <div class="head">
+                        <span class="logo emboss">YS</span>
+                        <div class="brand-stack">
+                            <span class="brand">YallaSpare</span>
+                            <span class="brand-sub">Admin · Live</span>
+                        </div>
+                    </div>
+
+                    <div class="group-head">Operations</div>
+                    <div class="nav">
+                        <a class="nav-item active" href="#"><i class="ic fas fa-chart-line"></i> Dashboard</a>
+                        <a class="nav-item" href="#"><i class="ic fas fa-receipt"></i> Orders Management</a>
+                        <a class="nav-item" href="#"><i class="ic fas fa-rotate-left"></i> Returns &amp; Refunds</a>
+                    </div>
+
+                    <div class="group-head">Catalog</div>
+                    <div class="nav">
+                        <a class="nav-item" href="#"><i class="ic fas fa-box"></i> Products</a>
+                        <a class="nav-item" href="#"><i class="ic fas fa-layer-group"></i> Categories</a>
+                        <a class="nav-item" href="#"><i class="ic fas fa-car-side"></i> Vehicle Finder</a>
+                        <a class="nav-item" href="#"><i class="ic fas fa-star"></i> Customer Reviews</a>
+                    </div>
+
+                    <div class="group-head">Analytics</div>
+                    <div class="nav">
+                        <a class="nav-item" href="#"><i class="ic fas fa-sack-dollar"></i> Revenue</a>
+                        <a class="nav-item" href="#"><i class="ic fas fa-warehouse"></i> Inventory</a>
+                    </div>
+
+                    <div class="group-head">Partners</div>
+                    <div class="nav">
+                        <a class="nav-item" href="#"><i class="ic fas fa-handshake"></i> Dealers</a>
+                    </div>
+
+                    <div class="group-head">Marketing</div>
+                    <div class="nav">
+                        <a class="nav-item" href="#"><i class="ic fas fa-tags"></i> Coupon Management</a>
+                        <a class="nav-item" href="#"><i class="ic fas fa-percent"></i> Discount Rules</a>
+                        <a class="nav-item" href="#"><i class="ic fas fa-envelope-open-text"></i> Email Center</a>
+                    </div>
+
+                    <div class="group-head">Admin</div>
+                    <div class="nav">
+                        <a class="nav-item" href="#"><i class="ic fas fa-users"></i> Users</a>
+                        <a class="nav-item" href="#"><i class="ic fas fa-gear"></i> Settings</a>
+                        <a class="nav-item" href="#"><i class="ic fas fa-clipboard-list"></i> Activity Logs</a>
+                    </div>
+
+                    <div class="foot">
+                        <span>v 2.4.1</span>
+                        <span class="status-pill"><span class="dot"></span> All systems</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ann-list">
+                <div class="ann-row">
+                    <span class="ann-bullet">1</span>
+                    <div class="ann-body"><strong>Same navy gradient + cross-hatch texture</strong> as your topbar — sidebar reads as a vertical extension of the header.</div>
+                </div>
+                <div class="ann-row">
+                    <span class="ann-bullet">2</span>
+                    <div class="ann-body"><strong>Monospace amber section headers</strong> (<code>OPERATIONS</code>, <code>CATALOG</code>, …) with thin amber hairline. Quiet but unmistakably on-brand.</div>
+                </div>
+                <div class="ann-row">
+                    <span class="ann-bullet">3</span>
+                    <div class="ann-body"><strong>Active item</strong> = bright 3px amber left bar with soft bloom, warm amber wash background, AND a low outward glow (<em>borrowed from Option C</em>) so the active row gently lifts off the navy. Not flashy — just clearly indicates "you're here."</div>
+                </div>
+                <div class="ann-row">
+                    <span class="ann-bullet">4</span>
+                    <div class="ann-body"><strong>Hover state</strong> = subtle white wash + amber icon. Inactive item keeps a slate icon and white-78 % label so the active row remains the focal point.</div>
+                </div>
+                <div class="ann-row">
+                    <span class="ann-bullet">5</span>
+                    <div class="ann-body"><strong>Footer</strong>: app version on the left, green "All systems" status pill on the right — same kind of telemetric chip the topbar uses.</div>
+                </div>
+                <div class="ann-row">
+                    <span class="ann-bullet">6</span>
+                    <div class="ann-body"><strong>Collapsed state</strong> (icons only): the same active-item treatment scales down cleanly — amber bar + halo still visible around the 36 × 36 icon tile, section headers hidden.</div>
+                </div>
+                <div class="ann-row">
+                    <span class="ann-bullet">7</span>
+                    <div class="ann-body"><strong>Permission-aware sections</strong>: each group will be wrapped so its header only renders when at least one item inside is allowed by <code>@can</code>. Nothing breaks for non-super-admin users.</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr style="border: 0; border-top: 1px solid #1e293b; margin: 36px 0;">
+
+    <div style="margin-bottom: 16px;">
+        <p class="section-tag" style="color: #94a3b8;">For reference · the three original mockups</p>
+    </div>
+
+    <div class="grid-3">
+
+        <!-- ========================================================== -->
+        <!-- OPTION A — INDUSTRIAL INSTRUMENT STACK                      -->
+        <!-- ========================================================== -->
+        <div>
+            <div style="margin-bottom: 14px;">
+                <div style="display: flex; align-items: baseline; gap: 10px;">
+                    <span class="section-tag">Option A</span>
+                    <h2 class="section-title">Instrument Stack</h2>
+                </div>
+                <p class="section-blurb" style="margin: 6px 0 0 0;">Same dark navy + amber palette as your topbar. Active item gets a glowing amber left bar. Monospace section headers with horizontal hairline. Status pill in footer. Feels like a continuation of the topbar.</p>
+            </div>
+            <div class="sidebar-frame opA">
+                <div class="opA-content">
+                    <div class="head">
+                        <span class="logo emboss">YS</span>
+                        <div class="brand-stack">
+                            <span class="brand">YallaSpare</span>
+                            <span class="brand-sub">Admin · Live</span>
+                        </div>
+                    </div>
+
+                    <div class="group-head">Operations</div>
+                    <div class="nav">
+                        <a class="nav-item active" href="#"><i class="ic fas fa-chart-line"></i> Dashboard</a>
+                        <a class="nav-item" href="#"><i class="ic fas fa-receipt"></i> Orders Management</a>
+                        <a class="nav-item" href="#"><i class="ic fas fa-rotate-left"></i> Returns &amp; Refunds</a>
+                    </div>
+
+                    <div class="group-head">Catalog</div>
+                    <div class="nav">
+                        <a class="nav-item" href="#"><i class="ic fas fa-box"></i> Products</a>
+                        <a class="nav-item" href="#"><i class="ic fas fa-layer-group"></i> Categories</a>
+                        <a class="nav-item" href="#"><i class="ic fas fa-car-side"></i> Vehicle Finder</a>
+                    </div>
+
+                    <div class="group-head">Analytics</div>
+                    <div class="nav">
+                        <a class="nav-item" href="#"><i class="ic fas fa-sack-dollar"></i> Revenue</a>
+                        <a class="nav-item" href="#"><i class="ic fas fa-warehouse"></i> Inventory</a>
+                    </div>
+
+                    <div class="group-head">Admin</div>
+                    <div class="nav">
+                        <a class="nav-item" href="#"><i class="ic fas fa-users"></i> Users</a>
+                        <a class="nav-item" href="#"><i class="ic fas fa-gear"></i> Settings</a>
+                    </div>
+
+                    <div class="foot">
+                        <span>v 2.4.1</span>
+                        <span class="status-pill"><span class="dot"></span> All systems</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================================== -->
+        <!-- OPTION B — EDITORIAL VERTICAL                              -->
+        <!-- ========================================================== -->
+        <div>
+            <div style="margin-bottom: 14px;">
+                <div style="display: flex; align-items: baseline; gap: 10px;">
+                    <span class="section-tag">Option B</span>
+                    <h2 class="section-title">Editorial Vertical</h2>
+                </div>
+                <p class="section-blurb" style="margin: 6px 0 0 0;">Strong typographic section headers with amber underline. Tall items, generous breathing room. Active item has a chunky 5px amber bar. Profile card sits at the bottom. Magazine-style hierarchy.</p>
+            </div>
+            <div class="sidebar-frame opB">
+                <div class="head">
+                    <span class="logo emboss">YS</span>
+                    <div class="brand-stack">
+                        <span class="brand">YallaSpare</span>
+                        <span class="brand-sub">Admin Panel</span>
+                    </div>
+                </div>
+
+                <div class="group-head">Operations<span class="group-num">/ 03</span></div>
+                <div class="nav">
+                    <a class="nav-item active" href="#"><i class="ic fas fa-chart-line"></i> Dashboard</a>
+                    <a class="nav-item" href="#"><i class="ic fas fa-receipt"></i> Orders Management</a>
+                    <a class="nav-item" href="#"><i class="ic fas fa-rotate-left"></i> Returns &amp; Refunds</a>
+                </div>
+
+                <div class="group-head">Catalog<span class="group-num">/ 03</span></div>
+                <div class="nav">
+                    <a class="nav-item" href="#"><i class="ic fas fa-box"></i> Products</a>
+                    <a class="nav-item" href="#"><i class="ic fas fa-layer-group"></i> Categories</a>
+                    <a class="nav-item" href="#"><i class="ic fas fa-car-side"></i> Vehicle Finder</a>
+                </div>
+
+                <div class="group-head">Analytics<span class="group-num">/ 02</span></div>
+                <div class="nav">
+                    <a class="nav-item" href="#"><i class="ic fas fa-sack-dollar"></i> Revenue</a>
+                    <a class="nav-item" href="#"><i class="ic fas fa-warehouse"></i> Inventory</a>
+                </div>
+
+                <div class="foot">
+                    <div class="foot-row">
+                        <span class="foot-avatar emboss">A</span>
+                        <div style="display: flex; flex-direction: column;">
+                            <span class="foot-name">Admin</span>
+                            <span class="foot-role">Super Admin</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================================== -->
+        <!-- OPTION C — GLASS FLOATING TILES                            -->
+        <!-- ========================================================== -->
+        <div>
+            <div style="margin-bottom: 14px;">
+                <div style="display: flex; align-items: baseline; gap: 10px;">
+                    <span class="section-tag">Option C</span>
+                    <h2 class="section-title">Glass Floating</h2>
+                </div>
+                <p class="section-blurb" style="margin: 6px 0 0 0;">Each item is a rounded pill that lifts on hover. Active item is a glass pill with a soft amber halo glow beneath it. Section markers are tiny amber dots. Profile sits in a glass card at the bottom. Apple-Vision-inspired softness.</p>
+            </div>
+            <div class="sidebar-frame opC">
+                <div class="head">
+                    <span class="logo emboss">YS</span>
+                    <div class="brand-stack">
+                        <span class="brand">YallaSpare</span>
+                        <span class="brand-sub">Admin</span>
+                    </div>
+                </div>
+
+                <div class="group-head">Operations</div>
+                <div class="nav">
+                    <a class="nav-item active" href="#"><i class="ic fas fa-chart-line"></i> Dashboard</a>
+                    <a class="nav-item" href="#"><i class="ic fas fa-receipt"></i> Orders Management</a>
+                    <a class="nav-item" href="#"><i class="ic fas fa-rotate-left"></i> Returns &amp; Refunds</a>
+                </div>
+
+                <div class="group-head">Catalog</div>
+                <div class="nav">
+                    <a class="nav-item" href="#"><i class="ic fas fa-box"></i> Products</a>
+                    <a class="nav-item" href="#"><i class="ic fas fa-layer-group"></i> Categories</a>
+                    <a class="nav-item" href="#"><i class="ic fas fa-car-side"></i> Vehicle Finder</a>
+                </div>
+
+                <div class="group-head">Analytics</div>
+                <div class="nav">
+                    <a class="nav-item" href="#"><i class="ic fas fa-sack-dollar"></i> Revenue</a>
+                    <a class="nav-item" href="#"><i class="ic fas fa-warehouse"></i> Inventory</a>
+                </div>
+
+                <div class="foot">
+                    <div class="foot-card">
+                        <span class="foot-avatar emboss">A</span>
+                        <div style="display: flex; flex-direction: column;">
+                            <span class="foot-name">Admin</span>
+                            <span class="foot-role">Super Admin</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <footer>
+        Preview only · <code>public/admin-sidebar-preview.html</code> · Real sidebar has not been modified.<br>
+        Reply with <strong>A</strong>, <strong>B</strong> or <strong>C</strong> to apply.
+    </footer>
+</div>
+
+</body>
+</html>

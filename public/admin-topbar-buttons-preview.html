@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Topbar Buttons · 3 Bold New Directions (Preview Only)</title>
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer">
+<style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+        font-family: 'Figtree', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        background: #020617;
+        color: #f1f5f9;
+        padding: 32px 24px;
+        line-height: 1.5;
+    }
+    .container { max-width: 1180px; margin: 0 auto; }
+    .stack > * + * { margin-top: 56px; }
+
+    /* ─── REAL ADMIN TOPBAR BG (1:1 from app.blade.php) ─── */
+    .topbar {
+        position: relative;
+        background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);
+        border-radius: 18px;
+        overflow: hidden;
+        box-shadow: inset 0 0 0 1px rgba(255,255,255,0.05), 0 30px 60px rgba(0,0,0,0.45);
+    }
+    .topbar::before {
+        content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.45;
+        background-image:
+            repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 18px),
+            repeating-linear-gradient(45deg,  rgba(255,255,255,0.02) 0 1px, transparent 1px 18px);
+    }
+    .topbar::after {
+        content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 3px;
+        background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+    }
+    .hairline {
+        position: absolute; top: 0; left: 0; right: 0; height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(251,191,36,0.45), transparent);
+        z-index: 1;
+    }
+    .glow {
+        position: absolute; top: -72px; right: -72px; height: 168px; width: 168px;
+        border-radius: 9999px; background: rgba(251,191,36,0.07); filter: blur(60px); pointer-events: none;
+    }
+    .topbar-row {
+        position: relative; z-index: 2;
+        display: flex; align-items: center; justify-content: space-between;
+        gap: 12px; padding: 0 28px;
+        min-height: 76px;
+    }
+
+    .emboss {
+        background:
+            radial-gradient(circle at 30% 25%, rgba(255,255,255,0.22), transparent 60%),
+            linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.45),
+            inset 0 -2px 4px rgba(120,53,15,0.4),
+            0 2px 6px rgba(245,158,11,0.30);
+        color: #04042a;
+        display: grid; place-items: center;
+        font-weight: 900;
+    }
+
+    .section-tag {
+        font-size: 11px; font-weight: 900; color: #fcd34d;
+        text-transform: uppercase; letter-spacing: 0.28em;
+        font-family: ui-monospace, 'JetBrains Mono', monospace;
+    }
+    .section-title { font-size: 22px; font-weight: 800; color: #ffffff; margin: 0; letter-spacing: -0.02em; }
+    .section-blurb { font-size: 13px; color: #94a3b8; margin: 10px 0 18px 0; max-width: 720px; }
+
+    .center-block { display: none; flex-direction: column; align-items: center; line-height: 1.15; }
+    @media (min-width: 768px) { .center-block { display: flex; } }
+    .center-title { font-size: 18px; font-weight: 900; color: #fff; letter-spacing: -0.025em; }
+    @media (min-width: 768px) { .center-title { font-size: 20px; } }
+    @media (min-width: 1024px) { .center-title { font-size: 24px; } }
+    .center-meta {
+        margin-top: 5px;
+        font-size: 10px; text-transform: uppercase; letter-spacing: 0.2em;
+        color: rgba(255,255,255,0.55); font-weight: 700;
+        font-family: ui-monospace, 'JetBrains Mono', monospace;
+    }
+    .center-meta .dot { color: #34d399; }
+    .center-meta .live { color: #fcd34d; }
+    .center-meta .sep { color: rgba(255,255,255,0.25); margin: 0 4px; }
+
+    .left-placeholder { color: rgba(255,255,255,0.32); font-size: 11px; font-family: ui-monospace, monospace; }
+
+    button, a.btn { font: inherit; cursor: pointer; border: 0; background: none; text-decoration: none; color: inherit; padding: 0; }
+
+    /* =================================================================== */
+    /* APPLIED — Option A palette on the REAL existing button shapes       */
+    /* This is exactly what your live admin topbar looks like right now.   */
+    /* =================================================================== */
+    .live .actions { display: flex; align-items: center; gap: 6px; }
+
+    /* Restrained + semantic: neutral icon buttons, amber profile, red logout */
+    .live .topbar-action {
+        display: inline-flex; align-items: center; justify-content: center;
+        height: 36px; width: 36px; border-radius: 10px;
+        border: 1px solid rgba(255,255,255,0.10);
+        background: rgba(255,255,255,0.04);
+        color: rgba(255,255,255,0.85);
+        transition: all .15s ease;
+    }
+    .live .topbar-action:hover {
+        background: rgba(255,255,255,0.10);
+        border-color: rgba(255,255,255,0.18);
+        color: #fff;
+    }
+    .live .topbar-action .icon { font-size: 13px; }
+
+    .live .topbar-logout { color: rgba(253,164,175,0.85); }
+    .live .topbar-logout:hover {
+        background: rgba(244,63,94,0.18);
+        border-color: rgba(244,63,94,0.55);
+        color: #fecdd3;
+    }
+
+    .live .lang-pill {
+        display: inline-flex; align-items: center; gap: 8px;
+        height: 36px; border-radius: 10px;
+        padding: 0 12px;
+        border: 1px solid rgba(255,255,255,0.10);
+        background: rgba(255,255,255,0.04);
+        color: rgba(255,255,255,0.90);
+        font-size: 14px; font-weight: 500;
+        transition: all .15s ease;
+    }
+    .live .lang-pill:hover {
+        background: rgba(255,255,255,0.10);
+        border-color: rgba(255,255,255,0.18);
+        color: #fff;
+    }
+    .live .lang-pill .code { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.7; }
+    .live .lang-pill .caret { width: 14px; height: 14px; opacity: 0.7; }
+
+    .live .topbar-profile {
+        display: inline-flex; align-items: center; gap: 8px;
+        height: 36px; border-radius: 10px;
+        padding: 0 8px 0 4px;
+        border: 1px solid rgba(251,191,36,0.40);
+        background: rgba(251,191,36,0.07);
+        color: #fff;
+        transition: all .15s ease;
+    }
+    .live .topbar-profile:hover {
+        background: rgba(251,191,36,0.14);
+        border-color: rgba(251,191,36,0.65);
+    }
+    .live .topbar-profile .avatar { width: 28px; height: 28px; border-radius: 6px; font-size: 11px; }
+    .live .topbar-profile .label { font-size: 12px; font-weight: 700; line-height: 1; }
+
+    .live .badge-bell {
+        position: absolute; top: -2px; right: -2px;
+        height: 15px; min-width: 15px; padding: 0 4px;
+        border-radius: 9999px; font-size: 9px; font-weight: 700;
+        display: inline-flex; align-items: center; justify-content: center;
+        background: #f43f5e; color: #fff;
+        box-shadow: 0 0 0 2px #07073a;
+        font-family: ui-monospace, monospace;
+    }
+
+    /* =================================================================== */
+    /* OPTION A — HUD COCKPIT                                              */
+    /* Aerospace instrument panel: scanning lines, thin amber rings,       */
+    /* monospace telemetry numerics, hexagonal profile frame.              */
+    /* =================================================================== */
+    .optA .actions { display: flex; align-items: center; gap: 10px; font-family: ui-monospace, 'JetBrains Mono', monospace; }
+
+    .optA .tlm-chip {
+        display: inline-flex; align-items: center; gap: 6px;
+        height: 22px; padding: 0 8px;
+        border: 1px solid rgba(251,191,36,0.35);
+        border-radius: 3px;
+        background: rgba(251,191,36,0.06);
+        font-size: 9px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase;
+        color: #fcd34d;
+        position: relative; overflow: hidden;
+    }
+    .optA .tlm-chip::before {
+        content: ""; position: absolute; left: -30%; top: 0; bottom: 0; width: 30%;
+        background: linear-gradient(90deg, transparent, rgba(251,191,36,0.4), transparent);
+        animation: scan 2.4s linear infinite;
+    }
+    @keyframes scan { 0% { left: -30%; } 100% { left: 100%; } }
+
+    .optA .btn-hud {
+        position: relative;
+        display: inline-flex; align-items: center; justify-content: center;
+        height: 38px; padding: 0 14px;
+        background: linear-gradient(180deg, rgba(7,7,58,0.85), rgba(2,2,20,0.85));
+        border: 1px solid rgba(251,191,36,0.32);
+        color: #fde68a;
+        clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+        font-size: 12px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+        transition: all 150ms ease;
+    }
+    .optA .btn-hud:hover { color: #fef3c7; border-color: rgba(251,191,36,0.7); background: linear-gradient(180deg, rgba(251,191,36,0.10), rgba(2,2,20,0.85)); }
+    .optA .btn-hud .caret { width: 14px; height: 14px; margin-left: 6px; opacity: 0.7; }
+    .optA .btn-hud .icon { font-size: 13px; }
+
+    .optA .btn-icon-hud {
+        position: relative;
+        width: 42px; height: 38px;
+        background: linear-gradient(180deg, rgba(7,7,58,0.85), rgba(2,2,20,0.85));
+        border: 1px solid rgba(251,191,36,0.32);
+        color: #fde68a;
+        display: inline-flex; align-items: center; justify-content: center;
+        clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+        transition: all 150ms ease;
+    }
+    .optA .btn-icon-hud:hover { border-color: rgba(251,191,36,0.7); color: #fef3c7; }
+    .optA .btn-icon-hud::after {
+        content: ""; position: absolute; top: 0; left: 6px; right: 6px; height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(251,191,36,0.7), transparent);
+        animation: scan-mini 1.8s ease-in-out infinite;
+    }
+    @keyframes scan-mini {
+        0%,100% { transform: translateX(-40%); opacity: 0; }
+        50% { transform: translateX(40%); opacity: 1; }
+    }
+
+    .optA .badge-tlm {
+        position: absolute; top: -5px; right: -2px;
+        height: 16px; min-width: 22px; padding: 0 4px;
+        background: #020617;
+        border: 1.5px solid #fbbf24;
+        border-radius: 2px;
+        color: #fcd34d;
+        font-size: 9px; font-weight: 900; letter-spacing: 0.05em;
+        display: inline-flex; align-items: center; justify-content: center;
+        box-shadow: 0 0 8px rgba(251,191,36,0.5);
+    }
+
+    .optA .profile-hex {
+        position: relative;
+        display: inline-flex; align-items: center; gap: 10px;
+        height: 38px; padding: 0 14px 0 4px;
+        background: linear-gradient(180deg, rgba(251,191,36,0.12), rgba(2,2,20,0.85));
+        border: 1px solid rgba(251,191,36,0.55);
+        clip-path: polygon(6px 0, 100% 0, calc(100% - 6px) 100%, 0 100%);
+        color: #fef3c7;
+        transition: all 150ms ease;
+    }
+    .optA .profile-hex:hover { background: rgba(251,191,36,0.18); border-color: rgba(251,191,36,0.85); }
+    .optA .profile-hex .avatar-hex {
+        position: relative;
+        width: 28px; height: 32px;
+        background:
+            radial-gradient(circle at 30% 25%, rgba(255,255,255,0.22), transparent 60%),
+            linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%);
+        display: grid; place-items: center;
+        color: #04042a; font-weight: 900; font-size: 12px;
+    }
+    .optA .profile-hex .label-stack { display: flex; flex-direction: column; line-height: 1.05; }
+    .optA .profile-hex .label-name { font-size: 11px; font-weight: 900; letter-spacing: 0.05em; text-transform: uppercase; }
+    .optA .profile-hex .label-role { font-size: 8px; font-weight: 700; letter-spacing: 0.2em; color: #fcd34d; text-transform: uppercase; }
+
+    .optA .btn-eject {
+        color: #fecaca;
+        border-color: rgba(244,63,94,0.45);
+    }
+    .optA .btn-eject:hover { background: linear-gradient(180deg, rgba(244,63,94,0.18), rgba(2,2,20,0.85)); border-color: rgba(244,63,94,0.8); color: #fee2e2; }
+    .optA .btn-eject::after { background: linear-gradient(90deg, transparent, rgba(244,63,94,0.7), transparent); }
+
+    /* =================================================================== */
+    /* OPTION B — FROSTED CRYSTAL VISION                                   */
+    /* Heavy glass, soft amber halos beneath, circular profile,            */
+    /* generous spacing, levitating notification orb.                      */
+    /* =================================================================== */
+    .optB .actions { display: flex; align-items: center; gap: 12px; }
+
+    .optB .btn-crystal {
+        position: relative;
+        display: inline-flex; align-items: center; justify-content: center;
+        height: 44px; padding: 0 18px;
+        border-radius: 999px;
+        background:
+            linear-gradient(180deg, rgba(255,255,255,0.10), rgba(255,255,255,0.02)),
+            rgba(7,7,58,0.4);
+        border: 1px solid rgba(255,255,255,0.14);
+        backdrop-filter: blur(20px);
+        color: rgba(255,255,255,0.92);
+        font-size: 13px; font-weight: 600;
+        transition: all 200ms ease;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.18),
+            inset 0 -1px 0 rgba(0,0,0,0.2),
+            0 8px 24px -8px rgba(251,191,36,0.18);
+    }
+    .optB .btn-crystal:hover {
+        background:
+            linear-gradient(180deg, rgba(255,255,255,0.16), rgba(255,255,255,0.04)),
+            rgba(251,191,36,0.08);
+        border-color: rgba(255,255,255,0.22);
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.25),
+            inset 0 -1px 0 rgba(0,0,0,0.2),
+            0 14px 36px -8px rgba(251,191,36,0.40);
+        transform: translateY(-1px);
+    }
+    .optB .btn-crystal .caret { width: 14px; height: 14px; opacity: 0.65; margin-left: 6px; }
+    .optB .btn-crystal .code-pill {
+        margin-left: 8px; padding: 2px 8px; border-radius: 999px;
+        background: rgba(251,191,36,0.18);
+        color: #fde68a;
+        font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase;
+    }
+
+    .optB .btn-icon-crystal {
+        width: 44px; height: 44px; padding: 0;
+    }
+    .optB .btn-icon-crystal .icon { font-size: 14px; }
+
+    .optB .btn-bell-crystal { position: relative; }
+    .optB .badge-orb {
+        position: absolute; top: -3px; right: -3px;
+        height: 22px; min-width: 22px; padding: 0 6px;
+        border-radius: 999px;
+        background:
+            radial-gradient(circle at 35% 30%, rgba(255,255,255,0.55), rgba(251,191,36,0) 60%),
+            linear-gradient(135deg, #fbbf24, #f59e0b);
+        color: #04042a;
+        font-size: 11px; font-weight: 900;
+        display: inline-flex; align-items: center; justify-content: center;
+        box-shadow:
+            0 0 0 2px rgba(7,7,58,0.95),
+            0 0 16px 4px rgba(251,191,36,0.55),
+            0 4px 10px rgba(245,158,11,0.4);
+    }
+
+    .optB .profile-crystal {
+        position: relative;
+        display: inline-flex; align-items: center; gap: 10px;
+        height: 44px; padding: 0 18px 0 4px;
+        border-radius: 999px;
+        background:
+            linear-gradient(180deg, rgba(251,191,36,0.14), rgba(251,191,36,0.04)),
+            rgba(7,7,58,0.4);
+        border: 1px solid rgba(251,191,36,0.32);
+        backdrop-filter: blur(20px);
+        color: #fff;
+        transition: all 200ms ease;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.20),
+            0 8px 28px -8px rgba(251,191,36,0.40);
+    }
+    .optB .profile-crystal:hover {
+        background: linear-gradient(180deg, rgba(251,191,36,0.20), rgba(251,191,36,0.06)), rgba(7,7,58,0.4);
+        border-color: rgba(251,191,36,0.50);
+        transform: translateY(-1px);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 14px 36px -8px rgba(251,191,36,0.55);
+    }
+    .optB .profile-crystal .avatar-round {
+        width: 36px; height: 36px; border-radius: 999px;
+        background:
+            radial-gradient(circle at 30% 25%, rgba(255,255,255,0.30), transparent 60%),
+            linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        color: #04042a; font-weight: 900; font-size: 14px;
+        display: grid; place-items: center;
+        box-shadow:
+            inset 0 1px 0 rgba(255,255,255,0.50),
+            inset 0 -2px 6px rgba(120,53,15,0.40),
+            0 0 0 2px rgba(7,7,58,0.6),
+            0 0 14px rgba(251,191,36,0.50);
+    }
+    .optB .profile-crystal .label { font-size: 13px; font-weight: 700; letter-spacing: -0.01em; }
+
+    .optB .btn-logout-crystal:hover {
+        background: linear-gradient(180deg, rgba(244,63,94,0.18), rgba(244,63,94,0.04)), rgba(7,7,58,0.4);
+        border-color: rgba(244,63,94,0.35);
+        color: #fda4af;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.20), 0 14px 36px -8px rgba(244,63,94,0.45);
+    }
+
+    /* =================================================================== */
+    /* OPTION C — EDITORIAL MASTHEAD                                       */
+    /* No traditional buttons. Action columns separated by hairlines.      */
+    /* Strong typography, icon on top, label below.                        */
+    /* =================================================================== */
+    .optC .actions {
+        display: flex; align-items: stretch;
+        height: 60px;
+        background: rgba(2,2,30,0.35);
+        border: 1px solid rgba(255,255,255,0.06);
+        border-radius: 4px;
+    }
+    .optC .col {
+        position: relative;
+        display: flex; flex-direction: column; align-items: center; justify-content: center;
+        min-width: 64px; padding: 0 18px;
+        color: rgba(255,255,255,0.78);
+        gap: 4px;
+        transition: all 150ms ease;
+    }
+    .optC .col + .col::before {
+        content: ""; position: absolute; left: 0; top: 12px; bottom: 12px; width: 1px;
+        background: rgba(255,255,255,0.08);
+    }
+    .optC .col:hover { background: rgba(255,255,255,0.04); color: #fff; }
+    .optC .col .icon-top { font-size: 14px; color: #fde68a; }
+    .optC .col .label {
+        font-size: 9px; font-weight: 900; letter-spacing: 0.22em; text-transform: uppercase;
+        color: rgba(255,255,255,0.55);
+        font-family: ui-monospace, 'JetBrains Mono', monospace;
+    }
+    .optC .col .badge-num {
+        position: absolute; top: 8px; right: 12px;
+        font-size: 11px; font-weight: 900; color: #fbbf24;
+        font-family: ui-monospace, monospace;
+    }
+    .optC .col-lang .lang-row { display: inline-flex; align-items: center; gap: 6px; color: #fde68a; font-size: 13px; font-weight: 800; letter-spacing: 0.05em; }
+    .optC .col-lang .caret { width: 10px; height: 10px; opacity: 0.7; }
+
+    .optC .col-profile {
+        background: linear-gradient(180deg, rgba(251,191,36,0.10), rgba(251,191,36,0.02));
+        border-left: 1px solid rgba(251,191,36,0.25) !important;
+        border-right: 1px solid rgba(251,191,36,0.25);
+        min-width: 100px;
+        flex-direction: row; gap: 10px;
+    }
+    .optC .col-profile::before { display: none; }
+    .optC .col-profile .avatar-sq {
+        width: 32px; height: 32px; border-radius: 4px; font-size: 13px;
+    }
+    .optC .col-profile .stack { display: flex; flex-direction: column; line-height: 1.05; }
+    .optC .col-profile .name { font-size: 12px; font-weight: 800; color: #fff; letter-spacing: 0.02em; text-transform: uppercase; }
+    .optC .col-profile .role { font-size: 8px; font-weight: 800; color: #fcd34d; letter-spacing: 0.22em; text-transform: uppercase; }
+
+    .optC .col-logout:hover { color: #fda4af; background: rgba(244,63,94,0.08); }
+    .optC .col-logout .icon-top { color: #fda4af; }
+    .optC .col-logout .label { color: rgba(253,164,175,0.65); }
+
+    /* ─── Closeup grid ─── */
+    .closeup-grid { display: grid; grid-template-columns: 1fr; gap: 20px; }
+    @media (min-width: 768px) { .closeup-grid { grid-template-columns: repeat(3, 1fr); } }
+    .closeup { position: relative; min-height: 110px; padding: 24px; display: flex; align-items: center; justify-content: center; }
+
+    footer { text-align: center; font-size: 12px; color: #64748b; padding-top: 28px; border-top: 1px solid #1e293b; margin-top: 32px; }
+    code { font-family: ui-monospace, monospace; background: #0f172a; padding: 2px 6px; border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<div class="container stack">
+
+    <header>
+        <p class="section-tag" style="color: #34d399;">✓ APPLIED · your live admin now looks like this</p>
+        <h1 style="font-size: 32px; font-weight: 900; color: #fff; margin: 6px 0 10px 0; letter-spacing: -0.025em;">Admin Topbar · Option A Colors Live</h1>
+        <p style="font-size: 14px; color: #94a3b8; margin: 0; max-width: 720px;">Same button shapes you already had — just recoloured with Option A's amber-on-navy instrument palette. Hover any button to see the brighter state. Scroll further down to compare against the three original direction mockups.</p>
+    </header>
+
+    <!-- ============================================================ -->
+    <!-- LIVE — exactly how the real admin topbar looks now            -->
+    <!-- ============================================================ -->
+    <section class="live">
+        <div style="display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px;">
+            <span class="section-tag" style="color: #34d399;">● LIVE</span>
+            <h2 class="section-title">What your /admin pages look like right now</h2>
+        </div>
+        <p class="section-blurb">Restrained + semantic: Language / Dark / Notification stay neutral white-glass; Profile gets a soft amber tint (focal premium action); Logout gets a quiet rose hint at idle and turns full red on hover. Each button colour signals its job — nothing is shouting amber for no reason.</p>
+
+        <div class="topbar">
+            <div class="hairline"></div>
+            <div class="glow"></div>
+            <div class="topbar-row">
+                <div class="left-placeholder">[ menu · sidebar toggle ]</div>
+
+                <div class="center-block">
+                    <span class="center-title">Dashboard</span>
+                    <span class="center-meta"><span class="dot">●</span> <span class="live">ADMIN · LIVE</span><span class="sep">·</span>Wed, Jun 24</span>
+                </div>
+
+                <div class="actions">
+                    <!-- Language pill (matches x-language-switcher dark variant) -->
+                    <button class="lang-pill" title="Language">
+                        <span>English</span>
+                        <span class="code">EN</span>
+                        <svg class="caret" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.126l3.71-3.895a.75.75 0 1 1 1.08 1.04l-4.25 4.46a.75.75 0 0 1-1.08 0l-4.25-4.46a.75.75 0 0 1 .02-1.06Z"/></svg>
+                    </button>
+                    <button class="topbar-action" title="Toggle dark mode"><i class="fas fa-moon icon"></i></button>
+                    <button class="topbar-action" title="Notifications" style="position: relative;">
+                        <i class="fas fa-bell icon"></i>
+                        <span class="badge-bell">3</span>
+                    </button>
+                    <a class="topbar-profile" href="#" title="Profile">
+                        <span class="avatar emboss">A</span>
+                        <span class="label">Profile</span>
+                    </a>
+                    <button class="topbar-action topbar-logout" title="Log out"><i class="fas fa-right-from-bracket icon"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <p style="margin: 14px 0 0 0; font-size: 12px; color: #64748b;">Hover the buttons → border brightens to amber-70 %, fill picks up an amber wash, icon turns cream. Logout follows the same pattern in rose.</p>
+    </section>
+
+    <hr style="border: 0; border-top: 1px solid #1e293b; margin: 8px 0;">
+
+    <div>
+        <p class="section-tag" style="color: #94a3b8;">For reference · the three original mockups</p>
+        <h2 style="font-size: 22px; font-weight: 800; color: #cbd5e1; margin: 4px 0 0 0;">A / B / C side-by-side below</h2>
+    </div>
+
+    <!-- ============================================================ -->
+    <!-- OPTION A · HUD COCKPIT                                        -->
+    <!-- ============================================================ -->
+    <section class="optA">
+        <div style="display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px;">
+            <span class="section-tag">Option A</span>
+            <h2 class="section-title">HUD Cockpit · Aerospace Telemetry</h2>
+        </div>
+        <p class="section-blurb">Buttons are angled instrument-panel plates with scanning amber lines. Numerics are monospace counters. Avatar sits inside a true hexagonal frame. Looks like reading instruments in an F-22 or a McLaren cockpit — technical, precise, deeply on-brand for an auto-parts business.</p>
+
+        <div class="topbar">
+            <div class="hairline"></div>
+            <div class="glow"></div>
+            <div class="topbar-row">
+                <div class="left-placeholder">[ menu · sidebar toggle ]</div>
+
+                <div class="center-block">
+                    <span class="center-title">Dashboard</span>
+                    <span class="center-meta"><span class="dot">●</span> <span class="live">ADMIN · LIVE</span><span class="sep">·</span>Wed, Jun 24</span>
+                </div>
+
+                <div class="actions">
+                    <span class="tlm-chip"><i class="fas fa-satellite-dish" style="font-size: 9px;"></i> TLM · OK</span>
+
+                    <button class="btn-hud">
+                        EN
+                        <svg class="caret" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.126l3.71-3.895a.75.75 0 1 1 1.08 1.04l-4.25 4.46a.75.75 0 0 1-1.08 0l-4.25-4.46a.75.75 0 0 1 .02-1.06Z"/></svg>
+                    </button>
+                    <button class="btn-icon-hud" title="Toggle dark mode"><i class="fas fa-moon icon"></i></button>
+                    <button class="btn-icon-hud" title="Notifications" style="position: relative;"><i class="fas fa-bell icon"></i><span class="badge-tlm">003</span></button>
+                    <a class="profile-hex" href="#">
+                        <span class="avatar-hex">A</span>
+                        <span class="label-stack">
+                            <span class="label-name">Admin</span>
+                            <span class="label-role">Operator</span>
+                        </span>
+                    </a>
+                    <button class="btn-icon-hud btn-eject" title="Sign out / Eject"><i class="fas fa-right-from-bracket icon"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- OPTION B · FROSTED CRYSTAL VISION                            -->
+    <!-- ============================================================ -->
+    <section class="optB">
+        <div style="display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px;">
+            <span class="section-tag">Option B</span>
+            <h2 class="section-title">Frosted Crystal · Apple-Vision Inspired</h2>
+        </div>
+        <p class="section-blurb">Heavy backdrop-blur, soft amber halos beneath each pill, circular avatar with a glowing ring, generous spacing. The notification badge becomes a tiny levitating orb. Premium, soft, luxurious. Feels expensive. Works beautifully against the dark navy because every button gently lifts off it.</p>
+
+        <div class="topbar">
+            <div class="hairline"></div>
+            <div class="glow"></div>
+            <div class="topbar-row">
+                <div class="left-placeholder">[ menu · sidebar toggle ]</div>
+
+                <div class="center-block">
+                    <span class="center-title">Dashboard</span>
+                    <span class="center-meta"><span class="dot">●</span> <span class="live">ADMIN · LIVE</span><span class="sep">·</span>Wed, Jun 24</span>
+                </div>
+
+                <div class="actions">
+                    <button class="btn-crystal">
+                        English
+                        <span class="code-pill">EN</span>
+                        <svg class="caret" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.126l3.71-3.895a.75.75 0 1 1 1.08 1.04l-4.25 4.46a.75.75 0 0 1-1.08 0l-4.25-4.46a.75.75 0 0 1 .02-1.06Z"/></svg>
+                    </button>
+                    <button class="btn-crystal btn-icon-crystal" title="Toggle dark mode"><i class="fas fa-moon icon"></i></button>
+                    <button class="btn-crystal btn-icon-crystal btn-bell-crystal" title="Notifications"><i class="fas fa-bell icon"></i><span class="badge-orb">3</span></button>
+                    <a class="profile-crystal" href="#">
+                        <span class="avatar-round">A</span>
+                        <span class="label">Admin</span>
+                    </a>
+                    <button class="btn-crystal btn-icon-crystal btn-logout-crystal" title="Sign out"><i class="fas fa-right-from-bracket icon"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- OPTION C · EDITORIAL MASTHEAD                                -->
+    <!-- ============================================================ -->
+    <section class="optC">
+        <div style="display: flex; align-items: baseline; gap: 12px; margin-bottom: 4px;">
+            <span class="section-tag">Option C</span>
+            <h2 class="section-title">Editorial Masthead · Magazine Typography</h2>
+        </div>
+        <p class="section-blurb">No buttons at all. Each action becomes a labeled column (icon on top, ALL-CAPS label below) separated by hairlines. Confident, typographic, totally unlike anything in your current header. The profile column is a wider amber-tinted section with avatar + name + role stacked. Reads like a premium business publication's masthead.</p>
+
+        <div class="topbar">
+            <div class="hairline"></div>
+            <div class="glow"></div>
+            <div class="topbar-row">
+                <div class="left-placeholder">[ menu · sidebar toggle ]</div>
+
+                <div class="center-block">
+                    <span class="center-title">Dashboard</span>
+                    <span class="center-meta"><span class="dot">●</span> <span class="live">ADMIN · LIVE</span><span class="sep">·</span>Wed, Jun 24</span>
+                </div>
+
+                <div class="actions">
+                    <div class="col col-lang">
+                        <span class="lang-row">
+                            EN
+                            <svg class="caret" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.126l3.71-3.895a.75.75 0 1 1 1.08 1.04l-4.25 4.46a.75.75 0 0 1-1.08 0l-4.25-4.46a.75.75 0 0 1 .02-1.06Z"/></svg>
+                        </span>
+                        <span class="label">Language</span>
+                    </div>
+                    <div class="col">
+                        <i class="fas fa-moon icon-top"></i>
+                        <span class="label">Theme</span>
+                    </div>
+                    <div class="col">
+                        <span style="position: relative;">
+                            <i class="fas fa-bell icon-top"></i>
+                            <span class="badge-num" style="top: -4px; right: -10px;">3</span>
+                        </span>
+                        <span class="label">Inbox</span>
+                    </div>
+                    <a class="col col-profile" href="#">
+                        <span class="emboss avatar-sq">A</span>
+                        <span class="stack">
+                            <span class="name">Admin</span>
+                            <span class="role">Operator</span>
+                        </span>
+                    </a>
+                    <button class="col col-logout">
+                        <i class="fas fa-right-from-bracket icon-top"></i>
+                        <span class="label">Sign Out</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- SIDE-BY-SIDE CLOSEUPS                                        -->
+    <!-- ============================================================ -->
+    <section>
+        <h2 class="section-title" style="margin-bottom: 18px;">Side-by-side · right cluster only</h2>
+        <div class="closeup-grid">
+
+            <div class="topbar closeup optA">
+                <div class="actions">
+                    <span class="tlm-chip"><i class="fas fa-satellite-dish" style="font-size: 9px;"></i> TLM</span>
+                    <button class="btn-hud">EN <svg class="caret" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.126l3.71-3.895a.75.75 0 1 1 1.08 1.04l-4.25 4.46a.75.75 0 0 1-1.08 0l-4.25-4.46a.75.75 0 0 1 .02-1.06Z"/></svg></button>
+                    <button class="btn-icon-hud"><i class="fas fa-moon icon"></i></button>
+                    <button class="btn-icon-hud" style="position: relative;"><i class="fas fa-bell icon"></i><span class="badge-tlm">003</span></button>
+                    <a class="profile-hex" href="#"><span class="avatar-hex">A</span><span class="label-stack"><span class="label-name">Admin</span><span class="label-role">Operator</span></span></a>
+                    <button class="btn-icon-hud btn-eject"><i class="fas fa-right-from-bracket icon"></i></button>
+                </div>
+            </div>
+
+            <div class="topbar closeup optB">
+                <div class="actions" style="gap: 10px;">
+                    <button class="btn-crystal" style="height: 40px; padding: 0 14px;"><span class="code-pill" style="margin-left: 0;">EN</span><svg class="caret" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.126l3.71-3.895a.75.75 0 1 1 1.08 1.04l-4.25 4.46a.75.75 0 0 1-1.08 0l-4.25-4.46a.75.75 0 0 1 .02-1.06Z"/></svg></button>
+                    <button class="btn-crystal btn-icon-crystal" style="width: 40px; height: 40px;"><i class="fas fa-moon icon"></i></button>
+                    <button class="btn-crystal btn-icon-crystal btn-bell-crystal" style="width: 40px; height: 40px;"><i class="fas fa-bell icon"></i><span class="badge-orb">3</span></button>
+                    <a class="profile-crystal" href="#" style="height: 40px;"><span class="avatar-round" style="width: 32px; height: 32px; font-size: 13px;">A</span><span class="label">Admin</span></a>
+                    <button class="btn-crystal btn-icon-crystal btn-logout-crystal" style="width: 40px; height: 40px;"><i class="fas fa-right-from-bracket icon"></i></button>
+                </div>
+            </div>
+
+            <div class="topbar closeup optC">
+                <div class="actions">
+                    <div class="col col-lang">
+                        <span class="lang-row">EN <svg class="caret" viewBox="0 0 20 20" fill="currentColor"><path d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.126l3.71-3.895a.75.75 0 1 1 1.08 1.04l-4.25 4.46a.75.75 0 0 1-1.08 0l-4.25-4.46a.75.75 0 0 1 .02-1.06Z"/></svg></span>
+                        <span class="label">Lang</span>
+                    </div>
+                    <div class="col"><i class="fas fa-moon icon-top"></i><span class="label">Theme</span></div>
+                    <div class="col"><span style="position: relative;"><i class="fas fa-bell icon-top"></i><span class="badge-num" style="top: -4px; right: -10px;">3</span></span><span class="label">Inbox</span></div>
+                    <a class="col col-profile" href="#"><span class="emboss avatar-sq">A</span><span class="stack"><span class="name">Admin</span><span class="role">Operator</span></span></a>
+                    <button class="col col-logout"><i class="fas fa-right-from-bracket icon-top"></i><span class="label">Exit</span></button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <footer>
+        Preview only · <code>public/admin-topbar-buttons-preview.html</code> · Real header has not been modified.<br>
+        Reply with <strong>A</strong>, <strong>B</strong> or <strong>C</strong> to apply your pick.
+    </footer>
+</div>
+
+</body>
+</html>

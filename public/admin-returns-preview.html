@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Returns &amp; Refunds · 3 Visual Directions (Preview Only)</title>
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer">
+<style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+        font-family: 'Figtree', ui-sans-serif, system-ui, -apple-system, sans-serif;
+        background: #eef1f6;
+        color: #0f172a;
+        padding: 40px 24px 80px;
+        line-height: 1.5;
+    }
+    .wrap { max-width: 1280px; margin: 0 auto; }
+    .stack > * + * { margin-top: 64px; }
+    h1, h2, h3, p { margin: 0; }
+
+    /* Intro */
+    .intro { text-align: center; margin-bottom: 48px; }
+    .intro .tag {
+        font-family: ui-monospace, monospace;
+        font-size: 11px; font-weight: 900; letter-spacing: 0.28em;
+        text-transform: uppercase; color: #f59e0b;
+    }
+    .intro h1 { font-size: 32px; font-weight: 900; color: #04042a; letter-spacing: -0.02em; margin-top: 10px; }
+    .intro p { font-size: 14px; color: #64748b; margin-top: 12px; max-width: 680px; margin-left: auto; margin-right: auto; }
+
+    /* Option label header */
+    .opt-head {
+        display: flex; align-items: center; gap: 14px;
+        padding: 18px 22px;
+        background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);
+        border-radius: 14px 14px 0 0;
+        position: relative; overflow: hidden;
+    }
+    .opt-head::before {
+        content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.45;
+        background-image:
+            repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 18px);
+    }
+    .opt-head::after {
+        content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 3px;
+        background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+    }
+    .opt-num {
+        position: relative; z-index: 2;
+        width: 44px; height: 44px; border-radius: 12px;
+        background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.22), transparent 60%),
+                    linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), inset 0 -2px 4px rgba(120,53,15,0.4), 0 2px 6px rgba(245,158,11,0.30);
+        display: grid; place-items: center;
+        color: #04042a; font-weight: 900; font-size: 18px;
+    }
+    .opt-text { position: relative; z-index: 2; }
+    .opt-text .kicker { font-family: ui-monospace, monospace; font-size: 10px; font-weight: 900; letter-spacing: 0.28em; color: #fcd34d; text-transform: uppercase; }
+    .opt-text h2 { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -0.01em; margin-top: 4px; }
+    .opt-text p { font-size: 12.5px; color: rgba(255,255,255,0.65); margin-top: 4px; }
+
+    /* Page shell */
+    .page {
+        background: #f3f4f7;
+        border-radius: 0 0 18px 18px;
+        padding: 24px;
+        box-shadow: 0 30px 70px rgba(7,7,64,0.10);
+        position: relative;
+    }
+    .page-inner { max-width: 100%; margin: 0 auto; }
+
+    /* Shared */
+    .num-display { font-feature-settings: "tnum" 1, "lnum" 1; letter-spacing: -0.025em; }
+    .bento-stripes { background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 14px); }
+    .bento-shadow { box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06); }
+    .bento-shadow-lg { box-shadow: 0 10px 30px rgba(7,7,64,0.10), 0 24px 50px rgba(7,7,64,0.10); }
+    .corner-brackets::before,
+    .corner-brackets::after {
+        content: ""; position: absolute; width: 14px; height: 14px;
+        border-color: rgba(255,255,255,0.35); border-style: solid; border-width: 0; pointer-events: none;
+    }
+    .corner-brackets::before { top: 14px; left: 14px; border-top-width: 1.5px; border-left-width: 1.5px; }
+    .corner-brackets::after { bottom: 14px; right: 14px; border-bottom-width: 1.5px; border-right-width: 1.5px; }
+
+    /* Pill */
+    .pill {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 4px 10px; border-radius: 999px;
+        font-size: 10.5px; font-weight: 700; line-height: 1;
+        border: 1px solid; letter-spacing: 0.02em; white-space: nowrap;
+    }
+    .pill::before { content:""; width:5px; height:5px; border-radius:50%; background: currentColor; }
+    .pill.requested { background: #fef3c7; color: #b45309; border-color: #fcd34d; }
+    .pill.approved  { background: #dbeafe; color: #1d4ed8; border-color: #93c5fd; }
+    .pill.rejected  { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
+    .pill.received  { background: #cffafe; color: #0e7490; border-color: #67e8f9; }
+    .pill.refunded  { background: #dcfce7; color: #15803d; border-color: #86efac; }
+    .pill.closed    { background: #f1f5f9; color: #475569; border-color: #cbd5e1; }
+    .pill.paid      { background: #dcfce7; color: #15803d; border-color: #86efac; }
+    .pill.unpaid    { background: #fee2e2; color: #b91c1c; border-color: #fca5a5; }
+
+    /* Type tag (flat, no dot) */
+    .ttag {
+        display: inline-flex; align-items: center; padding: 3px 8px;
+        border-radius: 6px; font-size: 9.5px; font-weight: 800;
+        text-transform: uppercase; letter-spacing: .07em; border: 1px solid;
+    }
+    .ttag.return   { background: #f1f5f9; color: #334155; border-color: #cbd5e1; }
+    .ttag.exchange { background: #ede9fe; color: #6d28d9; border-color: #c4b5fd; }
+    .ttag.refund   { background: #dcfce7; color: #15803d; border-color: #86efac; }
+
+    /* Icon button base */
+    .ico-btn {
+        width: 34px; height: 34px;
+        display: inline-flex; align-items: center; justify-content: center;
+        border-radius: 9px; background: #fff;
+        border: 1px solid #e2e8f0; color: #475569;
+        transition: all .15s ease; text-decoration: none;
+    }
+    .ico-btn:hover { color: #04042a; border-color: #fcd34d; background: #fffbeb; }
+
+    /* ─────────────────────────────────────────────────────────────────── */
+    /* OPTION 1 — WORKFLOW CONSOLE                                         */
+    /* ─────────────────────────────────────────────────────────────────── */
+    .o1-hero {
+        position: relative; overflow: hidden;
+        padding: 22px 24px;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);
+        color: #fff;
+    }
+    .o1-hero::before {
+        content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.45;
+        background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 18px);
+    }
+    .o1-hero::after {
+        content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 3px;
+        background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+    }
+    .o1-hero-row { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .o1-kicker { font-family: ui-monospace, monospace; font-size: 10px; font-weight: 900; letter-spacing: 0.28em; color: #fcd34d; text-transform: uppercase; }
+    .o1-hero h1 { font-size: 28px; font-weight: 900; margin-top: 6px; letter-spacing: -0.01em; }
+    .o1-hero .sub { font-size: 13px; color: rgba(255,255,255,0.65); margin-top: 6px; }
+    .o1-hero .sub b { color: #fcd34d; }
+
+    /* ── Premium stat cards (no shared shell, each is its own card) ── */
+    .o1-stats {
+        margin-top: 16px;
+        display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px;
+    }
+    @media (max-width: 1100px) { .o1-stats { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 640px) { .o1-stats { grid-template-columns: repeat(2, 1fr); } }
+    .o1-stat {
+        position: relative; overflow: hidden;
+        background: #fff;
+        border: 1px solid #e3e9f1;
+        border-radius: 16px;
+        padding: 18px;
+        box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06);
+        transition: all .2s ease;
+        cursor: pointer;
+    }
+    .o1-stat:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(7,7,64,0.10); border-color: #cbd5e1; }
+    .o1-stat::before {
+        content: "";
+        position: absolute; top: 0; left: 0; right: 0; height: 3px;
+        background: var(--stat-grad, linear-gradient(90deg, #94a3b8, #64748b));
+    }
+    /* Decorative blurred glow */
+    .o1-stat::after {
+        content: "";
+        position: absolute; right: -30px; bottom: -30px;
+        width: 110px; height: 110px; border-radius: 50%;
+        background: var(--stat-glow, rgba(148,163,184,0.10));
+        filter: blur(20px);
+        pointer-events: none;
+    }
+    .o1-stat .row1 { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .o1-stat .ic {
+        width: 38px; height: 38px;
+        border-radius: 11px;
+        display: grid; place-items: center;
+        font-size: 15px;
+        background: var(--stat-ico-bg, #f1f5f9);
+        color: var(--stat-ico-fg, #64748b);
+        flex-shrink: 0;
+    }
+    .o1-stat .trend {
+        font-size: 10px; font-weight: 800;
+        padding: 3px 8px; border-radius: 999px;
+        display: inline-flex; align-items: center; gap: 4px;
+        font-family: ui-monospace, monospace;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+    }
+    .o1-stat .trend.up   { background: rgba(34,197,94,0.10); color: #15803d; border: 1px solid rgba(34,197,94,0.20); }
+    .o1-stat .trend.warn { background: rgba(245,158,11,0.10); color: #b45309; border: 1px solid rgba(245,158,11,0.20); }
+    .o1-stat .trend.flat { background: rgba(100,116,139,0.08); color: #475569; border: 1px solid rgba(100,116,139,0.15); }
+    .o1-stat .trend.amber { background: rgba(245,158,11,0.10); color: #b45309; border: 1px solid rgba(245,158,11,0.22); }
+    .o1-stat .lbl {
+        position: relative; z-index: 1;
+        font-size: 9.5px; font-weight: 800; letter-spacing: 0.12em;
+        text-transform: uppercase; color: #64748b;
+        margin-top: 14px;
+    }
+    .o1-stat .val {
+        position: relative; z-index: 1;
+        font-size: 30px; font-weight: 900; color: #04042a;
+        margin-top: 4px; line-height: 1.1; letter-spacing: -0.025em;
+    }
+    .o1-stat .val .cy { font-size: 12px; color: #94a3b8; font-weight: 600; margin-left: 4px; }
+    .o1-stat .delta {
+        position: relative; z-index: 1;
+        font-size: 11px; font-weight: 600; color: #64748b;
+        margin-top: 8px;
+        display: flex; align-items: center; gap: 6px;
+        padding-top: 8px;
+        border-top: 1px dashed #e2e8f0;
+    }
+    .o1-stat .delta .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--stat-dot, #94a3b8); flex-shrink: 0; }
+
+    /* Per-stat color identities */
+    .o1-stat.tot  { --stat-grad: linear-gradient(90deg, #1e293b, #04042a); --stat-glow: rgba(4,4,42,0.08); --stat-ico-bg: rgba(4,4,42,0.08); --stat-ico-fg: #04042a; --stat-dot: #04042a; }
+    .o1-stat.open { --stat-grad: linear-gradient(90deg, #fbbf24, #f59e0b); --stat-glow: rgba(245,158,11,0.16); --stat-ico-bg: #fef3c7; --stat-ico-fg: #b45309; --stat-dot: #f59e0b; }
+    .o1-stat.ref  { --stat-grad: linear-gradient(90deg, #4ade80, #16a34a); --stat-glow: rgba(16,163,74,0.12); --stat-ico-bg: #dcfce7; --stat-ico-fg: #15803d; --stat-dot: #16a34a; }
+    .o1-stat.cls  { --stat-grad: linear-gradient(90deg, #cbd5e1, #64748b); --stat-glow: rgba(100,116,139,0.10); --stat-ico-bg: #f1f5f9; --stat-ico-fg: #475569; --stat-dot: #64748b; }
+    .o1-stat.val-money {
+        --stat-grad: linear-gradient(90deg, #fbbf24, #f59e0b);
+        --stat-glow: rgba(245,158,11,0.20);
+        --stat-ico-bg: linear-gradient(135deg, #fef3c7, #fde68a);
+        --stat-ico-fg: #92400e;
+        --stat-dot: #f59e0b;
+        background: linear-gradient(180deg, #fffbeb, #fef3c7);
+        border-color: #fde68a;
+    }
+    .o1-stat.val-money::after { background: rgba(245,158,11,0.22); }
+    .o1-stat.val-money .val { color: #04042a; }
+    .o1-stat.val-money .lbl { color: #92400e; }
+
+    .o1-filter {
+        margin-top: 16px;
+        background: #fff; border: 1px solid #e3e9f1; border-radius: 16px;
+        padding: 18px;
+        box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06);
+    }
+    .o1-filter-head { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+    .o1-filter-head .badge { width: 30px; height: 30px; border-radius: 9px; background: #04042a; color: #fcd34d; display: grid; place-items: center; font-size: 13px; }
+    .o1-filter-head h3 { font-size: 14px; font-weight: 800; color: #04042a; }
+    .o1-filter-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 12px; align-items: end; }
+    @media (max-width: 800px) { .o1-filter-grid { grid-template-columns: 1fr; } }
+    .o1-field label { display: block; font-size: 10.5px; font-weight: 800; letter-spacing: 0.05em; text-transform: uppercase; color: #64748b; margin-bottom: 6px; }
+    .o1-input, .o1-select {
+        height: 42px; width: 100%; border-radius: 10px; padding: 0 14px;
+        border: 1px solid #d7e0ea; background: #f8fafc; color: #0f172a;
+        font-size: 13px; font-family: inherit;
+        transition: all .15s ease;
+    }
+    .o1-input:focus, .o1-select:focus {
+        outline: none; border-color: #f59e0b; background: #fff;
+        box-shadow: 0 0 0 3px rgba(245,158,11,0.18);
+    }
+    .o1-select {
+        appearance: none;
+        background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23f59e0b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+        background-repeat: no-repeat; background-position: right 14px center;
+        padding-right: 40px;
+        font-weight: 600;
+    }
+    .o1-search-wrap { position: relative; }
+    .o1-search-wrap .ico { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+    .o1-search-wrap .o1-input { padding-left: 40px; }
+    .o1-filter-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; padding-top: 14px; border-top: 1px dashed #e2e8f0; }
+    .o1-btn-sm { height: 40px; padding: 0 18px; border-radius: 10px; font-size: 13px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; border: 1px solid; cursor: pointer; }
+    .o1-btn-sm.apply { background: #04042a; color: #fcd34d; border-color: #04042a; }
+    .o1-btn-sm.reset { background: #fff; color: #475569; border-color: #d7e0ea; }
+
+    /* Status chip strip — moved INTO the list-card head as a separate visual band */
+    .o1-status-band {
+        display: flex; align-items: center; gap: 16px;
+        padding: 14px 20px;
+        border-bottom: 1px solid #e3e9f1;
+        background: linear-gradient(180deg, #fafbfd, #fff);
+        flex-wrap: wrap;
+    }
+    .o1-status-band .band-label {
+        display: inline-flex; align-items: center; gap: 8px;
+        font-family: ui-monospace, monospace; font-size: 10px;
+        font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase;
+        color: #64748b; flex-shrink: 0;
+    }
+    .o1-status-band .band-label::before {
+        content: ""; width: 6px; height: 6px; border-radius: 50%; background: #f59e0b;
+        box-shadow: 0 0 0 3px rgba(245,158,11,0.18);
+    }
+    .o1-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+    .o1-chip {
+        display: inline-flex; align-items: center; gap: 8px;
+        padding: 6px 12px;
+        border-radius: 999px;
+        font-size: 11.5px; font-weight: 700;
+        border: 1px solid #e2e8f0; background: #fff; color: #475569;
+        cursor: pointer;
+        transition: all .15s ease;
+    }
+    .o1-chip:hover {
+        background: var(--chip-hover-bg, #f8fafc);
+        border-color: var(--chip-hover-bd, #cbd5e1);
+        color: var(--chip-hover-fg, #04042a);
+    }
+    .o1-chip .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+    .o1-chip .cnt {
+        background: rgba(15,23,42,0.05);
+        padding: 1px 7px;
+        border-radius: 999px;
+        font-size: 10.5px;
+        font-family: ui-monospace, monospace;
+        color: #475569;
+        font-weight: 800;
+        letter-spacing: -0.01em;
+    }
+    .o1-chip.c-all  { --chip-hover-bg: #f8fafc; --chip-hover-bd: #cbd5e1; --chip-hover-fg: #04042a; }
+    .o1-chip.c-req  { --chip-hover-bg: #fffbeb; --chip-hover-bd: #fbbf24; --chip-hover-fg: #92400e; }
+    .o1-chip.c-app  { --chip-hover-bg: #eff6ff; --chip-hover-bd: #93c5fd; --chip-hover-fg: #1e3a8a; }
+    .o1-chip.c-rej  { --chip-hover-bg: #fef2f2; --chip-hover-bd: #fca5a5; --chip-hover-fg: #7f1d1d; }
+    .o1-chip.c-rcv  { --chip-hover-bg: #ecfeff; --chip-hover-bd: #67e8f9; --chip-hover-fg: #155e75; }
+    .o1-chip.c-rfd  { --chip-hover-bg: #f0fdf4; --chip-hover-bd: #86efac; --chip-hover-fg: #14532d; }
+    .o1-chip.c-cls  { --chip-hover-bg: #f8fafc; --chip-hover-bd: #cbd5e1; --chip-hover-fg: #1e293b; }
+    .o1-chip.on {
+        background: #04042a;
+        color: #fcd34d;
+        border-color: #04042a;
+        box-shadow: 0 6px 14px -8px rgba(4,4,42,0.40);
+    }
+    .o1-chip.on .cnt { background: rgba(252,211,77,0.18); color: #fcd34d; }
+
+    .o1-table-card {
+        margin-top: 16px;
+        background: #fff; border: 1px solid #e3e9f1; border-radius: 18px;
+        overflow: hidden;
+        box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06);
+    }
+    .o1-table-head {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 16px 20px; border-bottom: 1px solid #e3e9f1;
+        background: linear-gradient(180deg, #fafbfd, #fff);
+    }
+    .o1-table-head .ttl { font-size: 14px; font-weight: 800; color: #04042a; display: flex; align-items: center; gap: 10px; }
+    .o1-table-head .ttl::before { content: ""; width: 4px; height: 18px; border-radius: 99px; background: linear-gradient(180deg, #fbbf24, #f59e0b); }
+    .o1-table-head .meta { font-size: 11.5px; color: #64748b; font-family: ui-monospace, monospace; }
+    .o1-row {
+        display: grid; grid-template-columns: 220px 1fr 260px 1fr 280px;
+        gap: 16px;
+        padding: 18px 20px;
+        border-bottom: 1px solid #eef2f7;
+        align-items: start;
+    }
+    .o1-row:hover { background: #fefce8; }
+    .o1-req .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
+    .o1-req .reqid { font-size: 13px; font-weight: 800; color: #04042a; font-family: ui-monospace, monospace; }
+    .o1-req .dt { font-size: 11px; color: #64748b; margin-top: 2px; font-family: ui-monospace, monospace; }
+    .o1-ord .ordnum { font-size: 13px; font-weight: 800; color: #2563eb; font-family: ui-monospace, monospace; text-decoration: none; }
+    .o1-ord .ordnum:hover { color: #1d4ed8; }
+    .o1-ord .total { font-size: 13.5px; font-weight: 800; color: #04042a; margin-top: 6px; }
+    .o1-ord .total .cy { font-size: 10px; color: #94a3b8; font-weight: 500; }
+    .o1-ord .pay { margin-top: 6px; }
+    .o1-cust .nm { font-size: 13px; font-weight: 700; color: #04042a; }
+    .o1-cust .em { font-size: 11px; color: #64748b; margin-top: 2px; }
+    .o1-cust .kv {
+        display: grid; gap: 4px; margin-top: 8px;
+        background: #f8fafc; border-radius: 8px; padding: 8px 10px;
+        font-size: 10.5px;
+    }
+    .o1-cust .kv .it { display: flex; justify-content: space-between; gap: 8px; }
+    .o1-cust .kv .it .k { color: #64748b; font-weight: 600; }
+    .o1-cust .kv .it .v { color: #0f172a; font-weight: 600; }
+    .o1-rsn .reason { font-size: 12px; color: #334155; line-height: 1.5; }
+    .o1-rsn .note { margin-top: 8px; padding: 8px 10px; background: #fef3c7; border: 1px solid #fde68a; border-radius: 8px; font-size: 11px; color: #78350f; }
+    .o1-rsn .note b { color: #422006; }
+    .o1-act .frm-grid { display: grid; gap: 8px; grid-template-columns: 1fr 1fr; }
+    .o1-act label { font-size: 10px; font-weight: 800; text-transform: uppercase; color: #64748b; letter-spacing: 0.05em; display: block; margin-bottom: 4px; }
+    .o1-act select, .o1-act input, .o1-act textarea {
+        width: 100%;
+        border: 1px solid #d7e0ea;
+        background: #fff;
+        border-radius: 8px;
+        padding: 0 10px;
+        height: 38px;
+        font-size: 12.5px; font-family: inherit;
+        color: #0f172a;
+    }
+    .o1-act textarea { padding: 8px 10px; height: 60px; resize: none; }
+    .o1-act .save {
+        margin-top: 8px;
+        width: 100%; height: 40px; border-radius: 10px;
+        background: linear-gradient(180deg, #fbbf24, #f59e0b);
+        color: #04042a; font-weight: 800; font-size: 13px;
+        border: 1px solid rgba(255,255,255,0.2);
+        display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+        cursor: pointer;
+        box-shadow: 0 8px 18px -10px rgba(245,158,11,0.7);
+    }
+
+    .o1-pag {
+        display: flex; justify-content: space-between; align-items: center;
+        padding: 14px 20px; border-top: 1px solid #e3e9f1; background: #fafbfd;
+        font-size: 12px; color: #64748b;
+    }
+    .o1-pag .nums { display: flex; gap: 6px; }
+    .o1-pag .nums a, .o1-pag .nums span {
+        display: inline-flex; align-items: center; justify-content: center;
+        min-width: 34px; height: 34px; padding: 0 10px;
+        border-radius: 8px; background: #fff; border: 1px solid #e3e9f1;
+        color: #475569; font-weight: 700; font-size: 12px; text-decoration: none;
+    }
+    .o1-pag .nums .active { background: #04042a; color: #fcd34d; border-color: #04042a; }
+
+    /* ─────────────────────────────────────────────────────────────────── */
+    /* OPTION 2 — REFUND OPERATIONS BENTO (matches Orders Bento)           */
+    /* ─────────────────────────────────────────────────────────────────── */
+    .o2-bento {
+        display: grid; gap: 14px;
+        grid-template-columns: repeat(4, 1fr); grid-auto-rows: minmax(120px, auto);
+        margin-bottom: 16px;
+    }
+    @media (max-width: 900px) { .o2-bento { grid-template-columns: repeat(2, 1fr); } }
+
+    .o2-hero {
+        position: relative; overflow: hidden;
+        grid-column: span 2; grid-row: span 2;
+        background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);
+        color: #fff; border-radius: 20px; padding: 26px;
+    }
+    .o2-hero::before {
+        content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.5;
+        background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.05) 0 1px, transparent 1px 16px);
+    }
+    .o2-hero::after { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, #22d3ee, #fbbf24, #f59e0b); }
+    .o2-hero .glow1 { position: absolute; top: -100px; right: -100px; height: 320px; width: 320px; border-radius: 999px; background: rgba(251,191,36,0.18); filter: blur(80px); }
+    .o2-hero .glow2 { position: absolute; bottom: -100px; left: -50px; height: 260px; width: 260px; border-radius: 999px; background: rgba(34,211,238,0.12); filter: blur(80px); }
+    .o2-hero-row { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: flex-start; gap: 14px; }
+    .o2-hero .kicker { font-family: ui-monospace, monospace; font-size: 10px; font-weight: 800; letter-spacing: 0.20em; color: rgba(255,255,255,0.55); text-transform: uppercase; }
+    .o2-hero .kicker b { color: #fcd34d; }
+    .o2-hero h2 { font-size: 13px; color: rgba(255,255,255,0.55); margin-top: 6px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.15em; }
+    .o2-hero .iconbox { width: 48px; height: 48px; border-radius: 14px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.12); display: grid; place-items: center; font-size: 18px; backdrop-filter: blur(8px); }
+    .o2-hero .big { position: relative; z-index: 2; margin-top: 26px; }
+    .o2-hero .big .cy { font-size: 14px; font-weight: 800; color: #fcd34d; }
+    .o2-hero .big .nm { font-size: 56px; font-weight: 900; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; margin-top: 4px; }
+    .o2-hero .meta-row { position: relative; z-index: 2; display: flex; gap: 24px; margin-top: 24px; padding-top: 18px; border-top: 1px dashed rgba(255,255,255,0.15); }
+    .o2-hero .meta-row .it .l { font-size: 10px; font-weight: 800; letter-spacing: 0.15em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+    .o2-hero .meta-row .it .v { font-size: 20px; font-weight: 900; margin-top: 4px; }
+
+    .o2-tile {
+        position: relative; overflow: hidden;
+        background: #fff; border-radius: 16px; padding: 18px;
+        border: 1px solid #e3e9f1;
+        box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06);
+        transition: all .2s ease;
+    }
+    .o2-tile:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(7,7,64,0.10); }
+    .o2-tile .head { display: flex; justify-content: space-between; align-items: center; }
+    .o2-tile .head .lbl { font-size: 10px; font-weight: 800; letter-spacing: 0.10em; text-transform: uppercase; color: #64748b; }
+    .o2-tile .head .ic { width: 32px; height: 32px; border-radius: 9px; display: grid; place-items: center; font-size: 13px; }
+    .o2-tile .val { font-size: 30px; font-weight: 900; color: #04042a; margin-top: 12px; letter-spacing: -0.02em; }
+    .o2-tile .foot { font-size: 11px; color: #64748b; margin-top: 6px; display: flex; align-items: center; gap: 6px; }
+    .o2-tile .stripe { position: absolute; top: 0; left: 0; right: 0; height: 3px; }
+    .o2-tile.amber  .ic { background: #fef3c7; color: #b45309; } .o2-tile.amber  .stripe { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+    .o2-tile.blue   .ic { background: #dbeafe; color: #1d4ed8; } .o2-tile.blue   .stripe { background: linear-gradient(90deg, #60a5fa, #2563eb); }
+    .o2-tile.cyan   .ic { background: #cffafe; color: #0e7490; } .o2-tile.cyan   .stripe { background: linear-gradient(90deg, #67e8f9, #06b6d4); }
+    .o2-tile.green  .ic { background: #dcfce7; color: #15803d; } .o2-tile.green  .stripe { background: linear-gradient(90deg, #4ade80, #16a34a); }
+    .o2-tile.red    .ic { background: #fee2e2; color: #b91c1c; } .o2-tile.red    .stripe { background: linear-gradient(90deg, #f87171, #dc2626); }
+    .o2-tile.gray   .ic { background: #f1f5f9; color: #475569; } .o2-tile.gray   .stripe { background: linear-gradient(90deg, #cbd5e1, #64748b); }
+
+    .o2-filter {
+        background: #fff; border-radius: 16px; padding: 16px;
+        border: 1px solid #e3e9f1; box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06);
+        margin-bottom: 14px;
+        display: grid; grid-template-columns: 2fr 1fr auto; gap: 10px; align-items: center;
+    }
+    @media (max-width: 700px) { .o2-filter { grid-template-columns: 1fr; } }
+    .o2-filter .o2-search { position: relative; }
+    .o2-filter .o2-search .ic { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: #94a3b8; }
+    .o2-filter input, .o2-filter select {
+        height: 44px; border-radius: 12px; border: 1px solid #e3e9f1; background: #f8fafc;
+        padding: 0 14px; font-size: 13px; width: 100%; font-family: inherit; color: #0f172a;
+    }
+    .o2-filter .o2-search input { padding-left: 40px; }
+    .o2-filter-actions { display: flex; gap: 8px; }
+    .o2-btn {
+        height: 44px; padding: 0 18px; border-radius: 12px; font-size: 13px; font-weight: 700;
+        display: inline-flex; align-items: center; gap: 8px; cursor: pointer; border: 1px solid;
+    }
+    .o2-btn.go { background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #04042a; border-color: rgba(0,0,0,0.05); }
+    .o2-btn.rst { background: #fff; color: #475569; border-color: #e3e9f1; }
+
+    .o2-list-card {
+        background: #fff; border-radius: 18px;
+        border: 1px solid #e3e9f1; overflow: hidden;
+        box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06);
+    }
+    .o2-list-head {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 18px 22px; border-bottom: 1px solid #eef2f7;
+    }
+    .o2-list-head .ttl-ico { width: 36px; height: 36px; border-radius: 10px; background: #04042a; color: #fcd34d; display: grid; place-items: center; }
+    .o2-list-head h3 { font-size: 15px; font-weight: 800; color: #04042a; }
+    .o2-list-head .sub { font-size: 11.5px; color: #64748b; font-family: ui-monospace, monospace; margin-top: 2px; }
+    .o2-list-head .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+    .o2-list-head .chip {
+        padding: 6px 10px; border-radius: 999px; background: #f1f5f9; color: #475569;
+        font-size: 11px; font-weight: 700; border: 1px solid #e2e8f0; cursor: pointer;
+        display: inline-flex; align-items: center; gap: 6px;
+    }
+    .o2-list-head .chip .dot { width: 6px; height: 6px; border-radius: 50%; }
+    .o2-list-head .chip.on { background: #04042a; color: #fcd34d; border-color: #04042a; }
+    .o2-list-head .chip .cnt { padding: 1px 6px; border-radius: 999px; background: rgba(0,0,0,0.06); font-size: 10px; font-family: ui-monospace, monospace; }
+    .o2-list-head .chip.on .cnt { background: rgba(252,211,77,0.2); color: #fcd34d; }
+
+    /* Compact bento-style "request cards" instead of huge table */
+    .o2-reqs { display: grid; gap: 0; }
+    .o2-req {
+        display: grid; grid-template-columns: 200px 1fr 220px 240px;
+        gap: 16px;
+        padding: 18px 22px;
+        border-bottom: 1px solid #f1f5f9;
+        align-items: start;
+        transition: background .15s;
+    }
+    .o2-req:hover { background: #fffbeb; }
+    .o2-req .col-req .tags { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+    .o2-req .col-req .rid { font-family: ui-monospace, monospace; font-size: 12.5px; font-weight: 800; color: #04042a; }
+    .o2-req .col-req .dt { font-family: ui-monospace, monospace; font-size: 10.5px; color: #94a3b8; margin-top: 3px; }
+    .o2-req .col-cust .nm { font-weight: 700; font-size: 13px; color: #04042a; }
+    .o2-req .col-cust .em { font-size: 11px; color: #64748b; }
+    .o2-req .col-cust .reason {
+        margin-top: 8px; padding: 8px 12px; border-radius: 10px;
+        background: #f8fafc; border-left: 3px solid #fbbf24;
+        font-size: 11.5px; color: #334155; line-height: 1.5;
+    }
+    .o2-req .col-order { font-family: ui-monospace, monospace; }
+    .o2-req .col-order .ono { font-size: 12px; font-weight: 800; color: #2563eb; text-decoration: none; }
+    .o2-req .col-order .amt { font-size: 14px; font-weight: 900; color: #04042a; margin-top: 4px; font-variant-numeric: tabular-nums; }
+    .o2-req .col-order .amt .cy { font-size: 9.5px; color: #94a3b8; font-weight: 600; margin-left: 3px; }
+    .o2-req .col-order .pay { margin-top: 6px; }
+    .o2-req .col-act .frm { display: grid; gap: 6px; }
+    .o2-req .col-act .row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+    .o2-req .col-act select, .o2-req .col-act input {
+        width: 100%; height: 34px; padding: 0 10px;
+        border: 1px solid #d7e0ea; border-radius: 8px;
+        background: #fff; color: #0f172a; font-size: 12px; font-family: inherit;
+    }
+    .o2-req .col-act .save {
+        height: 36px; border-radius: 8px;
+        background: linear-gradient(180deg, #fbbf24, #f59e0b);
+        color: #04042a; font-weight: 800; font-size: 12px;
+        border: 1px solid rgba(255,255,255,0.2);
+        cursor: pointer; box-shadow: 0 6px 14px -8px rgba(245,158,11,0.6);
+    }
+
+    /* ─────────────────────────────────────────────────────────────────── */
+    /* OPTION 3 — TRIAGE BOARD (Kanban-like columns)                       */
+    /* ─────────────────────────────────────────────────────────────────── */
+    .o3-board {
+        background:
+            repeating-linear-gradient(135deg, rgba(7,7,64,0.025) 0 1px, transparent 1px 22px),
+            repeating-linear-gradient(45deg, rgba(7,7,64,0.018) 0 1px, transparent 1px 22px),
+            #fafbfd;
+        border-radius: 22px;
+        padding: 4px;
+        border: 1px solid #e3e9f1;
+    }
+    .o3-header {
+        position: relative; overflow: hidden;
+        background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);
+        border-radius: 20px;
+        padding: 22px 26px;
+        color: #fff;
+    }
+    .o3-header::before {
+        content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.45;
+        background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 18px);
+    }
+    .o3-header::after { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, transparent, #fbbf24, transparent); }
+    .o3-h-grid { position: relative; z-index: 2; display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .o3-tag { font-family: ui-monospace, monospace; font-size: 10px; font-weight: 900; letter-spacing: 0.32em; color: #fcd34d; text-transform: uppercase; display: inline-flex; align-items: center; gap: 8px; }
+    .o3-tag::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #fbbf24; box-shadow: 0 0 12px #fbbf24; animation: o3pulse 1.6s ease-out infinite; }
+    @keyframes o3pulse { 0% { box-shadow: 0 0 0 0 rgba(251,191,36,0.5); } 100% { box-shadow: 0 0 0 12px rgba(251,191,36,0); } }
+    .o3-header h1 { font-size: 26px; font-weight: 900; letter-spacing: -0.01em; margin-top: 6px; }
+    .o3-header .sub { font-size: 12.5px; color: rgba(255,255,255,0.55); margin-top: 4px; font-family: ui-monospace, monospace; }
+
+    .o3-h-meta { display: flex; gap: 22px; }
+    .o3-h-meta .it { text-align: right; }
+    .o3-h-meta .it .l { font-family: ui-monospace, monospace; font-size: 9.5px; font-weight: 800; letter-spacing: 0.25em; color: rgba(255,255,255,0.45); text-transform: uppercase; }
+    .o3-h-meta .it .v { font-size: 20px; font-weight: 900; color: #fff; margin-top: 4px; font-variant-numeric: tabular-nums; }
+    .o3-h-meta .it .v.amber { color: #fcd34d; }
+
+    .o3-control {
+        margin: 14px 4px 0;
+        background: #fff; border: 1px solid #e3e9f1; border-radius: 16px;
+        padding: 16px 18px;
+    }
+    .o3-control-head {
+        display: flex; align-items: center; gap: 10px;
+        font-family: ui-monospace, monospace; font-size: 10px; font-weight: 800;
+        letter-spacing: 0.25em; color: #64748b; text-transform: uppercase;
+        padding-bottom: 12px; border-bottom: 1px dashed #e3e9f1; margin-bottom: 14px;
+    }
+    .o3-control-head .dot { width: 8px; height: 8px; border-radius: 50%; background: #f59e0b; }
+    .o3-control-grid { display: grid; grid-template-columns: 2.2fr 1fr auto; gap: 10px; align-items: end; }
+    .o3-control-grid label { font-family: ui-monospace, monospace; font-size: 9.5px; font-weight: 800; letter-spacing: 0.18em; color: #64748b; text-transform: uppercase; margin-bottom: 6px; display: block; }
+    .o3-control-grid input, .o3-control-grid select {
+        height: 42px; border: 1px solid #d7e0ea; border-radius: 8px; background: #f8fafc;
+        padding: 0 14px; font-size: 13px; color: #0f172a; font-family: inherit; width: 100%;
+    }
+    .o3-control-actions { display: flex; gap: 8px; height: 42px; }
+    .o3-btn { height: 42px; padding: 0 18px; border-radius: 8px; font-size: 12.5px; font-weight: 800; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; border: 1px solid; font-family: 'Figtree', sans-serif; }
+    .o3-btn.go { background: #04042a; color: #fcd34d; border-color: #04042a; }
+    .o3-btn.rst { background: #fff; color: #475569; border-color: #d7e0ea; }
+
+    /* Kanban */
+    .o3-kanban {
+        margin: 14px 4px 0;
+        display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px;
+    }
+    @media (max-width: 1200px) { .o3-kanban { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 700px) { .o3-kanban { grid-template-columns: repeat(2, 1fr); } }
+    .o3-col {
+        background: #fff;
+        border: 1px solid #e3e9f1; border-radius: 14px;
+        padding: 10px;
+        min-height: 320px;
+    }
+    .o3-col-head {
+        display: flex; align-items: center; justify-content: space-between;
+        padding: 8px 10px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+        font-family: ui-monospace, monospace;
+    }
+    .o3-col-head .lbl { font-size: 10px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; display: flex; align-items: center; gap: 6px; }
+    .o3-col-head .cnt { font-size: 11px; font-weight: 900; padding: 2px 8px; border-radius: 999px; background: rgba(255,255,255,0.7); }
+    .o3-col.requested .o3-col-head { background: linear-gradient(180deg, #fef3c7, #fde68a); color: #78350f; }
+    .o3-col.approved  .o3-col-head { background: linear-gradient(180deg, #dbeafe, #bfdbfe); color: #1e3a8a; }
+    .o3-col.rejected  .o3-col-head { background: linear-gradient(180deg, #fee2e2, #fecaca); color: #7f1d1d; }
+    .o3-col.received  .o3-col-head { background: linear-gradient(180deg, #cffafe, #a5f3fc); color: #155e75; }
+    .o3-col.refunded  .o3-col-head { background: linear-gradient(180deg, #dcfce7, #bbf7d0); color: #14532d; }
+    .o3-col.closed    .o3-col-head { background: linear-gradient(180deg, #e2e8f0, #cbd5e1); color: #1e293b; }
+
+    .o3-card {
+        background: #fafbfd;
+        border: 1px solid #e3e9f1; border-radius: 10px;
+        padding: 12px;
+        margin-bottom: 8px;
+        position: relative;
+        transition: all .15s;
+        cursor: pointer;
+    }
+    .o3-card:hover { background: #fff; border-color: #fcd34d; transform: translateY(-1px); box-shadow: 0 8px 18px -10px rgba(7,7,64,0.20); }
+    .o3-card .row1 { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .o3-card .rid { font-family: ui-monospace, monospace; font-size: 11.5px; font-weight: 800; color: #04042a; }
+    .o3-card .dt { font-family: ui-monospace, monospace; font-size: 9.5px; color: #94a3b8; }
+    .o3-card .nm { font-size: 12px; font-weight: 700; color: #04042a; margin-top: 4px; }
+    .o3-card .ono { font-family: ui-monospace, monospace; font-size: 10.5px; color: #2563eb; margin-top: 2px; text-decoration: none; }
+    .o3-card .amt { font-size: 13px; font-weight: 900; color: #04042a; margin-top: 6px; font-variant-numeric: tabular-nums; }
+    .o3-card .amt .cy { font-size: 9px; color: #94a3b8; font-weight: 600; margin-left: 3px; }
+    .o3-card .reason {
+        margin-top: 8px; font-size: 10.5px; color: #475569; line-height: 1.5;
+        max-height: 42px; overflow: hidden;
+        display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical;
+    }
+    .o3-card .acts { display: flex; gap: 6px; margin-top: 10px; padding-top: 8px; border-top: 1px dashed #e2e8f0; }
+    .o3-card .acts .btn {
+        flex: 1;
+        height: 28px; border-radius: 6px;
+        background: #fff; border: 1px solid #e2e8f0; color: #475569;
+        font-size: 10.5px; font-weight: 700; cursor: pointer;
+        display: inline-flex; align-items: center; justify-content: center; gap: 4px;
+    }
+    .o3-card .acts .btn.primary { background: #04042a; color: #fcd34d; border-color: #04042a; }
+    .o3-card .acts .btn:hover { border-color: #fcd34d; color: #04042a; background: #fffbeb; }
+    .o3-card .acts .btn.primary:hover { background: #07073a; color: #fcd34d; }
+    .o3-col-empty {
+        padding: 24px 12px; text-align: center;
+        font-size: 11px; color: #94a3b8;
+        border: 2px dashed #e2e8f0; border-radius: 10px;
+        font-family: ui-monospace, monospace;
+    }
+
+    /* Industrial stat tickets */
+    .o3-tickets {
+        margin: 14px 4px 0;
+        display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;
+    }
+    @media (max-width: 900px) { .o3-tickets { grid-template-columns: repeat(2, 1fr); } }
+    .o3-ticket {
+        position: relative; overflow: hidden;
+        background: #fff; border: 1px solid #e3e9f1; border-radius: 14px;
+        padding: 14px 16px;
+        transition: all .15s;
+    }
+    .o3-ticket:hover { border-color: #fcd34d; transform: translateY(-1px); }
+    .o3-ticket .bar { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--tc, #94a3b8); }
+    .o3-ticket .corners::before, .o3-ticket .corners::after {
+        content: ""; position: absolute; width: 8px; height: 8px;
+        border-color: var(--tc, #94a3b8); border-style: solid; border-width: 0; opacity: .5;
+    }
+    .o3-ticket .corners::before { top: 8px; right: 8px; border-top-width: 1.5px; border-right-width: 1.5px; }
+    .o3-ticket .corners::after { bottom: 8px; left: 8px; border-bottom-width: 1.5px; border-left-width: 1.5px; }
+    .o3-ticket .row1 { display: flex; justify-content: space-between; align-items: center; }
+    .o3-ticket .lbl { font-family: ui-monospace, monospace; font-size: 9px; font-weight: 800; letter-spacing: 0.20em; color: #64748b; text-transform: uppercase; }
+    .o3-ticket .code { font-family: ui-monospace, monospace; font-size: 8.5px; padding: 2px 5px; border-radius: 4px; background: #f1f5f9; color: #475569; font-weight: 700; }
+    .o3-ticket .val { font-size: 26px; font-weight: 900; color: #04042a; margin-top: 8px; line-height: 1; letter-spacing: -0.02em; }
+    .o3-ticket .val .cy { font-size: 10px; color: #94a3b8; font-weight: 600; margin-left: 3px; }
+    .o3-ticket .foot { font-size: 10px; color: #15803d; font-weight: 700; margin-top: 8px; }
+    .o3-ticket.tot   { --tc: #04042a; }
+    .o3-ticket.open  { --tc: #f59e0b; }
+    .o3-ticket.ref   { --tc: #16a34a; }
+    .o3-ticket.cls   { --tc: #64748b; }
+    .o3-ticket.money { --tc: #f59e0b; }
+
+    /* Section divider */
+    .preview-section-label {
+        margin: 28px 0 14px;
+        font-family: ui-monospace, monospace;
+        font-size: 11px; font-weight: 900; letter-spacing: 0.20em;
+        text-transform: uppercase; color: #64748b;
+        display: flex; align-items: center; gap: 10px;
+    }
+    .preview-section-label::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: #f59e0b; }
+    .preview-section-label::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, #cbd5e1, transparent); }
+
+    /* Empty state */
+    .empty { padding: 50px 16px; text-align: center; }
+    .empty .ic {
+        width: 56px; height: 56px; margin: 0 auto 16px;
+        border-radius: 16px; background: #f8fafc; border: 1px solid #e3e9f1;
+        display: grid; place-items: center; font-size: 22px; color: #94a3b8;
+    }
+    .empty h4 { font-size: 16px; font-weight: 800; color: #04042a; }
+    .empty p { font-size: 13px; color: #64748b; margin-top: 6px; max-width: 380px; margin-left: auto; margin-right: auto; }
+</style>
+</head>
+<body>
+<div class="wrap stack">
+
+    <!-- Intro -->
+    <div class="intro">
+        <div class="tag">YALLA SPARE · ADMIN · RETURNS &amp; REFUNDS</div>
+        <h1>Returns &amp; Refunds — 3 Visual Directions</h1>
+        <p>Pick one. All three use the dashboard's premium dark-navy + amber palette, soft shadows, rounded corners, and corner-bracket industrial accents — matching the Orders Management page exactly. No real files have been changed.</p>
+    </div>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- OPTION 1 — WORKFLOW CONSOLE                                       -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section>
+        <div class="opt-head">
+            <div class="opt-num">1</div>
+            <div class="opt-text">
+                <div class="kicker">OPTION 1 · WORKFLOW CONSOLE</div>
+                <h2>Refund workflow control center</h2>
+                <p>Hero strip · 5 stat cards · filter card · status chips with counts · spacious list with all customer details and inline workflow form</p>
+            </div>
+        </div>
+        <div class="page">
+            <div class="page-inner">
+
+                <div class="o1-hero">
+                    <div class="o1-hero-row">
+                        <div>
+                            <div class="o1-kicker">RETURNS · WORKFLOW</div>
+                            <h1>Returns &amp; Refunds</h1>
+                            <p class="sub">Showing <b>87 requests</b> · 12 open · 5 awaiting decision · live</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="o1-stats">
+                    <div class="o1-stat tot">
+                        <div class="row1">
+                            <div class="ic"><i class="fas fa-clipboard-list"></i></div>
+                            <span class="trend up"><i class="fas fa-arrow-trend-up"></i> +8%</span>
+                        </div>
+                        <div class="lbl">Total Requests</div>
+                        <div class="val">87</div>
+                        <div class="delta"><span class="dot"></span> Matching current view</div>
+                    </div>
+                    <div class="o1-stat open">
+                        <div class="row1">
+                            <div class="ic"><i class="far fa-clock"></i></div>
+                            <span class="trend warn"><i class="fas fa-circle-exclamation"></i> ACT NOW</span>
+                        </div>
+                        <div class="lbl">Open Workflow</div>
+                        <div class="val">12</div>
+                        <div class="delta"><span class="dot"></span> Requested / Approved / Received</div>
+                    </div>
+                    <div class="o1-stat ref">
+                        <div class="row1">
+                            <div class="ic"><i class="fas fa-check"></i></div>
+                            <span class="trend up"><i class="fas fa-arrow-up"></i> +3 wk</span>
+                        </div>
+                        <div class="lbl">Refunded</div>
+                        <div class="val">41</div>
+                        <div class="delta"><span class="dot"></span> Requests paid back</div>
+                    </div>
+                    <div class="o1-stat cls">
+                        <div class="row1">
+                            <div class="ic"><i class="fas fa-archive"></i></div>
+                            <span class="trend flat"><i class="fas fa-minus"></i> stable</span>
+                        </div>
+                        <div class="lbl">Closed</div>
+                        <div class="val">28</div>
+                        <div class="delta"><span class="dot"></span> Rejected + Refunded + Closed</div>
+                    </div>
+                    <div class="o1-stat val-money">
+                        <div class="row1">
+                            <div class="ic"><i class="fas fa-coins"></i></div>
+                            <span class="trend amber"><i class="fas fa-bolt"></i> LIVE</span>
+                        </div>
+                        <div class="lbl">Refund Value</div>
+                        <div class="val">184,500<span class="cy">IQD</span></div>
+                        <div class="delta"><span class="dot"></span> Total approved refunds</div>
+                    </div>
+                </div>
+
+                <div class="o1-filter">
+                    <div class="o1-filter-head">
+                        <div class="badge"><i class="fas fa-sliders"></i></div>
+                        <h3>Filter Requests</h3>
+                    </div>
+                    <div class="o1-filter-grid">
+                        <div class="o1-field">
+                            <label>Search</label>
+                            <div class="o1-search-wrap">
+                                <i class="fas fa-search ico"></i>
+                                <input class="o1-input" placeholder="Order ID, customer name, email or reason…">
+                            </div>
+                        </div>
+                        <div class="o1-field">
+                            <label>Status</label>
+                            <select class="o1-select"><option>All Statuses</option><option>Requested</option><option>Approved</option><option>Rejected</option><option>Received</option><option>Refunded</option><option>Closed</option></select>
+                        </div>
+                        <div class="o1-field">
+                            <label style="opacity:0;">.</label>
+                            <button class="o1-btn-sm apply"><i class="fas fa-filter"></i> Apply</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="o1-table-card">
+                    <div class="o1-status-band">
+                        <span class="band-label">Quick Filter · Status</span>
+                        <div class="o1-chips">
+                            <div class="o1-chip c-all on">All <span class="cnt">87</span></div>
+                            <div class="o1-chip c-req"><span class="dot" style="background:#f59e0b"></span> Requested <span class="cnt">8</span></div>
+                            <div class="o1-chip c-app"><span class="dot" style="background:#2563eb"></span> Approved <span class="cnt">3</span></div>
+                            <div class="o1-chip c-rej"><span class="dot" style="background:#dc2626"></span> Rejected <span class="cnt">5</span></div>
+                            <div class="o1-chip c-rcv"><span class="dot" style="background:#0891b2"></span> Received <span class="cnt">1</span></div>
+                            <div class="o1-chip c-rfd"><span class="dot" style="background:#16a34a"></span> Refunded <span class="cnt">41</span></div>
+                            <div class="o1-chip c-cls"><span class="dot" style="background:#64748b"></span> Closed <span class="cnt">29</span></div>
+                        </div>
+                    </div>
+                    <div class="o1-table-head">
+                        <div class="ttl">Requests <span style="font-size:12px; font-weight:500; color:#64748b;">(showing 3 of 87)</span></div>
+                        <div class="meta">Updated 09:42 · auto-refresh 30s</div>
+                    </div>
+
+                    <div class="o1-row">
+                        <div class="o1-req">
+                            <div class="tags"><span class="ttag refund">Refund</span><span class="pill requested">Requested</span></div>
+                            <div class="reqid">#R-1284</div>
+                            <div class="dt">24 JUN 2026 / 09:32</div>
+                        </div>
+                        <div class="o1-ord">
+                            <a class="ordnum">#YS-10284</a>
+                            <div class="total">45,100<span class="cy"> IQD</span></div>
+                            <div class="pay"><span class="pill paid">Paid</span></div>
+                        </div>
+                        <div class="o1-cust">
+                            <div class="nm">Ahmed Hassan</div>
+                            <div class="em">ahmed.h@example.ae</div>
+                            <div class="kv">
+                                <div class="it"><span class="k">Account phone</span><span class="v">+971 50 123 4567</span></div>
+                                <div class="it"><span class="k">Delivery phone</span><span class="v">+971 55 555 0011</span></div>
+                                <div class="it"><span class="k">City</span><span class="v">Dubai</span></div>
+                                <div class="it"><span class="k">Role</span><span class="v">User</span></div>
+                            </div>
+                        </div>
+                        <div class="o1-rsn">
+                            <div class="reason">Wrong size brake pad delivered for Toyota Camry 2018. Customer wants a refund — original packaging unopened.</div>
+                            <div class="note"><b>Admin note:</b> Verified order details, awaiting warehouse inspection.</div>
+                        </div>
+                        <div class="o1-act">
+                            <div class="frm-grid">
+                                <div><label>Status</label><select><option>Requested</option><option selected>Approved</option><option>Received</option><option>Refunded</option></select></div>
+                                <div><label>Refund</label><input type="number" value="45100" placeholder="0"></div>
+                            </div>
+                            <div style="margin-top:6px"><label>Internal note</label><textarea placeholder="Add handling note…">Pre-approved · awaiting pickup</textarea></div>
+                            <button class="save"><i class="fas fa-save"></i> Save Workflow</button>
+                        </div>
+                    </div>
+
+                    <div class="o1-row">
+                        <div class="o1-req">
+                            <div class="tags"><span class="ttag exchange">Exchange</span><span class="pill approved">Approved</span></div>
+                            <div class="reqid">#R-1283</div>
+                            <div class="dt">23 JUN 2026 / 17:48</div>
+                        </div>
+                        <div class="o1-ord">
+                            <a class="ordnum">#YS-10282</a>
+                            <div class="total">920.00<span class="cy"> IQD</span></div>
+                            <div class="pay"><span class="pill paid">Paid</span></div>
+                        </div>
+                        <div class="o1-cust">
+                            <div class="nm">Khalid Rashid</div>
+                            <div class="em">khalid.r@example.ae</div>
+                            <div class="kv">
+                                <div class="it"><span class="k">Account phone</span><span class="v">+971 52 444 2080</span></div>
+                                <div class="it"><span class="k">City</span><span class="v">Sharjah</span></div>
+                                <div class="it"><span class="k">Role</span><span class="v">Dealer</span></div>
+                            </div>
+                        </div>
+                        <div class="o1-rsn">
+                            <div class="reason">Air filter model exchange — original part incompatible with newer engine variant. Replacement part already shipped.</div>
+                        </div>
+                        <div class="o1-act">
+                            <div class="frm-grid">
+                                <div><label>Status</label><select><option>Requested</option><option selected>Received</option><option>Refunded</option></select></div>
+                                <div><label>Refund</label><input type="number" value="0" placeholder="0"></div>
+                            </div>
+                            <div style="margin-top:6px"><label>Internal note</label><textarea>Exchange in transit · tracking 8492-AB</textarea></div>
+                            <button class="save"><i class="fas fa-save"></i> Save Workflow</button>
+                        </div>
+                    </div>
+
+                    <div class="o1-row">
+                        <div class="o1-req">
+                            <div class="tags"><span class="ttag return">Return</span><span class="pill refunded">Refunded</span></div>
+                            <div class="reqid">#R-1281</div>
+                            <div class="dt">22 JUN 2026 / 14:05</div>
+                        </div>
+                        <div class="o1-ord">
+                            <a class="ordnum">#YS-10280</a>
+                            <div class="total">3,420.00<span class="cy"> IQD</span></div>
+                            <div class="pay"><span class="pill paid">Paid</span></div>
+                        </div>
+                        <div class="o1-cust">
+                            <div class="nm">Mariam Adel</div>
+                            <div class="em">m.adel@example.ae</div>
+                            <div class="kv">
+                                <div class="it"><span class="k">Account phone</span><span class="v">+971 56 218 9430</span></div>
+                                <div class="it"><span class="k">City</span><span class="v">Abu Dhabi</span></div>
+                            </div>
+                        </div>
+                        <div class="o1-rsn">
+                            <div class="reason">Wrong color spoiler shipped. Customer accepted refund. Item returned and inspected — full refund issued.</div>
+                            <div class="note"><b>Admin note:</b> Refund completed via original payment method.</div>
+                        </div>
+                        <div class="o1-act">
+                            <div class="frm-grid">
+                                <div><label>Status</label><select><option selected>Refunded</option><option>Closed</option></select></div>
+                                <div><label>Refund</label><input type="number" value="3420" placeholder="0"></div>
+                            </div>
+                            <div style="margin-top:6px"><label>Internal note</label><textarea>Refund processed</textarea></div>
+                            <button class="save"><i class="fas fa-save"></i> Save Workflow</button>
+                        </div>
+                    </div>
+
+                    <div class="o1-pag">
+                        <div>Showing <b>1–3</b> of <b>87</b> requests</div>
+                        <div class="nums"><a>‹</a><span class="active">1</span><a>2</a><a>3</a><a>…</a><a>8</a><a>›</a></div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- OPTION 2 — REFUND OPERATIONS BENTO                                -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section>
+        <div class="opt-head">
+            <div class="opt-num">2</div>
+            <div class="opt-text">
+                <div class="kicker">OPTION 2 · REFUND OPERATIONS BENTO</div>
+                <h2>Matches Orders Management — bento layout</h2>
+                <p>2×2 "Refund Value" hero · colored attention tiles · inline filter · cleaner request list with bento-style cards in a row. Maximum consistency with the redesigned Orders page.</p>
+            </div>
+        </div>
+        <div class="page">
+            <div class="page-inner">
+
+                <div class="o2-bento">
+                    <div class="o2-hero">
+                        <div class="glow1"></div><div class="glow2"></div>
+                        <div class="o2-hero-row">
+                            <div>
+                                <div class="kicker">REFUND VALUE · <b>LIVE</b></div>
+                                <h2>Total Refund Value</h2>
+                            </div>
+                            <div class="iconbox"><i class="fas fa-money-bill-wave" style="color:#fcd34d"></i></div>
+                        </div>
+                        <div class="big">
+                            <div class="cy">IQD</div>
+                            <div class="nm">184,500<span style="color:rgba(255,255,255,0.4); font-size:30px;">.00</span></div>
+                        </div>
+                        <div class="meta-row">
+                            <div class="it"><div class="l">Total Requests</div><div class="v">87</div></div>
+                            <div class="it"><div class="l">Open Workflow</div><div class="v" style="color:#fcd34d;">12</div></div>
+                            <div class="it"><div class="l">Closed</div><div class="v">28</div></div>
+                        </div>
+                    </div>
+
+                    <div class="o2-tile amber"><div class="stripe"></div><div class="head"><div class="lbl">Requested</div><div class="ic"><i class="far fa-clock"></i></div></div><div class="val">8</div><div class="foot"><i class="fas fa-circle" style="font-size:6px;color:#f59e0b"></i> Awaits decision</div></div>
+                    <div class="o2-tile blue"><div class="stripe"></div><div class="head"><div class="lbl">Approved</div><div class="ic"><i class="fas fa-check-circle"></i></div></div><div class="val">3</div><div class="foot"><i class="fas fa-circle" style="font-size:6px;color:#2563eb"></i> Awaiting return</div></div>
+                    <div class="o2-tile cyan"><div class="stripe"></div><div class="head"><div class="lbl">Received</div><div class="ic"><i class="fas fa-box"></i></div></div><div class="val">1</div><div class="foot"><i class="fas fa-circle" style="font-size:6px;color:#0891b2"></i> Item received</div></div>
+                    <div class="o2-tile green"><div class="stripe"></div><div class="head"><div class="lbl">Refunded</div><div class="ic"><i class="fas fa-check"></i></div></div><div class="val">41</div><div class="foot"><i class="fas fa-arrow-up" style="font-size:9px;color:#16a34a"></i> +3 today</div></div>
+
+                    <div class="o2-tile red"><div class="stripe"></div><div class="head"><div class="lbl">Rejected</div><div class="ic"><i class="fas fa-ban"></i></div></div><div class="val">5</div><div class="foot" style="color:#b91c1c"><i class="fas fa-times"></i> Declined</div></div>
+                    <div class="o2-tile gray"><div class="stripe"></div><div class="head"><div class="lbl">Closed</div><div class="ic"><i class="fas fa-archive"></i></div></div><div class="val">28</div><div class="foot">Archived</div></div>
+                </div>
+
+                <div class="o2-filter">
+                    <div class="o2-search">
+                        <i class="fas fa-search ic"></i>
+                        <input placeholder="Order ID, customer, email or reason…">
+                    </div>
+                    <select><option>All Statuses</option><option>Requested</option><option>Approved</option><option>Rejected</option><option>Received</option><option>Refunded</option><option>Closed</option></select>
+                    <div class="o2-filter-actions">
+                        <button class="o2-btn rst" title="Reset"><i class="fas fa-rotate-left"></i></button>
+                        <button class="o2-btn go"><i class="fas fa-filter"></i> Filter</button>
+                    </div>
+                </div>
+
+                <div class="o2-list-card">
+                    <div class="o2-list-head">
+                        <div style="display:flex; align-items:center; gap:12px;">
+                            <div class="ttl-ico"><i class="fas fa-undo"></i></div>
+                            <div>
+                                <h3>Return Requests</h3>
+                                <div class="sub">3 visible · 87 total · auto-sync 30s</div>
+                            </div>
+                        </div>
+                        <div class="chips">
+                            <button class="chip on">All <span class="cnt">87</span></button>
+                            <button class="chip"><span class="dot" style="background:#f59e0b"></span> Requested <span class="cnt">8</span></button>
+                            <button class="chip"><span class="dot" style="background:#2563eb"></span> Approved <span class="cnt">3</span></button>
+                            <button class="chip"><span class="dot" style="background:#16a34a"></span> Refunded <span class="cnt">41</span></button>
+                        </div>
+                    </div>
+
+                    <div class="o2-reqs">
+
+                        <div class="o2-req">
+                            <div class="col-req">
+                                <div class="tags"><span class="ttag refund">Refund</span><span class="pill requested">Requested</span></div>
+                                <div class="rid">#R-1284</div>
+                                <div class="dt">24 JUN · 09:32</div>
+                            </div>
+                            <div class="col-cust">
+                                <div class="nm">Ahmed Hassan</div>
+                                <div class="em">ahmed.h@example.ae · +971 50 123 4567</div>
+                                <div class="reason">Wrong size brake pad delivered for Toyota Camry 2018. Customer wants a refund — packaging unopened.</div>
+                            </div>
+                            <div class="col-order">
+                                <a class="ono">#YS-10284</a>
+                                <div class="amt">45,100<span class="cy">IQD</span></div>
+                                <div class="pay"><span class="pill paid">Paid</span></div>
+                            </div>
+                            <div class="col-act">
+                                <div class="frm">
+                                    <div class="row">
+                                        <select><option>Requested</option><option selected>Approved</option><option>Received</option><option>Refunded</option></select>
+                                        <input type="number" value="45100" placeholder="Refund">
+                                    </div>
+                                    <button class="save"><i class="fas fa-save"></i> Save Workflow</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="o2-req">
+                            <div class="col-req">
+                                <div class="tags"><span class="ttag exchange">Exchange</span><span class="pill approved">Approved</span></div>
+                                <div class="rid">#R-1283</div>
+                                <div class="dt">23 JUN · 17:48</div>
+                            </div>
+                            <div class="col-cust">
+                                <div class="nm">Khalid Rashid</div>
+                                <div class="em">khalid.r@example.ae · +971 52 444 2080</div>
+                                <div class="reason">Air filter model exchange — original part incompatible with newer engine variant. Replacement shipped.</div>
+                            </div>
+                            <div class="col-order">
+                                <a class="ono">#YS-10282</a>
+                                <div class="amt">920.00<span class="cy">IQD</span></div>
+                                <div class="pay"><span class="pill paid">Paid</span></div>
+                            </div>
+                            <div class="col-act">
+                                <div class="frm">
+                                    <div class="row">
+                                        <select><option>Approved</option><option selected>Received</option><option>Refunded</option></select>
+                                        <input type="number" value="0" placeholder="Refund">
+                                    </div>
+                                    <button class="save"><i class="fas fa-save"></i> Save Workflow</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="o2-req">
+                            <div class="col-req">
+                                <div class="tags"><span class="ttag return">Return</span><span class="pill refunded">Refunded</span></div>
+                                <div class="rid">#R-1281</div>
+                                <div class="dt">22 JUN · 14:05</div>
+                            </div>
+                            <div class="col-cust">
+                                <div class="nm">Mariam Adel</div>
+                                <div class="em">m.adel@example.ae · +971 56 218 9430</div>
+                                <div class="reason">Wrong color spoiler shipped. Item returned and inspected — full refund issued via original payment method.</div>
+                            </div>
+                            <div class="col-order">
+                                <a class="ono">#YS-10280</a>
+                                <div class="amt">3,420.00<span class="cy">IQD</span></div>
+                                <div class="pay"><span class="pill paid">Paid</span></div>
+                            </div>
+                            <div class="col-act">
+                                <div class="frm">
+                                    <div class="row">
+                                        <select><option selected>Refunded</option><option>Closed</option></select>
+                                        <input type="number" value="3420" placeholder="Refund">
+                                    </div>
+                                    <button class="save"><i class="fas fa-save"></i> Save Workflow</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="preview-section-label">Empty state preview</div>
+                <div class="o2-list-card">
+                    <div class="empty">
+                        <div class="ic"><i class="fas fa-undo"></i></div>
+                        <h4>No return requests found</h4>
+                        <p>Try changing the search or status filter. New requests appear here automatically.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <!-- OPTION 3 — TRIAGE BOARD (Kanban)                                  -->
+    <!-- ════════════════════════════════════════════════════════════════ -->
+    <section>
+        <div class="opt-head">
+            <div class="opt-num">3</div>
+            <div class="opt-text">
+                <div class="kicker">OPTION 3 · TRIAGE BOARD</div>
+                <h2>Kanban-style workflow board</h2>
+                <p>Every status gets a column · compact cards with inline quick actions · fastest possible "scan + act" workflow for high-volume return triage. Most distinctive, dispatcher-style operations feel.</p>
+            </div>
+        </div>
+        <div class="page">
+            <div class="page-inner">
+                <div class="o3-board">
+
+                    <div class="o3-header">
+                        <div class="o3-h-grid">
+                            <div>
+                                <div class="o3-tag">RETURNS · TRIAGE BOARD</div>
+                                <h1>Returns &amp; Refunds</h1>
+                                <div class="sub">SYS · YS-ADMIN · TRIAGE-LIVE · 09:42:18 GST</div>
+                            </div>
+                            <div class="o3-h-meta">
+                                <div class="it"><div class="l">Total</div><div class="v">87</div></div>
+                                <div class="it"><div class="l">Open</div><div class="v amber">12</div></div>
+                                <div class="it"><div class="l">Refund Value</div><div class="v amber">184,500 <span style="font-size:10px;color:rgba(255,255,255,0.5);">IQD</span></div></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="o3-tickets">
+                        <div class="o3-ticket tot"><div class="bar"></div><div class="corners"></div><div class="row1"><div class="lbl">Total Requests</div><div class="code">YS-T01</div></div><div class="val">87</div><div class="foot">Matching current view</div></div>
+                        <div class="o3-ticket open"><div class="bar"></div><div class="corners"></div><div class="row1"><div class="lbl">Open Workflow</div><div class="code">YS-O02</div></div><div class="val">12</div><div class="foot" style="color:#b45309">Needs decision</div></div>
+                        <div class="o3-ticket ref"><div class="bar"></div><div class="corners"></div><div class="row1"><div class="lbl">Refunded</div><div class="code">YS-R03</div></div><div class="val">41</div><div class="foot">+3 today</div></div>
+                        <div class="o3-ticket cls"><div class="bar"></div><div class="corners"></div><div class="row1"><div class="lbl">Closed</div><div class="code">YS-C04</div></div><div class="val">28</div><div class="foot" style="color:#64748b">Archived</div></div>
+                        <div class="o3-ticket money"><div class="bar"></div><div class="corners"></div><div class="row1"><div class="lbl">Refund Value</div><div class="code">YS-V05</div></div><div class="val">184,500<span class="cy">IQD</span></div><div class="foot">Total payouts</div></div>
+                    </div>
+
+                    <div class="o3-control">
+                        <div class="o3-control-head">
+                            <div class="dot"></div>
+                            CONTROL · FILTER PANEL
+                            <span style="font-family: inherit; color:#94a3b8; margin-left:auto; letter-spacing:0;">/admin/returns</span>
+                        </div>
+                        <div class="o3-control-grid">
+                            <div><label>QUERY</label><input placeholder="Order ID · Customer · Email · Reason"></div>
+                            <div><label>STATUS</label><select><option>All</option><option>Requested</option><option>Approved</option><option>Rejected</option><option>Received</option><option>Refunded</option><option>Closed</option></select></div>
+                            <div><label style="opacity:0;">.</label><div class="o3-control-actions"><button class="o3-btn rst"><i class="fas fa-rotate-left"></i> RESET</button><button class="o3-btn go"><i class="fas fa-filter"></i> FILTER</button></div></div>
+                        </div>
+                    </div>
+
+                    <div class="o3-kanban">
+                        <!-- REQUESTED column -->
+                        <div class="o3-col requested">
+                            <div class="o3-col-head">
+                                <div class="lbl"><span style="width:8px;height:8px;border-radius:50%;background:#f59e0b;display:inline-block"></span> REQUESTED</div>
+                                <div class="cnt">8</div>
+                            </div>
+                            <div class="o3-card">
+                                <div class="row1"><div class="rid">#R-1284</div><div class="dt">24 JUN</div></div>
+                                <div class="nm">Ahmed Hassan</div>
+                                <a class="ono">#YS-10284</a>
+                                <div class="amt">45,100<span class="cy">IQD</span></div>
+                                <div class="reason">Wrong size brake pad for Toyota Camry 2018 — packaging unopened.</div>
+                                <div class="acts">
+                                    <button class="btn primary"><i class="fas fa-check"></i> Approve</button>
+                                    <button class="btn"><i class="fas fa-times"></i> Reject</button>
+                                </div>
+                            </div>
+                            <div class="o3-card">
+                                <div class="row1"><div class="rid">#R-1278</div><div class="dt">23 JUN</div></div>
+                                <div class="nm">Sara Faisal</div>
+                                <a class="ono">#YS-10283</a>
+                                <div class="amt">2,650<span class="cy">IQD</span></div>
+                                <div class="reason">Engine oil filter package torn during delivery, requesting replacement.</div>
+                                <div class="acts">
+                                    <button class="btn primary"><i class="fas fa-check"></i> Approve</button>
+                                    <button class="btn"><i class="fas fa-times"></i> Reject</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- APPROVED column -->
+                        <div class="o3-col approved">
+                            <div class="o3-col-head">
+                                <div class="lbl"><span style="width:8px;height:8px;border-radius:50%;background:#2563eb;display:inline-block"></span> APPROVED</div>
+                                <div class="cnt">3</div>
+                            </div>
+                            <div class="o3-card">
+                                <div class="row1"><div class="rid">#R-1283</div><div class="dt">23 JUN</div></div>
+                                <div class="nm">Khalid Rashid</div>
+                                <a class="ono">#YS-10282</a>
+                                <div class="amt">920<span class="cy">IQD</span></div>
+                                <div class="reason">Air filter exchange — replacement shipped via 8492-AB.</div>
+                                <div class="acts">
+                                    <button class="btn primary"><i class="fas fa-box"></i> Mark Received</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- REJECTED column -->
+                        <div class="o3-col rejected">
+                            <div class="o3-col-head">
+                                <div class="lbl"><span style="width:8px;height:8px;border-radius:50%;background:#dc2626;display:inline-block"></span> REJECTED</div>
+                                <div class="cnt">5</div>
+                            </div>
+                            <div class="o3-card">
+                                <div class="row1"><div class="rid">#R-1276</div><div class="dt">21 JUN</div></div>
+                                <div class="nm">Yousef Zaman</div>
+                                <a class="ono">#YS-10280</a>
+                                <div class="amt">480<span class="cy">IQD</span></div>
+                                <div class="reason">Outside return window (30 days). Customer notified.</div>
+                                <div class="acts">
+                                    <button class="btn"><i class="fas fa-archive"></i> Close</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- RECEIVED column -->
+                        <div class="o3-col received">
+                            <div class="o3-col-head">
+                                <div class="lbl"><span style="width:8px;height:8px;border-radius:50%;background:#0891b2;display:inline-block"></span> RECEIVED</div>
+                                <div class="cnt">1</div>
+                            </div>
+                            <div class="o3-card">
+                                <div class="row1"><div class="rid">#R-1279</div><div class="dt">22 JUN</div></div>
+                                <div class="nm">Bayar A.</div>
+                                <a class="ono">#YS-10278</a>
+                                <div class="amt">1,150<span class="cy">IQD</span></div>
+                                <div class="reason">Item inspected — meets refund criteria.</div>
+                                <div class="acts">
+                                    <button class="btn primary"><i class="fas fa-money-bill"></i> Refund</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- REFUNDED column -->
+                        <div class="o3-col refunded">
+                            <div class="o3-col-head">
+                                <div class="lbl"><span style="width:8px;height:8px;border-radius:50%;background:#16a34a;display:inline-block"></span> REFUNDED</div>
+                                <div class="cnt">41</div>
+                            </div>
+                            <div class="o3-card">
+                                <div class="row1"><div class="rid">#R-1281</div><div class="dt">22 JUN</div></div>
+                                <div class="nm">Mariam Adel</div>
+                                <a class="ono">#YS-10277</a>
+                                <div class="amt">3,420<span class="cy">IQD</span></div>
+                                <div class="reason">Wrong color spoiler shipped — full refund issued.</div>
+                                <div class="acts">
+                                    <button class="btn"><i class="fas fa-archive"></i> Close</button>
+                                </div>
+                            </div>
+                            <div class="o3-card">
+                                <div class="row1"><div class="rid">#R-1272</div><div class="dt">19 JUN</div></div>
+                                <div class="nm">Aya Z.</div>
+                                <a class="ono">#YS-10271</a>
+                                <div class="amt">880<span class="cy">IQD</span></div>
+                                <div class="reason">Customer changed mind within 7 days.</div>
+                                <div class="acts">
+                                    <button class="btn"><i class="fas fa-archive"></i> Close</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CLOSED column -->
+                        <div class="o3-col closed">
+                            <div class="o3-col-head">
+                                <div class="lbl"><span style="width:8px;height:8px;border-radius:50%;background:#64748b;display:inline-block"></span> CLOSED</div>
+                                <div class="cnt">28</div>
+                            </div>
+                            <div class="o3-col-empty">
+                                Showing top 3 only<br>
+                                <small style="font-size:9.5px;">Click "Closed" chip to expand</small>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Closing note -->
+    <div style="text-align:center; padding-top: 12px;">
+        <p style="font-size:13px; color:#64748b;">When you decide, just reply with <b style="color:#04042a;">Option 1</b>, <b style="color:#04042a;">Option 2</b>, or <b style="color:#04042a;">Option 3</b>.</p>
+        <p style="font-size:11px; color:#94a3b8; margin-top:6px; font-family: ui-monospace, monospace; letter-spacing: 0.1em;">PREVIEW ONLY · NO REAL FILES CHANGED YET</p>
+    </div>
+
+</div>
+</body>
+</html>
