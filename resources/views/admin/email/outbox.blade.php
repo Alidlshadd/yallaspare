@@ -15,6 +15,8 @@
 
     <div class="py-8">
         <div class="mx-auto max-w-6xl space-y-6 px-4 sm:px-6 lg:px-8">
+            <h1 class="sr-only">{{ __('Email Outbox') }}</h1>
+
             @if(isset($mailLogAvailable) && ! $mailLogAvailable)
                 <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">
                     {{ __('Mail log table is not installed yet. Run the pending migrations to enable delivery history.') }}

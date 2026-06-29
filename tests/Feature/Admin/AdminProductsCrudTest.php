@@ -353,7 +353,7 @@ class AdminProductsCrudTest extends TestCase
             ->assertSee('20 units');
     }
 
-    public function test_products_index_renders_long_table_content(): void
+    public function test_products_index_renders_long_card_content(): void
     {
         $user = $this->adminUser();
         $category = $this->createCategory();
@@ -370,10 +370,9 @@ class AdminProductsCrudTest extends TestCase
         $this->actingAs($user)
             ->get(route('admin.products.index', ['search' => 'SKU-LONG-CONTENT']))
             ->assertOk()
-            ->assertSee('admin-products-table')
-            ->assertSee('product-name-clamp')
-            ->assertSee('w-full table-fixed')
-            ->assertSee('md:min-w-0')
+            ->assertSee('prod-card')
+            ->assertSee('pname mt-1')
+            ->assertSee('grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3')
             ->assertDontSee('min-w-[1320px]')
             ->assertSee('20 units');
     }

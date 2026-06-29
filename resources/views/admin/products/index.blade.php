@@ -671,7 +671,10 @@
                             <div class="price">
                                 <span class="cy">{{ $currencyLabel }}</span>{{ number_format($product->price, $currencyDecimals) }}
                             </div>
-                            <span class="stock-badge {{ $stockClass }}">{{ $stockLabel }}</span>
+                            <span class="stock-badge {{ $stockClass }}">
+                                {{ $stockLabel }}
+                                <span class="sr-only">{{ __(':count units', ['count' => $product->stock_quantity]) }}</span>
+                            </span>
                         </div>
                         @if($product->dealer_price !== null)
                             <div class="dealer-row">
