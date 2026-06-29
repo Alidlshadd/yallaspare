@@ -85,6 +85,43 @@ class ReturnRefundSecurityTest extends TestCase
         $this->assertSame(0, ReturnRequest::query()->where('order_id', $order->id)->count());
     }
 
+    public function test_web_delivered_paid_return_request_is_allowed(): void
+    {
+        $user = User::factory()->create(['email_verified_at' => now()]);
+        $order = $this->orderFor($user, [
+            'status' => Order::STATUS_DELIVERED,
+            'payment_status' => Order::PAYMENT_PAID,
+        ]);
+
+        $this->actingAs($user)
+            ->post(route('account.orders.return-request', $order), [
+                'type' => 'return',
+                'reason' => 'Wrong part',
+            ])
+            ->assertSessionHas('status');
+
+        $this->assertSame(1, ReturnRequest::query()->where('order_id', $order->id)->count());
+    }
+
+    public function test_web_delivered_unpaid_cod_return_request_is_rejected(): void
+    {
+        $user = User::factory()->create(['email_verified_at' => now()]);
+        $order = $this->orderFor($user, [
+            'status' => Order::STATUS_DELIVERED,
+            'payment_method' => 'cash_on_delivery',
+            'payment_status' => Order::PAYMENT_PENDING,
+        ]);
+
+        $this->actingAs($user)
+            ->post(route('account.orders.return-request', $order), [
+                'type' => 'refund',
+                'reason' => 'Wrong part',
+            ])
+            ->assertSessionHas('error');
+
+        $this->assertSame(0, ReturnRequest::query()->where('order_id', $order->id)->count());
+    }
+
     public function test_bulk_refund_path_uses_same_validation_as_single_path(): void
     {
         [$admin, $validReturn, $validOrder] = $this->refundContext([

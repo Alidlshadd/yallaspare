@@ -6,6 +6,7 @@ use App\Mail\SupportContactRequestMail;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Category;
+use App\Models\EmailBroadcast;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\UserAddress;
@@ -133,6 +134,35 @@ class EmailCrlfMitigationTest extends TestCase
             ])->assertStatus(422);
 
         Mail::assertNothingQueued();
+    }
+
+    public function test_admin_email_broadcast_rejects_crlf_recipient_before_broadcast_creation(): void
+    {
+        Mail::fake();
+        User::factory()->create([
+            'email' => 'customer@example.test',
+            'email_verified_at' => now(),
+            'email_notifications' => true,
+            'marketing_consent' => true,
+        ]);
+        $admin = User::factory()->create([
+            'role' => User::ROLE_SETTINGS_MANAGER,
+            'email_verified_at' => now(),
+        ]);
+
+        $this->actingAs($admin)
+            ->post(route('admin.email.broadcast'), [
+                'audience_type' => EmailBroadcast::AUDIENCE_USER,
+                'recipient_email' => $this->crlfEmail,
+                'purpose' => EmailBroadcast::PURPOSE_PROMOTIONAL,
+                'subject' => 'Admin broadcast',
+                'message' => 'Normal broadcast body.',
+                'action_url' => url('/'),
+                'action_text' => 'Open',
+            ])->assertStatus(422);
+
+        Mail::assertNothingQueued();
+        $this->assertDatabaseCount('email_broadcasts', 0);
     }
 
     public function test_mobile_registration_rejects_crlf_email_before_user_creation(): void
