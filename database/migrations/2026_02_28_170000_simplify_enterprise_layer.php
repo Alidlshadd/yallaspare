@@ -115,6 +115,7 @@ return new class extends Migration
             Schema::table('admin_activity_logs', function (Blueprint $table) {
                 if (Schema::hasColumn('admin_activity_logs', 'reviewed_by')) {
                     if (DB::connection()->getDriverName() === 'sqlite') {
+                        $table->dropForeign(['reviewed_by']);
                         $table->dropColumn('reviewed_by');
                     } else {
                         $table->dropConstrainedForeignId('reviewed_by');

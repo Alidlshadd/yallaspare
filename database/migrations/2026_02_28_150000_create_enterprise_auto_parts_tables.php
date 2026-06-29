@@ -53,7 +53,7 @@ return new class extends Migration
                 $table->string('name');
                 $table->string('fuel_type', 30)->nullable();
                 $table->unsignedSmallInteger('cc')->nullable();
-                $table->unsignedDecimal('liter', 4, 1)->nullable();
+                $table->decimal('liter', 4, 1)->unsigned()->nullable();
                 $table->timestamps();
                 $table->softDeletes();
 
