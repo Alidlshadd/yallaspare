@@ -45,7 +45,7 @@ Route::middleware('auth')->group(function () {
                 ->name('verification.verify');
 
     Route::get('verify-email/{id}/{hash}', [VerifyEmailController::class, 'fromSignedLink'])
-                ->middleware(['signed:relative', 'throttle:6,1'])
+                ->middleware(['signed', 'throttle:6,1'])
                 ->name('verification.verify-link');
 
     Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
