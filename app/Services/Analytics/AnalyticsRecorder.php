@@ -39,7 +39,7 @@ class AnalyticsRecorder
                 $this->touchProductCounter($type, (int) $productId, $now);
             }
         } catch (Throwable $e) {
-            Log::channel('stack')->warning('analytics.record_failed', [
+            Log::warning('analytics.record_failed', [
                 'type' => $type,
                 'error' => $e->getMessage(),
             ]);
@@ -78,7 +78,7 @@ class AnalyticsRecorder
                 ]);
             }
         } catch (Throwable $e) {
-            Log::channel('stack')->warning('analytics.record_search_failed', [
+            Log::warning('analytics.record_search_failed', [
                 'error' => $e->getMessage(),
             ]);
         }
