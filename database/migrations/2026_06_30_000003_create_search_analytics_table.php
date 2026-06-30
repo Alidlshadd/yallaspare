@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->bigIncrements('id');
             $table->string('keyword', 80)->unique();
             $table->unsignedInteger('search_count')->default(1);
-            $table->timestamp('last_searched_at');
+            $table->timestamp('last_searched_at')->nullable();
             $table->timestamps();
 
             $table->index('search_count');

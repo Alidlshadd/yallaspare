@@ -20,8 +20,6 @@ return new class extends Migration {
             $table->json('metadata')->nullable();
             $table->timestamp('created_at')->useCurrent();
 
-            $table->index('event_type');
-            $table->index('product_id');
             $table->index('user_id');
             $table->index('session_id');
             $table->index('created_at');
