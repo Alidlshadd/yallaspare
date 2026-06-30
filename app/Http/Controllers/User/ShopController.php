@@ -10,6 +10,7 @@ use App\Models\Setting;
 use App\Models\VehicleBrand;
 use App\Models\VehicleModel;
 use App\Models\Wishlist;
+use App\Services\Analytics\SearchTracker;
 use App\Support\LocalizedText;
 use App\Support\SqlSafe;
 use Illuminate\Support\Collection;
@@ -308,6 +309,10 @@ class ShopController extends Controller
         };
 
         $products = $productsQuery->paginate(12)->withQueryString();
+
+        if ($search !== '') {
+            app(SearchTracker::class)->record($request, $search, (int) $products->total());
+        }
 
         $wishlistedProductIds = [];
         if ($customerUser && Schema::hasTable('wishlists')) {
