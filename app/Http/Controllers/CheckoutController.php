@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\Setting;
 use App\Models\UserAddress;
+use App\Services\Analytics\CheckoutStartTracker;
 use App\Services\Checkout\CheckoutService;
 use App\Services\CouponService;
 use App\Services\Payments\PaymentService;
@@ -46,6 +47,8 @@ class CheckoutController extends Controller
             return back()->with('error', __('This product is not available right now.'));
         }
 
+        app(CheckoutStartTracker::class)->record($request, $product, $quantity);
+
         return $this->showBuyNowReview($request, $product, $quantity, $data);
     }
 
@@ -65,6 +68,8 @@ class CheckoutController extends Controller
         if ($quantity < 1) {
             return back()->with('error', __('This product is not available right now.'));
         }
+
+        app(CheckoutStartTracker::class)->record($request, $product, $quantity);
 
         return $this->showBuyNowReview($request, $product, $quantity, $data);
     }
