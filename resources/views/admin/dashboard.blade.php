@@ -477,6 +477,104 @@
 
     </div>
 
+    {{-- ================= SITE ANALYTICS SNAPSHOT ================= --}}
+    <div class="mb-8 rounded-3xl border border-slate-200/70 bg-white p-5 bento-shadow dark:border-slate-800 dark:bg-slate-900 sm:p-6">
+        <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
+            <div>
+                <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">{{ __('Site Analytics') }}</p>
+                <h3 class="mt-1 text-xl font-black text-primary dark:text-slate-100">{{ __('Visitor activity snapshot') }}</h3>
+                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Last :n days', ['n' => $siteAnalyticsDays]) }}</p>
+            </div>
+            @if(Route::has('admin.analytics.index'))
+                <a href="{{ route('admin.analytics.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">
+                    {{ __('Open analytics') }} <i class="fas fa-arrow-right text-[10px]"></i>
+                </a>
+            @endif
+        </div>
+
+        @if(! $siteAnalyticsHasData)
+            <div class="mb-5 rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-5 py-6 text-center dark:border-slate-700 dark:bg-slate-950/50">
+                <div class="mx-auto grid h-11 w-11 place-items-center rounded-xl bg-white text-slate-500 shadow-sm dark:bg-slate-900 dark:text-slate-400">
+                    <i class="fas fa-chart-simple"></i>
+                </div>
+                <p class="mt-3 text-sm font-bold text-slate-700 dark:text-slate-200">No analytics data yet. Data will appear after visitors use the website.</p>
+            </div>
+        @endif
+
+        <div class="grid grid-cols-2 gap-3 lg:grid-cols-7">
+            @foreach($siteAnalyticsCards as $card)
+                @php
+                    $tone = $card['tone'] ?? 'slate';
+                    $toneClasses = match ($tone) {
+                        'indigo' => ['from-indigo-500 to-indigo-600', 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-300'],
+                        'cyan' => ['from-cyan-400 to-cyan-600', 'bg-cyan-50 text-cyan-600 dark:bg-cyan-900/30 dark:text-cyan-300'],
+                        'rose' => ['from-rose-400 to-rose-600', 'bg-rose-50 text-rose-600 dark:bg-rose-900/30 dark:text-rose-300'],
+                        'amber' => ['from-amber-400 to-orange-500', 'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'],
+                        'blue' => ['from-sky-400 to-blue-600', 'bg-sky-50 text-sky-600 dark:bg-sky-900/30 dark:text-sky-300'],
+                        'violet' => ['from-violet-500 to-fuchsia-600', 'bg-violet-50 text-violet-600 dark:bg-violet-900/30 dark:text-violet-300'],
+                        'emerald' => ['from-emerald-400 to-teal-600', 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-300'],
+                        default => ['from-slate-400 to-slate-600', 'bg-slate-50 text-slate-600 dark:bg-slate-800 dark:text-slate-300'],
+                    };
+                @endphp
+                <div class="relative overflow-hidden rounded-2xl border border-slate-200/70 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950/40">
+                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b {{ $toneClasses[0] }}"></div>
+                    <div class="flex items-start justify-between gap-3 pl-1">
+                        <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">{{ $card['label'] }}</p>
+                        <span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg {{ $toneClasses[1] }}">
+                            <i class="{{ $card['icon'] }} text-xs"></i>
+                        </span>
+                    </div>
+                    <p class="num-display mt-4 pl-1 text-2xl font-black text-primary dark:text-slate-100">{{ number_format((int) $card['value']) }}</p>
+                </div>
+            @endforeach
+        </div>
+
+        <div class="mt-5 grid gap-4 lg:grid-cols-2">
+            <div class="rounded-2xl border border-slate-200/70 bg-slate-50 dark:border-slate-800 dark:bg-slate-950/40">
+                <div class="flex items-center justify-between border-b border-slate-200/70 px-4 py-3 dark:border-slate-800">
+                    <p class="text-xs font-black uppercase tracking-[0.16em] text-slate-600 dark:text-slate-300">{{ __('Most viewed products') }}</p>
+                    <i class="far fa-eye text-indigo-500"></i>
+                </div>
+                @if($siteAnalyticsTopViewed->isEmpty())
+                    <p class="px-4 py-6 text-center text-xs font-semibold text-slate-400">{{ __('No product views yet.') }}</p>
+                @else
+                    <div class="divide-y divide-slate-200/70 dark:divide-slate-800">
+                        @foreach($siteAnalyticsTopViewed->take(5) as $row)
+                            <div class="flex items-center justify-between gap-3 px-4 py-3">
+                                <div class="min-w-0">
+                                    <p class="truncate text-sm font-bold text-slate-700 dark:text-slate-200">{{ $row['name'] }}</p>
+                                    @if(($row['sku'] ?? '') !== '')
+                                        <p class="font-mono text-[10px] text-slate-400">{{ $row['sku'] }}</p>
+                                    @endif
+                                </div>
+                                <span class="num-display shrink-0 text-sm font-black text-primary dark:text-slate-100">{{ number_format((int) $row['count']) }}</span>
+                            </div>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+
+            <div class="rounded-2xl border border-slate-200/70 bg-slate-50 dark:border-slate-800 dark:bg-slate-950/40">
+                <div class="flex items-center justify-between border-b border-slate-200/70 px-4 py-3 dark:border-slate-800">
+                    <p class="text-xs font-black uppercase tracking-[0.16em] text-slate-600 dark:text-slate-300">{{ __('Search keywords') }}</p>
+                    <i class="fas fa-magnifying-glass text-sky-500"></i>
+                </div>
+                @if($siteAnalyticsTopSearches->isEmpty())
+                    <p class="px-4 py-6 text-center text-xs font-semibold text-slate-400">{{ __('No searches recorded yet.') }}</p>
+                @else
+                    <div class="flex flex-wrap gap-2 px-4 py-4">
+                        @foreach($siteAnalyticsTopSearches->take(10) as $row)
+                            <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                <span class="font-mono">{{ $row['keyword'] }}</span>
+                                <span class="rounded bg-slate-50 px-1.5 py-0.5 text-[10px] font-black text-slate-500 dark:bg-slate-800 dark:text-slate-400">{{ number_format((int) $row['count']) }}</span>
+                            </span>
+                        @endforeach
+                    </div>
+                @endif
+            </div>
+        </div>
+    </div>
+
     {{-- ================= OPERATIONS QUEUE — COCKPIT REDESIGN ================= --}}
     @php
         $opTotal = collect($operationsQueue)->sum(fn($x) => (int)($x['count'] ?? 0));

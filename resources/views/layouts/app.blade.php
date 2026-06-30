@@ -416,6 +416,7 @@
                                 : 'text-slate-300';
                         };
                         $adminUserForNav = auth()->user();
+                        $canDashboard  = $adminUserForNav?->can(\App\Models\User::PERMISSION_DASHBOARD_VIEW);
                         $canCatalog    = $adminUserForNav?->can(\App\Models\User::PERMISSION_PRODUCTS_MANAGE);
                         $canOrders     = $adminUserForNav?->can(\App\Models\User::PERMISSION_ORDERS_MANAGE);
                         $canFinance    = $adminUserForNav?->can(\App\Models\User::PERMISSION_FINANCE_VIEW);
@@ -425,7 +426,7 @@
                         $canSettings   = $adminUserForNav?->can(\App\Models\User::PERMISSION_SETTINGS_MANAGE);
                         $canUsersView  = $adminUserForNav?->can('viewAny', \App\Models\User::class);
                         $canActLogs    = $adminUserForNav?->can(\App\Models\User::PERMISSION_ACTIVITY_LOGS_VIEW);
-                        $hasAnalytics  = $canFinance || $canStock;
+                        $hasAnalytics  = $canDashboard || $canFinance || $canStock;
                         $hasMarketing  = $canFinanceMgr || $canSettings;
                         $hasAdminGrp   = $canUsersView || $canSettings || $canActLogs;
                     @endphp
@@ -516,6 +517,8 @@
                                     <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-sack-dollar"></i></span>
                                     <span class="admin-nav-label">{{ __('Revenue') }}</span>
                                 </a>
+                            @endcan
+                            @can(\App\Models\User::PERMISSION_DASHBOARD_VIEW)
                                 <a
                                     href="{{ route('admin.analytics.index') }}"
                                     class="admin-nav-link {{ $navItem(request()->routeIs('admin.analytics.*')) }}"

@@ -47,7 +47,7 @@ class AnalyticsAdminAccessTest extends TestCase
             ->assertOk();
     }
 
-    public function test_product_manager_cannot_open_analytics_dashboard(): void
+    public function test_product_manager_can_open_site_analytics_dashboard(): void
     {
         $productManager = User::factory()->create([
             'role' => User::ROLE_PRODUCT_MANAGER,
@@ -56,7 +56,8 @@ class AnalyticsAdminAccessTest extends TestCase
 
         $this->actingAs($productManager)
             ->get(route('admin.analytics.index'))
-            ->assertForbidden();
+            ->assertOk()
+            ->assertSee('Site Analytics');
     }
 
     public function test_guest_is_redirected_to_login(): void
@@ -81,6 +82,23 @@ class AnalyticsAdminAccessTest extends TestCase
             ->get(route('admin.analytics.index', ['days' => 999]))
             ->assertOk()
             ->assertSee('Last 30 days');
+    }
+
+    public function test_empty_analytics_dashboard_shows_clear_empty_state(): void
+    {
+        $admin = User::factory()->create([
+            'role' => User::ROLE_ADMIN,
+            'email_verified_at' => now(),
+        ]);
+
+        DB::table('analytics_events')->delete();
+        DB::table('search_analytics')->delete();
+        cache()->flush();
+
+        $this->actingAs($admin)
+            ->get(route('admin.analytics.index'))
+            ->assertOk()
+            ->assertSee('No analytics data yet. Data will appear after visitors use the website.');
     }
 
     public function test_dashboard_surfaces_real_event_data(): void

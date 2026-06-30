@@ -229,7 +229,7 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
             ->middleware('can:' . User::PERMISSION_FINANCE_VIEW)
             ->name('revenue.index');
         Route::get('/analytics', [AdminAnalyticsController::class, 'index'])
-            ->middleware('can:' . User::PERMISSION_FINANCE_VIEW)
+            ->middleware('can:' . User::PERMISSION_DASHBOARD_VIEW)
             ->name('analytics.index');
         Route::get('/discounts', [DiscountCouponController::class, 'edit'])
             ->middleware('can:' . User::PERMISSION_FINANCE_MANAGE)

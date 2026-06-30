@@ -46,18 +46,26 @@ class AnalyticsQueryService
         $previousStart = $start->copy()->subDays($days);
         $previousEnd = $start->copy()->subSecond();
 
+        $kpi = $this->buildKpi($start, $end, $previousStart, $previousEnd);
+        $topViewed = $this->topProducts('product_view', $start, $end);
+        $topCartAdds = $this->topProducts('add_to_cart', $start, $end);
+        $topWishlisted = $this->topProducts('wishlist_click', $start, $end);
+        $topSearches = $this->topSearchKeywords($start, $end);
+        $recentSearches = $this->recentSearches();
+
         return [
             'days' => $days,
             'allowedDays' => self::ALLOWED_DAYS,
             'start' => $start,
             'end' => $end,
-            'kpi' => $this->buildKpi($start, $end, $previousStart, $previousEnd),
-            'topViewed' => $this->topProducts('product_view', $start, $end),
-            'topCartAdds' => $this->topProducts('add_to_cart', $start, $end),
-            'topWishlisted' => $this->topProducts('wishlist_click', $start, $end),
-            'topSearches' => $this->topSearchKeywords($start, $end),
+            'kpi' => $kpi,
+            'topViewed' => $topViewed,
+            'topCartAdds' => $topCartAdds,
+            'topWishlisted' => $topWishlisted,
+            'topSearches' => $topSearches,
             'dailySeries' => $this->dailyEventSeries($start, $end),
-            'recentSearches' => $this->recentSearches(),
+            'recentSearches' => $recentSearches,
+            'hasData' => $this->snapshotHasData($kpi, $topViewed, $topCartAdds, $topWishlisted, $topSearches, $recentSearches),
             'generatedAt' => Carbon::now(),
         ];
     }
@@ -86,6 +94,7 @@ class AnalyticsQueryService
         $productViews = $countByType('product_view', $start, $end);
         $cartAdds = $countByType('add_to_cart', $start, $end);
         $wishlistClicks = $countByType('wishlist_click', $start, $end);
+        $searchKeywords = $this->searchKeywordCount($start, $end);
         $checkoutStarts = $countByType('checkout_started', $start, $end);
         $ordersCompleted = $countByType('order_completed', $start, $end);
         $uniques = $uniqueVisitors($start, $end);
@@ -108,6 +117,7 @@ class AnalyticsQueryService
             'cart_adds_delta' => $this->percentChange($cartAdds, $prevCartAdds),
             'wishlist_clicks' => $wishlistClicks,
             'wishlist_clicks_delta' => $this->percentChange($wishlistClicks, $prevWishlist),
+            'search_keywords' => $searchKeywords,
             'checkout_starts' => $checkoutStarts,
             'orders_completed' => $ordersCompleted,
             'cart_conversion_pct' => round($cartConversion, 1),
@@ -245,6 +255,47 @@ class AnalyticsQueryService
         return round((($current - $previous) / $previous) * 100, 1);
     }
 
+    private function searchKeywordCount(Carbon $start, Carbon $end): int
+    {
+        if (! Schema::hasTable('search_analytics')) {
+            return 0;
+        }
+
+        return (int) DB::table('search_analytics')
+            ->whereBetween('last_searched_at', [$start, $end])
+            ->count();
+    }
+
+    /**
+     * @param array<string, mixed> $kpi
+     */
+    private function snapshotHasData(array $kpi, Collection ...$collections): bool
+    {
+        $trackedKeys = [
+            'page_views',
+            'product_views',
+            'cart_adds',
+            'wishlist_clicks',
+            'search_keywords',
+            'checkout_starts',
+            'orders_completed',
+        ];
+
+        foreach ($trackedKeys as $key) {
+            if ((int) ($kpi[$key] ?? 0) > 0) {
+                return true;
+            }
+        }
+
+        foreach ($collections as $collection) {
+            if ($collection->isNotEmpty()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private function localizedProductColumn(): string
     {
         return match (true) {
@@ -270,6 +321,7 @@ class AnalyticsQueryService
                 'product_views' => 0,
                 'cart_adds' => 0, 'cart_adds_delta' => 0.0,
                 'wishlist_clicks' => 0, 'wishlist_clicks_delta' => 0.0,
+                'search_keywords' => 0,
                 'checkout_starts' => 0,
                 'orders_completed' => 0,
                 'cart_conversion_pct' => 0.0,
@@ -283,6 +335,7 @@ class AnalyticsQueryService
                 'page_views' => [], 'product_views' => [], 'cart_adds' => [], 'orders' => [],
             ]],
             'recentSearches' => collect(),
+            'hasData' => false,
             'generatedAt' => Carbon::now(),
         ];
     }

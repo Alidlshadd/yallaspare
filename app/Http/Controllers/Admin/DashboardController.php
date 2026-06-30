@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Category;
 use App\Models\InventoryMovement;
 use App\Models\Setting;
+use App\Services\Analytics\AnalyticsQueryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -396,6 +397,9 @@ class DashboardController extends Controller
                 ->filter(fn ($row) => (int) ($row->units_sold ?? 0) > 0)
                 ->values();
 
+            $siteAnalytics = app(AnalyticsQueryService::class)->snapshot(30);
+            $siteAnalyticsKpi = $siteAnalytics['kpi'] ?? [];
+
             return [
                 'totalProducts' => $totalProducts,
                 'totalOrders' => $totalOrders,
@@ -441,6 +445,19 @@ class DashboardController extends Controller
                 'deliveredOrders30d' => $deliveredOrders30d,
                 'avgShipHours' => $avgShipHours,
                 'topProfitable' => $topProfitable,
+                'siteAnalyticsDays' => $siteAnalytics['days'] ?? 30,
+                'siteAnalyticsHasData' => (bool) ($siteAnalytics['hasData'] ?? false),
+                'siteAnalyticsCards' => [
+                    ['label' => __('Total page views'), 'value' => (int) ($siteAnalyticsKpi['page_views'] ?? 0), 'icon' => 'far fa-eye', 'tone' => 'indigo'],
+                    ['label' => __('Product views'), 'value' => (int) ($siteAnalyticsKpi['product_views'] ?? 0), 'icon' => 'fas fa-box-open', 'tone' => 'cyan'],
+                    ['label' => __('Add-to-cart clicks'), 'value' => (int) ($siteAnalyticsKpi['cart_adds'] ?? 0), 'icon' => 'fas fa-cart-plus', 'tone' => 'rose'],
+                    ['label' => __('Wishlist clicks'), 'value' => (int) ($siteAnalyticsKpi['wishlist_clicks'] ?? 0), 'icon' => 'far fa-heart', 'tone' => 'amber'],
+                    ['label' => __('Search keywords'), 'value' => (int) ($siteAnalyticsKpi['search_keywords'] ?? 0), 'icon' => 'fas fa-magnifying-glass', 'tone' => 'blue'],
+                    ['label' => __('Checkout starts'), 'value' => (int) ($siteAnalyticsKpi['checkout_starts'] ?? 0), 'icon' => 'fas fa-credit-card', 'tone' => 'violet'],
+                    ['label' => __('Completed orders'), 'value' => (int) ($siteAnalyticsKpi['orders_completed'] ?? 0), 'icon' => 'fas fa-circle-check', 'tone' => 'emerald'],
+                ],
+                'siteAnalyticsTopViewed' => $siteAnalytics['topViewed'] ?? collect(),
+                'siteAnalyticsTopSearches' => $siteAnalytics['topSearches'] ?? collect(),
             ];
         });
 
@@ -464,6 +481,11 @@ class DashboardController extends Controller
             'deliveredOrders30d' => 0,
             'avgShipHours' => null,
             'topProfitable' => collect(),
+            'siteAnalyticsDays' => 30,
+            'siteAnalyticsHasData' => false,
+            'siteAnalyticsCards' => [],
+            'siteAnalyticsTopViewed' => collect(),
+            'siteAnalyticsTopSearches' => collect(),
             'cancellationRequestOrders' => 0,
             'openReturnRequests' => 0,
             'operationsQueue' => [],
@@ -542,6 +564,11 @@ class DashboardController extends Controller
             'deliveredOrders30d',
             'avgShipHours',
             'topProfitable',
+            'siteAnalyticsDays',
+            'siteAnalyticsHasData',
+            'siteAnalyticsCards',
+            'siteAnalyticsTopViewed',
+            'siteAnalyticsTopSearches',
             'currencySymbol',
             'currencyLabel',
             'currencyDecimals'

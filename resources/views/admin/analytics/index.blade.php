@@ -60,6 +60,15 @@
         </div>
     </div>
 
+    @if(! ($hasData ?? false))
+        <div class="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-8 text-center bento-shadow">
+            <div class="mx-auto grid h-12 w-12 place-items-center rounded-xl bg-slate-50 text-slate-500">
+                <i class="fas fa-chart-simple"></i>
+            </div>
+            <p class="mt-3 text-sm font-bold text-slate-700">No analytics data yet. Data will appear after visitors use the website.</p>
+        </div>
+    @endif
+
     {{-- KPI strip --}}
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         @php $d = $deltaTone((float) $kpi['page_views_delta']); @endphp

@@ -85,6 +85,7 @@ class AdminDashboardTest extends TestCase
 
         $routes = [
             'admin.dashboard',
+            'admin.analytics.index',
             'admin.products.index',
             'admin.categories.index',
             'admin.orders.index',

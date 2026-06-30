@@ -30,6 +30,9 @@ class RecordAnalyticsEvent
         if ($response->getStatusCode() >= 400) {
             return;
         }
+        if ($request->is('admin') || $request->is('admin/*')) {
+            return;
+        }
         if (BotDetector::isBot($request->userAgent())) {
             return;
         }
