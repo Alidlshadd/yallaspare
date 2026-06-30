@@ -1,0 +1,1168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin · Analytics · 3 Visual Directions</title>
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer">
+<style>
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+        font-family: 'Figtree', ui-sans-serif, system-ui, -apple-system, sans-serif;
+        background: #eef1f6;
+        color: #04042a;
+        padding: 40px 24px 80px;
+        line-height: 1.5;
+    }
+    .wrap { max-width: 1280px; margin: 0 auto; }
+    .stack > * + * { margin-top: 64px; }
+    h1, h2, h3, h4, p { margin: 0; }
+
+    /* ── Intro ── */
+    .intro { text-align: center; margin-bottom: 48px; }
+    .intro .tag {
+        font-family: ui-monospace, 'JetBrains Mono', monospace;
+        font-size: 11px; font-weight: 900; letter-spacing: 0.28em;
+        text-transform: uppercase; color: #f59e0b;
+    }
+    .intro h1 { font-size: 32px; font-weight: 900; color: #04042a; letter-spacing: -0.02em; margin-top: 10px; }
+    .intro p { font-size: 14px; color: #64748b; margin-top: 12px; max-width: 680px; margin-left: auto; margin-right: auto; }
+
+    /* ── Option header (gold pill) ── */
+    .opt-head {
+        display: flex; align-items: center; gap: 14px;
+        padding: 18px 22px;
+        background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);
+        border-radius: 14px 14px 0 0;
+        position: relative; overflow: hidden;
+    }
+    .opt-head::before {
+        content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.45;
+        background-image:
+            repeating-linear-gradient(135deg, rgba(255,255,255,0.04) 0 1px, transparent 1px 18px),
+            repeating-linear-gradient(45deg,  rgba(255,255,255,0.02) 0 1px, transparent 1px 18px);
+    }
+    .opt-head::after {
+        content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 3px;
+        background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+    }
+    .opt-num {
+        position: relative; z-index: 2;
+        width: 44px; height: 44px; border-radius: 12px;
+        background: radial-gradient(circle at 30% 25%, rgba(255,255,255,0.22), transparent 60%),
+                    linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.45), inset 0 -2px 4px rgba(120,53,15,0.4), 0 2px 6px rgba(245,158,11,0.30);
+        display: grid; place-items: center;
+        color: #04042a; font-weight: 900; font-size: 18px;
+    }
+    .opt-text { position: relative; z-index: 2; }
+    .opt-text .kicker { font-family: ui-monospace, monospace; font-size: 10px; font-weight: 900; letter-spacing: 0.28em; color: #fcd34d; text-transform: uppercase; }
+    .opt-text h2 { font-size: 20px; font-weight: 800; color: #fff; letter-spacing: -0.01em; margin-top: 4px; }
+    .opt-text p { font-size: 12.5px; color: rgba(255,255,255,0.65); margin-top: 4px; }
+
+    /* ── Page shell (matches real admin bg #f3f4f7) ── */
+    .page {
+        background: #f3f4f7;
+        border-radius: 0 0 18px 18px;
+        padding: 28px;
+        box-shadow: 0 30px 70px rgba(7,7,64,0.10);
+    }
+
+    /* ============================================================
+       SHARED ADMIN DESIGN TOKENS (copied from real dashboard.blade)
+       ============================================================ */
+    .num-display { font-feature-settings: "tnum" 1, "lnum" 1; letter-spacing: -0.025em; }
+    .bento-shadow { box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06); }
+    .bento-shadow-lg { box-shadow: 0 10px 30px rgba(7,7,64,0.18), 0 30px 60px rgba(7,7,64,0.20); }
+    .bento-stripes {
+        background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.06) 0px, rgba(255,255,255,0.06) 1px, transparent 1px, transparent 14px);
+    }
+    .bento-stripes-soft {
+        background-image: repeating-linear-gradient(135deg, rgba(7,7,64,0.04) 0px, rgba(7,7,64,0.04) 1px, transparent 1px, transparent 14px);
+    }
+    .kicker {
+        font-size: 10px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase;
+        color: #64748b;
+    }
+    .kicker-w { color: rgba(255,255,255,0.60); }
+    .mono-badge {
+        font-family: ui-monospace, monospace;
+        font-size: 10px; padding: 2px 6px; border-radius: 4px;
+    }
+    .corner-brackets { position: relative; }
+    .corner-brackets::before, .corner-brackets::after {
+        content: ""; position: absolute; width: 14px; height: 14px;
+        border-color: rgba(255,255,255,0.35); border-style: solid; border-width: 0;
+        pointer-events: none;
+    }
+    .corner-brackets::before { top: 14px; left: 14px; border-top-width: 1.5px; border-left-width: 1.5px; }
+    .corner-brackets::after { bottom: 14px; right: 14px; border-bottom-width: 1.5px; border-right-width: 1.5px; }
+    .pulse-dot { position: relative; }
+    .pulse-dot::after {
+        content: ""; position: absolute; inset: -4px; border-radius: 999px;
+        border: 2px solid currentColor; opacity: 0.35; animation: pulse-ring 1.6s ease-out infinite;
+    }
+    @keyframes pulse-ring { 0% { transform: scale(0.6); opacity: 0.6; } 100% { transform: scale(1.5); opacity: 0; } }
+
+    /* ── White card with colored side-strip (the dashboard signature) ── */
+    .stat-card {
+        position: relative;
+        background: #fff;
+        border: 1px solid rgba(15,23,42,0.07);
+        border-radius: 24px;
+        padding: 22px;
+        overflow: hidden;
+    }
+    .stat-card .strip {
+        position: absolute; top: 0; left: 0; bottom: 0; width: 4px;
+    }
+    .stat-card .glow {
+        position: absolute; bottom: -32px; right: -32px;
+        width: 128px; height: 128px; border-radius: 999px; filter: blur(40px);
+    }
+    .stat-card .icon-box {
+        width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; font-size: 14px;
+    }
+    .stat-card .big {
+        margin-top: 22px;
+        font-size: 34px; font-weight: 900; color: #04042a; letter-spacing: -0.025em;
+    }
+    .pill {
+        display: inline-flex; align-items: center; gap: 5px;
+        padding: 2px 9px; border-radius: 999px; font-size: 11px; font-weight: 700;
+        border: 1px solid;
+    }
+    .pill-up   { background: #ecfdf5; color: #047857; border-color: #a7f3d0; }
+    .pill-down { background: #fef2f2; color: #b91c1c; border-color: #fecaca; }
+    .pill-flat { background: #f1f5f9; color: #475569; border-color: #e2e8f0; }
+    .pill-dark-up { background: rgba(52,211,153,0.15); color: #6ee7b7; border: 1px solid rgba(52,211,153,0.25); }
+
+    /* Mini progress bar */
+    .progress { height: 6px; background: #f1f5f9; border-radius: 999px; overflow: hidden; }
+    .progress > div { height: 100%; border-radius: 999px; }
+
+    /* ── Hero dark card (mirrors revenue hero) ── */
+    .hero-dark {
+        position: relative;
+        border-radius: 26px;
+        padding: 28px;
+        background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);
+        color: #fff;
+        overflow: hidden;
+    }
+    .hero-dark .top-accent {
+        position: absolute; top: 0; left: 0; right: 0; height: 2px;
+        background: linear-gradient(90deg, #22d3ee, #818cf8, #e879f9);
+    }
+    .hero-dark .halo-a { position: absolute; top: -130px; right: -130px; width: 380px; height: 380px; border-radius: 999px; background: rgba(99,102,241,0.25); filter: blur(100px); }
+    .hero-dark .halo-b { position: absolute; bottom: -130px; left: -80px; width: 320px; height: 320px; border-radius: 999px; background: rgba(34,211,238,0.18); filter: blur(100px); }
+    .hero-dark .stripes {
+        position: absolute; inset: 0; pointer-events: none;
+        background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 14px);
+    }
+    .hero-icon {
+        width: 48px; height: 48px; border-radius: 16px;
+        background: rgba(255,255,255,0.10);
+        border: 1px solid rgba(255,255,255,0.15);
+        display: grid; place-items: center;
+        backdrop-filter: blur(4px);
+    }
+
+    /* ── Mission control style operations card (dark wide) ── */
+    .ops-card {
+        position: relative;
+        border-radius: 26px;
+        padding: 28px;
+        background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);
+        color: #fff;
+        overflow: hidden;
+    }
+    .ops-card .top-accent {
+        position: absolute; top: 0; left: 0; right: 0; height: 2px;
+        background: linear-gradient(90deg, #f59e0b, #f43f5e, #818cf8, #22d3ee);
+    }
+    .ops-card .stripes {
+        position: absolute; inset: 0; pointer-events: none;
+        background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 14px);
+    }
+    .ops-card .halo-a { position: absolute; top: -130px; right: -130px; width: 380px; height: 380px; border-radius: 999px; background: rgba(245,158,11,0.16); filter: blur(100px); }
+    .ops-card .halo-b { position: absolute; bottom: -100px; left: -80px; width: 320px; height: 320px; border-radius: 999px; background: rgba(99,102,241,0.18); filter: blur(100px); }
+    .gauge-card {
+        position: relative;
+        border-radius: 18px;
+        background: rgba(255,255,255,0.04);
+        border: 1px solid rgba(255,255,255,0.10);
+        padding: 18px;
+        overflow: hidden;
+        backdrop-filter: blur(4px);
+    }
+    .gauge-card .led {
+        position: absolute; top: 14px; right: 14px;
+        width: 8px; height: 8px; border-radius: 999px;
+    }
+    .gauge-disc {
+        position: relative; width: 68px; height: 68px; border-radius: 999px;
+        display: grid; place-items: center;
+    }
+    .gauge-disc::after {
+        content: ""; position: absolute; inset: 6px; border-radius: 999px;
+        background: linear-gradient(135deg, #04042a, #0a0d3f);
+    }
+    .gauge-disc > span {
+        position: relative; z-index: 1; font-weight: 900; font-size: 19px; letter-spacing: -0.02em;
+    }
+
+    /* ── Tables ── */
+    table { width: 100%; border-collapse: collapse; }
+    th, td { text-align: left; padding: 11px 4px; font-size: 13px; }
+    thead th { font-size: 10px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: #94a3b8; border-bottom: 1px solid #e5e7eb; }
+    tbody tr + tr td { border-top: 1px solid #f1f5f9; }
+    tbody td { color: #1e293b; }
+    tbody td.num { font-feature-settings: "tnum" 1; font-weight: 800; text-align: right; color: #04042a; }
+    .rank {
+        display: inline-grid; place-items: center;
+        width: 24px; height: 24px;
+        border-radius: 8px; font-size: 11px; font-weight: 900; color: #475569;
+        background: #f1f5f9; margin-right: 10px;
+    }
+    .rank-1 { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #04042a; box-shadow: 0 2px 6px rgba(245,158,11,0.30); }
+    .rank-2 { background: #e2e8f0; color: #334155; }
+    .rank-3 { background: linear-gradient(135deg, #fda4af, #f87171); color: #fff; }
+
+    .table-card {
+        background: #fff;
+        border: 1px solid rgba(15,23,42,0.07);
+        border-radius: 24px;
+        padding: 22px;
+    }
+    .table-card h3 {
+        font-size: 14px; font-weight: 900; color: #04042a; letter-spacing: -0.01em;
+    }
+    .table-card .head {
+        display: flex; align-items: center; justify-content: space-between;
+        margin-bottom: 12px;
+    }
+
+    /* Range chips (Time range header) */
+    .range-bar {
+        background: #fff; border: 1px solid rgba(148,163,184,0.30);
+        border-radius: 16px; padding: 12px 16px;
+        display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+        margin-bottom: 24px;
+    }
+    .range-icon { width: 36px; height: 36px; border-radius: 12px; background: rgba(7,7,64,0.10); color: #04042a; display: grid; place-items: center; }
+    .range-chip {
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 7px 13px; border-radius: 12px; font-size: 11px; font-weight: 800;
+        background: #f8fafc; color: #334155; border: 1px solid #e2e8f0;
+    }
+    .range-chip.active {
+        background: linear-gradient(135deg, #04042a, #4f46e5); color: #fff; border-color: transparent;
+        box-shadow: 0 6px 16px rgba(79,70,229,0.25);
+    }
+    .range-chip .live-dot {
+        width: 7px; height: 7px; border-radius: 999px; background: #6ee7b7; box-shadow: 0 0 0 0 rgba(110,231,183,0.65);
+        animation: ping 1.4s ease-out infinite;
+    }
+    @keyframes ping { 0%{box-shadow:0 0 0 0 rgba(110,231,183,0.50)} 100%{box-shadow:0 0 0 8px rgba(110,231,183,0)} }
+
+    /* ── OPTION 1 layout: bento ── */
+    .o1-hero-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 16px;
+    }
+    .o1-row-cards { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 16px; }
+    .o1-row-mid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 24px; }
+    .o1-row-charts { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 24px; }
+    .o1-gauges { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-top: 22px; position: relative; }
+
+    /* ── OPTION 2 layout: hero 2x2 + side stack ── */
+    .o2-grid {
+        display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 16px; align-items: stretch;
+    }
+    .o2-hero { grid-row: span 2; }
+    .o2-bottom { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 24px; }
+
+    /* ── OPTION 3 layout: live console + activity ── */
+    .o3-console-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+    .o3-split { display: grid; grid-template-columns: 1.4fr 1fr; gap: 16px; margin-top: 24px; }
+    .feed-item { display: flex; align-items: flex-start; gap: 12px; padding: 11px 0; border-bottom: 1px dashed #e2e8f0; }
+    .feed-item:last-child { border-bottom: 0; }
+    .feed-icon { width: 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; flex-shrink: 0; }
+    .feed-text { font-size: 13px; color: #1e293b; line-height: 1.4; }
+    .feed-text strong { color: #04042a; font-weight: 800; }
+    .feed-meta { font-size: 11px; color: #94a3b8; margin-top: 2px; font-family: ui-monospace, monospace; }
+    .o3-tables { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin-top: 24px; }
+
+    /* Chart svg */
+    .chart-svg { display: block; width: 100%; height: auto; }
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+    <div class="intro">
+        <span class="tag">YallaSpare · Admin Analytics</span>
+        <h1>Three layouts using the actual admin design language</h1>
+        <p>Same bento-shadow cards, color side-strips, navy hero gradients, conic gauges, mission-control wide card, pulse-dot LEDs — exactly like the existing dashboard. Pick the layout you want me to build.</p>
+    </div>
+
+    <div class="stack">
+
+        <!-- ==================================================== OPTION 1 -->
+        <section>
+            <div class="opt-head">
+                <div class="opt-num">1</div>
+                <div class="opt-text">
+                    <div class="kicker" style="color:#fcd34d">Recommended · Direct port of dashboard pattern</div>
+                    <h2>Hero + KPI strip + Mission Control + Tables</h2>
+                    <p>Three navy gradient feature cards on top, four white color-strip KPI cards, then a dark "Top Performers" mission-control with conic gauges, finished with three top-N tables and two trend charts.</p>
+                </div>
+            </div>
+            <div class="page">
+
+                <!-- Time range bar (same as dashboard) -->
+                <div class="range-bar">
+                    <div style="display:flex; align-items:center; gap:10px">
+                        <div class="range-icon"><i class="far fa-calendar-days"></i></div>
+                        <div>
+                            <div class="kicker" style="font-size:9.5px">Time Range</div>
+                            <div style="font-size:13px; font-weight:800; color:#04042a; margin-top:2px">
+                                Analytics Period <span style="font-family:ui-monospace,monospace; color:#94a3b8; font-size:11px; font-weight:600">· Last 30 days</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:6px">
+                        <span class="range-chip">7D</span>
+                        <span class="range-chip active"><span class="live-dot"></span>30D</span>
+                        <span class="range-chip">90D</span>
+                        <span class="range-chip">1Y</span>
+                    </div>
+                </div>
+
+                <!-- ── Hero row: Today / Week / Month ── -->
+                <div class="o1-hero-grid">
+                    <!-- Big today hero -->
+                    <div class="hero-dark corner-brackets">
+                        <div class="top-accent"></div>
+                        <div class="stripes"></div>
+                        <div class="halo-a"></div>
+                        <div class="halo-b"></div>
+
+                        <div style="position:relative; display:flex; align-items:flex-start; justify-content:space-between; gap:16px">
+                            <div>
+                                <div style="display:flex; align-items:center; gap:8px">
+                                    <span class="kicker kicker-w">Visitors Today</span>
+                                    <span class="mono-badge" style="color:#67e8f9; background: rgba(34,211,238,0.10); border: 1px solid rgba(34,211,238,0.20)">YS · LIVE</span>
+                                </div>
+                                <p style="margin-top:6px; font-size:12px; color:rgba(255,255,255,0.50)">Unique sessions in the last 24h</p>
+                            </div>
+                            <div class="hero-icon"><i class="fas fa-users-line" style="color:#fff; font-size:18px"></i></div>
+                        </div>
+
+                        <div style="position:relative; margin-top:28px">
+                            <div style="display:flex; align-items:baseline; gap:8px; flex-wrap:wrap">
+                                <span style="color:#67e8f9; font-weight:800; font-size:14px">Sessions</span>
+                                <span class="num-display" style="font-size:64px; font-weight:900; color:#fff; line-height:1">1,284</span>
+                            </div>
+                            <div style="margin-top:18px; display:flex; gap:10px; align-items:center; flex-wrap:wrap">
+                                <span class="pill pill-dark-up"><i class="fas fa-arrow-trend-up"></i> +12.4%</span>
+                                <span style="color:rgba(255,255,255,0.55); font-size:12px">vs yesterday</span>
+                            </div>
+                        </div>
+
+                        <!-- sparkline -->
+                        <div style="position:relative; margin-top:26px">
+                            <svg viewBox="0 0 600 90" preserveAspectRatio="none" style="width:100%; height:84px">
+                                <defs>
+                                    <linearGradient id="sl1Area" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.55"/>
+                                        <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
+                                    </linearGradient>
+                                    <linearGradient id="sl1Line" x1="0" y1="0" x2="1" y2="0">
+                                        <stop offset="0%" stop-color="#a5f3fc"/>
+                                        <stop offset="100%" stop-color="#fff"/>
+                                    </linearGradient>
+                                </defs>
+                                <path d="M 0,90 L 0,72 L 60,68 L 120,55 L 180,60 L 240,48 L 300,52 L 360,38 L 420,42 L 480,28 L 540,20 L 600,15 L 600,90 Z" fill="url(#sl1Area)"/>
+                                <path d="M 0,72 L 60,68 L 120,55 L 180,60 L 240,48 L 300,52 L 360,38 L 420,42 L 480,28 L 540,20 L 600,15" fill="none" stroke="url(#sl1Line)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+                            </svg>
+                            <div style="margin-top:6px; display:flex; justify-content:space-between; font-size:10px; color:rgba(255,255,255,0.40); letter-spacing:0.15em">
+                                <span>00</span><span>04</span><span>08</span><span>12</span><span>16</span><span>20</span><span>24</span>
+                            </div>
+                        </div>
+
+                        <!-- Footer mini stats -->
+                        <div style="position:relative; margin-top:24px; padding-top:18px; border-top: 1px solid rgba(255,255,255,0.10); display:grid; grid-template-columns: repeat(2,1fr); gap:14px">
+                            <div>
+                                <p class="kicker kicker-w">Unique today</p>
+                                <p style="margin-top:4px; font-size:16px; font-weight:800; color:#fff">982 <span style="color:rgba(255,255,255,0.55); font-size:11px; font-weight:600">of 1,284</span></p>
+                            </div>
+                            <div>
+                                <p class="kicker kicker-w">Avg session</p>
+                                <p style="margin-top:4px; font-size:16px; font-weight:800; color:#fff">4m 12s</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Week mini hero -->
+                    <div class="hero-dark" style="padding:22px">
+                        <div class="top-accent" style="background: linear-gradient(90deg, #34d399, #22d3ee)"></div>
+                        <div class="stripes"></div>
+                        <div style="position:relative; display:flex; justify-content:space-between; align-items:flex-start">
+                            <span class="kicker kicker-w">This Week</span>
+                            <div class="hero-icon" style="width:38px; height:38px; border-radius:12px"><i class="far fa-calendar-week" style="color:#fff"></i></div>
+                        </div>
+                        <p class="num-display" style="margin-top:18px; font-size:34px; font-weight:900; color:#fff; line-height:1">8,962</p>
+                        <div style="margin-top:14px; display:flex; gap:8px; align-items:center; flex-wrap:wrap">
+                            <span class="pill pill-dark-up"><i class="fas fa-arrow-up"></i> +6.1%</span>
+                            <span style="color:rgba(255,255,255,0.55); font-size:11px">vs last week</span>
+                        </div>
+                        <!-- mini 7-day bars -->
+                        <div style="margin-top:18px; display:flex; align-items:flex-end; gap:5px; height:42px">
+                            <div style="flex:1; height:30%; background:rgba(52,211,153,0.30); border-radius:3px 3px 0 0"></div>
+                            <div style="flex:1; height:42%; background:rgba(52,211,153,0.45); border-radius:3px 3px 0 0"></div>
+                            <div style="flex:1; height:55%; background:rgba(52,211,153,0.60); border-radius:3px 3px 0 0"></div>
+                            <div style="flex:1; height:48%; background:rgba(52,211,153,0.50); border-radius:3px 3px 0 0"></div>
+                            <div style="flex:1; height:72%; background:rgba(52,211,153,0.78); border-radius:3px 3px 0 0"></div>
+                            <div style="flex:1; height:85%; background:rgba(52,211,153,0.88); border-radius:3px 3px 0 0"></div>
+                            <div style="flex:1; height:100%; background:#34d399; border-radius:3px 3px 0 0"></div>
+                        </div>
+                    </div>
+
+                    <!-- Month mini hero -->
+                    <div class="hero-dark" style="padding:22px">
+                        <div class="top-accent" style="background: linear-gradient(90deg, #c084fc, #818cf8)"></div>
+                        <div class="stripes"></div>
+                        <div style="position:relative; display:flex; justify-content:space-between; align-items:flex-start">
+                            <span class="kicker kicker-w">This Month</span>
+                            <div class="hero-icon" style="width:38px; height:38px; border-radius:12px"><i class="far fa-calendar" style="color:#fff"></i></div>
+                        </div>
+                        <p class="num-display" style="margin-top:18px; font-size:34px; font-weight:900; color:#fff; line-height:1">32,140</p>
+                        <div style="margin-top:14px; display:flex; gap:8px; align-items:center; flex-wrap:wrap">
+                            <span class="pill" style="background:rgba(244,63,94,0.16); color:#fda4af; border-color:rgba(244,63,94,0.25)"><i class="fas fa-arrow-down"></i> -2.3%</span>
+                            <span style="color:rgba(255,255,255,0.55); font-size:11px">vs last month</span>
+                        </div>
+                        <!-- thin progress goal -->
+                        <div style="margin-top:18px">
+                            <div style="display:flex; justify-content:space-between; font-size:10px; color:rgba(255,255,255,0.55); letter-spacing:0.15em; text-transform:uppercase; font-weight:800; margin-bottom:8px">
+                                <span>Goal 40K</span><span style="color:#c084fc">80%</span>
+                            </div>
+                            <div class="progress" style="background: rgba(255,255,255,0.10)">
+                                <div style="width:80%; background: linear-gradient(90deg, #c084fc, #818cf8)"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── 4 KPI cards with color strip ── -->
+                <div class="o1-row-cards">
+                    <div class="stat-card">
+                        <div class="strip" style="background: linear-gradient(180deg, #6366f1, #4338ca)"></div>
+                        <div class="glow" style="background: rgba(99,102,241,0.10)"></div>
+                        <div style="display:flex; align-items:flex-start; justify-content:space-between">
+                            <div>
+                                <p class="kicker">Page Views</p>
+                                <p style="margin-top:4px; font-size:11px; color:#94a3b8">All trackable pages</p>
+                            </div>
+                            <div class="icon-box" style="background:#eef2ff; color:#4f46e5"><i class="far fa-eye"></i></div>
+                        </div>
+                        <p class="big num-display">24,510</p>
+                        <div style="margin-top:8px; display:flex; align-items:center; gap:8px">
+                            <span class="pill pill-up"><i class="fas fa-arrow-up" style="font-size:9px"></i> 9.8%</span>
+                            <span style="color:#64748b; font-size:11px">vs last month</span>
+                        </div>
+                        <svg viewBox="0 0 200 36" preserveAspectRatio="none" style="margin-top:16px; width:100%; height:32px">
+                            <defs><linearGradient id="m1a" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#6366f1" stop-opacity="0.30"/><stop offset="100%" stop-color="#6366f1" stop-opacity="0"/></linearGradient></defs>
+                            <path d="M 0,36 L 0,28 L 30,24 L 60,22 L 90,18 L 120,14 L 150,15 L 180,10 L 200,8 L 200,36 Z" fill="url(#m1a)"/>
+                            <path d="M 0,28 L 30,24 L 60,22 L 90,18 L 120,14 L 150,15 L 180,10 L 200,8" fill="none" stroke="#4f46e5" stroke-width="1.8"/>
+                        </svg>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="strip" style="background: linear-gradient(180deg, #fb7185, #be123c)"></div>
+                        <div class="glow" style="background: rgba(244,63,94,0.10)"></div>
+                        <div style="display:flex; align-items:flex-start; justify-content:space-between">
+                            <div>
+                                <p class="kicker">Add to Cart</p>
+                                <p style="margin-top:4px; font-size:11px; color:#94a3b8">Total clicks</p>
+                            </div>
+                            <div class="icon-box" style="background:#fff1f2; color:#be123c"><i class="fas fa-cart-plus"></i></div>
+                        </div>
+                        <p class="big num-display">1,872</p>
+                        <div style="margin-top:8px; display:flex; align-items:center; gap:8px">
+                            <span class="pill pill-up"><i class="fas fa-arrow-up" style="font-size:9px"></i> 14.2%</span>
+                            <span style="color:#64748b; font-size:11px">vs last month</span>
+                        </div>
+                        <div style="margin-top:16px">
+                            <div style="display:flex; justify-content:space-between; font-size:10px; color:#94a3b8; font-weight:800; letter-spacing:0.18em; text-transform:uppercase; margin-bottom:6px">
+                                <span>Conversion</span><span style="color:#be123c">7.6%</span>
+                            </div>
+                            <div class="progress"><div style="width:76%; background: linear-gradient(90deg, #fb7185, #be123c)"></div></div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="strip" style="background: linear-gradient(180deg, #f59e0b, #b45309)"></div>
+                        <div class="glow" style="background: rgba(245,158,11,0.10)"></div>
+                        <div style="display:flex; align-items:flex-start; justify-content:space-between">
+                            <div>
+                                <p class="kicker">Wishlist Clicks</p>
+                                <p style="margin-top:4px; font-size:11px; color:#94a3b8">Saved to wishlist</p>
+                            </div>
+                            <div class="icon-box" style="background:#fff7ed; color:#b45309"><i class="far fa-heart"></i></div>
+                        </div>
+                        <p class="big num-display">694</p>
+                        <div style="margin-top:8px; display:flex; align-items:center; gap:8px">
+                            <span class="pill pill-flat">±0.0%</span>
+                            <span style="color:#64748b; font-size:11px">stable</span>
+                        </div>
+                        <svg viewBox="0 0 200 36" preserveAspectRatio="none" style="margin-top:16px; width:100%; height:32px">
+                            <defs><linearGradient id="m2a" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#f59e0b" stop-opacity="0.30"/><stop offset="100%" stop-color="#f59e0b" stop-opacity="0"/></linearGradient></defs>
+                            <path d="M 0,36 L 0,18 L 30,22 L 60,16 L 90,20 L 120,15 L 150,19 L 180,16 L 200,18 L 200,36 Z" fill="url(#m2a)"/>
+                            <path d="M 0,18 L 30,22 L 60,16 L 90,20 L 120,15 L 150,19 L 180,16 L 200,18" fill="none" stroke="#b45309" stroke-width="1.8"/>
+                        </svg>
+                    </div>
+
+                    <div class="stat-card" style="border-color:#fcd34d">
+                        <div class="strip" style="background: linear-gradient(180deg, #fbbf24, #d97706)"></div>
+                        <div style="position:absolute; inset:0; pointer-events:none; background-image: repeating-linear-gradient(135deg, rgba(245,158,11,0.06) 0 1px, transparent 1px 14px)"></div>
+                        <div style="position:relative; display:flex; align-items:flex-start; justify-content:space-between">
+                            <div>
+                                <p class="kicker" style="color:#b45309"><i class="fas fa-trophy"></i> Top Product</p>
+                                <p style="margin-top:4px; font-size:11px; color:#94a3b8">Most viewed today</p>
+                            </div>
+                            <div class="icon-box" style="background:#fef3c7; color:#92400e"><i class="fas fa-screwdriver-wrench"></i></div>
+                        </div>
+                        <p style="position:relative; margin-top:22px; font-size:17px; font-weight:900; color:#04042a; letter-spacing:-0.015em; line-height:1.2">Brake Pad XR<br><span style="font-family:ui-monospace,monospace; font-size:11px; color:#64748b; font-weight:600">SKU · BPX-2410</span></p>
+                        <div style="position:relative; margin-top:14px; display:flex; gap:14px; align-items:center">
+                            <div>
+                                <p class="num-display" style="font-size:22px; font-weight:900; color:#04042a">412</p>
+                                <p class="kicker" style="margin-top:2px">views</p>
+                            </div>
+                            <div style="height:32px; width:1px; background:#e2e8f0"></div>
+                            <div>
+                                <p class="num-display" style="font-size:22px; font-weight:900; color:#04042a">71</p>
+                                <p class="kicker" style="margin-top:2px">carts</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── Mission Control: Top Performers ── -->
+                <div class="ops-card" style="margin-top:24px">
+                    <div class="top-accent"></div>
+                    <div class="stripes"></div>
+                    <div class="halo-a"></div>
+                    <div class="halo-b"></div>
+
+                    <div style="position:relative; display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap">
+                        <div>
+                            <div style="display:flex; align-items:center; gap:10px">
+                                <span class="pulse-dot" style="display:inline-block; width:8px; height:8px; border-radius:999px; background:#fbbf24; color:#fbbf24"></span>
+                                <span class="kicker kicker-w">Engagement · Mission Control</span>
+                                <span class="mono-badge" style="color:#fcd34d; background: rgba(251,191,36,0.10); border: 1px solid rgba(251,191,36,0.25)">7 SIGNALS</span>
+                            </div>
+                            <h3 style="margin-top:6px; font-size:22px; font-weight:800; color:#fff; letter-spacing:-0.015em">What customers are interacting with</h3>
+                        </div>
+                        <a href="#" style="display:inline-flex; align-items:center; gap:8px; padding:10px 14px; border-radius:12px; font-size:12px; font-weight:800; color:#fff; text-decoration:none; background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.15)">Drill into events <i class="fas fa-arrow-right" style="font-size:10px"></i></a>
+                    </div>
+
+                    <div class="o1-gauges">
+                        <!-- gauge 1 -->
+                        <div class="gauge-card">
+                            <span class="led" style="background:#fbbf24; box-shadow:0 0 10px #fbbf24"></span>
+                            <div style="display:flex; align-items:center; gap:14px">
+                                <div class="gauge-disc" style="background: conic-gradient(#fbbf24 0deg 295deg, rgba(255,255,255,0.06) 295deg 360deg)">
+                                    <span style="color:#fbbf24">412</span>
+                                </div>
+                                <div>
+                                    <i class="far fa-eye" style="color:#fbbf24; font-size:13px"></i>
+                                    <p style="margin-top:6px; color:#fff; font-size:13px; font-weight:800; line-height:1.25">Top viewed<br><span style="color:rgba(255,255,255,0.55); font-weight:500; font-size:11px">Brake Pad XR</span></p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- gauge 2 -->
+                        <div class="gauge-card">
+                            <span class="led" style="background:#f43f5e; box-shadow:0 0 10px #f43f5e"></span>
+                            <div style="display:flex; align-items:center; gap:14px">
+                                <div class="gauge-disc" style="background: conic-gradient(#f43f5e 0deg 240deg, rgba(255,255,255,0.06) 240deg 360deg)">
+                                    <span style="color:#f43f5e">98</span>
+                                </div>
+                                <div>
+                                    <i class="fas fa-cart-plus" style="color:#f43f5e; font-size:13px"></i>
+                                    <p style="margin-top:6px; color:#fff; font-size:13px; font-weight:800; line-height:1.25">Top cart<br><span style="color:rgba(255,255,255,0.55); font-weight:500; font-size:11px">Oil Filter Pro</span></p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- gauge 3 -->
+                        <div class="gauge-card">
+                            <span class="led" style="background:#818cf8; box-shadow:0 0 10px #818cf8"></span>
+                            <div style="display:flex; align-items:center; gap:14px">
+                                <div class="gauge-disc" style="background: conic-gradient(#818cf8 0deg 220deg, rgba(255,255,255,0.06) 220deg 360deg)">
+                                    <span style="color:#818cf8">42</span>
+                                </div>
+                                <div>
+                                    <i class="far fa-heart" style="color:#818cf8; font-size:13px"></i>
+                                    <p style="margin-top:6px; color:#fff; font-size:13px; font-weight:800; line-height:1.25">Top wishlist<br><span style="color:rgba(255,255,255,0.55); font-weight:500; font-size:11px">Spark Plug Iridium</span></p>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- gauge 4 -->
+                        <div class="gauge-card">
+                            <span class="led" style="background:#22d3ee; box-shadow:0 0 10px #22d3ee"></span>
+                            <div style="display:flex; align-items:center; gap:14px">
+                                <div class="gauge-disc" style="background: conic-gradient(#22d3ee 0deg 340deg, rgba(255,255,255,0.06) 340deg 360deg)">
+                                    <span style="color:#22d3ee" style="font-size:12px">brake<br>pad</span>
+                                </div>
+                                <div>
+                                    <i class="fas fa-magnifying-glass" style="color:#22d3ee; font-size:13px"></i>
+                                    <p style="margin-top:6px; color:#fff; font-size:13px; font-weight:800; line-height:1.25">Top search<br><span style="color:rgba(255,255,255,0.55); font-weight:500; font-size:11px">340 queries</span></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── 3 top tables ── -->
+                <div class="o1-row-mid">
+                    <div class="table-card">
+                        <div class="head">
+                            <h3><i class="far fa-eye" style="margin-right:6px; color:#4f46e5"></i> Top viewed</h3>
+                            <span class="kicker">last 7d</span>
+                        </div>
+                        <table>
+                            <tbody>
+                                <tr><td><span class="rank rank-1">1</span>Brake Pad XR</td><td class="num">412</td></tr>
+                                <tr><td><span class="rank rank-2">2</span>Oil Filter Pro</td><td class="num">389</td></tr>
+                                <tr><td><span class="rank rank-3">3</span>Spark Plug Iridium</td><td class="num">301</td></tr>
+                                <tr><td><span class="rank">4</span>Headlight H7</td><td class="num">265</td></tr>
+                                <tr><td><span class="rank">5</span>Air Filter</td><td class="num">221</td></tr>
+                                <tr><td><span class="rank">6</span>Wiper Blade 24"</td><td class="num">198</td></tr>
+                                <tr><td><span class="rank">7</span>Engine Coolant 1L</td><td class="num">172</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-card">
+                        <div class="head">
+                            <h3><i class="fas fa-cart-plus" style="margin-right:6px; color:#be123c"></i> Top cart adds</h3>
+                            <span class="kicker">last 7d</span>
+                        </div>
+                        <table>
+                            <tbody>
+                                <tr><td><span class="rank rank-1">1</span>Oil Filter Pro</td><td class="num">98</td></tr>
+                                <tr><td><span class="rank rank-2">2</span>Spark Plug Iridium</td><td class="num">77</td></tr>
+                                <tr><td><span class="rank rank-3">3</span>Brake Pad XR</td><td class="num">71</td></tr>
+                                <tr><td><span class="rank">4</span>Headlight H7</td><td class="num">54</td></tr>
+                                <tr><td><span class="rank">5</span>Air Filter</td><td class="num">42</td></tr>
+                                <tr><td><span class="rank">6</span>Battery 60Ah</td><td class="num">38</td></tr>
+                                <tr><td><span class="rank">7</span>Cabin Filter</td><td class="num">29</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="table-card">
+                        <div class="head">
+                            <h3><i class="fas fa-magnifying-glass" style="margin-right:6px; color:#0e7490"></i> Top searches</h3>
+                            <span class="kicker">last 7d</span>
+                        </div>
+                        <table>
+                            <tbody>
+                                <tr><td><span class="rank rank-1">1</span>brake pad</td><td class="num">340</td></tr>
+                                <tr><td><span class="rank rank-2">2</span>oil filter</td><td class="num">287</td></tr>
+                                <tr><td><span class="rank rank-3">3</span>headlight</td><td class="num">201</td></tr>
+                                <tr><td><span class="rank">4</span>spark plug</td><td class="num">178</td></tr>
+                                <tr><td><span class="rank">5</span>battery</td><td class="num">142</td></tr>
+                                <tr><td><span class="rank">6</span>wiper</td><td class="num">110</td></tr>
+                                <tr><td><span class="rank">7</span>coolant</td><td class="num">88</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- ── Charts ── -->
+                <div class="o1-row-charts">
+                    <div class="table-card">
+                        <div class="head">
+                            <div>
+                                <span class="kicker">Visitors trend</span>
+                                <h3 style="margin-top:4px">Last 7 days</h3>
+                            </div>
+                            <span class="pill pill-up"><i class="fas fa-arrow-trend-up"></i> +6.1%</span>
+                        </div>
+                        <svg class="chart-svg" viewBox="0 0 600 180" preserveAspectRatio="none">
+                            <defs>
+                                <linearGradient id="ch1a" x1="0" x2="0" y1="0" y2="1">
+                                    <stop offset="0%" stop-color="#4f46e5" stop-opacity="0.32"/>
+                                    <stop offset="100%" stop-color="#4f46e5" stop-opacity="0"/>
+                                </linearGradient>
+                            </defs>
+                            <g stroke="#eef2ff" stroke-width="1"><line x1="0" y1="40" x2="600" y2="40"/><line x1="0" y1="90" x2="600" y2="90"/><line x1="0" y1="140" x2="600" y2="140"/></g>
+                            <path d="M 0,170 L 0,130 L 100,105 L 200,85 L 300,95 L 400,65 L 500,45 L 600,30 L 600,170 Z" fill="url(#ch1a)"/>
+                            <path d="M 0,130 L 100,105 L 200,85 L 300,95 L 400,65 L 500,45 L 600,30" stroke="#4f46e5" stroke-width="2.5" fill="none"/>
+                            <g fill="#4f46e5"><circle cx="0" cy="130" r="3.5"/><circle cx="100" cy="105" r="3.5"/><circle cx="200" cy="85" r="3.5"/><circle cx="300" cy="95" r="3.5"/><circle cx="400" cy="65" r="3.5"/><circle cx="500" cy="45" r="3.5"/><circle cx="600" cy="30" r="3.5"/></g>
+                            <g font-size="10" font-family="ui-monospace,monospace" fill="#94a3b8"><text x="0" y="178">Mon</text><text x="100" y="178">Tue</text><text x="200" y="178">Wed</text><text x="300" y="178">Thu</text><text x="400" y="178">Fri</text><text x="500" y="178">Sat</text><text x="582" y="178">Sun</text></g>
+                        </svg>
+                    </div>
+                    <div class="table-card">
+                        <div class="head">
+                            <div>
+                                <span class="kicker">Product views</span>
+                                <h3 style="margin-top:4px">Last 7 days</h3>
+                            </div>
+                            <span class="pill pill-up"><i class="fas fa-arrow-trend-up"></i> +9.8%</span>
+                        </div>
+                        <svg class="chart-svg" viewBox="0 0 600 180" preserveAspectRatio="none">
+                            <g stroke="#fffbeb" stroke-width="1"><line x1="0" y1="40" x2="600" y2="40"/><line x1="0" y1="90" x2="600" y2="90"/><line x1="0" y1="140" x2="600" y2="140"/></g>
+                            <g>
+                                <rect x="15"  y="110" width="65" height="50" rx="6" fill="url(#bar1)"/>
+                                <rect x="100" y="90"  width="65" height="70" rx="6" fill="url(#bar1)"/>
+                                <rect x="185" y="65"  width="65" height="95" rx="6" fill="url(#bar1)"/>
+                                <rect x="270" y="55"  width="65" height="105" rx="6" fill="url(#bar1)"/>
+                                <rect x="355" y="42"  width="65" height="118" rx="6" fill="url(#bar1)"/>
+                                <rect x="440" y="35"  width="65" height="125" rx="6" fill="url(#bar1)"/>
+                                <rect x="525" y="50"  width="65" height="110" rx="6" fill="url(#bar1)"/>
+                            </g>
+                            <defs>
+                                <linearGradient id="bar1" x1="0" y1="0" x2="0" y2="1">
+                                    <stop offset="0%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#d97706"/>
+                                </linearGradient>
+                            </defs>
+                            <g font-size="10" font-family="ui-monospace,monospace" fill="#94a3b8"><text x="25" y="178">Mon</text><text x="110" y="178">Tue</text><text x="195" y="178">Wed</text><text x="280" y="178">Thu</text><text x="365" y="178">Fri</text><text x="450" y="178">Sat</text><text x="535" y="178">Sun</text></g>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================================================== OPTION 2 -->
+        <section>
+            <div class="opt-head">
+                <div class="opt-num">2</div>
+                <div class="opt-text">
+                    <div class="kicker" style="color:#fcd34d">Hero-driven · Single big focus</div>
+                    <h2>Revenue-style 2×2 hero + side metric stack</h2>
+                    <p>One large navy "Visitor Pulse" 2×2 hero (like the revenue card on the main dashboard), four side cards stacked vertically next to it, then a mission-control engagement console and three top-N tables.</p>
+                </div>
+            </div>
+            <div class="page">
+
+                <div class="range-bar">
+                    <div style="display:flex; align-items:center; gap:10px">
+                        <div class="range-icon"><i class="far fa-calendar-days"></i></div>
+                        <div>
+                            <div class="kicker" style="font-size:9.5px">Time Range</div>
+                            <div style="font-size:13px; font-weight:800; color:#04042a; margin-top:2px">Live Pulse <span style="font-family:ui-monospace,monospace; color:#94a3b8; font-size:11px; font-weight:600">· today</span></div>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:6px">
+                        <span class="range-chip active"><span class="live-dot"></span>Today</span>
+                        <span class="range-chip">7D</span>
+                        <span class="range-chip">30D</span>
+                        <span class="range-chip">90D</span>
+                    </div>
+                </div>
+
+                <div class="o2-grid">
+                    <!-- ── 2x2 Hero ── -->
+                    <div class="hero-dark o2-hero corner-brackets" style="padding:32px">
+                        <div class="top-accent"></div>
+                        <div class="stripes"></div>
+                        <div class="halo-a"></div>
+                        <div class="halo-b"></div>
+
+                        <div style="position:relative; display:flex; justify-content:space-between; align-items:flex-start">
+                            <div>
+                                <div style="display:flex; align-items:center; gap:8px">
+                                    <span class="kicker kicker-w">Visitor Pulse</span>
+                                    <span class="mono-badge" style="color:#67e8f9; background: rgba(34,211,238,0.10); border: 1px solid rgba(34,211,238,0.20)">YS · LIVE</span>
+                                </div>
+                                <p style="margin-top:6px; font-size:12px; color:rgba(255,255,255,0.50)">Active sessions in the last 24 hours</p>
+                            </div>
+                            <div class="hero-icon"><i class="fas fa-wave-square" style="color:#fff; font-size:18px"></i></div>
+                        </div>
+
+                        <div style="position:relative; margin-top:36px">
+                            <div style="display:flex; align-items:baseline; gap:10px; flex-wrap:wrap">
+                                <span style="color:#67e8f9; font-weight:800; font-size:14px">Visitors</span>
+                                <span class="num-display" style="font-size:88px; font-weight:900; color:#fff; line-height:0.9">1,284</span>
+                            </div>
+                            <div style="margin-top:20px; display:flex; gap:10px; align-items:center; flex-wrap:wrap">
+                                <span class="pill pill-dark-up"><i class="fas fa-arrow-trend-up"></i> +12.4%</span>
+                                <span style="color:rgba(255,255,255,0.55); font-size:12px">vs yesterday</span>
+                            </div>
+                        </div>
+
+                        <!-- big sparkline -->
+                        <div style="position:relative; margin-top:32px">
+                            <svg viewBox="0 0 600 100" preserveAspectRatio="none" style="width:100%; height:100px">
+                                <defs>
+                                    <linearGradient id="hl2a" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="0%" stop-color="#22d3ee" stop-opacity="0.55"/>
+                                        <stop offset="100%" stop-color="#22d3ee" stop-opacity="0"/>
+                                    </linearGradient>
+                                    <linearGradient id="hl2l" x1="0" y1="0" x2="1" y2="0">
+                                        <stop offset="0%" stop-color="#a5f3fc"/>
+                                        <stop offset="100%" stop-color="#fff"/>
+                                    </linearGradient>
+                                </defs>
+                                <path d="M 0,100 L 0,80 L 50,72 L 100,65 L 150,55 L 200,62 L 250,48 L 300,50 L 350,40 L 400,32 L 450,30 L 500,22 L 550,18 L 600,10 L 600,100 Z" fill="url(#hl2a)"/>
+                                <path d="M 0,80 L 50,72 L 100,65 L 150,55 L 200,62 L 250,48 L 300,50 L 350,40 L 400,32 L 450,30 L 500,22 L 550,18 L 600,10" fill="none" stroke="url(#hl2l)" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round"/>
+                            </svg>
+                            <div style="margin-top:8px; display:flex; justify-content:space-between; font-size:10px; color:rgba(255,255,255,0.40); letter-spacing:0.15em">
+                                <span>00:00</span><span>04:00</span><span>08:00</span><span>12:00</span><span>16:00</span><span>20:00</span><span>23:59</span>
+                            </div>
+                        </div>
+
+                        <!-- Footer 3 mini stats -->
+                        <div style="position:relative; margin-top:28px; padding-top:20px; border-top: 1px solid rgba(255,255,255,0.10); display:grid; grid-template-columns: repeat(3,1fr); gap:14px">
+                            <div>
+                                <p class="kicker kicker-w">Unique</p>
+                                <p style="margin-top:4px; font-size:18px; font-weight:900; color:#fff" class="num-display">982</p>
+                            </div>
+                            <div>
+                                <p class="kicker kicker-w">Returning</p>
+                                <p style="margin-top:4px; font-size:18px; font-weight:900; color:#fff" class="num-display">302</p>
+                            </div>
+                            <div>
+                                <p class="kicker kicker-w">Bounce</p>
+                                <p style="margin-top:4px; font-size:18px; font-weight:900; color:#fff" class="num-display">38%</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ── Right column 4 stack ── -->
+                    <div class="stat-card">
+                        <div class="strip" style="background: linear-gradient(180deg, #34d399, #047857)"></div>
+                        <div style="display:flex; align-items:center; justify-content:space-between"><span class="kicker">Week</span><div class="icon-box" style="width:36px; height:36px; background:#ecfdf5; color:#047857"><i class="far fa-calendar-week"></i></div></div>
+                        <p class="big num-display" style="margin-top:14px; font-size:28px">8,962</p>
+                        <p style="margin-top:6px; font-size:11px; color:#64748b">visitors · <span style="color:#047857; font-weight:800">+6.1%</span></p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="strip" style="background: linear-gradient(180deg, #c084fc, #6d28d9)"></div>
+                        <div style="display:flex; align-items:center; justify-content:space-between"><span class="kicker">Month</span><div class="icon-box" style="width:36px; height:36px; background:#f5f3ff; color:#6d28d9"><i class="far fa-calendar"></i></div></div>
+                        <p class="big num-display" style="margin-top:14px; font-size:28px">32,140</p>
+                        <p style="margin-top:6px; font-size:11px; color:#64748b">visitors · <span style="color:#be123c; font-weight:800">-2.3%</span></p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="strip" style="background: linear-gradient(180deg, #6366f1, #4338ca)"></div>
+                        <div style="display:flex; align-items:center; justify-content:space-between"><span class="kicker">Views</span><div class="icon-box" style="width:36px; height:36px; background:#eef2ff; color:#4f46e5"><i class="far fa-eye"></i></div></div>
+                        <p class="big num-display" style="margin-top:14px; font-size:28px">24,510</p>
+                        <p style="margin-top:6px; font-size:11px; color:#64748b">page views · <span style="color:#4f46e5; font-weight:800">+9.8%</span></p>
+                    </div>
+                    <div class="stat-card">
+                        <div class="strip" style="background: linear-gradient(180deg, #fb7185, #be123c)"></div>
+                        <div style="display:flex; align-items:center; justify-content:space-between"><span class="kicker">Cart</span><div class="icon-box" style="width:36px; height:36px; background:#fff1f2; color:#be123c"><i class="fas fa-cart-plus"></i></div></div>
+                        <p class="big num-display" style="margin-top:14px; font-size:28px">1,872</p>
+                        <p style="margin-top:6px; font-size:11px; color:#64748b">add to cart · <span style="color:#be123c; font-weight:800">+14.2%</span></p>
+                    </div>
+                </div>
+
+                <!-- ── Engagement Console ── -->
+                <div class="ops-card" style="margin-top:24px">
+                    <div class="top-accent"></div>
+                    <div class="stripes"></div>
+                    <div class="halo-a"></div>
+                    <div class="halo-b"></div>
+
+                    <div style="position:relative; display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap">
+                        <div>
+                            <div style="display:flex; align-items:center; gap:10px">
+                                <span class="pulse-dot" style="display:inline-block; width:8px; height:8px; border-radius:999px; background:#fbbf24; color:#fbbf24"></span>
+                                <span class="kicker kicker-w">Engagement Console</span>
+                            </div>
+                            <h3 style="margin-top:6px; font-size:22px; font-weight:800; color:#fff">Top performers right now</h3>
+                        </div>
+                    </div>
+
+                    <div style="position:relative; margin-top:22px; display:grid; grid-template-columns: repeat(4,1fr); gap:12px">
+                        <div class="gauge-card">
+                            <span class="led" style="background:#fbbf24; box-shadow:0 0 10px #fbbf24"></span>
+                            <span class="kicker kicker-w">Top viewed</span>
+                            <p style="margin-top:10px; color:#fff; font-size:15px; font-weight:900; letter-spacing:-0.01em">Brake Pad XR</p>
+                            <p class="num-display" style="margin-top:6px; color:#fbbf24; font-size:24px; font-weight:900">412 <span style="color:rgba(255,255,255,0.45); font-size:11px; font-weight:600">views</span></p>
+                        </div>
+                        <div class="gauge-card">
+                            <span class="led" style="background:#f43f5e; box-shadow:0 0 10px #f43f5e"></span>
+                            <span class="kicker kicker-w">Top cart</span>
+                            <p style="margin-top:10px; color:#fff; font-size:15px; font-weight:900; letter-spacing:-0.01em">Oil Filter Pro</p>
+                            <p class="num-display" style="margin-top:6px; color:#f43f5e; font-size:24px; font-weight:900">98 <span style="color:rgba(255,255,255,0.45); font-size:11px; font-weight:600">adds</span></p>
+                        </div>
+                        <div class="gauge-card">
+                            <span class="led" style="background:#818cf8; box-shadow:0 0 10px #818cf8"></span>
+                            <span class="kicker kicker-w">Conversion</span>
+                            <p style="margin-top:10px; color:#fff; font-size:15px; font-weight:900; letter-spacing:-0.01em">View → Cart</p>
+                            <p class="num-display" style="margin-top:6px; color:#818cf8; font-size:24px; font-weight:900">7.6%</p>
+                        </div>
+                        <div class="gauge-card">
+                            <span class="led" style="background:#22d3ee; box-shadow:0 0 10px #22d3ee"></span>
+                            <span class="kicker kicker-w">Top search</span>
+                            <p style="margin-top:10px; color:#fff; font-size:15px; font-weight:900; letter-spacing:-0.01em">"brake pad"</p>
+                            <p class="num-display" style="margin-top:6px; color:#22d3ee; font-size:24px; font-weight:900">340 <span style="color:rgba(255,255,255,0.45); font-size:11px; font-weight:600">queries</span></p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="o2-bottom">
+                    <div class="table-card"><div class="head"><h3><i class="far fa-eye" style="margin-right:6px; color:#4f46e5"></i> Top viewed</h3><span class="kicker">7d</span></div>
+                        <table><tbody>
+                            <tr><td><span class="rank rank-1">1</span>Brake Pad XR</td><td class="num">412</td></tr>
+                            <tr><td><span class="rank rank-2">2</span>Oil Filter Pro</td><td class="num">389</td></tr>
+                            <tr><td><span class="rank rank-3">3</span>Spark Plug Iridium</td><td class="num">301</td></tr>
+                            <tr><td><span class="rank">4</span>Headlight H7</td><td class="num">265</td></tr>
+                            <tr><td><span class="rank">5</span>Air Filter</td><td class="num">221</td></tr>
+                        </tbody></table>
+                    </div>
+                    <div class="table-card"><div class="head"><h3><i class="fas fa-cart-plus" style="margin-right:6px; color:#be123c"></i> Top cart adds</h3><span class="kicker">7d</span></div>
+                        <table><tbody>
+                            <tr><td><span class="rank rank-1">1</span>Oil Filter Pro</td><td class="num">98</td></tr>
+                            <tr><td><span class="rank rank-2">2</span>Spark Plug Iridium</td><td class="num">77</td></tr>
+                            <tr><td><span class="rank rank-3">3</span>Brake Pad XR</td><td class="num">71</td></tr>
+                            <tr><td><span class="rank">4</span>Headlight H7</td><td class="num">54</td></tr>
+                            <tr><td><span class="rank">5</span>Air Filter</td><td class="num">42</td></tr>
+                        </tbody></table>
+                    </div>
+                    <div class="table-card"><div class="head"><h3><i class="fas fa-magnifying-glass" style="margin-right:6px; color:#0e7490"></i> Top searches</h3><span class="kicker">7d</span></div>
+                        <table><tbody>
+                            <tr><td><span class="rank rank-1">1</span>brake pad</td><td class="num">340</td></tr>
+                            <tr><td><span class="rank rank-2">2</span>oil filter</td><td class="num">287</td></tr>
+                            <tr><td><span class="rank rank-3">3</span>headlight</td><td class="num">201</td></tr>
+                            <tr><td><span class="rank">4</span>spark plug</td><td class="num">178</td></tr>
+                            <tr><td><span class="rank">5</span>battery</td><td class="num">142</td></tr>
+                        </tbody></table>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ==================================================== OPTION 3 -->
+        <section>
+            <div class="opt-head">
+                <div class="opt-num">3</div>
+                <div class="opt-text">
+                    <div class="kicker" style="color:#fcd34d">Live console · Real-time feeling</div>
+                    <h2>Live Analytics Console + Activity Feed</h2>
+                    <p>Top: wide dark console with 4 conic-gauge mini cards (pulsing LEDs, just like Ops Mission Control). Middle: a live activity feed (who searched/viewed/added) next to a trend chart. Bottom: the three top-N tables.</p>
+                </div>
+            </div>
+            <div class="page">
+
+                <div class="range-bar">
+                    <div style="display:flex; align-items:center; gap:10px">
+                        <div class="range-icon" style="background:rgba(245,158,11,0.15); color:#b45309"><i class="fas fa-broadcast-tower"></i></div>
+                        <div>
+                            <div class="kicker" style="font-size:9.5px; color:#b45309">Live · Console mode</div>
+                            <div style="font-size:13px; font-weight:800; color:#04042a; margin-top:2px">Streaming events <span style="font-family:ui-monospace,monospace; color:#94a3b8; font-size:11px; font-weight:600">· auto-refresh 30s</span></div>
+                        </div>
+                    </div>
+                    <div style="display:flex; gap:6px">
+                        <span class="range-chip active"><span class="live-dot"></span>Live</span>
+                        <span class="range-chip">7D</span>
+                        <span class="range-chip">30D</span>
+                    </div>
+                </div>
+
+                <!-- ── Wide live console ── -->
+                <div class="ops-card">
+                    <div class="top-accent"></div>
+                    <div class="stripes"></div>
+                    <div class="halo-a"></div>
+                    <div class="halo-b"></div>
+
+                    <div style="position:relative; display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap">
+                        <div>
+                            <div style="display:flex; align-items:center; gap:10px">
+                                <span class="pulse-dot" style="display:inline-block; width:8px; height:8px; border-radius:999px; background:#34d399; color:#34d399"></span>
+                                <span class="kicker kicker-w">Live Analytics Console</span>
+                                <span class="mono-badge" style="color:#6ee7b7; background: rgba(52,211,153,0.10); border: 1px solid rgba(52,211,153,0.25)">YS · STREAMING</span>
+                            </div>
+                            <h3 style="margin-top:6px; font-size:22px; font-weight:800; color:#fff">Site activity right now</h3>
+                        </div>
+                        <div style="display:flex; align-items:center; gap:10px; color:rgba(255,255,255,0.55); font-size:11px">
+                            <i class="far fa-clock"></i> Last event 2s ago
+                        </div>
+                    </div>
+
+                    <div class="o3-console-grid" style="position:relative; margin-top:22px">
+                        <div class="gauge-card">
+                            <span class="led" style="background:#34d399; box-shadow:0 0 10px #34d399"></span>
+                            <div style="display:flex; align-items:center; gap:14px">
+                                <div class="gauge-disc" style="background: conic-gradient(#34d399 0deg 320deg, rgba(255,255,255,0.06) 320deg 360deg)">
+                                    <span style="color:#34d399">1.2K</span>
+                                </div>
+                                <div>
+                                    <span class="kicker kicker-w">Today</span>
+                                    <p style="margin-top:4px; color:#fff; font-size:13px; font-weight:800">Visitors</p>
+                                    <p style="margin-top:2px; color:rgba(255,255,255,0.45); font-size:11px">982 unique</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="gauge-card">
+                            <span class="led" style="background:#22d3ee; box-shadow:0 0 10px #22d3ee"></span>
+                            <div style="display:flex; align-items:center; gap:14px">
+                                <div class="gauge-disc" style="background: conic-gradient(#22d3ee 0deg 290deg, rgba(255,255,255,0.06) 290deg 360deg)">
+                                    <span style="color:#22d3ee" style="font-size:16px">24K</span>
+                                </div>
+                                <div>
+                                    <span class="kicker kicker-w">Page</span>
+                                    <p style="margin-top:4px; color:#fff; font-size:13px; font-weight:800">Views</p>
+                                    <p style="margin-top:2px; color:rgba(255,255,255,0.45); font-size:11px">+9.8% MoM</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="gauge-card">
+                            <span class="led" style="background:#f43f5e; box-shadow:0 0 10px #f43f5e"></span>
+                            <div style="display:flex; align-items:center; gap:14px">
+                                <div class="gauge-disc" style="background: conic-gradient(#f43f5e 0deg 240deg, rgba(255,255,255,0.06) 240deg 360deg)">
+                                    <span style="color:#f43f5e">1.8K</span>
+                                </div>
+                                <div>
+                                    <span class="kicker kicker-w">Cart</span>
+                                    <p style="margin-top:4px; color:#fff; font-size:13px; font-weight:800">Adds</p>
+                                    <p style="margin-top:2px; color:rgba(255,255,255,0.45); font-size:11px">+14.2%</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="gauge-card">
+                            <span class="led" style="background:#fbbf24; box-shadow:0 0 10px #fbbf24"></span>
+                            <div style="display:flex; align-items:center; gap:14px">
+                                <div class="gauge-disc" style="background: conic-gradient(#fbbf24 0deg 270deg, rgba(255,255,255,0.06) 270deg 360deg)">
+                                    <span style="color:#fbbf24">694</span>
+                                </div>
+                                <div>
+                                    <span class="kicker kicker-w">Wishlist</span>
+                                    <p style="margin-top:4px; color:#fff; font-size:13px; font-weight:800">Clicks</p>
+                                    <p style="margin-top:2px; color:rgba(255,255,255,0.45); font-size:11px">stable</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── Activity feed + chart ── -->
+                <div class="o3-split">
+                    <div class="table-card">
+                        <div class="head">
+                            <div>
+                                <span class="kicker">Visitor trend</span>
+                                <h3 style="margin-top:4px">Last 7 days · visitors / views / cart</h3>
+                            </div>
+                            <div style="display:flex; gap:4px; padding:4px; border-radius:10px; background:#f1f5f9">
+                                <button style="padding:5px 10px; border:0; border-radius:8px; background:#fff; color:#04042a; font-size:11px; font-weight:800; box-shadow:0 1px 2px rgba(7,7,64,0.08)">Visitors</button>
+                                <button style="padding:5px 10px; border:0; border-radius:8px; background:transparent; color:#475569; font-size:11px; font-weight:800">Views</button>
+                                <button style="padding:5px 10px; border:0; border-radius:8px; background:transparent; color:#475569; font-size:11px; font-weight:800">Cart</button>
+                            </div>
+                        </div>
+                        <svg class="chart-svg" viewBox="0 0 600 230" preserveAspectRatio="none">
+                            <defs>
+                                <linearGradient id="ch3a" x1="0" x2="0" y1="0" y2="1">
+                                    <stop offset="0%" stop-color="#34d399" stop-opacity="0.35"/>
+                                    <stop offset="100%" stop-color="#34d399" stop-opacity="0"/>
+                                </linearGradient>
+                            </defs>
+                            <g stroke="#ecfdf5" stroke-width="1">
+                                <line x1="0" y1="50" x2="600" y2="50"/><line x1="0" y1="100" x2="600" y2="100"/><line x1="0" y1="150" x2="600" y2="150"/>
+                            </g>
+                            <path d="M 0,220 L 0,170 L 100,140 L 200,115 L 300,125 L 400,80 L 500,55 L 600,40 L 600,220 Z" fill="url(#ch3a)"/>
+                            <path d="M 0,170 L 100,140 L 200,115 L 300,125 L 400,80 L 500,55 L 600,40" stroke="#047857" stroke-width="2.5" fill="none"/>
+                            <g fill="#047857">
+                                <circle cx="0" cy="170" r="4"/><circle cx="100" cy="140" r="4"/><circle cx="200" cy="115" r="4"/>
+                                <circle cx="300" cy="125" r="4"/><circle cx="400" cy="80" r="4"/><circle cx="500" cy="55" r="4"/><circle cx="600" cy="40" r="4"/>
+                            </g>
+                            <g font-size="10" font-family="ui-monospace,monospace" fill="#94a3b8"><text x="0" y="228">Mon</text><text x="100" y="228">Tue</text><text x="200" y="228">Wed</text><text x="300" y="228">Thu</text><text x="400" y="228">Fri</text><text x="500" y="228">Sat</text><text x="582" y="228">Sun</text></g>
+                        </svg>
+                    </div>
+
+                    <div class="table-card">
+                        <div class="head">
+                            <h3><i class="fas fa-bolt" style="margin-right:6px; color:#f59e0b"></i> Live activity</h3>
+                            <span class="mono-badge" style="color:#34d399; background:#ecfdf5; border:1px solid #a7f3d0">STREAMING</span>
+                        </div>
+                        <div>
+                            <div class="feed-item">
+                                <div class="feed-icon" style="background:#eef2ff; color:#4f46e5"><i class="far fa-eye"></i></div>
+                                <div style="flex:1; min-width:0">
+                                    <p class="feed-text">Visitor viewed <strong>Brake Pad XR</strong></p>
+                                    <p class="feed-meta">2s ago · DE · session #b7f3</p>
+                                </div>
+                            </div>
+                            <div class="feed-item">
+                                <div class="feed-icon" style="background:#ecfdf5; color:#0e7490"><i class="fas fa-magnifying-glass"></i></div>
+                                <div style="flex:1; min-width:0">
+                                    <p class="feed-text">Search query <strong>"oil filter pro"</strong></p>
+                                    <p class="feed-meta">11s ago · 6 results · session #a1c2</p>
+                                </div>
+                            </div>
+                            <div class="feed-item">
+                                <div class="feed-icon" style="background:#fff1f2; color:#be123c"><i class="fas fa-cart-plus"></i></div>
+                                <div style="flex:1; min-width:0">
+                                    <p class="feed-text">Added <strong>Spark Plug Iridium</strong> to cart</p>
+                                    <p class="feed-meta">28s ago · qty 2 · session #5e9d</p>
+                                </div>
+                            </div>
+                            <div class="feed-item">
+                                <div class="feed-icon" style="background:#fff7ed; color:#b45309"><i class="far fa-heart"></i></div>
+                                <div style="flex:1; min-width:0">
+                                    <p class="feed-text">Saved <strong>Battery 60Ah</strong> to wishlist</p>
+                                    <p class="feed-meta">52s ago · session #2d11</p>
+                                </div>
+                            </div>
+                            <div class="feed-item">
+                                <div class="feed-icon" style="background:#f1f5f9; color:#475569"><i class="fas fa-user-plus"></i></div>
+                                <div style="flex:1; min-width:0">
+                                    <p class="feed-text">New guest session started</p>
+                                    <p class="feed-meta">1m ago · mobile · landing /shop</p>
+                                </div>
+                            </div>
+                            <div class="feed-item">
+                                <div class="feed-icon" style="background:#eef2ff; color:#4f46e5"><i class="far fa-eye"></i></div>
+                                <div style="flex:1; min-width:0">
+                                    <p class="feed-text">Visitor viewed <strong>Headlight H7</strong></p>
+                                    <p class="feed-meta">1m 18s ago · session #b7f3</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="o3-tables">
+                    <div class="table-card"><div class="head"><h3><i class="far fa-eye" style="margin-right:6px; color:#4f46e5"></i> Top viewed</h3><span class="kicker">7d</span></div>
+                        <table><tbody>
+                            <tr><td><span class="rank rank-1">1</span>Brake Pad XR</td><td class="num">412</td></tr>
+                            <tr><td><span class="rank rank-2">2</span>Oil Filter Pro</td><td class="num">389</td></tr>
+                            <tr><td><span class="rank rank-3">3</span>Spark Plug Iridium</td><td class="num">301</td></tr>
+                            <tr><td><span class="rank">4</span>Headlight H7</td><td class="num">265</td></tr>
+                            <tr><td><span class="rank">5</span>Air Filter</td><td class="num">221</td></tr>
+                        </tbody></table>
+                    </div>
+                    <div class="table-card"><div class="head"><h3><i class="fas fa-cart-plus" style="margin-right:6px; color:#be123c"></i> Top cart adds</h3><span class="kicker">7d</span></div>
+                        <table><tbody>
+                            <tr><td><span class="rank rank-1">1</span>Oil Filter Pro</td><td class="num">98</td></tr>
+                            <tr><td><span class="rank rank-2">2</span>Spark Plug Iridium</td><td class="num">77</td></tr>
+                            <tr><td><span class="rank rank-3">3</span>Brake Pad XR</td><td class="num">71</td></tr>
+                            <tr><td><span class="rank">4</span>Headlight H7</td><td class="num">54</td></tr>
+                            <tr><td><span class="rank">5</span>Air Filter</td><td class="num">42</td></tr>
+                        </tbody></table>
+                    </div>
+                    <div class="table-card"><div class="head"><h3><i class="fas fa-magnifying-glass" style="margin-right:6px; color:#0e7490"></i> Top searches</h3><span class="kicker">7d</span></div>
+                        <table><tbody>
+                            <tr><td><span class="rank rank-1">1</span>brake pad</td><td class="num">340</td></tr>
+                            <tr><td><span class="rank rank-2">2</span>oil filter</td><td class="num">287</td></tr>
+                            <tr><td><span class="rank rank-3">3</span>headlight</td><td class="num">201</td></tr>
+                            <tr><td><span class="rank">4</span>spark plug</td><td class="num">178</td></tr>
+                            <tr><td><span class="rank">5</span>battery</td><td class="num">142</td></tr>
+                        </tbody></table>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+</div>
+</body>
+</html>
