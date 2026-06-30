@@ -6,7 +6,9 @@ $allowedOrigins = array_values(array_filter(array_map(
 )));
 
 if ($allowedOrigins === []) {
-    $allowedOrigins = ['http://localhost', 'http://127.0.0.1:8000'];
+    $allowedOrigins = app()->environment('production')
+        ? []
+        : ['http://localhost', 'http://127.0.0.1:8000'];
 }
 
 return [

@@ -11,9 +11,11 @@ use App\Models\Product;
 use App\Models\ProductReview;
 use App\Models\ReturnRequest;
 use App\Services\InvoiceRenderer;
+use App\Services\Returns\ReturnRefundService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\Response;
 use Illuminate\View\View;
 
@@ -257,7 +259,7 @@ class AccountOrdersController extends Controller
         });
     }
 
-    public function requestReturn(Request $request, Order $order): RedirectResponse
+    public function requestReturn(Request $request, Order $order, ReturnRefundService $refunds): RedirectResponse
     {
         $data = $request->validate([
             'type' => ['required', 'in:return,exchange,refund'],
@@ -269,8 +271,10 @@ class AccountOrdersController extends Controller
             ->whereKey($order->id)
             ->firstOrFail();
 
-        if (Order::normalizedStatus((string) $order->status) !== Order::STATUS_DELIVERED) {
-            return back()->with('error', __('Returns can be requested after the order is delivered.'));
+        try {
+            $refunds->assertReturnCanBeRequested($order);
+        } catch (ValidationException $exception) {
+            return back()->with('error', $exception->errors()['order'][0] ?? __('Return request is not allowed for this order.'));
         }
 
         ReturnRequest::query()->create([

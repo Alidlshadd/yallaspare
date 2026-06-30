@@ -120,6 +120,16 @@ class Product extends Model {
         return $this->hasMany(ProductReview::class);
     }
 
+    public function views()
+    {
+        return $this->hasMany(ProductView::class);
+    }
+
+    public function analytics()
+    {
+        return $this->hasOne(ProductAnalytic::class);
+    }
+
     public function vehicleFitments()
     {
         return $this->hasMany(ProductVehicleFitment::class);

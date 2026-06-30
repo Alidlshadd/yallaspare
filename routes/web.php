@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\EmailController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\LowStockController;
 use App\Http\Controllers\Admin\AdminActivityLogController;
+use App\Http\Controllers\Admin\AnalyticsController as AdminAnalyticsController;
 use App\Http\Controllers\Admin\RevenueController;
 use App\Http\Controllers\Admin\ReturnRequestController;
 use App\Http\Controllers\Admin\VehicleFitmentController;
@@ -227,6 +228,9 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::get('/revenue', [RevenueController::class, 'index'])
             ->middleware('can:' . User::PERMISSION_FINANCE_VIEW)
             ->name('revenue.index');
+        Route::get('/analytics', [AdminAnalyticsController::class, 'index'])
+            ->middleware('can:' . User::PERMISSION_FINANCE_VIEW)
+            ->name('analytics.index');
         Route::get('/discounts', [DiscountCouponController::class, 'edit'])
             ->middleware('can:' . User::PERMISSION_FINANCE_MANAGE)
             ->name('discounts.edit');

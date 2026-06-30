@@ -320,6 +320,7 @@
                 $adminPageTitlePatterns = [
                     'admin.dashboard'              => __('Dashboard'),
                     'admin.revenue.*'              => __('Revenue Analytics'),
+                    'admin.analytics.*'            => __('Site Analytics'),
                     'admin.products.*'             => __('Products'),
                     'admin.categories.*'           => __('Categories'),
                     'admin.vehicle-fitments.*'     => __('Vehicle Finder'),
@@ -514,6 +515,15 @@
                                 >
                                     <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-sack-dollar"></i></span>
                                     <span class="admin-nav-label">{{ __('Revenue') }}</span>
+                                </a>
+                                <a
+                                    href="{{ route('admin.analytics.index') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.analytics.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Site Analytics') }}"
+                                    @if(request()->routeIs('admin.analytics.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-chart-line"></i></span>
+                                    <span class="admin-nav-label">{{ __('Site Analytics') }}</span>
                                 </a>
                             @endcan
                             @can(\App\Models\User::PERMISSION_STOCK_MANAGE)
@@ -952,8 +962,30 @@
                         return;
                     }
 
+                    const setClass = (element, className) => {
+                        element.className = className;
+                        return element;
+                    };
+
+                    const appendText = (parent, tagName, className, text) => {
+                        const element = setClass(document.createElement(tagName), className);
+                        element.textContent = text || '';
+                        parent.appendChild(element);
+                        return element;
+                    };
+
+                    const safeNotificationUrl = (url) => {
+                        try {
+                            const parsed = new URL(String(url || '#'), window.location.origin);
+                            return parsed.origin === window.location.origin ? parsed.toString() : '#';
+                        } catch (error) {
+                            return '#';
+                        }
+                    };
+
                     const renderEmpty = (container, message) => {
-                        container.innerHTML = `<p class="text-xs text-slate-400 dark:text-slate-500">${message}</p>`;
+                        container.textContent = '';
+                        appendText(container, 'p', 'text-xs text-slate-400 dark:text-slate-500', message);
                     };
 
                     const renderItems = (container, items) => {
@@ -961,19 +993,37 @@
                             return false;
                         }
 
-                        container.innerHTML = items.map(item => `
-                            <div class="block rounded-lg px-2 py-2 ${item.read ? 'bg-white dark:bg-slate-900/60' : 'bg-indigo-50/50 dark:bg-indigo-500/10'} hover:bg-slate-50 dark:hover:bg-slate-800/80 transition">
-                                <a href="${item.url}" class="block">
-                                <p class="text-sm font-medium text-slate-800 dark:text-slate-100">${item.title}</p>
-                                <p class="text-xs text-slate-500 dark:text-slate-400">${item.subtitle}</p>
-                                <div class="flex items-center justify-between mt-1">
-                                    <p class="text-[11px] text-slate-400 dark:text-slate-500">${item.meta ?? ''}</p>
-                                    <p class="text-[11px] text-slate-400 dark:text-slate-500">${item.time ?? ''}</p>
-                                </div>
-                                </a>
-                                ${item.read ? '' : `<button type="button" data-key="${item.key}" class="admin-mark-read mt-2 text-[11px] font-semibold text-indigo-600 hover:text-indigo-700">${markReadLabel}</button>`}
-                            </div>
-                        `).join('');
+                        container.textContent = '';
+                        items.forEach((item) => {
+                            const wrapper = setClass(
+                                document.createElement('div'),
+                                `block rounded-lg px-2 py-2 ${item.read ? 'bg-white dark:bg-slate-900/60' : 'bg-indigo-50/50 dark:bg-indigo-500/10'} hover:bg-slate-50 dark:hover:bg-slate-800/80 transition`
+                            );
+
+                            const link = setClass(document.createElement('a'), 'block');
+                            link.setAttribute('href', safeNotificationUrl(item.url));
+                            appendText(link, 'p', 'text-sm font-medium text-slate-800 dark:text-slate-100', item.title);
+                            appendText(link, 'p', 'text-xs text-slate-500 dark:text-slate-400', item.subtitle);
+
+                            const metaRow = setClass(document.createElement('div'), 'flex items-center justify-between mt-1');
+                            appendText(metaRow, 'p', 'text-[11px] text-slate-400 dark:text-slate-500', item.meta || '');
+                            appendText(metaRow, 'p', 'text-[11px] text-slate-400 dark:text-slate-500', item.time || '');
+                            link.appendChild(metaRow);
+                            wrapper.appendChild(link);
+
+                            if (!item.read) {
+                                const markReadButton = setClass(
+                                    document.createElement('button'),
+                                    'admin-mark-read mt-2 text-[11px] font-semibold text-indigo-600 hover:text-indigo-700'
+                                );
+                                markReadButton.setAttribute('type', 'button');
+                                markReadButton.setAttribute('data-key', String(item.key || ''));
+                                markReadButton.textContent = markReadLabel;
+                                wrapper.appendChild(markReadButton);
+                            }
+
+                            container.appendChild(wrapper);
+                        });
                         return true;
                     };
 

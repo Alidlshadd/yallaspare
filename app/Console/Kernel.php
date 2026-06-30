@@ -15,6 +15,10 @@ class Kernel extends ConsoleKernel
         $schedule->command('logs:cleanup')
             ->monthlyOn(1, '03:00')
             ->withoutOverlapping();
+
+        $schedule->command('analytics:prune')
+            ->dailyAt('03:00')
+            ->withoutOverlapping();
     }
 
     /**

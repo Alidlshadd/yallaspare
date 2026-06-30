@@ -14,8 +14,11 @@ use App\Models\Product;
 use App\Models\ReturnRequest;
 use App\Models\User;
 use App\Models\UserAddress;
+use App\Notifications\AdminTwoFactorCode;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Hash;
+use ReflectionClass;
 use Tests\TestCase;
 
 class SecurityHardeningRegressionTest extends TestCase
@@ -70,6 +73,73 @@ class SecurityHardeningRegressionTest extends TestCase
             'name' => 'mobile',
         ]);
         $this->assertNotNull($admin->tokens()->first()?->expires_at);
+    }
+
+    public function test_mobile_admin_step_up_issues_dedicated_admin_mobile_token(): void
+    {
+        Notification::fake();
+
+        $admin = User::factory()->create([
+            'role' => User::ROLE_SUPER_ADMIN,
+            'email_verified_at' => now(),
+            'password' => Hash::make('password'),
+        ]);
+
+        $token = $this->postJson('/api/mobile/login', [
+            'email' => $admin->email,
+            'password' => 'password',
+        ])->assertOk()->json('token');
+
+        $this->withToken($token)
+            ->postJson('/api/mobile/admin/step-up')
+            ->assertOk();
+
+        $code = null;
+        Notification::assertSentTo($admin, AdminTwoFactorCode::class, function (AdminTwoFactorCode $notification) use (&$code) {
+            $reflection = new ReflectionClass($notification);
+            $property = $reflection->getProperty('code');
+            $property->setAccessible(true);
+            $code = (string) $property->getValue($notification);
+
+            return $code !== '';
+        });
+
+        $adminToken = $this->withToken($token)
+            ->postJson('/api/mobile/admin/step-up/verify', ['code' => $code])
+            ->assertOk()
+            ->json('token');
+
+        $this->assertTrue($admin->fresh()->hasPermission(User::PERMISSION_DASHBOARD_VIEW));
+        $this->assertTrue($admin->tokens()->where('name', 'mobile-admin')->latest('id')->first()?->can('admin:mobile'));
+
+        $this->app['auth']->forgetGuards();
+
+        $this->withToken($adminToken)
+            ->getJson('/api/mobile/admin/dashboard')
+            ->assertOk();
+
+        $this->assertDatabaseHas('personal_access_tokens', [
+            'tokenable_id' => $admin->id,
+            'name' => 'mobile-admin',
+        ]);
+    }
+
+    public function test_normal_mobile_user_cannot_request_admin_step_up(): void
+    {
+        $user = User::factory()->create([
+            'role' => User::ROLE_USER,
+            'email_verified_at' => now(),
+            'password' => Hash::make('password'),
+        ]);
+
+        $token = $this->postJson('/api/mobile/login', [
+            'email' => $user->email,
+            'password' => 'password',
+        ])->assertOk()->json('token');
+
+        $this->withToken($token)
+            ->postJson('/api/mobile/admin/step-up')
+            ->assertForbidden();
     }
 
     public function test_mobile_checkout_uses_shared_checkout_side_effects(): void
@@ -146,6 +216,73 @@ class SecurityHardeningRegressionTest extends TestCase
             'password' => 'Password123',
             'password_confirmation' => 'Password123',
         ])->assertStatus(422);
+    }
+
+    public function test_product_json_ld_escapes_script_breakout_payload(): void
+    {
+        $category = Category::factory()->create();
+        $payload = '</script><script>alert(1)</script>';
+        $product = Product::factory()->create([
+            'category_id' => $category->id,
+            'name_en' => 'Brake ' . $payload,
+            'name_ar' => 'Brake',
+            'name_ku' => 'Brake',
+            'is_active' => true,
+        ]);
+
+        $response = $this->get(route('shop.show', $product))->assertOk();
+
+        $response->assertDontSee($payload, false);
+        $response->assertSee('\u003C/script\u003E\u003Cscript\u003Ealert(1)\u003C/script\u003E', false);
+    }
+
+    public function test_admin_notification_shell_does_not_template_untrusted_fields_with_inner_html(): void
+    {
+        $admin = User::factory()->create([
+            'role' => User::ROLE_SUPER_ADMIN,
+            'email_verified_at' => now(),
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.dashboard'))
+            ->assertOk()
+            ->assertDontSee('container.innerHTML = items.map', false)
+            ->assertDontSee('${item.title}', false)
+            ->assertDontSee('${item.meta', false);
+    }
+
+    public function test_admin_orders_update_route_changes_status_without_server_error(): void
+    {
+        $admin = User::factory()->create([
+            'role' => User::ROLE_ORDER_MANAGER,
+            'permissions' => [User::PERMISSION_ORDERS_MANAGE],
+            'email_verified_at' => now(),
+        ]);
+        $order = $this->orderFor(User::factory()->create(), [
+            'status' => Order::STATUS_PENDING,
+        ]);
+
+        $this->actingAs($admin)
+            ->patch(route('admin.orders.update', $order), [
+                'status' => Order::STATUS_PROCESSING,
+            ])
+            ->assertRedirect();
+
+        $this->assertSame(Order::STATUS_PROCESSING, (string) $order->fresh()->status);
+    }
+
+    public function test_normal_user_cannot_access_admin_orders_update_route(): void
+    {
+        $user = User::factory()->create(['role' => User::ROLE_USER, 'email_verified_at' => now()]);
+        $order = $this->orderFor($user);
+
+        $this->actingAs($user)
+            ->patch(route('admin.orders.update', $order), [
+                'status' => Order::STATUS_PROCESSING,
+            ])
+            ->assertForbidden();
+
+        $this->assertSame(Order::STATUS_PENDING, (string) $order->fresh()->status);
     }
 
     public function test_email_broadcast_job_revalidates_admin_permission(): void

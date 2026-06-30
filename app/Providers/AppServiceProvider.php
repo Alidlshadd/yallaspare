@@ -14,6 +14,7 @@ use App\Support\Branding;
 use App\Observers\AdminAuditObserver;
 use App\Observers\CartItemCacheObserver;
 use App\Observers\CategoryCacheObserver;
+use App\Observers\OrderAnalyticsObserver;
 use App\Observers\WishlistCacheObserver;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Lang;
@@ -78,6 +79,7 @@ class AppServiceProvider extends ServiceProvider
         User::observe(AdminAuditObserver::class);
         Wishlist::observe(WishlistCacheObserver::class);
         Order::observe(AdminAuditObserver::class);
+        Order::observe(OrderAnalyticsObserver::class);
 
         View::composer(['layouts.user', 'layouts.store'], HeaderComposer::class);
     }

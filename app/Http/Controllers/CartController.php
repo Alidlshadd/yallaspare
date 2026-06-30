@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
 use App\Models\Setting;
+use App\Services\Analytics\AddToCartTracker;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -108,6 +109,8 @@ class CartController extends Controller
 
             return back()->with('error', $exception->getMessage());
         }
+
+        app(AddToCartTracker::class)->record($request, $product, $quantity);
 
         $message = $wasLimited
             ? __('Only :quantity available. Cart quantity was set to :quantity.', ['quantity' => $cartQuantity])
@@ -224,6 +227,8 @@ class CartController extends Controller
         } catch (\RuntimeException $exception) {
             return redirect()->to($safeRedirect)->with('error', $exception->getMessage());
         }
+
+        app(AddToCartTracker::class)->record($request, $product, $quantity);
 
         $message = $wasLimited
             ? __('Only :quantity available. Cart quantity was set to :quantity.', ['quantity' => $cartQuantity])

@@ -10,6 +10,7 @@ use App\Models\RecentlyViewedProduct;
 use App\Models\Setting;
 use App\Models\User;
 use App\Models\Wishlist;
+use App\Services\Analytics\ProductViewTracker;
 use App\Support\SqlSafe;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -19,7 +20,7 @@ use Illuminate\View\View;
 
 class ShopController extends Controller
 {
-    public function show(Request $request, Product $product): View|RedirectResponse
+    public function show(Request $request, Product $product, ProductViewTracker $productViews): View|RedirectResponse
     {
         abort_unless($product->is_active, 404);
 
@@ -39,6 +40,7 @@ class ShopController extends Controller
         }
 
         $product->load($productRelations);
+        $productViews->record($request, $product);
 
         $currencyLabel = (string) Setting::getValue('currency_code', 'IQD');
 

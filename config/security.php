@@ -49,6 +49,7 @@ return [
         // Admin-capable mobile tokens should be issued only after a fresh step-up
         // challenge so a stolen long-lived customer token cannot call admin APIs.
         'required_token_ability' => env('MOBILE_ADMIN_TOKEN_ABILITY', 'admin:mobile'),
+        'step_up_token_ttl_minutes' => (int) env('MOBILE_ADMIN_STEP_UP_TOKEN_TTL', 60),
     ],
 
     'notification_webhooks' => [

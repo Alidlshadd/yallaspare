@@ -22,6 +22,7 @@ use App\Models\UserAddress;
 use App\Models\VehicleBrand;
 use App\Mail\SupportContactRequestMail;
 use App\Models\Wishlist;
+use App\Notifications\AdminTwoFactorCode;
 use App\Rules\PhoneNumber;
 use App\Services\CheckoutTotals;
 use App\Services\Checkout\CheckoutService;
@@ -36,6 +37,7 @@ use App\Services\Security\UserPrivilegeService;
 use App\Support\SqlSafe;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
@@ -1623,6 +1625,92 @@ class MobileController extends Controller
         return response()->json(['data' => $this->productPayload($product->fresh(['category', 'images', 'reviews', 'vehicleFitments.brand', 'vehicleFitments.model']), $request->user())]);
     }
 
+    public function requestAdminMobileStepUp(Request $request)
+    {
+        $user = $request->user();
+        abort_unless($user && $user->isAdminPanelUser(), 403);
+
+        $token = $user->currentAccessToken();
+        abort_unless($token && method_exists($token, 'getKey') && $token->getKey(), 403);
+
+        $code = (string) random_int(100000, 999999);
+        $ttl = max((int) config('security.admin_two_factor.code_ttl_minutes', 10), 1);
+        $cacheKey = $this->mobileAdminStepUpKey($user, (int) $token->getKey());
+
+        Cache::put($cacheKey, [
+            'hash' => Hash::make($code),
+            'attempts' => 0,
+        ], now()->addMinutes($ttl));
+
+        try {
+            $user->notify(new AdminTwoFactorCode($code, $ttl));
+        } catch (\Throwable $exception) {
+            Cache::forget($cacheKey);
+            Log::error('Mobile admin step-up code email failed', [
+                'user_id' => $user->id,
+                'email_hash' => hash('sha256', strtolower((string) $user->email)),
+                'exception' => $exception::class,
+                'message' => $exception->getMessage(),
+            ]);
+
+            return response()->json(['message' => __('We could not send the verification code. Please try again later.')], 503);
+        }
+
+        return response()->json([
+            'message' => __('A verification code has been sent to your admin email.'),
+            'expires_in_minutes' => $ttl,
+        ]);
+    }
+
+    public function verifyAdminMobileStepUp(Request $request)
+    {
+        $user = $request->user();
+        abort_unless($user && $user->isAdminPanelUser(), 403);
+
+        $token = $user->currentAccessToken();
+        abort_unless($token && method_exists($token, 'getKey') && $token->getKey(), 403);
+
+        $data = $request->validate([
+            'code' => ['required', 'digits:6'],
+        ]);
+
+        $cacheKey = $this->mobileAdminStepUpKey($user, (int) $token->getKey());
+        $challenge = Cache::get($cacheKey);
+        if (! is_array($challenge) || empty($challenge['hash'])) {
+            return response()->json(['message' => __('The verification code is invalid or expired.')], 422);
+        }
+
+        if (! Hash::check((string) $data['code'], (string) $challenge['hash'])) {
+            $attempts = ((int) ($challenge['attempts'] ?? 0)) + 1;
+            if ($attempts >= max((int) config('security.email_verification.max_attempts', 5), 1)) {
+                Cache::forget($cacheKey);
+            } else {
+                $challenge['attempts'] = $attempts;
+                Cache::put($cacheKey, $challenge, now()->addMinutes(max((int) config('security.admin_two_factor.code_ttl_minutes', 10), 1)));
+            }
+
+            return response()->json(['message' => __('The verification code is invalid or expired.')], 422);
+        }
+
+        Cache::forget($cacheKey);
+
+        $abilities = array_values(array_unique(array_merge(
+            $this->mobileTokenAbilities($user),
+            [(string) config('security.mobile_admin.required_token_ability', 'admin:mobile')]
+        )));
+
+        $adminToken = $user->createToken(
+            'mobile-admin',
+            $abilities,
+            now()->addMinutes(max((int) config('security.mobile_admin.step_up_token_ttl_minutes', 60), 5))
+        )->plainTextToken;
+
+        return response()->json([
+            'token' => $adminToken,
+            'user' => $this->userPayload($user),
+        ]);
+    }
+
     public function adminDashboard(Request $request)
     {
         $this->requirePermission($request, User::PERMISSION_DASHBOARD_VIEW);
@@ -2030,16 +2118,21 @@ class MobileController extends Controller
     private function requirePermission(Request $request, string $permission): User
     {
         $user = $request->user();
-        abort_unless($user && $user->hasPermission($permission), 403);
+        abort_unless($user && $user->hasPermission($permission), 403, 'permission_denied');
         $token = $user->currentAccessToken();
 
         // Web sessions remain protected by admin.2fa. Personal access tokens
         // must carry a dedicated mobile-admin ability issued after step-up.
         if ($token && ! $token->can((string) config('security.mobile_admin.required_token_ability', 'admin:mobile'))) {
-            abort(403);
+            abort(403, 'admin_mobile_step_up_required');
         }
 
         return $user;
+    }
+
+    private function mobileAdminStepUpKey(User $user, int $tokenId): string
+    {
+        return 'mobile-admin-step-up:' . $user->id . ':' . $tokenId;
     }
 
     private function mobileTokenAbilities(User $user): array

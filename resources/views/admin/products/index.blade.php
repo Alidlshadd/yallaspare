@@ -649,6 +649,8 @@
                         $isOut = $product->stock_quantity === 0;
                         $stockClass = $isOut ? 'out' : ($isLow ? 'low' : 'in');
                         $stockLabel = $isOut ? __('Out') : ($isLow ? __(':n low', ['n' => $product->stock_quantity]) : __(':n', ['n' => $product->stock_quantity]));
+                        $viewsCount = (int) optional($product->analytics)->views_count;
+                        $lastViewedAt = optional($product->analytics)->last_viewed_at;
                     @endphp
                     <div class="prod-card">
                         <div class="img-wrap">
@@ -667,11 +669,23 @@
                         <div class="brand-row">
                             {{ $product->brand ?? '—' }}<span class="pid">· #{{ $product->id }}</span>
                         </div>
+                        <div class="mt-2 flex items-center justify-between gap-2 rounded-lg border border-slate-100 bg-slate-50 px-2.5 py-2 text-[11px] font-semibold text-slate-500 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400">
+                            <span class="inline-flex items-center gap-1.5">
+                                <i class="fas fa-eye text-amber-500"></i>
+                                {{ __(':count views', ['count' => number_format($viewsCount)]) }}
+                            </span>
+                            @if($lastViewedAt)
+                                <span class="font-mono text-[10px] text-slate-400">{{ $lastViewedAt->diffForHumans() }}</span>
+                            @endif
+                        </div>
                         <div class="price-row">
                             <div class="price">
                                 <span class="cy">{{ $currencyLabel }}</span>{{ number_format($product->price, $currencyDecimals) }}
                             </div>
-                            <span class="stock-badge {{ $stockClass }}">{{ $stockLabel }}</span>
+                            <span class="stock-badge {{ $stockClass }}">
+                                {{ $stockLabel }}
+                                <span class="sr-only">{{ __(':count units', ['count' => $product->stock_quantity]) }}</span>
+                            </span>
                         </div>
                         @if($product->dealer_price !== null)
                             <div class="dealer-row">

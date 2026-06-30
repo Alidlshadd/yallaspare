@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\View\Composers\HeaderComposer;
 use App\Models\Product;
 use App\Models\Wishlist;
+use App\Services\Analytics\WishlistClickTracker;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -27,12 +28,16 @@ class WishlistController extends Controller
 
     public function store(Request $request, Product $product): RedirectResponse
     {
-        Wishlist::firstOrCreate([
+        $entry = Wishlist::firstOrCreate([
             'user_id' => $request->user()->id,
             'product_id' => $product->id,
         ]);
 
         $this->syncWishlistCount($request);
+
+        if ($entry->wasRecentlyCreated) {
+            app(WishlistClickTracker::class)->record($request, $product);
+        }
 
         return back()->with('success', __('Added to wishlist.'));
     }

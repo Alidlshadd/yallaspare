@@ -101,6 +101,8 @@ Route::prefix('mobile')->group(function () {
         Route::post('/orders/{order}/cancellation-request', [MobileController::class, 'requestCancellation']);
         Route::post('/orders/{order}/return-request', [MobileController::class, 'requestReturn']);
 
+        Route::post('/admin/step-up', [MobileController::class, 'requestAdminMobileStepUp'])->middleware('throttle:admin-2fa');
+        Route::post('/admin/step-up/verify', [MobileController::class, 'verifyAdminMobileStepUp'])->middleware('throttle:admin-2fa');
         Route::get('/admin/dashboard', [MobileController::class, 'adminDashboard']);
         Route::get('/admin/{section}', [MobileController::class, 'adminModule']);
         Route::patch('/admin/products/{idOrSlug}', [MobileController::class, 'adminUpdateProduct']);

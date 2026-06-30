@@ -262,9 +262,9 @@ class OrderController extends Controller
         return null;
     }
 
-    public function update(Request $request, Order $order): RedirectResponse
+    public function update(Request $request, Order $order, OrderStatusService $statuses): RedirectResponse
     {
-        return $this->updateStatus($request, $order);
+        return $this->updateStatus($request, $order, $statuses);
     }
 
     public function updatePayment(Request $request, Order $order): RedirectResponse

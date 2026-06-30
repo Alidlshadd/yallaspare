@@ -501,4 +501,9 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
     {
         return $this->hasMany(ProductReview::class);
     }
+
+    public function productViews()
+    {
+        return $this->hasMany(ProductView::class);
+    }
 }

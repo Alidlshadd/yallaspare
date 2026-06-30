@@ -13,6 +13,7 @@ class SiteIconHeadTest extends TestCase
 
     private const PUBLIC_SEO_TITLE = 'YallaSpare | Auto Spare Parts Platform in Iraq';
     private const PUBLIC_SEO_DESCRIPTION = 'YallaSpare is an auto spare parts platform built for Iraq, helping customers find trusted parts, check vehicle compatibility, order easily, and get reliable support.';
+    private const HEAD_ICON_VERSION = '20260616b';
 
     private string $logoPath = 'settings/test-head-logo.png';
 
@@ -37,20 +38,21 @@ class SiteIconHeadTest extends TestCase
         $response->assertOk();
 
         $head = $this->extractHead($response->getContent());
+        $iconVersion = self::HEAD_ICON_VERSION;
 
         $this->assertStringContainsString('rel="icon"', $head);
-        $this->assertStringContainsString('favicon.ico?v=20260605', $head);
-        $this->assertStringContainsString('favicon.png?v=20260605', $head);
-        $this->assertStringContainsString('favicon-32x32.png?v=20260605', $head);
-        $this->assertStringContainsString('favicon-16x16.png?v=20260605', $head);
-        $this->assertStringContainsString('apple-touch-icon.png?v=20260605', $head);
-        $this->assertStringContainsString('site.webmanifest?v=20260605', $head);
+        $this->assertStringContainsString('favicon.ico?v=' . $iconVersion, $head);
+        $this->assertStringContainsString('favicon.png?v=' . $iconVersion, $head);
+        $this->assertStringContainsString('favicon-32x32.png?v=' . $iconVersion, $head);
+        $this->assertStringContainsString('favicon-16x16.png?v=' . $iconVersion, $head);
+        $this->assertStringContainsString('apple-touch-icon.png?v=' . $iconVersion, $head);
+        $this->assertStringContainsString('site.webmanifest?v=' . $iconVersion, $head);
         $this->assertStringContainsString('/brand/logo?v=', $head);
         $this->assertStringContainsString('sv=head-logo-version', $head);
         $this->assertStringContainsString('property="og:image"', $head);
-        $this->assertStringContainsString('icons/yallaspare-og-preview.png?v=20260605', $head);
+        $this->assertStringContainsString('icons/yallaspare-og-preview.png?v=' . $iconVersion, $head);
         $this->assertStringContainsString('name="twitter:image"', $head);
-        $this->assertStringContainsString('<title>' . self::PUBLIC_SEO_TITLE . '</title>', $head);
+        $this->assertStringContainsString('<title>Yalla Spare</title>', $head);
         $this->assertStringContainsString('name="description" content="' . self::PUBLIC_SEO_DESCRIPTION . '"', $head);
         $this->assertStringContainsString('property="og:title" content="' . self::PUBLIC_SEO_TITLE . '"', $head);
         $this->assertStringContainsString('property="og:description" content="' . self::PUBLIC_SEO_DESCRIPTION . '"', $head);
