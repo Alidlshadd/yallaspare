@@ -52,7 +52,10 @@ class ProductController extends Controller
                 'stock_quantity',
                 'created_at',
             ])
-            ->with(['category:id,name_en,name_ar,name_ku,slug']);
+            ->with([
+                'analytics:id,product_id,views_count,last_viewed_at',
+                'category:id,name_en,name_ar,name_ku,slug',
+            ]);
 
         if ($request->filled('search')) {
             $search = SqlSafe::searchTerm($request->search);
@@ -263,7 +266,7 @@ class ProductController extends Controller
         $currencyDecimals = strtoupper($currencyCode) === 'IQD' ? 0 : 2;
         $lowStockThreshold = max((int) Setting::getValue('low_stock_threshold', config('inventory.low_stock_threshold', 5)), 0);
 
-        $product->load('images');
+        $product->load('analytics', 'images');
         $returnTo = $this->productsIndexReturnUrl($request);
 
         return view('admin.products.edit', compact('product', 'categories', 'currencySymbol', 'currencyCode', 'currencyLabel', 'currencyDecimals', 'lowStockThreshold', 'returnTo'));

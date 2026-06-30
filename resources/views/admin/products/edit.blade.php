@@ -18,6 +18,9 @@
         $compatibleModelsValue = is_array($product->compatible_models)
             ? implode("\n", $product->compatible_models)
             : $product->compatible_models;
+        $productAnalytics = $product->analytics;
+        $productViewsCount = (int) optional($productAnalytics)->views_count;
+        $productLastViewedAt = optional($productAnalytics)->last_viewed_at;
     @endphp
 
     <div class="py-8">
@@ -281,6 +284,26 @@
                     </div>
 
                     <aside class="space-y-6">
+                        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                            <div class="flex items-center justify-between gap-3">
+                                <div>
+                                    <p class="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Product Analytics') }}</p>
+                                    <h3 class="mt-1 text-2xl font-black text-slate-900 dark:text-slate-100">{{ number_format($productViewsCount) }}</h3>
+                                </div>
+                                <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300">
+                                    <i class="fas fa-eye"></i>
+                                </span>
+                            </div>
+                            <p class="mt-2 text-sm font-medium text-slate-600 dark:text-slate-300">{{ __('Total product detail views') }}</p>
+                            <div class="mt-4 rounded-xl border border-dashed border-slate-200 bg-slate-50 px-4 py-3 text-xs text-slate-500 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400">
+                                @if($productLastViewedAt)
+                                    {{ __('Last viewed :time', ['time' => $productLastViewedAt->diffForHumans()]) }}
+                                @else
+                                    {{ __('No tracked product views yet.') }}
+                                @endif
+                            </div>
+                        </div>
+
                         <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                             <h3 class="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide">{{ __('Quick Tips') }}</h3>
                             <ul class="mt-4 space-y-3 text-sm text-slate-500 dark:text-slate-400">
