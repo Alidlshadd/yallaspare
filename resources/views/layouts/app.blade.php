@@ -320,6 +320,7 @@
                 $adminPageTitlePatterns = [
                     'admin.dashboard'              => __('Dashboard'),
                     'admin.revenue.*'              => __('Revenue Analytics'),
+                    'admin.analytics.*'            => __('Site Analytics'),
                     'admin.products.*'             => __('Products'),
                     'admin.categories.*'           => __('Categories'),
                     'admin.vehicle-fitments.*'     => __('Vehicle Finder'),
@@ -514,6 +515,15 @@
                                 >
                                     <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-sack-dollar"></i></span>
                                     <span class="admin-nav-label">{{ __('Revenue') }}</span>
+                                </a>
+                                <a
+                                    href="{{ route('admin.analytics.index') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.analytics.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Site Analytics') }}"
+                                    @if(request()->routeIs('admin.analytics.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-chart-line"></i></span>
+                                    <span class="admin-nav-label">{{ __('Site Analytics') }}</span>
                                 </a>
                             @endcan
                             @can(\App\Models\User::PERMISSION_STOCK_MANAGE)
