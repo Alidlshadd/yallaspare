@@ -2856,5 +2856,14 @@
     "templates": "templates",
     "transactional": "transactional",
     "read-only": "read-only",
-    "masked": "masked"
+    "masked": "masked",
+    "New Broadcast": "New Broadcast",
+    "Workspace": "Workspace",
+    "Audiences": "Audiences",
+    "Delivery health": "Delivery health",
+    "Mail settings": "Mail settings",
+    "Readiness": "Readiness",
+    "Broadcast console": "Broadcast console",
+    "failed": "failed",
+    "sent": "sent"
 }

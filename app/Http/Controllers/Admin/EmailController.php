@@ -46,7 +46,23 @@ class EmailController extends Controller
             'broadcastCounts' => $this->broadcastStatusCounts(),
             'broadcastFilters' => ['status' => $status, 'q' => $search],
             'broadcastsAvailable' => $this->emailBroadcastTableExists(),
+            'audienceCounts' => $this->audienceCounts(),
         ]);
+    }
+
+    /**
+     * @return array{customers:int,dealers:int,admins:int,total:int}
+     */
+    private function audienceCounts(): array
+    {
+        $base = User::query()->whereNotNull('email_verified_at');
+
+        return [
+            'customers' => (clone $base)->where('role', User::ROLE_USER)->count(),
+            'dealers'   => (clone $base)->where('role', User::ROLE_DEALER)->count(),
+            'admins'    => (clone $base)->whereIn('role', [User::ROLE_ADMIN, User::ROLE_SETTINGS_MANAGER])->count(),
+            'total'     => (clone $base)->count(),
+        ];
     }
 
     public function createBroadcast(): View

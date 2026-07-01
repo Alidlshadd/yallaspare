@@ -2856,5 +2856,14 @@
     "templates": "قاڵبەکان",
     "transactional": "کارلێکەیی",
     "read-only": "تەنها بۆ خوێندنەوە",
-    "masked": "شاراوە"
+    "masked": "شاراوە",
+    "New Broadcast": "بڵاوکراوەی نوێ",
+    "Workspace": "شوێنی کار",
+    "Audiences": "گەڵەکان",
+    "Delivery health": "تەندروستی گەیاندن",
+    "Mail settings": "ڕێکخستنی ئیمەیل",
+    "Readiness": "ئامادەبوون",
+    "Broadcast console": "کۆنسۆڵی بڵاوکراوە",
+    "failed": "شکستی هێنا",
+    "sent": "نێردرا"
 }

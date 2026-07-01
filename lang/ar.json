@@ -2856,5 +2856,14 @@
     "templates": "قوالب",
     "transactional": "معاملاتية",
     "read-only": "للقراءة فقط",
-    "masked": "مخفي"
+    "masked": "مخفي",
+    "New Broadcast": "بث جديد",
+    "Workspace": "مساحة العمل",
+    "Audiences": "الجماهير",
+    "Delivery health": "صحة التسليم",
+    "Mail settings": "إعدادات البريد",
+    "Readiness": "الجاهزية",
+    "Broadcast console": "لوحة البث",
+    "failed": "فشل",
+    "sent": "تم الإرسال"
 }

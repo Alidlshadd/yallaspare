@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Email Center v2 · 4 yeni yön (R1 / R2 / R3 / R4)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      colors: {
+        brand:'#070740', 'brand-hover':'#04042a',
+        ink:'#0a0a0a',
+        cream:'#f7f2ea', peach:'#f5c6a5', olive:'#606c38', clay:'#bc4749'
+      },
+      fontFamily: {
+        sans:['Inter','ui-sans-serif','system-ui'],
+        mono:['JetBrains Mono','ui-monospace','monospace'],
+        serif:['"Instrument Serif"','ui-serif','Georgia']
+      }
+    }}
+  }
+</script>
+<style>
+  html, body { font-family: 'Inter', ui-sans-serif, system-ui, sans-serif; }
+  .switcher button.active { background:#0a0a0a; color:#fff; }
+  .tab-pane { display:none; }
+  .tab-pane.active { display:block; }
+  .num { font-feature-settings:"tnum" 1,"lnum" 1; letter-spacing:-0.025em; }
+  .grid-lines {
+    background-image:
+      linear-gradient(to right, rgba(0,0,0,0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(0,0,0,0.04) 1px, transparent 1px);
+    background-size: 24px 24px;
+  }
+  .dark-grid {
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+  .noise::after {
+    content:"";
+    position:absolute; inset:0;
+    background-image: radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 3px 3px;
+    pointer-events:none;
+  }
+  /* Dashboard palette helpers */
+  .bento-shadow { box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06); }
+  .bento-shadow-lg { box-shadow: 0 10px 30px rgba(7,7,64,0.14), 0 30px 60px rgba(7,7,64,0.16); }
+  .bento-stripes-soft {
+    background-image: repeating-linear-gradient(135deg, rgba(7,7,64,0.04) 0px, rgba(7,7,64,0.04) 1px, transparent 1px, transparent 14px);
+  }
+  .corner-brackets-dark::before,
+  .corner-brackets-dark::after {
+    content:""; position:absolute; width:12px; height:12px;
+    border-color: rgba(7,7,64,0.22); border-style:solid; border-width:0;
+    pointer-events:none;
+  }
+  .corner-brackets-dark::before { top:12px; left:12px; border-top-width:1.5px; border-left-width:1.5px; }
+  .corner-brackets-dark::after  { bottom:12px; right:12px; border-bottom-width:1.5px; border-right-width:1.5px; }
+</style>
+</head>
+<body class="bg-[#eaeaea]">
+
+<header class="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
+  <div class="mx-auto flex max-w-[1600px] items-center justify-between gap-4 px-6 py-3">
+    <div>
+      <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">YallaSpare · Email Center · v2 tasarımlar</p>
+      <h1 class="mt-0.5 text-base font-bold text-black">4 farklı yön · hangisini istersen onu uygulayacağım</h1>
+    </div>
+    <div class="switcher inline-flex rounded-xl border border-slate-200 bg-white p-1 text-sm font-bold shadow-sm">
+      <button data-tab="r1" class="active rounded-lg px-3 py-1.5">R1 · Sidebar Console</button>
+      <button data-tab="r2" class="rounded-lg px-3 py-1.5">R2 · Command Grid</button>
+      <button data-tab="r3" class="rounded-lg px-3 py-1.5">R3 · Split Workspace</button>
+      <button data-tab="r4" class="rounded-lg px-3 py-1.5">R4 · Sade Table</button>
+    </div>
+  </div>
+</header>
+
+<main class="mx-auto max-w-[1600px] px-4 py-6 sm:px-6 lg:px-8">
+
+<!-- ============================================================
+     R1 · SIDEBAR CONSOLE — Gmail / Notion / Linear tarzı
+     Beyaz + siyah + tek accent. Sol sabit nav, sağ tek şey.
+     ============================================================ -->
+<section data-pane="r1" class="tab-pane active">
+  <div class="relative rounded-2xl border border-slate-200/70 bg-white overflow-hidden bento-shadow">
+    <!-- accent stripe -->
+    <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-brand via-indigo-500 to-amber-400 z-10"></div>
+
+    <div class="grid" style="grid-template-columns: 260px 1fr;">
+
+      <!-- SIDEBAR -->
+      <aside class="relative border-r border-slate-200/70 bg-[#f7f7fb] p-3">
+        <div class="absolute inset-0 bento-stripes-soft opacity-40 pointer-events-none"></div>
+
+        <div class="relative">
+          <!-- Compose CTA -->
+          <button class="w-full flex items-center gap-2 rounded-xl bg-gradient-to-br from-brand to-indigo-700 text-white px-3 py-2.5 text-sm font-bold shadow-md shadow-brand/20 hover:shadow-lg hover:shadow-brand/30 transition">
+            <i class="fas fa-pen-to-square text-xs"></i> Yeni Broadcast
+          </button>
+
+          <div class="mt-5">
+            <p class="px-2 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Workspace</p>
+            <nav class="mt-1 space-y-0.5">
+              <a class="flex items-center gap-2.5 rounded-lg bg-brand/10 px-2.5 py-2 text-sm font-bold text-brand">
+                <i class="fas fa-house w-4 text-brand text-xs"></i> Overview
+                <span class="ml-auto font-mono text-[10px] text-brand/70">986</span>
+              </a>
+              <a class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-brand transition">
+                <i class="fas fa-bullhorn w-4 text-slate-400 text-xs"></i> Broadcasts
+                <span class="ml-auto font-mono text-[10px] text-slate-400">47</span>
+              </a>
+              <a class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-brand transition">
+                <i class="fas fa-inbox w-4 text-slate-400 text-xs"></i> Outbox
+                <span class="ml-auto font-mono text-[10px] text-slate-400">1.2k</span>
+              </a>
+              <a class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-brand transition">
+                <i class="fas fa-file-lines w-4 text-slate-400 text-xs"></i> Templates
+                <span class="ml-auto font-mono text-[10px] text-slate-400">9</span>
+              </a>
+              <a class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-brand transition">
+                <i class="fas fa-gears w-4 text-slate-400 text-xs"></i> Mail settings
+              </a>
+            </nav>
+          </div>
+
+          <div class="mt-6">
+            <p class="px-2 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">Audiences</p>
+            <nav class="mt-1 space-y-0.5">
+              <a class="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm text-slate-600 hover:bg-white hover:text-brand transition">
+                <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Customers
+                <span class="ml-auto font-mono text-[10px] text-slate-400">2 341</span>
+              </a>
+              <a class="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm text-slate-600 hover:bg-white hover:text-brand transition">
+                <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span> Dealers
+                <span class="ml-auto font-mono text-[10px] text-slate-400">84</span>
+              </a>
+              <a class="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm text-slate-600 hover:bg-white hover:text-brand transition">
+                <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span> Admins
+                <span class="ml-auto font-mono text-[10px] text-slate-400">4</span>
+              </a>
+            </nav>
+          </div>
+
+          <div class="mt-6 relative rounded-xl border border-brand/15 bg-gradient-to-br from-brand/[0.06] to-white p-3 corner-brackets-dark">
+            <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-brand">Delivery health</p>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span class="num text-2xl font-black text-brand">97.6</span>
+              <span class="text-xs font-mono text-slate-500">%</span>
+            </div>
+            <div class="mt-1.5 h-1 rounded-full bg-slate-200 overflow-hidden">
+              <div class="h-full rounded-full bg-gradient-to-r from-brand to-indigo-500" style="width:97.6%"></div>
+            </div>
+            <p class="mt-2 text-[10px] font-mono text-slate-500">last 7 days</p>
+          </div>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <div class="p-8 bg-[#f3f4f7]/50">
+        <!-- Top row -->
+        <div class="flex items-center justify-between">
+          <div>
+            <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">Overview · YALLASPARE / EMAIL</p>
+            <h2 class="mt-1 text-2xl font-black tracking-tight text-brand">Broadcast console</h2>
+            <p class="mt-1 text-sm text-slate-500 font-mono">7 gün · 986 mail gönderildi · 962 teslim</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <div class="relative">
+              <i class="fas fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+              <input placeholder="Arama..." class="pl-9 pr-3 py-2 rounded-xl border border-slate-200 bg-white text-sm w-56 focus:border-brand focus:ring-2 focus:ring-brand/20 focus:outline-none">
+            </div>
+            <button class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50"><i class="fas fa-download text-[10px]"></i></button>
+          </div>
+        </div>
+
+        <!-- 3 numeric cards — bento style -->
+        <div class="mt-8 grid grid-cols-3 gap-3">
+          <div class="relative rounded-2xl border border-slate-200/70 bg-white p-5 bento-shadow overflow-hidden">
+            <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-brand to-indigo-700"></div>
+            <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">Total sent · 7d</p>
+            <p class="mt-3 num text-3xl font-black text-brand">986</p>
+            <div class="mt-2 flex items-center justify-between">
+              <span class="text-[10px] text-emerald-600 font-mono font-bold">↗ 18%</span>
+              <span class="text-[10px] text-slate-400 font-mono">vs prev</span>
+            </div>
+            <div class="mt-2 h-1 rounded-full bg-slate-100 overflow-hidden">
+              <div class="h-full rounded-full bg-gradient-to-r from-brand to-indigo-500" style="width:78%"></div>
+            </div>
+          </div>
+          <div class="relative rounded-2xl border border-slate-200/70 bg-white p-5 bento-shadow overflow-hidden">
+            <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-emerald-500 to-emerald-600"></div>
+            <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">Delivered</p>
+            <p class="mt-3 num text-3xl font-black text-brand">97.6<span class="text-lg text-slate-400 font-mono">%</span></p>
+            <div class="mt-2 flex items-center justify-between">
+              <span class="text-[10px] text-emerald-600 font-mono font-bold">962 / 986</span>
+              <span class="text-[10px] text-slate-400 font-mono">24h</span>
+            </div>
+            <div class="mt-2 h-1 rounded-full bg-slate-100 overflow-hidden">
+              <div class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600" style="width:97.6%"></div>
+            </div>
+          </div>
+          <div class="relative rounded-2xl border border-amber-200/70 bg-gradient-to-br from-amber-50/60 to-white p-5 bento-shadow overflow-hidden">
+            <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-amber-400 to-amber-500"></div>
+            <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-amber-700">Pending queue</p>
+            <p class="mt-3 num text-3xl font-black text-brand flex items-center gap-2">12 <span class="inline-flex h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse"></span></p>
+            <div class="mt-2 flex items-center justify-between">
+              <span class="text-[10px] text-amber-700 font-mono font-bold">in queue</span>
+              <span class="text-[10px] text-amber-700 font-mono">~4 min</span>
+            </div>
+            <div class="mt-2 h-1 rounded-full bg-amber-100 overflow-hidden">
+              <div class="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-500 animate-pulse" style="width:25%"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent broadcasts — clean list card -->
+        <div class="mt-6 rounded-2xl border border-slate-200/70 bg-white bento-shadow overflow-hidden">
+          <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80">
+            <div class="flex items-center gap-2.5">
+              <div class="h-8 w-8 rounded-lg bg-brand/10 text-brand grid place-items-center"><i class="fas fa-clock-rotate-left text-xs"></i></div>
+              <div>
+                <p class="text-sm font-bold text-brand leading-none">Son broadcast'lar</p>
+                <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">47 records · last 4</p>
+              </div>
+            </div>
+            <a class="text-xs font-bold text-brand hover:underline">Hepsini gör →</a>
+          </div>
+          <ul class="divide-y divide-slate-100">
+            <li class="flex items-center gap-4 px-5 py-3 hover:bg-slate-50/60 transition">
+              <span class="h-9 w-9 rounded-lg bg-emerald-50 border border-emerald-100 grid place-items-center"><i class="fas fa-check text-emerald-600 text-xs"></i></span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-bold text-brand truncate">Newroz kampanyası · %15 indirim</p>
+                <p class="text-[11px] text-slate-500 font-mono mt-0.5">Customers · 2 341 alıcı · 12 Mar 14:22</p>
+              </div>
+              <span class="num text-sm font-bold text-brand">2 310</span>
+              <span class="text-[10px] font-mono text-emerald-600 w-16 text-right font-bold uppercase tracking-wider">delivered</span>
+            </li>
+            <li class="flex items-center gap-4 px-5 py-3 hover:bg-slate-50/60 transition">
+              <span class="h-9 w-9 rounded-lg bg-emerald-50 border border-emerald-100 grid place-items-center"><i class="fas fa-check text-emerald-600 text-xs"></i></span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-bold text-brand truncate">Dealer tier update</p>
+                <p class="text-[11px] text-slate-500 font-mono mt-0.5">Dealers · 84 alıcı · 11 Mar 09:15</p>
+              </div>
+              <span class="num text-sm font-bold text-brand">84</span>
+              <span class="text-[10px] font-mono text-emerald-600 w-16 text-right font-bold uppercase tracking-wider">delivered</span>
+            </li>
+            <li class="flex items-center gap-4 px-5 py-3 hover:bg-slate-50/60 transition border-l-2 border-amber-400 bg-amber-50/20">
+              <span class="h-9 w-9 rounded-lg bg-amber-50 border border-amber-100 grid place-items-center"><i class="fas fa-clock text-amber-600 text-xs"></i></span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-bold text-brand truncate">Weekend sale</p>
+                <p class="text-[11px] text-slate-500 font-mono mt-0.5">Customers · 12 kuyruğda · sending...</p>
+              </div>
+              <span class="num text-sm font-bold text-amber-700">12</span>
+              <span class="text-[10px] font-mono text-amber-700 w-16 text-right font-bold uppercase tracking-wider">queued</span>
+            </li>
+            <li class="flex items-center gap-4 px-5 py-3 hover:bg-slate-50/60 transition">
+              <span class="h-9 w-9 rounded-lg bg-rose-50 border border-rose-100 grid place-items-center"><i class="fas fa-xmark text-rose-600 text-xs"></i></span>
+              <div class="flex-1 min-w-0">
+                <p class="text-sm font-bold text-brand truncate">Support update</p>
+                <p class="text-[11px] text-slate-500 font-mono mt-0.5">Admins · 4 alıcı · 3 failed</p>
+              </div>
+              <span class="num text-sm font-bold text-rose-600">3</span>
+              <span class="text-[10px] font-mono text-rose-600 w-16 text-right font-bold uppercase tracking-wider">failed</span>
+            </li>
+          </ul>
+        </div>
+
+        <p class="mt-8 text-[10px] font-mono text-slate-400">Aesthetic: dashboard palette (navy #070740 + slate + white bento-shadow cards) · sidebar navigation · one thing at a time</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     R2 · COMMAND GRID — Vercel / Cloudflare tarzı
+     Koyu, minimal, kart moduller.
+     ============================================================ -->
+<section data-pane="r2" class="tab-pane">
+  <div class="relative overflow-hidden rounded-3xl bg-[#0a0a0a] text-white noise">
+    <div class="absolute inset-0 dark-grid opacity-40 pointer-events-none"></div>
+
+    <div class="relative p-8">
+      <!-- Top bar -->
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-white/40">yallaspare / email</p>
+          <h2 class="mt-1 font-serif text-3xl leading-none">Broadcast console.</h2>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="relative">
+            <i class="fas fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-white/40 text-xs"></i>
+            <input placeholder="Search broadcasts, templates..." class="pl-9 pr-16 py-2 rounded-lg bg-white/5 border border-white/10 text-sm text-white placeholder-white/40 w-72 focus:border-white/40 focus:outline-none">
+            <kbd class="absolute right-3 top-1/2 -translate-y-1/2 inline-flex items-center rounded border border-white/20 bg-white/5 px-1.5 font-mono text-[10px] text-white/60">⌘K</kbd>
+          </div>
+          <button class="rounded-lg bg-white text-black px-3.5 py-2 text-xs font-bold hover:bg-white/90">
+            <i class="fas fa-plus text-[10px]"></i> New Broadcast
+          </button>
+        </div>
+      </div>
+
+      <!-- 4 module cards -->
+      <div class="mt-8 grid grid-cols-2 lg:grid-cols-4 gap-3">
+
+        <!-- Broadcasts -->
+        <a class="group relative overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] p-5 hover:bg-white/[0.06] transition">
+          <div class="flex items-start justify-between">
+            <div class="h-8 w-8 rounded-lg bg-white/10 grid place-items-center"><i class="fas fa-bullhorn text-xs"></i></div>
+            <i class="fas fa-arrow-up-right text-[10px] text-white/40 group-hover:text-white transition"></i>
+          </div>
+          <p class="mt-6 text-[10px] font-bold uppercase tracking-[0.22em] text-white/50">Broadcasts</p>
+          <p class="num mt-1 text-3xl font-black">47</p>
+          <p class="mt-1 text-[11px] font-mono text-emerald-400">28 sent · 12 pending · 3 failed</p>
+        </a>
+
+        <!-- Deliverability -->
+        <a class="group relative overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] p-5 hover:bg-white/[0.06] transition">
+          <div class="flex items-start justify-between">
+            <div class="h-8 w-8 rounded-lg bg-emerald-500/20 text-emerald-400 grid place-items-center"><i class="fas fa-circle-check text-xs"></i></div>
+            <i class="fas fa-arrow-up-right text-[10px] text-white/40 group-hover:text-white transition"></i>
+          </div>
+          <p class="mt-6 text-[10px] font-bold uppercase tracking-[0.22em] text-white/50">Deliverability</p>
+          <p class="num mt-1 text-3xl font-black">97.6<span class="text-lg font-mono text-white/40">%</span></p>
+          <!-- inline sparkline -->
+          <svg class="mt-2 h-6 w-full" viewBox="0 0 100 24" preserveAspectRatio="none">
+            <polyline points="0,18 12,15 24,17 36,10 48,12 60,8 72,10 84,6 96,4" fill="none" stroke="#22c55e" stroke-width="1.5"/>
+          </svg>
+        </a>
+
+        <!-- Templates -->
+        <a class="group relative overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] p-5 hover:bg-white/[0.06] transition">
+          <div class="flex items-start justify-between">
+            <div class="h-8 w-8 rounded-lg bg-white/10 grid place-items-center"><i class="fas fa-file-lines text-xs"></i></div>
+            <i class="fas fa-arrow-up-right text-[10px] text-white/40 group-hover:text-white transition"></i>
+          </div>
+          <p class="mt-6 text-[10px] font-bold uppercase tracking-[0.22em] text-white/50">Templates</p>
+          <p class="num mt-1 text-3xl font-black">9</p>
+          <div class="mt-2 flex gap-1">
+            <span class="h-4 w-4 rounded bg-blue-400/40"></span>
+            <span class="h-4 w-4 rounded bg-emerald-400/40"></span>
+            <span class="h-4 w-4 rounded bg-rose-400/40"></span>
+            <span class="h-4 w-4 rounded bg-amber-400/40"></span>
+            <span class="h-4 w-4 rounded bg-violet-400/40"></span>
+            <span class="h-4 w-4 rounded bg-cyan-400/40"></span>
+          </div>
+        </a>
+
+        <!-- Health -->
+        <a class="group relative overflow-hidden rounded-xl border border-white/10 bg-white/[0.03] p-5 hover:bg-white/[0.06] transition">
+          <div class="flex items-start justify-between">
+            <div class="h-8 w-8 rounded-lg bg-emerald-500/20 text-emerald-400 grid place-items-center"><i class="fas fa-shield-halved text-xs"></i></div>
+            <i class="fas fa-arrow-up-right text-[10px] text-white/40 group-hover:text-white transition"></i>
+          </div>
+          <p class="mt-6 text-[10px] font-bold uppercase tracking-[0.22em] text-white/50">Mail health</p>
+          <p class="num mt-1 text-3xl font-black">100<span class="text-lg font-mono text-white/40">/100</span></p>
+          <p class="mt-1 text-[11px] font-mono text-emerald-400">4/4 checks ok</p>
+        </a>
+      </div>
+
+      <!-- Two panels: Activity feed + Compose quick -->
+      <div class="mt-6 grid gap-3 lg:grid-cols-[1.5fr_1fr]">
+        <!-- Activity -->
+        <div class="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+          <div class="flex items-center justify-between">
+            <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-white/50">Live activity</p>
+            <span class="inline-flex items-center gap-1 text-[10px] font-mono text-emerald-400">
+              <span class="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse"></span> streaming
+            </span>
+          </div>
+          <ul class="mt-4 space-y-2 font-mono text-[11px]">
+            <li class="flex items-center gap-3 text-white/80"><span class="text-white/40">14:22:03</span> <span class="text-emerald-400">SENT</span> <span class="truncate">Newroz kampanyası → customer@…</span></li>
+            <li class="flex items-center gap-3 text-white/80"><span class="text-white/40">14:22:01</span> <span class="text-emerald-400">SENT</span> <span class="truncate">Newroz kampanyası → ahmed@…</span></li>
+            <li class="flex items-center gap-3 text-white/80"><span class="text-white/40">14:21:58</span> <span class="text-amber-400">QUEUE</span> <span class="truncate">Weekend sale → 12 recipients</span></li>
+            <li class="flex items-center gap-3 text-white/80"><span class="text-white/40">14:21:22</span> <span class="text-rose-400">FAIL </span> <span class="truncate">Support update → dealer@… (bounce)</span></li>
+            <li class="flex items-center gap-3 text-white/80"><span class="text-white/40">14:18:04</span> <span class="text-emerald-400">SENT</span> <span class="truncate">Dealer tier update → 84 recipients</span></li>
+          </ul>
+        </div>
+
+        <!-- Quick compose stub -->
+        <div class="rounded-xl border border-white/10 bg-white/[0.03] p-5">
+          <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-white/50">Quick delivery test</p>
+          <div class="mt-4 space-y-2">
+            <input placeholder="recipient@example.com" class="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2 text-sm text-white placeholder-white/40 focus:border-white/40 focus:outline-none">
+            <input placeholder="Subject" class="w-full rounded-lg bg-white/5 border border-white/10 px-3 py-2 text-sm text-white placeholder-white/40 focus:border-white/40 focus:outline-none">
+            <button class="w-full rounded-lg bg-white text-black px-3 py-2 text-sm font-bold hover:bg-white/90">
+              Send test
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <p class="mt-6 text-[10px] font-mono text-white/40">Aesthetic: dark-first · serif accent title · grid backdrop · module cards you can drill into · live streaming feel</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     R3 · SPLIT WORKSPACE — Mailchimp / Klaviyo / warm studio
+     ============================================================ -->
+<section data-pane="r3" class="tab-pane">
+  <div class="rounded-3xl bg-cream border border-[#e5dccb] overflow-hidden">
+    <!-- top strip -->
+    <div class="flex items-center justify-between border-b border-[#e5dccb] bg-white/40 px-6 py-4">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-full bg-clay text-cream grid place-items-center font-serif italic text-xl">ys</div>
+        <div>
+          <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-[#7a6c53]">Studio · Email</p>
+          <h2 class="font-serif text-2xl leading-tight text-ink">Broadcast studio.</h2>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <button class="rounded-full border border-[#d9cfbc] bg-cream px-4 py-2 text-sm font-bold text-ink hover:bg-white">
+          <i class="fas fa-inbox text-[11px]"></i> Outbox
+        </button>
+        <button class="rounded-full bg-ink text-cream px-4 py-2 text-sm font-bold hover:bg-black">
+          <i class="fas fa-pen-nib text-[11px]"></i> New broadcast
+        </button>
+      </div>
+    </div>
+
+    <div class="grid gap-6 p-6" style="grid-template-columns: 1fr 380px;">
+
+      <!-- MAIN -->
+      <div>
+        <!-- Compose card -->
+        <div class="rounded-2xl bg-white border border-[#e5dccb] p-6 shadow-[0_1px_0_rgba(0,0,0,0.03)]">
+          <div class="flex items-center justify-between">
+            <p class="font-serif italic text-xl text-ink">Bugün ne göndereceksin?</p>
+            <span class="text-[10px] font-mono uppercase tracking-widest text-[#7a6c53]">draft · saved 12s ago</span>
+          </div>
+          <div class="mt-5 grid gap-4">
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <label class="text-[10px] font-bold uppercase tracking-[0.14em] text-[#7a6c53]">Kime</label>
+                <div class="mt-1.5 flex items-center gap-2 rounded-xl border border-[#d9cfbc] bg-cream px-3 py-2">
+                  <span class="h-6 w-6 rounded-full bg-olive/15 text-olive grid place-items-center text-[10px] font-black">C</span>
+                  <span class="text-sm font-bold text-ink">Customers</span>
+                  <span class="font-mono text-[11px] text-[#7a6c53]">· 2 341</span>
+                </div>
+              </div>
+              <div>
+                <label class="text-[10px] font-bold uppercase tracking-[0.14em] text-[#7a6c53]">Amaç</label>
+                <div class="mt-1.5 flex items-center gap-2 rounded-xl border border-[#d9cfbc] bg-cream px-3 py-2">
+                  <span class="h-6 w-6 rounded-full bg-peach/50 grid place-items-center text-[10px]">📣</span>
+                  <span class="text-sm font-bold text-ink">Promotional</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <label class="text-[10px] font-bold uppercase tracking-[0.14em] text-[#7a6c53]">Konu</label>
+              <input value="Newroz'a özel — %15 indirim" class="mt-1.5 w-full rounded-xl border border-[#d9cfbc] bg-cream px-3 py-2.5 text-base font-serif text-ink focus:bg-white focus:border-ink focus:outline-none">
+            </div>
+            <div>
+              <label class="text-[10px] font-bold uppercase tracking-[0.14em] text-[#7a6c53]">Mesaj</label>
+              <div class="mt-1.5 rounded-xl border border-[#d9cfbc] bg-cream p-3 text-sm text-ink">
+                <p class="font-serif italic text-[#5c5039]">Merhaba,</p>
+                <p class="mt-1 font-serif">Yalla Spare olarak Newroz bayramını kutlar, size özel …</p>
+                <div class="mt-6 h-8 rounded-full bg-clay/90 w-40"></div>
+              </div>
+            </div>
+            <div class="flex items-center justify-between pt-2">
+              <div class="flex items-center gap-1 text-[10px] font-mono text-[#7a6c53]">
+                <i class="fas fa-clock"></i> Scheduling · Now
+              </div>
+              <div class="flex items-center gap-2">
+                <button class="rounded-full border border-[#d9cfbc] px-4 py-2 text-xs font-bold text-ink hover:bg-cream">Preview</button>
+                <button class="rounded-full bg-clay text-cream px-5 py-2 text-xs font-bold hover:bg-[#a03c3f]">Send now →</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- History mini table -->
+        <div class="mt-6 rounded-2xl bg-white border border-[#e5dccb] p-5">
+          <div class="flex items-center justify-between">
+            <p class="font-serif text-lg text-ink">Son gönderilenler</p>
+            <a class="text-xs font-bold text-clay">Tümü →</a>
+          </div>
+          <ul class="mt-3 divide-y divide-[#f0e7d5]">
+            <li class="flex items-center justify-between py-2.5">
+              <div class="flex items-center gap-3 min-w-0">
+                <span class="h-8 w-8 rounded-full bg-olive/15 text-olive grid place-items-center text-[10px] font-black">C</span>
+                <div class="min-w-0"><p class="font-serif text-sm text-ink truncate">Weekend flash sale</p><p class="text-[10px] text-[#7a6c53] font-mono">2 340 · 2h ago</p></div>
+              </div>
+              <span class="text-xs font-bold text-olive">Sent</span>
+            </li>
+            <li class="flex items-center justify-between py-2.5">
+              <div class="flex items-center gap-3 min-w-0">
+                <span class="h-8 w-8 rounded-full bg-peach/50 grid place-items-center text-[10px]">📣</span>
+                <div class="min-w-0"><p class="font-serif text-sm text-ink truncate">Newroz kampanyası</p><p class="text-[10px] text-[#7a6c53] font-mono">2 310 · 4h ago</p></div>
+              </div>
+              <span class="text-xs font-bold text-olive">Sent</span>
+            </li>
+            <li class="flex items-center justify-between py-2.5">
+              <div class="flex items-center gap-3 min-w-0">
+                <span class="h-8 w-8 rounded-full bg-amber-200 grid place-items-center text-[10px]">⚙</span>
+                <div class="min-w-0"><p class="font-serif text-sm text-ink truncate">Dealer tier update</p><p class="text-[10px] text-[#7a6c53] font-mono">84 · yesterday</p></div>
+              </div>
+              <span class="text-xs font-bold text-olive">Sent</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- RIGHT PANEL -->
+      <aside class="space-y-4">
+        <div class="rounded-2xl bg-ink text-cream p-5">
+          <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-cream/50">This week</p>
+          <p class="mt-3 num font-serif text-5xl leading-none">986</p>
+          <p class="mt-2 text-xs text-cream/70 font-mono">delivered · 97.6% success rate</p>
+          <div class="mt-4 h-1 rounded-full bg-white/10 overflow-hidden"><div class="h-full bg-peach" style="width:97.6%"></div></div>
+        </div>
+
+        <div class="rounded-2xl bg-white border border-[#e5dccb] p-5">
+          <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-[#7a6c53]">Live activity</p>
+          <ul class="mt-3 space-y-2 text-[13px]">
+            <li class="flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-olive"></span> <span class="text-ink font-medium">Sent</span> <span class="text-[#7a6c53]">customer@…</span> <span class="ml-auto font-mono text-[10px] text-[#a99a80]">2s</span></li>
+            <li class="flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-olive"></span> <span class="text-ink font-medium">Sent</span> <span class="text-[#7a6c53]">ahmed@…</span> <span class="ml-auto font-mono text-[10px] text-[#a99a80]">4s</span></li>
+            <li class="flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-amber-500"></span> <span class="text-ink font-medium">Queued</span> <span class="text-[#7a6c53]">12 recipients</span> <span class="ml-auto font-mono text-[10px] text-[#a99a80]">1m</span></li>
+            <li class="flex items-center gap-2"><span class="h-2 w-2 rounded-full bg-clay"></span> <span class="text-ink font-medium">Failed</span> <span class="text-[#7a6c53]">dealer@…</span> <span class="ml-auto font-mono text-[10px] text-[#a99a80]">3m</span></li>
+          </ul>
+        </div>
+
+        <div class="rounded-2xl bg-peach/40 border border-peach/60 p-5">
+          <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-clay">Template</p>
+          <p class="mt-2 font-serif italic text-xl text-ink">Newroz kampanya taslağı</p>
+          <p class="mt-1 text-xs text-ink/60 font-mono">4 dakika önce düzenlendi</p>
+          <button class="mt-4 rounded-full bg-clay text-cream px-4 py-1.5 text-xs font-bold">Open →</button>
+        </div>
+      </aside>
+    </div>
+
+    <p class="px-6 pb-6 text-[10px] font-mono text-[#7a6c53]">Aesthetic: warm cream + clay + olive · serif italic accents · rounded-full buttons · studio feel · compose front-and-center</p>
+  </div>
+</section>
+
+<!-- ============================================================
+     R4 · SADE TABLE — bugünkü paletle stripped down
+     ============================================================ -->
+<section data-pane="r4" class="tab-pane">
+  <div class="space-y-6">
+    <!-- Header -->
+    <div class="rounded-2xl border border-slate-200 bg-white p-5">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">Email Center</p>
+          <h2 class="mt-1 text-2xl font-black text-brand tracking-tight">Broadcast console</h2>
+        </div>
+        <button class="rounded-xl bg-brand text-white px-4 py-2 text-sm font-bold hover:bg-brand-hover">
+          <i class="fas fa-plus text-[11px]"></i> Yeni Broadcast
+        </button>
+      </div>
+    </div>
+
+    <!-- 3 stat cards ONLY (not 6) -->
+    <div class="grid grid-cols-3 gap-4">
+      <div class="rounded-2xl border border-slate-200 bg-white p-5">
+        <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">Total sent · 7d</p>
+        <p class="mt-3 num text-3xl font-black text-brand">986</p>
+        <p class="mt-1 text-xs text-emerald-600 font-mono">↗ 18%</p>
+      </div>
+      <div class="rounded-2xl border border-slate-200 bg-white p-5">
+        <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">Delivered</p>
+        <p class="mt-3 num text-3xl font-black text-brand">97.6%</p>
+        <div class="mt-2 h-1 rounded-full bg-slate-100"><div class="h-full bg-emerald-500 rounded-full" style="width:97.6%"></div></div>
+      </div>
+      <div class="rounded-2xl border border-slate-200 bg-white p-5">
+        <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">Pending</p>
+        <p class="mt-3 num text-3xl font-black text-brand">12</p>
+        <p class="mt-1 text-xs text-amber-700 font-mono">in queue</p>
+      </div>
+    </div>
+
+    <!-- Two columns: History + Compose form -->
+    <div class="grid gap-6" style="grid-template-columns: 1.6fr 1fr;">
+      <div class="rounded-2xl border border-slate-200 bg-white overflow-hidden">
+        <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+          <div>
+            <p class="text-sm font-bold text-brand">Broadcast history</p>
+            <p class="text-[10px] font-mono uppercase tracking-widest text-slate-400 mt-0.5">47 records · last 5</p>
+          </div>
+          <div class="inline-flex rounded-lg border border-slate-200 p-0.5 text-[11px] font-bold">
+            <button class="rounded bg-brand text-white px-2.5 py-1">All</button>
+            <button class="px-2.5 py-1 text-slate-600">Sent</button>
+            <button class="px-2.5 py-1 text-slate-600">Failed</button>
+          </div>
+        </div>
+        <table class="min-w-full text-sm">
+          <tbody class="divide-y divide-slate-100">
+            <tr><td class="px-5 py-3">Newroz kampanyası</td><td class="px-5 py-3 text-slate-500 font-mono text-xs">Customers</td><td class="px-5 py-3 text-emerald-600 text-xs font-bold">Sent</td><td class="px-5 py-3 text-right font-mono text-xs">2 310</td></tr>
+            <tr><td class="px-5 py-3">Dealer tier update</td><td class="px-5 py-3 text-slate-500 font-mono text-xs">Dealers</td><td class="px-5 py-3 text-emerald-600 text-xs font-bold">Sent</td><td class="px-5 py-3 text-right font-mono text-xs">84</td></tr>
+            <tr><td class="px-5 py-3">Weekend sale</td><td class="px-5 py-3 text-slate-500 font-mono text-xs">Customers</td><td class="px-5 py-3 text-amber-700 text-xs font-bold">Queued</td><td class="px-5 py-3 text-right font-mono text-xs">12</td></tr>
+            <tr><td class="px-5 py-3">Support update</td><td class="px-5 py-3 text-slate-500 font-mono text-xs">Admins</td><td class="px-5 py-3 text-rose-600 text-xs font-bold">Failed</td><td class="px-5 py-3 text-right font-mono text-xs">3</td></tr>
+            <tr><td class="px-5 py-3">Order status notice</td><td class="px-5 py-3 text-slate-500 font-mono text-xs">Customers</td><td class="px-5 py-3 text-emerald-600 text-xs font-bold">Sent</td><td class="px-5 py-3 text-right font-mono text-xs">1 850</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Compose sidebar -->
+      <div class="rounded-2xl border border-slate-200 bg-white overflow-hidden">
+        <div class="border-b border-slate-100 px-5 py-4">
+          <p class="text-sm font-bold text-brand">Quick delivery test</p>
+          <p class="text-[10px] font-mono uppercase tracking-widest text-slate-400 mt-0.5">one-off</p>
+        </div>
+        <div class="p-5 space-y-3">
+          <input placeholder="recipient@example.com" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm">
+          <input placeholder="Subject" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm">
+          <textarea rows="3" placeholder="Message" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm"></textarea>
+          <button class="w-full rounded-xl bg-brand text-white py-2 text-sm font-bold">Send test</button>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-[10px] font-mono text-slate-400 px-1">Aesthetic: mevcut palet (navy + slate + white) ama sadeleştirilmiş · 3 kart (6 değil) · 1 tablo · sağda tek compose form · alt kısımlar kaldırıldı (Templates/Config ayrı sayfaya kayar)</p>
+  </div>
+</section>
+
+</main>
+
+<script>
+  document.querySelectorAll('.switcher button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.switcher button').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelector(`[data-pane="${btn.dataset.tab}"]`).classList.add('active');
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+</script>
+</body>
+</html>
