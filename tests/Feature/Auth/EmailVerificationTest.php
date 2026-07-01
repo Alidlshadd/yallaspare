@@ -128,7 +128,7 @@ class EmailVerificationTest extends TestCase
         $this->postJson('/api/mobile/register', [
             'name' => 'Mobile User',
             'email' => 'mobile@example.com',
-            'password' => 'password',
+            'password' => 'YallaTest!2026',
         ])
             ->assertCreated()
             ->assertJson([
