@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\EmailTemplate;
+use App\Services\Email\EmailHtmlSanitizer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -11,6 +12,10 @@ use Illuminate\View\View;
 
 class EmailTemplateController extends Controller
 {
+    public function __construct(private readonly EmailHtmlSanitizer $sanitizer)
+    {
+    }
+
     public function index(): View
     {
         $registry = $this->registry();
@@ -65,7 +70,9 @@ class EmailTemplateController extends Controller
             'defaults' => $defaults,
             'override' => $override,
             'subject' => old('subject', $override?->subject ?? $defaults['subject']),
-            'body_html' => old('body_html', $override?->body_html ?? $defaults['body_html']),
+            'body_html' => $this->sanitizer->clean(
+                old('body_html', $override?->body_html ?? $defaults['body_html'])
+            ),
             'tableExists' => EmailTemplate::tableExists(),
         ]);
     }
@@ -90,7 +97,7 @@ class EmailTemplateController extends Controller
             ['template_key' => $key, 'locale' => $locale],
             [
                 'subject' => trim($data['subject']),
-                'body_html' => $this->sanitize($data['body_html']),
+                'body_html' => $this->sanitizer->clean($data['body_html']),
                 'updated_by' => $request->user()?->getAuthIdentifier(),
             ],
         );
@@ -120,7 +127,7 @@ class EmailTemplateController extends Controller
             }
         }
 
-        $body = $this->sanitize($body);
+        $body = $this->sanitizer->clean($body);
 
         app()->setLocale(in_array($locale, ['en', 'ar', 'ku'], true) ? $locale : 'en');
 
@@ -135,27 +142,6 @@ class EmailTemplateController extends Controller
             'meta' => $meta,
             'sampleVars' => $this->sampleVars($key),
         ]);
-    }
-
-    /**
-     * Strip dangerous tags before persisting or rendering admin content.
-     * Only allows a curated tag list. Rejects <script>, <iframe>, event handlers, etc.
-     */
-    private function sanitize(string $html): string
-    {
-        $stripBlocks = ['script', 'style', 'iframe', 'object', 'embed', 'form', 'meta', 'link', 'base'];
-        foreach ($stripBlocks as $tag) {
-            $html = preg_replace('/<' . $tag . '\b[^>]*>.*?<\/' . $tag . '>/is', '', $html) ?? $html;
-            $html = preg_replace('/<' . $tag . '\b[^>]*\/?>/is', '', $html) ?? $html;
-        }
-
-        $allowed = '<p><br><strong><b><em><i><u><s><a><ul><ol><li><h1><h2><h3><h4><blockquote><hr><span><div>';
-        $clean = strip_tags($html, $allowed);
-        $clean = preg_replace('/\son\w+\s*=\s*"[^"]*"/i', '', $clean) ?? $clean;
-        $clean = preg_replace("/\son\w+\s*=\s*'[^']*'/i", '', $clean) ?? $clean;
-        $clean = preg_replace('/javascript:/i', '', $clean) ?? $clean;
-
-        return trim($clean);
     }
 
     /**
