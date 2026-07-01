@@ -332,7 +332,6 @@
                     'admin.dead-stock.*'           => __('Dead Stock'),
                     'admin.orders.*'               => __('Orders Management'),
                     'admin.returns.*'              => __('Returns & Refunds'),
-                    'admin.delivery-zones.*'       => __('Delivery Zones'),
                     'admin.dealers.*'              => __('Dealers'),
                     'admin.users.*'                => __('Users'),
                     'admin.discounts.coupons.*'    => __('Coupon Management'),
@@ -656,15 +655,6 @@
                                 >
                                     <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-gear"></i></span>
                                     <span class="admin-nav-label">{{ __('Settings') }}</span>
-                                </a>
-                                <a
-                                    href="{{ route('admin.delivery-zones.index') }}"
-                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.delivery-zones.*')) }}"
-                                    data-admin-sidebar-tooltip="{{ __('Delivery Zones') }}"
-                                    @if(request()->routeIs('admin.delivery-zones.*')) aria-current="page" @endif
-                                >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-map-location-dot"></i></span>
-                                    <span class="admin-nav-label">{{ __('Delivery Zones') }}</span>
                                 </a>
                             @endcan
                             @can(\App\Models\User::PERMISSION_ACTIVITY_LOGS_VIEW)

@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\BackInStockSubscription;
-use App\Models\DeliveryZone;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -14,10 +13,8 @@ use App\Support\AdminLogger;
 use App\Support\SqlSafe;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class OperationsInsightController extends Controller
@@ -275,122 +272,6 @@ class OperationsInsightController extends Controller
         ];
 
         return view('admin.operations.dead-stock', compact('products', 'summary', 'idleDays', 'search', 'currency'));
-    }
-
-    public function deliveryZones(Request $request): View
-    {
-        $status = $this->allowedString((string) $request->query('status', 'all'), ['all', 'active', 'inactive'], 'all');
-        $search = SqlSafe::searchTerm($request->query('search', ''));
-        $currency = $this->currencyMeta();
-        $hasDeliveryZonesTable = Schema::hasTable('delivery_zones');
-
-        if (! $hasDeliveryZonesTable) {
-            $zones = new LengthAwarePaginator([], 0, 20, 1, [
-                'path' => $request->url(),
-                'query' => $request->query(),
-            ]);
-            $summary = [
-                'total' => 0,
-                'active' => 0,
-                'inactive' => 0,
-                'cod' => 0,
-            ];
-
-            return view('admin.operations.delivery-zones', compact('zones', 'summary', 'status', 'search', 'currency', 'hasDeliveryZonesTable'));
-        }
-
-        $query = DeliveryZone::query();
-
-        if ($status === 'active') {
-            $query->where('is_active', true);
-        } elseif ($status === 'inactive') {
-            $query->where('is_active', false);
-        }
-
-        if ($search !== '') {
-            $query->where(function ($q) use ($search): void {
-                SqlSafe::whereLike($q, 'city', $search);
-                SqlSafe::orWhereLike($q, 'district', $search);
-                SqlSafe::orWhereLike($q, 'notes', $search);
-            });
-        }
-
-        $zones = $query
-            ->orderByDesc('is_active')
-            ->orderBy('city')
-            ->orderBy('district')
-            ->paginate(20)
-            ->withQueryString();
-
-        $summary = [
-            'total' => DeliveryZone::query()->count(),
-            'active' => DeliveryZone::query()->where('is_active', true)->count(),
-            'inactive' => DeliveryZone::query()->where('is_active', false)->count(),
-            'cod' => DeliveryZone::query()->where('cash_on_delivery_enabled', true)->count(),
-        ];
-
-        return view('admin.operations.delivery-zones', compact('zones', 'summary', 'status', 'search', 'currency', 'hasDeliveryZonesTable'));
-    }
-
-    public function storeDeliveryZone(Request $request): RedirectResponse
-    {
-        if (! Schema::hasTable('delivery_zones')) {
-            return back()->with('error', __('Delivery zones are not available until the database migration is run.'));
-        }
-
-        $data = $this->validateDeliveryZone($request);
-        $zone = DeliveryZone::query()->create($data);
-
-        AdminLogger::log('delivery_zone.created', $zone, ['city' => $zone->city, 'district' => $zone->district]);
-
-        return back()->with('success', __('Delivery zone created.'));
-    }
-
-    public function updateDeliveryZone(Request $request, DeliveryZone $zone): RedirectResponse
-    {
-        $data = $this->validateDeliveryZone($request, $zone);
-        $zone->update($data);
-
-        AdminLogger::log('delivery_zone.updated', $zone, ['city' => $zone->city, 'district' => $zone->district]);
-
-        return back()->with('success', __('Delivery zone updated.'));
-    }
-
-    public function destroyDeliveryZone(DeliveryZone $zone): RedirectResponse
-    {
-        AdminLogger::log('delivery_zone.deleted', $zone, ['city' => $zone->city, 'district' => $zone->district]);
-        $zone->delete();
-
-        return back()->with('success', __('Delivery zone deleted.'));
-    }
-
-    private function validateDeliveryZone(Request $request, ?DeliveryZone $zone = null): array
-    {
-        $data = $request->validate([
-            'city' => ['required', 'string', 'max:120'],
-            'district' => [
-                'nullable',
-                'string',
-                'max:120',
-                Rule::unique('delivery_zones', 'district')
-                    ->where(fn ($query) => $query->where('city', trim((string) $request->input('city'))))
-                    ->ignore($zone?->id),
-            ],
-            'shipping_fee' => ['required', 'numeric', 'min:0', 'max:1000000000'],
-            'free_shipping_min' => ['nullable', 'numeric', 'min:0', 'max:1000000000'],
-            'delivery_days_min' => ['required', 'integer', 'min:0', 'max:365'],
-            'delivery_days_max' => ['required', 'integer', 'min:0', 'max:365', 'gte:delivery_days_min'],
-            'cash_on_delivery_enabled' => ['nullable', 'boolean'],
-            'is_active' => ['nullable', 'boolean'],
-            'notes' => ['nullable', 'string', 'max:1000'],
-        ]);
-
-        $data['city'] = trim((string) $data['city']);
-        $data['district'] = trim((string) ($data['district'] ?? '')) ?: null;
-        $data['cash_on_delivery_enabled'] = $request->boolean('cash_on_delivery_enabled');
-        $data['is_active'] = $request->boolean('is_active');
-
-        return $data;
     }
 
     private function salesSubquery(mixed $from = null)

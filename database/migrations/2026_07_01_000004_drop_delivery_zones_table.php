@@ -8,6 +8,11 @@ return new class extends Migration
 {
     public function up(): void
     {
+        Schema::dropIfExists('delivery_zones');
+    }
+
+    public function down(): void
+    {
         Schema::create('delivery_zones', function (Blueprint $table): void {
             $table->id();
             $table->string('city', 120);
@@ -24,10 +29,5 @@ return new class extends Migration
             $table->unique(['city', 'district'], 'delivery_zones_city_district_unique');
             $table->index(['is_active', 'city'], 'delivery_zones_active_city_idx');
         });
-    }
-
-    public function down(): void
-    {
-        Schema::dropIfExists('delivery_zones');
     }
 };

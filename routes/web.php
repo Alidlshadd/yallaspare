@@ -248,18 +248,6 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::get('/dead-stock', [OperationsInsightController::class, 'deadStock'])
             ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
             ->name('dead-stock.index');
-        Route::get('/delivery-zones', [OperationsInsightController::class, 'deliveryZones'])
-            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
-            ->name('delivery-zones.index');
-        Route::post('/delivery-zones', [OperationsInsightController::class, 'storeDeliveryZone'])
-            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
-            ->name('delivery-zones.store');
-        Route::patch('/delivery-zones/{zone}', [OperationsInsightController::class, 'updateDeliveryZone'])
-            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
-            ->name('delivery-zones.update');
-        Route::delete('/delivery-zones/{zone}', [OperationsInsightController::class, 'destroyDeliveryZone'])
-            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
-            ->name('delivery-zones.destroy');
         Route::get('/discounts', [DiscountCouponController::class, 'edit'])
             ->middleware('can:' . User::PERMISSION_FINANCE_MANAGE)
             ->name('discounts.edit');
