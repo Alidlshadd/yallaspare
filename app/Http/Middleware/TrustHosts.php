@@ -14,7 +14,13 @@ class TrustHosts extends Middleware
      */
     public function hosts(): array
     {
-        $patterns = [];
+        $patterns = [
+            '^yallaspare\.com$',
+            '^www\.yallaspare\.com$',
+            '^72\.62\.93\.151$',
+            '^localhost$',
+            '^127\.0\.0\.1$',
+        ];
 
         $appHost = parse_url((string) config('app.url'), PHP_URL_HOST);
         if (is_string($appHost) && $appHost !== '') {
