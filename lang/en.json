@@ -2852,5 +2852,9 @@
     "No broadcasts match this filter": "No broadcasts match this filter",
     "Try a different status or clear the search.": "Try a different status or clear the search.",
     "Filter broadcasts by status": "Filter broadcasts by status",
-    "last 10": "last 10"
+    "last 10": "last 10",
+    "templates": "templates",
+    "transactional": "transactional",
+    "read-only": "read-only",
+    "masked": "masked"
 }

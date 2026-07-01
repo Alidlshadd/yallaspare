@@ -2852,5 +2852,9 @@
     "No broadcasts match this filter": "هیچ بڵاوکراوەیەک لەگەڵ ئەم پاڵاوتنە نایەت",
     "Try a different status or clear the search.": "دۆخێکی جیاواز تاقی بکەرەوە یان گەڕانەکە پاک بکەرەوە.",
     "Filter broadcasts by status": "پاڵاوتنی بڵاوکراوەکان بەپێی دۆخ",
-    "last 10": "دوایین ١٠"
+    "last 10": "دوایین ١٠",
+    "templates": "قاڵبەکان",
+    "transactional": "کارلێکەیی",
+    "read-only": "تەنها بۆ خوێندنەوە",
+    "masked": "شاراوە"
 }

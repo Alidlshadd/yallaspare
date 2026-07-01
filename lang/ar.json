@@ -2852,5 +2852,9 @@
     "No broadcasts match this filter": "لا توجد رسائل مطابقة لهذا الفلتر",
     "Try a different status or clear the search.": "جرب حالة مختلفة أو امسح البحث.",
     "Filter broadcasts by status": "تصفية الرسائل حسب الحالة",
-    "last 10": "آخر 10"
+    "last 10": "آخر 10",
+    "templates": "قوالب",
+    "transactional": "معاملاتية",
+    "read-only": "للقراءة فقط",
+    "masked": "مخفي"
 }

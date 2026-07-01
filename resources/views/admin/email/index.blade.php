@@ -408,45 +408,53 @@
             <div class="grid gap-6 xl:grid-cols-2">
 
                 {{-- Quick Delivery Test --}}
-                <form method="POST" action="{{ route('admin.email.test') }}" class="rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                <form method="POST" action="{{ route('admin.email.test') }}" class="relative rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
                     @csrf
-                    <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900">
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-paper-plane text-amber-500 text-sm"></i>
-                            <p class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Quick Delivery Test') }}</p>
+                    <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500"></div>
+                    <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
+                        <div class="flex items-center gap-2.5">
+                            <div class="relative h-8 w-8 rounded-lg bg-amber-100 text-amber-700 grid place-items-center dark:bg-amber-900/50 dark:text-amber-200">
+                                <i class="fas fa-paper-plane text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-slate-900 leading-none dark:text-white">{{ __('Quick Delivery Test') }}</p>
+                                <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">{{ __('one-off send') }}</p>
+                            </div>
                         </div>
-                        <span class="font-mono text-[10px] uppercase tracking-widest text-slate-400">{{ __('one-off send') }}</span>
+                        <span class="inline-flex items-center gap-1 rounded-full bg-amber-50 text-amber-700 px-2 py-1 text-[10px] font-bold border border-amber-100 dark:bg-amber-950/40 dark:text-amber-200 dark:border-amber-900/50">
+                            <i class="fas fa-bolt text-[9px]"></i> {{ __('LIVE') }}
+                        </span>
                     </div>
                     <div class="p-5 space-y-4">
                         <div>
-                            <label for="recipient" class="block text-xs font-bold text-slate-700 mb-1 dark:text-slate-300">{{ __('Recipient') }}</label>
+                            <label for="recipient" class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5 dark:text-slate-400">{{ __('Recipient') }}</label>
                             <input id="recipient" type="email" name="recipient" value="{{ old('recipient', auth()->user()?->email) }}" required
-                                   class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                   class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             @error('recipient')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label for="subject" class="block text-xs font-bold text-slate-700 mb-1 dark:text-slate-300">{{ __('Subject') }}</label>
+                            <label for="subject" class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5 dark:text-slate-400">{{ __('Subject') }}</label>
                             <input id="subject" type="text" name="subject" value="{{ old('subject', 'YallaSpare test email') }}" required
-                                   class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                   class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             @error('subject')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
                         </div>
                         <div>
-                            <label for="test_body" class="block text-xs font-bold text-slate-700 mb-1 dark:text-slate-300">{{ __('Message') }}</label>
+                            <label for="test_body" class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5 dark:text-slate-400">{{ __('Message') }}</label>
                             <textarea id="test_body" name="body" rows="3" placeholder="{{ __('Optional custom text for this test email.') }}"
-                                      class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">{{ old('body') }}</textarea>
+                                      class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">{{ old('body') }}</textarea>
                         </div>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label for="mailer" class="block text-xs font-bold text-slate-700 mb-1 dark:text-slate-300">{{ __('Mailer') }}</label>
-                                <select id="mailer" name="mailer" class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                        <div class="grid grid-cols-5 gap-3 items-end">
+                            <div class="col-span-2">
+                                <label for="mailer" class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5 dark:text-slate-400">{{ __('Mailer') }}</label>
+                                <select id="mailer" name="mailer" class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                     @foreach($mailers as $mailer)
                                         <option value="{{ $mailer }}" @selected(old('mailer', $summary['default_mailer'] ?? '') === $mailer)>{{ $mailer }}</option>
                                     @endforeach
                                 </select>
                                 @error('mailer')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
                             </div>
-                            <div class="flex items-end">
-                                <button type="submit" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-md hover:bg-primary-hover transition">
+                            <div class="col-span-3">
+                                <button type="submit" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-primary to-indigo-700 px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition">
                                     <i class="fas fa-paper-plane"></i> {{ __('Send Test Email') }}
                                 </button>
                             </div>
@@ -455,28 +463,40 @@
                 </form>
 
                 {{-- Readiness Checks --}}
-                <div class="rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-                    <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900">
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-shield-halved text-primary text-sm dark:text-indigo-300"></i>
-                            <p class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Readiness Checks') }}</p>
+                <div class="relative rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                    <div class="absolute top-0 left-0 right-0 h-[2px] {{ $health['tone'] === 'green' ? 'bg-gradient-to-r from-emerald-400 via-emerald-500 to-teal-500' : ($health['tone'] === 'amber' ? 'bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500' : 'bg-gradient-to-r from-rose-400 via-rose-500 to-pink-500') }}"></div>
+                    <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
+                        <div class="flex items-center gap-2.5">
+                            <div class="h-8 w-8 rounded-lg {{ $health['tone'] === 'green' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-200' : ($health['tone'] === 'amber' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-200' : 'bg-rose-100 text-rose-700 dark:bg-rose-900/50 dark:text-rose-200') }} grid place-items-center">
+                                <i class="fas fa-shield-halved text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-sm font-bold text-slate-900 leading-none dark:text-white">{{ __('Readiness Checks') }}</p>
+                                <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">{{ $health['ok'] }} / {{ $health['total'] }} {{ __('OK') }} · {{ $health['label'] }}</p>
+                            </div>
                         </div>
-                        <span class="rounded-full border px-2.5 py-1 text-xs font-bold {{ $healthClasses['badge'] }}">{{ $health['label'] }} · {{ $health['score'] }}/100</span>
+                        <span class="rounded-full border px-2.5 py-1 text-xs font-bold {{ $healthClasses['badge'] }}">{{ $health['score'] }}/100</span>
+                    </div>
+                    <div class="px-5 pt-3">
+                        <div class="h-1.5 rounded-full bg-slate-100 overflow-hidden dark:bg-slate-800">
+                            <div class="h-full rounded-full {{ $healthClasses['bar'] }}" style="width: {{ $health['score'] }}%"></div>
+                        </div>
                     </div>
                     <div class="divide-y divide-slate-100 dark:divide-slate-800">
                         @foreach($checks as $check)
-                            <div class="flex items-start gap-3 px-5 py-3">
-                                <span class="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg {{ $check['ok'] ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-200' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-200' }}">
-                                    <i class="fas {{ $check['ok'] ? 'fa-check' : 'fa-screwdriver-wrench' }} text-[10px]"></i>
+                            <div class="group flex items-start gap-3 px-5 py-3 hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition">
+                                <span class="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg {{ $check['ok'] ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-200' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-200' }}">
+                                    <i class="fas {{ $check['ok'] ? 'fa-check' : 'fa-screwdriver-wrench' }} text-[11px]"></i>
                                 </span>
                                 <div class="min-w-0 flex-1">
                                     <div class="flex flex-wrap items-center justify-between gap-2">
                                         <p class="text-sm font-bold text-slate-900 dark:text-slate-100">{{ $check['label'] }}</p>
-                                        <span class="rounded-full px-2 py-0.5 text-[10px] font-bold {{ $check['ok'] ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300' }}">
+                                        <span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold {{ $check['ok'] ? 'bg-emerald-50 text-emerald-700 border border-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-900/50' : 'bg-amber-50 text-amber-700 border border-amber-100 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-900/50' }}">
+                                            <i class="fas {{ $check['ok'] ? 'fa-circle-check' : 'fa-triangle-exclamation' }} text-[9px]"></i>
                                             {{ $check['ok'] ? __('OK') : __('Action') }}
                                         </span>
                                     </div>
-                                    <p class="mt-0.5 font-mono text-[11px] text-slate-500 dark:text-slate-400">{{ $check['value'] }}</p>
+                                    <p class="mt-0.5 font-mono text-[11px] text-slate-500 dark:text-slate-400 truncate">{{ $check['value'] }}</p>
                                     <p class="mt-1 text-xs text-slate-600 leading-snug dark:text-slate-300">{{ $check['detail'] }}</p>
                                 </div>
                             </div>
@@ -486,35 +506,47 @@
             </div>
 
             {{-- ============== Recent Activity (mail logs) ============== --}}
-            <div class="rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-                <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900">
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-inbox text-slate-400 text-sm"></i>
-                        <p class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Recent Activity') }}</p>
-                        <span class="font-mono text-[10px] uppercase tracking-widest text-slate-400">{{ __('mail log') }}</span>
+            <div class="relative rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-sky-400 via-sky-500 to-indigo-500"></div>
+                <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
+                    <div class="flex items-center gap-2.5">
+                        <div class="h-8 w-8 rounded-lg bg-sky-100 text-sky-700 grid place-items-center dark:bg-sky-900/50 dark:text-sky-200">
+                            <i class="fas fa-inbox text-xs"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-slate-900 leading-none dark:text-white">{{ __('Recent Activity') }}</p>
+                            <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">{{ __('mail log') }} · {{ __(':n records', ['n' => $recentLogs->count()]) }}</p>
+                        </div>
                     </div>
-                    <a href="{{ route('admin.email.outbox') }}" class="text-xs font-bold text-primary hover:underline dark:text-indigo-300">{{ __('View all') }} &rarr;</a>
+                    <a href="{{ route('admin.email.outbox') }}" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+                        <i class="fas fa-arrow-up-right-from-square text-[10px]"></i> {{ __('View all') }}
+                    </a>
                 </div>
                 <div class="divide-y divide-slate-100 dark:divide-slate-800">
                     @forelse($recentLogs as $log)
-                        <div class="grid gap-3 px-5 py-3 sm:grid-cols-[130px_1fr_auto] sm:items-center">
+                        <div class="group grid gap-3 px-5 py-3 hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition sm:grid-cols-[150px_1fr_auto] sm:items-center">
                             <div>
-                                <p class="font-mono text-xs text-slate-500 dark:text-slate-400">{{ optional($log->created_at)->format('M d, H:i') }}</p>
-                                <p class="mt-0.5 text-[10px] text-slate-400 dark:text-slate-500">{{ optional($log->created_at)->diffForHumans() }}</p>
+                                <p class="font-mono text-xs font-bold text-slate-700 dark:text-slate-200">{{ optional($log->created_at)->format('M d, H:i') }}</p>
+                                <p class="mt-0.5 text-[10px] text-slate-400 font-mono dark:text-slate-500">{{ optional($log->created_at)->diffForHumans() }}</p>
                             </div>
-                            <div class="min-w-0">
-                                <p class="truncate text-sm font-bold text-slate-900 dark:text-slate-100" title="{{ $log->subject }}">{{ $log->subject ?: __('No subject') }}</p>
-                                <p class="mt-0.5 text-[11px] text-slate-500 font-mono dark:text-slate-400">
-                                    {{ $log->recipient_domain ?: '-' }} <span class="mx-1 text-slate-300">/</span> {{ $log->mailer ?: '-' }}
-                                </p>
+                            <div class="min-w-0 flex items-center gap-2.5">
+                                <span class="h-7 w-7 shrink-0 rounded-lg bg-slate-100 text-slate-500 grid place-items-center dark:bg-slate-800 dark:text-slate-300">
+                                    <i class="fas fa-envelope text-[10px]"></i>
+                                </span>
+                                <div class="min-w-0">
+                                    <p class="truncate text-sm font-bold text-slate-900 dark:text-slate-100" title="{{ $log->subject }}">{{ $log->subject ?: __('No subject') }}</p>
+                                    <p class="mt-0.5 text-[11px] text-slate-500 font-mono dark:text-slate-400">
+                                        {{ $log->recipient_domain ?: '-' }} <span class="mx-1 text-slate-300 dark:text-slate-600">/</span> {{ $log->mailer ?: '-' }}
+                                    </p>
+                                </div>
                             </div>
-                            <span class="inline-flex w-fit items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold {{ $statusClasses[$log->status] ?? 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200' }}">
+                            <span class="inline-flex w-fit items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-bold {{ $log->status === 'sent' ? 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-900/50' : 'bg-rose-50 text-rose-700 border-rose-100 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-900/50' }}">
                                 <i class="fas {{ $log->status === 'sent' ? 'fa-check' : 'fa-xmark' }} text-[9px]"></i>
                                 {{ __(ucfirst($log->status)) }}
                             </span>
                         </div>
                     @empty
-                        <div class="px-5 py-10 text-center">
+                        <div class="px-5 py-12 text-center">
                             <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300">
                                 <i class="fas fa-inbox"></i>
                             </span>
@@ -526,40 +558,47 @@
             </div>
 
             {{-- ============== Template Examples ============== --}}
-            <div class="rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-                <div class="flex flex-col gap-3 border-b border-slate-200/70 px-5 py-3.5 bg-slate-50/60 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800 dark:bg-slate-900">
-                    <div class="flex items-center gap-2">
-                        <i class="fas fa-palette text-primary text-sm dark:text-indigo-300"></i>
+            <div class="relative rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-violet-400 via-fuchsia-500 to-amber-400"></div>
+                <div class="flex flex-col gap-3 border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
+                    <div class="flex items-center gap-2.5">
+                        <div class="h-8 w-8 rounded-lg bg-violet-100 text-violet-700 grid place-items-center dark:bg-violet-900/50 dark:text-violet-200">
+                            <i class="fas fa-palette text-xs"></i>
+                        </div>
                         <div>
-                            <p class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Template Examples') }}</p>
-                            <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-0.5">{{ __('live previews from blade templates') }}</p>
+                            <p class="text-sm font-bold text-slate-900 leading-none dark:text-white">{{ __('Template Examples') }}</p>
+                            <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">{{ __('live previews from blade templates') }}</p>
                         </div>
                     </div>
-                    <div class="flex flex-wrap gap-1 text-[10px] font-bold uppercase tracking-wider">
-                        <span class="rounded-full bg-slate-100 px-2 py-0.5 text-slate-600 dark:bg-slate-800 dark:text-slate-300">EN</span>
-                        <span class="rounded-full bg-slate-100 px-2 py-0.5 text-slate-600 dark:bg-slate-800 dark:text-slate-300">AR</span>
-                        <span class="rounded-full bg-slate-100 px-2 py-0.5 text-slate-600 dark:bg-slate-800 dark:text-slate-300">KU</span>
+                    <div class="inline-flex items-center gap-0.5 rounded-xl border border-slate-200 bg-white p-1 text-[10px] font-bold uppercase tracking-wider shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                        <span class="rounded-lg bg-primary/10 text-primary px-2 py-0.5 dark:bg-primary/20 dark:text-indigo-200">EN</span>
+                        <span class="rounded-lg px-2 py-0.5 text-slate-500 dark:text-slate-400">AR</span>
+                        <span class="rounded-lg px-2 py-0.5 text-slate-500 dark:text-slate-400">KU</span>
                     </div>
                 </div>
                 <div class="grid gap-4 p-5 lg:grid-cols-3">
                     @foreach($previewShowcase as $template)
-                        <article class="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50/40 dark:border-slate-800 dark:bg-slate-950">
-                            <div class="flex items-start justify-between gap-3 border-b border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+                        <article class="group relative overflow-hidden rounded-2xl border border-slate-200/70 bg-gradient-to-br from-slate-50/40 to-white shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all dark:border-slate-800 dark:from-slate-950 dark:to-slate-900">
+                            <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b {{ $template['tone'] === 'blue' ? 'from-blue-500 to-blue-600' : ($template['tone'] === 'emerald' ? 'from-emerald-500 to-emerald-600' : ($template['tone'] === 'rose' ? 'from-rose-500 to-rose-600' : ($template['tone'] === 'amber' ? 'from-amber-500 to-amber-600' : ($template['tone'] === 'violet' ? 'from-violet-500 to-violet-600' : ($template['tone'] === 'cyan' ? 'from-cyan-500 to-cyan-600' : ($template['tone'] === 'indigo' ? 'from-indigo-500 to-indigo-600' : ($template['tone'] === 'orange' ? 'from-orange-500 to-orange-600' : 'from-slate-400 to-slate-500'))))))) }}"></div>
+                            <div class="relative flex items-start justify-between gap-3 border-b border-slate-200/70 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
                                 <div class="min-w-0">
                                     <div class="flex items-center gap-2">
-                                        <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl border {{ $toneClasses[$template['tone']] ?? $toneClasses['slate'] }}">
+                                        <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl border {{ $toneClasses[$template['tone']] ?? $toneClasses['slate'] }}">
                                             <i class="fas {{ $template['icon'] }} text-xs"></i>
                                         </span>
-                                        <p class="truncate text-sm font-bold text-slate-900 dark:text-slate-100">{{ $template['title'] }}</p>
+                                        <div class="min-w-0">
+                                            <p class="truncate text-sm font-bold text-slate-900 dark:text-slate-100">{{ $template['title'] }}</p>
+                                            <p class="font-mono text-[9px] uppercase tracking-widest text-slate-400 mt-0.5">{{ $template['sample']['spec'] }}</p>
+                                        </div>
                                     </div>
                                     <p class="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">{{ $template['description'] }}</p>
                                 </div>
                                 <a href="{{ route('admin.email.preview', ['template' => $template['key'], 'locale' => app()->getLocale()]) }}" target="_blank" rel="noopener"
-                                   class="shrink-0 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[10px] font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-slate-800">
-                                    {{ __('Open') }}
+                                   class="shrink-0 inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[10px] font-bold text-slate-700 hover:bg-primary hover:text-white hover:border-primary transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-primary dark:hover:text-white">
+                                    <i class="fas fa-up-right-from-square text-[8px]"></i> {{ __('Open') }}
                                 </a>
                             </div>
-                            <div class="bg-slate-200/60 p-3 dark:bg-slate-950">
+                            <div class="relative bg-slate-100/70 p-3 dark:bg-slate-950">
                                 <div class="mx-auto max-w-sm overflow-hidden rounded-lg border border-slate-300 bg-white shadow-sm dark:border-slate-700">
                                     <div class="flex items-center justify-between bg-primary px-3 py-2 text-white">
                                         <span class="text-[10px] font-bold tracking-wide">YALLASPARE</span>
@@ -575,7 +614,7 @@
                                         <div class="rounded-lg border border-slate-200 bg-slate-50 px-2 py-1.5">
                                             <p class="font-mono text-[10px] text-slate-600">{{ $template['sample']['meta'] }}</p>
                                         </div>
-                                        <div class="h-7 rounded-lg bg-primary"></div>
+                                        <div class="h-7 rounded-lg bg-gradient-to-br from-primary to-indigo-700"></div>
                                     </div>
                                 </div>
                             </div>
@@ -586,34 +625,48 @@
 
             {{-- ============== Template Library + Mail Config ============== --}}
             <div class="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-                <div class="rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-                    <div class="border-b border-slate-200/70 px-5 py-3.5 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900">
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-layer-group text-primary text-sm dark:text-indigo-300"></i>
-                            <p class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Template Library') }}</p>
+                <div class="relative rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                    <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-indigo-500 to-cyan-400"></div>
+                    <div class="border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
+                        <div class="flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-2.5">
+                                <div class="h-8 w-8 rounded-lg bg-primary/10 text-primary grid place-items-center dark:bg-primary/20 dark:text-indigo-200">
+                                    <i class="fas fa-layer-group text-xs"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold text-slate-900 leading-none dark:text-white">{{ __('Template Library') }}</p>
+                                    <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">{{ count($templateCards) }} {{ __('templates') }} · EN · AR · KU</p>
+                                </div>
+                            </div>
+                            <span class="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2.5 py-1 text-[10px] font-bold border border-primary/20 dark:bg-primary/20 dark:text-indigo-200 dark:border-primary/40">
+                                <i class="fas fa-envelope-open-text text-[9px]"></i> {{ __('transactional') }}
+                            </span>
                         </div>
-                        <p class="text-xs text-slate-500 mt-0.5 dark:text-slate-400">{{ __('Open any email in English, Arabic, or Kurdish sample data.') }}</p>
                     </div>
                     <div class="grid gap-3 p-5 md:grid-cols-2">
                         @foreach($templateCards as $template)
-                            <article class="rounded-2xl border border-slate-200 p-4 transition hover:shadow-md dark:border-slate-800">
-                                <div class="flex items-start gap-3">
+                            <article class="group relative overflow-hidden rounded-2xl border border-slate-200/70 bg-white p-4 transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+                                <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b {{ $template['tone'] === 'blue' ? 'from-blue-500 to-blue-600' : ($template['tone'] === 'emerald' ? 'from-emerald-500 to-emerald-600' : ($template['tone'] === 'rose' ? 'from-rose-500 to-rose-600' : ($template['tone'] === 'amber' ? 'from-amber-500 to-amber-600' : ($template['tone'] === 'violet' ? 'from-violet-500 to-violet-600' : ($template['tone'] === 'cyan' ? 'from-cyan-500 to-cyan-600' : ($template['tone'] === 'indigo' ? 'from-indigo-500 to-indigo-600' : ($template['tone'] === 'orange' ? 'from-orange-500 to-orange-600' : 'from-slate-400 to-slate-500'))))))) }}"></div>
+                                <div class="relative flex items-start gap-3">
                                     <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border {{ $toneClasses[$template['tone']] ?? $toneClasses['slate'] }}">
                                         <i class="fas {{ $template['icon'] }} text-xs"></i>
                                     </span>
                                     <div class="min-w-0 flex-1">
-                                        <p class="text-sm font-bold text-slate-900 dark:text-slate-100">{{ $template['title'] }}</p>
+                                        <div class="flex items-center gap-2">
+                                            <p class="text-sm font-bold text-slate-900 dark:text-slate-100">{{ $template['title'] }}</p>
+                                            <span class="font-mono text-[9px] uppercase tracking-widest text-slate-400">{{ $template['sample']['spec'] }}</span>
+                                        </div>
                                         <p class="mt-0.5 text-xs leading-5 text-slate-600 dark:text-slate-300">{{ $template['description'] }}</p>
                                         <div class="mt-2 flex flex-wrap gap-1">
                                             @foreach($template['badges'] as $badge)
                                                 <span class="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ $badge }}</span>
                                             @endforeach
                                         </div>
-                                        <div class="mt-3 flex flex-wrap gap-1.5">
+                                        <div class="mt-3 flex flex-wrap gap-1">
                                             @foreach(['en' => 'EN', 'ar' => 'AR', 'ku' => 'KU'] as $locale => $label)
                                                 <a href="{{ route('admin.email.preview', ['template' => $template['key'], 'locale' => $locale]) }}" target="_blank" rel="noopener"
-                                                   class="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2 py-1 text-[10px] font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">
-                                                    <i class="fas fa-up-right-from-square text-[8px] text-slate-400"></i> {{ $label }}
+                                                   class="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[10px] font-bold text-slate-700 hover:bg-primary hover:text-white hover:border-primary transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-primary dark:hover:text-white">
+                                                    <i class="fas fa-up-right-from-square text-[8px]"></i> {{ $label }}
                                                 </a>
                                             @endforeach
                                         </div>
@@ -624,18 +677,32 @@
                     </div>
                 </div>
 
-                <div class="rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-                    <div class="border-b border-slate-200/70 px-5 py-3.5 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900">
-                        <div class="flex items-center gap-2">
-                            <i class="fas fa-gears text-primary text-sm dark:text-indigo-300"></i>
-                            <p class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Mail Configuration') }}</p>
+                <div class="relative rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                    <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-slate-400 via-slate-500 to-slate-600"></div>
+                    <div class="border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
+                        <div class="flex items-center justify-between gap-3">
+                            <div class="flex items-center gap-2.5">
+                                <div class="h-8 w-8 rounded-lg bg-slate-100 text-slate-700 grid place-items-center dark:bg-slate-800 dark:text-slate-200">
+                                    <i class="fas fa-gears text-xs"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold text-slate-900 leading-none dark:text-white">{{ __('Mail Configuration') }}</p>
+                                    <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">{{ __('read-only') }} · .env</p>
+                                </div>
+                            </div>
+                            <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-700 px-2.5 py-1 text-[10px] font-bold border border-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700">
+                                <i class="fas fa-lock text-[9px]"></i> {{ __('masked') }}
+                            </span>
                         </div>
-                        <p class="text-xs text-slate-500 mt-0.5 dark:text-slate-400">{{ __('Sensitive values are masked and must be changed from environment configuration.') }}</p>
+                        <p class="text-xs text-slate-500 mt-2 dark:text-slate-400">{{ __('Sensitive values are masked and must be changed from environment configuration.') }}</p>
                     </div>
                     <div class="grid gap-2 p-5 sm:grid-cols-2">
                         @foreach($summary as $label => $value)
-                            <div class="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-950">
-                                <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __(str_replace('_', ' ', $label)) }}</p>
+                            <div class="group relative overflow-hidden rounded-xl border border-slate-200/70 bg-slate-50/60 p-3 transition hover:bg-white hover:shadow-sm dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-900">
+                                <div class="flex items-center justify-between">
+                                    <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __(str_replace('_', ' ', $label)) }}</p>
+                                    <i class="fas fa-check text-[9px] text-emerald-500 opacity-0 group-hover:opacity-100 transition"></i>
+                                </div>
                                 <p class="mt-1 break-words text-sm font-bold text-slate-900 font-mono dark:text-slate-100">{{ $value !== '' ? $value : '-' }}</p>
                             </div>
                         @endforeach
