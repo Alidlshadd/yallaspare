@@ -133,14 +133,14 @@
                                 <i class="fas fa-inbox w-4 text-slate-400 text-xs"></i> {{ __('Outbox') }}
                                 <span class="ml-auto font-mono text-[10px] text-slate-400"><i class="fas fa-arrow-up-right-from-square text-[8px]"></i></span>
                             </a>
+                            <a href="#settings"
+                               class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white">
+                                <i class="fas fa-gears w-4 text-slate-400 text-xs"></i> {{ __('Settings') }}
+                            </a>
                             <a href="#templates"
                                class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white">
                                 <i class="fas fa-file-lines w-4 text-slate-400 text-xs"></i> {{ __('Templates') }}
                                 <span class="ml-auto font-mono text-[10px] text-slate-400">{{ count($templateCards) }}</span>
-                            </a>
-                            <a href="#settings"
-                               class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white">
-                                <i class="fas fa-gears w-4 text-slate-400 text-xs"></i> {{ __('Mail settings') }}
                             </a>
                         </nav>
                     </div>
@@ -644,72 +644,35 @@
                                 </span>
                             </div>
                         </div>
-                        <div class="grid gap-3 p-5 md:grid-cols-2">
+                        {{-- Compact list: one row per template --}}
+                        <ul class="divide-y divide-slate-100 dark:divide-slate-800">
                             @foreach($templateCards as $template)
-                                <article class="group relative overflow-hidden rounded-2xl border border-slate-200/70 bg-white p-4 transition-all hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
-                                    <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b {{ $template['tone'] === 'blue' ? 'from-blue-500 to-blue-600' : ($template['tone'] === 'emerald' ? 'from-emerald-500 to-emerald-600' : ($template['tone'] === 'rose' ? 'from-rose-500 to-rose-600' : ($template['tone'] === 'amber' ? 'from-amber-500 to-amber-600' : ($template['tone'] === 'violet' ? 'from-violet-500 to-violet-600' : ($template['tone'] === 'cyan' ? 'from-cyan-500 to-cyan-600' : ($template['tone'] === 'indigo' ? 'from-indigo-500 to-indigo-600' : ($template['tone'] === 'orange' ? 'from-orange-500 to-orange-600' : 'from-slate-400 to-slate-500'))))))) }}"></div>
-                                    <div class="relative flex items-start gap-3">
-                                        <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border {{ $toneClasses[$template['tone']] ?? $toneClasses['slate'] }}">
-                                            <i class="fas {{ $template['icon'] }} text-xs"></i>
-                                        </span>
-                                        <div class="min-w-0 flex-1">
-                                            <div class="flex items-center gap-2">
-                                                <p class="text-sm font-bold text-primary dark:text-slate-100">{{ $template['title'] }}</p>
-                                                <span class="font-mono text-[9px] uppercase tracking-widest text-slate-400">{{ $template['sample']['spec'] }}</span>
-                                            </div>
-                                            <p class="mt-0.5 text-xs leading-5 text-slate-600 dark:text-slate-300">{{ $template['description'] }}</p>
-                                            <div class="mt-2 flex flex-wrap gap-1">
-                                                @foreach($template['badges'] as $badge)
-                                                    <span class="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ $badge }}</span>
-                                                @endforeach
-                                            </div>
-                                            <div class="mt-3 flex flex-wrap gap-1">
-                                                @foreach(['en' => 'EN', 'ar' => 'AR', 'ku' => 'KU'] as $locale => $label)
-                                                    <a href="{{ route('admin.email.preview', ['template' => $template['key'], 'locale' => $locale]) }}" target="_blank" rel="noopener"
-                                                       class="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[10px] font-bold text-slate-700 hover:bg-primary hover:text-white hover:border-primary transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200">
-                                                        <i class="fas fa-up-right-from-square text-[8px]"></i> {{ $label }}
-                                                    </a>
-                                                @endforeach
-                                            </div>
+                                <li class="group flex items-center gap-3 px-5 py-2.5 hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition">
+                                    <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border {{ $toneClasses[$template['tone']] ?? $toneClasses['slate'] }}">
+                                        <i class="fas {{ $template['icon'] }} text-[11px]"></i>
+                                    </span>
+                                    <div class="min-w-0 flex-1">
+                                        <div class="flex items-center gap-2">
+                                            <p class="text-sm font-bold text-primary truncate dark:text-slate-100">{{ $template['title'] }}</p>
+                                            <span class="font-mono text-[9px] uppercase tracking-widest text-slate-400 shrink-0">{{ $template['sample']['spec'] }}</span>
                                         </div>
+                                        <p class="text-[11px] text-slate-500 truncate dark:text-slate-400">{{ $template['description'] }}</p>
                                     </div>
-                                </article>
+                                    <div class="hidden sm:flex items-center gap-0.5 shrink-0">
+                                        @foreach(['en' => 'EN', 'ar' => 'AR', 'ku' => 'KU'] as $locale => $label)
+                                            <a href="{{ route('admin.email.preview', ['template' => $template['key'], 'locale' => $locale]) }}" target="_blank" rel="noopener"
+                                               class="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-bold text-slate-500 hover:bg-primary hover:text-white transition dark:text-slate-400">
+                                                {{ $label }}
+                                            </a>
+                                        @endforeach
+                                    </div>
+                                    <a href="{{ route('admin.email.preview', ['template' => $template['key'], 'locale' => app()->getLocale()]) }}" target="_blank" rel="noopener"
+                                       class="shrink-0 inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[10px] font-bold text-slate-700 hover:bg-primary hover:text-white hover:border-primary transition dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                        <i class="fas fa-up-right-from-square text-[8px]"></i> {{ __('Open') }}
+                                    </a>
+                                </li>
                             @endforeach
-                        </div>
-                    </div>
-                </section>
-
-                {{-- ==================== MAIL CONFIG ==================== --}}
-                <section id="mailconfig" class="mt-6">
-                    <div class="relative rounded-2xl border border-slate-200/70 bg-white bento-shadow-em overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-                        <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-slate-400 via-slate-500 to-slate-600"></div>
-                        <div class="border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
-                            <div class="flex items-center justify-between gap-3">
-                                <div class="flex items-center gap-2.5">
-                                    <div class="h-8 w-8 rounded-lg bg-slate-100 text-slate-700 grid place-items-center dark:bg-slate-800 dark:text-slate-200">
-                                        <i class="fas fa-gears text-xs"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-sm font-bold text-primary leading-none dark:text-white">{{ __('Mail Configuration') }}</p>
-                                        <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">{{ __('read-only') }} · .env</p>
-                                    </div>
-                                </div>
-                                <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-700 px-2.5 py-1 text-[10px] font-bold border border-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:border-slate-700">
-                                    <i class="fas fa-lock text-[9px]"></i> {{ __('masked') }}
-                                </span>
-                            </div>
-                            <p class="text-xs text-slate-500 mt-2 dark:text-slate-400">{{ __('Sensitive values are masked and must be changed from environment configuration.') }}</p>
-                        </div>
-                        <div class="grid gap-2 p-5 sm:grid-cols-2 lg:grid-cols-3">
-                            @foreach($summary as $label => $value)
-                                <div class="group relative overflow-hidden rounded-xl border border-slate-200/70 bg-slate-50/60 p-3 transition hover:bg-white hover:shadow-sm dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-900">
-                                    <div class="flex items-center justify-between">
-                                        <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __(str_replace('_', ' ', $label)) }}</p>
-                                    </div>
-                                    <p class="mt-1 break-words text-sm font-bold text-primary font-mono dark:text-slate-100">{{ $value !== '' ? $value : '-' }}</p>
-                                </div>
-                            @endforeach
-                        </div>
+                        </ul>
                     </div>
                 </section>
 
