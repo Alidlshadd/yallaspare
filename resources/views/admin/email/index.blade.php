@@ -81,11 +81,23 @@
             \App\Models\EmailBroadcast::AUDIENCE_USER => 'bg-emerald-100 text-emerald-700',
         ];
 
-        $queuedCount = $recentBroadcasts->whereIn('status', ['queued','sending'])->count();
+        $queuedCount = $broadcastCounts['pending'] ?? 0;
         $totalSent7d = (int) ($emailStats['total_7d'] ?? 0);
+        $sent7d = (int) ($emailStats['sent_7d'] ?? 0);
         $sent24h = (int) ($emailStats['sent_24h'] ?? 0);
         $failed24h = (int) ($emailStats['failed_24h'] ?? 0);
         $successRate = $emailStats['success_rate_24h'];
+        $successRate7d = $emailStats['success_rate_7d'];
+        $total24h = (int) ($emailStats['total_24h'] ?? 0);
+        $failureRate = $total24h > 0 ? max(0, 100 - (int) ($successRate ?? 0)) : 0;
+        $broadcastFilters = $broadcastFilters ?? ['status' => '', 'q' => ''];
+        $activeStatus = $broadcastFilters['status'] ?? '';
+        $searchTerm = $broadcastFilters['q'] ?? '';
+        $broadcastAll = (int) ($broadcastCounts['all'] ?? 0);
+        $broadcastSentTotal = (int) ($broadcastCounts['sent'] ?? 0);
+        $broadcastFailedTotal = (int) ($broadcastCounts['failed'] ?? 0);
+        $broadcastPendingTotal = (int) ($broadcastCounts['pending'] ?? 0);
+        $pendingShare = $broadcastAll > 0 ? min(100, (int) round(($broadcastPendingTotal / $broadcastAll) * 100)) : 0;
     @endphp
 
     <div class="py-6">
@@ -124,6 +136,14 @@
                     <p class="relative mt-3 text-2xl font-black text-slate-900 dark:text-white" style="font-feature-settings:'tnum' 1,'lnum' 1;letter-spacing:-0.025em">{{ number_format($totalSent7d) }}</p>
                     <div class="relative mt-2 flex items-center justify-between">
                         <p class="text-[10px] text-slate-400 font-mono">{{ __('last 7 days') }}</p>
+                        @if($successRate7d !== null)
+                            <span class="inline-flex items-center gap-0.5 text-[10px] font-bold text-indigo-600 dark:text-indigo-300">
+                                <i class="fas fa-arrow-up text-[8px]"></i> {{ $successRate7d }}%
+                            </span>
+                        @endif
+                    </div>
+                    <div class="relative mt-2 h-1 rounded-full bg-slate-100 overflow-hidden dark:bg-slate-800">
+                        <div class="h-full rounded-full bg-gradient-to-r from-indigo-500 to-indigo-600" style="width: {{ $successRate7d ?? 0 }}%"></div>
                     </div>
                 </div>
 
@@ -139,6 +159,9 @@
                     <div class="relative mt-2 flex items-center justify-between">
                         <p class="text-[10px] text-emerald-600 font-mono font-bold">{{ $successRate === null ? '—' : $successRate . '%' }}</p>
                         <span class="text-[10px] font-mono text-slate-400">{{ __('24h') }}</span>
+                    </div>
+                    <div class="relative mt-2 h-1 rounded-full bg-slate-100 overflow-hidden dark:bg-slate-800">
+                        <div class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600" style="width: {{ $successRate ?? 0 }}%"></div>
                     </div>
                 </div>
 
@@ -163,7 +186,13 @@
                         <div class="h-7 w-7 rounded-lg bg-rose-50 text-rose-600 grid place-items-center dark:bg-rose-900/40 dark:text-rose-300"><i class="fas fa-triangle-exclamation text-[10px]"></i></div>
                     </div>
                     <p class="relative mt-3 text-2xl font-black text-slate-900 dark:text-white" style="font-feature-settings:'tnum' 1,'lnum' 1;letter-spacing:-0.025em">{{ number_format($failed24h) }}</p>
-                    <p class="relative mt-2 text-[10px] text-rose-600 font-mono font-bold">{{ __('24h') }}</p>
+                    <div class="relative mt-2 flex items-center justify-between">
+                        <p class="text-[10px] text-rose-600 font-mono font-bold">{{ $failureRate }}%</p>
+                        <span class="text-[10px] font-mono text-slate-400">{{ __('24h') }}</span>
+                    </div>
+                    <div class="relative mt-2 h-1 rounded-full bg-slate-100 overflow-hidden dark:bg-slate-800">
+                        <div class="h-full rounded-full bg-gradient-to-r from-rose-500 to-rose-600" style="width: {{ $failureRate }}%"></div>
+                    </div>
                 </div>
 
                 {{-- Drafts (placeholder — model doesn't track yet) --}}
@@ -192,7 +221,15 @@
                             <span class="inline-flex h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse"></span>
                         @endif
                     </p>
-                    <p class="relative mt-2 text-[10px] text-amber-700 font-mono font-bold">{{ __('in queue') }}</p>
+                    <div class="relative mt-2 flex items-center justify-between">
+                        <p class="text-[10px] text-amber-700 font-mono font-bold">{{ __('in queue') }}</p>
+                        @if($broadcastAll > 0)
+                            <span class="text-[10px] font-mono text-amber-700">{{ $pendingShare }}%</span>
+                        @endif
+                    </div>
+                    <div class="relative mt-2 h-1 rounded-full bg-amber-100 overflow-hidden dark:bg-amber-950/60">
+                        <div class="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-500 @if($queuedCount > 0) animate-pulse @endif" style="width: {{ $pendingShare }}%"></div>
+                    </div>
                 </div>
             </div>
 
@@ -205,20 +242,71 @@
                         <div class="h-8 w-8 rounded-lg bg-primary/10 text-primary grid place-items-center dark:bg-primary/20"><i class="fas fa-clock-rotate-left text-xs"></i></div>
                         <div>
                             <p class="text-sm font-bold text-slate-900 leading-none dark:text-white">{{ __('Broadcast History') }}</p>
-                            <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">{{ __(':n records', ['n' => $recentBroadcasts->count()]) }} · {{ __('last 5') }}</p>
+                            <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">{{ __(':n records', ['n' => $broadcastAll]) }} · {{ __('last 10') }}</p>
                         </div>
                     </div>
-                    <div class="flex items-center gap-2">
+                    <div class="flex flex-wrap items-center gap-2">
                         @if(! $broadcastsAvailable)
                             <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 text-amber-700 px-2.5 py-1 text-[10px] font-bold border border-amber-100">
                                 <i class="fas fa-triangle-exclamation"></i> {{ __('Table not installed') }}
                             </span>
                         @endif
+                        {{-- Status filter pills --}}
+                        @php
+                            $pillBase = 'inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold uppercase tracking-wider transition';
+                            $pillOn = 'bg-primary text-white shadow-sm';
+                            $pillOff = 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800';
+                            $countChipOn = 'ml-0.5 rounded-full bg-white/20 px-1 text-[9px]';
+                            $countChipOff = 'ml-0.5 rounded-full bg-slate-100 dark:bg-slate-800 px-1 text-[9px]';
+                        @endphp
+                        <nav class="inline-flex items-center gap-0.5 rounded-xl border border-slate-200 bg-white p-1 shadow-sm dark:border-slate-700 dark:bg-slate-900" aria-label="{{ __('Filter broadcasts by status') }}">
+                            <a href="{{ route('admin.email.index', array_filter(['q' => $searchTerm])) }}"
+                               class="{{ $pillBase }} {{ $activeStatus === '' ? $pillOn : $pillOff }}">
+                                <i class="fas fa-layer-group text-[9px]"></i> {{ __('All') }} <span class="{{ $activeStatus === '' ? $countChipOn : $countChipOff }}">{{ number_format($broadcastAll) }}</span>
+                            </a>
+                            <a href="{{ route('admin.email.index', array_filter(['status' => 'sent', 'q' => $searchTerm])) }}"
+                               class="{{ $pillBase }} {{ $activeStatus === 'sent' ? $pillOn : $pillOff }}">
+                                <i class="fas fa-check text-[9px]"></i> {{ __('Sent') }} <span class="{{ $activeStatus === 'sent' ? $countChipOn : $countChipOff }}">{{ number_format($broadcastSentTotal) }}</span>
+                            </a>
+                            <a href="{{ route('admin.email.index', array_filter(['status' => 'failed', 'q' => $searchTerm])) }}"
+                               class="{{ $pillBase }} {{ $activeStatus === 'failed' ? $pillOn : $pillOff }}">
+                                <i class="fas fa-xmark text-[9px]"></i> {{ __('Failed') }} <span class="{{ $activeStatus === 'failed' ? $countChipOn : $countChipOff }}">{{ number_format($broadcastFailedTotal) }}</span>
+                            </a>
+                            <a href="{{ route('admin.email.index', array_filter(['status' => 'pending', 'q' => $searchTerm])) }}"
+                               class="{{ $pillBase }} {{ $activeStatus === 'pending' ? $pillOn : $pillOff }}">
+                                <i class="fas fa-clock text-[9px]"></i> {{ __('Pending') }} <span class="{{ $activeStatus === 'pending' ? $countChipOn : $countChipOff }}">{{ number_format($broadcastPendingTotal) }}</span>
+                            </a>
+                        </nav>
                         <a href="{{ route('admin.email.outbox') }}" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
                             <i class="fas fa-arrow-up-right-from-square text-[10px]"></i> {{ __('Open Outbox') }}
                         </a>
                     </div>
                 </div>
+
+                {{-- Filter bar --}}
+                <form method="GET" action="{{ route('admin.email.index') }}" class="border-b border-slate-200/70 px-5 py-3 bg-white dark:bg-slate-900 dark:border-slate-800">
+                    @if($activeStatus !== '')
+                        <input type="hidden" name="status" value="{{ $activeStatus }}">
+                    @endif
+                    <div class="relative">
+                        <i class="fas fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                        <input type="search"
+                               name="q"
+                               value="{{ $searchTerm }}"
+                               maxlength="100"
+                               placeholder="{{ __('Search subject...') }}"
+                               class="w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-24 py-2 text-sm text-slate-900 focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                        @if($searchTerm !== '')
+                            <a href="{{ route('admin.email.index', array_filter(['status' => $activeStatus])) }}"
+                               class="absolute right-14 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-500 hover:text-rose-600">
+                                <i class="fas fa-xmark"></i> {{ __('Clear') }}
+                            </a>
+                        @endif
+                        <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg bg-primary px-3 py-1 text-[11px] font-bold text-white hover:bg-primary-hover">
+                            {{ __('Search') }}
+                        </button>
+                    </div>
+                </form>
 
                 <div class="overflow-x-auto">
                     <table class="min-w-full text-sm">
@@ -295,11 +383,19 @@
                                     <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300">
                                         <i class="fas fa-bullhorn"></i>
                                     </span>
-                                    <p class="mt-3 text-sm font-semibold text-slate-900 dark:text-slate-100">{{ __('No broadcasts yet') }}</p>
-                                    <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Use Create Broadcast to send your first one.') }}</p>
-                                    <a href="{{ route('admin.email.broadcasts.create') }}" class="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 py-2 text-xs font-bold text-white hover:bg-primary-hover">
-                                        <i class="fas fa-plus text-[10px]"></i> {{ __('Create Broadcast') }}
-                                    </a>
+                                    @if($activeStatus !== '' || $searchTerm !== '')
+                                        <p class="mt-3 text-sm font-semibold text-slate-900 dark:text-slate-100">{{ __('No broadcasts match this filter') }}</p>
+                                        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Try a different status or clear the search.') }}</p>
+                                        <a href="{{ route('admin.email.index') }}" class="mt-4 inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+                                            <i class="fas fa-rotate-left text-[10px]"></i> {{ __('Reset filters') }}
+                                        </a>
+                                    @else
+                                        <p class="mt-3 text-sm font-semibold text-slate-900 dark:text-slate-100">{{ __('No broadcasts yet') }}</p>
+                                        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Use Create Broadcast to send your first one.') }}</p>
+                                        <a href="{{ route('admin.email.broadcasts.create') }}" class="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 py-2 text-xs font-bold text-white hover:bg-primary-hover">
+                                            <i class="fas fa-plus text-[10px]"></i> {{ __('Create Broadcast') }}
+                                        </a>
+                                    @endif
                                 </td>
                             </tr>
                         @endforelse

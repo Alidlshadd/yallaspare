@@ -20,10 +20,16 @@ use Throwable;
 
 class EmailController extends Controller
 {
-    public function index(): View
+    public function index(Request $request): View
     {
         $checks = $this->readinessChecks();
         $templateCards = $this->templateCards();
+
+        $status = (string) $request->query('status', '');
+        if (! in_array($status, ['sent', 'failed', 'pending'], true)) {
+            $status = '';
+        }
+        $search = mb_substr(trim((string) $request->query('q', '')), 0, 100);
 
         return view('admin.email.index', [
             'summary' => $this->mailSummary(),
@@ -36,7 +42,9 @@ class EmailController extends Controller
             'templateCards' => $templateCards,
             'previewShowcase' => array_slice($templateCards, 0, 3),
             'audienceRoles' => $this->broadcastAudienceRoles(),
-            'recentBroadcasts' => $this->recentBroadcasts(),
+            'recentBroadcasts' => $this->recentBroadcasts($status, $search),
+            'broadcastCounts' => $this->broadcastStatusCounts(),
+            'broadcastFilters' => ['status' => $status, 'q' => $search],
             'broadcastsAvailable' => $this->emailBroadcastTableExists(),
         ]);
     }
@@ -244,7 +252,9 @@ class EmailController extends Controller
                 'sent_24h' => 0,
                 'failed_24h' => 0,
                 'total_7d' => 0,
+                'sent_7d' => 0,
                 'success_rate_24h' => null,
+                'success_rate_7d' => null,
                 'last_sent_label' => __('Mail log table is not installed yet'),
             ];
         }
@@ -262,6 +272,10 @@ class EmailController extends Controller
             ->where('created_at', '>=', $lastDay)
             ->count();
         $total7d = EmailLog::query()->where('created_at', '>=', $lastWeek)->count();
+        $sent7d = EmailLog::query()
+            ->where('status', EmailLog::STATUS_SENT)
+            ->where('created_at', '>=', $lastWeek)
+            ->count();
         $lastSent = EmailLog::query()
             ->where('status', EmailLog::STATUS_SENT)
             ->orderByDesc('sent_at')
@@ -273,7 +287,9 @@ class EmailController extends Controller
             'sent_24h' => $sent24h,
             'failed_24h' => $failed24h,
             'total_7d' => $total7d,
+            'sent_7d' => $sent7d,
             'success_rate_24h' => $total24h > 0 ? (int) round(($sent24h / $total24h) * 100) : null,
+            'success_rate_7d' => $total7d > 0 ? (int) round(($sent7d / $total7d) * 100) : null,
             'last_sent_label' => $lastSent?->sent_at
                 ? $lastSent->sent_at->diffForHumans()
                 : __('No sent mail yet'),
@@ -695,7 +711,7 @@ class EmailController extends Controller
         return $query->count();
     }
 
-    private function recentBroadcasts()
+    private function recentBroadcasts(string $status = '', string $search = '')
     {
         if (! $this->emailBroadcastTableExists()) {
             return collect();
@@ -703,9 +719,39 @@ class EmailController extends Controller
 
         return EmailBroadcast::query()
             ->with(['admin:id,name', 'targetUser:id,name,email'])
+            ->when($status === 'sent', fn ($q) => $q->where('status', EmailBroadcast::STATUS_SENT))
+            ->when($status === 'failed', fn ($q) => $q->where('status', EmailBroadcast::STATUS_FAILED))
+            ->when($status === 'pending', fn ($q) => $q->whereIn('status', [
+                EmailBroadcast::STATUS_QUEUED,
+                EmailBroadcast::STATUS_SENDING,
+            ]))
+            ->when($search !== '', function ($q) use ($search) {
+                $needle = '%' . str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $search) . '%';
+                $q->where('subject', 'like', $needle);
+            })
             ->latest('id')
-            ->limit(5)
+            ->limit(10)
             ->get();
+    }
+
+    /**
+     * @return array{all:int,sent:int,failed:int,pending:int}
+     */
+    private function broadcastStatusCounts(): array
+    {
+        if (! $this->emailBroadcastTableExists()) {
+            return ['all' => 0, 'sent' => 0, 'failed' => 0, 'pending' => 0];
+        }
+
+        return [
+            'all' => EmailBroadcast::query()->count(),
+            'sent' => EmailBroadcast::query()->where('status', EmailBroadcast::STATUS_SENT)->count(),
+            'failed' => EmailBroadcast::query()->where('status', EmailBroadcast::STATUS_FAILED)->count(),
+            'pending' => EmailBroadcast::query()->whereIn('status', [
+                EmailBroadcast::STATUS_QUEUED,
+                EmailBroadcast::STATUS_SENDING,
+            ])->count(),
+        ];
     }
 
     private function emailBroadcastTableExists(): bool

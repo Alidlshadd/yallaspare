@@ -2847,5 +2847,10 @@
     "Use Create Broadcast to send your first one.": "Use Create Broadcast to send your first one.",
     "one-off send": "one-off send",
     "mail log": "mail log",
-    "live previews from blade templates": "live previews from blade templates"
+    "live previews from blade templates": "live previews from blade templates",
+    "Search subject...": "Search subject...",
+    "No broadcasts match this filter": "No broadcasts match this filter",
+    "Try a different status or clear the search.": "Try a different status or clear the search.",
+    "Filter broadcasts by status": "Filter broadcasts by status",
+    "last 10": "last 10"
 }

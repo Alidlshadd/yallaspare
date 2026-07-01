@@ -2847,5 +2847,10 @@
     "Use Create Broadcast to send your first one.": "استخدم إنشاء بث لإرسال أول بث لك.",
     "one-off send": "إرسال لمرة واحدة",
     "mail log": "سجل البريد",
-    "live previews from blade templates": "معاينات مباشرة من قوالب Blade"
+    "live previews from blade templates": "معاينات مباشرة من قوالب Blade",
+    "Search subject...": "ابحث في الموضوع...",
+    "No broadcasts match this filter": "لا توجد رسائل مطابقة لهذا الفلتر",
+    "Try a different status or clear the search.": "جرب حالة مختلفة أو امسح البحث.",
+    "Filter broadcasts by status": "تصفية الرسائل حسب الحالة",
+    "last 10": "آخر 10"
 }

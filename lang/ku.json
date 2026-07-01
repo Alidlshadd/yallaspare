@@ -2847,5 +2847,10 @@
     "Use Create Broadcast to send your first one.": "دروستکردنی بڵاوکراوە بەکاربهێنە بۆ ناردنی یەکەم بڵاوکراوەت.",
     "one-off send": "ناردنی یەکجارە",
     "mail log": "تۆماری ئیمەیل",
-    "live previews from blade templates": "پێشبینینی زیندوو لە قاڵبەکانی Blade"
+    "live previews from blade templates": "پێشبینینی زیندوو لە قاڵبەکانی Blade",
+    "Search subject...": "گەڕان لە بابەت...",
+    "No broadcasts match this filter": "هیچ بڵاوکراوەیەک لەگەڵ ئەم پاڵاوتنە نایەت",
+    "Try a different status or clear the search.": "دۆخێکی جیاواز تاقی بکەرەوە یان گەڕانەکە پاک بکەرەوە.",
+    "Filter broadcasts by status": "پاڵاوتنی بڵاوکراوەکان بەپێی دۆخ",
+    "last 10": "دوایین ١٠"
 }
