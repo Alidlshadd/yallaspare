@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\DealerController;
 use App\Http\Controllers\Admin\InventoryMovementController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\EmailController;
+use App\Http\Controllers\Admin\EmailTemplateController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\LowStockController;
 use App\Http\Controllers\Admin\AdminActivityLogController;
@@ -429,6 +430,23 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
             ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
             ->where('template', '[a-z0-9-]+')
             ->name('email.preview');
+
+        // Email template editor
+        Route::get('/email/templates', [EmailTemplateController::class, 'index'])
+            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
+            ->name('email.templates.index');
+        Route::get('/email/templates/{key}/{locale}/edit', [EmailTemplateController::class, 'edit'])
+            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
+            ->where(['key' => '[a-z0-9-]+', 'locale' => 'en|ar|ku'])
+            ->name('email.templates.edit');
+        Route::patch('/email/templates/{key}/{locale}', [EmailTemplateController::class, 'update'])
+            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
+            ->where(['key' => '[a-z0-9-]+', 'locale' => 'en|ar|ku'])
+            ->name('email.templates.update');
+        Route::get('/email/templates/{key}/{locale}/preview', [EmailTemplateController::class, 'preview'])
+            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
+            ->where(['key' => '[a-z0-9-]+', 'locale' => 'en|ar|ku'])
+            ->name('email.templates.preview');
 
         // Notifications
         Route::get('/notifications', [NotificationController::class, 'index'])
