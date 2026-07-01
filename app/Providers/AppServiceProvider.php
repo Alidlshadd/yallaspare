@@ -66,7 +66,11 @@ class AppServiceProvider extends ServiceProvider
                 ->toString();
         });
 
-        Password::defaults(fn (): Password => Password::min(8)->letters()->numbers());
+        Password::defaults(function (): Password {
+            $rule = Password::min(10)->letters()->numbers();
+
+            return app()->isProduction() ? $rule->uncompromised() : $rule;
+        });
 
         View::composer('*', function ($view): void {
             $view->with('systemSettings', $this->systemSettings());

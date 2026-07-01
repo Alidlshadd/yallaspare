@@ -48,6 +48,7 @@ use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 
 class MobileController extends Controller
 {
@@ -122,7 +123,7 @@ class MobileController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')],
             'phone' => ['nullable', 'string', 'max:20', new PhoneNumber(), User::uniquePhoneRule()],
-            'password' => ['required', 'string', 'min:8'],
+            'password' => ['required', 'string', PasswordRule::defaults()],
         ]);
 
         $user = new User();
@@ -196,7 +197,7 @@ class MobileController extends Controller
     {
         $data = $request->validate([
             'current_password' => ['required', 'string'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'confirmed', PasswordRule::defaults()],
         ]);
 
         if (! Hash::check($data['current_password'], $request->user()->password)) {
