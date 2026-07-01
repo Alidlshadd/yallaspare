@@ -40,7 +40,6 @@ class EmailController extends Controller
             'recentLogs' => $this->recentLogs(),
             'previewTemplates' => array_keys($this->previewTemplates()),
             'templateCards' => $templateCards,
-            'previewShowcase' => array_slice($templateCards, 0, 3),
             'audienceRoles' => $this->broadcastAudienceRoles(),
             'recentBroadcasts' => $this->recentBroadcasts($status, $search),
             'broadcastCounts' => $this->broadcastStatusCounts(),

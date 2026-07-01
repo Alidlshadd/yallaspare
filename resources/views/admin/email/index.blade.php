@@ -625,67 +625,6 @@
 
                 {{-- ==================== TEMPLATES ==================== --}}
                 <section id="templates" class="mt-6 space-y-6">
-                    {{-- Template Examples (3 highlighted) --}}
-                    <div class="relative rounded-2xl border border-slate-200/70 bg-white bento-shadow-em overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-                        <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-violet-400 via-fuchsia-500 to-amber-400"></div>
-                        <div class="flex flex-col gap-3 border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
-                            <div class="flex items-center gap-2.5">
-                                <div class="h-8 w-8 rounded-lg bg-violet-100 text-violet-700 grid place-items-center dark:bg-violet-900/50 dark:text-violet-200">
-                                    <i class="fas fa-palette text-xs"></i>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-bold text-primary leading-none dark:text-white">{{ __('Template Examples') }}</p>
-                                    <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">{{ __('live previews from blade templates') }}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="grid gap-4 p-5 lg:grid-cols-3">
-                            @foreach($previewShowcase as $template)
-                                <article class="group relative overflow-hidden rounded-2xl border border-slate-200/70 bg-gradient-to-br from-slate-50/40 to-white shadow-sm hover:-translate-y-0.5 hover:shadow-md transition-all dark:border-slate-800 dark:from-slate-950 dark:to-slate-900">
-                                    <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b {{ $template['tone'] === 'blue' ? 'from-blue-500 to-blue-600' : ($template['tone'] === 'emerald' ? 'from-emerald-500 to-emerald-600' : ($template['tone'] === 'rose' ? 'from-rose-500 to-rose-600' : ($template['tone'] === 'amber' ? 'from-amber-500 to-amber-600' : ($template['tone'] === 'violet' ? 'from-violet-500 to-violet-600' : ($template['tone'] === 'cyan' ? 'from-cyan-500 to-cyan-600' : ($template['tone'] === 'indigo' ? 'from-indigo-500 to-indigo-600' : ($template['tone'] === 'orange' ? 'from-orange-500 to-orange-600' : 'from-slate-400 to-slate-500'))))))) }}"></div>
-                                    <div class="relative flex items-start justify-between gap-3 border-b border-slate-200/70 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-                                        <div class="min-w-0">
-                                            <div class="flex items-center gap-2">
-                                                <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl border {{ $toneClasses[$template['tone']] ?? $toneClasses['slate'] }}">
-                                                    <i class="fas {{ $template['icon'] }} text-xs"></i>
-                                                </span>
-                                                <div class="min-w-0">
-                                                    <p class="truncate text-sm font-bold text-primary dark:text-slate-100">{{ $template['title'] }}</p>
-                                                    <p class="font-mono text-[9px] uppercase tracking-widest text-slate-400 mt-0.5">{{ $template['sample']['spec'] }}</p>
-                                                </div>
-                                            </div>
-                                            <p class="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">{{ $template['description'] }}</p>
-                                        </div>
-                                        <a href="{{ route('admin.email.preview', ['template' => $template['key'], 'locale' => app()->getLocale()]) }}" target="_blank" rel="noopener"
-                                           class="shrink-0 inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[10px] font-bold text-slate-700 hover:bg-primary hover:text-white hover:border-primary transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200">
-                                            <i class="fas fa-up-right-from-square text-[8px]"></i> {{ __('Open') }}
-                                        </a>
-                                    </div>
-                                    <div class="relative bg-slate-100/70 p-3 dark:bg-slate-950">
-                                        <div class="mx-auto max-w-sm overflow-hidden rounded-lg border border-slate-300 bg-white shadow-sm dark:border-slate-700">
-                                            <div class="flex items-center justify-between bg-primary px-3 py-2 text-white">
-                                                <span class="text-[10px] font-bold tracking-wide">YALLASPARE</span>
-                                                <span class="font-mono text-[9px] uppercase tracking-[0.16em] text-amber-300">{{ $template['sample']['spec'] }}</span>
-                                            </div>
-                                            <div class="h-0.5 bg-amber-500"></div>
-                                            <div class="space-y-2 p-3">
-                                                <span class="inline-flex rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider {{ $toneClasses[$template['tone']] ?? $toneClasses['slate'] }}">
-                                                    {{ $template['badges'][0] ?? __('Email') }}
-                                                </span>
-                                                <p class="mt-1 text-sm font-bold leading-5 text-slate-900">{{ $template['sample']['subject'] }}</p>
-                                                <p class="text-[11px] leading-5 text-slate-600">{{ $template['sample']['body'] }}</p>
-                                                <div class="rounded-lg border border-slate-200 bg-slate-50 px-2 py-1.5">
-                                                    <p class="font-mono text-[10px] text-slate-600">{{ $template['sample']['meta'] }}</p>
-                                                </div>
-                                                <div class="h-7 rounded-lg bg-gradient-to-br from-primary to-indigo-700"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </article>
-                            @endforeach
-                        </div>
-                    </div>
-
                     {{-- Template Library --}}
                     <div class="relative rounded-2xl border border-slate-200/70 bg-white bento-shadow-em overflow-hidden dark:bg-slate-900 dark:border-slate-800">
                         <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-indigo-500 to-cyan-400"></div>
