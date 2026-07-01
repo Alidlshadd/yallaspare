@@ -2865,5 +2865,12 @@
     "Readiness": "الجاهزية",
     "Broadcast console": "لوحة البث",
     "failed": "فشل",
-    "sent": "تم الإرسال"
+    "sent": "تم الإرسال",
+    "to one user or all users": "إلى مستخدم واحد أو جميع المستخدمين",
+    "Full editor": "المحرر الكامل",
+    "All users": "جميع المستخدمين",
+    "Specific person": "شخص محدد",
+    "By email address": "بعنوان البريد الإلكتروني",
+    "verified": "موثق",
+    "Recipient email": "بريد المستلم"
 }

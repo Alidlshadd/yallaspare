@@ -477,58 +477,106 @@
                     </div>
                 </section>
 
-                {{-- ==================== SETTINGS: Quick Test + Readiness ==================== --}}
+                {{-- ==================== SETTINGS: Compose Broadcast + Readiness ==================== --}}
                 <section id="settings" class="mt-6 grid gap-6 xl:grid-cols-2">
 
-                    {{-- Quick Delivery Test --}}
-                    <form method="POST" action="{{ route('admin.email.test') }}" class="relative rounded-2xl border border-slate-200/70 bg-white bento-shadow-em overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                    {{-- Compose Broadcast (inline · D-style) --}}
+                    <form method="POST" action="{{ route('admin.email.broadcast') }}" id="inline-compose"
+                          class="relative rounded-2xl border border-slate-200/70 bg-white bento-shadow-em overflow-hidden dark:bg-slate-900 dark:border-slate-800">
                         @csrf
-                        <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500"></div>
+                        <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-indigo-500 to-amber-400"></div>
+
+                        {{-- Header with CREATE button --}}
                         <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
                             <div class="flex items-center gap-2.5">
-                                <div class="h-8 w-8 rounded-lg bg-amber-100 text-amber-700 grid place-items-center dark:bg-amber-900/50 dark:text-amber-200">
-                                    <i class="fas fa-paper-plane text-xs"></i>
+                                <div class="h-8 w-8 rounded-lg bg-primary/10 text-primary grid place-items-center dark:bg-primary/20 dark:text-indigo-200">
+                                    <i class="fas fa-pen-nib text-xs"></i>
                                 </div>
                                 <div>
-                                    <p class="text-sm font-bold text-primary leading-none dark:text-white">{{ __('Quick Delivery Test') }}</p>
-                                    <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">{{ __('one-off send') }}</p>
+                                    <p class="text-sm font-bold text-primary leading-none dark:text-white">{{ __('Create Broadcast') }}</p>
+                                    <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">{{ __('to one user or all users') }}</p>
                                 </div>
                             </div>
+                            <a href="{{ route('admin.email.broadcasts.create') }}"
+                               class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-[10px] font-bold text-slate-600 hover:bg-primary hover:text-white hover:border-primary transition dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+                                <i class="fas fa-expand text-[9px]"></i> {{ __('Full editor') }}
+                            </a>
                         </div>
+
                         <div class="p-5 space-y-4">
+                            {{-- Audience picker --}}
                             <div>
-                                <label for="recipient" class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5 dark:text-slate-400">{{ __('Recipient') }}</label>
-                                <input id="recipient" type="email" name="recipient" value="{{ old('recipient', auth()->user()?->email) }}" required
-                                       class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                                @error('recipient')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
-                            </div>
-                            <div>
-                                <label for="subject" class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5 dark:text-slate-400">{{ __('Subject') }}</label>
-                                <input id="subject" type="text" name="subject" value="{{ old('subject', 'YallaSpare test email') }}" required
-                                       class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                                @error('subject')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
-                            </div>
-                            <div>
-                                <label for="test_body" class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5 dark:text-slate-400">{{ __('Message') }}</label>
-                                <textarea id="test_body" name="body" rows="3" placeholder="{{ __('Optional custom text for this test email.') }}"
-                                          class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">{{ old('body') }}</textarea>
-                            </div>
-                            <div class="grid grid-cols-5 gap-3 items-end">
-                                <div class="col-span-2">
-                                    <label for="mailer" class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5 dark:text-slate-400">{{ __('Mailer') }}</label>
-                                    <select id="mailer" name="mailer" class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                                        @foreach($mailers as $mailer)
-                                            <option value="{{ $mailer }}" @selected(old('mailer', $summary['default_mailer'] ?? '') === $mailer)>{{ $mailer }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('mailer')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
-                                </div>
-                                <div class="col-span-3">
-                                    <button type="submit" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-primary to-indigo-700 px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition">
-                                        <i class="fas fa-paper-plane"></i> {{ __('Send Test Email') }}
+                                <label class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5 dark:text-slate-400">{{ __('Recipients') }}</label>
+                                <div class="grid grid-cols-2 gap-2" id="ic-audience-tiles">
+                                    <button type="button" data-audience="all"
+                                            class="ic-tile rounded-xl border-2 border-primary bg-primary/5 text-primary px-3 py-3 text-xs font-bold text-left transition dark:bg-primary/10">
+                                        <div class="flex items-center gap-2">
+                                            <i class="fas fa-users text-base"></i>
+                                            <span>{{ __('All users') }}</span>
+                                        </div>
+                                        <p class="font-mono text-[9px] text-slate-400 mt-1 truncate">{{ number_format($audienceCounts['total']) }} {{ __('verified') }}</p>
+                                    </button>
+                                    <button type="button" data-audience="user"
+                                            class="ic-tile rounded-xl border border-slate-200 px-3 py-3 text-xs font-bold text-slate-600 text-left hover:bg-slate-50 transition dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
+                                        <div class="flex items-center gap-2">
+                                            <i class="fas fa-user text-base"></i>
+                                            <span>{{ __('Specific person') }}</span>
+                                        </div>
+                                        <p class="font-mono text-[9px] text-slate-400 mt-1 truncate">{{ __('By email address') }}</p>
                                     </button>
                                 </div>
+                                <input type="hidden" name="audience_type" id="ic-audience-type" value="{{ old('audience_type', 'all') }}">
+                                @error('audience_type')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
                             </div>
+
+                            {{-- Conditional email input --}}
+                            <div id="ic-user-wrap" style="display:none">
+                                <label for="ic-recipient-email" class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5 dark:text-slate-400">{{ __('Recipient email') }}</label>
+                                <input id="ic-recipient-email" type="email" name="recipient_email" value="{{ old('recipient_email') }}" placeholder="customer@example.com" maxlength="255"
+                                       class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                @error('recipient_email')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
+                            </div>
+
+                            {{-- Purpose toggle --}}
+                            <div>
+                                <label class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5 dark:text-slate-400">{{ __('Purpose') }}</label>
+                                <div class="inline-flex rounded-xl border border-slate-200 bg-slate-50 p-1 dark:border-slate-700 dark:bg-slate-950" id="ic-purpose-toggle">
+                                    <button type="button" data-purpose="promotional"
+                                            class="ic-purpose-btn rounded-lg bg-primary text-white px-3 py-1.5 text-xs font-bold transition">{{ __('Promotional') }}</button>
+                                    <button type="button" data-purpose="operational"
+                                            class="ic-purpose-btn rounded-lg text-slate-600 px-3 py-1.5 text-xs font-bold transition dark:text-slate-300">{{ __('Operational') }}</button>
+                                </div>
+                                <input type="hidden" name="purpose" id="ic-purpose" value="{{ old('purpose', 'promotional') }}">
+                                <p class="mt-1.5 text-[10px] font-mono text-slate-400">{{ __('Promotional broadcasts only go to users who opted into marketing.') }}</p>
+                            </div>
+
+                            {{-- Subject --}}
+                            <div>
+                                <label for="ic-subject" class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5 dark:text-slate-400">{{ __('Subject') }}</label>
+                                <input id="ic-subject" type="text" name="subject" value="{{ old('subject') }}" required maxlength="160" placeholder="{{ __('Happy Newroz from YallaSpare') }}"
+                                       class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                @error('subject')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
+                            </div>
+
+                            {{-- Message --}}
+                            <div>
+                                <label for="ic-message" class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5 dark:text-slate-400">{{ __('Message') }}</label>
+                                <textarea id="ic-message" name="message" rows="5" required maxlength="5000" placeholder="{{ __('Write the email body. Plain text is safest and line breaks are preserved.') }}"
+                                          class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 leading-relaxed focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">{{ old('message') }}</textarea>
+                                @error('message')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
+                            </div>
+
+                            {{-- Send button (prominent) --}}
+                            <button type="submit" @disabled(! $broadcastsAvailable)
+                                    class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-primary to-indigo-700 px-4 py-3 text-sm font-bold text-white shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition disabled:cursor-not-allowed disabled:from-slate-400 disabled:to-slate-500 disabled:shadow-none">
+                                <i class="fas fa-paper-plane"></i> {{ __('Send Broadcast') }}
+                            </button>
+
+                            @if(! $broadcastsAvailable)
+                                <p class="text-[11px] text-amber-700 font-mono">
+                                    <i class="fas fa-triangle-exclamation"></i> {{ __('Email broadcast table is not installed yet. Run the pending migrations before sending broadcasts.') }}
+                                </p>
+                            @endif
                         </div>
                     </form>
 
@@ -733,5 +781,55 @@
 </div>
 </div>
 </div>
+
+<script>
+    (function () {
+        var form = document.getElementById('inline-compose');
+        if (!form) return;
+
+        var audienceTiles = form.querySelectorAll('.ic-tile');
+        var audienceInput = form.querySelector('#ic-audience-type');
+        var userWrap = form.querySelector('#ic-user-wrap');
+
+        function setAudience(value) {
+            audienceInput.value = value;
+            audienceTiles.forEach(function (tile) {
+                var isActive = tile.dataset.audience === value;
+                if (isActive) {
+                    tile.classList.add('border-2','border-primary','bg-primary/5','text-primary','dark:bg-primary/10');
+                    tile.classList.remove('border','border-slate-200','text-slate-600','hover:bg-slate-50','dark:border-slate-700','dark:text-slate-300','dark:hover:bg-slate-800');
+                } else {
+                    tile.classList.remove('border-2','border-primary','bg-primary/5','text-primary','dark:bg-primary/10');
+                    tile.classList.add('border','border-slate-200','text-slate-600','hover:bg-slate-50','dark:border-slate-700','dark:text-slate-300','dark:hover:bg-slate-800');
+                }
+            });
+            userWrap.style.display = value === 'user' ? '' : 'none';
+        }
+        audienceTiles.forEach(function (tile) {
+            tile.addEventListener('click', function () { setAudience(tile.dataset.audience); });
+        });
+        setAudience(audienceInput.value || 'all');
+
+        var purposeButtons = form.querySelectorAll('.ic-purpose-btn');
+        var purposeInput = form.querySelector('#ic-purpose');
+        function setPurpose(value) {
+            purposeInput.value = value;
+            purposeButtons.forEach(function (btn) {
+                var isActive = btn.dataset.purpose === value;
+                if (isActive) {
+                    btn.classList.add('bg-primary','text-white');
+                    btn.classList.remove('text-slate-600','dark:text-slate-300');
+                } else {
+                    btn.classList.remove('bg-primary','text-white');
+                    btn.classList.add('text-slate-600','dark:text-slate-300');
+                }
+            });
+        }
+        purposeButtons.forEach(function (btn) {
+            btn.addEventListener('click', function () { setPurpose(btn.dataset.purpose); });
+        });
+        setPurpose(purposeInput.value || 'promotional');
+    })();
+</script>
 
 </x-app-layout>

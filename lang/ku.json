@@ -2865,5 +2865,12 @@
     "Readiness": "ئامادەبوون",
     "Broadcast console": "کۆنسۆڵی بڵاوکراوە",
     "failed": "شکستی هێنا",
-    "sent": "نێردرا"
+    "sent": "نێردرا",
+    "to one user or all users": "بۆ یەک بەکارهێنەر یان هەموو بەکارهێنەران",
+    "Full editor": "دەستکاریکەری تەواو",
+    "All users": "هەموو بەکارهێنەران",
+    "Specific person": "کەسێکی تایبەت",
+    "By email address": "بە ناونیشانی ئیمەیل",
+    "verified": "پشتڕاستکراوە",
+    "Recipient email": "ئیمەیلی وەرگر"
 }

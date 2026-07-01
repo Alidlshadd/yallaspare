@@ -28,7 +28,7 @@ class AdminEmailPageTest extends TestCase
             ->get(route('admin.email.index'))
             ->assertOk()
             ->assertSee('Email Center')
-            ->assertSee('Send Test Email')
+            ->assertSee('Send Broadcast')
             ->assertSee('Readiness Checks');
     }
 

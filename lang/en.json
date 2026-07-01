@@ -2865,5 +2865,12 @@
     "Readiness": "Readiness",
     "Broadcast console": "Broadcast console",
     "failed": "failed",
-    "sent": "sent"
+    "sent": "sent",
+    "to one user or all users": "to one user or all users",
+    "Full editor": "Full editor",
+    "All users": "All users",
+    "Specific person": "Specific person",
+    "By email address": "By email address",
+    "verified": "verified",
+    "Recipient email": "Recipient email"
 }
