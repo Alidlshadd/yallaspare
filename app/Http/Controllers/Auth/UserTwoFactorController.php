@@ -46,6 +46,15 @@ class UserTwoFactorController extends Controller
 
         $key = 'user-2fa:' . $user->id . '|' . $request->ip();
         if (RateLimiter::tooManyAttempts($key, 5)) {
+            Log::channel('security')->warning('security event', [
+                'event' => 'auth.2fa_locked_attempt',
+                'guard' => 'user',
+                'user_id' => $user->id,
+                'route' => $request->route()?->getName() ?? $request->path(),
+                'ip' => $request->ip(),
+                'user_agent' => substr((string) $request->userAgent(), 0, 255),
+            ]);
+
             return back()->withErrors(['code' => __('Too many verification attempts. Please try again later.')]);
         }
 
@@ -55,6 +64,15 @@ class UserTwoFactorController extends Controller
 
         if ($expiresAt < now()->timestamp || ! Hash::check((string) $request->input('code'), $hash)) {
             RateLimiter::hit($key, 300);
+
+            Log::channel('security')->warning('security event', [
+                'event' => 'auth.2fa_failed',
+                'guard' => 'user',
+                'user_id' => $user->id,
+                'route' => $request->route()?->getName() ?? $request->path(),
+                'ip' => $request->ip(),
+                'user_agent' => substr((string) $request->userAgent(), 0, 255),
+            ]);
 
             return back()->withErrors(['code' => __('The verification code is invalid or expired.')]);
         }
