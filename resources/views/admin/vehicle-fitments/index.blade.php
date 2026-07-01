@@ -6,7 +6,7 @@
                 <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Manage brand, model, year, engine compatibility for products.') }}</p>
             </div>
             <span class="inline-flex w-fit items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
-                <i class="fas fa-car-side text-indigo-500"></i>
+                <i class="fas fa-car-side text-primary dark:text-white"></i>
                 {{ __('Catalog compatibility') }}
             </span>
         </div>
@@ -14,7 +14,7 @@
 
     @php
         $statsCards = [
-            ['label' => __('Vehicle Brands'), 'value' => $stats['brands'] ?? 0, 'icon' => 'fa-car-side', 'tone' => 'text-indigo-600 bg-indigo-50 dark:bg-indigo-950/40 dark:text-indigo-300'],
+            ['label' => __('Vehicle Brands'), 'value' => $stats['brands'] ?? 0, 'icon' => 'fa-car-side', 'tone' => 'text-primary bg-primary/10 dark:bg-primary/25 dark:text-white'],
             ['label' => __('Vehicle Models'), 'value' => $stats['models'] ?? 0, 'icon' => 'fa-layer-group', 'tone' => 'text-cyan-600 bg-cyan-50 dark:bg-cyan-950/40 dark:text-cyan-300'],
             ['label' => __('Fitment Rules'), 'value' => $stats['fitments'] ?? 0, 'icon' => 'fa-link', 'tone' => 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-300'],
             ['label' => __('Covered Products'), 'value' => $stats['covered_products'] ?? 0, 'icon' => 'fa-box-open', 'tone' => 'text-amber-600 bg-amber-50 dark:bg-amber-950/40 dark:text-amber-300'],
@@ -47,6 +47,9 @@
                             <div>
                                 <p class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ $card['label'] }}</p>
                                 <p class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{{ number_format((int) $card['value']) }}</p>
+                                @if((int) $card['value'] === 0)
+                                    <p class="mt-1 text-[11px] text-slate-400 dark:text-slate-500">{{ __('Add your first one below') }} ↓</p>
+                                @endif
                             </div>
                             <span class="inline-flex h-10 w-10 items-center justify-center rounded-lg {{ $card['tone'] }}">
                                 <i class="fas {{ $card['icon'] }} text-sm"></i>
@@ -60,7 +63,10 @@
                 <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-center justify-between gap-3">
                         <div>
-                            <h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100">{{ __('Add Vehicle Brand') }}</h3>
+                            <h3 class="flex items-center text-sm font-semibold text-slate-900 dark:text-slate-100">
+                                <span class="me-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary dark:bg-white/10 dark:text-white">1</span>
+                                {{ __('Add Vehicle Brand') }}
+                            </h3>
                             <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Create the manufacturer list used in fitment rules.') }}</p>
                         </div>
                         <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
@@ -71,17 +77,20 @@
                         @csrf
                         <label class="block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Brand Name') }}</label>
                         <input name="name" required maxlength="120" placeholder="{{ __('Toyota') }}" class="w-full rounded-lg border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                        <button class="w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white dark:bg-white dark:text-slate-900">{{ __('Create Brand') }}</button>
+                        <button class="w-full rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-hover dark:bg-white dark:text-primary dark:hover:bg-slate-100">{{ __('Create Brand') }}</button>
                     </form>
                 </section>
 
                 <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-center justify-between gap-3">
                         <div>
-                            <h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100">{{ __('Add Vehicle Model') }}</h3>
+                            <h3 class="flex items-center text-sm font-semibold text-slate-900 dark:text-slate-100">
+                                <span class="me-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary dark:bg-white/10 dark:text-white">2</span>
+                                {{ __('Add Vehicle Model') }}
+                            </h3>
                             <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Attach models under the correct vehicle brand.') }}</p>
                         </div>
-                        <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-300">
+                        <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary dark:bg-white/10 dark:text-white">
                             <i class="fas fa-sitemap text-xs"></i>
                         </span>
                     </div>
@@ -96,7 +105,7 @@
                         </select>
                         <label class="block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Model Name') }}</label>
                         <input name="name" required maxlength="120" placeholder="{{ __('Corolla') }}" class="w-full rounded-lg border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                        <button class="w-full rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">{{ __('Create Model') }}</button>
+                        <button class="w-full rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-hover dark:bg-white dark:text-primary dark:hover:bg-slate-100">{{ __('Create Model') }}</button>
                     </form>
                 </section>
 
@@ -108,7 +117,7 @@
                         </div>
                         <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ $brands->count() }}</span>
                     </div>
-                    <div class="mt-4 max-h-72 space-y-3 overflow-y-auto pr-1">
+                    <div class="mt-4 max-h-72 space-y-3 overflow-y-auto pe-1">
                         @forelse($brands as $brand)
                             <div class="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-950">
                                 <div class="flex items-start justify-between gap-3">
@@ -148,10 +157,13 @@
                 <div class="border-b border-slate-200 px-5 py-4 dark:border-slate-800">
                     <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                         <div>
-                            <h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100">{{ __('Add Product Fitment') }}</h3>
+                            <h3 class="flex items-center text-sm font-semibold text-slate-900 dark:text-slate-100">
+                                <span class="me-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary dark:bg-white/10 dark:text-white">3</span>
+                                {{ __('Add Product Fitment') }}
+                            </h3>
                             <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Connect one product to a vehicle brand, model, year range, and engine.') }}</p>
                         </div>
-                        <span class="inline-flex w-fit items-center rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300">
+                        <span class="inline-flex w-fit items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary dark:bg-white/10 dark:text-white">
                             {{ __('Compatibility rule') }}
                         </span>
                     </div>
@@ -230,30 +242,33 @@
                             </div>
                         </div>
 
-                        <button class="inline-flex w-full items-center justify-center rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto">
-                            <i class="fas fa-link mr-2 text-xs"></i>
+                        <button class="inline-flex w-full items-center justify-center rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-primary dark:hover:bg-slate-100 sm:w-auto">
+                            <i class="fas fa-link me-2 text-xs"></i>
                             {{ __('Save Fitment') }}
                         </button>
                     </div>
 
-                    <aside class="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950">
-                        <p class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Preview') }}</p>
+                    <aside class="rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-800 dark:bg-slate-950 lg:sticky lg:top-24 lg:self-start">
+                        <p class="flex items-center text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
+                            {{ __('Preview') }}
+                            <span class="ms-2 inline-flex h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" aria-hidden="true"></span>
+                        </p>
                         <div class="mt-3 space-y-3 text-sm">
                             <div>
-                                <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Product') }}</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400"><i class="fas fa-box me-1 text-[10px] text-slate-400"></i>{{ __('Product') }}</p>
                                 <p class="font-semibold text-slate-900 dark:text-slate-100" data-admin-preview-product>{{ __('Select product') }}</p>
                             </div>
                             <div>
-                                <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Vehicle') }}</p>
+                                <p class="text-xs text-slate-500 dark:text-slate-400"><i class="fas fa-car-side me-1 text-[10px] text-slate-400"></i>{{ __('Vehicle') }}</p>
                                 <p class="font-semibold text-slate-900 dark:text-slate-100" data-admin-preview-vehicle>{{ __('Select brand') }} / {{ __('Any model') }}</p>
                             </div>
                             <div class="grid grid-cols-2 gap-3">
                                 <div>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Years') }}</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400"><i class="fas fa-calendar-days me-1 text-[10px] text-slate-400"></i>{{ __('Years') }}</p>
                                     <p class="font-semibold text-slate-900 dark:text-slate-100" data-admin-preview-years>{{ __('Any year') }}</p>
                                 </div>
                                 <div>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Engine') }}</p>
+                                    <p class="text-xs text-slate-500 dark:text-slate-400"><i class="fas fa-cog me-1 text-[10px] text-slate-400"></i>{{ __('Engine') }}</p>
                                     <p class="font-semibold text-slate-900 dark:text-slate-100" data-admin-preview-engine>{{ __('Any engine') }}</p>
                                 </div>
                             </div>
@@ -274,8 +289,8 @@
                             @if(request('search'))
                                 <a href="{{ route('admin.vehicle-fitments.index') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Clear') }}</a>
                             @endif
-                            <button class="inline-flex items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white dark:bg-white dark:text-slate-900">
-                                <i class="fas fa-search mr-2 text-xs"></i>
+                            <button class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+                                <i class="fas fa-search me-2 text-xs"></i>
                                 {{ __('Search') }}
                             </button>
                         </form>
@@ -293,11 +308,11 @@
                     <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800">
                         <thead class="bg-slate-50 dark:bg-slate-800/70">
                             <tr>
-                                <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Product') }}</th>
-                                <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Vehicle') }}</th>
-                                <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Coverage') }}</th>
-                                <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Notes') }}</th>
-                                <th class="px-4 py-3 text-right text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Actions') }}</th>
+                                <th class="px-4 py-3 text-start text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Product') }}</th>
+                                <th class="px-4 py-3 text-start text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Vehicle') }}</th>
+                                <th class="px-4 py-3 text-start text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Coverage') }}</th>
+                                <th class="px-4 py-3 text-start text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Notes') }}</th>
+                                <th class="px-4 py-3 text-end text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Actions') }}</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
@@ -335,7 +350,7 @@
                                     <td class="px-4 py-4">
                                         <div class="flex min-w-48 flex-wrap gap-2">
                                             <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200">{{ $fitment->brand?->name ?? __('Any brand') }}</span>
-                                            <span class="inline-flex items-center rounded-full bg-indigo-50 px-2.5 py-1 text-xs font-semibold text-indigo-700 dark:bg-indigo-950/40 dark:text-indigo-300">{{ $fitment->model?->name ?? __('Any model') }}</span>
+                                            <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200">{{ $fitment->model?->name ?? __('Any model') }}</span>
                                         </div>
                                     </td>
                                     <td class="px-4 py-4 text-sm text-slate-700 dark:text-slate-300">
@@ -345,12 +360,12 @@
                                     <td class="max-w-xs px-4 py-4 text-sm text-slate-600 dark:text-slate-300">
                                         {{ $fitment->notes ? Str::limit($fitment->notes, 90) : '-' }}
                                     </td>
-                                    <td class="px-4 py-4 text-right">
+                                    <td class="px-4 py-4 text-end">
                                         <form method="POST" action="{{ route('admin.vehicle-fitments.destroy', $fitment) }}" data-danger-confirm data-danger-title="{{ __('Delete Fitment') }}" data-danger-description="{{ __('This product compatibility row will be removed.') }}">
                                             @csrf
                                             @method('DELETE')
                                             <button class="inline-flex items-center justify-center rounded-md bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-700 hover:bg-rose-100 dark:bg-rose-950/30 dark:text-rose-300">
-                                                <i class="fas fa-trash-alt mr-2 text-[10px]"></i>
+                                                <i class="fas fa-trash-alt me-2 text-[10px]"></i>
                                                 {{ __('Delete') }}
                                             </button>
                                         </form>
