@@ -16,6 +16,15 @@
             @if($errors->any())
                 <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/20 dark:text-rose-300">{{ $errors->first() }}</div>
             @endif
+            @if(session('error'))
+                <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/20 dark:text-rose-300">{{ session('error') }}</div>
+            @endif
+
+            @if(! ($hasDeliveryZonesTable ?? true))
+                <div class="rounded-2xl border border-amber-200 bg-amber-50 p-5 text-sm font-semibold text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/20 dark:text-amber-200">
+                    {{ __('Delivery zones need a database migration before they can be managed. Run php artisan migrate --force on production, then clear the cache.') }}
+                </div>
+            @endif
 
             <section class="grid gap-4 md:grid-cols-4">
                 @foreach([
@@ -32,6 +41,7 @@
             </section>
 
             <section class="grid gap-6 xl:grid-cols-3">
+                @if($hasDeliveryZonesTable ?? true)
                 <form method="POST" action="{{ route('admin.delivery-zones.store') }}" class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     @csrf
                     <h3 class="text-lg font-bold text-slate-900 dark:text-slate-100">{{ __('Add Delivery Zone') }}</h3>
@@ -76,8 +86,9 @@
                         <button class="w-full rounded-xl bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white hover:bg-slate-800">{{ __('Create Zone') }}</button>
                     </div>
                 </form>
+                @endif
 
-                <div class="space-y-4 xl:col-span-2">
+                <div class="space-y-4 {{ ($hasDeliveryZonesTable ?? true) ? 'xl:col-span-2' : 'xl:col-span-3' }}">
                     <form method="GET" action="{{ route('admin.delivery-zones.index') }}" class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         <div class="grid gap-3 md:grid-cols-4">
                             <input type="search" name="search" value="{{ $search }}" placeholder="{{ __('Search city or district') }}" class="rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 md:col-span-2">

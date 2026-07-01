@@ -14,6 +14,7 @@ use App\Support\AdminLogger;
 use App\Support\SqlSafe;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
@@ -281,6 +282,22 @@ class OperationsInsightController extends Controller
         $status = $this->allowedString((string) $request->query('status', 'all'), ['all', 'active', 'inactive'], 'all');
         $search = SqlSafe::searchTerm($request->query('search', ''));
         $currency = $this->currencyMeta();
+        $hasDeliveryZonesTable = Schema::hasTable('delivery_zones');
+
+        if (! $hasDeliveryZonesTable) {
+            $zones = new LengthAwarePaginator([], 0, 20, 1, [
+                'path' => $request->url(),
+                'query' => $request->query(),
+            ]);
+            $summary = [
+                'total' => 0,
+                'active' => 0,
+                'inactive' => 0,
+                'cod' => 0,
+            ];
+
+            return view('admin.operations.delivery-zones', compact('zones', 'summary', 'status', 'search', 'currency', 'hasDeliveryZonesTable'));
+        }
 
         $query = DeliveryZone::query();
 
@@ -312,11 +329,15 @@ class OperationsInsightController extends Controller
             'cod' => DeliveryZone::query()->where('cash_on_delivery_enabled', true)->count(),
         ];
 
-        return view('admin.operations.delivery-zones', compact('zones', 'summary', 'status', 'search', 'currency'));
+        return view('admin.operations.delivery-zones', compact('zones', 'summary', 'status', 'search', 'currency', 'hasDeliveryZonesTable'));
     }
 
     public function storeDeliveryZone(Request $request): RedirectResponse
     {
+        if (! Schema::hasTable('delivery_zones')) {
+            return back()->with('error', __('Delivery zones are not available until the database migration is run.'));
+        }
+
         $data = $this->validateDeliveryZone($request);
         $zone = DeliveryZone::query()->create($data);
 
