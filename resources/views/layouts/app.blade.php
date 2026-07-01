@@ -321,13 +321,18 @@
                     'admin.dashboard'              => __('Dashboard'),
                     'admin.revenue.*'              => __('Revenue Analytics'),
                     'admin.analytics.*'            => __('Site Analytics'),
+                    'admin.search-insights.*'      => __('Search Insights'),
                     'admin.products.*'             => __('Products'),
                     'admin.categories.*'           => __('Categories'),
                     'admin.vehicle-fitments.*'     => __('Vehicle Finder'),
                     'admin.reviews.*'              => __('Customer Reviews'),
                     'admin.inventory.*'            => __('Inventory Movements'),
+                    'admin.purchase-planning.*'    => __('Purchase Planning'),
+                    'admin.stock-requests.*'       => __('Stock Requests'),
+                    'admin.dead-stock.*'           => __('Dead Stock'),
                     'admin.orders.*'               => __('Orders Management'),
                     'admin.returns.*'              => __('Returns & Refunds'),
+                    'admin.delivery-zones.*'       => __('Delivery Zones'),
                     'admin.dealers.*'              => __('Dealers'),
                     'admin.users.*'                => __('Users'),
                     'admin.discounts.coupons.*'    => __('Coupon Management'),
@@ -502,6 +507,15 @@
                                 <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-star"></i></span>
                                 <span class="admin-nav-label">{{ __('Customer Reviews') }}</span>
                             </a>
+                            <a
+                                href="{{ route('admin.dead-stock.index') }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.dead-stock.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Dead Stock') }}"
+                                @if(request()->routeIs('admin.dead-stock.*')) aria-current="page" @endif
+                            >
+                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-boxes-stacked"></i></span>
+                                <span class="admin-nav-label">{{ __('Dead Stock') }}</span>
+                            </a>
                         @endif
 
                         {{-- ── ANALYTICS ── --}}
@@ -528,6 +542,15 @@
                                     <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-chart-line"></i></span>
                                     <span class="admin-nav-label">{{ __('Site Analytics') }}</span>
                                 </a>
+                                <a
+                                    href="{{ route('admin.search-insights.index') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.search-insights.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Search Insights') }}"
+                                    @if(request()->routeIs('admin.search-insights.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-magnifying-glass-chart"></i></span>
+                                    <span class="admin-nav-label">{{ __('Search Insights') }}</span>
+                                </a>
                             @endcan
                             @can(\App\Models\User::PERMISSION_STOCK_MANAGE)
                                 <a
@@ -538,6 +561,24 @@
                                 >
                                     <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-warehouse"></i></span>
                                     <span class="admin-nav-label">{{ __('Inventory') }}</span>
+                                </a>
+                                <a
+                                    href="{{ route('admin.purchase-planning.index') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.purchase-planning.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Purchase Planning') }}"
+                                    @if(request()->routeIs('admin.purchase-planning.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-cart-flatbed"></i></span>
+                                    <span class="admin-nav-label">{{ __('Purchase Planning') }}</span>
+                                </a>
+                                <a
+                                    href="{{ route('admin.stock-requests.index') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.stock-requests.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Stock Requests') }}"
+                                    @if(request()->routeIs('admin.stock-requests.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-bell"></i></span>
+                                    <span class="admin-nav-label">{{ __('Stock Requests') }}</span>
                                 </a>
                             @endcan
                         @endif
@@ -615,6 +656,15 @@
                                 >
                                     <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-gear"></i></span>
                                     <span class="admin-nav-label">{{ __('Settings') }}</span>
+                                </a>
+                                <a
+                                    href="{{ route('admin.delivery-zones.index') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.delivery-zones.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Delivery Zones') }}"
+                                    @if(request()->routeIs('admin.delivery-zones.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-map-location-dot"></i></span>
+                                    <span class="admin-nav-label">{{ __('Delivery Zones') }}</span>
                                 </a>
                             @endcan
                             @can(\App\Models\User::PERMISSION_ACTIVITY_LOGS_VIEW)

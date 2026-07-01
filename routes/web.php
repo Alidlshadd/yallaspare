@@ -28,6 +28,7 @@ use App\Http\Controllers\Admin\VehicleFitmentController;
 use App\Http\Controllers\Admin\ProductReviewController as AdminProductReviewController;
 use App\Http\Controllers\Admin\DiscountCouponController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+use App\Http\Controllers\Admin\OperationsInsightController;
 use App\Http\Controllers\ShopController as CatalogShopController;
 use App\Http\Controllers\ProductReviewController;
 use App\Http\Controllers\CartController;
@@ -232,6 +233,33 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::get('/analytics', [AdminAnalyticsController::class, 'index'])
             ->middleware('can:' . User::PERMISSION_DASHBOARD_VIEW)
             ->name('analytics.index');
+        Route::get('/purchase-planning', [OperationsInsightController::class, 'purchasePlanning'])
+            ->middleware('can:' . User::PERMISSION_STOCK_MANAGE)
+            ->name('purchase-planning.index');
+        Route::get('/stock-requests', [OperationsInsightController::class, 'stockRequests'])
+            ->middleware('can:' . User::PERMISSION_STOCK_MANAGE)
+            ->name('stock-requests.index');
+        Route::patch('/stock-requests/{product}/notify', [OperationsInsightController::class, 'markStockRequestsNotified'])
+            ->middleware(['can:' . User::PERMISSION_STOCK_MANAGE, 'throttle:admin-write'])
+            ->name('stock-requests.notify');
+        Route::get('/search-insights', [OperationsInsightController::class, 'searchInsights'])
+            ->middleware('can:' . User::PERMISSION_DASHBOARD_VIEW)
+            ->name('search-insights.index');
+        Route::get('/dead-stock', [OperationsInsightController::class, 'deadStock'])
+            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->name('dead-stock.index');
+        Route::get('/delivery-zones', [OperationsInsightController::class, 'deliveryZones'])
+            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
+            ->name('delivery-zones.index');
+        Route::post('/delivery-zones', [OperationsInsightController::class, 'storeDeliveryZone'])
+            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
+            ->name('delivery-zones.store');
+        Route::patch('/delivery-zones/{zone}', [OperationsInsightController::class, 'updateDeliveryZone'])
+            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
+            ->name('delivery-zones.update');
+        Route::delete('/delivery-zones/{zone}', [OperationsInsightController::class, 'destroyDeliveryZone'])
+            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
+            ->name('delivery-zones.destroy');
         Route::get('/discounts', [DiscountCouponController::class, 'edit'])
             ->middleware('can:' . User::PERMISSION_FINANCE_MANAGE)
             ->name('discounts.edit');
