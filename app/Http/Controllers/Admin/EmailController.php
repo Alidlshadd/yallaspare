@@ -41,6 +41,14 @@ class EmailController extends Controller
         ]);
     }
 
+    public function createBroadcast(): View
+    {
+        return view('admin.email.broadcasts.create', [
+            'audienceRoles' => $this->broadcastAudienceRoles(),
+            'broadcastsAvailable' => $this->emailBroadcastTableExists(),
+        ]);
+    }
+
     public function outbox(Request $request): View
     {
         $status = trim((string) $request->query('status', ''));

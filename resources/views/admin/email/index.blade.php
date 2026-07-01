@@ -1,51 +1,49 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-                <div class="flex flex-wrap items-center gap-2">
-                    <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-white shadow-sm">
+        <div class="relative rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+            <div class="absolute -top-16 -right-16 h-40 w-40 rounded-full bg-amber-400/10 blur-3xl pointer-events-none"></div>
+            <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-indigo-500 to-amber-400"></div>
+            <div class="relative flex flex-wrap items-center justify-between gap-3 px-5 py-4">
+                <div class="flex items-center gap-3">
+                    <div class="relative h-11 w-11 rounded-2xl bg-gradient-to-br from-primary to-indigo-700 text-white grid place-items-center shadow-lg shadow-primary/20">
                         <i class="fas fa-envelope-open-text text-sm"></i>
-                    </span>
-                    <h2 class="text-2xl font-semibold text-slate-900 dark:text-white">{{ __('Email Center') }}</h2>
+                        <span class="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-amber-400 border-2 border-white dark:border-slate-900"></span>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <p class="text-[10px] uppercase tracking-[0.22em] text-slate-400 font-bold leading-none">{{ __('Customer communication') }}</p>
+                            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 px-1.5 py-0.5 text-[9px] font-bold border border-emerald-100 dark:bg-emerald-900/40 dark:text-emerald-200 dark:border-emerald-800">
+                                <span class="h-1 w-1 rounded-full bg-emerald-500 animate-pulse"></span> {{ __('LIVE') }}
+                            </span>
+                        </div>
+                        <p class="text-2xl font-semibold text-slate-900 dark:text-white leading-tight mt-1 tracking-tight">{{ __('Email Center') }}</p>
+                        <p class="text-[11px] text-slate-400 font-mono mt-0.5">{{ __('queue: :q', ['q' => $summary['queue'] ?: 'sync']) }} · {{ $emailStats['last_sent_label'] }}</p>
+                    </div>
                 </div>
-                <p class="mt-2 max-w-3xl text-sm text-slate-500 dark:text-slate-400">
-                    {{ __('Monitor mail health, test delivery, and preview every customer-facing email template from one place.') }}
-                </p>
-            </div>
-
-            <div class="flex flex-wrap items-center gap-2">
-                <a href="{{ route('admin.email.outbox') }}"
-                   class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
-                    <i class="fas fa-clock-rotate-left text-slate-400"></i>
-                    {{ __('Open Outbox') }}
-                </a>
-                <a href="{{ route('admin.email.preview', ['template' => 'order-status', 'locale' => app()->getLocale()]) }}" target="_blank" rel="noopener"
-                   class="inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-hover">
-                    <i class="fas fa-eye"></i>
-                    {{ __('Preview Example') }}
-                </a>
+                <div class="flex items-center gap-1.5">
+                    <a href="{{ route('admin.email.outbox') }}"
+                       class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+                        <i class="fas fa-clock-rotate-left text-[10px]"></i> {{ __('Outbox') }}
+                    </a>
+                    <a href="{{ route('admin.email.preview', ['template' => 'order-status', 'locale' => app()->getLocale()]) }}" target="_blank" rel="noopener"
+                       class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+                        <i class="fas fa-eye text-[10px]"></i> {{ __('Preview templates') }}
+                    </a>
+                    <a href="{{ route('admin.email.broadcasts.create') }}"
+                       class="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-br from-primary to-indigo-700 px-4 py-2 text-xs font-bold text-white shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition">
+                        <i class="fas fa-plus text-[10px]"></i> {{ __('Create Broadcast') }}
+                    </a>
+                </div>
             </div>
         </div>
     </x-slot>
 
     @php
         $healthClasses = [
-            'green' => [
-                'badge' => 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-200',
-                'bar' => 'bg-emerald-500',
-            ],
-            'amber' => [
-                'badge' => 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-200',
-                'bar' => 'bg-amber-500',
-            ],
-            'rose' => [
-                'badge' => 'border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-200',
-                'bar' => 'bg-rose-500',
-            ],
-        ][$health['tone']] ?? [
-            'badge' => 'border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200',
-            'bar' => 'bg-slate-500',
-        ];
+            'green' => ['badge' => 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-200', 'bar' => 'bg-emerald-500'],
+            'amber' => ['badge' => 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-200', 'bar' => 'bg-amber-500'],
+            'rose' => ['badge' => 'border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-200', 'bar' => 'bg-rose-500'],
+        ][$health['tone']] ?? ['badge' => 'border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200', 'bar' => 'bg-slate-500'];
 
         $toneClasses = [
             'blue' => 'border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900/50 dark:bg-blue-950/30 dark:text-blue-200',
@@ -63,10 +61,36 @@
             'sent' => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/60 dark:text-emerald-200',
             'failed' => 'bg-rose-100 text-rose-700 dark:bg-rose-900/60 dark:text-rose-200',
         ];
+
+        $broadcastStatusClasses = [
+            'sent' => ['cls' => 'bg-emerald-50 text-emerald-700 border-emerald-100', 'icon' => 'fa-check'],
+            'sending' => ['cls' => 'bg-sky-50 text-sky-700 border-sky-100', 'icon' => 'fa-paper-plane'],
+            'queued' => ['cls' => 'bg-amber-50 text-amber-700 border-amber-100', 'icon' => 'fa-clock'],
+            'failed' => ['cls' => 'bg-rose-50 text-rose-700 border-rose-100', 'icon' => 'fa-xmark'],
+        ];
+
+        $audienceLabels = [
+            \App\Models\EmailBroadcast::AUDIENCE_ALL => __('All'),
+            \App\Models\EmailBroadcast::AUDIENCE_ROLE => __('Role'),
+            \App\Models\EmailBroadcast::AUDIENCE_USER => __('User'),
+        ];
+
+        $audienceAvatarClasses = [
+            \App\Models\EmailBroadcast::AUDIENCE_ALL => 'bg-indigo-100 text-indigo-700',
+            \App\Models\EmailBroadcast::AUDIENCE_ROLE => 'bg-amber-100 text-amber-700',
+            \App\Models\EmailBroadcast::AUDIENCE_USER => 'bg-emerald-100 text-emerald-700',
+        ];
+
+        $queuedCount = $recentBroadcasts->whereIn('status', ['queued','sending'])->count();
+        $totalSent7d = (int) ($emailStats['total_7d'] ?? 0);
+        $sent24h = (int) ($emailStats['sent_24h'] ?? 0);
+        $failed24h = (int) ($emailStats['failed_24h'] ?? 0);
+        $successRate = $emailStats['success_rate_24h'];
     @endphp
 
-    <div class="py-8">
+    <div class="py-6">
         <div class="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
+
             @if(session('success'))
                 <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-900/30 dark:text-emerald-200">
                     {{ session('success') }}
@@ -74,409 +98,426 @@
             @endif
 
             @if($errors->any())
-                <div class="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-700 dark:border-red-900/60 dark:bg-red-900/30 dark:text-red-200">
+                <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700 dark:border-rose-900/60 dark:bg-rose-900/30 dark:text-rose-200">
                     {{ $errors->first() }}
                 </div>
             @endif
 
-            <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/30">
-                <div class="grid gap-0 xl:grid-cols-[1.2fr_0.8fr]">
-                    <div class="bg-slate-950 p-6 text-white sm:p-8">
-                        <div class="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-                            <div>
-                                <p class="text-xs font-semibold uppercase tracking-[0.22em] text-blue-200">{{ __('Mail Operations') }}</p>
-                                <h3 class="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">{{ __('Delivery health and template control') }}</h3>
-                                <p class="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
-                                    {{ __('Use this panel before changing SMTP, after deployment, and when checking customer email quality.') }}
-                                </p>
-                            </div>
+            @if($emailStats['last_sent_label'] === __('Mail log table is not installed yet'))
+                <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">
+                    <i class="fas fa-triangle-exclamation mr-1"></i>
+                    {{ __('Mail log table is not installed yet') }}. {{ __('Run the pending migrations to start recording email activity.') }}
+                </div>
+            @endif
 
-                            <div class="min-w-[180px] rounded-2xl border border-white/10 bg-white/10 p-4">
-                                <div class="flex items-center justify-between gap-3">
-                                    <span class="text-xs font-semibold uppercase tracking-[0.16em] text-slate-300">{{ __('Health') }}</span>
-                                    <span class="rounded-full border px-2.5 py-1 text-xs font-semibold {{ $healthClasses['badge'] }}">
-                                        {{ $health['label'] }}
-                                    </span>
-                                </div>
-                                <div class="mt-4 flex items-end gap-2">
-                                    <span class="text-4xl font-semibold">{{ $health['score'] }}</span>
-                                    <span class="pb-1 text-sm text-slate-300">/ 100</span>
-                                </div>
-                                <div class="mt-4 h-2 overflow-hidden rounded-full bg-white/15">
-                                    <div class="h-full rounded-full {{ $healthClasses['bar'] }}" style="width: {{ $health['score'] }}%"></div>
-                                </div>
-                                <p class="mt-3 text-xs text-slate-300">{{ $health['ok'] }} / {{ $health['total'] }} {{ __('checks passing') }}</p>
-                            </div>
-                        </div>
+            {{-- ============== 6 PREMIUM STAT CARDS ============== --}}
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
 
-                        <div class="mt-8 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                            <div class="rounded-xl border border-white/10 bg-white/10 p-4">
-                                <p class="text-xs font-medium text-slate-300">{{ __('Sent 24h') }}</p>
-                                <p class="mt-2 text-2xl font-semibold">{{ number_format($emailStats['sent_24h']) }}</p>
-                            </div>
-                            <div class="rounded-xl border border-white/10 bg-white/10 p-4">
-                                <p class="text-xs font-medium text-slate-300">{{ __('Failed 24h') }}</p>
-                                <p class="mt-2 text-2xl font-semibold">{{ number_format($emailStats['failed_24h']) }}</p>
-                            </div>
-                            <div class="rounded-xl border border-white/10 bg-white/10 p-4">
-                                <p class="text-xs font-medium text-slate-300">{{ __('Success rate') }}</p>
-                                <p class="mt-2 text-2xl font-semibold">
-                                    {{ $emailStats['success_rate_24h'] === null ? '-' : $emailStats['success_rate_24h'] . '%' }}
-                                </p>
-                            </div>
-                            <div class="rounded-xl border border-white/10 bg-white/10 p-4">
-                                <p class="text-xs font-medium text-slate-300">{{ __('Last sent') }}</p>
-                                <p class="mt-2 text-sm font-semibold text-white">{{ $emailStats['last_sent_label'] }}</p>
-                            </div>
+                {{-- Total Sent (7d) --}}
+                <div class="group relative rounded-2xl bg-white p-4 shadow-sm border border-slate-200/70 overflow-hidden hover:-translate-y-0.5 transition-all dark:bg-slate-900 dark:border-slate-800">
+                    <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-indigo-500 to-indigo-700"></div>
+                    <div class="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-indigo-500/5 blur-xl"></div>
+                    <div class="relative flex items-start justify-between">
+                        <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold dark:text-slate-400">{{ __('Total Sent') }}</p>
+                        <div class="h-7 w-7 rounded-lg bg-indigo-50 text-indigo-600 grid place-items-center dark:bg-indigo-900/40 dark:text-indigo-300"><i class="fas fa-envelopes-bulk text-[10px]"></i></div>
+                    </div>
+                    <p class="relative mt-3 text-2xl font-black text-slate-900 dark:text-white" style="font-feature-settings:'tnum' 1,'lnum' 1;letter-spacing:-0.025em">{{ number_format($totalSent7d) }}</p>
+                    <div class="relative mt-2 flex items-center justify-between">
+                        <p class="text-[10px] text-slate-400 font-mono">{{ __('last 7 days') }}</p>
+                    </div>
+                </div>
+
+                {{-- Delivered (Sent 24h) --}}
+                <div class="group relative rounded-2xl bg-white p-4 shadow-sm border border-slate-200/70 overflow-hidden hover:-translate-y-0.5 transition-all dark:bg-slate-900 dark:border-slate-800">
+                    <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-emerald-500 to-emerald-600"></div>
+                    <div class="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-emerald-500/5 blur-xl"></div>
+                    <div class="relative flex items-start justify-between">
+                        <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold dark:text-slate-400">{{ __('Delivered') }}</p>
+                        <div class="h-7 w-7 rounded-lg bg-emerald-50 text-emerald-600 grid place-items-center dark:bg-emerald-900/40 dark:text-emerald-300"><i class="fas fa-circle-check text-[10px]"></i></div>
+                    </div>
+                    <p class="relative mt-3 text-2xl font-black text-slate-900 dark:text-white" style="font-feature-settings:'tnum' 1,'lnum' 1;letter-spacing:-0.025em">{{ number_format($sent24h) }}</p>
+                    <div class="relative mt-2 flex items-center justify-between">
+                        <p class="text-[10px] text-emerald-600 font-mono font-bold">{{ $successRate === null ? '—' : $successRate . '%' }}</p>
+                        <span class="text-[10px] font-mono text-slate-400">{{ __('24h') }}</span>
+                    </div>
+                </div>
+
+                {{-- Opened (placeholder — not tracked yet) --}}
+                <div class="group relative rounded-2xl bg-white p-4 shadow-sm border border-slate-200/70 overflow-hidden hover:-translate-y-0.5 transition-all dark:bg-slate-900 dark:border-slate-800">
+                    <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-sky-500 to-sky-600"></div>
+                    <div class="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-sky-500/5 blur-xl"></div>
+                    <div class="relative flex items-start justify-between">
+                        <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold dark:text-slate-400">{{ __('Opened') }}</p>
+                        <div class="h-7 w-7 rounded-lg bg-sky-50 text-sky-600 grid place-items-center dark:bg-sky-900/40 dark:text-sky-300"><i class="fas fa-envelope-open text-[10px]"></i></div>
+                    </div>
+                    <p class="relative mt-3 text-2xl font-black text-slate-300 dark:text-slate-600">—</p>
+                    <p class="relative mt-2 text-[10px] text-slate-400 font-mono">{{ __('not tracked yet') }}</p>
+                </div>
+
+                {{-- Failed --}}
+                <div class="group relative rounded-2xl bg-white p-4 shadow-sm border border-slate-200/70 overflow-hidden hover:-translate-y-0.5 transition-all dark:bg-slate-900 dark:border-slate-800">
+                    <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-rose-500 to-rose-600"></div>
+                    <div class="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-rose-500/5 blur-xl"></div>
+                    <div class="relative flex items-start justify-between">
+                        <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold dark:text-slate-400">{{ __('Failed') }}</p>
+                        <div class="h-7 w-7 rounded-lg bg-rose-50 text-rose-600 grid place-items-center dark:bg-rose-900/40 dark:text-rose-300"><i class="fas fa-triangle-exclamation text-[10px]"></i></div>
+                    </div>
+                    <p class="relative mt-3 text-2xl font-black text-slate-900 dark:text-white" style="font-feature-settings:'tnum' 1,'lnum' 1;letter-spacing:-0.025em">{{ number_format($failed24h) }}</p>
+                    <p class="relative mt-2 text-[10px] text-rose-600 font-mono font-bold">{{ __('24h') }}</p>
+                </div>
+
+                {{-- Drafts (placeholder — model doesn't track yet) --}}
+                <div class="group relative rounded-2xl bg-white p-4 shadow-sm border border-slate-200/70 overflow-hidden hover:-translate-y-0.5 transition-all dark:bg-slate-900 dark:border-slate-800">
+                    <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-slate-400 to-slate-500"></div>
+                    <div class="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-slate-500/5 blur-xl"></div>
+                    <div class="relative flex items-start justify-between">
+                        <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold dark:text-slate-400">{{ __('Drafts') }}</p>
+                        <div class="h-7 w-7 rounded-lg bg-slate-100 text-slate-600 grid place-items-center dark:bg-slate-800 dark:text-slate-300"><i class="fas fa-file-pen text-[10px]"></i></div>
+                    </div>
+                    <p class="relative mt-3 text-2xl font-black text-slate-300 dark:text-slate-600">0</p>
+                    <p class="relative mt-2 text-[10px] text-slate-400 font-mono">{{ __('drafts coming soon') }}</p>
+                </div>
+
+                {{-- Pending (queued/sending broadcasts) --}}
+                <div class="group relative rounded-2xl bg-gradient-to-br from-amber-50/60 to-white p-4 shadow-sm border border-amber-200/70 overflow-hidden hover:-translate-y-0.5 transition-all dark:from-amber-950/20 dark:to-slate-900 dark:border-amber-900/50">
+                    <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-amber-400 to-amber-500"></div>
+                    <div class="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-amber-500/10 blur-xl"></div>
+                    <div class="relative flex items-start justify-between">
+                        <p class="text-[10px] uppercase tracking-[0.22em] text-amber-700 font-bold dark:text-amber-300">{{ __('Pending') }}</p>
+                        <div class="h-7 w-7 rounded-lg bg-amber-100 text-amber-700 grid place-items-center dark:bg-amber-900/60 dark:text-amber-200"><i class="fas fa-clock text-[10px]"></i></div>
+                    </div>
+                    <p class="relative mt-3 text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2" style="font-feature-settings:'tnum' 1,'lnum' 1;letter-spacing:-0.025em">
+                        {{ number_format($queuedCount) }}
+                        @if($queuedCount > 0)
+                            <span class="inline-flex h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                        @endif
+                    </p>
+                    <p class="relative mt-2 text-[10px] text-amber-700 font-mono font-bold">{{ __('in queue') }}</p>
+                </div>
+            </div>
+
+            {{-- ============== HISTORY (Recent Broadcasts) — Premium A table ============== --}}
+            <div class="relative rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+
+                {{-- Header --}}
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
+                    <div class="flex items-center gap-2.5">
+                        <div class="h-8 w-8 rounded-lg bg-primary/10 text-primary grid place-items-center dark:bg-primary/20"><i class="fas fa-clock-rotate-left text-xs"></i></div>
+                        <div>
+                            <p class="text-sm font-bold text-slate-900 leading-none dark:text-white">{{ __('Broadcast History') }}</p>
+                            <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">{{ __(':n records', ['n' => $recentBroadcasts->count()]) }} · {{ __('last 5') }}</p>
                         </div>
                     </div>
-
-                    <form method="POST" action="{{ route('admin.email.test') }}" class="space-y-4 p-6 sm:p-8">
-                        @csrf
-                        <div>
-                            <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ __('Quick Delivery Test') }}</p>
-                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Send one controlled email using the selected mailer.') }}</p>
-                        </div>
-
-                        <div>
-                            <label for="recipient" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Recipient') }}</label>
-                            <input id="recipient" type="email" name="recipient" value="{{ old('recipient', auth()->user()?->email) }}" class="w-full rounded-xl border-slate-300 bg-white text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" required>
-                            @error('recipient')
-                                <p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label for="subject" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Subject') }}</label>
-                            <input id="subject" type="text" name="subject" value="{{ old('subject', 'YallaSpare test email') }}" class="w-full rounded-xl border-slate-300 bg-white text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" required>
-                            @error('subject')
-                                <p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <div>
-                            <label for="test_body" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Message') }}</label>
-                            <textarea id="test_body" name="body" rows="4" class="w-full rounded-xl border-slate-300 bg-white text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" placeholder="{{ __('Optional custom text for this test email.') }}">{{ old('body') }}</textarea>
-                        </div>
-
-                        <div>
-                            <label for="mailer" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Mailer') }}</label>
-                            <select id="mailer" name="mailer" class="w-full rounded-xl border-slate-300 bg-white text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                                @foreach($mailers as $mailer)
-                                    <option value="{{ $mailer }}" @selected(old('mailer', $summary['default_mailer'] ?? '') === $mailer)>{{ $mailer }}</option>
-                                @endforeach
-                            </select>
-                            @error('mailer')
-                                <p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>
-                            @enderror
-                        </div>
-
-                        <button type="submit" class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-hover">
-                            <i class="fas fa-paper-plane"></i>
-                            {{ __('Send Test Email') }}
-                        </button>
-                    </form>
-                </div>
-            </section>
-
-            <section class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/30">
-                <div class="grid gap-0 xl:grid-cols-[1fr_0.9fr]">
-                    <form method="POST" action="{{ route('admin.email.broadcast') }}" class="space-y-5 p-6 sm:p-8">
-                        @csrf
-                        <div>
-                            <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ __('Send Broadcast') }}</p>
-                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Send a controlled email to one user, a role group, or all eligible users.') }}</p>
-                        </div>
-
+                    <div class="flex items-center gap-2">
                         @if(! $broadcastsAvailable)
-                            <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-medium leading-5 text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">
-                                {{ __('Email broadcast table is not installed yet. Run the pending migrations before sending broadcasts.') }}
-                            </div>
+                            <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 text-amber-700 px-2.5 py-1 text-[10px] font-bold border border-amber-100">
+                                <i class="fas fa-triangle-exclamation"></i> {{ __('Table not installed') }}
+                            </span>
                         @endif
+                        <a href="{{ route('admin.email.outbox') }}" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+                            <i class="fas fa-arrow-up-right-from-square text-[10px]"></i> {{ __('Open Outbox') }}
+                        </a>
+                    </div>
+                </div>
 
-                        <div class="grid gap-4 md:grid-cols-2">
-                            <div>
-                                <label for="audience_type" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Audience') }}</label>
-                                <select id="audience_type" name="audience_type" class="w-full rounded-xl border-slate-300 bg-white text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                                    <option value="all" @selected(old('audience_type') === 'all')>{{ __('All eligible users') }}</option>
-                                    <option value="role" @selected(old('audience_type') === 'role')>{{ __('Role group') }}</option>
-                                    <option value="user" @selected(old('audience_type') === 'user')>{{ __('Single user') }}</option>
-                                </select>
-                            </div>
-                            <div>
-                                <label for="purpose" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Purpose') }}</label>
-                                <select id="purpose" name="purpose" class="w-full rounded-xl border-slate-300 bg-white text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                                    <option value="promotional" @selected(old('purpose', 'promotional') === 'promotional')>{{ __('Promotional / special day') }}</option>
-                                    <option value="operational" @selected(old('purpose') === 'operational')>{{ __('Operational notice') }}</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="grid gap-4 md:grid-cols-2">
-                            <div>
-                                <label for="audience_role" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Role group') }}</label>
-                                <select id="audience_role" name="audience_role" class="w-full rounded-xl border-slate-300 bg-white text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                                    <option value="">{{ __('Choose when audience is role group') }}</option>
-                                    @foreach($audienceRoles as $role => $label)
-                                        <option value="{{ $role }}" @selected(old('audience_role') === $role)>{{ $label }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div>
-                                <label for="recipient_email" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Single user email') }}</label>
-                                <input id="recipient_email" type="email" name="recipient_email" value="{{ old('recipient_email') }}" placeholder="customer@example.com" class="w-full rounded-xl border-slate-300 bg-white text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label for="broadcast_subject" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Subject') }}</label>
-                            <input id="broadcast_subject" type="text" name="subject" value="{{ old('subject') }}" placeholder="{{ __('Happy Newroz from YallaSpare') }}" class="w-full rounded-xl border-slate-300 bg-white text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" required>
-                        </div>
-
-                        <div>
-                            <label for="broadcast_message" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Message') }}</label>
-                            <textarea id="broadcast_message" name="message" rows="6" class="w-full rounded-xl border-slate-300 bg-white text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" placeholder="{{ __('Write the email body here. Plain text is safest and line breaks are preserved.') }}" required>{{ old('message') }}</textarea>
-                        </div>
-
-                        <div class="grid gap-4 md:grid-cols-2">
-                            <div>
-                                <label for="action_url" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Button URL') }}</label>
-                                <input id="action_url" type="url" name="action_url" value="{{ old('action_url') }}" placeholder="{{ url('/') }}" class="w-full rounded-xl border-slate-300 bg-white text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                            </div>
-                            <div>
-                                <label for="action_text" class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Button text') }}</label>
-                                <input id="action_text" type="text" name="action_text" value="{{ old('action_text') }}" placeholder="{{ __('Shop now') }}" class="w-full rounded-xl border-slate-300 bg-white text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                            </div>
-                        </div>
-
-                        <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-5 text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">
-                            {{ __('Promotional broadcasts only go to verified users who allow email and marketing messages. Operational notices still require verified email and email notifications enabled.') }}
-                            {{ __('Single-user broadcasts are sent immediately. Group and all-user broadcasts are queued and require a running queue worker.') }}
-                        </div>
-
-                        <button type="submit" @disabled(! $broadcastsAvailable) class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:bg-slate-400">
-                            <i class="fas fa-bullhorn"></i>
-                            {{ __('Queue Broadcast') }}
-                        </button>
-                    </form>
-
-                    <div class="border-t border-slate-200 p-6 dark:border-slate-800 sm:p-8 xl:border-l xl:border-t-0">
-                        <div class="flex items-center justify-between gap-3">
-                            <div>
-                                <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ __('Recent Broadcasts') }}</p>
-                                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Queued campaign and announcement jobs.') }}</p>
-                            </div>
-                        </div>
-
-                        <div class="mt-5 divide-y divide-slate-100 dark:divide-slate-800">
-                            @forelse($recentBroadcasts as $broadcast)
-                                <div class="py-4">
-                                    <div class="flex items-start justify-between gap-3">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm">
+                        <thead class="text-[10px] uppercase tracking-widest text-slate-500 font-bold bg-slate-50/40 dark:bg-slate-900 dark:text-slate-400">
+                            <tr class="border-b border-slate-200/70 dark:border-slate-800">
+                                <th class="px-5 py-3 text-left">{{ __('Campaign / Subject') }}</th>
+                                <th class="px-5 py-3 text-left">{{ __('Audience') }}</th>
+                                <th class="px-5 py-3 text-left">{{ __('Status') }}</th>
+                                <th class="px-5 py-3 text-right">{{ __('Sent') }}</th>
+                                <th class="px-5 py-3 text-right">{{ __('Failed') }}</th>
+                                <th class="px-5 py-3 text-left">{{ __('Date') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
+                        @forelse($recentBroadcasts as $broadcast)
+                            @php
+                                $statusKey = $broadcast->status;
+                                $statusStyle = $broadcastStatusClasses[$statusKey] ?? ['cls' => 'bg-slate-100 text-slate-700 border-slate-200', 'icon' => 'fa-circle'];
+                                $audienceKey = $broadcast->audience_type;
+                                $audienceLabel = $audienceLabels[$audienceKey] ?? ucfirst($audienceKey);
+                                $audienceAvatar = $audienceAvatarClasses[$audienceKey] ?? 'bg-slate-100 text-slate-700';
+                                $audienceLetter = strtoupper(mb_substr($audienceLabel, 0, 1));
+                                $purposeLabel = $broadcast->purpose === \App\Models\EmailBroadcast::PURPOSE_PROMOTIONAL ? __('promotional') : __('operational');
+                            @endphp
+                            <tr class="group hover:bg-slate-50/60 transition dark:hover:bg-slate-800/40 {{ in_array($statusKey, ['queued','sending']) ? 'border-l-2 border-amber-400 bg-amber-50/20 dark:bg-amber-950/20' : '' }}">
+                                <td class="px-5 py-3">
+                                    <div class="flex items-center gap-3">
+                                        <span class="h-8 w-8 rounded-lg bg-gradient-to-br from-primary to-indigo-700 text-white grid place-items-center shadow-sm"><i class="fas fa-bullhorn text-[11px]"></i></span>
                                         <div class="min-w-0">
-                                            <p class="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $broadcast->subject }}</p>
-                                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                                                {{ __(ucfirst($broadcast->audience_type)) }}
-                                                @if($broadcast->audience_role)
-                                                    <span class="mx-1 text-slate-300">/</span>{{ $audienceRoles[$broadcast->audience_role] ?? $broadcast->audience_role }}
-                                                @endif
-                                                @if($broadcast->targetUser)
-                                                    <span class="mx-1 text-slate-300">/</span>{{ $broadcast->targetUser->email }}
-                                                @endif
-                                            </p>
-                                        </div>
-                                        <span class="shrink-0 rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200">
-                                            {{ __(ucfirst($broadcast->status)) }}
-                                        </span>
-                                    </div>
-                                    <div class="mt-3 grid grid-cols-3 gap-2 text-center text-xs">
-                                        <div class="rounded-lg bg-slate-50 px-2 py-2 dark:bg-slate-950">
-                                            <p class="font-semibold text-slate-900 dark:text-slate-100">{{ number_format($broadcast->recipient_count) }}</p>
-                                            <p class="text-slate-500 dark:text-slate-400">{{ __('Recipients') }}</p>
-                                        </div>
-                                        <div class="rounded-lg bg-emerald-50 px-2 py-2 dark:bg-emerald-950/30">
-                                            <p class="font-semibold text-emerald-800 dark:text-emerald-200">{{ number_format($broadcast->sent_count) }}</p>
-                                            <p class="text-emerald-700 dark:text-emerald-300">{{ __('Sent') }}</p>
-                                        </div>
-                                        <div class="rounded-lg bg-rose-50 px-2 py-2 dark:bg-rose-950/30">
-                                            <p class="font-semibold text-rose-800 dark:text-rose-200">{{ number_format($broadcast->failed_count) }}</p>
-                                            <p class="text-rose-700 dark:text-rose-300">{{ __('Failed') }}</p>
+                                            <p class="font-bold text-slate-900 text-[13px] truncate max-w-xs dark:text-slate-100" title="{{ $broadcast->subject }}">{{ $broadcast->subject }}</p>
+                                            <p class="text-[11px] text-slate-400 font-mono">{{ $purposeLabel }}@if($broadcast->action_url) · {{ __('with CTA') }}@endif</p>
                                         </div>
                                     </div>
-                                </div>
-                            @empty
-                                <div class="py-12 text-center">
+                                </td>
+                                <td class="px-5 py-3">
+                                    <div class="flex items-center gap-2">
+                                        <span class="h-7 w-7 rounded-full {{ $audienceAvatar }} grid place-items-center text-[10px] font-black">{{ $audienceLetter }}</span>
+                                        <div>
+                                            <span class="inline-flex rounded-md bg-slate-100 text-slate-700 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider dark:bg-slate-800 dark:text-slate-200">
+                                                {{ $audienceLabel }}@if($broadcast->audience_role) · {{ $audienceRoles[$broadcast->audience_role] ?? $broadcast->audience_role }}@endif
+                                            </span>
+                                            <p class="mt-0.5 text-[11px] text-slate-400 font-mono">{{ number_format($broadcast->recipient_count) }} {{ __('recipients') }}</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-5 py-3">
+                                    <span class="inline-flex items-center gap-1 rounded-full {{ $statusStyle['cls'] }} px-2.5 py-1 text-[11px] font-bold border">
+                                        @if(in_array($statusKey, ['queued','sending']))
+                                            <span class="inline-flex h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                        @else
+                                            <i class="fas {{ $statusStyle['icon'] }} text-[9px]"></i>
+                                        @endif
+                                        {{ __(ucfirst($statusKey)) }}
+                                    </span>
+                                </td>
+                                <td class="px-5 py-3 text-right">
+                                    <span class="font-mono font-bold text-slate-700 dark:text-slate-200">{{ number_format($broadcast->sent_count) }}</span>
+                                </td>
+                                <td class="px-5 py-3 text-right">
+                                    @if($broadcast->failed_count > 0)
+                                        <span class="font-mono font-bold text-rose-600">{{ number_format($broadcast->failed_count) }}</span>
+                                    @else
+                                        <span class="font-mono text-slate-400">0</span>
+                                    @endif
+                                </td>
+                                <td class="px-5 py-3">
+                                    <div class="text-slate-500 font-mono text-[12px] dark:text-slate-400">{{ optional($broadcast->created_at)->format('M d') }}</div>
+                                    <div class="text-[10px] text-slate-400 font-mono">{{ optional($broadcast->created_at)->format('H:i') }}</div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="px-5 py-12 text-center">
                                     <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300">
                                         <i class="fas fa-bullhorn"></i>
                                     </span>
                                     <p class="mt-3 text-sm font-semibold text-slate-900 dark:text-slate-100">{{ __('No broadcasts yet') }}</p>
-                                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('Queue the first announcement from the form.') }}</p>
-                                </div>
-                            @endforelse
+                                    <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Use Create Broadcast to send your first one.') }}</p>
+                                    <a href="{{ route('admin.email.broadcasts.create') }}" class="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 py-2 text-xs font-bold text-white hover:bg-primary-hover">
+                                        <i class="fas fa-plus text-[10px]"></i> {{ __('Create Broadcast') }}
+                                    </a>
+                                </td>
+                            </tr>
+                        @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {{-- ============== Two columns: Quick Test + Readiness ============== --}}
+            <div class="grid gap-6 xl:grid-cols-2">
+
+                {{-- Quick Delivery Test --}}
+                <form method="POST" action="{{ route('admin.email.test') }}" class="rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                    @csrf
+                    <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-paper-plane text-amber-500 text-sm"></i>
+                            <p class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Quick Delivery Test') }}</p>
+                        </div>
+                        <span class="font-mono text-[10px] uppercase tracking-widest text-slate-400">{{ __('one-off send') }}</span>
+                    </div>
+                    <div class="p-5 space-y-4">
+                        <div>
+                            <label for="recipient" class="block text-xs font-bold text-slate-700 mb-1 dark:text-slate-300">{{ __('Recipient') }}</label>
+                            <input id="recipient" type="email" name="recipient" value="{{ old('recipient', auth()->user()?->email) }}" required
+                                   class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                            @error('recipient')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
+                        </div>
+                        <div>
+                            <label for="subject" class="block text-xs font-bold text-slate-700 mb-1 dark:text-slate-300">{{ __('Subject') }}</label>
+                            <input id="subject" type="text" name="subject" value="{{ old('subject', 'YallaSpare test email') }}" required
+                                   class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                            @error('subject')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
+                        </div>
+                        <div>
+                            <label for="test_body" class="block text-xs font-bold text-slate-700 mb-1 dark:text-slate-300">{{ __('Message') }}</label>
+                            <textarea id="test_body" name="body" rows="3" placeholder="{{ __('Optional custom text for this test email.') }}"
+                                      class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">{{ old('body') }}</textarea>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label for="mailer" class="block text-xs font-bold text-slate-700 mb-1 dark:text-slate-300">{{ __('Mailer') }}</label>
+                                <select id="mailer" name="mailer" class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                    @foreach($mailers as $mailer)
+                                        <option value="{{ $mailer }}" @selected(old('mailer', $summary['default_mailer'] ?? '') === $mailer)>{{ $mailer }}</option>
+                                    @endforeach
+                                </select>
+                                @error('mailer')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
+                            </div>
+                            <div class="flex items-end">
+                                <button type="submit" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-white shadow-md hover:bg-primary-hover transition">
+                                    <i class="fas fa-paper-plane"></i> {{ __('Send Test Email') }}
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
+                </form>
 
-            <div class="grid gap-6 xl:grid-cols-[0.9fr_1.1fr]">
-                <section class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/30">
-                    <div class="flex items-center justify-between gap-3 border-b border-slate-200 px-6 py-5 dark:border-slate-800">
-                        <div>
-                            <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ __('Readiness Checks') }}</p>
-                            <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Production delivery requirements at a glance.') }}</p>
+                {{-- Readiness Checks --}}
+                <div class="rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                    <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-shield-halved text-primary text-sm dark:text-indigo-300"></i>
+                            <p class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Readiness Checks') }}</p>
                         </div>
-                        <span class="rounded-full border px-2.5 py-1 text-xs font-semibold {{ $healthClasses['badge'] }}">{{ $health['label'] }}</span>
+                        <span class="rounded-full border px-2.5 py-1 text-xs font-bold {{ $healthClasses['badge'] }}">{{ $health['label'] }} · {{ $health['score'] }}/100</span>
                     </div>
                     <div class="divide-y divide-slate-100 dark:divide-slate-800">
                         @foreach($checks as $check)
-                            <div class="flex items-start gap-4 px-6 py-4">
-                                <span class="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full {{ $check['ok'] ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-200' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-200' }}">
-                                    <i class="fas {{ $check['ok'] ? 'fa-check' : 'fa-screwdriver-wrench' }} text-xs"></i>
+                            <div class="flex items-start gap-3 px-5 py-3">
+                                <span class="mt-0.5 inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg {{ $check['ok'] ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-200' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-200' }}">
+                                    <i class="fas {{ $check['ok'] ? 'fa-check' : 'fa-screwdriver-wrench' }} text-[10px]"></i>
                                 </span>
                                 <div class="min-w-0 flex-1">
                                     <div class="flex flex-wrap items-center justify-between gap-2">
-                                        <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $check['label'] }}</p>
-                                        <span class="rounded-full px-2.5 py-1 text-xs font-semibold {{ $check['ok'] ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300' }}">
+                                        <p class="text-sm font-bold text-slate-900 dark:text-slate-100">{{ $check['label'] }}</p>
+                                        <span class="rounded-full px-2 py-0.5 text-[10px] font-bold {{ $check['ok'] ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/50 dark:text-emerald-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-950/50 dark:text-amber-300' }}">
                                             {{ $check['ok'] ? __('OK') : __('Action') }}
                                         </span>
                                     </div>
-                                    <p class="mt-1 font-mono text-xs text-slate-500 dark:text-slate-400">{{ __('Current:') }} {{ $check['value'] }}</p>
-                                    <p class="mt-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{{ $check['detail'] }}</p>
+                                    <p class="mt-0.5 font-mono text-[11px] text-slate-500 dark:text-slate-400">{{ $check['value'] }}</p>
+                                    <p class="mt-1 text-xs text-slate-600 leading-snug dark:text-slate-300">{{ $check['detail'] }}</p>
                                 </div>
                             </div>
                         @endforeach
                     </div>
-                </section>
-
-                <section class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/30">
-                    <div class="flex items-center justify-between gap-3 border-b border-slate-200 px-6 py-5 dark:border-slate-800">
-                        <div>
-                            <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ __('Recent Activity') }}</p>
-                            <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Latest recorded mail attempts. Recipient emails remain private.') }}</p>
-                        </div>
-                        <a href="{{ route('admin.email.outbox') }}" class="text-xs font-semibold text-primary hover:underline dark:text-blue-300">{{ __('View all') }}</a>
-                    </div>
-
-                    <div class="divide-y divide-slate-100 dark:divide-slate-800">
-                        @forelse($recentLogs as $log)
-                            <div class="grid gap-3 px-6 py-4 sm:grid-cols-[130px_1fr_auto] sm:items-center">
-                                <div>
-                                    <p class="font-mono text-xs text-slate-500 dark:text-slate-400">{{ optional($log->created_at)->format('M d, H:i') }}</p>
-                                    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">{{ optional($log->created_at)->diffForHumans() }}</p>
-                                </div>
-                                <div class="min-w-0">
-                                    <p class="truncate text-sm font-semibold text-slate-900 dark:text-slate-100" title="{{ $log->subject }}">{{ $log->subject ?: __('No subject') }}</p>
-                                    <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                                        {{ $log->recipient_domain ?: '-' }} <span class="mx-1 text-slate-300">/</span> {{ $log->mailer ?: '-' }}
-                                    </p>
-                                </div>
-                                <span class="inline-flex w-fit items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold {{ $statusClasses[$log->status] ?? 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200' }}">
-                                    <i class="fas {{ $log->status === 'sent' ? 'fa-check' : 'fa-xmark' }}"></i>
-                                    {{ __(ucfirst($log->status)) }}
-                                </span>
-                            </div>
-                        @empty
-                            <div class="px-6 py-12 text-center">
-                                <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300">
-                                    <i class="fas fa-inbox"></i>
-                                </span>
-                                <p class="mt-3 text-sm font-semibold text-slate-900 dark:text-slate-100">{{ __('No mail activity yet') }}</p>
-                                <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('Send a test email to create the first outbox record.') }}</p>
-                            </div>
-                        @endforelse
-                    </div>
-                </section>
+                </div>
             </div>
 
-            <section class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/30">
-                <div class="flex flex-col gap-3 border-b border-slate-200 px-6 py-5 dark:border-slate-800 lg:flex-row lg:items-center lg:justify-between">
-                    <div>
-                        <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ __('Template Examples') }}</p>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Live previews from the same Blade templates customers receive.') }}</p>
+            {{-- ============== Recent Activity (mail logs) ============== --}}
+            <div class="rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-inbox text-slate-400 text-sm"></i>
+                        <p class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Recent Activity') }}</p>
+                        <span class="font-mono text-[10px] uppercase tracking-widest text-slate-400">{{ __('mail log') }}</span>
                     </div>
-                    <div class="flex flex-wrap gap-2 text-xs font-semibold">
-                        <span class="rounded-full bg-slate-100 px-3 py-1 text-slate-600 dark:bg-slate-800 dark:text-slate-300">EN</span>
-                        <span class="rounded-full bg-slate-100 px-3 py-1 text-slate-600 dark:bg-slate-800 dark:text-slate-300">AR</span>
-                        <span class="rounded-full bg-slate-100 px-3 py-1 text-slate-600 dark:bg-slate-800 dark:text-slate-300">KU</span>
+                    <a href="{{ route('admin.email.outbox') }}" class="text-xs font-bold text-primary hover:underline dark:text-indigo-300">{{ __('View all') }} &rarr;</a>
+                </div>
+                <div class="divide-y divide-slate-100 dark:divide-slate-800">
+                    @forelse($recentLogs as $log)
+                        <div class="grid gap-3 px-5 py-3 sm:grid-cols-[130px_1fr_auto] sm:items-center">
+                            <div>
+                                <p class="font-mono text-xs text-slate-500 dark:text-slate-400">{{ optional($log->created_at)->format('M d, H:i') }}</p>
+                                <p class="mt-0.5 text-[10px] text-slate-400 dark:text-slate-500">{{ optional($log->created_at)->diffForHumans() }}</p>
+                            </div>
+                            <div class="min-w-0">
+                                <p class="truncate text-sm font-bold text-slate-900 dark:text-slate-100" title="{{ $log->subject }}">{{ $log->subject ?: __('No subject') }}</p>
+                                <p class="mt-0.5 text-[11px] text-slate-500 font-mono dark:text-slate-400">
+                                    {{ $log->recipient_domain ?: '-' }} <span class="mx-1 text-slate-300">/</span> {{ $log->mailer ?: '-' }}
+                                </p>
+                            </div>
+                            <span class="inline-flex w-fit items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-bold {{ $statusClasses[$log->status] ?? 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200' }}">
+                                <i class="fas {{ $log->status === 'sent' ? 'fa-check' : 'fa-xmark' }} text-[9px]"></i>
+                                {{ __(ucfirst($log->status)) }}
+                            </span>
+                        </div>
+                    @empty
+                        <div class="px-5 py-10 text-center">
+                            <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300">
+                                <i class="fas fa-inbox"></i>
+                            </span>
+                            <p class="mt-3 text-sm font-bold text-slate-900 dark:text-slate-100">{{ __('No mail activity yet') }}</p>
+                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Send a test email to create the first outbox record.') }}</p>
+                        </div>
+                    @endforelse
+                </div>
+            </div>
+
+            {{-- ============== Template Examples ============== --}}
+            <div class="rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                <div class="flex flex-col gap-3 border-b border-slate-200/70 px-5 py-3.5 bg-slate-50/60 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800 dark:bg-slate-900">
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-palette text-primary text-sm dark:text-indigo-300"></i>
+                        <div>
+                            <p class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Template Examples') }}</p>
+                            <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-0.5">{{ __('live previews from blade templates') }}</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-wrap gap-1 text-[10px] font-bold uppercase tracking-wider">
+                        <span class="rounded-full bg-slate-100 px-2 py-0.5 text-slate-600 dark:bg-slate-800 dark:text-slate-300">EN</span>
+                        <span class="rounded-full bg-slate-100 px-2 py-0.5 text-slate-600 dark:bg-slate-800 dark:text-slate-300">AR</span>
+                        <span class="rounded-full bg-slate-100 px-2 py-0.5 text-slate-600 dark:bg-slate-800 dark:text-slate-300">KU</span>
                     </div>
                 </div>
-
-                <div class="grid gap-5 p-6 lg:grid-cols-3">
+                <div class="grid gap-4 p-5 lg:grid-cols-3">
                     @foreach($previewShowcase as $template)
-                        <article class="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 dark:border-slate-800 dark:bg-slate-950">
+                        <article class="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50/40 dark:border-slate-800 dark:bg-slate-950">
                             <div class="flex items-start justify-between gap-3 border-b border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
                                 <div class="min-w-0">
                                     <div class="flex items-center gap-2">
                                         <span class="inline-flex h-8 w-8 items-center justify-center rounded-xl border {{ $toneClasses[$template['tone']] ?? $toneClasses['slate'] }}">
                                             <i class="fas {{ $template['icon'] }} text-xs"></i>
                                         </span>
-                                        <p class="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $template['title'] }}</p>
+                                        <p class="truncate text-sm font-bold text-slate-900 dark:text-slate-100">{{ $template['title'] }}</p>
                                     </div>
                                     <p class="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">{{ $template['description'] }}</p>
                                 </div>
                                 <a href="{{ route('admin.email.preview', ['template' => $template['key'], 'locale' => app()->getLocale()]) }}" target="_blank" rel="noopener"
-                                   class="shrink-0 rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-slate-800">
+                                   class="shrink-0 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[10px] font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-slate-800">
                                     {{ __('Open') }}
                                 </a>
                             </div>
-                            <div class="bg-slate-200 p-4 dark:bg-slate-950">
+                            <div class="bg-slate-200/60 p-3 dark:bg-slate-950">
                                 <div class="mx-auto max-w-sm overflow-hidden rounded-lg border border-slate-300 bg-white shadow-sm dark:border-slate-700">
-                                    <div class="flex items-center justify-between bg-primary px-4 py-3 text-white">
-                                        <span class="text-xs font-semibold tracking-wide">YALLASPARE</span>
-                                        <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-blue-200">{{ $template['sample']['spec'] }}</span>
+                                    <div class="flex items-center justify-between bg-primary px-3 py-2 text-white">
+                                        <span class="text-[10px] font-bold tracking-wide">YALLASPARE</span>
+                                        <span class="font-mono text-[9px] uppercase tracking-[0.16em] text-amber-300">{{ $template['sample']['spec'] }}</span>
                                     </div>
-                                    <div class="h-0.5 bg-orange-500"></div>
-                                    <div class="space-y-4 p-5">
-                                        <div>
-                                            <span class="inline-flex rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] {{ $toneClasses[$template['tone']] ?? $toneClasses['slate'] }}">
-                                                {{ $template['badges'][0] ?? __('Email') }}
-                                            </span>
-                                            <p class="mt-4 text-lg font-semibold leading-6 text-slate-950">{{ $template['sample']['subject'] }}</p>
-                                            <p class="mt-2 text-sm leading-6 text-slate-600">{{ $template['sample']['body'] }}</p>
+                                    <div class="h-0.5 bg-amber-500"></div>
+                                    <div class="space-y-2 p-3">
+                                        <span class="inline-flex rounded-full border px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider {{ $toneClasses[$template['tone']] ?? $toneClasses['slate'] }}">
+                                            {{ $template['badges'][0] ?? __('Email') }}
+                                        </span>
+                                        <p class="mt-1 text-sm font-bold leading-5 text-slate-900">{{ $template['sample']['subject'] }}</p>
+                                        <p class="text-[11px] leading-5 text-slate-600">{{ $template['sample']['body'] }}</p>
+                                        <div class="rounded-lg border border-slate-200 bg-slate-50 px-2 py-1.5">
+                                            <p class="font-mono text-[10px] text-slate-600">{{ $template['sample']['meta'] }}</p>
                                         </div>
-                                        <div class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2">
-                                            <p class="font-mono text-[11px] leading-5 text-slate-600">{{ $template['sample']['meta'] }}</p>
-                                        </div>
-                                        <div class="h-9 rounded-lg bg-primary"></div>
-                                        <div class="space-y-2">
-                                            <div class="h-2 w-2/3 rounded-full bg-slate-200"></div>
-                                            <div class="h-2 w-1/2 rounded-full bg-slate-200"></div>
-                                        </div>
+                                        <div class="h-7 rounded-lg bg-primary"></div>
                                     </div>
                                 </div>
                             </div>
                         </article>
                     @endforeach
                 </div>
-            </section>
+            </div>
 
+            {{-- ============== Template Library + Mail Config ============== --}}
             <div class="grid gap-6 xl:grid-cols-[1.1fr_0.9fr]">
-                <section class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/30">
-                    <div class="border-b border-slate-200 px-6 py-5 dark:border-slate-800">
-                        <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ __('Template Library') }}</p>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Open any email in English, Arabic, or Kurdish sample data.') }}</p>
+                <div class="rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                    <div class="border-b border-slate-200/70 px-5 py-3.5 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-layer-group text-primary text-sm dark:text-indigo-300"></i>
+                            <p class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Template Library') }}</p>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-0.5 dark:text-slate-400">{{ __('Open any email in English, Arabic, or Kurdish sample data.') }}</p>
                     </div>
-
-                    <div class="grid gap-4 p-6 md:grid-cols-2">
+                    <div class="grid gap-3 p-5 md:grid-cols-2">
                         @foreach($templateCards as $template)
-                            <article class="rounded-2xl border border-slate-200 p-4 transition hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800">
+                            <article class="rounded-2xl border border-slate-200 p-4 transition hover:shadow-md dark:border-slate-800">
                                 <div class="flex items-start gap-3">
-                                    <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border {{ $toneClasses[$template['tone']] ?? $toneClasses['slate'] }}">
-                                        <i class="fas {{ $template['icon'] }}"></i>
+                                    <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border {{ $toneClasses[$template['tone']] ?? $toneClasses['slate'] }}">
+                                        <i class="fas {{ $template['icon'] }} text-xs"></i>
                                     </span>
                                     <div class="min-w-0 flex-1">
-                                        <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $template['title'] }}</p>
-                                        <p class="mt-1 text-sm leading-6 text-slate-600 dark:text-slate-300">{{ $template['description'] }}</p>
-                                        <div class="mt-3 flex flex-wrap gap-1.5">
+                                        <p class="text-sm font-bold text-slate-900 dark:text-slate-100">{{ $template['title'] }}</p>
+                                        <p class="mt-0.5 text-xs leading-5 text-slate-600 dark:text-slate-300">{{ $template['description'] }}</p>
+                                        <div class="mt-2 flex flex-wrap gap-1">
                                             @foreach($template['badges'] as $badge)
-                                                <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[11px] font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ $badge }}</span>
+                                                <span class="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ $badge }}</span>
                                             @endforeach
                                         </div>
-                                        <div class="mt-4 flex flex-wrap gap-2">
+                                        <div class="mt-3 flex flex-wrap gap-1.5">
                                             @foreach(['en' => 'EN', 'ar' => 'AR', 'ku' => 'KU'] as $locale => $label)
                                                 <a href="{{ route('admin.email.preview', ['template' => $template['key'], 'locale' => $locale]) }}" target="_blank" rel="noopener"
-                                                   class="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">
-                                                    <i class="fas fa-up-right-from-square text-[10px] text-slate-400"></i>
-                                                    {{ $label }}
+                                                   class="inline-flex items-center gap-1 rounded-lg border border-slate-200 px-2 py-1 text-[10px] font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800">
+                                                    <i class="fas fa-up-right-from-square text-[8px] text-slate-400"></i> {{ $label }}
                                                 </a>
                                             @endforeach
                                         </div>
@@ -485,22 +526,25 @@
                             </article>
                         @endforeach
                     </div>
-                </section>
+                </div>
 
-                <section class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/30">
-                    <div class="border-b border-slate-200 px-6 py-5 dark:border-slate-800">
-                        <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ __('Mail Configuration') }}</p>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Sensitive values are masked and must be changed from environment configuration.') }}</p>
+                <div class="rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                    <div class="border-b border-slate-200/70 px-5 py-3.5 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900">
+                        <div class="flex items-center gap-2">
+                            <i class="fas fa-gears text-primary text-sm dark:text-indigo-300"></i>
+                            <p class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Mail Configuration') }}</p>
+                        </div>
+                        <p class="text-xs text-slate-500 mt-0.5 dark:text-slate-400">{{ __('Sensitive values are masked and must be changed from environment configuration.') }}</p>
                     </div>
-                    <div class="grid gap-3 p-6 sm:grid-cols-2">
+                    <div class="grid gap-2 p-5 sm:grid-cols-2">
                         @foreach($summary as $label => $value)
-                            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950">
-                                <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __(str_replace('_', ' ', $label)) }}</p>
-                                <p class="mt-2 break-words text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $value !== '' ? $value : '-' }}</p>
+                            <div class="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-950">
+                                <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __(str_replace('_', ' ', $label)) }}</p>
+                                <p class="mt-1 break-words text-sm font-bold text-slate-900 font-mono dark:text-slate-100">{{ $value !== '' ? $value : '-' }}</p>
                             </div>
                         @endforeach
                     </div>
-                </section>
+                </div>
             </div>
         </div>
     </div>

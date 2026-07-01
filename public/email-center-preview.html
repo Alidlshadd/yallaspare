@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Email Center · Broadcast Campaign Center · 3 + 1 Mockup</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0"
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer">
+<script>
+  tailwind.config = {
+    theme: { extend: {
+      colors: { primary:'#070740', 'primary-hover':'#04042a' },
+      fontFamily: { sans:['Inter','ui-sans-serif','system-ui'], mono:['JetBrains Mono','ui-monospace','monospace'] }
+    }}
+  }
+</script>
+<style>
+  body { font-family: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif; }
+  .switcher button.active { background:#070740; color:#fff; }
+  .tab-pane { display:none; }
+  .tab-pane.active { display:block; }
+  .bento-shadow { box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06); }
+  .num-display { font-feature-settings: "tnum" 1, "lnum" 1; letter-spacing: -0.025em; }
+  .pulse-dot { position: relative; }
+  .pulse-dot::after {
+    content: ""; position: absolute; inset: -4px; border-radius: 999px;
+    border: 2px solid currentColor; opacity: 0.35; animation: pulse-ring 1.6s ease-out infinite;
+  }
+  @keyframes pulse-ring { 0% { transform: scale(0.6); opacity: 0.6; } 100% { transform: scale(1.5); opacity: 0; } }
+  .rt-toolbar button { display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:8px; color:#475569; }
+  .rt-toolbar button:hover { background:#f1f5f9; color:#070740; }
+  .rt-toolbar .sep { width:1px; height:18px; background:#e2e8f0; margin:0 4px; }
+</style>
+</head>
+<body class="bg-[#f3f4f7]">
+
+<header class="sticky top-0 z-30 border-b border-slate-200 bg-white/90 backdrop-blur">
+  <div class="mx-auto flex max-w-7xl items-center justify-between gap-4 px-6 py-3">
+    <div>
+      <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">Yalla Spare · Email Center · Compose ayri sayfada</p>
+      <h1 class="mt-0.5 text-base font-bold text-primary">3 ana sayfa mockup + 1 ayri Compose sayfasi</h1>
+    </div>
+    <div class="switcher inline-flex rounded-xl border border-slate-200 bg-white p-1 text-sm font-bold shadow-sm">
+      <button data-tab="a" class="active rounded-lg px-3 py-1.5">A · Tablo Geniş</button>
+      <button data-tab="b" class="rounded-lg px-3 py-1.5">B · Kart-Liste</button>
+      <button data-tab="c" class="rounded-lg px-3 py-1.5">C · Inbox 3-Kol</button>
+      <button data-tab="d" class="rounded-lg px-3 py-1.5 bg-amber-100 text-amber-800">D · Compose Sayfasi</button>
+    </div>
+  </div>
+</header>
+
+<main class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+
+<!-- ============================================================
+     A) MAIN PAGE — TABLO GENIŞ
+     Sadece stats + history. Create Broadcast = ust sag dukme (route).
+     ============================================================ -->
+<section data-pane="a" class="tab-pane active">
+
+  <!-- PREMIUM HEADER STRIP -->
+  <div class="relative mb-6 rounded-2xl bg-white border border-slate-200/70 bento-shadow overflow-hidden">
+    <div class="absolute -top-16 -right-16 h-40 w-40 rounded-full bg-amber-400/10 blur-3xl pointer-events-none"></div>
+    <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-indigo-500 to-amber-400"></div>
+    <div class="relative flex flex-wrap items-center justify-between gap-3 px-5 py-4">
+      <div class="flex items-center gap-3">
+        <div class="relative h-11 w-11 rounded-2xl bg-gradient-to-br from-primary to-indigo-700 text-white grid place-items-center shadow-lg shadow-primary/20">
+          <i class="fas fa-envelope-open-text text-sm"></i>
+          <span class="absolute -top-1 -right-1 h-3 w-3 rounded-full bg-amber-400 border-2 border-white"></span>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <p class="text-[10px] uppercase tracking-[0.22em] text-slate-400 font-bold leading-none">Customer communication</p>
+            <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 px-1.5 py-0.5 text-[9px] font-bold border border-emerald-100"><span class="h-1 w-1 rounded-full bg-emerald-500 animate-pulse"></span> LIVE</span>
+          </div>
+          <p class="text-base font-black text-primary leading-tight mt-1 tracking-tight">Email Center</p>
+          <p class="text-[11px] text-slate-400 font-mono mt-0.5">last sync · 12 sec ago · queue: redis</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-1.5">
+        <button class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100"><i class="fas fa-rotate-right text-[10px]"></i> Refresh</button>
+        <button class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50"><i class="fas fa-file-pen text-[10px]"></i> Drafts <span class="ml-1 rounded-full bg-amber-100 text-amber-700 px-1.5 text-[10px]">7</span></button>
+        <a href="#d" onclick="document.querySelector('[data-tab=d]').click();return false;" class="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-br from-primary to-indigo-700 px-4 py-2 text-xs font-bold text-white shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition"><i class="fas fa-plus text-[10px]"></i> Create Broadcast</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- PREMIUM STAT CARDS -->
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+    <div class="group relative rounded-2xl bg-white p-4 bento-shadow border border-slate-200/70 overflow-hidden hover:-translate-y-0.5 transition-all">
+      <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-indigo-500 to-indigo-700"></div>
+      <div class="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-indigo-500/5 blur-xl"></div>
+      <div class="relative flex items-start justify-between">
+        <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">Total Sent</p>
+        <div class="h-7 w-7 rounded-lg bg-indigo-50 text-indigo-600 grid place-items-center"><i class="fas fa-envelopes-bulk text-[10px]"></i></div>
+      </div>
+      <p class="relative mt-3 num-display text-2xl font-black text-primary">986</p>
+      <div class="relative mt-2 flex items-center justify-between">
+        <p class="text-[10px] text-slate-400 font-mono">7 days</p>
+        <span class="inline-flex items-center gap-0.5 text-[10px] font-bold text-emerald-600"><i class="fas fa-arrow-up text-[8px]"></i> 18%</span>
+      </div>
+      <div class="relative mt-2 h-1 rounded-full bg-slate-100 overflow-hidden"><div class="h-full rounded-full bg-gradient-to-r from-indigo-500 to-indigo-600" style="width:78%"></div></div>
+    </div>
+
+    <div class="group relative rounded-2xl bg-white p-4 bento-shadow border border-slate-200/70 overflow-hidden hover:-translate-y-0.5 transition-all">
+      <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-emerald-500 to-emerald-600"></div>
+      <div class="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-emerald-500/5 blur-xl"></div>
+      <div class="relative flex items-start justify-between">
+        <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">Delivered</p>
+        <div class="h-7 w-7 rounded-lg bg-emerald-50 text-emerald-600 grid place-items-center"><i class="fas fa-circle-check text-[10px]"></i></div>
+      </div>
+      <p class="relative mt-3 num-display text-2xl font-black text-primary">962</p>
+      <div class="relative mt-2 flex items-center justify-between">
+        <p class="text-[10px] text-emerald-600 font-mono font-bold">97.6%</p>
+        <span class="text-[10px] font-mono text-slate-400">rate</span>
+      </div>
+      <div class="relative mt-2 h-1 rounded-full bg-slate-100 overflow-hidden"><div class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600" style="width:97.6%"></div></div>
+    </div>
+
+    <div class="group relative rounded-2xl bg-white p-4 bento-shadow border border-slate-200/70 overflow-hidden hover:-translate-y-0.5 transition-all">
+      <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-sky-500 to-sky-600"></div>
+      <div class="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-sky-500/5 blur-xl"></div>
+      <div class="relative flex items-start justify-between">
+        <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">Opened</p>
+        <div class="h-7 w-7 rounded-lg bg-sky-50 text-sky-600 grid place-items-center"><i class="fas fa-envelope-open text-[10px]"></i></div>
+      </div>
+      <p class="relative mt-3 num-display text-2xl font-black text-primary">421</p>
+      <div class="relative mt-2 flex items-center justify-between">
+        <p class="text-[10px] text-sky-600 font-mono font-bold">43.7%</p>
+        <span class="text-[10px] font-mono text-slate-400">open</span>
+      </div>
+      <div class="relative mt-2 h-1 rounded-full bg-slate-100 overflow-hidden"><div class="h-full rounded-full bg-gradient-to-r from-sky-500 to-sky-600" style="width:43.7%"></div></div>
+    </div>
+
+    <div class="group relative rounded-2xl bg-white p-4 bento-shadow border border-slate-200/70 overflow-hidden hover:-translate-y-0.5 transition-all">
+      <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-rose-500 to-rose-600"></div>
+      <div class="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-rose-500/5 blur-xl"></div>
+      <div class="relative flex items-start justify-between">
+        <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">Failed</p>
+        <div class="h-7 w-7 rounded-lg bg-rose-50 text-rose-600 grid place-items-center"><i class="fas fa-triangle-exclamation text-[10px]"></i></div>
+      </div>
+      <p class="relative mt-3 num-display text-2xl font-black text-primary">3</p>
+      <div class="relative mt-2 flex items-center justify-between">
+        <p class="text-[10px] text-rose-600 font-mono font-bold">2.0%</p>
+        <span class="text-[10px] font-mono text-slate-400">bounce</span>
+      </div>
+      <div class="relative mt-2 h-1 rounded-full bg-slate-100 overflow-hidden"><div class="h-full rounded-full bg-gradient-to-r from-rose-500 to-rose-600" style="width:2%"></div></div>
+    </div>
+
+    <div class="group relative rounded-2xl bg-white p-4 bento-shadow border border-slate-200/70 overflow-hidden hover:-translate-y-0.5 transition-all">
+      <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-slate-400 to-slate-500"></div>
+      <div class="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-slate-500/5 blur-xl"></div>
+      <div class="relative flex items-start justify-between">
+        <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">Drafts</p>
+        <div class="h-7 w-7 rounded-lg bg-slate-100 text-slate-600 grid place-items-center"><i class="fas fa-file-pen text-[10px]"></i></div>
+      </div>
+      <p class="relative mt-3 num-display text-2xl font-black text-primary">7</p>
+      <div class="relative mt-2 flex items-center justify-between">
+        <p class="text-[10px] text-slate-400 font-mono">unsent</p>
+        <a class="text-[10px] font-bold text-primary hover:underline">Resume &rarr;</a>
+      </div>
+      <div class="relative mt-2 h-1 rounded-full bg-slate-100 overflow-hidden"><div class="h-full rounded-full bg-gradient-to-r from-slate-400 to-slate-500" style="width:20%"></div></div>
+    </div>
+
+    <div class="group relative rounded-2xl bg-gradient-to-br from-amber-50/60 to-white p-4 bento-shadow border border-amber-200/70 overflow-hidden hover:-translate-y-0.5 transition-all">
+      <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-amber-400 to-amber-500"></div>
+      <div class="absolute -top-4 -right-4 h-16 w-16 rounded-full bg-amber-500/10 blur-xl"></div>
+      <div class="relative flex items-start justify-between">
+        <p class="text-[10px] uppercase tracking-[0.22em] text-amber-700 font-bold">Pending</p>
+        <div class="h-7 w-7 rounded-lg bg-amber-100 text-amber-700 grid place-items-center"><i class="fas fa-clock text-[10px]"></i></div>
+      </div>
+      <p class="relative mt-3 num-display text-2xl font-black text-primary flex items-center gap-2">12 <span class="pulse-dot inline-flex h-1.5 w-1.5 rounded-full bg-amber-500 text-amber-500"></span></p>
+      <div class="relative mt-2 flex items-center justify-between">
+        <p class="text-[10px] text-amber-700 font-mono font-bold">in queue</p>
+        <span class="text-[10px] font-mono text-amber-700">~4 min</span>
+      </div>
+      <div class="relative mt-2 h-1 rounded-full bg-amber-100 overflow-hidden"><div class="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-500 animate-pulse" style="width:35%"></div></div>
+    </div>
+  </div>
+
+  <!-- HISTORY full width — PREMIUM -->
+  <div class="relative rounded-2xl bg-white border border-slate-200/70 bento-shadow overflow-hidden">
+    <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-transparent via-slate-200 to-transparent"></div>
+
+    <!-- Header with title + filter pills -->
+    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80">
+      <div class="flex items-center gap-2.5">
+        <div class="h-8 w-8 rounded-lg bg-primary/10 text-primary grid place-items-center"><i class="fas fa-clock-rotate-left text-xs"></i></div>
+        <div>
+          <p class="text-sm font-bold text-primary leading-none">Broadcast History</p>
+          <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">47 records · last 90 days</p>
+        </div>
+      </div>
+      <div class="inline-flex items-center gap-0.5 rounded-xl border border-slate-200 bg-white p-1 text-[11px] font-bold uppercase tracking-wider shadow-sm">
+        <button class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-primary text-white"><i class="fas fa-layer-group text-[9px]"></i> All <span class="ml-0.5 rounded-full bg-white/20 px-1 text-[9px]">47</span></button>
+        <button class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-emerald-700 hover:bg-emerald-50"><i class="fas fa-check text-[9px]"></i> Sent <span class="ml-0.5 rounded-full bg-emerald-100 px-1 text-[9px]">28</span></button>
+        <button class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-slate-600 hover:bg-slate-50"><i class="fas fa-file-pen text-[9px]"></i> Draft <span class="ml-0.5 rounded-full bg-slate-100 px-1 text-[9px]">7</span></button>
+        <button class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-rose-700 hover:bg-rose-50"><i class="fas fa-xmark text-[9px]"></i> Failed <span class="ml-0.5 rounded-full bg-rose-100 px-1 text-[9px]">3</span></button>
+        <button class="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-amber-700 hover:bg-amber-50"><i class="fas fa-clock text-[9px]"></i> Pending <span class="ml-0.5 rounded-full bg-amber-100 px-1 text-[9px]">12</span></button>
+      </div>
+    </div>
+
+    <!-- Filter bar -->
+    <div class="flex flex-col gap-2 border-b border-slate-200/70 px-5 py-3 bg-white sm:flex-row sm:items-center">
+      <div class="relative flex-1">
+        <i class="fas fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+        <input type="text" placeholder="Search subject, recipient, audience..." class="w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-12 py-2 text-sm focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20 transition">
+        <kbd class="absolute right-3 top-1/2 -translate-y-1/2 inline-flex h-5 items-center gap-0.5 rounded border border-slate-200 bg-white px-1.5 font-mono text-[10px] font-bold text-slate-400">⌘K</kbd>
+      </div>
+      <div class="flex items-center gap-2">
+        <div class="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white px-2 py-1.5">
+          <i class="fas fa-calendar-days text-slate-400 text-[10px]"></i>
+          <input type="date" class="bg-transparent text-xs font-bold text-slate-700 focus:outline-none">
+          <span class="text-slate-400 font-mono text-[11px]">→</span>
+          <input type="date" class="bg-transparent text-xs font-bold text-slate-700 focus:outline-none">
+        </div>
+        <button class="inline-flex items-center gap-1.5 rounded-xl border border-amber-200 bg-gradient-to-br from-amber-50 to-white px-3 py-2 text-xs font-bold text-amber-800 hover:from-amber-100 hover:to-amber-50 shadow-sm"><i class="fas fa-file-export text-[10px]"></i> Export CSV</button>
+      </div>
+    </div>
+
+    <!-- Bulk actions strip (shown when 1+ selected) -->
+    <div class="hidden items-center gap-2 border-b border-slate-200/70 px-5 py-2 bg-indigo-50/50 text-[11px] font-bold text-primary">
+      <span>2 selected</span>
+      <button class="rounded-lg border border-slate-200 bg-white px-2 py-1">Duplicate</button>
+      <button class="rounded-lg border border-slate-200 bg-white px-2 py-1">Export</button>
+      <button class="rounded-lg border border-rose-200 bg-rose-50 text-rose-700 px-2 py-1">Delete</button>
+    </div>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full text-sm">
+        <thead class="text-[10px] uppercase tracking-widest text-slate-500 font-bold bg-slate-50/40">
+          <tr class="border-b border-slate-200/70">
+            <th class="px-5 py-3 text-left"><input type="checkbox" class="rounded border-slate-300"></th>
+            <th class="px-5 py-3 text-left">Campaign / Subject</th>
+            <th class="px-5 py-3 text-left">Audience</th>
+            <th class="px-5 py-3 text-left">Status</th>
+            <th class="px-5 py-3 text-right">Sent</th>
+            <th class="px-5 py-3 text-right">Opened</th>
+            <th class="px-5 py-3 text-left">Date</th>
+            <th class="px-5 py-3 text-right">Actions</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-slate-100">
+
+          <tr class="group hover:bg-slate-50/60 transition">
+            <td class="px-5 py-3"><input type="checkbox" class="rounded border-slate-300"></td>
+            <td class="px-5 py-3">
+              <div class="flex items-center gap-3">
+                <span class="h-8 w-8 rounded-lg bg-gradient-to-br from-indigo-500 to-indigo-700 text-white grid place-items-center shadow-sm"><i class="fas fa-bullhorn text-[11px]"></i></span>
+                <div class="min-w-0">
+                  <p class="font-bold text-primary text-[13px]">Newroz campaign · save 15%</p>
+                  <p class="text-[11px] text-slate-400 font-mono">promotional · with CTA</p>
+                </div>
+              </div>
+            </td>
+            <td class="px-5 py-3">
+              <div class="flex items-center gap-2">
+                <span class="h-7 w-7 rounded-full bg-emerald-100 text-emerald-700 grid place-items-center text-[10px] font-black">C</span>
+                <div>
+                  <span class="inline-flex rounded-md bg-slate-100 text-slate-700 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">Customers</span>
+                  <p class="mt-0.5 text-[11px] text-slate-400 font-mono">2,341 recipients</p>
+                </div>
+              </div>
+            </td>
+            <td class="px-5 py-3"><span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 px-2.5 py-1 text-[11px] font-bold border border-emerald-100"><i class="fas fa-check text-[9px]"></i> Sent</span></td>
+            <td class="px-5 py-3 text-right"><span class="num-display font-bold text-slate-700">2,310</span></td>
+            <td class="px-5 py-3 text-right">
+              <div class="inline-flex flex-col items-end">
+                <span class="num-display font-bold text-slate-700">1,012</span>
+                <div class="mt-1 flex items-center gap-1.5">
+                  <div class="h-1.5 w-20 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-sky-400 to-sky-600 rounded-full" style="width:43.8%"></div></div>
+                  <span class="text-[10px] font-bold text-sky-600">43.8%</span>
+                </div>
+              </div>
+            </td>
+            <td class="px-5 py-3"><div class="text-slate-500 font-mono text-[12px]">12 Mar</div><div class="text-[10px] text-slate-400 font-mono">14:22</div></td>
+            <td class="px-5 py-3">
+              <div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition">
+                <button title="View" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-primary hover:text-white hover:border-primary"><i class="fas fa-eye text-[10px]"></i></button>
+                <button title="Duplicate" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-primary hover:text-white hover:border-primary"><i class="fas fa-copy text-[10px]"></i></button>
+                <button title="Send test" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-amber-500 hover:text-white hover:border-amber-500"><i class="fas fa-paper-plane text-[10px]"></i></button>
+                <button title="Delete" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-rose-500 hover:text-white hover:border-rose-500"><i class="fas fa-trash text-[10px]"></i></button>
+              </div>
+            </td>
+          </tr>
+
+          <tr class="group hover:bg-slate-50/60 transition">
+            <td class="px-5 py-3"><input type="checkbox" class="rounded border-slate-300"></td>
+            <td class="px-5 py-3">
+              <div class="flex items-center gap-3">
+                <span class="h-8 w-8 rounded-lg bg-gradient-to-br from-emerald-500 to-emerald-600 text-white grid place-items-center shadow-sm"><i class="fas fa-handshake text-[11px]"></i></span>
+                <div class="min-w-0"><p class="font-bold text-primary text-[13px]">Dealer tier update</p><p class="text-[11px] text-slate-400 font-mono">operational</p></div>
+              </div>
+            </td>
+            <td class="px-5 py-3">
+              <div class="flex items-center gap-2">
+                <span class="h-7 w-7 rounded-full bg-amber-100 text-amber-700 grid place-items-center text-[10px] font-black">D</span>
+                <div><span class="inline-flex rounded-md bg-slate-100 text-slate-700 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">Dealers</span><p class="mt-0.5 text-[11px] text-slate-400 font-mono">84 recipients</p></div>
+              </div>
+            </td>
+            <td class="px-5 py-3"><span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 px-2.5 py-1 text-[11px] font-bold border border-emerald-100"><i class="fas fa-check text-[9px]"></i> Sent</span></td>
+            <td class="px-5 py-3 text-right"><span class="num-display font-bold text-slate-700">84</span></td>
+            <td class="px-5 py-3 text-right">
+              <div class="inline-flex flex-col items-end">
+                <span class="num-display font-bold text-slate-700">61</span>
+                <div class="mt-1 flex items-center gap-1.5">
+                  <div class="h-1.5 w-20 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-sky-400 to-sky-600 rounded-full" style="width:72.6%"></div></div>
+                  <span class="text-[10px] font-bold text-sky-600">72.6%</span>
+                </div>
+              </div>
+            </td>
+            <td class="px-5 py-3"><div class="text-slate-500 font-mono text-[12px]">10 Mar</div><div class="text-[10px] text-slate-400 font-mono">09:14</div></td>
+            <td class="px-5 py-3">
+              <div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition">
+                <button title="View" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-primary hover:text-white hover:border-primary"><i class="fas fa-eye text-[10px]"></i></button>
+                <button title="Duplicate" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-primary hover:text-white hover:border-primary"><i class="fas fa-copy text-[10px]"></i></button>
+                <button title="Send test" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-amber-500 hover:text-white hover:border-amber-500"><i class="fas fa-paper-plane text-[10px]"></i></button>
+                <button title="Delete" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-rose-500 hover:text-white hover:border-rose-500"><i class="fas fa-trash text-[10px]"></i></button>
+              </div>
+            </td>
+          </tr>
+
+          <tr class="group hover:bg-slate-50/60 transition bg-amber-50/20 border-l-2 border-amber-400">
+            <td class="px-5 py-3"><input type="checkbox" class="rounded border-slate-300"></td>
+            <td class="px-5 py-3">
+              <div class="flex items-center gap-3">
+                <span class="h-8 w-8 rounded-lg bg-gradient-to-br from-amber-400 to-amber-500 text-white grid place-items-center shadow-sm"><i class="fas fa-clock text-[11px]"></i></span>
+                <div class="min-w-0"><p class="font-bold text-primary text-[13px]">Weekend service reminder</p><p class="text-[11px] text-amber-700 font-mono">queued · 12 processing</p></div>
+              </div>
+            </td>
+            <td class="px-5 py-3">
+              <div class="flex items-center gap-2">
+                <span class="h-7 w-7 rounded-full bg-indigo-100 text-indigo-700 grid place-items-center text-[10px] font-black">A</span>
+                <div><span class="inline-flex rounded-md bg-slate-100 text-slate-700 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">All</span><p class="mt-0.5 text-[11px] text-slate-400 font-mono">2,425 recipients</p></div>
+              </div>
+            </td>
+            <td class="px-5 py-3"><span class="inline-flex items-center gap-1 rounded-full bg-amber-50 text-amber-700 px-2.5 py-1 text-[11px] font-bold border border-amber-100"><span class="pulse-dot inline-flex h-1.5 w-1.5 rounded-full bg-amber-500 text-amber-500"></span> Pending</span></td>
+            <td class="px-5 py-3 text-right font-mono text-slate-400">—</td>
+            <td class="px-5 py-3 text-right text-slate-400 font-mono">—</td>
+            <td class="px-5 py-3"><div class="text-slate-500 font-mono text-[12px]">today</div><div class="text-[10px] text-amber-700 font-mono">est. 4 min</div></td>
+            <td class="px-5 py-3">
+              <div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition">
+                <button title="View" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-primary hover:text-white hover:border-primary"><i class="fas fa-eye text-[10px]"></i></button>
+                <button title="Pause queue" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-amber-500 hover:text-white hover:border-amber-500"><i class="fas fa-pause text-[10px]"></i></button>
+                <button title="Cancel" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-rose-500 hover:text-white hover:border-rose-500"><i class="fas fa-stop text-[10px]"></i></button>
+              </div>
+            </td>
+          </tr>
+
+          <tr class="group hover:bg-slate-50/60 transition">
+            <td class="px-5 py-3"><input type="checkbox" class="rounded border-slate-300"></td>
+            <td class="px-5 py-3">
+              <div class="flex items-center gap-3">
+                <span class="h-8 w-8 rounded-lg bg-gradient-to-br from-rose-500 to-rose-600 text-white grid place-items-center shadow-sm"><i class="fas fa-triangle-exclamation text-[11px]"></i></span>
+                <div class="min-w-0"><p class="font-bold text-primary text-[13px]">Spring brake offer</p><p class="text-[11px] text-rose-500 font-mono">bounce: invalid sender</p></div>
+              </div>
+            </td>
+            <td class="px-5 py-3">
+              <div class="flex items-center gap-2">
+                <span class="h-7 w-7 rounded-full bg-emerald-100 text-emerald-700 grid place-items-center text-[10px] font-black">C</span>
+                <div><span class="inline-flex rounded-md bg-slate-100 text-slate-700 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">Customers</span><p class="mt-0.5 text-[11px] text-slate-400 font-mono">1,892 recipients</p></div>
+              </div>
+            </td>
+            <td class="px-5 py-3"><span class="inline-flex items-center gap-1 rounded-full bg-rose-50 text-rose-700 px-2.5 py-1 text-[11px] font-bold border border-rose-100"><i class="fas fa-xmark text-[9px]"></i> Failed</span></td>
+            <td class="px-5 py-3 text-right"><span class="num-display font-bold text-slate-700">1,840</span></td>
+            <td class="px-5 py-3 text-right">
+              <div class="inline-flex flex-col items-end">
+                <span class="num-display font-bold text-slate-700">912</span>
+                <div class="mt-1 flex items-center gap-1.5">
+                  <div class="h-1.5 w-20 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-gradient-to-r from-sky-400 to-sky-600 rounded-full" style="width:49.6%"></div></div>
+                  <span class="text-[10px] font-bold text-sky-600">49.6%</span>
+                </div>
+              </div>
+            </td>
+            <td class="px-5 py-3"><div class="text-slate-500 font-mono text-[12px]">08 Mar</div><div class="text-[10px] text-slate-400 font-mono">11:08</div></td>
+            <td class="px-5 py-3">
+              <div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition">
+                <button title="View error" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-primary hover:text-white hover:border-primary"><i class="fas fa-eye text-[10px]"></i></button>
+                <button title="Retry" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-emerald-500 hover:text-white hover:border-emerald-500"><i class="fas fa-rotate-right text-[10px]"></i></button>
+                <button title="Duplicate" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-primary hover:text-white hover:border-primary"><i class="fas fa-copy text-[10px]"></i></button>
+                <button title="Delete" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-rose-500 hover:text-white hover:border-rose-500"><i class="fas fa-trash text-[10px]"></i></button>
+              </div>
+            </td>
+          </tr>
+
+          <tr class="group hover:bg-slate-50/60 transition">
+            <td class="px-5 py-3"><input type="checkbox" class="rounded border-slate-300"></td>
+            <td class="px-5 py-3">
+              <div class="flex items-center gap-3">
+                <span class="h-8 w-8 rounded-lg bg-gradient-to-br from-slate-400 to-slate-500 text-white grid place-items-center shadow-sm"><i class="fas fa-file-pen text-[11px]"></i></span>
+                <div class="min-w-0"><p class="font-bold text-primary text-[13px]">Eid Mubarak greeting</p><p class="text-[11px] text-slate-400 font-mono">draft · not sent</p></div>
+              </div>
+            </td>
+            <td class="px-5 py-3">
+              <div class="flex items-center gap-2">
+                <span class="h-7 w-7 rounded-full bg-indigo-100 text-indigo-700 grid place-items-center text-[10px] font-black">A</span>
+                <div><span class="inline-flex rounded-md bg-slate-100 text-slate-700 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider">All</span><p class="mt-0.5 text-[11px] text-slate-400 font-mono">est. 2,425</p></div>
+              </div>
+            </td>
+            <td class="px-5 py-3"><span class="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-700 px-2.5 py-1 text-[11px] font-bold border border-slate-200"><i class="fas fa-file-pen text-[9px]"></i> Draft</span></td>
+            <td class="px-5 py-3 text-right font-mono text-slate-400">—</td>
+            <td class="px-5 py-3 text-right text-slate-400 font-mono">—</td>
+            <td class="px-5 py-3"><div class="text-slate-500 font-mono text-[12px]">02 Mar</div><div class="text-[10px] text-slate-400 font-mono">10:15</div></td>
+            <td class="px-5 py-3">
+              <div class="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition">
+                <button title="Edit" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-primary hover:text-white hover:border-primary"><i class="fas fa-pen text-[10px]"></i></button>
+                <button title="Send now" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-emerald-500 hover:text-white hover:border-emerald-500"><i class="fas fa-paper-plane text-[10px]"></i></button>
+                <button title="Duplicate" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-primary hover:text-white hover:border-primary"><i class="fas fa-copy text-[10px]"></i></button>
+                <button title="Delete draft" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-rose-500 hover:text-white hover:border-rose-500"><i class="fas fa-trash text-[10px]"></i></button>
+              </div>
+            </td>
+          </tr>
+
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Premium pagination -->
+    <div class="flex flex-wrap items-center justify-between gap-3 border-t border-slate-200/70 px-5 py-3 bg-gradient-to-r from-slate-50/60 via-white to-slate-50/60">
+      <div class="flex items-center gap-3 text-[11px] font-mono text-slate-500">
+        <span>Showing <span class="font-bold text-primary">1–5</span> of <span class="font-bold text-primary">47</span></span>
+        <span class="text-slate-300">·</span>
+        <select class="rounded-lg border border-slate-200 bg-white px-2 py-1 text-[11px] font-bold text-slate-700 focus:border-primary focus:ring-1 focus:ring-primary/20"><option>5 / page</option><option>10 / page</option><option>25 / page</option><option>50 / page</option></select>
+      </div>
+      <div class="inline-flex items-center gap-0.5 rounded-xl border border-slate-200 bg-white p-1 shadow-sm">
+        <button class="h-7 w-7 grid place-items-center rounded-lg text-slate-400 hover:bg-slate-50" title="Previous"><i class="fas fa-chevron-left text-[10px]"></i></button>
+        <button class="h-7 min-w-[28px] px-2 rounded-lg bg-primary text-white text-[11px] font-bold">1</button>
+        <button class="h-7 min-w-[28px] px-2 rounded-lg text-slate-600 hover:bg-slate-50 text-[11px] font-bold">2</button>
+        <button class="h-7 min-w-[28px] px-2 rounded-lg text-slate-600 hover:bg-slate-50 text-[11px] font-bold">3</button>
+        <span class="px-1.5 text-slate-400 text-[11px] font-mono">…</span>
+        <button class="h-7 min-w-[28px] px-2 rounded-lg text-slate-600 hover:bg-slate-50 text-[11px] font-bold">10</button>
+        <button class="h-7 w-7 grid place-items-center rounded-lg text-slate-600 hover:bg-slate-50" title="Next"><i class="fas fa-chevron-right text-[10px]"></i></button>
+      </div>
+    </div>
+  </div>
+
+  <p class="mt-4 text-center text-xs font-mono text-slate-500">A · Tablo Geniş (Premium) — Live header, mini progress bars, audience avatars, hover icon actions, gradient pagination.</p>
+</section>
+
+
+<!-- ============================================================
+     B) MAIN PAGE — KART-LISTE
+     Tablo yerine zengin kart-liste. Compose yine ayri sayfada.
+     ============================================================ -->
+<section data-pane="b" class="tab-pane">
+
+  <div class="mb-6 rounded-2xl bg-white border border-slate-200/70 px-4 py-3 bento-shadow flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center gap-2.5">
+      <div class="h-9 w-9 rounded-xl bg-primary/10 text-primary grid place-items-center"><i class="fas fa-envelope-open-text text-sm"></i></div>
+      <div>
+        <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold leading-none">Customer communication</p>
+        <p class="text-sm font-bold text-primary leading-tight mt-0.5">Email Center</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-1.5">
+      <button class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700"><i class="fas fa-rotate-right text-[10px]"></i> Refresh</button>
+      <button class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700"><i class="fas fa-file-pen text-[10px]"></i> Drafts <span class="ml-1 rounded-full bg-slate-200 px-1.5 text-[10px]">7</span></button>
+      <a href="#d" onclick="document.querySelector('[data-tab=d]').click();return false;" class="inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 py-2 text-xs font-bold text-white hover:bg-primary-hover shadow-md"><i class="fas fa-plus text-[10px]"></i> Create Broadcast</a>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+    <div class="relative rounded-2xl bg-white p-4 bento-shadow border border-slate-200/70 overflow-hidden"><div class="absolute top-0 left-0 bottom-0 w-1 bg-indigo-500"></div><p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">Total Sent</p><p class="mt-2 num-display text-2xl font-black text-primary">986</p><p class="text-[10px] text-slate-400 font-mono">7 days</p></div>
+    <div class="relative rounded-2xl bg-white p-4 bento-shadow border border-slate-200/70 overflow-hidden"><div class="absolute top-0 left-0 bottom-0 w-1 bg-emerald-500"></div><p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">Delivered</p><p class="mt-2 num-display text-2xl font-black text-primary">962</p><p class="text-[10px] text-emerald-600 font-mono">97.6%</p></div>
+    <div class="relative rounded-2xl bg-white p-4 bento-shadow border border-slate-200/70 overflow-hidden"><div class="absolute top-0 left-0 bottom-0 w-1 bg-sky-500"></div><p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">Opened</p><p class="mt-2 num-display text-2xl font-black text-primary">421</p><p class="text-[10px] text-sky-600 font-mono">43.7%</p></div>
+    <div class="relative rounded-2xl bg-white p-4 bento-shadow border border-slate-200/70 overflow-hidden"><div class="absolute top-0 left-0 bottom-0 w-1 bg-rose-500"></div><p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">Failed</p><p class="mt-2 num-display text-2xl font-black text-primary">3</p><p class="text-[10px] text-rose-600 font-mono">2.0%</p></div>
+    <div class="relative rounded-2xl bg-white p-4 bento-shadow border border-slate-200/70 overflow-hidden"><div class="absolute top-0 left-0 bottom-0 w-1 bg-slate-400"></div><p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">Drafts</p><p class="mt-2 num-display text-2xl font-black text-primary">7</p><p class="text-[10px] text-slate-400 font-mono">unsent</p></div>
+    <div class="relative rounded-2xl bg-white p-4 bento-shadow border border-slate-200/70 overflow-hidden"><div class="absolute top-0 left-0 bottom-0 w-1 bg-amber-500"></div><p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">Pending</p><p class="mt-2 num-display text-2xl font-black text-primary flex items-center gap-2">12 <span class="pulse-dot inline-flex h-1.5 w-1.5 rounded-full bg-amber-500 text-amber-500"></span></p><p class="text-[10px] text-amber-700 font-mono">in queue</p></div>
+  </div>
+
+  <div class="rounded-2xl bg-white border border-slate-200/70 bento-shadow overflow-hidden">
+    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/70 px-5 py-3.5 bg-slate-50/60">
+      <div class="flex items-center gap-2"><i class="fas fa-clock-rotate-left text-slate-400 text-sm"></i><p class="text-sm font-bold text-primary">Broadcast History</p><span class="font-mono text-[10px] uppercase tracking-widest text-slate-400">· 47 records</span></div>
+      <div class="flex items-center gap-2">
+        <div class="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-white p-1 text-[11px] font-bold uppercase tracking-wider">
+          <button class="px-2 py-1 rounded-lg bg-primary text-white">All</button>
+          <button class="px-2 py-1 rounded-lg text-slate-600">Sent</button>
+          <button class="px-2 py-1 rounded-lg text-slate-600">Draft</button>
+          <button class="px-2 py-1 rounded-lg text-rose-700">Failed</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-2 border-b border-slate-200/70 px-5 py-3 sm:flex-row sm:items-center">
+      <div class="relative flex-1"><i class="fas fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i><input type="text" placeholder="Search..." class="w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-3 py-2 text-sm"></div>
+      <input type="date" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700">
+      <button class="inline-flex items-center gap-1.5 rounded-xl border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-bold text-amber-800"><i class="fas fa-file-export text-[10px]"></i> Export</button>
+    </div>
+
+    <ul class="divide-y divide-slate-100">
+      <li class="px-5 py-4 hover:bg-slate-50/60 transition">
+        <div class="flex items-start gap-4">
+          <div class="h-11 w-11 rounded-xl bg-indigo-50 text-indigo-700 grid place-items-center"><i class="fas fa-bullhorn"></i></div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-3">
+              <div class="min-w-0">
+                <p class="truncate font-bold text-primary text-sm">Newroz campaign · save 15%</p>
+                <p class="mt-0.5 text-[12px] text-slate-500">To <span class="font-bold text-slate-700">Customers</span> · 2,341 recipients · 12 Mar 14:22</p>
+              </div>
+              <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 px-2.5 py-1 text-[11px] font-bold border border-emerald-100"><i class="fas fa-check text-[9px]"></i> Sent</span>
+            </div>
+            <div class="mt-3 grid grid-cols-4 gap-2 text-[11px]">
+              <div class="rounded-lg bg-slate-50 px-2.5 py-2"><p class="text-slate-400 font-mono">SENT</p><p class="font-bold text-slate-700 mt-0.5">2,310</p></div>
+              <div class="rounded-lg bg-emerald-50 px-2.5 py-2"><p class="text-emerald-600 font-mono">DELIVERED</p><p class="font-bold text-emerald-700 mt-0.5">2,279</p></div>
+              <div class="rounded-lg bg-sky-50 px-2.5 py-2"><p class="text-sky-600 font-mono">OPENED</p><p class="font-bold text-sky-700 mt-0.5">1,012 · 43.8%</p></div>
+              <div class="rounded-lg bg-rose-50 px-2.5 py-2"><p class="text-rose-600 font-mono">BOUNCE</p><p class="font-bold text-rose-700 mt-0.5">31</p></div>
+            </div>
+          </div>
+          <button class="text-slate-400 hover:text-primary"><i class="fas fa-ellipsis"></i></button>
+        </div>
+      </li>
+      <li class="px-5 py-4 hover:bg-slate-50/60 transition">
+        <div class="flex items-start gap-4">
+          <div class="h-11 w-11 rounded-xl bg-emerald-50 text-emerald-700 grid place-items-center"><i class="fas fa-handshake"></i></div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-3">
+              <div class="min-w-0">
+                <p class="truncate font-bold text-primary text-sm">Dealer tier update</p>
+                <p class="mt-0.5 text-[12px] text-slate-500">To <span class="font-bold text-slate-700">Dealers</span> · 84 recipients · 10 Mar 09:14</p>
+              </div>
+              <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 px-2.5 py-1 text-[11px] font-bold border border-emerald-100"><i class="fas fa-check text-[9px]"></i> Sent</span>
+            </div>
+            <div class="mt-3 grid grid-cols-4 gap-2 text-[11px]">
+              <div class="rounded-lg bg-slate-50 px-2.5 py-2"><p class="text-slate-400 font-mono">SENT</p><p class="font-bold text-slate-700 mt-0.5">84</p></div>
+              <div class="rounded-lg bg-emerald-50 px-2.5 py-2"><p class="text-emerald-600 font-mono">DELIVERED</p><p class="font-bold text-emerald-700 mt-0.5">84</p></div>
+              <div class="rounded-lg bg-sky-50 px-2.5 py-2"><p class="text-sky-600 font-mono">OPENED</p><p class="font-bold text-sky-700 mt-0.5">61 · 72.6%</p></div>
+              <div class="rounded-lg bg-rose-50 px-2.5 py-2"><p class="text-rose-600 font-mono">BOUNCE</p><p class="font-bold text-rose-700 mt-0.5">0</p></div>
+            </div>
+          </div>
+          <button class="text-slate-400 hover:text-primary"><i class="fas fa-ellipsis"></i></button>
+        </div>
+      </li>
+      <li class="px-5 py-4 hover:bg-slate-50/60 transition">
+        <div class="flex items-start gap-4">
+          <div class="h-11 w-11 rounded-xl bg-amber-50 text-amber-700 grid place-items-center"><i class="fas fa-clock"></i></div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-3">
+              <div class="min-w-0">
+                <p class="truncate font-bold text-primary text-sm">Weekend service reminder</p>
+                <p class="mt-0.5 text-[12px] text-slate-500">To <span class="font-bold text-slate-700">All</span> · 2,425 recipients · today</p>
+              </div>
+              <span class="inline-flex items-center gap-1 rounded-full bg-amber-50 text-amber-700 px-2.5 py-1 text-[11px] font-bold border border-amber-100"><span class="pulse-dot inline-flex h-1.5 w-1.5 rounded-full bg-amber-500 text-amber-500"></span> Pending</span>
+            </div>
+            <div class="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-[11px] font-mono text-amber-700 flex items-center justify-between">
+              <span>queued · 12 processing · 2,413 waiting</span>
+              <span>est. completion in 4 min</span>
+            </div>
+          </div>
+          <button class="text-slate-400 hover:text-primary"><i class="fas fa-ellipsis"></i></button>
+        </div>
+      </li>
+      <li class="px-5 py-4 hover:bg-slate-50/60 transition">
+        <div class="flex items-start gap-4">
+          <div class="h-11 w-11 rounded-xl bg-rose-50 text-rose-700 grid place-items-center"><i class="fas fa-triangle-exclamation"></i></div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-3">
+              <div class="min-w-0">
+                <p class="truncate font-bold text-primary text-sm">Spring brake offer</p>
+                <p class="mt-0.5 text-[12px] text-rose-500 font-mono">bounce: invalid sender · check FROM_ADDRESS</p>
+              </div>
+              <span class="inline-flex items-center gap-1 rounded-full bg-rose-50 text-rose-700 px-2.5 py-1 text-[11px] font-bold border border-rose-100"><i class="fas fa-xmark text-[9px]"></i> Failed</span>
+            </div>
+          </div>
+          <button class="text-slate-400 hover:text-primary"><i class="fas fa-ellipsis"></i></button>
+        </div>
+      </li>
+      <li class="px-5 py-4 hover:bg-slate-50/60 transition">
+        <div class="flex items-start gap-4">
+          <div class="h-11 w-11 rounded-xl bg-slate-100 text-slate-600 grid place-items-center"><i class="fas fa-file-pen"></i></div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center justify-between gap-3">
+              <div class="min-w-0">
+                <p class="truncate font-bold text-primary text-sm">Eid Mubarak greeting</p>
+                <p class="mt-0.5 text-[12px] text-slate-500">Draft · estimated 2,425 recipients · 02 Mar</p>
+              </div>
+              <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-700 px-2.5 py-1 text-[11px] font-bold border border-slate-200"><i class="fas fa-file-pen text-[9px]"></i> Draft</span>
+            </div>
+          </div>
+          <button class="text-slate-400 hover:text-primary"><i class="fas fa-ellipsis"></i></button>
+        </div>
+      </li>
+    </ul>
+
+    <div class="flex items-center justify-between border-t border-slate-200/70 px-5 py-3 text-[11px] text-slate-500 font-mono">
+      <span>Showing 5 of 47</span>
+      <a class="font-bold text-primary hover:underline normal-case">Load more</a>
+    </div>
+  </div>
+
+  <p class="mt-4 text-center text-xs font-mono text-slate-500">B · Kart-Liste — Ana sayfa zengin kartlarla. Her kart 4 metric (sent/delivered/opened/bounce) gosterir.</p>
+</section>
+
+
+<!-- ============================================================
+     C) MAIN PAGE — INBOX 3-KOL
+     Sol folder rail, ortada history, sag detay paneli (sticky).
+     ============================================================ -->
+<section data-pane="c" class="tab-pane">
+
+  <div class="mb-6 rounded-2xl bg-white border border-slate-200/70 px-4 py-3 bento-shadow flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center gap-2.5">
+      <div class="h-9 w-9 rounded-xl bg-primary/10 text-primary grid place-items-center"><i class="fas fa-envelope-open-text text-sm"></i></div>
+      <div>
+        <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold leading-none">Customer communication</p>
+        <p class="text-sm font-bold text-primary leading-tight mt-0.5">Email Center</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-1.5">
+      <button class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-bold text-slate-700"><i class="fas fa-rotate-right text-[10px]"></i> Refresh</button>
+      <a href="#d" onclick="document.querySelector('[data-tab=d]').click();return false;" class="inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 py-2 text-xs font-bold text-white hover:bg-primary-hover shadow-md"><i class="fas fa-plus text-[10px]"></i> Create Broadcast</a>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3 mb-6">
+    <div class="relative rounded-2xl bg-white p-4 bento-shadow border border-slate-200/70 overflow-hidden"><div class="absolute top-0 left-0 bottom-0 w-1 bg-indigo-500"></div><p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">Total Sent</p><p class="mt-2 num-display text-2xl font-black text-primary">986</p><p class="text-[10px] text-slate-400 font-mono">7 days</p></div>
+    <div class="relative rounded-2xl bg-white p-4 bento-shadow border border-slate-200/70 overflow-hidden"><div class="absolute top-0 left-0 bottom-0 w-1 bg-emerald-500"></div><p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">Delivered</p><p class="mt-2 num-display text-2xl font-black text-primary">962</p><p class="text-[10px] text-emerald-600 font-mono">97.6%</p></div>
+    <div class="relative rounded-2xl bg-white p-4 bento-shadow border border-slate-200/70 overflow-hidden"><div class="absolute top-0 left-0 bottom-0 w-1 bg-sky-500"></div><p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">Opened</p><p class="mt-2 num-display text-2xl font-black text-primary">421</p><p class="text-[10px] text-sky-600 font-mono">43.7%</p></div>
+    <div class="relative rounded-2xl bg-white p-4 bento-shadow border border-slate-200/70 overflow-hidden"><div class="absolute top-0 left-0 bottom-0 w-1 bg-rose-500"></div><p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">Failed</p><p class="mt-2 num-display text-2xl font-black text-primary">3</p><p class="text-[10px] text-rose-600 font-mono">2.0%</p></div>
+    <div class="relative rounded-2xl bg-white p-4 bento-shadow border border-slate-200/70 overflow-hidden"><div class="absolute top-0 left-0 bottom-0 w-1 bg-slate-400"></div><p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">Drafts</p><p class="mt-2 num-display text-2xl font-black text-primary">7</p><p class="text-[10px] text-slate-400 font-mono">unsent</p></div>
+    <div class="relative rounded-2xl bg-white p-4 bento-shadow border border-slate-200/70 overflow-hidden"><div class="absolute top-0 left-0 bottom-0 w-1 bg-amber-500"></div><p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">Pending</p><p class="mt-2 num-display text-2xl font-black text-primary flex items-center gap-2">12 <span class="pulse-dot inline-flex h-1.5 w-1.5 rounded-full bg-amber-500 text-amber-500"></span></p><p class="text-[10px] text-amber-700 font-mono">in queue</p></div>
+  </div>
+
+  <div class="grid gap-4 xl:grid-cols-[220px_1fr_380px]">
+
+    <!-- LEFT folder rail -->
+    <aside class="rounded-2xl bg-white border border-slate-200/70 bento-shadow overflow-hidden self-start xl:sticky xl:top-24">
+      <div class="px-4 py-3 border-b border-slate-200/70 text-[10px] uppercase tracking-widest text-slate-500 font-bold bg-slate-50/60">Folders</div>
+      <nav class="p-2 text-sm">
+        <a class="flex items-center justify-between rounded-lg bg-primary text-white px-3 py-2 font-bold mb-1"><span class="flex items-center gap-2"><i class="fas fa-inbox text-xs"></i> All Broadcasts</span><span class="text-[10px] font-mono opacity-80">47</span></a>
+        <a class="flex items-center justify-between rounded-lg text-slate-600 hover:bg-slate-50 px-3 py-2 font-semibold mb-1"><span class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-xs"></i> Sent</span><span class="text-[10px] font-mono text-slate-400">28</span></a>
+        <a class="flex items-center justify-between rounded-lg text-slate-600 hover:bg-slate-50 px-3 py-2 font-semibold mb-1"><span class="flex items-center gap-2"><i class="fas fa-file-pen text-slate-400 text-xs"></i> Drafts</span><span class="text-[10px] font-mono text-slate-400">7</span></a>
+        <a class="flex items-center justify-between rounded-lg text-slate-600 hover:bg-slate-50 px-3 py-2 font-semibold mb-1"><span class="flex items-center gap-2"><i class="fas fa-triangle-exclamation text-rose-500 text-xs"></i> Failed</span><span class="text-[10px] font-mono text-rose-500">3</span></a>
+        <a class="flex items-center justify-between rounded-lg text-slate-600 hover:bg-slate-50 px-3 py-2 font-semibold mb-1"><span class="flex items-center gap-2"><i class="fas fa-clock text-amber-500 text-xs"></i> Pending</span><span class="text-[10px] font-mono text-amber-700">12</span></a>
+        <div class="my-2 border-t border-slate-200/70"></div>
+        <p class="px-3 py-1.5 text-[10px] uppercase tracking-widest text-slate-400 font-bold">Audiences</p>
+        <a class="flex items-center justify-between rounded-lg text-slate-600 hover:bg-slate-50 px-3 py-2 font-semibold"><span class="flex items-center gap-2"><i class="fas fa-users text-xs"></i> All eligible</span><span class="text-[10px] font-mono text-slate-400">2,425</span></a>
+        <a class="flex items-center justify-between rounded-lg text-slate-600 hover:bg-slate-50 px-3 py-2 font-semibold"><span class="flex items-center gap-2"><i class="fas fa-user-group text-xs"></i> Customers</span><span class="text-[10px] font-mono text-slate-400">2,341</span></a>
+        <a class="flex items-center justify-between rounded-lg text-slate-600 hover:bg-slate-50 px-3 py-2 font-semibold"><span class="flex items-center gap-2"><i class="fas fa-handshake text-xs"></i> Dealers</span><span class="text-[10px] font-mono text-slate-400">84</span></a>
+      </nav>
+    </aside>
+
+    <!-- MIDDLE list -->
+    <div class="rounded-2xl bg-white border border-slate-200/70 bento-shadow overflow-hidden">
+      <div class="flex items-center justify-between gap-2 border-b border-slate-200/70 px-4 py-3 bg-slate-50/60">
+        <div class="relative flex-1"><i class="fas fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i><input type="text" placeholder="Search..." class="w-full rounded-xl border border-slate-200 bg-white pl-9 pr-3 py-2 text-sm"></div>
+        <select class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700"><option>Newest</option><option>Oldest</option><option>Open rate</option></select>
+      </div>
+      <ul class="divide-y divide-slate-100 max-h-[600px] overflow-y-auto">
+        <li class="group px-4 py-3 hover:bg-slate-50/60 transition border-l-2 border-primary bg-indigo-50/30 cursor-pointer">
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0 flex-1">
+              <p class="truncate font-bold text-primary text-[13px]">Newroz campaign · save 15%</p>
+              <p class="mt-0.5 text-[11px] text-slate-500 truncate">Customers · 2,341 · 12 Mar 14:22</p>
+            </div>
+            <span class="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 px-2 py-0.5 text-[10px] font-bold border border-emerald-100">Sent</span>
+          </div>
+          <div class="mt-2 flex items-center gap-1 opacity-100 transition">
+            <button title="View" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-primary hover:text-white hover:border-primary"><i class="fas fa-eye text-[10px]"></i></button>
+            <button title="Duplicate" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-primary hover:text-white hover:border-primary"><i class="fas fa-copy text-[10px]"></i></button>
+            <button title="Send test" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-amber-500 hover:text-white hover:border-amber-500"><i class="fas fa-paper-plane text-[10px]"></i></button>
+            <button title="Export CSV" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-700 hover:text-white hover:border-slate-700"><i class="fas fa-file-export text-[10px]"></i></button>
+            <button title="Delete" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-rose-500 hover:text-white hover:border-rose-500"><i class="fas fa-trash text-[10px]"></i></button>
+          </div>
+        </li>
+        <li class="group px-4 py-3 hover:bg-slate-50/60 transition cursor-pointer">
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0 flex-1">
+              <p class="truncate font-bold text-primary text-[13px]">Dealer tier update</p>
+              <p class="mt-0.5 text-[11px] text-slate-500 truncate">Dealers · 84 · 10 Mar</p>
+            </div>
+            <span class="inline-flex shrink-0 items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 px-2 py-0.5 text-[10px] font-bold border border-emerald-100">Sent</span>
+          </div>
+          <div class="mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
+            <button title="View" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-primary hover:text-white hover:border-primary"><i class="fas fa-eye text-[10px]"></i></button>
+            <button title="Duplicate" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-primary hover:text-white hover:border-primary"><i class="fas fa-copy text-[10px]"></i></button>
+            <button title="Send test" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-amber-500 hover:text-white hover:border-amber-500"><i class="fas fa-paper-plane text-[10px]"></i></button>
+            <button title="Export CSV" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-700 hover:text-white hover:border-slate-700"><i class="fas fa-file-export text-[10px]"></i></button>
+            <button title="Delete" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-rose-500 hover:text-white hover:border-rose-500"><i class="fas fa-trash text-[10px]"></i></button>
+          </div>
+        </li>
+        <li class="group px-4 py-3 hover:bg-slate-50/60 transition cursor-pointer">
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0 flex-1">
+              <p class="truncate font-bold text-primary text-[13px]">Weekend service reminder</p>
+              <p class="mt-0.5 text-[11px] text-slate-500 truncate">All · 2,425 · today</p>
+            </div>
+            <span class="inline-flex shrink-0 items-center gap-1 rounded-full bg-amber-50 text-amber-700 px-2 py-0.5 text-[10px] font-bold border border-amber-100"><span class="pulse-dot inline-flex h-1.5 w-1.5 rounded-full bg-amber-500 text-amber-500"></span> Pending</span>
+          </div>
+          <div class="mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
+            <button title="View" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-primary hover:text-white hover:border-primary"><i class="fas fa-eye text-[10px]"></i></button>
+            <button title="Pause queue" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-amber-500 hover:text-white hover:border-amber-500"><i class="fas fa-pause text-[10px]"></i></button>
+            <button title="Cancel" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-rose-500 hover:text-white hover:border-rose-500"><i class="fas fa-stop text-[10px]"></i></button>
+          </div>
+        </li>
+        <li class="group px-4 py-3 hover:bg-slate-50/60 transition cursor-pointer">
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0 flex-1">
+              <p class="truncate font-bold text-primary text-[13px]">Spring brake offer</p>
+              <p class="mt-0.5 text-[11px] text-rose-500 font-mono truncate">bounce: invalid sender</p>
+            </div>
+            <span class="inline-flex shrink-0 items-center gap-1 rounded-full bg-rose-50 text-rose-700 px-2 py-0.5 text-[10px] font-bold border border-rose-100">Failed</span>
+          </div>
+          <div class="mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
+            <button title="View error" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-primary hover:text-white hover:border-primary"><i class="fas fa-eye text-[10px]"></i></button>
+            <button title="Retry" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-emerald-500 hover:text-white hover:border-emerald-500"><i class="fas fa-rotate-right text-[10px]"></i></button>
+            <button title="Duplicate" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-primary hover:text-white hover:border-primary"><i class="fas fa-copy text-[10px]"></i></button>
+            <button title="Delete" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-rose-500 hover:text-white hover:border-rose-500"><i class="fas fa-trash text-[10px]"></i></button>
+          </div>
+        </li>
+        <li class="group px-4 py-3 hover:bg-slate-50/60 transition cursor-pointer">
+          <div class="flex items-start justify-between gap-2">
+            <div class="min-w-0 flex-1">
+              <p class="truncate font-bold text-primary text-[13px]">Eid Mubarak greeting</p>
+              <p class="mt-0.5 text-[11px] text-slate-500 truncate">Draft · est. 2,425 · 02 Mar</p>
+            </div>
+            <span class="inline-flex shrink-0 items-center gap-1 rounded-full bg-slate-100 text-slate-700 px-2 py-0.5 text-[10px] font-bold border border-slate-200">Draft</span>
+          </div>
+          <div class="mt-2 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
+            <button title="Edit" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-primary hover:text-white hover:border-primary"><i class="fas fa-pen text-[10px]"></i></button>
+            <button title="Send now" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-emerald-500 hover:text-white hover:border-emerald-500"><i class="fas fa-paper-plane text-[10px]"></i></button>
+            <button title="Duplicate" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-primary hover:text-white hover:border-primary"><i class="fas fa-copy text-[10px]"></i></button>
+            <button title="Delete draft" class="h-7 w-7 grid place-items-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-rose-500 hover:text-white hover:border-rose-500"><i class="fas fa-trash text-[10px]"></i></button>
+          </div>
+        </li>
+      </ul>
+    </div>
+
+    <!-- RIGHT detail panel (selected broadcast) -->
+    <aside class="rounded-2xl bg-white border border-slate-200/70 bento-shadow overflow-hidden self-start xl:sticky xl:top-24">
+      <div class="px-5 py-3.5 border-b border-slate-200/70 bg-slate-50/60 flex items-center justify-between">
+        <p class="text-sm font-bold text-primary">Broadcast detail</p>
+        <span class="font-mono text-[10px] uppercase tracking-widest text-slate-400">#48291</span>
+      </div>
+      <div class="p-5 space-y-4">
+        <div>
+          <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Subject</p>
+          <p class="mt-1 font-bold text-primary">Newroz campaign · save 15%</p>
+        </div>
+        <div class="grid grid-cols-2 gap-3 text-[11px]">
+          <div class="rounded-lg bg-slate-50 px-2.5 py-2"><p class="text-slate-400 font-mono">AUDIENCE</p><p class="font-bold text-slate-700 mt-0.5">Customers</p></div>
+          <div class="rounded-lg bg-slate-50 px-2.5 py-2"><p class="text-slate-400 font-mono">PURPOSE</p><p class="font-bold text-slate-700 mt-0.5">Promotional</p></div>
+        </div>
+        <div class="grid grid-cols-3 gap-2 text-center text-[11px]">
+          <div class="rounded-lg border border-slate-200 px-2 py-2"><p class="font-bold text-slate-700">2,310</p><p class="text-slate-400 font-mono">SENT</p></div>
+          <div class="rounded-lg border border-sky-200 bg-sky-50 px-2 py-2"><p class="font-bold text-sky-700">43.8%</p><p class="text-sky-600 font-mono">OPEN</p></div>
+          <div class="rounded-lg border border-rose-200 bg-rose-50 px-2 py-2"><p class="font-bold text-rose-700">31</p><p class="text-rose-600 font-mono">BOUNCE</p></div>
+        </div>
+        <div>
+          <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Message preview</p>
+          <div class="mt-1 rounded-xl border border-slate-200 bg-slate-50/60 p-3 text-[12px] text-slate-700 leading-relaxed">
+            <p class="font-bold mb-1">Happy Newroz!</p>
+            <p>Spring is here, and so is our biggest sale of the season. Use code NEWROZ15 at checkout to save 15% on all brake and suspension parts...</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2 pt-2 border-t border-slate-200/70">
+          <button class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700"><i class="fas fa-copy text-[10px]"></i> Duplicate</button>
+          <button class="flex-1 inline-flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700"><i class="fas fa-eye text-[10px]"></i> View full</button>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <p class="mt-4 text-center text-xs font-mono text-slate-500">C · Inbox 3-Kol — Sol folder rail (sayilarla), orta liste, sag canli detay paneli. En "mail uygulamasi" hissi.</p>
+</section>
+
+
+<!-- ============================================================
+     D) AYRI COMPOSE SAYFASI
+     /admin/email/broadcasts/create rotasi (sadece tasarim ornek)
+     Rich text editor + canli preview + zengin alanlar
+     ============================================================ -->
+<section data-pane="d" class="tab-pane">
+
+  <!-- Breadcrumb / Top bar -->
+  <div class="mb-6 rounded-2xl bg-white border border-slate-200/70 px-4 py-3 bento-shadow flex flex-wrap items-center justify-between gap-3">
+    <div class="flex items-center gap-2.5">
+      <button onclick="document.querySelector('[data-tab=a]').click()" class="h-9 w-9 rounded-xl border border-slate-200 bg-slate-50 text-slate-600 grid place-items-center hover:bg-slate-100" title="Back to Email Center"><i class="fas fa-arrow-left text-xs"></i></button>
+      <div>
+        <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold leading-none">
+          <a class="hover:text-primary">Email Center</a> <span class="mx-1 text-slate-300">/</span> <span class="text-primary">Create Broadcast</span>
+        </p>
+        <p class="text-sm font-bold text-primary leading-tight mt-0.5">Create Broadcast</p>
+      </div>
+    </div>
+    <div class="flex items-center gap-1.5">
+      <span class="font-mono text-[10px] uppercase tracking-widest text-emerald-600 mr-2 inline-flex items-center gap-1"><span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Auto-saved · 2s ago</span>
+      <button class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700"><i class="fas fa-paper-plane text-[10px] text-amber-500"></i> Send test to me</button>
+      <button class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700"><i class="fas fa-file-pen text-[10px]"></i> Save Draft</button>
+      <button class="inline-flex items-center gap-1.5 rounded-xl bg-primary px-4 py-2 text-xs font-bold text-white hover:bg-primary-hover shadow-md"><i class="fas fa-paper-plane text-[10px]"></i> Send Broadcast</button>
+    </div>
+  </div>
+
+  <div class="grid gap-4 xl:grid-cols-[1.4fr_1fr]">
+
+    <!-- LEFT: Compose form (rich) -->
+    <div class="space-y-4">
+
+      <!-- Audience + Purpose card -->
+      <div class="rounded-2xl bg-white border border-slate-200/70 bento-shadow overflow-hidden">
+        <div class="px-5 py-3 border-b border-slate-200/70 bg-slate-50/60">
+          <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Step 1 · Audience</p>
+        </div>
+        <div class="p-5 space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-2">Who should receive this?</label>
+            <div class="grid grid-cols-3 gap-2">
+              <button type="button" class="rounded-xl border-2 border-primary bg-primary/5 px-3 py-3 text-xs font-bold text-primary text-center"><i class="fas fa-users block mb-1 text-base"></i>All eligible<p class="font-mono text-[10px] text-slate-400 mt-1">2,425</p></button>
+              <button type="button" class="rounded-xl border border-slate-200 px-3 py-3 text-xs font-bold text-slate-600 hover:bg-slate-50 text-center"><i class="fas fa-user-group block mb-1 text-base"></i>Role group<p class="font-mono text-[10px] text-slate-400 mt-1">Customers / Dealers</p></button>
+              <button type="button" class="rounded-xl border border-slate-200 px-3 py-3 text-xs font-bold text-slate-600 hover:bg-slate-50 text-center"><i class="fas fa-user block mb-1 text-base"></i>Single user<p class="font-mono text-[10px] text-slate-400 mt-1">By email</p></button>
+            </div>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-2">Purpose</label>
+            <div class="inline-flex w-full max-w-sm rounded-xl border border-slate-200 bg-slate-50 p-1">
+              <button type="button" class="flex-1 rounded-lg bg-primary text-white px-3 py-1.5 text-xs font-bold">Promotional</button>
+              <button type="button" class="flex-1 rounded-lg text-slate-600 px-3 py-1.5 text-xs font-bold">Operational</button>
+            </div>
+            <p class="mt-2 text-[11px] text-slate-500">Promotional broadcasts only go to users who opted into marketing.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Subject + Rich text editor -->
+      <div class="rounded-2xl bg-white border border-slate-200/70 bento-shadow overflow-hidden">
+        <div class="px-5 py-3 border-b border-slate-200/70 bg-slate-50/60">
+          <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Step 2 · Content</p>
+        </div>
+        <div class="p-5 space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Subject line</label>
+            <input type="text" placeholder="Subject..." value="Happy Newroz from YallaSpare · save 15%" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20">
+            <div class="mt-1 flex items-center justify-between text-[10px] font-mono text-slate-400">
+              <span>preheader: optional inbox preview text</span>
+              <span>40 / 160</span>
+            </div>
+          </div>
+
+          <!-- Rich text editor mockup -->
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Message body</label>
+            <div class="rounded-xl border border-slate-200 overflow-hidden focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
+              <!-- Toolbar -->
+              <div class="rt-toolbar flex items-center flex-wrap gap-0.5 border-b border-slate-200 bg-slate-50/60 px-2 py-1.5">
+                <button title="Bold"><i class="fas fa-bold text-xs"></i></button>
+                <button title="Italic"><i class="fas fa-italic text-xs"></i></button>
+                <button title="Underline"><i class="fas fa-underline text-xs"></i></button>
+                <button title="Strike"><i class="fas fa-strikethrough text-xs"></i></button>
+                <span class="sep"></span>
+                <button title="Heading"><i class="fas fa-heading text-xs"></i></button>
+                <select class="text-[11px] font-bold text-slate-600 bg-transparent rounded px-1 py-0.5 hover:bg-slate-100"><option>Body</option><option>H1</option><option>H2</option><option>H3</option></select>
+                <span class="sep"></span>
+                <button title="Bullet list"><i class="fas fa-list-ul text-xs"></i></button>
+                <button title="Numbered list"><i class="fas fa-list-ol text-xs"></i></button>
+                <button title="Quote"><i class="fas fa-quote-right text-xs"></i></button>
+                <span class="sep"></span>
+                <button title="Link"><i class="fas fa-link text-xs"></i></button>
+                <button title="Image"><i class="fas fa-image text-xs"></i></button>
+                <button title="Divider"><i class="fas fa-minus text-xs"></i></button>
+                <span class="sep"></span>
+                <button title="Align left"><i class="fas fa-align-left text-xs"></i></button>
+                <button title="Align center"><i class="fas fa-align-center text-xs"></i></button>
+                <button title="Align right"><i class="fas fa-align-right text-xs"></i></button>
+                <span class="sep"></span>
+                <button title="Text color"><i class="fas fa-palette text-xs"></i></button>
+                <button title="Highlight"><i class="fas fa-highlighter text-xs"></i></button>
+                <span class="sep"></span>
+                <button title="Undo"><i class="fas fa-rotate-left text-xs"></i></button>
+                <button title="Redo"><i class="fas fa-rotate-right text-xs"></i></button>
+                <span class="ml-auto"></span>
+                <button title="Personalize" class="!w-auto px-2.5 inline-flex items-center gap-1.5 text-[11px] font-bold text-amber-700 hover:bg-amber-50"><i class="fas fa-tag text-[10px]"></i> Insert variable</button>
+              </div>
+              <!-- Editor area -->
+              <div class="px-4 py-4 text-sm leading-7 min-h-[260px] bg-white">
+                <p class="text-xl font-black text-primary mb-2">Happy Newroz, {{name}}!</p>
+                <p class="text-slate-700">Spring is here, and so is our biggest sale of the season. Use code <span class="font-mono bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded">NEWROZ15</span> at checkout to save <b>15%</b> on all brake and suspension parts.</p>
+                <p class="mt-3 text-slate-700">The offer runs until <i>March 25th</i>. Free shipping on orders over 100,000 IQD.</p>
+                <ul class="mt-3 list-disc list-inside text-slate-700">
+                  <li>Bosch front brake pads</li>
+                  <li>NGK iridium spark plugs</li>
+                  <li>Mann oil filters</li>
+                </ul>
+                <p class="mt-4"><a class="text-primary underline decoration-amber-400 decoration-2 underline-offset-4 font-bold">Shop the sale &rarr;</a></p>
+              </div>
+              <!-- Footer -->
+              <div class="flex items-center justify-between border-t border-slate-200 bg-slate-50/60 px-3 py-1.5 text-[10px] font-mono text-slate-400">
+                <span>312 chars · 58 words · rich text supported</span>
+                <span>{{name}} {{email}} {{order_id}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Call to action card -->
+      <div class="rounded-2xl bg-white border border-slate-200/70 bento-shadow overflow-hidden">
+        <div class="px-5 py-3 border-b border-slate-200/70 bg-slate-50/60">
+          <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Step 3 · Call to action</p>
+        </div>
+        <div class="p-5 grid gap-3 md:grid-cols-2">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Button URL</label>
+            <input type="url" value="https://yallaspare.com/sale/newroz" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-mono focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20">
+            <p class="mt-1 text-[10px] font-mono text-slate-400">must point to yallaspare domain</p>
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Button text</label>
+            <input type="text" value="Shop the sale" class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm font-semibold focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20">
+          </div>
+        </div>
+      </div>
+
+      <!-- Schedule + Attachments -->
+      <div class="rounded-2xl bg-white border border-slate-200/70 bento-shadow overflow-hidden">
+        <div class="px-5 py-3 border-b border-slate-200/70 bg-slate-50/60">
+          <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Step 4 · Delivery</p>
+        </div>
+        <div class="p-5 space-y-3">
+          <div class="grid gap-3 md:grid-cols-2">
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Send time</label>
+              <div class="inline-flex w-full rounded-xl border border-slate-200 bg-slate-50 p-1">
+                <button type="button" class="flex-1 rounded-lg bg-primary text-white px-3 py-1.5 text-xs font-bold">Send now</button>
+                <button type="button" class="flex-1 rounded-lg text-slate-600 px-3 py-1.5 text-xs font-bold">Schedule</button>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-slate-700 mb-1">Throttle</label>
+              <select class="w-full rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20">
+                <option>All at once (queue)</option><option>500 / hour</option><option>1000 / hour</option><option>5000 / hour</option>
+              </select>
+            </div>
+          </div>
+          <div class="rounded-xl border-2 border-dashed border-slate-200 px-4 py-3 text-center">
+            <i class="fas fa-paperclip text-slate-400"></i>
+            <p class="mt-1 text-xs font-bold text-slate-700">Drop files to attach (optional)</p>
+            <p class="text-[10px] font-mono text-slate-400">max 5 MB · jpg, png, pdf</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT: Live preview pane (sticky) -->
+    <aside class="self-start xl:sticky xl:top-24 space-y-4">
+
+      <!-- Recipient summary -->
+      <div class="rounded-2xl bg-white border border-slate-200/70 bento-shadow overflow-hidden">
+        <div class="px-5 py-3 border-b border-slate-200/70 bg-slate-50/60 flex items-center justify-between">
+          <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Recipients</p>
+          <span class="font-mono text-[10px] text-slate-400">dry-run</span>
+        </div>
+        <div class="p-5">
+          <p class="num-display text-3xl font-black text-primary">2,341</p>
+          <p class="text-[11px] text-slate-500 mt-0.5">eligible Customers · verified · marketing on</p>
+          <div class="mt-3 grid grid-cols-3 gap-2 text-center text-[11px]">
+            <div class="rounded-md bg-slate-50 px-2 py-1.5"><p class="font-bold text-slate-700">2,425</p><p class="text-slate-400 font-mono">TOTAL</p></div>
+            <div class="rounded-md bg-rose-50 px-2 py-1.5"><p class="font-bold text-rose-700">−72</p><p class="text-rose-600 font-mono">UNSUB</p></div>
+            <div class="rounded-md bg-amber-50 px-2 py-1.5"><p class="font-bold text-amber-700">−12</p><p class="text-amber-700 font-mono">BOUNCED</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live email preview -->
+      <div class="rounded-2xl bg-white border border-slate-200/70 bento-shadow overflow-hidden">
+        <div class="px-5 py-3 border-b border-slate-200/70 bg-slate-50/60 flex items-center justify-between">
+          <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Live preview</p>
+          <div class="inline-flex rounded-lg border border-slate-200 bg-white text-[10px] font-bold uppercase">
+            <button class="px-2 py-1 bg-primary text-white rounded-l-md">Desktop</button>
+            <button class="px-2 py-1 text-slate-500">Mobile</button>
+          </div>
+        </div>
+        <div class="p-4 bg-slate-100">
+          <div class="mx-auto max-w-sm rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm">
+            <div class="flex items-center justify-between bg-primary px-4 py-3 text-white">
+              <span class="text-xs font-bold tracking-wide">YALLASPARE</span>
+              <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-amber-300">CMP/NEWROZ</span>
+            </div>
+            <div class="h-0.5 bg-amber-500"></div>
+            <div class="p-4 space-y-3 text-[12px] leading-relaxed">
+              <p class="font-black text-primary text-base">Happy Newroz, Ahmed!</p>
+              <p class="text-slate-700">Spring is here, and so is our biggest sale of the season. Use code <span class="font-mono bg-amber-50 text-amber-700 px-1 rounded">NEWROZ15</span> at checkout to save <b>15%</b>.</p>
+              <p class="text-slate-700">The offer runs until <i>March 25th</i>.</p>
+              <div class="pt-2"><a class="inline-block rounded-lg bg-primary px-4 py-2 text-white text-xs font-bold">Shop the sale &rarr;</a></div>
+              <p class="text-[10px] text-slate-400 pt-2 border-t border-slate-100">YallaSpare · Baghdad, Iraq · <a class="underline">unsubscribe</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sending checklist -->
+      <div class="rounded-2xl bg-white border border-slate-200/70 bento-shadow overflow-hidden">
+        <div class="px-5 py-3 border-b border-slate-200/70 bg-slate-50/60">
+          <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Pre-flight checks</p>
+        </div>
+        <ul class="divide-y divide-slate-100 text-[12px]">
+          <li class="flex items-center justify-between px-5 py-2.5"><span class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-[10px]"></i> Subject set</span><span class="text-emerald-600 font-bold">OK</span></li>
+          <li class="flex items-center justify-between px-5 py-2.5"><span class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-[10px]"></i> Audience selected</span><span class="text-emerald-600 font-bold">OK</span></li>
+          <li class="flex items-center justify-between px-5 py-2.5"><span class="flex items-center gap-2"><i class="fas fa-check text-emerald-500 text-[10px]"></i> CTA URL valid</span><span class="text-emerald-600 font-bold">OK</span></li>
+          <li class="flex items-center justify-between px-5 py-2.5"><span class="flex items-center gap-2"><i class="fas fa-circle text-amber-500 text-[8px]"></i> Test email sent to me</span><a class="text-amber-700 font-bold hover:underline">Send test</a></li>
+        </ul>
+      </div>
+
+    </aside>
+  </div>
+
+  <p class="mt-4 text-center text-xs font-mono text-slate-500">D · Ayri Compose Sayfasi — /admin/email/broadcasts/create. Rich text editor + canli onizleme + recipient dry-run + pre-flight checks.</p>
+</section>
+
+</main>
+
+<script>
+  document.querySelectorAll('.switcher button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const tab = btn.dataset.tab;
+      document.querySelectorAll('.switcher button').forEach(b => b.classList.toggle('active', b === btn));
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.toggle('active', p.dataset.pane === tab));
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+</script>
+
+</body>
+</html>

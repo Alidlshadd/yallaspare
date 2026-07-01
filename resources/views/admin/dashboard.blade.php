@@ -497,7 +497,7 @@
                 <div class="mx-auto grid h-11 w-11 place-items-center rounded-xl bg-white text-slate-500 shadow-sm dark:bg-slate-900 dark:text-slate-400">
                     <i class="fas fa-chart-simple"></i>
                 </div>
-                <p class="mt-3 text-sm font-bold text-slate-700 dark:text-slate-200">No analytics data yet. Data will appear after visitors use the website.</p>
+                <p class="mt-3 text-sm font-bold text-slate-700 dark:text-slate-200">{{ __('No analytics data yet. Data will appear after visitors use the website.') }}</p>
             </div>
         @endif
 
