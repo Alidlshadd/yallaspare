@@ -394,7 +394,7 @@
         </div>
     </div>
 
-    <script>
+    <script nonce="{{ $cspNonce }}">
         document.querySelectorAll('[data-admin-vehicle-fitment]').forEach((form) => {
             const productFilter = form.querySelector('[data-admin-product-filter]');
             const productSelect = form.querySelector('[data-admin-product-select]');

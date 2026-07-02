@@ -93,7 +93,7 @@
     <meta name="twitter:title" content="{{ $seoTitle }}">
     <meta name="twitter:description" content="{{ $seoDescription }}">
     <meta name="twitter:image" content="{{ $imageUrl }}">
-    <script type="application/ld+json">
+    <script nonce="{{ $cspNonce }}" type="application/ld+json">
         {!! json_encode($productSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!}
     </script>
 @endpush
@@ -451,7 +451,7 @@
 
     </div>
 
-    <script>
+    <script nonce="{{ $cspNonce }}">
         document.addEventListener('DOMContentLoaded', () => {
             const mainImage = document.getElementById('product-main-image');
             const thumbs = Array.from(document.querySelectorAll('[data-gallery-thumb]'));

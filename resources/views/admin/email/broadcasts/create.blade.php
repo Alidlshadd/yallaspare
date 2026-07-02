@@ -246,7 +246,7 @@
         .dark .rt-sep { background:#334155; }
     </style>
 
-    <script>
+    <script nonce="{{ $cspNonce }}">
         (function () {
             const audienceTiles = document.querySelectorAll('.audience-tile');
             const audienceInput = document.getElementById('audience_type');

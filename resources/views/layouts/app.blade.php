@@ -273,7 +273,7 @@
                     display: none;
                 }
             </style>
-            <script>
+            <script nonce="{{ $cspNonce }}">
                 (function () {
                     try {
                         const lightDefaultResetKey = 'admin-theme-light-default-20260523';
@@ -897,7 +897,7 @@
         @endif
 
         @if(request()->routeIs('admin.*'))
-            <script>
+            <script nonce="{{ $cspNonce }}">
                 (function () {
                     const themeToggle = document.getElementById('adminThemeToggle');
                     const themeIcon = document.getElementById('adminThemeIcon');

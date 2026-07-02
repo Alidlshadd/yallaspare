@@ -389,7 +389,7 @@
 
         @include('partials.language-switcher-script')
 
-        <script>
+        <script nonce="{{ $cspNonce }}">
             (function () {
                 const form = document.querySelector('[data-otp-form]');
                 const boxes = Array.from(document.querySelectorAll('[data-otp-box]'));

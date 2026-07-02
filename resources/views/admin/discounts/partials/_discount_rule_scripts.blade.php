@@ -1,5 +1,5 @@
 ﻿@push('scripts')
-<script>
+<script nonce="{{ $cspNonce }}">
     window.discountProductPicker = function (config) {
         return {
             scope: config.initialScope ?? 'all',

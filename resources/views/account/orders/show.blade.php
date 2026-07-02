@@ -579,7 +579,7 @@
 @endsection
 
 @push('scripts')
-    <script>
+    <script nonce="{{ $cspNonce }}">
         document.addEventListener('DOMContentLoaded', () => {
             const directCancelForm = document.querySelector('[data-direct-cancel-form]');
             const directCancelModal = document.querySelector('[data-direct-cancel-modal]');

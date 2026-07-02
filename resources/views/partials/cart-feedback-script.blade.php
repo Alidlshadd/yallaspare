@@ -48,7 +48,7 @@
     }
 </style>
 
-<script>
+<script nonce="{{ $cspNonce }}">
     (() => {
         if (window.YallaCartFeedbackInitialized) {
             return;

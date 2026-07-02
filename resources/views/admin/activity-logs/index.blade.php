@@ -212,7 +212,7 @@
         </div>
     </div>
 
-    <script>
+    <script nonce="{{ $cspNonce }}">
         (function () {
             const input = document.getElementById('activityLogSearch');
             if (!input) return;

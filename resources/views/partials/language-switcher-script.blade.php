@@ -1,5 +1,5 @@
 @once
-    <script>
+    <script nonce="{{ $cspNonce }}">
         (() => {
             const languageDropdowns = Array.from(document.querySelectorAll('[data-header-dropdown]'));
 

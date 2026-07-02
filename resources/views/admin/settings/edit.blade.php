@@ -294,7 +294,7 @@
     </div>
 
 @push('scripts')
-    <script>
+    <script nonce="{{ $cspNonce }}">
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.querySelector('[data-admin-settings-form]');
             const input = document.querySelector('[data-hero-video-input]');

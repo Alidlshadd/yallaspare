@@ -356,7 +356,7 @@
                 pointer-events: none;
             }
         </style>
-        <script>
+        <script nonce="{{ $cspNonce }}">
             (() => {
                 const videos = Array.from(document.querySelectorAll('[data-hero-background-video]'));
                 const progressState = new WeakMap();
@@ -600,7 +600,7 @@
 @endsection
 
 @push('scripts')
-    <script>
+    <script nonce="{{ $cspNonce }}">
         (() => {
             const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
             if (!csrfToken) return;

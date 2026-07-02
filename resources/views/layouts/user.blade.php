@@ -60,7 +60,7 @@
             $themePreference = $isCustomerAuthenticated ? ($customerUser->theme_preference ?? 'light') : 'light';
             $themePreference = in_array($themePreference, ['light', 'dark'], true) ? $themePreference : 'light';
         @endphp
-        <script>
+        <script nonce="{{ $cspNonce }}">
             (function () {
                 try {
                     const normalizeTheme = (value) => ['light', 'dark'].includes(value) ? value : null;
@@ -109,7 +109,7 @@
         </style>
     </head>
     <body class="{{ $bodyClasses }}" x-data="{ accountOpen: false, mobileNavOpen: false }">
-        <script>
+        <script nonce="{{ $cspNonce }}">
             window.YallaI18n = Object.assign(window.YallaI18n || {}, {
                 adding: @json(__('Adding...')),
                 processing: @json(__('Processing your request...')),
@@ -623,7 +623,7 @@
 
             @include('partials.site-footer')
         </div>
-        <script>
+        <script nonce="{{ $cspNonce }}">
             (() => {
                 const header = document.querySelector('[data-store-header]');
 
@@ -713,7 +713,7 @@
                 }, { passive: true });
             })();
         </script>
-        <script>
+        <script nonce="{{ $cspNonce }}">
             (() => {
                 const forms = Array.from(document.querySelectorAll('[data-search-autocomplete]'));
                 if (forms.length === 0) {
@@ -865,7 +865,7 @@
                 });
             })();
         </script>
-        <script>
+        <script nonce="{{ $cspNonce }}">
             (() => {
                 const desktopQuery = window.matchMedia('(min-width: 1024px)');
                 const languageDropdowns = Array.from(document.querySelectorAll('[data-header-dropdown]'));

@@ -266,7 +266,7 @@
         </div>
     </div>
 
-    <script>
+    <script nonce="{{ $cspNonce }}">
         (function () {
             const form = document.getElementById('productForm');
             const submitButton = document.getElementById('productSubmit');

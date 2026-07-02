@@ -1,5 +1,5 @@
 ﻿@push('scripts')
-<script>
+<script nonce="{{ $cspNonce }}">
     (() => {
         const couponEnabledInput = document.querySelector('input[name="coupon_enabled"]');
         const couponControls = document.querySelectorAll('[data-coupon-control]');

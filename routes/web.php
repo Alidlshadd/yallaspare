@@ -7,6 +7,7 @@ use App\Http\Controllers\User\UserSettingsController;
 use App\Http\Controllers\User\WishlistController;
 use App\Http\Controllers\User\ShopController as UserShopController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\CspReportController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\ProductController;
@@ -488,5 +489,9 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
             ->middleware('can:' . User::PERMISSION_ACTIVITY_LOGS_VIEW)
             ->name('activity-logs.export-excel');
     });
+
+Route::post('/csp-report', [CspReportController::class, 'store'])
+    ->middleware('throttle:30,1')
+    ->name('csp.report');
 
 require __DIR__ . '/auth.php';

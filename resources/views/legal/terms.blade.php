@@ -140,7 +140,7 @@
         </article>
     </section>
 
-    <script>
+    <script nonce="{{ $cspNonce }}">
         document.addEventListener('DOMContentLoaded', () => {
             document.documentElement.classList.add('scroll-smooth');
 

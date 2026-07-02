@@ -137,7 +137,7 @@
 </div>
 
 @push('scripts')
-<script>
+<script nonce="{{ $cspNonce }}">
     (() => {
         const couponTypeInput = document.getElementById('coupon_type');
         const couponValueInput = document.getElementById('coupon_value');

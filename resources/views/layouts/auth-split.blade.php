@@ -156,7 +156,7 @@
         </section>
     </main>
 
-    <script>
+    <script nonce="{{ $cspNonce }}">
         document.addEventListener('click', (event) => {
             const link = event.target.closest('[data-auth-nav]');
             if (!link) {

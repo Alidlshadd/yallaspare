@@ -200,7 +200,7 @@
         #preview-body strong, #preview-body b { font-weight:700; }
     </style>
 
-    <script>
+    <script nonce="{{ $cspNonce }}">
     (function () {
         var subject = document.getElementById('editor-subject');
         var body = document.getElementById('editor-body');

@@ -1481,12 +1481,12 @@
       referrerpolicy="no-referrer">
 
 {{-- ================= CHART JS ================= --}}
-<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"
+<script nonce="{{ $cspNonce }}" src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"
         integrity="sha384-e6nUZLBkQ86NJ6TVVKAeSaK8jWa3NhkYWZFomE39AvDbQWeie9PlQqM3pmYW5d1g"
         crossorigin="anonymous"
         referrerpolicy="no-referrer"></script>
 
-<script>
+<script nonce="{{ $cspNonce }}">
 const isDark = document.documentElement.classList.contains('dark');
 const gridColor = isDark ? 'rgba(75, 85, 99, 0.25)' : 'rgba(238, 240, 244, 1)';
 const textColor = isDark ? '#94a3b8' : '#94a3b8';

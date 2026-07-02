@@ -689,7 +689,7 @@
 </div>
 </div>
 
-<script>
+<script nonce="{{ $cspNonce }}">
     (function () {
         var form = document.getElementById('inline-compose');
         if (!form) return;

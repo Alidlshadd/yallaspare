@@ -10,7 +10,7 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
-        <script>
+        <script nonce="{{ $cspNonce }}">
                 (function () {
                     try {
                     const lightDefaultResetKey = 'admin-theme-light-default-20260523';

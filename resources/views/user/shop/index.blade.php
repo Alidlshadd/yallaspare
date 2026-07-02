@@ -195,7 +195,7 @@
     </div>
 
     @push('scripts')
-        <script>
+        <script nonce="{{ $cspNonce }}">
             document.querySelectorAll('[data-vehicle-finder]').forEach((form) => {
                 const brandSelect = form.querySelector('[data-vehicle-brand]');
                 const modelSelect = form.querySelector('[data-vehicle-model]');

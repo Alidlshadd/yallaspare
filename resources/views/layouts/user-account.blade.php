@@ -28,7 +28,7 @@
         <meta name="csrf-token" content="{{ csrf_token() }}">
         <title>{{ $titleContent !== '' ? $titleContent . ' | ' . $brand : $brand }}</title>
         @include('partials.brand-head')
-        <script>
+        <script nonce="{{ $cspNonce }}">
             (function () {
                 try {
                     const normalizeTheme = (value) => ['light', 'dark'].includes(value) ? value : null;

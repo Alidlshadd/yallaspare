@@ -261,7 +261,7 @@
         </p>
     </section>
 
-    <script>
+    <script nonce="{{ $cspNonce }}">
         (() => {
             const root = document.getElementById('verify-email-experience');
             const form = root?.querySelector('[data-resend-form]');
