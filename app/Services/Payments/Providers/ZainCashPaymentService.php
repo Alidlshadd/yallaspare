@@ -118,10 +118,11 @@ class ZainCashPaymentService implements PaymentProviderInterface
             return ! app()->environment('production');
         }
 
+        // Header-only: a token in the query string would leak into access
+        // logs and intermediate proxies.
         $provided = (string) (
             $request->header('X-ZainCash-Webhook-Token')
             ?: $request->header('X-Payment-Webhook-Token')
-            ?: $request->query('token', '')
         );
 
         return hash_equals($expected, $provided);

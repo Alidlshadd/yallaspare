@@ -11,7 +11,7 @@ class SecurityHeadersTest extends TestCase
         $this->get('/')
             ->assertHeader('X-Content-Type-Options', 'nosniff')
             ->assertHeader('X-Frame-Options', 'DENY')
-            ->assertHeader('X-XSS-Protection', '1; mode=block')
+            ->assertHeader('X-XSS-Protection', '0')
             ->assertHeader('X-DNS-Prefetch-Control', 'off')
             ->assertHeader('X-Download-Options', 'noopen')
             ->assertHeader('X-Permitted-Cross-Domain-Policies', 'none')
@@ -20,6 +20,14 @@ class SecurityHeadersTest extends TestCase
             ->assertHeader('Cross-Origin-Resource-Policy', 'same-origin')
             ->assertHeader('Origin-Agent-Cluster', '?1')
             ->assertHeader('Content-Security-Policy');
+    }
+
+    public function test_csp_img_src_is_restricted_to_local_sources(): void
+    {
+        $csp = (string) $this->get('/')->headers->get('Content-Security-Policy');
+
+        $this->assertStringContainsString("img-src 'self' data: blob:", $csp);
+        $this->assertStringNotContainsString('img-src \'self\' data: blob: https:', $csp);
     }
 
     public function test_sensitive_pages_are_not_cached(): void

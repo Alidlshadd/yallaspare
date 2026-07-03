@@ -67,9 +67,15 @@ Route::post('/language/{locale}', function (Request $request, string $locale) {
 
     $redirectTo = (string) $request->input('redirect_to', '');
     $previousUrl = URL::previous();
-    $targetUrl = $redirectTo !== '' && str_starts_with($redirectTo, url('/'))
-        ? $redirectTo
-        : $previousUrl;
+    // url('/') has no trailing slash, so require an exact match or a proper
+    // boundary after it — a bare prefix check would accept lookalike hosts
+    // such as https://example.com.evil.com or https://example.com:8080.
+    $appBase = rtrim(url('/'), '/');
+    $isInternal = $redirectTo === $appBase
+        || str_starts_with($redirectTo, $appBase . '/')
+        || str_starts_with($redirectTo, $appBase . '?')
+        || str_starts_with($redirectTo, $appBase . '#');
+    $targetUrl = $isInternal ? $redirectTo : $previousUrl;
 
     return redirect()->to($targetUrl);
 })->middleware('throttle:public-write')->name('language.switch');

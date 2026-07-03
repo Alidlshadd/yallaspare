@@ -28,7 +28,9 @@ class SecurityHeaders
 
         $response->headers->set('X-Content-Type-Options', 'nosniff');
         $response->headers->set('X-Frame-Options', 'DENY');
-        $response->headers->set('X-XSS-Protection', '1; mode=block');
+        // Explicitly disable the legacy XSS auditor: it is removed from modern
+        // browsers and its filtering mode enabled XS-Leaks in older ones.
+        $response->headers->set('X-XSS-Protection', '0');
         $response->headers->set('X-DNS-Prefetch-Control', 'off');
         $response->headers->set('X-Download-Options', 'noopen');
         $response->headers->set('X-Permitted-Cross-Domain-Policies', 'none');
@@ -48,7 +50,7 @@ class SecurityHeaders
             "form-action 'self'",
             "frame-ancestors 'none'",
             "object-src 'none'",
-            "img-src 'self' data: blob: https:",
+            "img-src 'self' data: blob:",
             "font-src 'self' data: https://fonts.bunny.net https://cdnjs.cloudflare.com",
             "style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://cdnjs.cloudflare.com",
             "connect-src 'self'",
