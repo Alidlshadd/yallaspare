@@ -183,6 +183,13 @@ tail -n 50 /var/www/yallaspare/storage/logs/security-$(date +%F).log
 
 ## Deploy adımları (her yayına alışta sırayla)
 
+> **Önerilen:** Bu adımları elle yapmak yerine sunucuda `bash deploy/deploy.sh`
+> çalıştırın. Script hepsini sırayla + güvenli yapar: bakım modu, `--ff-only`
+> pull, koşullu bağımlılık kurulumu, build, **manifest doğrulaması** (eksikse
+> abort — "eski kod canlıda kaldı" hatasını yakalar), migration, cache tazeleme,
+> worker restart. Hata olursa durur ve siteyi bakım modundan geri açar.
+> Aşağıdaki elle adımlar script'in ne yaptığının referansı ve yedeğidir.
+
 Kod değişikliğini canlıya alırken bu sırayı izleyin. **En sık hata:** `git pull`
 yapmadan ya da `npm run build`'i eski kod üzerinde çalıştırıp "deploy ettim"
 sanmak — sonuç: eski kod canlıda kalır.
