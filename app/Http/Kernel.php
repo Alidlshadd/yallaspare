@@ -43,6 +43,7 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':web',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\RecordAnalyticsEvent::class,
+            \App\Http\Middleware\MinifyHtmlResponse::class,
         ],
 
         'api' => [
