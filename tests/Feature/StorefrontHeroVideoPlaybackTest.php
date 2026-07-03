@@ -43,21 +43,32 @@ class StorefrontHeroVideoPlaybackTest extends TestCase
         $this->assertStringContainsString('opacity-0', $videoTag);
         $this->assertStringContainsString('data-hero-video-fallback', $html);
         $this->assertStringContainsString('home/hero/poster.jpg', $html);
-        $this->assertStringContainsString('window.setInterval', $html);
-        $this->assertStringContainsString('}, 500);', $html);
-        $this->assertStringContainsString('setHeroVideoVisible', $html);
-        $this->assertStringContainsString("video.classList.toggle('opacity-100', visible)", $html);
-        $this->assertStringContainsString("video.classList.toggle('opacity-0', !visible)", $html);
-        $this->assertStringContainsString('video.controls = false', $html);
-        $this->assertStringContainsString('video.volume = 0', $html);
-        $this->assertStringContainsString('video.playbackRate = 1', $html);
-        $this->assertStringContainsString('recoverFrozenHeroVideo', $html);
-        $this->assertStringContainsString('frozenCount >= 3', $html);
-        $this->assertStringContainsString("'touchstart'", $html);
-        $this->assertStringContainsString("'touchend'", $html);
-        $this->assertStringContainsString("'orientationchange'", $html);
-        $this->assertStringContainsString("'webkitbeginfullscreen'", $html);
-        $this->assertStringContainsString("'enterpictureinpicture'", $html);
         $this->assertStringContainsString('hero-background-video::-webkit-media-controls-start-playback-button', $html);
+    }
+
+    public function test_hero_video_playback_logic_ships_in_storefront_bundle(): void
+    {
+        // The playback/recovery logic was moved out of an inline <script> into
+        // resources/js/storefront.js so the page source stays compact and the
+        // code ships minified. Assert the behaviour still lives in that module.
+        $source = file_get_contents(resource_path('js/storefront.js'));
+        $this->assertIsString($source);
+
+        $this->assertStringContainsString('data-hero-background-video', $source);
+        $this->assertStringContainsString('window.setInterval', $source);
+        $this->assertStringContainsString('}, 500);', $source);
+        $this->assertStringContainsString('setHeroVideoVisible', $source);
+        $this->assertStringContainsString("video.classList.toggle('opacity-100', visible)", $source);
+        $this->assertStringContainsString("video.classList.toggle('opacity-0', !visible)", $source);
+        $this->assertStringContainsString('video.controls = false', $source);
+        $this->assertStringContainsString('video.volume = 0', $source);
+        $this->assertStringContainsString('video.playbackRate = 1', $source);
+        $this->assertStringContainsString('recoverFrozenHeroVideo', $source);
+        $this->assertStringContainsString('frozenCount >= 3', $source);
+        $this->assertStringContainsString("'touchstart'", $source);
+        $this->assertStringContainsString("'touchend'", $source);
+        $this->assertStringContainsString("'orientationchange'", $source);
+        $this->assertStringContainsString("'webkitbeginfullscreen'", $source);
+        $this->assertStringContainsString("'enterpictureinpicture'", $source);
     }
 }
