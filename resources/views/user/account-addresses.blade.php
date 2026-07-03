@@ -90,7 +90,7 @@
                                     </form>
                                 @endunless
 
-                                <form method="POST" action="{{ route('account.addresses.destroy', $savedAddress) }}" onsubmit="return confirm('Delete this address?');">
+                                <form method="POST" action="{{ route('account.addresses.destroy', $savedAddress) }}" data-confirm="{{ __('Delete this address?') }}">
                                     @csrf
                                     @method('DELETE')
                                     <x-ui.button type="submit" variant="danger" size="sm">{{ __('Delete') }}</x-ui.button>

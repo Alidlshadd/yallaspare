@@ -22,6 +22,24 @@ class SecurityHeadersTest extends TestCase
             ->assertHeader('Content-Security-Policy');
     }
 
+    public function test_enforced_csp_script_src_uses_nonce_and_strict_dynamic(): void
+    {
+        $response = $this->get('/');
+        $csp = (string) $response->headers->get('Content-Security-Policy');
+
+        preg_match('/script-src ([^;]+)/', $csp, $matches);
+        $scriptSrc = $matches[1] ?? '';
+
+        $this->assertMatchesRegularExpression("/'nonce-[0-9a-f]{32}'/", $scriptSrc);
+        $this->assertStringContainsString("'strict-dynamic'", $scriptSrc);
+        $this->assertStringNotContainsString("'unsafe-inline'", $scriptSrc);
+
+        // Reporting moved onto the enforced policy; the Report-Only
+        // rollout header is retired.
+        $this->assertStringContainsString('report-uri /csp-report', $csp);
+        $this->assertFalse($response->headers->has('Content-Security-Policy-Report-Only'));
+    }
+
     public function test_csp_img_src_is_restricted_to_local_sources(): void
     {
         $csp = (string) $this->get('/')->headers->get('Content-Security-Policy');

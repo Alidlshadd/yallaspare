@@ -56,24 +56,27 @@ class SecurityHeaders
             "connect-src 'self'",
         ];
 
-        // ENFORCED script-src — unchanged; still authorizes inline scripts and
-        // the jsdelivr host so nothing breaks while Report-Only observes.
-        $enforcedScriptSrc = "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net";
-
-        // REPORT-ONLY script-src.
+        // ENFORCED script-src (Faz 5B — nonce rollout complete).
         // - 'nonce-...' authorizes the per-request nonce tags (@vite output +
         //   hand-edited inline scripts + dashboard Chart.js).
         // - 'strict-dynamic' makes host-source allowlists (including 'self' and
         //   https://cdn.jsdelivr.net) IGNORED under CSP3; nonced scripts become
-        //   roots and transitively trust what they insert.
+        //   roots and transitively trust what they insert. 'self' and the
+        //   jsdelivr host stay listed only as a fallback for CSP2 browsers.
         // - 'unsafe-eval' REMAINS: Alpine 3's default build compiles x-*/@event
         //   expressions via new Function(); strict-dynamic does NOT authorize
-        //   inline directive eval. This is the accepted limit of Faz 5A.
+        //   inline directive eval. Removing it requires Alpine's CSP build.
         // - 'unsafe-inline' is NOT listed — browsers ignore it when a nonce is
         //   present anyway; omitting it avoids misleading CSP evaluators.
-        $reportOnlyScriptSrc = "script-src 'nonce-{$nonce}' 'strict-dynamic' 'unsafe-eval'";
+        $enforcedScriptSrc = "script-src 'nonce-{$nonce}' 'strict-dynamic' 'unsafe-eval' 'self' https://cdn.jsdelivr.net";
 
-        $csp = array_merge($commonDirectives, [$enforcedScriptSrc]);
+        $csp = array_merge($commonDirectives, [
+            $enforcedScriptSrc,
+            // Keep violation reporting on the enforced policy so regressions
+            // surface in the security log.
+            'report-uri /csp-report',
+            'report-to csp-endpoint',
+        ]);
 
         if (app()->environment('production') && $request->isSecure()) {
             $csp[] = 'upgrade-insecure-requests';
@@ -81,17 +84,6 @@ class SecurityHeaders
         }
 
         $response->headers->set('Content-Security-Policy', implode('; ', $csp));
-
-        $reportOnly = array_merge($commonDirectives, [
-            $reportOnlyScriptSrc,
-            'report-uri /csp-report',
-            'report-to csp-endpoint',
-        ]);
-        if (app()->environment('production') && $request->isSecure()) {
-            $reportOnly[] = 'upgrade-insecure-requests';
-        }
-
-        $response->headers->set('Content-Security-Policy-Report-Only', implode('; ', $reportOnly));
         $response->headers->set('Reporting-Endpoints', 'csp-endpoint="/csp-report"');
 
         if ($this->isSensitivePath($request)) {

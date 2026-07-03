@@ -296,6 +296,78 @@ const initAdminSidebars = () => {
     document.querySelectorAll('[data-admin-shell]').forEach(initAdminSidebarShell);
 };
 
+// Declarative replacements for inline on* handlers, which the nonce-based
+// CSP blocks (event handler attributes cannot carry a nonce).
+const initDeclarativeInteractions = () => {
+    // <form data-confirm="..."> — capture phase so the cancel wins before
+    // the loading-state submit listener reacts.
+    document.addEventListener('submit', (event) => {
+        const form = event.target instanceof HTMLFormElement ? event.target : null;
+        const message = form?.dataset.confirm;
+        if (message && !window.confirm(message)) {
+            event.preventDefault();
+        }
+    }, true);
+
+    document.addEventListener('click', (event) => {
+        const origin = event.target instanceof Element ? event.target : null;
+        if (!origin) {
+            return;
+        }
+
+        const stepper = origin.closest('[data-quantity-step]');
+        if (stepper) {
+            const input = document.getElementById(stepper.dataset.quantityTarget || '');
+            if (input) {
+                if (stepper.dataset.quantityStep === 'up') {
+                    input.stepUp();
+                } else {
+                    input.stepDown();
+                }
+                input.form?.requestSubmit();
+            }
+            return;
+        }
+
+        const submitLink = origin.closest('[data-submit-closest-form]');
+        if (submitLink) {
+            event.preventDefault();
+            submitLink.closest('form')?.submit();
+            return;
+        }
+
+        if (origin.closest('[data-history-back]')) {
+            window.history.back();
+        }
+    });
+
+    document.addEventListener('change', (event) => {
+        const input = event.target instanceof Element ? event.target.closest('[data-submit-on-change]') : null;
+        input?.form?.requestSubmit();
+    });
+
+    // Brand logo fallback. The error event does not bubble, so listen in
+    // capture phase — and sweep images that already failed before this ran.
+    const applyBrandFallback = (img) => {
+        img.style.display = 'none';
+        const fallback = img.nextElementSibling;
+        if (fallback instanceof HTMLElement) {
+            fallback.style.display = 'inline-flex';
+        }
+    };
+    document.addEventListener('error', (event) => {
+        const img = event.target;
+        if (img instanceof HTMLImageElement && img.hasAttribute('data-brand-logo')) {
+            applyBrandFallback(img);
+        }
+    }, true);
+    document.querySelectorAll('img[data-brand-logo]').forEach((img) => {
+        if (img.complete && img.naturalWidth === 0) {
+            applyBrandFallback(img);
+        }
+    });
+};
+
 const findVisibleElement = (elements) => elements.find((element) => {
     if (!(element instanceof HTMLElement)) {
         return false;
@@ -813,11 +885,13 @@ if (document.readyState === 'loading') {
         initAdminSidebars();
         initAddToCartAnimations();
         initLoadingSystem();
+        initDeclarativeInteractions();
     }, { once: true });
 } else {
     initAdminSidebars();
     initAddToCartAnimations();
     initLoadingSystem();
+    initDeclarativeInteractions();
 }
 
 Alpine.start();

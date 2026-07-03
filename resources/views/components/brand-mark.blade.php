@@ -21,7 +21,7 @@
             src="{{ $resolvedLogoUrl }}"
             alt="{{ $resolvedAlt }}"
             class="{{ $imgClass }}"
-            onerror="this.style.display='none'; const fallback=this.nextElementSibling; if(fallback){fallback.style.display='inline-flex';}"
+            data-brand-logo
         >
     @endif
     <span class="{{ $fallbackClass }}" @if(!empty($resolvedLogoUrl)) style="display:none" @endif>

@@ -251,7 +251,7 @@
                                                 </button>
                                             </form>
 
-                                            <form method="POST" action="{{ route('admin.dealers.demote', $dealer) }}" class="mt-3" onsubmit="return confirm('Convert this dealer to regular user?');">
+                                            <form method="POST" action="{{ route('admin.dealers.demote', $dealer) }}" class="mt-3" data-confirm="{{ __('Convert this dealer to regular user?') }}">
                                                 @csrf
                                                 @method('PATCH')
                                                 <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl border border-rose-200 bg-rose-50 px-4 py-2.5 text-sm font-semibold text-rose-700 transition hover:bg-rose-100 dark:border-rose-900/60 dark:bg-rose-950/20 dark:text-rose-300 dark:hover:bg-rose-950/30">

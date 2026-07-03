@@ -119,7 +119,7 @@
                                         {{ __('Edit') }}
                                     </a>
 
-                                    <form method="POST" action="{{ route('account.addresses.destroy', $address) }}" onsubmit="return confirm('Delete this address?');">
+                                    <form method="POST" action="{{ route('account.addresses.destroy', $address) }}" data-confirm="{{ __('Delete this address?') }}">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="inline-flex items-center justify-center rounded-xl border border-rose-200 bg-rose-50 px-4 py-2.5 text-sm font-medium text-rose-700 transition duration-200 hover:bg-rose-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300 focus-visible:ring-offset-2 dark:border-rose-900/40 dark:bg-rose-900/20 dark:text-rose-300">

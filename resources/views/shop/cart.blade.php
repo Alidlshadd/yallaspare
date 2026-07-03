@@ -129,7 +129,8 @@
                                                     <div class="inline-flex h-12 items-stretch overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-950 dark:shadow-black/10">
                                                         <button
                                                             type="button"
-                                                            onclick="const input = document.getElementById('quantity-{{ $item->id }}'); input.stepDown(); input.form.requestSubmit();"
+                                                            data-quantity-step="down"
+                                                            data-quantity-target="quantity-{{ $item->id }}"
                                                             class="inline-flex h-12 w-11 items-center justify-center border-r border-slate-200/80 bg-primary text-base font-semibold text-white transition duration-200 hover:bg-primary-hover focus:outline-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-primary dark:border-slate-800"
                                                             aria-label="{{ __('Decrease quantity') }}"
                                                         >
@@ -142,12 +143,13 @@
                                                             min="1"
                                                             max="{{ $maxQuantity }}"
                                                             value="{{ $item->quantity }}"
-                                                            onchange="this.form.requestSubmit()"
+                                                            data-submit-on-change
                                                             class="block h-12 w-16 border-0 bg-white px-2 text-center text-sm font-semibold text-slate-900 outline-none [appearance:textfield] focus:ring-0 dark:bg-slate-950 dark:text-white [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                                                         >
                                                         <button
                                                             type="button"
-                                                            onclick="const input = document.getElementById('quantity-{{ $item->id }}'); input.stepUp(); input.form.requestSubmit();"
+                                                            data-quantity-step="up"
+                                                            data-quantity-target="quantity-{{ $item->id }}"
                                                             @disabled($item->quantity >= $maxQuantity)
                                                             class="inline-flex h-12 w-11 items-center justify-center border-l border-slate-200/80 bg-primary text-base font-semibold text-white transition duration-200 hover:bg-primary-hover focus:outline-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500 dark:border-slate-800 dark:disabled:bg-slate-800 dark:disabled:text-slate-500"
                                                             aria-label="{{ __('Increase quantity') }}"

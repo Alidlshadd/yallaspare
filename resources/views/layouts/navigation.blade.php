@@ -82,8 +82,7 @@
                             @csrf
 
                             <x-dropdown-link :href="route('logout')"
-                                    onclick="event.preventDefault();
-                                                this.closest('form').submit();">
+                                    data-submit-closest-form>
                                 {{ __('Log Out') }}
                             </x-dropdown-link>
                         </form>
@@ -151,8 +150,7 @@
                     @csrf
 
                     <a href="{{ route('logout') }}"
-                            onclick="event.preventDefault();
-                                        this.closest('form').submit();"
+                            data-submit-closest-form
                             class="flex rounded-2xl px-4 py-3 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 hover:text-slate-950">
                         {{ __('Log Out') }}
                     </a>
