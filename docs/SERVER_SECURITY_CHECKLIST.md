@@ -181,6 +181,55 @@ tail -n 50 /var/www/yallaspare/storage/logs/security-$(date +%F).log
 
 ---
 
+## Deploy adımları (her yayına alışta sırayla)
+
+Kod değişikliğini canlıya alırken bu sırayı izleyin. **En sık hata:** `git pull`
+yapmadan ya da `npm run build`'i eski kod üzerinde çalıştırıp "deploy ettim"
+sanmak — sonuç: eski kod canlıda kalır.
+
+```bash
+cd /var/www/yallaspare
+
+# 1) Kodu çek — ÇIKTIYA BAK, sessizce başarısız olmuş olabilir
+git status                 # temiz mi? yerel değişiklik / detached HEAD pull'u engeller
+git pull origin main
+git log --oneline -1       # beklediğiniz commit'i görmelisiniz (doğrulama)
+
+# 2) Bağımlılıklar (yalnızca composer.json/package.json değiştiyse)
+composer install --no-dev --optimize-autoloader
+npm ci
+
+# 3) Frontend'i derle — blade/JS değiştiyse ŞART
+npm run build              # public/build gitignore'da; burada üretilir
+
+# 4) Migration (yeni migration varsa)
+php artisan migrate --force
+
+# 5) Önbellekleri tazele — pull sonrası eski derlenmiş blade/config'i temizler
+php artisan config:cache
+php artisan route:cache
+php artisan view:cache      # eski inline script'ler görünüyorsa bunu atlamışsınızdır
+
+# 6) Kuyruk worker'ını yeniden başlat (yeni koddan çalışsın)
+sudo supervisorctl restart yallaspare-worker
+```
+
+**Doğrulama (deploy sonrası):**
+- `git log --oneline -1` → yayınlamak istediğiniz commit görünüyor mu?
+- Tarayıcıda `https://yallaspare.com/user/home` → `Ctrl+U` (view-source):
+  ✅ `build/assets/storefront-*.js` referansı var, uzun inline JS blokları yok.
+- `https://yallaspare.com/build/manifest.json` → beklenen JS girdileri (ör.
+  `resources/js/storefront.js`) listede.
+- F12 → Console → **hata yok**.
+
+> Notlar:
+> - `npm run build` olmadan yalnızca `git pull` yaparsanız blade yeni asset'i
+>   arar ama dosya yoktur → sayfa `@vite` hatası verir. Her zaman ikisi birlikte.
+> - `config:cache` çalıştırdıysanız `.env` değişikliği ancak yeniden
+>   `config:cache` ile devreye girer — deploy'un parçası olarak tekrarlayın.
+
+---
+
 ## Hızlı skor
 - 🔴 5/5 tamam → temel güvendesiniz, bot saldırılarına kapalısınız.
 - 🔴 + 🟠 tamam → hedefli saldırganlar için de ciddi engel.
