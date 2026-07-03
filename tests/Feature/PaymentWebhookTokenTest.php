@@ -50,6 +50,16 @@ class PaymentWebhookTokenTest extends TestCase
         $this->assertTrue(app(ZainCashPaymentService::class)->validateWebhook($request));
     }
 
+    public function test_zaincash_webhook_token_is_accepted_from_generic_header(): void
+    {
+        config(['services.zaincash.webhook_token' => 'wh-secret']);
+
+        $request = Request::create('/api/payments/zaincash/webhook', 'POST');
+        $request->headers->set('X-Payment-Webhook-Token', 'wh-secret');
+
+        $this->assertTrue(app(ZainCashPaymentService::class)->validateWebhook($request));
+    }
+
     public function test_zaincash_webhook_token_is_rejected_when_only_in_query_string(): void
     {
         config(['services.zaincash.webhook_token' => 'wh-secret']);
@@ -67,5 +77,15 @@ class PaymentWebhookTokenTest extends TestCase
         $request->headers->set('X-FIB-Webhook-Token', 'wrong');
 
         $this->assertFalse(app(FibPaymentService::class)->validateWebhook($request));
+    }
+
+    public function test_zaincash_webhook_wrong_header_token_is_rejected(): void
+    {
+        config(['services.zaincash.webhook_token' => 'wh-secret']);
+
+        $request = Request::create('/api/payments/zaincash/webhook', 'POST');
+        $request->headers->set('X-ZainCash-Webhook-Token', 'wrong');
+
+        $this->assertFalse(app(ZainCashPaymentService::class)->validateWebhook($request));
     }
 }
