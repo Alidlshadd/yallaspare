@@ -83,78 +83,15 @@
             <div class="grid grid-cols-1 xl:grid-cols-3 gap-6">
                 <section
                     class="xl:col-span-1 rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900"
-                    x-data="{
-                        products: @js($productOptions),
-                        labels: {
-                            na: @js(__('N/A')),
-                            part: @js(__('Part:')),
-                            oem: @js(__('OEM:')),
-                            stock: @js(__('Stock:')),
-                        },
-                        productId: '{{ old('product_id', '') }}',
-                        productSearch: @js($selectedProductLabel),
-                        productOpen: false,
-                        productActiveIndex: 0,
-                        type: '{{ old('type', 'in') }}',
-                        quantity: Number('{{ old('quantity', 1) }}') || 1,
-                        get selectedProduct() {
-                            return this.products.find((product) => String(product.id) === String(this.productId)) || null;
-                        },
-                        get filteredProducts() {
-                            const term = this.productSearch.toLowerCase().trim();
-                            const matches = term === ''
-                                ? this.products
-                                : this.products.filter((product) => {
-                                    return [
-                                        product.name,
-                                        product.sku,
-                                        product.part_number,
-                                        product.oem_number,
-                                        product.brand,
-                                    ].some((value) => String(value || '').toLowerCase().includes(term));
-                                });
-
-                            return matches.slice(0, 50);
-                        },
-                        get projectedStock() {
-                            if (!this.selectedProduct) return null;
-                            return this.type === 'in'
-                                ? Number(this.selectedProduct.stock) + Number(this.quantity || 0)
-                                : Number(this.selectedProduct.stock) - Number(this.quantity || 0);
-                        },
-                        productLabel(product) {
-                            return product ? `${product.name} (${product.sku || this.labels.na})` : '';
-                        },
-                        productMeta(product) {
-                            return [
-                                product.brand,
-                                product.part_number ? `${this.labels.part} ${product.part_number}` : '',
-                                product.oem_number ? `${this.labels.oem} ${product.oem_number}` : '',
-                                `${this.labels.stock} ${product.stock}`,
-                            ].filter(Boolean).join(' | ');
-                        },
-                        selectProduct(product) {
-                            this.productId = String(product.id);
-                            this.productSearch = this.productLabel(product);
-                            this.productOpen = false;
-                        },
-                        clearProduct() {
-                            this.productId = '';
-                            this.productSearch = '';
-                            this.productActiveIndex = 0;
-                            this.productOpen = true;
-                            this.$nextTick(() => this.$refs.productSearch?.focus());
-                        },
-                        moveProductHighlight(step) {
-                            const count = this.filteredProducts.length;
-                            if (!count) return;
-                            this.productActiveIndex = (this.productActiveIndex + step + count) % count;
-                        },
-                        commitHighlightedProduct() {
-                            const product = this.filteredProducts[this.productActiveIndex] || this.filteredProducts[0];
-                            if (product) this.selectProduct(product);
-                        }
-                    }"
+                    x-data="inventoryForm"
+                    data-config="{{ json_encode([
+                        'products' => $productOptions,
+                        'labels' => ['na' => __('N/A'), 'part' => __('Part:'), 'oem' => __('OEM:'), 'stock' => __('Stock:')],
+                        'productId' => old('product_id', ''),
+                        'productSearch' => $selectedProductLabel,
+                        'type' => old('type', 'in'),
+                        'quantity' => (int) old('quantity', 1),
+                    ], JSON_UNESCAPED_UNICODE) }}"
                 >
                     <div class="flex items-start justify-between gap-3">
                         <div>
@@ -168,7 +105,7 @@
 
                     <form method="POST" action="{{ route('admin.inventory.store') }}" class="mt-5 space-y-4">
                         @csrf
-                        <div class="relative" @click.outside="productOpen = false">
+                        <div class="relative" @click.outside="closeList()">
                             <label class="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">{{ __('Product') }}</label>
                             <input type="hidden" name="product_id" x-model="productId">
                             <div class="flex rounded-lg border border-gray-300 bg-white focus-within:ring-2 focus-within:ring-blue-500 dark:border-slate-700 dark:bg-slate-950">
@@ -176,12 +113,12 @@
                                     type="text"
                                     x-ref="productSearch"
                                     x-model="productSearch"
-                                    @focus="productOpen = true"
-                                    @input="productId = ''; productOpen = true; productActiveIndex = 0"
-                                    @keydown.arrow-down.prevent="productOpen = true; moveProductHighlight(1)"
-                                    @keydown.arrow-up.prevent="productOpen = true; moveProductHighlight(-1)"
+                                    @focus="openList()"
+                                    @input="onSearchInput()"
+                                    @keydown.arrow-down.prevent="arrowDown()"
+                                    @keydown.arrow-up.prevent="arrowUp()"
                                     @keydown.enter.prevent="commitHighlightedProduct()"
-                                    @keydown.escape="productOpen = false"
+                                    @keydown.escape="closeList()"
                                     placeholder="{{ __('Search product by name, SKU, part number, OEM, or brand...') }}"
                                     class="min-w-0 flex-1 rounded-l-lg border-0 bg-transparent text-slate-900 focus:ring-0 dark:text-slate-100"
                                     autocomplete="off"
@@ -207,7 +144,7 @@
                                     <button
                                         type="button"
                                         @click="selectProduct(product)"
-                                        @mouseenter="productActiveIndex = index"
+                                        @mouseenter="setActive(index)"
                                         class="block w-full px-3 py-2 text-left transition"
                                         :class="productActiveIndex === index ? 'bg-blue-50 dark:bg-blue-950/40' : 'hover:bg-slate-50 dark:hover:bg-slate-900'"
                                     >

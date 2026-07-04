@@ -156,10 +156,10 @@
 
                             @if (session('status') === 'profile-updated')
                                 <p
-                                    x-data="{ show: true }"
+                                    x-data="reveal"
                                     x-show="show"
                                     x-transition
-                                    x-init="setTimeout(() => show = false, 2000)"
+                                    x-init="autoHide()"
                                     class="text-sm text-slate-600 dark:text-slate-400"
                                 >{{ __('Saved.') }}</p>
                             @endif
@@ -202,10 +202,10 @@
 
                             @if (session('status') === 'password-updated')
                                 <p
-                                    x-data="{ show: true }"
+                                    x-data="reveal"
                                     x-show="show"
                                     x-transition
-                                    x-init="setTimeout(() => show = false, 2000)"
+                                    x-init="autoHide()"
                                     class="text-sm text-slate-600 dark:text-slate-400"
                                 >{{ __('Saved.') }}</p>
                             @endif

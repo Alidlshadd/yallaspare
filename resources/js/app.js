@@ -1,6 +1,6 @@
 import './bootstrap';
 
-import Alpine from 'alpinejs';
+import Alpine from '@alpinejs/csp';
 
 window.Alpine = Alpine;
 
@@ -69,6 +69,234 @@ Alpine.data('modal', (name, initialShow, focusable) => ({
     closeNow() { this.show = false; },
     onTabForward() { this.nextFocusable()?.focus(); },
     onTabBackward() { this.prevFocusable()?.focus(); },
+}));
+
+// --- CSP-build-safe components ------------------------------------------------
+// The Alpine CSP build forbids inline expressions in x-*/@*/: attributes
+// (assignments, template literals, arrow functions, global calls). Every bit of
+// that logic lives here as component data/methods/getters instead, so Blade only
+// references names. Behaviour is identical on the standard build.
+
+// Generic open/close panel: replaces inline x-data="{ open:false }" + @click="open=!open".
+Alpine.data('toggle', (initial = false) => ({
+    open: Boolean(initial),
+    toggle() { this.open = !this.open; },
+    openNow() { this.open = true; },
+    close() { this.open = false; },
+    get ariaExpanded() { return this.open ? 'true' : 'false'; },
+}));
+
+// Password/field reveal: replaces x-data="{ show:true }" + x-init auto-hide arrow fns.
+Alpine.data('reveal', (initial = true) => ({
+    show: Boolean(initial),
+    hide() { this.show = false; },
+    autoHide(ms = 2000) { setTimeout(() => { this.show = false; }, ms); },
+}));
+
+// Store top menu: collapses on small screens, always visible ≥ 640px.
+Alpine.data('storeMenu', () => ({
+    open: false,
+    wide: window.innerWidth >= 640,
+    init() {
+        this._onResize = () => { this.wide = window.innerWidth >= 640; };
+        window.addEventListener('resize', this._onResize, { passive: true });
+    },
+    destroy() { window.removeEventListener('resize', this._onResize); },
+    toggle() { this.open = !this.open; },
+    close() { this.open = false; },
+    get visible() { return this.open || this.wide; },
+    get ariaExpanded() { return this.open ? 'true' : 'false'; },
+}));
+
+// Account dropdown used by the user layout and account header.
+Alpine.data('accountMenu', () => ({
+    accountOpen: false,
+    toggleAccount() { this.accountOpen = !this.accountOpen; },
+    closeAccount() { this.accountOpen = false; },
+    get accountAriaExpanded() { return this.accountOpen ? 'true' : 'false'; },
+}));
+
+// User storefront shell: account dropdown + mobile nav drawer in one scope.
+Alpine.data('userShell', () => ({
+    accountOpen: false,
+    mobileNavOpen: false,
+    toggleAccount() { this.accountOpen = !this.accountOpen; },
+    closeAccount() { this.accountOpen = false; },
+    toggleMobileNav() { this.mobileNavOpen = !this.mobileNavOpen; },
+    closeMobileNav() { this.mobileNavOpen = false; },
+    get mobileNavAriaExpanded() { return this.mobileNavOpen ? 'true' : 'false'; },
+}));
+
+// Orders bulk-selection checkbox state. IDs come from a data-all-ids JSON
+// attribute so the x-data expression stays a bare component reference (the CSP
+// build cannot evaluate array/object literals passed as arguments).
+Alpine.data('ordersBulk', () => ({
+    selected: [],
+    allIds: [],
+    init() {
+        try { this.allIds = JSON.parse(this.$el.dataset.allIds || '[]'); }
+        catch (e) { this.allIds = []; }
+        if (!Array.isArray(this.allIds)) this.allIds = [];
+    },
+    toggleAll(event) { this.selected = event.target.checked ? [...this.allIds] : []; },
+    clearSelection() { this.selected = []; },
+    allSelected() { return this.allIds.length > 0 && this.selected.length === this.allIds.length; },
+}));
+
+// Viewport-positioned dropdown menu (teleported), used by the orders row actions.
+Alpine.data('positionedMenu', (width = 218, height = 174) => ({
+    open: false,
+    x: 0,
+    y: 0,
+    _w: Number(width) || 218,
+    _h: Number(height) || 174,
+    toggle(event) {
+        if (this.open) { this.open = false; return; }
+        const r = event.currentTarget.getBoundingClientRect();
+        let left = r.right - this._w;
+        if (document.documentElement.dir === 'rtl') { left = r.left; }
+        if (left < 8) left = 8;
+        if (left + this._w > window.innerWidth - 8) left = window.innerWidth - this._w - 8;
+        let top = r.bottom + 6;
+        if (top + this._h > window.innerHeight - 8) top = r.top - this._h - 6;
+        this.x = left;
+        this.y = top;
+        this.open = true;
+    },
+    close() { this.open = false; },
+    get menuStyle() { return `top:${this.y}px; left:${this.x}px;`; },
+}));
+
+// Account appearance (theme) form. Initial preference comes from a
+// data-theme attribute to keep the x-data expression CSP-safe.
+Alpine.data('appearanceForm', () => ({
+    themePreference: 'light',
+    init() {
+        const normalize = (value) => (['light', 'dark'].includes(value) ? value : null);
+        const initial = normalize(this.$el.dataset.theme) || 'light';
+        this.themePreference = initial;
+        try { localStorage.setItem('user-theme', initial); } catch (e) {}
+        document.documentElement.classList.toggle('dark', initial === 'dark');
+    },
+    applyTheme(value) {
+        const selected = ['light', 'dark'].includes(value) ? value : 'light';
+        this.themePreference = selected;
+        document.documentElement.classList.toggle('dark', selected === 'dark');
+        try { localStorage.setItem('user-theme', selected); } catch (e) {}
+    },
+}));
+
+// Storefront primary nav: category mega-menu with hover-intent open/close.
+Alpine.data('storeNav', () => ({
+    categoriesOpen: false,
+    closeTimer: null,
+    isDesktop() { return window.innerWidth >= 1024; },
+    openNow() {
+        this.cancelClose();
+        this.categoriesOpen = true;
+    },
+    toggleMenu() {
+        if (this.isDesktop()) {
+            this.openNow();
+            return;
+        }
+        this.categoriesOpen = !this.categoriesOpen;
+    },
+    queueClose() {
+        if (!this.isDesktop()) return;
+        this.cancelClose();
+        this.closeTimer = setTimeout(() => { this.categoriesOpen = false; }, 180);
+    },
+    cancelClose() {
+        if (this.closeTimer) {
+            clearTimeout(this.closeTimer);
+            this.closeTimer = null;
+        }
+    },
+    closeNow() {
+        this.cancelClose();
+        this.categoriesOpen = false;
+    },
+}));
+
+// Inventory "Add Movement" product autocomplete. Config (products list, i18n
+// labels, restored old() values) is read from a data-config JSON attribute so
+// the x-data expression stays CSP-safe (no object literal argument).
+Alpine.data('inventoryForm', () => ({
+    products: [],
+    labels: { na: 'N/A', part: 'Part:', oem: 'OEM:', stock: 'Stock:' },
+    productId: '',
+    productSearch: '',
+    productOpen: false,
+    productActiveIndex: 0,
+    type: 'in',
+    quantity: 1,
+    init() {
+        let config = {};
+        try { config = JSON.parse(this.$el.dataset.config || '{}'); } catch (e) { config = {}; }
+        this.products = Array.isArray(config.products) ? config.products : [];
+        this.labels = config.labels || this.labels;
+        this.productId = config.productId != null ? String(config.productId) : '';
+        this.productSearch = config.productSearch || '';
+        this.type = config.type || 'in';
+        this.quantity = Number(config.quantity) || 1;
+    },
+    get selectedProduct() {
+        return this.products.find((product) => String(product.id) === String(this.productId)) || null;
+    },
+    get filteredProducts() {
+        const term = this.productSearch.toLowerCase().trim();
+        const matches = term === ''
+            ? this.products
+            : this.products.filter((product) => [
+                product.name, product.sku, product.part_number, product.oem_number, product.brand,
+            ].some((value) => String(value || '').toLowerCase().includes(term)));
+        return matches.slice(0, 50);
+    },
+    get projectedStock() {
+        if (!this.selectedProduct) return null;
+        return this.type === 'in'
+            ? Number(this.selectedProduct.stock) + Number(this.quantity || 0)
+            : Number(this.selectedProduct.stock) - Number(this.quantity || 0);
+    },
+    productLabel(product) {
+        return product ? `${product.name} (${product.sku || this.labels.na})` : '';
+    },
+    productMeta(product) {
+        return [
+            product.brand,
+            product.part_number ? `${this.labels.part} ${product.part_number}` : '',
+            product.oem_number ? `${this.labels.oem} ${product.oem_number}` : '',
+            `${this.labels.stock} ${product.stock}`,
+        ].filter(Boolean).join(' | ');
+    },
+    selectProduct(product) {
+        this.productId = String(product.id);
+        this.productSearch = this.productLabel(product);
+        this.productOpen = false;
+    },
+    clearProduct() {
+        this.productId = '';
+        this.productSearch = '';
+        this.productActiveIndex = 0;
+        this.productOpen = true;
+        this.$nextTick(() => this.$refs.productSearch?.focus());
+    },
+    openList() { this.productOpen = true; },
+    closeList() { this.productOpen = false; },
+    onSearchInput() { this.productId = ''; this.productOpen = true; this.productActiveIndex = 0; },
+    setActive(index) { this.productActiveIndex = index; },
+    arrowDown() { this.productOpen = true; this.moveProductHighlight(1); },
+    arrowUp() { this.productOpen = true; this.moveProductHighlight(-1); },
+    moveProductHighlight(step) {
+        const count = this.filteredProducts.length;
+        if (!count) return;
+        this.productActiveIndex = (this.productActiveIndex + step + count) % count;
+    },
+    commitHighlightedProduct() {
+        const product = this.filteredProducts[this.productActiveIndex] || this.filteredProducts[0];
+        if (product) this.selectProduct(product);
+    },
 }));
 
 const ADMIN_SIDEBAR_DEFAULT_STORAGE_KEY = 'admin-sidebar-collapsed';

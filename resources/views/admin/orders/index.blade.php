@@ -480,12 +480,7 @@
         {{-- ORDERS LIST CARD                                                --}}
         {{-- ═════════════════════════════════════════════════════════════ --}}
         <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl overflow-hidden bento-shadow"
-             x-data="{
-                selected: [],
-                allIds: @js($orders->pluck('id')->all()),
-                toggleAll(e) { this.selected = e.target.checked ? [...this.allIds] : []; },
-                allSelected() { return this.allIds.length > 0 && this.selected.length === this.allIds.length; },
-             }">
+             x-data="ordersBulk" data-all-ids="{{ json_encode($orders->pluck('id')->all()) }}">
 
             {{-- List header --}}
             <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-slate-200/70 dark:border-slate-800">
@@ -518,7 +513,7 @@
                       class="flex flex-wrap items-end gap-2 ms-auto"
                       data-loading-form
                       data-loading-button-text="Processing..."
-                      @submit="if (!confirm('{{ __('Apply this status change to the selected orders?') }}')) $event.preventDefault()">
+                      data-confirm="{{ __('Apply this status change to the selected orders?') }}">
                     @csrf
                     <template x-for="id in selected" :key="id">
                         <input type="hidden" name="order_ids[]" :value="id">
@@ -538,7 +533,7 @@
                             style="background: linear-gradient(180deg, #fbbf24, #f59e0b);">
                         {{ __('Apply') }}
                     </button>
-                    <button type="button" @click="selected = []"
+                    <button type="button" @click="clearSelection()"
                             class="inline-flex items-center gap-2 h-10 px-4 rounded-lg text-xs font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700">
                         {{ __('Clear') }}
                     </button>
@@ -665,26 +660,10 @@
                                         </a>
 
                                         {{-- Invoice (dropdown) --}}
-                                        <div x-data="{
-                                                open: false, x: 0, y: 0,
-                                                toggle(ev) {
-                                                    if (this.open) { this.open = false; return; }
-                                                    const r = ev.currentTarget.getBoundingClientRect();
-                                                    const menuW = 218;
-                                                    const menuH = 174;
-                                                    let left = r.right - menuW;
-                                                    if (document.documentElement.dir === 'rtl') { left = r.left; }
-                                                    if (left < 8) left = 8;
-                                                    if (left + menuW > window.innerWidth - 8) left = window.innerWidth - menuW - 8;
-                                                    let top = r.bottom + 6;
-                                                    if (top + menuH > window.innerHeight - 8) top = r.top - menuH - 6;
-                                                    this.x = left; this.y = top;
-                                                    this.open = true;
-                                                }
-                                             }"
-                                             @keydown.escape.window="open = false"
-                                             @scroll.window="open = false"
-                                             @resize.window="open = false">
+                                        <div x-data="positionedMenu(218, 174)"
+                                             @keydown.escape.window="close()"
+                                             @scroll.window="close()"
+                                             @resize.window="close()">
                                             <button type="button" @click.stop="toggle($event)"
                                                     title="{{ __('Invoice') }}" aria-label="{{ __('Choose invoice language') }}"
                                                     class="w-9 h-9 shrink-0 inline-flex items-center justify-center rounded-lg bg-slate-50 border border-slate-200 text-slate-600 hover:border-amber-300 hover:bg-amber-50 hover:text-amber-700 transition dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:border-amber-500/40 dark:hover:text-amber-300">
@@ -696,8 +675,8 @@
                                                 <div class="op-menu op-invoice-menu"
                                                      x-show="open" x-cloak
                                                      x-transition.opacity.duration.120ms
-                                                     :style="`top:${y}px; left:${x}px;`"
-                                                     @click.outside="open = false">
+                                                     :style="menuStyle"
+                                                     @click.outside="close()">
                                                     <div class="head">{{ __('Invoice language') }}</div>
                                                     <a class="invoice-lang" href="{{ route('admin.orders.invoice', ['order' => $order, 'lang' => 'en']) }}">
                                                         <span>{{ __('English') }}</span>
@@ -716,26 +695,10 @@
                                         </div>
 
                                         {{-- More (status update + archive) --}}
-                                        <div x-data="{
-                                                open: false, x: 0, y: 0,
-                                                toggle(ev) {
-                                                    if (this.open) { this.open = false; return; }
-                                                    const r = ev.currentTarget.getBoundingClientRect();
-                                                    const menuW = 270;
-                                                    const menuH = {{ $canArchive ? 220 : 160 }};
-                                                    let left = r.right - menuW;
-                                                    if (document.documentElement.dir === 'rtl') { left = r.left; }
-                                                    if (left < 8) left = 8;
-                                                    if (left + menuW > window.innerWidth - 8) left = window.innerWidth - menuW - 8;
-                                                    let top = r.bottom + 6;
-                                                    if (top + menuH > window.innerHeight - 8) top = r.top - menuH - 6;
-                                                    this.x = left; this.y = top;
-                                                    this.open = true;
-                                                }
-                                             }"
-                                             @keydown.escape.window="open = false"
-                                             @scroll.window="open = false"
-                                             @resize.window="open = false">
+                                        <div x-data="positionedMenu(270, {{ $canArchive ? 220 : 160 }})"
+                                             @keydown.escape.window="close()"
+                                             @scroll.window="close()"
+                                             @resize.window="close()">
                                             <button type="button" @click.stop="toggle($event)"
                                                     title="{{ __('More') }}" aria-label="{{ __('More actions') }}"
                                                     class="w-9 h-9 shrink-0 inline-flex items-center justify-center rounded-lg bg-slate-50 border border-slate-200 text-slate-600 hover:border-amber-300 hover:bg-amber-50 hover:text-amber-700 transition dark:bg-slate-800 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:border-amber-500/40 dark:hover:text-amber-300">
@@ -747,8 +710,8 @@
                                                 <div class="op-menu"
                                                      x-show="open" x-cloak
                                                      x-transition.opacity.duration.120ms
-                                                     :style="`top:${y}px; left:${x}px;`"
-                                                     @click.outside="open = false">
+                                                     :style="menuStyle"
+                                                     @click.outside="close()">
                                                     <div class="head">{{ __('Update Status') }}</div>
                                                     <form method="POST" action="{{ route('admin.orders.update-status', $order) }}" data-loading-form data-loading-button-text="Saving...">
                                                         @csrf

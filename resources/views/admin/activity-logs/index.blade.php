@@ -96,14 +96,14 @@
                         }));
                     @endphp
 
-                    <tbody x-data="{ open: false }" class="border-b border-slate-100 dark:border-slate-800 last:border-b-0">
+                    <tbody x-data="toggle" class="border-b border-slate-100 dark:border-slate-800 last:border-b-0">
                         <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/60 transition-colors">
                             <td class="px-3 py-3 text-slate-400 dark:text-slate-500">
                                 <button
                                     type="button"
                                     class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:scale-105 hover:border-slate-300 hover:text-slate-700 hover:shadow dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:text-white"
-                                    @click="open = !open"
-                                    :aria-expanded="open.toString()"
+                                    @click="toggle()"
+                                    :aria-expanded="ariaExpanded"
                                     aria-label="{{ __('Toggle log details') }}"
                                     title="{{ __('Toggle details') }}"
                                 >

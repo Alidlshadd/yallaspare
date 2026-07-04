@@ -32,24 +32,7 @@
                 </x-ui.alert>
             @endif
 
-            <section class="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:p-8" x-data="{
-                themePreference: @js($selectedThemePreference),
-                init() {
-                    const normalizeTheme = (value) => ['light', 'dark'].includes(value) ? value : null;
-                    const selectedTheme = normalizeTheme(this.themePreference) || 'light';
-
-                    this.themePreference = selectedTheme;
-                    localStorage.setItem('user-theme', selectedTheme);
-                    document.documentElement.classList.toggle('dark', selectedTheme === 'dark');
-                },
-                applyTheme(value) {
-                    const selectedTheme = ['light', 'dark'].includes(value) ? value : 'light';
-
-                    this.themePreference = selectedTheme;
-                    document.documentElement.classList.toggle('dark', selectedTheme === 'dark');
-                    localStorage.setItem('user-theme', selectedTheme);
-                }
-            }">
+            <section class="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:p-8" x-data="appearanceForm" data-theme="{{ $selectedThemePreference }}">
                 <div class="flex flex-col gap-5 border-b border-slate-200/80 pb-6 dark:border-slate-800 sm:flex-row sm:items-start sm:justify-between">
                     <div>
                         <p class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ __('Section') }}</p>

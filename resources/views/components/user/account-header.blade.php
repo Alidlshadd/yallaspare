@@ -41,8 +41,8 @@
                     <button
                         type="button"
                         class="inline-flex h-10 items-center gap-3 rounded-xl border border-white/10 bg-white/10 px-3 text-sm font-medium text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
-                        @click="accountOpen = !accountOpen"
-                        :aria-expanded="accountOpen.toString()"
+                        @click="toggleAccount()"
+                        :aria-expanded="accountAriaExpanded"
                         aria-haspopup="menu"
                     >
                         @if($userProfilePhotoUrl)
@@ -62,7 +62,7 @@
                         x-cloak
                         x-show="accountOpen"
                         x-transition
-                        @click.outside="accountOpen = false"
+                        @click.outside="closeAccount()"
                         class="absolute {{ $isRtl ? 'left-0' : 'right-0' }} top-full z-50 mt-3 w-56 overflow-hidden rounded-3xl border border-slate-200/80 bg-white p-2 text-slate-900 shadow-2xl shadow-slate-900/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:shadow-black/30"
                         role="menu"
                     >

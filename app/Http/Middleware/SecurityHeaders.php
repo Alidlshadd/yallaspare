@@ -63,12 +63,12 @@ class SecurityHeaders
         //   https://cdn.jsdelivr.net) IGNORED under CSP3; nonced scripts become
         //   roots and transitively trust what they insert. 'self' and the
         //   jsdelivr host stay listed only as a fallback for CSP2 browsers.
-        // - 'unsafe-eval' REMAINS: Alpine 3's default build compiles x-*/@event
-        //   expressions via new Function(); strict-dynamic does NOT authorize
-        //   inline directive eval. Removing it requires Alpine's CSP build.
+        // - 'unsafe-eval' is GONE (Faz 5C): the app runs Alpine's CSP build
+        //   (@alpinejs/csp), which evaluates x-*/@event expressions with a
+        //   restricted parser instead of new Function(), so no eval is needed.
         // - 'unsafe-inline' is NOT listed — browsers ignore it when a nonce is
         //   present anyway; omitting it avoids misleading CSP evaluators.
-        $enforcedScriptSrc = "script-src 'nonce-{$nonce}' 'strict-dynamic' 'unsafe-eval' 'self' https://cdn.jsdelivr.net";
+        $enforcedScriptSrc = "script-src 'nonce-{$nonce}' 'strict-dynamic' 'self' https://cdn.jsdelivr.net";
 
         $csp = array_merge($commonDirectives, [
             $enforcedScriptSrc,

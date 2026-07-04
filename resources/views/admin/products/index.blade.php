@@ -332,8 +332,8 @@
                         @endif
                     </p>
                 </div>
-                <div class="flex flex-wrap items-center gap-2" x-data="{ importOpen: false }">
-                    <button type="button" @click="importOpen = true"
+                <div class="flex flex-wrap items-center gap-2" x-data="toggle">
+                    <button type="button" @click="openNow()"
                             class="inline-flex items-center gap-2 h-10 px-4 rounded-xl text-xs font-bold text-white bg-white/10 border border-white/15 hover:bg-white/15 backdrop-blur-sm transition">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M17 8l-5-5-5 5M12 3v12"/></svg>
                         {{ __('Import') }}
@@ -352,11 +352,11 @@
 
                     {{-- Import modal --}}
                     <template x-teleport="body">
-                        <div x-show="importOpen" x-cloak x-transition.opacity
+                        <div x-show="open" x-cloak x-transition.opacity
                              class="fixed inset-0 z-[100] grid place-items-center bg-black/60 backdrop-blur-sm p-4"
-                             @click.self="importOpen = false"
-                             @keydown.escape.window="importOpen = false">
-                            <div x-show="importOpen" x-transition
+                             @click.self="close()"
+                             @keydown.escape.window="close()">
+                            <div x-show="open" x-transition
                                  class="w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-2xl overflow-hidden text-slate-900 dark:text-slate-100">
                                 <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-slate-200 dark:border-slate-800 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900/60 dark:to-slate-900">
                                     <div class="flex items-center gap-2.5">
@@ -368,7 +368,7 @@
                                             <div class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('Upload CSV / XLSX to update or create products') }}</div>
                                         </div>
                                     </div>
-                                    <button type="button" @click="importOpen = false"
+                                    <button type="button" @click="close()"
                                             class="h-8 w-8 rounded-lg grid place-items-center text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                                     </button>
@@ -404,7 +404,7 @@
                                     </div>
 
                                     <div class="flex justify-end gap-2 pt-2">
-                                        <button type="button" @click="importOpen = false"
+                                        <button type="button" @click="close()"
                                                 class="inline-flex items-center gap-2 h-10 px-4 rounded-xl text-xs font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700 transition">
                                             {{ __('Cancel') }}
                                         </button>

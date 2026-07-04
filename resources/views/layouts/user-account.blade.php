@@ -75,7 +75,7 @@
             }
         </style>
     </head>
-    <body class="{{ $bodyClasses }}" x-data="{ accountOpen: false }">
+    <body class="{{ $bodyClasses }}" x-data="accountMenu">
         <div class="min-h-screen">
             <x-user.account-header :title="$titleContent !== '' ? $titleContent : 'Account'" :subtitle="$subtitleContent !== '' ? $subtitleContent : null">
                 @if ($actionsContent !== '')

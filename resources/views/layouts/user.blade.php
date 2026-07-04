@@ -108,7 +108,7 @@
             }
         </style>
     </head>
-    <body class="{{ $bodyClasses }}" x-data="{ accountOpen: false, mobileNavOpen: false }">
+    <body class="{{ $bodyClasses }}" x-data="userShell">
         <script nonce="{{ $cspNonce }}">
             window.YallaI18n = Object.assign(window.YallaI18n || {}, {
                 adding: @json(__('Adding...')),
@@ -281,8 +281,8 @@
                                 <button
                                     type="button"
                                     class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25 sm:h-9 sm:w-9 sm:rounded-xl"
-                                    @click="mobileNavOpen = !mobileNavOpen"
-                                    :aria-expanded="mobileNavOpen.toString()"
+                                    @click="toggleMobileNav()"
+                                    :aria-expanded="mobileNavAriaExpanded"
                                     aria-label="{{ __('Menu') }}"
                                 >
                                     <svg x-show="!mobileNavOpen" class="h-4 w-4 sm:h-5 sm:w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
@@ -478,37 +478,7 @@
                 <nav
                     class="pb-2 pt-0 text-white lg:pb-3 lg:pt-1"
                     aria-label="{{ __('Main navigation') }}"
-                    x-data="{
-                        categoriesOpen: false,
-                        closeTimer: null,
-                        isDesktop() { return window.innerWidth >= 1024; },
-                        openNow() {
-                            this.cancelClose();
-                            this.categoriesOpen = true;
-                        },
-                        toggleMenu() {
-                            if (this.isDesktop()) {
-                                this.openNow();
-                                return;
-                            }
-                            this.categoriesOpen = !this.categoriesOpen;
-                        },
-                        queueClose() {
-                            if (!this.isDesktop()) return;
-                            this.cancelClose();
-                            this.closeTimer = setTimeout(() => this.categoriesOpen = false, 180);
-                        },
-                        cancelClose() {
-                            if (this.closeTimer) {
-                                clearTimeout(this.closeTimer);
-                                this.closeTimer = null;
-                            }
-                        },
-                        closeNow() {
-                            this.cancelClose();
-                            this.categoriesOpen = false;
-                        }
-                    }"
+                    x-data="storeNav"
                     @keydown.escape.window="closeNow()"
                 >
                     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

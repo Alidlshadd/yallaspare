@@ -173,7 +173,7 @@
                         {{ __('This discount will apply across the full catalog. No additional targeting is required.') }}
                     </div>
 
-                    <template x-for="productId in selectedProductIds" :key="`hidden-${productId}`">
+                    <template x-for="productId in selectedProductIds" :key="productId">
                         <input type="hidden" name="discount_product_ids[]" :value="productId">
                     </template>
 
@@ -205,8 +205,8 @@
                                         <span class="mb-2 block text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Category') }}</span>
                                         <select x-model="filters.categoryId" @change="refreshProducts()" class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                             <option value="">{{ __('All categories') }}</option>
-                                            <template x-for="category in categoryOptions" :key="`category-${category.id}`">
-                                                <option :value="String(category.id)" x-text="category.name"></option>
+                                            <template x-for="category in categoryOptions" :key="category.id">
+                                                <option :value="category.id" x-text="category.name"></option>
                                             </template>
                                         </select>
                                     </label>
@@ -214,7 +214,7 @@
                                         <span class="mb-2 block text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Brand') }}</span>
                                         <select x-model="filters.brand" @change="refreshProducts()" class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                             <option value="">{{ __('All brands') }}</option>
-                                            <template x-for="brand in brandOptions" :key="`brand-${brand}`">
+                                            <template x-for="brand in brandOptions" :key="brand">
                                                 <option :value="brand" x-text="brand"></option>
                                             </template>
                                         </select>
@@ -326,7 +326,7 @@
                                 </div>
 
                                 <div class="mt-4 max-h-[23rem] space-y-3 overflow-y-auto pe-1" x-show="selectedProductList.length > 0" x-cloak>
-                                    <template x-for="product in selectedProductList" :key="`selected-${product.id}`">
+                                    <template x-for="product in selectedProductList" :key="product.id">
                                         <div class="rounded-[1.2rem] border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-900">
                                             <div class="flex items-start justify-between gap-3">
                                                 <div class="min-w-0">

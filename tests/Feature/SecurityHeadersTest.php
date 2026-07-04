@@ -33,6 +33,8 @@ class SecurityHeadersTest extends TestCase
         $this->assertMatchesRegularExpression("/'nonce-[0-9a-f]{32}'/", $scriptSrc);
         $this->assertStringContainsString("'strict-dynamic'", $scriptSrc);
         $this->assertStringNotContainsString("'unsafe-inline'", $scriptSrc);
+        // Alpine's CSP build removed the need for eval (Faz 5C).
+        $this->assertStringNotContainsString("'unsafe-eval'", $scriptSrc);
 
         // Reporting moved onto the enforced policy; the Report-Only
         // rollout header is retired.

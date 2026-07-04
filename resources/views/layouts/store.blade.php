@@ -68,7 +68,7 @@
         <div class="absolute -right-16 top-40 h-80 w-80 rounded-full bg-white/35 blur-3xl"></div>
     </div>
 
-    <header class="store-fade sticky top-0 z-40 px-3 sm:px-6 lg:px-8" x-data="{ storeMenuOpen: false }">
+    <header class="store-fade sticky top-0 z-40 px-3 sm:px-6 lg:px-8" x-data="storeMenu">
         <div class="mx-auto w-full max-w-7xl">
             <div class="rounded-2xl border border-white/60 bg-white/85 px-3 py-2 shadow-[0_18px_50px_-34px_rgba(15,23,42,0.42)] backdrop-blur-2xl sm:rounded-3xl sm:px-5 sm:py-3">
                 <div class="flex min-w-0 items-center justify-between gap-3">
@@ -91,14 +91,14 @@
                     <button
                         type="button"
                         class="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-700 transition hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 sm:hidden"
-                        @click="storeMenuOpen = !storeMenuOpen"
-                        :aria-expanded="storeMenuOpen.toString()"
+                        @click="toggle()"
+                        :aria-expanded="ariaExpanded"
                         aria-label="{{ __('Menu') }}"
                     >
-                        <svg x-show="!storeMenuOpen" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+                        <svg x-show="!open" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M4 12h16M4 17h16" />
                         </svg>
-                        <svg x-cloak x-show="storeMenuOpen" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
+                        <svg x-cloak x-show="open" class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M6 6l12 12M18 6 6 18" />
                         </svg>
                     </button>
@@ -106,7 +106,7 @@
 
                 <nav
                     x-cloak
-                    x-show="storeMenuOpen || window.innerWidth >= 640"
+                    x-show="visible"
                     x-transition
                     class="mt-3 grid grid-cols-2 gap-2 sm:mt-0 sm:flex sm:flex-wrap sm:items-center sm:justify-end"
                 >

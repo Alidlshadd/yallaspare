@@ -39,7 +39,7 @@
                                     </tr>
                                 </thead>
                                 @foreach ($discountRows as $row)
-                                    <tbody x-data="{ open: false }" class="divide-y divide-slate-200 dark:divide-slate-800">
+                                    <tbody x-data="toggle" class="divide-y divide-slate-200 dark:divide-slate-800">
                                             <tr class="align-top hover:bg-slate-50/70 dark:hover:bg-slate-900/60">
                                                 <td class="px-5 py-4">
                                                     <div class="space-y-2">
@@ -63,7 +63,7 @@
                                                 </td>
                                                 <td class="px-5 py-4">
                                                     <div class="flex flex-wrap justify-end gap-2">
-                                                        <button type="button" @click="open = !open" class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+                                                        <button type="button" @click="toggle()" class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
                                                             <span x-text="open ? @js(__('Hide Details')) : @js(__('Details'))"></span>
                                                         </button>
                                                         <form action="{{ route('admin.discounts.update-rule-status', $row['id']) }}" method="POST">
