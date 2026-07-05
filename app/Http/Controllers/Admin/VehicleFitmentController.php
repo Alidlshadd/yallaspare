@@ -153,6 +153,43 @@ class VehicleFitmentController extends Controller
         return back()->with('success', __('Vehicle model created.'));
     }
 
+    public function updateBrand(Request $request, VehicleBrand $brand): RedirectResponse
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:120', Rule::unique('vehicle_brands', 'name')->ignore($brand->id)],
+        ]);
+
+        $name = trim((string) $data['name']);
+        $brand->update([
+            'name' => $name,
+            'slug' => $this->uniqueSlug(VehicleBrand::class, $name, $brand->id),
+        ]);
+
+        return back()->with('success', __('Vehicle brand updated.'));
+    }
+
+    public function updateModel(Request $request, VehicleModel $model): RedirectResponse
+    {
+        $data = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:120',
+                Rule::unique('vehicle_models', 'name')
+                    ->where(fn ($query) => $query->where('vehicle_brand_id', $model->vehicle_brand_id))
+                    ->ignore($model->id),
+            ],
+        ]);
+
+        $name = trim((string) $data['name']);
+        $model->update([
+            'name' => $name,
+            'slug' => $this->uniqueModelSlug((int) $model->vehicle_brand_id, $name, $model->id),
+        ]);
+
+        return back()->with('success', __('Vehicle model updated.'));
+    }
+
     public function storeFitment(Request $request): RedirectResponse
     {
         $data = $request->validate([
@@ -205,26 +242,33 @@ class VehicleFitmentController extends Controller
         return back()->with('success', __('Vehicle model removed.'));
     }
 
-    private function uniqueSlug(string $modelClass, string $value): string
+    private function uniqueSlug(string $modelClass, string $value, ?int $ignoreId = null): string
     {
         $base = Str::slug($value) ?: 'vehicle';
         $slug = $base;
         $suffix = 2;
 
-        while ($modelClass::query()->where('slug', $slug)->exists()) {
+        while ($modelClass::query()
+            ->where('slug', $slug)
+            ->when($ignoreId !== null, fn ($query) => $query->whereKeyNot($ignoreId))
+            ->exists()) {
             $slug = $base . '-' . $suffix++;
         }
 
         return $slug;
     }
 
-    private function uniqueModelSlug(int $brandId, string $value): string
+    private function uniqueModelSlug(int $brandId, string $value, ?int $ignoreId = null): string
     {
         $base = Str::slug($value) ?: 'model';
         $slug = $base;
         $suffix = 2;
 
-        while (VehicleModel::query()->where('vehicle_brand_id', $brandId)->where('slug', $slug)->exists()) {
+        while (VehicleModel::query()
+            ->where('vehicle_brand_id', $brandId)
+            ->where('slug', $slug)
+            ->when($ignoreId !== null, fn ($query) => $query->whereKeyNot($ignoreId))
+            ->exists()) {
             $slug = $base . '-' . $suffix++;
         }
 

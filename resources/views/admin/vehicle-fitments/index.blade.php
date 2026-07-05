@@ -41,6 +41,7 @@
     @endphp
 
     <style>
+        [hidden] { display: none !important; }
         .bento-stripes { background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 14px); }
         .bento-shadow { box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06); }
 
@@ -122,8 +123,12 @@
             background: #fff; border: 1px solid #e2e8f0; border-radius: 999px; padding: 4px 9px;
         }
         .dark .vf-model { background: #0f172a; border-color: #334155; color: #94a3b8; }
-        .vf-model button { color: #b91c1c; font-weight: 800; line-height: 1; }
-        .dark .vf-model button { color: #fca5a5; }
+        .vf-model button[type="submit"] { color: #b91c1c; font-weight: 800; line-height: 1; }
+        .dark .vf-model button[type="submit"] { color: #fca5a5; }
+        .vf-model .edit { color: #94a3b8; line-height: 1; transition: color .15s ease; }
+        .vf-model .edit:hover { color: #f59e0b; }
+        .vf-edit-inline { display: inline-flex; align-items: center; gap: 4px; }
+        .vf-edit-inline .vf-inp { height: 30px; font-size: 11.5px; padding: 0 9px; width: 140px; }
 
         /* Buttons */
         .vf-btn {
@@ -376,8 +381,8 @@
                 {{-- Brand / model tree --}}
                 <div class="max-h-80 overflow-y-auto pe-1 space-y-2.5">
                     @forelse($brands as $brand)
-                        <div class="vf-brand">
-                            <div class="bh">
+                        <div class="vf-brand" data-vf-editable>
+                            <div class="bh" data-vf-edit-view>
                                 <span class="flex items-center gap-2.5 text-[12.5px] font-extrabold text-slate-900 dark:text-slate-100">
                                     <span class="w-7 h-7 rounded-lg bg-[#04042a] text-amber-300 grid place-items-center shrink-0 dark:bg-amber-400 dark:text-[#04042a]">
                                         <i class="fas fa-car-side text-[11px]"></i>
@@ -386,6 +391,9 @@
                                 </span>
                                 <span class="flex items-center gap-2">
                                     <span class="vf-mono-chip">{{ $brand->models->count() }}</span>
+                                    <button type="button" class="vf-btn sm" data-vf-edit-toggle title="{{ __('Edit :name', ['name' => $brand->name]) }}">
+                                        <i class="fas fa-pen text-[10px]"></i>
+                                    </button>
                                     <form method="POST" action="{{ route('admin.vehicle-fitments.brands.destroy', $brand) }}"
                                           data-danger-confirm
                                           data-danger-title="{{ __('Delete Vehicle Brand') }}"
@@ -398,18 +406,48 @@
                                     </form>
                                 </span>
                             </div>
+                            <form method="POST" action="{{ route('admin.vehicle-fitments.brands.update', $brand) }}"
+                                  class="bh gap-2" data-vf-edit-panel hidden>
+                                @csrf
+                                @method('PATCH')
+                                <input name="name" value="{{ $brand->name }}" required maxlength="120" class="vf-inp !h-8 flex-1"
+                                       aria-label="{{ __('Brand Name') }}">
+                                <span class="flex items-center gap-1.5 shrink-0">
+                                    <button type="submit" class="vf-btn primary sm">{{ __('Save') }}</button>
+                                    <button type="button" class="vf-btn sm" data-vf-edit-cancel>{{ __('Cancel') }}</button>
+                                </span>
+                            </form>
                             @if($brand->models->isNotEmpty())
                                 <div class="flex flex-wrap gap-1.5 p-3">
                                     @foreach($brand->models as $model)
-                                        <form method="POST" action="{{ route('admin.vehicle-fitments.models.destroy', $model) }}" class="vf-model"
-                                              data-danger-confirm
-                                              data-danger-title="{{ __('Delete Vehicle Model') }}"
-                                              data-danger-description="{{ __('This model will be removed from Vehicle Finder.') }}">
-                                            @csrf
-                                            @method('DELETE')
-                                            <span>{{ $model->name }}</span>
-                                            <button type="submit" aria-label="{{ __('Delete :name', ['name' => $model->name]) }}">&times;</button>
-                                        </form>
+                                        <span data-vf-editable class="inline-flex">
+                                            <form method="POST" action="{{ route('admin.vehicle-fitments.models.destroy', $model) }}" class="vf-model"
+                                                  data-vf-edit-view
+                                                  data-danger-confirm
+                                                  data-danger-title="{{ __('Delete Vehicle Model') }}"
+                                                  data-danger-description="{{ __('This model will be removed from Vehicle Finder.') }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <span>{{ $model->name }}</span>
+                                                <button type="button" class="edit" data-vf-edit-toggle aria-label="{{ __('Edit :name', ['name' => $model->name]) }}">
+                                                    <i class="fas fa-pen text-[9px]"></i>
+                                                </button>
+                                                <button type="submit" aria-label="{{ __('Delete :name', ['name' => $model->name]) }}">&times;</button>
+                                            </form>
+                                            <form method="POST" action="{{ route('admin.vehicle-fitments.models.update', $model) }}"
+                                                  class="vf-edit-inline" data-vf-edit-panel hidden>
+                                                @csrf
+                                                @method('PATCH')
+                                                <input name="name" value="{{ $model->name }}" required maxlength="120" class="vf-inp"
+                                                       aria-label="{{ __('Model Name') }}">
+                                                <button type="submit" class="vf-btn primary sm" title="{{ __('Save') }}">
+                                                    <i class="fas fa-check text-[10px]"></i>
+                                                </button>
+                                                <button type="button" class="vf-btn sm" data-vf-edit-cancel title="{{ __('Cancel') }}">
+                                                    <i class="fas fa-times text-[10px]"></i>
+                                                </button>
+                                            </form>
+                                        </span>
                                     @endforeach
                                 </div>
                             @else
@@ -704,6 +742,36 @@
             });
             document.querySelectorAll('[data-vf-close-fitment]').forEach((btn) => {
                 btn.addEventListener('click', () => { panel.hidden = true; });
+            });
+        })();
+
+        // ── Inline rename for brands and models ──
+        (() => {
+            document.querySelectorAll('[data-vf-edit-toggle]').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const wrap = btn.closest('[data-vf-editable]');
+                    const panel = wrap?.querySelector('[data-vf-edit-panel]');
+                    const view = wrap?.querySelector('[data-vf-edit-view]');
+                    if (!panel) return;
+                    panel.hidden = false;
+                    if (view) view.hidden = true;
+                    const input = panel.querySelector('input[name="name"]');
+                    input?.focus();
+                    input?.select();
+                });
+            });
+            document.querySelectorAll('[data-vf-edit-cancel]').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    const wrap = btn.closest('[data-vf-editable]');
+                    const panel = wrap?.querySelector('[data-vf-edit-panel]');
+                    const view = wrap?.querySelector('[data-vf-edit-view]');
+                    if (panel) {
+                        panel.hidden = true;
+                        const input = panel.querySelector('input[name="name"]');
+                        if (input) input.value = input.defaultValue;
+                    }
+                    if (view) view.hidden = false;
+                });
             });
         })();
 
