@@ -20,6 +20,7 @@ class VehicleFitmentController extends Controller
     public function index(Request $request): View
     {
         $search = trim((string) $request->query('search', ''));
+        $brandFilter = (int) $request->query('brand', 0);
         $brands = VehicleBrand::query()
             ->with('models:id,vehicle_brand_id,name')
             ->orderBy('name')
@@ -41,6 +42,7 @@ class VehicleFitmentController extends Controller
                 'brand:id,name',
                 'model:id,name,vehicle_brand_id',
             ])
+            ->when($brandFilter > 0, fn ($query) => $query->where('vehicle_brand_id', $brandFilter))
             ->when($search !== '', function ($query) use ($search): void {
                 $query->where(function ($searchQuery) use ($search): void {
                     SqlSafe::whereLike($searchQuery, 'engine', $search);
@@ -58,15 +60,24 @@ class VehicleFitmentController extends Controller
             ->paginate(15)
             ->withQueryString();
 
+        $brandFitmentCounts = ProductVehicleFitment::query()
+            ->selectRaw('vehicle_brand_id, COUNT(*) as total')
+            ->groupBy('vehicle_brand_id')
+            ->pluck('total', 'vehicle_brand_id');
+
         return view('admin.vehicle-fitments.index', [
             'fitments' => $fitments,
             'brands' => $brands,
             'products' => $products,
+            'search' => $search,
+            'brandFilter' => $brandFilter,
+            'brandFitmentCounts' => $brandFitmentCounts,
             'stats' => [
                 'brands' => $brands->count(),
                 'models' => $brands->sum(fn ($brand) => $brand->models->count()),
                 'fitments' => ProductVehicleFitment::query()->count(),
                 'covered_products' => ProductVehicleFitment::query()->distinct('product_id')->count('product_id'),
+                'total_products' => Product::query()->where('is_active', true)->count(),
             ],
         ]);
     }

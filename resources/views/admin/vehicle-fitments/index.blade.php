@@ -1,24 +1,32 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-            <div>
-                <h2 class="text-2xl font-semibold text-slate-900 dark:text-white">{{ __('Vehicle Finder') }}</h2>
-                <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Manage brand, model, year, engine compatibility for products.') }}</p>
-            </div>
-            <span class="inline-flex w-fit items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-600 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
-                <i class="fas fa-car-side text-primary dark:text-white"></i>
-                {{ __('Catalog compatibility') }}
-            </span>
-        </div>
-    </x-slot>
+    <x-slot name="header">{{ __('Vehicle Finder') }}</x-slot>
 
     @php
-        $statsCards = [
-            ['label' => __('Vehicle Brands'), 'value' => $stats['brands'] ?? 0, 'icon' => 'fa-car-side', 'tone' => 'text-primary bg-primary/10 dark:bg-primary/25 dark:text-white'],
-            ['label' => __('Vehicle Models'), 'value' => $stats['models'] ?? 0, 'icon' => 'fa-layer-group', 'tone' => 'text-cyan-600 bg-cyan-50 dark:bg-cyan-950/40 dark:text-cyan-300'],
-            ['label' => __('Fitment Rules'), 'value' => $stats['fitments'] ?? 0, 'icon' => 'fa-link', 'tone' => 'text-emerald-600 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-300'],
-            ['label' => __('Covered Products'), 'value' => $stats['covered_products'] ?? 0, 'icon' => 'fa-box-open', 'tone' => 'text-amber-600 bg-amber-50 dark:bg-amber-950/40 dark:text-amber-300'],
-        ];
+        $totalProducts = max(0, (int) ($stats['total_products'] ?? 0));
+        $coveredProducts = max(0, (int) ($stats['covered_products'] ?? 0));
+        $uncoveredProducts = max(0, $totalProducts - $coveredProducts);
+        $coveragePct = $totalProducts > 0 ? (int) round($coveredProducts / $totalProducts * 100) : 0;
+        $ringCircumference = 238.76; // 2 * pi * r(38)
+        $ringDash = round($coveragePct / 100 * $ringCircumference, 2);
+
+        $trackStart = 2000;
+        $trackEnd = (int) now()->addYear()->year;
+        $trackSpan = max(1, $trackEnd - $trackStart);
+
+        $filterUrl = function (array $overrides = []) {
+            $params = array_filter([
+                'search' => request('search'),
+                'brand' => request('brand'),
+            ], fn ($value) => $value !== null && $value !== '');
+            foreach ($overrides as $key => $value) {
+                if ($value === null || $value === '') {
+                    unset($params[$key]);
+                } else {
+                    $params[$key] = $value;
+                }
+            }
+            return route('admin.vehicle-fitments.index', $params);
+        };
 
         $brandModelMap = $brands
             ->mapWithKeys(fn ($brand) => [
@@ -28,373 +36,678 @@
                     ->all(),
             ])
             ->all();
+
+        $openFitmentPanel = $errors->any() || old('product_id') !== null;
     @endphp
 
-    <div class="py-8">
-        <div class="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
-            @if(session('success'))
-                <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-900/20 dark:text-emerald-300">{{ session('success') }}</div>
-            @endif
+    <style>
+        .bento-stripes { background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.06) 0 1px, transparent 1px 14px); }
+        .bento-shadow { box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06); }
 
-            @if($errors->any())
-                <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-900/50 dark:bg-rose-900/20 dark:text-rose-300">{{ $errors->first() }}</div>
-            @endif
+        /* Chips — same dialect as Products/Categories */
+        .ychip {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 12px; border-radius: 999px;
+            font-size: 11.5px; font-weight: 700; line-height: 1;
+            border: 1px solid #e2e8f0; background: #fff; color: #475569;
+            text-decoration: none;
+            transition: all .15s ease;
+        }
+        .ychip:hover { background: #f8fafc; border-color: #cbd5e1; color: #04042a; }
+        .ychip .cnt {
+            background: rgba(15,23,42,0.06);
+            padding: 1px 7px; border-radius: 999px;
+            font-size: 10.5px; font-family: ui-monospace, 'JetBrains Mono', monospace;
+            color: #475569; font-weight: 800;
+        }
+        .ychip.on {
+            background: #04042a; color: #fcd34d; border-color: #04042a;
+            box-shadow: 0 6px 14px -8px rgba(4,4,42,0.40);
+        }
+        .ychip.on .cnt { background: rgba(252,211,77,0.18); color: #fcd34d; }
+        .dark .ychip { background: #1e293b; border-color: #334155; color: #cbd5e1; }
+        .dark .ychip .cnt { background: rgba(255,255,255,0.06); color: #cbd5e1; }
+        .dark .ychip:hover { background: #334155; color: #fff; }
+        .dark .ychip.on { background: #fbbf24; color: #04042a; border-color: #fbbf24; }
+        .dark .ychip.on .cnt { background: rgba(4,4,42,0.18); color: #04042a; }
 
-            <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-                @foreach($statsCards as $card)
-                    <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                        <div class="flex items-center justify-between gap-3">
-                            <div>
-                                <p class="text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ $card['label'] }}</p>
-                                <p class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{{ number_format((int) $card['value']) }}</p>
-                                @if((int) $card['value'] === 0)
-                                    <p class="mt-1 text-[11px] text-slate-400 dark:text-slate-500">{{ __('Add your first one below') }} ↓</p>
-                                @endif
-                            </div>
-                            <span class="inline-flex h-10 w-10 items-center justify-center rounded-lg {{ $card['tone'] }}">
-                                <i class="fas {{ $card['icon'] }} text-sm"></i>
-                            </span>
+        /* Status pills */
+        .vf-pill {
+            display: inline-flex; align-items: center; gap: 5px;
+            padding: 4px 10px; border-radius: 999px;
+            font-size: 11px; font-weight: 800; border: 1px solid;
+        }
+        .vf-pill::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
+        .vf-pill.good { background: #dcfce7; color: #15803d; border-color: #86efac; }
+        .vf-pill.warn { background: #fef3c7; color: #b45309; border-color: #fde68a; }
+        .dark .vf-pill.good { background: rgba(34,197,94,0.12); color: #4ade80; border-color: rgba(74,222,128,0.35); }
+        .dark .vf-pill.warn { background: rgba(245,158,11,0.12); color: #fbbf24; border-color: rgba(251,191,36,0.35); }
+
+        .vf-mono-chip {
+            display: inline-block; font-family: ui-monospace, monospace; font-size: 10.5px; font-weight: 600;
+            background: #f8fafc; border: 1px solid #e3e9f1;
+            padding: 3px 8px; border-radius: 7px; color: #64748b;
+        }
+        .dark .vf-mono-chip { background: #1e293b; border-color: #334155; color: #94a3b8; }
+
+        /* Year-range timeline */
+        .vf-range { display: flex; flex-direction: column; gap: 5px; min-width: 180px; }
+        .vf-range .years {
+            display: flex; justify-content: space-between; gap: 8px;
+            font-family: ui-monospace, monospace; font-size: 10px; font-weight: 700; color: #94a3b8;
+        }
+        .vf-range .years .mid { font-weight: 800; color: #b45309; }
+        .vf-range .years .mid.full { color: #15803d; }
+        .dark .vf-range .years .mid { color: #fbbf24; }
+        .dark .vf-range .years .mid.full { color: #4ade80; }
+        .vf-track { position: relative; height: 6px; border-radius: 999px; background: #f1f5f9; border: 1px solid #e3e9f1; }
+        .dark .vf-track { background: #1e293b; border-color: #334155; }
+        .vf-fill {
+            position: absolute; top: -1px; bottom: -1px; border-radius: 999px;
+            background: linear-gradient(90deg, #fbbf24, #f59e0b);
+        }
+        .vf-fill.full { background: linear-gradient(90deg, #34d399, #10b981); }
+
+        /* Brand tree */
+        .vf-brand { border: 1px solid #e3e9f1; border-radius: 12px; overflow: hidden; }
+        .dark .vf-brand { border-color: #334155; }
+        .vf-brand .bh {
+            display: flex; align-items: center; justify-content: space-between; gap: 8px;
+            padding: 9px 12px; background: #f8fafc;
+        }
+        .dark .vf-brand .bh { background: #1e293b; }
+        .vf-model {
+            display: inline-flex; align-items: center; gap: 6px;
+            font-size: 11px; font-weight: 700; color: #64748b;
+            background: #fff; border: 1px solid #e2e8f0; border-radius: 999px; padding: 4px 9px;
+        }
+        .dark .vf-model { background: #0f172a; border-color: #334155; color: #94a3b8; }
+        .vf-model button { color: #b91c1c; font-weight: 800; line-height: 1; }
+        .dark .vf-model button { color: #fca5a5; }
+
+        /* Buttons */
+        .vf-btn {
+            display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+            height: 38px; padding: 0 16px; border-radius: 10px; border: 1px solid #e2e8f0;
+            background: #fff; color: #475569; font-size: 12px; font-weight: 800; cursor: pointer;
+            text-decoration: none; transition: all .15s ease;
+        }
+        .vf-btn:hover { transform: translateY(-1px); }
+        .vf-btn.primary { background: #04042a; color: #fcd34d; border-color: #04042a; }
+        .vf-btn.primary:hover { background: #07073a; }
+        .vf-btn.gold {
+            background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #04042a; border-color: transparent;
+            box-shadow: 0 6px 16px -6px rgba(245,158,11,0.5);
+        }
+        .vf-btn.gold:hover { filter: brightness(1.05); }
+        .vf-btn.danger { background: #fef2f2; color: #b91c1c; border-color: #fca5a5; }
+        .vf-btn.danger:hover { background: #fee2e2; }
+        .vf-btn.sm { height: 30px; padding: 0 11px; font-size: 11px; border-radius: 8px; }
+        .dark .vf-btn { background: #1e293b; border-color: #334155; color: #cbd5e1; }
+        .dark .vf-btn:hover { background: #334155; }
+        .dark .vf-btn.primary { background: #fbbf24; color: #04042a; border-color: #fbbf24; }
+        .dark .vf-btn.primary:hover { background: #f59e0b; }
+        .dark .vf-btn.gold { background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #04042a; }
+        .dark .vf-btn.danger { background: rgba(239,68,68,0.10); color: #fca5a5; border-color: rgba(239,68,68,0.30); }
+
+        /* Inputs */
+        .vf-inp, .vf-sel {
+            width: 100%; height: 38px; padding: 0 12px; font-size: 13px;
+            border: 1px solid #e2e8f0; border-radius: 10px;
+            background: #f8fafc; color: #0f172a;
+        }
+        .vf-inp:focus, .vf-sel:focus {
+            outline: none; border-color: #fbbf24; background: #fff;
+            box-shadow: 0 0 0 3px rgba(251,191,36,0.25);
+        }
+        .dark .vf-inp, .dark .vf-sel { background: #1e293b; border-color: #334155; color: #f1f5f9; }
+        .dark .vf-inp:focus, .dark .vf-sel:focus { background: #0f172a; }
+        .vf-lbl {
+            display: block; font-size: 10px; font-weight: 800; text-transform: uppercase;
+            letter-spacing: .12em; color: #64748b; margin-bottom: 5px;
+        }
+        .dark .vf-lbl { color: #94a3b8; }
+
+        /* Fitment rule row */
+        .vf-row {
+            display: grid; grid-template-columns: minmax(210px, 1.2fr) minmax(150px, .8fr) minmax(220px, 1.2fr) auto;
+            gap: 14px; align-items: center; padding: 13px 16px;
+            border-bottom: 1px solid #eef1f6;
+        }
+        .dark .vf-row { border-bottom-color: #1e293b; }
+        .vf-row:last-child { border-bottom: none; }
+        .vf-row:hover { background: #fafbfd; }
+        .dark .vf-row:hover { background: rgba(30,41,59,0.4); }
+        @media (max-width: 900px) { .vf-row { grid-template-columns: 1fr; gap: 8px; } }
+
+        .vf-thumb {
+            width: 44px; height: 44px; border-radius: 10px; flex-shrink: 0;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border: 1px solid #e3e9f1; display: grid; place-items: center; color: #94a3b8;
+            overflow: hidden;
+        }
+        .vf-thumb img { width: 100%; height: 100%; object-fit: cover; }
+        .dark .vf-thumb { background: linear-gradient(135deg, #1e293b, #0f172a); border-color: #334155; }
+
+        /* Floating add button */
+        .vf-fab {
+            position: sticky; bottom: 18px; z-index: 30;
+            margin-inline-start: auto; width: fit-content;
+            display: flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 999px;
+            background: #04042a; color: #fcd34d; font-weight: 800; font-size: 13px;
+            box-shadow: 0 10px 28px rgba(4,4,42,0.35); cursor: pointer;
+            border: 1px solid rgba(252,211,77,0.25);
+            transition: all .15s ease;
+        }
+        .vf-fab:hover { transform: translateY(-2px); }
+        .dark .vf-fab { background: #fbbf24; color: #04042a; border-color: #fbbf24; }
+
+        /* Pagination — same dialect as Products/Categories */
+        .y-pagination nav { display: flex; }
+        .y-pagination ul,
+        .y-pagination .pagination { display: flex; flex-wrap: wrap; gap: 4px; list-style: none; margin: 0; padding: 0; }
+        .y-pagination a,
+        .y-pagination span {
+            display: inline-flex; align-items: center; justify-content: center;
+            min-width: 34px; height: 34px; padding: 0 10px;
+            border-radius: 9px; background: #fff;
+            border: 1px solid #e2e8f0; color: #475569;
+            font-size: 12px; font-weight: 700; text-decoration: none;
+            transition: all .15s ease;
+        }
+        .y-pagination a:hover { color: #0f172a; border-color: #cbd5e1; background: #f8fafc; }
+        .y-pagination .active span,
+        .y-pagination span[aria-current="page"] { background: #04042a; color: #fcd34d; border-color: #04042a; }
+        .y-pagination .disabled span,
+        .y-pagination span[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
+        .dark .y-pagination a,
+        .dark .y-pagination span { background: #0f172a; border-color: #334155; color: #cbd5e1; }
+        .dark .y-pagination a:hover { background: #1e293b; color: #fff; border-color: #475569; }
+        .dark .y-pagination .active span,
+        .dark .y-pagination span[aria-current="page"] { background: #fbbf24; color: #04042a; border-color: #fbbf24; }
+    </style>
+
+    <div class="bg-[#f3f4f7] dark:bg-slate-950 min-h-screen">
+    <div class="py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-4">
+
+        {{-- ─────────────── Flash + errors ─────────────── --}}
+        @if(session('success'))
+            <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300">
+                {{ session('success') }}
+            </div>
+        @endif
+        @if(session('error'))
+            <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300">
+                {{ session('error') }}
+            </div>
+        @endif
+        @if($errors->any())
+            <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300">
+                {{ $errors->first() }}
+            </div>
+        @endif
+
+        {{-- ═════════════ Coverage board ═════════════ --}}
+        <div class="grid gap-4 lg:grid-cols-[300px_minmax(0,1fr)] items-stretch">
+
+            {{-- Coverage ring --}}
+            <div class="relative overflow-hidden rounded-2xl p-5 text-white flex flex-col gap-3"
+                 style="background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);">
+                <div class="absolute inset-0 bento-stripes pointer-events-none opacity-50"></div>
+                <div class="absolute top-0 bottom-0 start-0 w-[3px]" style="background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);"></div>
+                <div class="absolute -top-16 -end-16 h-52 w-52 rounded-full bg-amber-400/10 blur-[60px] pointer-events-none"></div>
+
+                <div class="relative font-mono text-[10px] font-extrabold uppercase tracking-[0.28em] text-amber-300">{{ __('Catalog · Compatibility') }}</div>
+                <h1 class="relative text-2xl font-black leading-tight -mt-1">{{ __('Vehicle Finder') }}</h1>
+
+                <div class="relative flex items-center gap-4">
+                    <svg width="92" height="92" viewBox="0 0 92 92" class="shrink-0" role="img" aria-label="{{ __('Coverage: :pct%', ['pct' => $coveragePct]) }}">
+                        <circle cx="46" cy="46" r="38" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="9"/>
+                        <circle cx="46" cy="46" r="38" fill="none" stroke="#fbbf24" stroke-width="9" stroke-linecap="round"
+                                stroke-dasharray="{{ $ringDash }} {{ $ringCircumference }}" transform="rotate(-90 46 46)"/>
+                        <text x="46" y="52" text-anchor="middle" fill="#fff" font-size="18" font-weight="900">{{ $coveragePct }}%</text>
+                    </svg>
+                    <div>
+                        <div class="text-[26px] font-black leading-none">
+                            {{ number_format($coveredProducts) }} <span class="text-[13px] font-bold text-amber-300">/ {{ number_format($totalProducts) }}</span>
                         </div>
+                        <p class="text-[11.5px] text-white/60 mt-1.5 leading-snug">
+                            {{ __(':n products have vehicle matches.', ['n' => number_format($coveredProducts)]) }}<br>
+                            {{ __(':n products are not covered yet.', ['n' => number_format($uncoveredProducts)]) }}
+                        </p>
                     </div>
-                @endforeach
+                </div>
+
+                <button type="button" data-vf-open-fitment
+                        class="relative inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-xs font-bold text-[#04042a] transition hover:brightness-105 mt-auto"
+                        style="background: linear-gradient(180deg, #fbbf24, #f59e0b);">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                    {{ __('Add Fitment') }}
+                </button>
             </div>
 
-            <div class="grid gap-6 xl:grid-cols-3">
-                <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <div class="flex items-center justify-between gap-3">
-                        <div>
-                            <h3 class="flex items-center text-sm font-semibold text-slate-900 dark:text-slate-100">
-                                <span class="me-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary dark:bg-white/10 dark:text-white">1</span>
-                                {{ __('Add Vehicle Brand') }}
-                            </h3>
-                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Create the manufacturer list used in fitment rules.') }}</p>
-                        </div>
-                        <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
-                            <i class="fas fa-plus text-xs"></i>
+            {{-- Mini stats + brand distribution --}}
+            <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-5 bento-shadow flex flex-col justify-between gap-4">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-xl grid place-items-center bg-[#04042a] text-amber-300 shrink-0">
+                            <i class="fas fa-car-side text-sm"></i>
                         </span>
+                        <div>
+                            <div class="text-xl font-black text-slate-900 dark:text-white leading-none">{{ number_format((int) $stats['brands']) }}</div>
+                            <div class="text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mt-1">{{ __('Brands') }}</div>
+                        </div>
                     </div>
-                    <form method="POST" action="{{ route('admin.vehicle-fitments.brands.store') }}" class="mt-4 space-y-3">
-                        @csrf
-                        <label class="block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Brand Name') }}</label>
-                        <input name="name" required maxlength="120" placeholder="{{ __('Toyota') }}" class="w-full rounded-lg border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                        <button class="w-full rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-hover dark:bg-white dark:text-primary dark:hover:bg-slate-100">{{ __('Create Brand') }}</button>
-                    </form>
-                </section>
+                    <div class="flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-xl grid place-items-center bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 shrink-0">
+                            <i class="fas fa-layer-group text-sm"></i>
+                        </span>
+                        <div>
+                            <div class="text-xl font-black text-slate-900 dark:text-white leading-none">{{ number_format((int) $stats['models']) }}</div>
+                            <div class="text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mt-1">{{ __('Models') }}</div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-xl grid place-items-center bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400 shrink-0">
+                            <i class="fas fa-link text-sm"></i>
+                        </span>
+                        <div>
+                            <div class="text-xl font-black text-slate-900 dark:text-white leading-none">{{ number_format((int) $stats['fitments']) }}</div>
+                            <div class="text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mt-1">{{ __('Fitment Rules') }}</div>
+                        </div>
+                    </div>
+                </div>
 
-                <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <div class="flex items-center justify-between gap-3">
-                        <div>
-                            <h3 class="flex items-center text-sm font-semibold text-slate-900 dark:text-slate-100">
-                                <span class="me-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary dark:bg-white/10 dark:text-white">2</span>
-                                {{ __('Add Vehicle Model') }}
-                            </h3>
-                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Attach models under the correct vehicle brand.') }}</p>
-                        </div>
-                        <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 text-primary dark:bg-white/10 dark:text-white">
-                            <i class="fas fa-sitemap text-xs"></i>
-                        </span>
+                <div>
+                    <div class="vf-lbl">{{ __('Brand distribution') }}</div>
+                    <div class="flex flex-wrap gap-1.5">
+                        <a href="{{ $filterUrl(['brand' => null]) }}" class="ychip {{ $brandFilter === 0 ? 'on' : '' }}">
+                            {{ __('All') }} <span class="cnt">{{ number_format((int) $stats['fitments']) }}</span>
+                        </a>
+                        @foreach($brands as $brand)
+                            @if(($brandFitmentCounts[$brand->id] ?? 0) > 0)
+                                <a href="{{ $filterUrl(['brand' => $brand->id]) }}" class="ychip {{ $brandFilter === (int) $brand->id ? 'on' : '' }}">
+                                    {{ $brand->name }} <span class="cnt">{{ number_format((int) $brandFitmentCounts[$brand->id]) }}</span>
+                                </a>
+                            @endif
+                        @endforeach
                     </div>
-                    <form method="POST" action="{{ route('admin.vehicle-fitments.models.store') }}" class="mt-4 space-y-3">
+                </div>
+            </div>
+        </div>
+
+        {{-- ═════════════ Vehicle data (brands + models) ═════════════ --}}
+        <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl bento-shadow overflow-hidden">
+            <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-slate-100 dark:border-slate-800">
+                <div>
+                    <h2 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Vehicle Data') }}</h2>
+                    <p class="text-[11.5px] text-slate-500 dark:text-slate-400 mt-0.5">{{ __('Manage the brands and models used in fitment rules.') }}</p>
+                </div>
+                <span class="vf-pill good">{{ number_format((int) $stats['brands']) }} {{ __('brands') }} · {{ number_format((int) $stats['models']) }} {{ __('models') }}</span>
+            </div>
+
+            <div class="grid gap-5 p-5 lg:grid-cols-[280px_minmax(0,1fr)]">
+                {{-- Add forms --}}
+                <div class="space-y-4">
+                    <form method="POST" action="{{ route('admin.vehicle-fitments.brands.store') }}" class="space-y-2">
                         @csrf
-                        <label class="block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Brand') }}</label>
-                        <select name="vehicle_brand_id" required class="w-full rounded-lg border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                        <label class="vf-lbl" for="vf-new-brand">{{ __('Add Vehicle Brand') }}</label>
+                        <input id="vf-new-brand" name="name" required maxlength="120" placeholder="{{ __('Toyota') }}" class="vf-inp">
+                        <button class="vf-btn primary w-full">{{ __('Create Brand') }}</button>
+                    </form>
+
+                    <div class="border-t border-dashed border-slate-200 dark:border-slate-700"></div>
+
+                    <form method="POST" action="{{ route('admin.vehicle-fitments.models.store') }}" class="space-y-2">
+                        @csrf
+                        <label class="vf-lbl" for="vf-model-brand">{{ __('Add Vehicle Model') }}</label>
+                        <select id="vf-model-brand" name="vehicle_brand_id" required class="vf-sel">
                             <option value="">{{ __('Select brand') }}</option>
                             @foreach($brands as $brand)
                                 <option value="{{ $brand->id }}">{{ $brand->name }}</option>
                             @endforeach
                         </select>
-                        <label class="block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Model Name') }}</label>
-                        <input name="name" required maxlength="120" placeholder="{{ __('Corolla') }}" class="w-full rounded-lg border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                        <button class="w-full rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-hover dark:bg-white dark:text-primary dark:hover:bg-slate-100">{{ __('Create Model') }}</button>
+                        <input name="name" required maxlength="120" placeholder="{{ __('Corolla') }}" class="vf-inp" aria-label="{{ __('Model Name') }}">
+                        <button class="vf-btn primary w-full">{{ __('Create Model') }}</button>
                     </form>
-                </section>
+                </div>
 
-                <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <div class="flex items-center justify-between gap-3">
-                        <div>
-                            <h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100">{{ __('Current Vehicle Data') }}</h3>
-                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Review and remove brands or models.') }}</p>
-                        </div>
-                        <span class="rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ $brands->count() }}</span>
-                    </div>
-                    <div class="mt-4 max-h-72 space-y-3 overflow-y-auto pe-1">
-                        @forelse($brands as $brand)
-                            <div class="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-950">
-                                <div class="flex items-start justify-between gap-3">
-                                    <div>
-                                        <p class="text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $brand->name }}</p>
-                                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ trans_choice(':count model|:count models', $brand->models->count(), ['count' => $brand->models->count()]) }}</p>
-                                    </div>
-                                    <form method="POST" action="{{ route('admin.vehicle-fitments.brands.destroy', $brand) }}" data-danger-confirm data-danger-title="{{ __('Delete Vehicle Brand') }}" data-danger-description="{{ __('This brand and all models under it will be removed from Vehicle Finder.') }}">
+                {{-- Brand / model tree --}}
+                <div class="max-h-80 overflow-y-auto pe-1 space-y-2.5">
+                    @forelse($brands as $brand)
+                        <div class="vf-brand">
+                            <div class="bh">
+                                <span class="flex items-center gap-2.5 text-[12.5px] font-extrabold text-slate-900 dark:text-slate-100">
+                                    <span class="w-7 h-7 rounded-lg bg-[#04042a] text-amber-300 grid place-items-center shrink-0 dark:bg-amber-400 dark:text-[#04042a]">
+                                        <i class="fas fa-car-side text-[11px]"></i>
+                                    </span>
+                                    {{ $brand->name }}
+                                </span>
+                                <span class="flex items-center gap-2">
+                                    <span class="vf-mono-chip">{{ $brand->models->count() }}</span>
+                                    <form method="POST" action="{{ route('admin.vehicle-fitments.brands.destroy', $brand) }}"
+                                          data-danger-confirm
+                                          data-danger-title="{{ __('Delete Vehicle Brand') }}"
+                                          data-danger-description="{{ __('This brand and all models under it will be removed from Vehicle Finder.') }}">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="rounded-md bg-rose-50 px-2 py-1 text-[11px] font-semibold text-rose-700 hover:bg-rose-100 dark:bg-rose-950/30 dark:text-rose-300">{{ __('Delete') }}</button>
+                                        <button type="submit" class="vf-btn danger sm" title="{{ __('Delete :name', ['name' => $brand->name]) }}">
+                                            <i class="fas fa-trash text-[10px]"></i>
+                                        </button>
                                     </form>
-                                </div>
-                                @if($brand->models->isNotEmpty())
-                                    <div class="mt-2 flex flex-wrap gap-2">
-                                        @foreach($brand->models as $model)
-                                            <form method="POST" action="{{ route('admin.vehicle-fitments.models.destroy', $model) }}" class="inline-flex items-center gap-1 rounded-full border border-slate-200 bg-white px-2 py-1 text-xs text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300" data-danger-confirm data-danger-title="{{ __('Delete Vehicle Model') }}" data-danger-description="{{ __('This model will be removed from Vehicle Finder.') }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <span>{{ $model->name }}</span>
-                                                <button type="submit" class="font-bold text-rose-600 hover:text-rose-700" aria-label="{{ __('Delete :name', ['name' => $model->name]) }}">x</button>
-                                            </form>
-                                        @endforeach
-                                    </div>
-                                @else
-                                    <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('No models yet') }}</p>
-                                @endif
+                                </span>
                             </div>
-                        @empty
-                            <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('No vehicle brands yet.') }}</p>
-                        @endforelse
-                    </div>
-                </section>
-            </div>
-
-            <section class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                <div class="border-b border-slate-200 px-5 py-4 dark:border-slate-800">
-                    <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                        <div>
-                            <h3 class="flex items-center text-sm font-semibold text-slate-900 dark:text-slate-100">
-                                <span class="me-2 inline-flex h-5 w-5 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary dark:bg-white/10 dark:text-white">3</span>
-                                {{ __('Add Product Fitment') }}
-                            </h3>
-                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Connect one product to a vehicle brand, model, year range, and engine.') }}</p>
-                        </div>
-                        <span class="inline-flex w-fit items-center rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary dark:bg-white/10 dark:text-white">
-                            {{ __('Compatibility rule') }}
-                        </span>
-                    </div>
-                </div>
-                <form
-                    method="POST"
-                    action="{{ route('admin.vehicle-fitments.store') }}"
-                    class="grid gap-5 p-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.65fr)]"
-                    data-admin-vehicle-fitment
-                    data-model-map='@json($brandModelMap)'
-                    data-any-model-label="{{ __('Any model') }}"
-                    data-no-model-label="{{ __('No models for this brand yet') }}"
-                    data-any-engine-label="{{ __('Any engine') }}"
-                    data-any-year-label="{{ __('Any year') }}"
-                    data-product-search-url="{{ route('admin.vehicle-fitments.products.search') }}"
-                >
-                    @csrf
-                    <div class="space-y-5">
-                        <div class="grid gap-4 md:grid-cols-2">
-                            <div class="md:col-span-2">
-                                <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Product') }}</label>
-                                <div class="grid gap-2 sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
-                                    <input
-                                        type="search"
-                                        placeholder="{{ __('Filter by product name, SKU, or brand') }}"
-                                        class="rounded-lg border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
-                                        data-admin-product-filter
-                                    >
-                                    <select name="product_id" required class="rounded-lg border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" data-admin-product-select>
-                                        <option value="">{{ __('Select product') }}</option>
-                                        @foreach($products as $product)
-                                            <option value="{{ $product->id }}" data-search="{{ Str::lower(trim($product->name . ' ' . $product->sku . ' ' . $product->brand)) }}">
-                                                {{ $product->name }} @if($product->sku) ({{ $product->sku }}) @endif @if($product->brand) - {{ $product->brand }} @endif
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div>
-                                <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Vehicle Brand') }}</label>
-                                <select name="vehicle_brand_id" required data-admin-vehicle-brand class="w-full rounded-lg border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                                    <option value="">{{ __('Select brand') }}</option>
-                                    @foreach($brands as $brand)
-                                        <option value="{{ $brand->id }}">{{ $brand->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div>
-                                <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Vehicle Model') }}</label>
-                                <select name="vehicle_model_id" data-admin-vehicle-model class="w-full rounded-lg border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                                    <option value="">{{ __('Any model') }}</option>
-                                    @foreach($brands as $brand)
-                                        @foreach($brand->models as $model)
-                                            <option value="{{ $model->id }}">{{ $brand->name }} / {{ $model->name }}</option>
-                                        @endforeach
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div>
-                                <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Year From') }}</label>
-                                <input name="year_from" type="number" min="1900" max="2100" placeholder="{{ __('Any') }}" class="w-full rounded-lg border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" data-admin-year-from>
-                            </div>
-                            <div>
-                                <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Year To') }}</label>
-                                <input name="year_to" type="number" min="1900" max="2100" placeholder="{{ __('Any') }}" class="w-full rounded-lg border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" data-admin-year-to>
-                            </div>
-                            <div>
-                                <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Engine') }}</label>
-                                <input name="engine" maxlength="120" placeholder="{{ __('e.g. 1.8L, Hybrid, Diesel') }}" class="w-full rounded-lg border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" data-admin-engine>
-                            </div>
-                            <div>
-                                <label class="mb-1 block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Notes') }}</label>
-                                <input name="notes" maxlength="255" placeholder="{{ __('Optional fitment notes') }}" class="w-full rounded-lg border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                            </div>
-                        </div>
-
-                        <button class="inline-flex w-full items-center justify-center rounded-lg bg-primary px-6 py-3 text-sm font-semibold text-white transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-50 dark:bg-white dark:text-primary dark:hover:bg-slate-100 sm:w-auto">
-                            <i class="fas fa-link me-2 text-xs"></i>
-                            {{ __('Save Fitment') }}
-                        </button>
-                    </div>
-
-                    <aside class="rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-800 dark:bg-slate-950 lg:sticky lg:top-24 lg:self-start">
-                        <p class="flex items-center text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">
-                            {{ __('Preview') }}
-                            <span class="ms-2 inline-flex h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" aria-hidden="true"></span>
-                        </p>
-                        <div class="mt-3 space-y-3 text-sm">
-                            <div>
-                                <p class="text-xs text-slate-500 dark:text-slate-400"><i class="fas fa-box me-1 text-[10px] text-slate-400"></i>{{ __('Product') }}</p>
-                                <p class="font-semibold text-slate-900 dark:text-slate-100" data-admin-preview-product>{{ __('Select product') }}</p>
-                            </div>
-                            <div>
-                                <p class="text-xs text-slate-500 dark:text-slate-400"><i class="fas fa-car-side me-1 text-[10px] text-slate-400"></i>{{ __('Vehicle') }}</p>
-                                <p class="font-semibold text-slate-900 dark:text-slate-100" data-admin-preview-vehicle>{{ __('Select brand') }} / {{ __('Any model') }}</p>
-                            </div>
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400"><i class="fas fa-calendar-days me-1 text-[10px] text-slate-400"></i>{{ __('Years') }}</p>
-                                    <p class="font-semibold text-slate-900 dark:text-slate-100" data-admin-preview-years>{{ __('Any year') }}</p>
-                                </div>
-                                <div>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400"><i class="fas fa-cog me-1 text-[10px] text-slate-400"></i>{{ __('Engine') }}</p>
-                                    <p class="font-semibold text-slate-900 dark:text-slate-100" data-admin-preview-engine>{{ __('Any engine') }}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </aside>
-                </form>
-            </section>
-
-            <section class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                <div class="border-b border-slate-200 p-4 dark:border-slate-800">
-                    <div class="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-                        <div>
-                            <h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100">{{ __('Product Fitments') }}</h3>
-                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Search and manage product-to-vehicle compatibility rows.') }}</p>
-                        </div>
-                        <form method="GET" action="{{ route('admin.vehicle-fitments.index') }}" class="flex w-full gap-2 lg:max-w-xl">
-                            <input name="search" value="{{ request('search') }}" placeholder="{{ __('Search product, SKU, brand, model, engine...') }}" class="min-w-0 flex-1 rounded-lg border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                            @if(request('search'))
-                                <a href="{{ route('admin.vehicle-fitments.index') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Clear') }}</a>
-                            @endif
-                            <button class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
-                                <i class="fas fa-search me-2 text-xs"></i>
-                                {{ __('Search') }}
-                            </button>
-                        </form>
-                    </div>
-                    @if(request('search'))
-                        <p class="mt-3 text-xs text-slate-500 dark:text-slate-400">{{ __('Showing results for ":term"', ['term' => request('search')]) }}</p>
-                    @endif
-                    @if($products->isEmpty())
-                        <div class="mt-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-200">
-                            {{ __('No active products are available for new fitments.') }}
-                        </div>
-                    @endif
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800">
-                        <thead class="bg-slate-50 dark:bg-slate-800/70">
-                            <tr>
-                                <th class="px-4 py-3 text-start text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Product') }}</th>
-                                <th class="px-4 py-3 text-start text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Vehicle') }}</th>
-                                <th class="px-4 py-3 text-start text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Coverage') }}</th>
-                                <th class="px-4 py-3 text-start text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Notes') }}</th>
-                                <th class="px-4 py-3 text-end text-xs font-semibold uppercase text-slate-600 dark:text-slate-300">{{ __('Actions') }}</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
-                            @forelse($fitments as $fitment)
-                                @php
-                                    $fitmentProductImage = $fitment->product?->image ? asset('storage/' . ltrim((string) $fitment->product->image, '/')) : null;
-                                @endphp
-                                <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40">
-                                    <td class="px-4 py-4">
-                                        <div class="flex min-w-72 items-center gap-3">
-                                            @if($fitmentProductImage)
-                                                <img
-                                                    src="{{ $fitmentProductImage }}"
-                                                    alt="{{ $fitment->product?->name ?? __('Product') }}"
-                                                    class="h-12 w-12 rounded-lg border border-slate-200 object-cover dark:border-slate-700"
-                                                    loading="lazy"
-                                                >
-                                            @else
-                                                <div class="flex h-12 w-12 items-center justify-center rounded-lg border border-dashed border-slate-300 bg-slate-50 text-slate-400 dark:border-slate-700 dark:bg-slate-950">
-                                                    <i class="fas fa-image text-sm"></i>
-                                                </div>
-                                            @endif
-                                            <div class="min-w-0">
-                                                <p class="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $fitment->product?->name ?? '-' }}</p>
-                                                <div class="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                                                    <span>{{ $fitment->product?->sku ?: __('No SKU') }}</span>
-                                                    @if($fitment->product?->brand)
-                                                        <span class="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600"></span>
-                                                        <span>{{ $fitment->product->brand }}</span>
-                                                    @endif
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-4">
-                                        <div class="flex min-w-48 flex-wrap gap-2">
-                                            <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200">{{ $fitment->brand?->name ?? __('Any brand') }}</span>
-                                            <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-xs font-semibold text-slate-700 dark:bg-slate-800 dark:text-slate-200">{{ $fitment->model?->name ?? __('Any model') }}</span>
-                                        </div>
-                                    </td>
-                                    <td class="px-4 py-4 text-sm text-slate-700 dark:text-slate-300">
-                                        <p class="font-semibold text-slate-900 dark:text-slate-100">{{ $fitment->year_from ?: '*' }} - {{ $fitment->year_to ?: '*' }}</p>
-                                        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ $fitment->engine ?: __('Any engine') }}</p>
-                                    </td>
-                                    <td class="max-w-xs px-4 py-4 text-sm text-slate-600 dark:text-slate-300">
-                                        {{ $fitment->notes ? Str::limit($fitment->notes, 90) : '-' }}
-                                    </td>
-                                    <td class="px-4 py-4 text-end">
-                                        <form method="POST" action="{{ route('admin.vehicle-fitments.destroy', $fitment) }}" data-danger-confirm data-danger-title="{{ __('Delete Fitment') }}" data-danger-description="{{ __('This product compatibility row will be removed.') }}">
+                            @if($brand->models->isNotEmpty())
+                                <div class="flex flex-wrap gap-1.5 p-3">
+                                    @foreach($brand->models as $model)
+                                        <form method="POST" action="{{ route('admin.vehicle-fitments.models.destroy', $model) }}" class="vf-model"
+                                              data-danger-confirm
+                                              data-danger-title="{{ __('Delete Vehicle Model') }}"
+                                              data-danger-description="{{ __('This model will be removed from Vehicle Finder.') }}">
                                             @csrf
                                             @method('DELETE')
-                                            <button class="inline-flex items-center justify-center rounded-md bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-700 hover:bg-rose-100 dark:bg-rose-950/30 dark:text-rose-300">
-                                                <i class="fas fa-trash-alt me-2 text-[10px]"></i>
-                                                {{ __('Delete') }}
-                                            </button>
+                                            <span>{{ $model->name }}</span>
+                                            <button type="submit" aria-label="{{ __('Delete :name', ['name' => $model->name]) }}">&times;</button>
                                         </form>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="5" class="px-6 py-12 text-center">
-                                        <div class="mx-auto max-w-sm">
-                                            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300">
-                                                <i class="fas fa-link"></i>
-                                            </div>
-                                            <p class="mt-3 text-sm font-semibold text-slate-900 dark:text-slate-100">{{ __('No fitments found.') }}</p>
-                                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Create a product fitment above or adjust your search.') }}</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
+                                    @endforeach
+                                </div>
+                            @else
+                                <p class="px-3 py-2.5 text-[11.5px] text-slate-400 dark:text-slate-500">{{ __('No models yet') }}</p>
+                            @endif
+                        </div>
+                    @empty
+                        <div class="rounded-xl border border-dashed border-slate-200 dark:border-slate-700 px-4 py-8 text-center text-sm text-slate-500 dark:text-slate-400">
+                            {{ __('No vehicle brands yet.') }} {{ __('Add your first one on the left.') }}
+                        </div>
+                    @endforelse
                 </div>
-                @if($fitments->hasPages())
-                    <div class="border-t border-slate-200 px-4 py-4 dark:border-slate-800">{{ $fitments->links() }}</div>
-                @endif
-            </section>
+            </div>
         </div>
+
+        {{-- ═════════════ Add fitment panel (collapsible) ═════════════ --}}
+        <div id="vf-fitment-panel" @if(!$openFitmentPanel) hidden @endif
+             class="bg-white dark:bg-slate-900 border border-amber-300/60 dark:border-amber-500/30 rounded-2xl bento-shadow overflow-hidden">
+            <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-slate-100 dark:border-slate-800 bg-gradient-to-b from-amber-50/60 to-white dark:from-amber-500/5 dark:to-slate-900">
+                <div class="flex items-center gap-3">
+                    <span class="w-9 h-9 rounded-xl bg-[#04042a] text-amber-300 grid place-items-center dark:bg-amber-400 dark:text-[#04042a]">
+                        <i class="fas fa-link text-xs"></i>
+                    </span>
+                    <div>
+                        <h2 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Add Product Fitment') }}</h2>
+                        <p class="text-[11.5px] text-slate-500 dark:text-slate-400 mt-0.5">{{ __('Connect one product to a vehicle brand, model, year range, and engine.') }}</p>
+                    </div>
+                </div>
+                <button type="button" data-vf-close-fitment class="vf-btn sm" aria-label="{{ __('Close') }}">
+                    <i class="fas fa-times text-[10px]"></i> {{ __('Close') }}
+                </button>
+            </div>
+
+            @if($products->isEmpty())
+                <div class="m-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-200">
+                    {{ __('No active products are available for new fitments.') }}
+                </div>
+            @endif
+
+            <form
+                method="POST"
+                action="{{ route('admin.vehicle-fitments.store') }}"
+                class="grid gap-5 p-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.65fr)]"
+                data-admin-vehicle-fitment
+                data-model-map='@json($brandModelMap)'
+                data-any-model-label="{{ __('Any model') }}"
+                data-no-model-label="{{ __('No models for this brand yet') }}"
+                data-any-engine-label="{{ __('Any engine') }}"
+                data-any-year-label="{{ __('Any year') }}"
+                data-product-search-url="{{ route('admin.vehicle-fitments.products.search') }}"
+            >
+                @csrf
+                <div class="space-y-5">
+                    <div class="grid gap-4 md:grid-cols-2">
+                        <div class="md:col-span-2">
+                            <label class="vf-lbl">{{ __('Product') }}</label>
+                            <div class="grid gap-2 sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
+                                <input
+                                    type="search"
+                                    placeholder="{{ __('Filter by product name, SKU, or brand') }}"
+                                    class="vf-inp"
+                                    data-admin-product-filter
+                                >
+                                <select name="product_id" required class="vf-sel" data-admin-product-select>
+                                    <option value="">{{ __('Select product') }}</option>
+                                    @foreach($products as $product)
+                                        <option value="{{ $product->id }}" @selected(old('product_id') == $product->id) data-search="{{ Str::lower(trim($product->name . ' ' . $product->sku . ' ' . $product->brand)) }}">
+                                            {{ $product->name }} @if($product->sku) ({{ $product->sku }}) @endif @if($product->brand) - {{ $product->brand }} @endif
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="vf-lbl">{{ __('Vehicle Brand') }}</label>
+                            <select name="vehicle_brand_id" required data-admin-vehicle-brand class="vf-sel">
+                                <option value="">{{ __('Select brand') }}</option>
+                                @foreach($brands as $brand)
+                                    <option value="{{ $brand->id }}" @selected(old('vehicle_brand_id') == $brand->id)>{{ $brand->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label class="vf-lbl">{{ __('Vehicle Model') }}</label>
+                            <select name="vehicle_model_id" data-admin-vehicle-model class="vf-sel">
+                                <option value="">{{ __('Any model') }}</option>
+                                @foreach($brands as $brand)
+                                    @foreach($brand->models as $model)
+                                        <option value="{{ $model->id }}">{{ $brand->name }} / {{ $model->name }}</option>
+                                    @endforeach
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="vf-lbl">{{ __('Year From') }}</label>
+                            <input name="year_from" type="number" min="1900" max="2100" value="{{ old('year_from') }}" placeholder="{{ __('Any') }}" class="vf-inp" data-admin-year-from>
+                        </div>
+                        <div>
+                            <label class="vf-lbl">{{ __('Year To') }}</label>
+                            <input name="year_to" type="number" min="1900" max="2100" value="{{ old('year_to') }}" placeholder="{{ __('Any') }}" class="vf-inp" data-admin-year-to>
+                        </div>
+                        <div>
+                            <label class="vf-lbl">{{ __('Engine') }}</label>
+                            <input name="engine" maxlength="120" value="{{ old('engine') }}" placeholder="{{ __('e.g. 1.8L, Hybrid, Diesel') }}" class="vf-inp" data-admin-engine>
+                        </div>
+                        <div>
+                            <label class="vf-lbl">{{ __('Notes') }}</label>
+                            <input name="notes" maxlength="255" value="{{ old('notes') }}" placeholder="{{ __('Optional fitment notes') }}" class="vf-inp">
+                        </div>
+                    </div>
+
+                    <button class="vf-btn gold w-full sm:w-auto px-6">
+                        <i class="fas fa-link text-[10px]"></i>
+                        {{ __('Save Fitment') }}
+                    </button>
+                </div>
+
+                {{-- Live preview plate --}}
+                <aside class="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 lg:sticky lg:top-24 lg:self-start bento-shadow">
+                    <div class="flex items-center justify-between px-4 py-3 text-white" style="background: linear-gradient(135deg, #04042a, #0a0d3f);">
+                        <span class="font-mono text-[10px] font-extrabold uppercase tracking-[0.22em] text-amber-300">{{ __('Fitment Preview') }}</span>
+                        <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true"></span>
+                    </div>
+                    <div class="p-4 space-y-3 bg-white dark:bg-slate-900">
+                        <div class="flex gap-3">
+                            <span class="w-[74px] shrink-0 text-[10px] font-extrabold uppercase tracking-widest text-slate-400 pt-0.5">{{ __('Product') }}</span>
+                            <span class="text-[13px] font-extrabold text-slate-900 dark:text-slate-100" data-admin-preview-product>{{ __('Select product') }}</span>
+                        </div>
+                        <div class="flex gap-3">
+                            <span class="w-[74px] shrink-0 text-[10px] font-extrabold uppercase tracking-widest text-slate-400 pt-0.5">{{ __('Vehicle') }}</span>
+                            <span class="text-[13px] font-extrabold text-slate-900 dark:text-slate-100" data-admin-preview-vehicle>{{ __('Select brand') }} / {{ __('Any model') }}</span>
+                        </div>
+                        <div class="flex gap-3">
+                            <span class="w-[74px] shrink-0 text-[10px] font-extrabold uppercase tracking-widest text-slate-400 pt-0.5">{{ __('Years') }}</span>
+                            <span class="text-[13px] font-extrabold font-mono text-slate-900 dark:text-slate-100" data-admin-preview-years>{{ __('Any year') }}</span>
+                        </div>
+                        <div class="flex gap-3">
+                            <span class="w-[74px] shrink-0 text-[10px] font-extrabold uppercase tracking-widest text-slate-400 pt-0.5">{{ __('Engine') }}</span>
+                            <span class="text-[13px] font-extrabold text-slate-900 dark:text-slate-100" data-admin-preview-engine>{{ __('Any engine') }}</span>
+                        </div>
+                    </div>
+                </aside>
+            </form>
+        </div>
+
+        {{-- ═════════════ Fitment rules list ═════════════ --}}
+        <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl bento-shadow overflow-hidden">
+            <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-slate-100 dark:border-slate-800">
+                <div>
+                    <h2 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Fitment Rules') }}</h2>
+                    <p class="text-[11.5px] text-slate-500 dark:text-slate-400 mt-0.5">
+                        {{ __('Year coverage is drawn as a timeline — narrow and catch-all rules read at a glance.') }}
+                    </p>
+                </div>
+                <form method="GET" action="{{ route('admin.vehicle-fitments.index') }}" class="flex gap-2 w-full sm:w-auto">
+                    @if($brandFilter > 0)
+                        <input type="hidden" name="brand" value="{{ $brandFilter }}">
+                    @endif
+                    <div class="relative flex-1 sm:w-72">
+                        <span class="absolute inset-y-0 start-0 flex items-center ps-3 text-slate-400">
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 100-15 7.5 7.5 0 000 15z"/></svg>
+                        </span>
+                        <input name="search" value="{{ $search }}" placeholder="{{ __('Search product, SKU, brand, model, engine...') }}"
+                               class="vf-inp !ps-10">
+                    </div>
+                    <button type="submit" class="vf-btn primary shrink-0">{{ __('Search') }}</button>
+                    @if($search !== '' || $brandFilter > 0)
+                        <a href="{{ route('admin.vehicle-fitments.index') }}" class="vf-btn shrink-0">{{ __('Clear') }}</a>
+                    @endif
+                </form>
+            </div>
+
+            @forelse($fitments as $fitment)
+                @php
+                    $fitmentProductImage = $fitment->product?->image ? asset('storage/' . ltrim((string) $fitment->product->image, '/')) : null;
+                    $yearFrom = $fitment->year_from ? (int) $fitment->year_from : null;
+                    $yearTo = $fitment->year_to ? (int) $fitment->year_to : null;
+                    $isAllYears = $yearFrom === null && $yearTo === null;
+                    $barFrom = max($trackStart, min($trackEnd, $yearFrom ?? $trackStart));
+                    $barTo = max($barFrom, min($trackEnd, $yearTo ?? $trackEnd));
+                    $barStartPct = round(($barFrom - $trackStart) / $trackSpan * 100, 1);
+                    $barWidthPct = max(3, round(($barTo - $barFrom + 1) / $trackSpan * 100, 1));
+                    if ($isAllYears) { $barStartPct = 0; $barWidthPct = 100; }
+                    $yearLabel = $isAllYears
+                        ? __('All years')
+                        : (($yearFrom ?? '*') . '–' . ($yearTo ?? '*'));
+                @endphp
+                <div class="vf-row">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div class="vf-thumb">
+                            @if($fitmentProductImage)
+                                <img src="{{ $fitmentProductImage }}" alt="{{ $fitment->product?->name ?? __('Product') }}" loading="lazy">
+                            @else
+                                <i class="fas fa-image text-sm"></i>
+                            @endif
+                        </div>
+                        <div class="min-w-0">
+                            <p class="truncate text-[13px] font-extrabold text-slate-900 dark:text-slate-100">{{ $fitment->product?->name ?? '-' }}</p>
+                            <p class="truncate font-mono text-[10.5px] text-slate-500 dark:text-slate-400 mt-0.5">
+                                {{ $fitment->product?->sku ?: __('No SKU') }}@if($fitment->product?->brand) · {{ $fitment->product->brand }}@endif
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap gap-1.5">
+                        <span class="vf-pill good">{{ $fitment->brand?->name ?? __('Any brand') }}</span>
+                        @if($fitment->model)
+                            <span class="vf-pill good">{{ $fitment->model->name }}</span>
+                        @else
+                            <span class="vf-pill warn">{{ __('Any model') }}</span>
+                        @endif
+                    </div>
+
+                    <div class="vf-range">
+                        <div class="years">
+                            <span>{{ $trackStart }}</span>
+                            <span class="mid {{ $isAllYears ? 'full' : '' }}">
+                                {{ $yearLabel }} · {{ $fitment->engine ?: __('Any engine') }}
+                            </span>
+                            <span>{{ $trackEnd }}</span>
+                        </div>
+                        <div class="vf-track">
+                            <div class="vf-fill {{ $isAllYears ? 'full' : '' }}" style="inset-inline-start: {{ $barStartPct }}%; width: {{ $barWidthPct }}%;"></div>
+                        </div>
+                        @if($fitment->notes)
+                            <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate" title="{{ $fitment->notes }}">{{ Str::limit($fitment->notes, 80) }}</p>
+                        @endif
+                    </div>
+
+                    <form method="POST" action="{{ route('admin.vehicle-fitments.destroy', $fitment) }}"
+                          data-danger-confirm
+                          data-danger-title="{{ __('Delete Fitment') }}"
+                          data-danger-description="{{ __('This product compatibility row will be removed.') }}">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="vf-btn danger sm" title="{{ __('Delete') }}">
+                            <i class="fas fa-trash text-[10px]"></i>
+                        </button>
+                    </form>
+                </div>
+            @empty
+                <div class="px-6 py-14 text-center">
+                    <div class="mx-auto mb-4 w-14 h-14 rounded-2xl bg-slate-50 border border-slate-200 grid place-items-center text-slate-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500">
+                        <i class="fas fa-link"></i>
+                    </div>
+                    <p class="text-base font-bold text-slate-900 dark:text-white">{{ __('No fitments found.') }}</p>
+                    <p class="text-[13px] text-slate-500 dark:text-slate-400 mt-1.5">{{ __('Create a product fitment or adjust your search.') }}</p>
+                    @if($search !== '' || $brandFilter > 0)
+                        <a href="{{ route('admin.vehicle-fitments.index') }}"
+                           class="vf-btn primary mt-4 inline-flex">{{ __('Reset filters') }}</a>
+                    @endif
+                </div>
+            @endforelse
+
+            @if($fitments->hasPages())
+                <div class="flex flex-wrap justify-between items-center gap-3 border-t border-slate-100 dark:border-slate-800 px-5 py-3.5">
+                    <span class="text-[12px] text-slate-500 dark:text-slate-400">
+                        {{ __('Showing :from–:to of :total fitments', [
+                            'from'  => $fitments->firstItem() ?? 0,
+                            'to'    => $fitments->lastItem() ?? 0,
+                            'total' => $fitments->total(),
+                        ]) }}
+                    </span>
+                    <div class="y-pagination">{{ $fitments->links() }}</div>
+                </div>
+            @endif
+        </div>
+
+        {{-- Floating add button --}}
+        <button type="button" class="vf-fab" data-vf-open-fitment>
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            {{ __('Add Fitment') }}
+        </button>
+
+    </div>
+    </div>
     </div>
 
     <script nonce="{{ $cspNonce }}">
+        // ── Add-fitment panel toggle ──
+        (() => {
+            const panel = document.getElementById('vf-fitment-panel');
+            if (!panel) return;
+            document.querySelectorAll('[data-vf-open-fitment]').forEach((btn) => {
+                btn.addEventListener('click', () => {
+                    panel.hidden = false;
+                    panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    panel.querySelector('[data-admin-product-filter]')?.focus({ preventScroll: true });
+                });
+            });
+            document.querySelectorAll('[data-vf-close-fitment]').forEach((btn) => {
+                btn.addEventListener('click', () => { panel.hidden = true; });
+            });
+        })();
+
+        // ── Fitment form: hybrid product search + dependent selects + live preview ──
         document.querySelectorAll('[data-admin-vehicle-fitment]').forEach((form) => {
             const productFilter = form.querySelector('[data-admin-product-filter]');
             const productSelect = form.querySelector('[data-admin-product-select]');
@@ -459,14 +772,6 @@
             const productSearchUrl = form.dataset.productSearchUrl || '';
             let productSearchTimer = null;
             let productSearchAbort = null;
-
-            const escapeHtml = (value) => {
-                return String(value ?? '')
-                    .replace(/&/g, '&amp;')
-                    .replace(/</g, '&lt;')
-                    .replace(/>/g, '&gt;')
-                    .replace(/"/g, '&quot;');
-            };
 
             const filterRenderedOptions = (needle) => {
                 Array.from(productSelect.options).forEach((option) => {
