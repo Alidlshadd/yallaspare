@@ -69,7 +69,7 @@
         }
         .dark .cat-card .img-wrap { background: linear-gradient(135deg, #1e293b, #0f172a); border-color: #334155; }
         .cat-card .img-wrap img {
-            max-width: 65%; max-height: 85%;
+            max-width: 50%; max-height: 70%;
             width: auto; height: auto;
             object-fit: contain;
             object-position: center;
