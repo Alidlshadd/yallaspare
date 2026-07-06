@@ -226,8 +226,10 @@ class OperationsInsightController extends Controller
 
     public function deadStock(Request $request): View
     {
-        $idleDays = $this->allowedInt((int) $request->query('idle_days', 90), [30, 60, 90, 180, 365], 90);
+        $idleOptions = [30, 60, 90, 180, 365];
+        $idleDays = $this->allowedInt((int) $request->query('idle_days', 90), $idleOptions, 90);
         $search = SqlSafe::searchTerm($request->query('search', ''));
+        $neverSoldOnly = $request->boolean('never_sold');
         $currency = $this->currencyMeta();
         $cutoff = now()->subDays($idleDays);
         $lastSales = $this->salesSubquery();
@@ -243,14 +245,12 @@ class OperationsInsightController extends Controller
                     ->orWhere('sales.last_sold_at', '<=', $cutoff);
             });
 
+        if ($neverSoldOnly) {
+            $query->whereNull('sales.last_sold_at');
+        }
+
         if ($search !== '') {
-            $query->where(function ($q) use ($search): void {
-                SqlSafe::whereLike($q, 'products.name_en', $search);
-                SqlSafe::orWhereLike($q, 'products.sku', $search);
-                SqlSafe::orWhereLike($q, 'products.brand', $search);
-                SqlSafe::orWhereLike($q, 'products.part_number', $search);
-                SqlSafe::orWhereLike($q, 'products.oem_number', $search);
-            });
+            $query->where($this->productSearchFilter($search));
         }
 
         $products = $query
@@ -271,7 +271,57 @@ class OperationsInsightController extends Controller
             'never_sold_on_page' => $products->getCollection()->whereNull('last_sold_at')->count(),
         ];
 
-        return view('admin.operations.dead-stock', compact('products', 'summary', 'idleDays', 'search', 'currency'));
+        $idleBuckets = $this->deadStockBucketCounts($idleOptions, $search, $neverSoldOnly);
+
+        return view('admin.operations.dead-stock', compact('products', 'summary', 'idleDays', 'search', 'currency', 'idleBuckets', 'neverSoldOnly'));
+    }
+
+    /**
+     * Count dead-stock products per idle-days bucket in one aggregate query.
+     *
+     * @param  array<int, int>  $idleOptions
+     * @return array<int, int>
+     */
+    private function deadStockBucketCounts(array $idleOptions, string $search, bool $neverSoldOnly = false): array
+    {
+        $query = Product::query()
+            ->leftJoinSub($this->salesSubquery(), 'sales', 'sales.product_id', '=', 'products.id')
+            ->where('products.stock_quantity', '>', 0);
+
+        if ($neverSoldOnly) {
+            $query->whereNull('sales.last_sold_at');
+        }
+
+        if ($search !== '') {
+            $query->where($this->productSearchFilter($search));
+        }
+
+        foreach ($idleOptions as $option) {
+            $query->selectRaw(
+                "SUM(CASE WHEN sales.last_sold_at IS NULL OR sales.last_sold_at <= ? THEN 1 ELSE 0 END) as bucket_{$option}",
+                [now()->subDays($option)]
+            );
+        }
+
+        $row = $query->first();
+
+        $buckets = [];
+        foreach ($idleOptions as $option) {
+            $buckets[$option] = (int) ($row->{'bucket_' . $option} ?? 0);
+        }
+
+        return $buckets;
+    }
+
+    private function productSearchFilter(string $search): \Closure
+    {
+        return function ($q) use ($search): void {
+            SqlSafe::whereLike($q, 'products.name_en', $search);
+            SqlSafe::orWhereLike($q, 'products.sku', $search);
+            SqlSafe::orWhereLike($q, 'products.brand', $search);
+            SqlSafe::orWhereLike($q, 'products.part_number', $search);
+            SqlSafe::orWhereLike($q, 'products.oem_number', $search);
+        };
     }
 
     private function salesSubquery(mixed $from = null)
