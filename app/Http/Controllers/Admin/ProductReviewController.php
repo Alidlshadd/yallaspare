@@ -17,7 +17,10 @@ class ProductReviewController extends Controller
     public function index(Request $request): View
     {
         $search = trim((string) $request->query('search', ''));
-        $rating = (int) $request->query('rating', 0);
+        $ratingParam = (string) $request->query('rating', '');
+        $rating = ctype_digit($ratingParam) ? (int) $ratingParam : 0;
+        $lowOnly = $ratingParam === 'low';
+        $flaggedOnly = $request->boolean('flagged');
 
         $baseQuery = ProductReview::query()
             ->with([
@@ -51,10 +54,13 @@ class ProductReviewController extends Controller
             'average' => (float) (clone $statsQuery)->avg('rating'),
             'five_star' => (int) ($ratingCounts->get(5, 0) ?? 0),
             'low_rating' => (int) (clone $statsQuery)->where('rating', '<=', 2)->count(),
+            'flagged' => (int) (clone $statsQuery)->where('is_flagged', true)->count(),
         ];
 
         $reviews = $baseQuery
             ->when($rating >= 1 && $rating <= 5, fn ($query) => $query->where('rating', $rating))
+            ->when($lowOnly, fn ($query) => $query->where('rating', '<=', 2))
+            ->when($flaggedOnly, fn ($query) => $query->where('is_flagged', true))
             ->latest('reviewed_at')
             ->latest('id')
             ->paginate(12)
@@ -66,6 +72,8 @@ class ProductReviewController extends Controller
             'ratingCounts' => $ratingCounts,
             'search' => $search,
             'rating' => $rating,
+            'lowOnly' => $lowOnly,
+            'flaggedOnly' => $flaggedOnly,
         ]);
     }
 
