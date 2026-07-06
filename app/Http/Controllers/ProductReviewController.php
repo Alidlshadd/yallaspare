@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use App\Models\ProductReview;
 use App\Services\Reviews\ProductReviewEligibilityService;
+use App\Support\ProfanityFilter;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -25,13 +26,17 @@ class ProductReviewController extends Controller
             return back()->with('review_error', $rejectionReason);
         }
 
+        [$title, $titleFlagged] = ProfanityFilter::clean(trim((string) ($data['title'] ?? '')) ?: null);
+        [$comment, $commentFlagged] = ProfanityFilter::clean(trim((string) ($data['comment'] ?? '')) ?: null);
+
         ProductReview::query()->create([
             'product_id' => $product->id,
             'user_id' => $request->user()->id,
             'rating' => (int) $data['rating'],
-            'title' => trim((string) ($data['title'] ?? '')) ?: null,
-            'comment' => trim((string) ($data['comment'] ?? '')) ?: null,
+            'title' => $title,
+            'comment' => $comment,
             'is_approved' => true,
+            'is_flagged' => $titleFlagged || $commentFlagged,
             'reviewed_at' => now(),
         ]);
 

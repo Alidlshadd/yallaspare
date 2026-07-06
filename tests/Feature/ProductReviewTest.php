@@ -95,6 +95,48 @@ class ProductReviewTest extends TestCase
         ]);
     }
 
+    public function test_profanity_is_masked_and_review_is_flagged(): void
+    {
+        $user = User::factory()->create(['email_verified_at' => now()]);
+        $product = $this->product();
+        $this->deliveredOrderFor($user, $product);
+
+        $response = $this->actingAs($user)->post(route('shop.reviews.store', $product), [
+            'rating' => 1,
+            'title' => 'Terrible shit product',
+            'comment' => 'This is bullshit, total waste of money.',
+        ]);
+
+        $response->assertRedirect();
+        $response->assertSessionHas('review_status');
+        $this->assertDatabaseHas('product_reviews', [
+            'product_id' => $product->id,
+            'user_id' => $user->id,
+            'title' => 'Terrible **** product',
+            'comment' => 'This is ********, total waste of money.',
+            'is_flagged' => true,
+        ]);
+    }
+
+    public function test_clean_review_is_not_flagged(): void
+    {
+        $user = User::factory()->create(['email_verified_at' => now()]);
+        $product = $this->product();
+        $this->deliveredOrderFor($user, $product);
+
+        $this->actingAs($user)->post(route('shop.reviews.store', $product), [
+            'rating' => 5,
+            'title' => 'Great product',
+            'comment' => 'Classic quality, shipped fast.',
+        ]);
+
+        $this->assertDatabaseHas('product_reviews', [
+            'product_id' => $product->id,
+            'title' => 'Great product',
+            'is_flagged' => false,
+        ]);
+    }
+
     public function test_delivered_order_detail_shows_review_form_for_ordered_product(): void
     {
         $user = User::factory()->create(['email_verified_at' => now()]);

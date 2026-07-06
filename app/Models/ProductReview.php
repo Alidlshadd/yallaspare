@@ -16,12 +16,14 @@ class ProductReview extends Model
         'title',
         'comment',
         'is_approved',
+        'is_flagged',
         'reviewed_at',
     ];
 
     protected $casts = [
         'rating' => 'integer',
         'is_approved' => 'boolean',
+        'is_flagged' => 'boolean',
         'reviewed_at' => 'datetime',
     ];
 
