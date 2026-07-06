@@ -39,7 +39,7 @@
                             <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Product Name (EN)') }} <span class="text-rose-500">*</span></label>
-                                    <input type="text" name="name_en" value="{{ old('name_en') }}" class="{{ $inputBase }} @error('name_en') {{ $inputError }} @enderror" required @error('name_en') aria-invalid="true" @enderror>
+                                    <input type="text" name="name_en" value="{{ old('name_en', (string) request('name', '')) }}" class="{{ $inputBase }} @error('name_en') {{ $inputError }} @enderror" required @error('name_en') aria-invalid="true" @enderror>
                                     @error('name_en')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror

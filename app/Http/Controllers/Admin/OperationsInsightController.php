@@ -193,12 +193,39 @@ class OperationsInsightController extends Controller
         $search = SqlSafe::searchTerm($request->query('search', ''));
         $sort = $this->allowedString((string) $request->query('sort', 'search_count'), ['search_count', 'last_searched_at', 'keyword'], 'search_count');
         $direction = $this->allowedString((string) $request->query('dir', 'desc'), ['asc', 'desc'], 'desc');
+        $window = $this->allowedString((string) $request->query('window', 'all'), ['all', '7', '30'], 'all');
+        $zeroHitOnly = $request->boolean('zero_hit');
 
-        $query = SearchAnalytic::query();
+        $baseQuery = SearchAnalytic::query();
 
         if ($search !== '') {
-            $query->where(function ($q) use ($search): void {
+            $baseQuery->where(function ($q) use ($search): void {
                 SqlSafe::whereLike($q, 'keyword', $search);
+            });
+        }
+
+        $windowCounts = [
+            'all' => (clone $baseQuery)->count(),
+            '7' => (clone $baseQuery)->where('last_searched_at', '>=', now()->subDays(7))->count(),
+            '30' => (clone $baseQuery)->where('last_searched_at', '>=', now()->subDays(30))->count(),
+        ];
+
+        $query = clone $baseQuery;
+
+        if ($window !== 'all') {
+            $query->where('last_searched_at', '>=', now()->subDays((int) $window));
+        }
+
+        if ($zeroHitOnly) {
+            $query->whereNotExists(function ($sub): void {
+                $sub->select(DB::raw(1))
+                    ->from('products')
+                    ->where(function ($q): void {
+                        // INSTR + LOWER works on both MySQL and SQLite, unlike CONCAT-based LIKE.
+                        foreach (['name_en', 'name_ar', 'name_ku', 'sku', 'brand', 'part_number', 'oem_number'] as $column) {
+                            $q->orWhereRaw("INSTR(LOWER(products.{$column}), LOWER(search_analytics.keyword)) > 0");
+                        }
+                    });
             });
         }
 
@@ -214,14 +241,43 @@ class OperationsInsightController extends Controller
             return $row;
         });
 
+        $pageRows = $keywords->getCollection();
+        $zeroHitRows = $pageRows->where('matching_products_count', 0);
+
         $summary = [
             'keywords' => SearchAnalytic::query()->count(),
             'searches' => (int) SearchAnalytic::query()->sum('search_count'),
-            'zero_result_on_page' => $keywords->getCollection()->where('matching_products_count', 0)->count(),
+            'zero_result_on_page' => $zeroHitRows->count(),
+            'missed_demand_on_page' => (int) $zeroHitRows->sum('search_count'),
+            'coverage_on_page' => $pageRows->count() > 0
+                ? (1 - ($zeroHitRows->count() / $pageRows->count())) * 100
+                : 100.0,
             'top_keyword' => optional(SearchAnalytic::query()->orderByDesc('search_count')->first())->keyword,
         ];
 
-        return view('admin.operations.search-insights', compact('keywords', 'summary', 'search', 'sort', 'direction'));
+        $coverageGaps = $zeroHitRows->sortByDesc('search_count')->take(5)->values();
+
+        $pulseRows = SearchAnalytic::query()
+            ->selectRaw('DATE(last_searched_at) as search_day, COUNT(*) as keyword_count')
+            ->where('last_searched_at', '>=', now()->subDays(6)->startOfDay())
+            ->groupBy('search_day')
+            ->get()
+            ->keyBy('search_day');
+
+        $demandPulse = collect();
+        for ($i = 6; $i >= 0; $i--) {
+            $day = now()->subDays($i);
+            $demandPulse->push([
+                'label' => $day->format('D'),
+                'date' => $day->toDateString(),
+                'count' => (int) ($pulseRows[$day->toDateString()]->keyword_count ?? 0),
+            ]);
+        }
+
+        return view('admin.operations.search-insights', compact(
+            'keywords', 'summary', 'search', 'sort', 'direction',
+            'window', 'zeroHitOnly', 'windowCounts', 'coverageGaps', 'demandPulse'
+        ));
     }
 
     public function deadStock(Request $request): View
