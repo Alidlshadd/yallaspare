@@ -9,41 +9,20 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class RevenueController extends Controller
 {
+    private const PAID_STATUSES = ['delivered', 'completed'];
+
     public function index(Request $request): View
     {
-        $allowedDays = [7, 30, 90, 365];
-        $days = (int) $request->query('days', 30);
-        if (!in_array($days, $allowedDays, true)) {
-            $days = 30;
-        }
+        [$start, $end, $days, $allowedDays, $customRange, $now] = $this->resolveRange($request);
 
-        $paidStatuses = ['delivered', 'completed'];
+        $paidStatuses = self::PAID_STATUSES;
         $pendingStatuses = ['pending', 'processing'];
         $cancelledStatuses = ['cancelled', 'canceled'];
         $refundedStatuses = ['refunded'];
-        $now = Carbon::now();
-        $end = $now->copy()->endOfDay();
-        $start = $now->copy()->subDays($days - 1)->startOfDay();
-        $from = trim((string) $request->query('from', ''));
-        $to = trim((string) $request->query('to', ''));
-        $customRange = false;
-
-        try {
-            if ($from !== '' && $to !== '') {
-                $customStart = Carbon::parse($from)->startOfDay();
-                $customEnd = Carbon::parse($to)->endOfDay();
-                if ($customStart->lessThanOrEqualTo($customEnd)) {
-                    $start = $customStart;
-                    $end = $customEnd;
-                    $customRange = true;
-                }
-            }
-        } catch (\Throwable $e) {
-            // Keep default days filter if date parsing fails.
-        }
 
         $rangeDays = max(1, $start->diffInDays($end) + 1);
         $previousStart = $start->copy()->subDays($rangeDays);
@@ -279,6 +258,77 @@ class RevenueController extends Controller
             'currencyLabel' => $currencyLabel,
             'currencyDecimals' => $currencyDecimals,
         ]);
+    }
+
+    public function export(Request $request): StreamedResponse
+    {
+        [$start, $end] = $this->resolveRange($request);
+        $rangeDays = max(1, $start->diffInDays($end) + 1);
+
+        $dailyRows = Order::query()
+            ->selectRaw('DATE(created_at) as order_day, COUNT(*) as orders_count, COALESCE(SUM(total_amount), 0) as total_revenue')
+            ->whereIn('status', self::PAID_STATUSES)
+            ->whereBetween('created_at', [$start, $end])
+            ->groupBy('order_day')
+            ->orderBy('order_day')
+            ->get()
+            ->keyBy('order_day');
+
+        $filename = 'revenue-' . $start->toDateString() . '-to-' . $end->toDateString() . '.csv';
+
+        return response()->streamDownload(function () use ($dailyRows, $start, $end, $rangeDays) {
+            $out = fopen('php://output', 'w');
+            fputcsv($out, ['Date', 'Paid Orders', 'Revenue']);
+
+            $totalOrders = 0;
+            $totalRevenue = 0.0;
+            for ($i = 0; $i < $rangeDays; $i++) {
+                $key = $start->copy()->addDays($i)->toDateString();
+                $orders = (int) ($dailyRows[$key]->orders_count ?? 0);
+                $revenue = (float) ($dailyRows[$key]->total_revenue ?? 0);
+                $totalOrders += $orders;
+                $totalRevenue += $revenue;
+                fputcsv($out, [$key, $orders, $revenue]);
+            }
+
+            fputcsv($out, ['Total (' . $start->toDateString() . ' to ' . $end->toDateString() . ')', $totalOrders, $totalRevenue]);
+            fclose($out);
+        }, $filename, ['Content-Type' => 'text/csv']);
+    }
+
+    /**
+     * @return array{0: Carbon, 1: Carbon, 2: int, 3: array<int>, 4: bool, 5: Carbon}
+     */
+    private function resolveRange(Request $request): array
+    {
+        $allowedDays = [7, 30, 90, 365];
+        $days = (int) $request->query('days', 30);
+        if (!in_array($days, $allowedDays, true)) {
+            $days = 30;
+        }
+
+        $now = Carbon::now();
+        $end = $now->copy()->endOfDay();
+        $start = $now->copy()->subDays($days - 1)->startOfDay();
+        $from = trim((string) $request->query('from', ''));
+        $to = trim((string) $request->query('to', ''));
+        $customRange = false;
+
+        try {
+            if ($from !== '' && $to !== '') {
+                $customStart = Carbon::parse($from)->startOfDay();
+                $customEnd = Carbon::parse($to)->endOfDay();
+                if ($customStart->lessThanOrEqualTo($customEnd)) {
+                    $start = $customStart;
+                    $end = $customEnd;
+                    $customRange = true;
+                }
+            }
+        } catch (\Throwable $e) {
+            // Keep default days filter if date parsing fails.
+        }
+
+        return [$start, $end, $days, $allowedDays, $customRange, $now];
     }
 
     private function percentageChange(float|int $current, float|int $previous): float

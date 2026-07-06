@@ -237,6 +237,9 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::get('/revenue', [RevenueController::class, 'index'])
             ->middleware('can:' . User::PERMISSION_FINANCE_VIEW)
             ->name('revenue.index');
+        Route::get('/revenue/export', [RevenueController::class, 'export'])
+            ->middleware('can:' . User::PERMISSION_FINANCE_VIEW)
+            ->name('revenue.export');
         Route::get('/analytics', [AdminAnalyticsController::class, 'index'])
             ->middleware('can:' . User::PERMISSION_DASHBOARD_VIEW)
             ->name('analytics.index');
