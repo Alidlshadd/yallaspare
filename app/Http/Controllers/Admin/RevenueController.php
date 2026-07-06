@@ -24,7 +24,7 @@ class RevenueController extends Controller
         $cancelledStatuses = ['cancelled', 'canceled'];
         $refundedStatuses = ['refunded'];
 
-        $rangeDays = max(1, $start->diffInDays($end) + 1);
+        $rangeDays = max(1, (int) $start->diffInDays($end) + 1);
         $previousStart = $start->copy()->subDays($rangeDays);
         $previousEnd = $start->copy()->subSecond();
 
@@ -121,7 +121,7 @@ class RevenueController extends Controller
         ];
 
         $dailyRows = Order::query()
-            ->selectRaw('DATE(created_at) as order_day, COALESCE(SUM(total_amount), 0) as total_revenue')
+            ->selectRaw('DATE(created_at) as order_day, COUNT(*) as orders_count, COALESCE(SUM(total_amount), 0) as total_revenue')
             ->whereIn('status', $paidStatuses)
             ->whereBetween('created_at', [$start, $end])
             ->groupBy('order_day')
@@ -137,6 +137,7 @@ class RevenueController extends Controller
                 'label' => $day->format('M d'),
                 'date' => $key,
                 'amount' => (float) ($dailyRows[$key]->total_revenue ?? 0),
+                'orders' => (int) ($dailyRows[$key]->orders_count ?? 0),
             ]);
         }
 
@@ -263,7 +264,7 @@ class RevenueController extends Controller
     public function export(Request $request): StreamedResponse
     {
         [$start, $end] = $this->resolveRange($request);
-        $rangeDays = max(1, $start->diffInDays($end) + 1);
+        $rangeDays = max(1, (int) $start->diffInDays($end) + 1);
 
         $dailyRows = Order::query()
             ->selectRaw('DATE(created_at) as order_day, COUNT(*) as orders_count, COALESCE(SUM(total_amount), 0) as total_revenue')
