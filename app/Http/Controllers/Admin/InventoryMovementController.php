@@ -147,7 +147,13 @@ class InventoryMovementController extends Controller
 
         $filename = 'inventory-movements-' . now()->format('Y-m-d-Hi') . '.csv';
 
-        return response()->streamDownload(function () use ($query, $dateExpression, $hasWarehouseSupport) {
+        // Guard user-controlled cells against CSV formula injection: a value
+        // starting with =, +, -, @, tab, or CR would execute in spreadsheets.
+        $safeCell = fn ($value) => (is_string($value) && preg_match('/^[=+\-@\t\r]/', $value))
+            ? "'" . $value
+            : $value;
+
+        return response()->streamDownload(function () use ($query, $dateExpression, $hasWarehouseSupport, $safeCell) {
             $out = fopen('php://output', 'w');
             $headers = ['Date', 'Product', 'SKU'];
             if ($hasWarehouseSupport) {
@@ -159,26 +165,26 @@ class InventoryMovementController extends Controller
             $query
                 ->orderByRaw("{$dateExpression} DESC")
                 ->latest('id')
-                ->chunk(500, function ($movements) use ($out, $hasWarehouseSupport): void {
+                ->chunk(500, function ($movements) use ($out, $hasWarehouseSupport, $safeCell): void {
                     foreach ($movements as $movement) {
                         $movementDate = $movement->performed_at ?? $movement->created_at;
                         $row = [
                             $movementDate?->format('Y-m-d H:i'),
-                            $movement->product->name ?? 'Deleted Product',
-                            $movement->product->sku ?? '',
+                            $safeCell($movement->product->name ?? 'Deleted Product'),
+                            $safeCell($movement->product->sku ?? ''),
                         ];
                         if ($hasWarehouseSupport) {
-                            $row[] = $movement->warehouse->name ?? '';
+                            $row[] = $safeCell($movement->warehouse->name ?? '');
                         }
                         array_push(
                             $row,
                             $movement->type,
-                            ($movement->type === InventoryMovement::TYPE_IN ? '+' : '-') . $movement->quantity,
+                            ($movement->type === InventoryMovement::TYPE_IN ? 'in +' : 'out -') . $movement->quantity,
                             $movement->stock_before,
                             $movement->stock_after,
-                            $movement->user->name ?? '',
-                            $movement->reference ?? '',
-                            $movement->note ?? ''
+                            $safeCell($movement->user->name ?? ''),
+                            $safeCell($movement->reference ?? ''),
+                            $safeCell($movement->note ?? '')
                         );
                         fputcsv($out, $row);
                     }
