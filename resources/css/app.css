@@ -1250,23 +1250,28 @@
     }
 
     .dark .admin-shell {
-        --admin-bg: #0f172a;
-        --admin-surface: #111827;
-        --admin-surface-strong: #1e293b;
-        --admin-surface-hover: #263449;
-        --admin-card: #1e293b;
-        --admin-input: #172033;
-        --admin-sidebar: #0b1220;
-        --admin-border: #334155;
-        --admin-border-soft: #263244;
-        --admin-text: #f8fafc;
-        --admin-text-strong: #f8fafc;
-        --admin-text-muted: #cbd5e1;
-        --admin-text-soft: #94a3b8;
-        --admin-accent: #06b6d4;
-        --admin-accent-hover: #0891b2;
-        --admin-shadow: 0 1px 0 rgba(255, 255, 255, 0.04), 0 22px 48px -34px rgba(0, 0, 0, 0.68);
-        --admin-shadow-soft: 0 1px 0 rgba(255, 255, 255, 0.035), 0 14px 34px -30px rgba(0, 0, 0, 0.62);
+        --admin-bg: #080a16;
+        --admin-surface: #0d1224;
+        --admin-surface-muted: #11182b;
+        --admin-surface-strong: #1b2338;
+        --admin-surface-hover: #24314b;
+        --admin-card: #151b2d;
+        --admin-card-elevated: #1a2136;
+        --admin-input: #0f1729;
+        --admin-sidebar: #050725;
+        --admin-border: rgba(148, 163, 184, 0.24);
+        --admin-border-soft: rgba(251, 191, 36, 0.18);
+        --admin-border-cool: rgba(34, 211, 238, 0.20);
+        --admin-text: #e8edf7;
+        --admin-text-strong: #ffffff;
+        --admin-text-muted: #c6d0e1;
+        --admin-text-soft: #91a2bc;
+        --admin-accent: #22d3ee;
+        --admin-accent-hover: #67e8f9;
+        --admin-accent-warm: #fbbf24;
+        --admin-accent-violet: #a78bfa;
+        --admin-shadow: 0 1px 0 rgba(255, 255, 255, 0.06), 0 28px 58px -34px rgba(0, 0, 0, 0.82);
+        --admin-shadow-soft: 0 1px 0 rgba(255, 255, 255, 0.045), 0 16px 38px -30px rgba(0, 0, 0, 0.72);
         background-color: var(--admin-bg);
     }
 
@@ -1287,15 +1292,21 @@
     }
 
     .dark .admin-shell .admin-main {
-        background-color: var(--admin-surface);
+        background:
+            linear-gradient(180deg, rgba(6, 8, 25, 0.98) 0%, rgba(14, 18, 38, 0.98) 46%, rgba(8, 10, 22, 0.98) 100%),
+            repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.025) 0 1px, transparent 1px 22px);
     }
 
     .dark .admin-shell .admin-sidebar {
         background-color: var(--admin-sidebar);
     }
 
+    .dark .admin-shell .admin-content {
+        color: var(--admin-text);
+    }
+
     .dark .admin-shell .admin-topbar {
-        background-color: rgba(17, 24, 39, 0.88);
+        background-color: rgba(5, 7, 37, 0.94);
         border-color: var(--admin-border-soft);
     }
 
@@ -1303,7 +1314,7 @@
         background-color: var(--admin-card);
     }
     .dark .admin-shell .bg-slate-50 {
-        background-color: var(--admin-surface);
+        background-color: var(--admin-surface-muted);
     }
     .dark .admin-shell .bg-slate-900,
     .dark .admin-shell .bg-slate-950 {
@@ -1319,9 +1330,37 @@
         background-color: rgba(17, 24, 39, 0.88);
     }
     .dark .admin-shell .dark\:bg-slate-800\/60 {
-        background-color: rgba(30, 41, 59, 0.62);
+        background-color: rgba(36, 49, 75, 0.64);
+    }
+
+    .dark .admin-shell :is(section, article, aside, form, div).bg-white,
+    .dark .admin-shell :is(section, article, aside, form, div).dark\:bg-slate-900 {
+        background-image:
+            linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0)),
+            linear-gradient(135deg, rgba(34, 211, 238, 0.035), rgba(251, 191, 36, 0.025) 48%, rgba(167, 139, 250, 0.035));
+        box-shadow: var(--admin-shadow-soft);
+    }
+
+    .dark .admin-shell :is(table, thead, tbody, tr, th, td) {
+        border-color: var(--admin-border);
+    }
+
+    .dark .admin-shell thead,
+    .dark .admin-shell .dark\:bg-slate-950\/40 {
+        background-color: rgba(10, 16, 34, 0.72);
+    }
+
+    .dark .admin-shell tbody tr:hover,
+    .dark .admin-shell .hover\:bg-slate-50\/70:hover {
+        background-color: rgba(34, 211, 238, 0.055);
     }
     .dark .admin-shell .border-slate-200 {
+        border-color: var(--admin-border);
+    }
+    .dark .admin-shell .border-slate-100,
+    .dark .admin-shell .border-slate-200\/60,
+    .dark .admin-shell .border-slate-200\/70,
+    .dark .admin-shell .border-slate-200\/80 {
         border-color: var(--admin-border);
     }
     .dark .admin-shell .dark\:border-slate-800 {
@@ -1332,6 +1371,10 @@
     }
     .dark .admin-shell .border-white\/10 {
         border-color: var(--admin-border-soft);
+    }
+    .dark .admin-shell .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+    .dark .admin-shell .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+        border-color: rgba(148, 163, 184, 0.18);
     }
     .dark .admin-shell .text-slate-900 {
         color: var(--admin-text-strong);
@@ -1350,6 +1393,9 @@
     }
     .dark .admin-shell .text-slate-400 {
         color: #94a3b8;
+    }
+    .dark .admin-shell .text-slate-300 {
+        color: #bfcadb;
     }
     .dark .admin-shell .dark\:text-slate-300 {
         color: var(--admin-text-muted);
@@ -1373,6 +1419,14 @@
     .dark .admin-shell .bg-slate-800 {
         background-color: var(--admin-surface-strong);
     }
+    .dark .admin-shell .bg-slate-100,
+    .dark .admin-shell .bg-slate-200 {
+        background-color: rgba(36, 49, 75, 0.72);
+    }
+    .dark .admin-shell .hover\:bg-slate-50:hover,
+    .dark .admin-shell .hover\:bg-slate-100:hover {
+        background-color: rgba(34, 211, 238, 0.07);
+    }
     .dark .admin-shell .hover\:bg-slate-800\/60:hover {
         background-color: var(--admin-surface-hover);
     }
@@ -1394,22 +1448,96 @@
     }
 
     .dark .admin-shell .bg-indigo-600 {
-        background-color: #06b6d4;
+        background-color: #2563eb;
     }
     .dark .admin-shell .text-indigo-600 {
-        color: #22d3ee;
+        color: #93c5fd;
+    }
+    .dark .admin-shell .bg-indigo-50,
+    .dark .admin-shell .dark\:bg-indigo-500\/10 {
+        background-color: rgba(79, 70, 229, 0.16);
+    }
+    .dark .admin-shell .text-indigo-700,
+    .dark .admin-shell .dark\:text-indigo-300 {
+        color: #a5b4fc;
     }
     .dark .admin-shell .bg-emerald-500 {
         background-color: #22c55e;
     }
+    .dark .admin-shell .bg-emerald-50,
+    .dark .admin-shell .dark\:bg-emerald-950\/20,
+    .dark .admin-shell .dark\:bg-emerald-950\/30,
+    .dark .admin-shell .dark\:bg-emerald-950\/40 {
+        background-color: rgba(16, 185, 129, 0.14);
+    }
     .dark .admin-shell .text-emerald-500 {
         color: #22c55e;
+    }
+    .dark .admin-shell .text-emerald-600,
+    .dark .admin-shell .text-emerald-700,
+    .dark .admin-shell .dark\:text-emerald-300,
+    .dark .admin-shell .dark\:text-emerald-400 {
+        color: #6ee7b7;
+    }
+    .dark .admin-shell .border-emerald-200,
+    .dark .admin-shell .dark\:border-emerald-900\/60 {
+        border-color: rgba(16, 185, 129, 0.34);
+    }
+    .dark .admin-shell .bg-amber-50,
+    .dark .admin-shell .bg-amber-100,
+    .dark .admin-shell .dark\:bg-amber-950\/20,
+    .dark .admin-shell .dark\:bg-amber-950\/30,
+    .dark .admin-shell .dark\:bg-amber-950\/40 {
+        background-color: rgba(251, 191, 36, 0.14);
     }
     .dark .admin-shell .text-amber-500 {
         color: #f59e0b;
     }
+    .dark .admin-shell .text-amber-600,
+    .dark .admin-shell .text-amber-700,
+    .dark .admin-shell .dark\:text-amber-300,
+    .dark .admin-shell .dark\:text-amber-400 {
+        color: #fcd34d;
+    }
+    .dark .admin-shell .border-amber-200,
+    .dark .admin-shell .border-amber-300,
+    .dark .admin-shell .dark\:border-amber-900\/50,
+    .dark .admin-shell .dark\:border-amber-900\/60 {
+        border-color: rgba(251, 191, 36, 0.36);
+    }
+    .dark .admin-shell .bg-rose-50,
+    .dark .admin-shell .dark\:bg-rose-950\/20,
+    .dark .admin-shell .dark\:bg-rose-950\/30,
+    .dark .admin-shell .dark\:bg-rose-950\/40 {
+        background-color: rgba(244, 63, 94, 0.14);
+    }
     .dark .admin-shell .text-rose-500 {
         color: #ef4444;
+    }
+    .dark .admin-shell .text-rose-600,
+    .dark .admin-shell .text-rose-700,
+    .dark .admin-shell .dark\:text-rose-300,
+    .dark .admin-shell .dark\:text-rose-400 {
+        color: #fda4af;
+    }
+    .dark .admin-shell .border-rose-200,
+    .dark .admin-shell .dark\:border-rose-800,
+    .dark .admin-shell .dark\:border-rose-900\/60 {
+        border-color: rgba(244, 63, 94, 0.34);
+    }
+    .dark .admin-shell .bg-sky-50,
+    .dark .admin-shell .dark\:bg-sky-950\/30 {
+        background-color: rgba(14, 165, 233, 0.14);
+    }
+    .dark .admin-shell .text-sky-600,
+    .dark .admin-shell .text-sky-700,
+    .dark .admin-shell .dark\:text-sky-300 {
+        color: #7dd3fc;
+    }
+    .dark .admin-shell .border-sky-200,
+    .dark .admin-shell .border-sky-300,
+    .dark .admin-shell .dark\:border-sky-800 {
+        border-color: rgba(14, 165, 233, 0.34);
     }
     .dark .admin-shell .bg-rose-900\/20 {
         background-color: rgba(239, 68, 68, 0.14);
@@ -1422,7 +1550,7 @@
     }
 
     .dark .admin-shell [class*='bg-gradient-to-'] {
-        filter: saturate(0.82) brightness(1.02);
+        filter: saturate(0.92) brightness(1.04);
     }
 
     /* Cover legacy admin pages still using gray utilities without dark variants */
