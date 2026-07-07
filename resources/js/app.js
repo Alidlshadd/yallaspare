@@ -313,6 +313,11 @@ Alpine.data('inventoryForm', () => ({
     },
 }));
 
+// Shared localStorage key for admin purchase lists: written by the Purchase
+// Planning builder below and by the Stock Requests board's "Add to Purchase
+// List" action, so both pages operate on the same lists.
+const PURCHASE_LISTS_STORAGE_KEY = 'ys-purchase-lists-v1';
+
 // Purchase Planning "Purchase List Builder" side dock. Multiple named lists
 // with inline-editable qty/cost/notes, persisted to localStorage (no backend).
 // Config (currency, page budget, i18n labels) comes from a data-config JSON
@@ -330,7 +335,7 @@ Alpine.data('purchaseBuilder', () => ({
     currency: { label: 'IQD', decimals: 0 },
     budget: 0,
     labels: {},
-    storageKey: 'ys-purchase-lists-v1',
+    storageKey: PURCHASE_LISTS_STORAGE_KEY,
     _flashTimer: null,
 
     init() {
@@ -678,6 +683,138 @@ Alpine.data('purchaseBuilder', () => ({
             unitLabel: this.money(item.cost),
             totalLabel: this.money(item.qty * item.cost),
         }));
+    },
+}));
+
+// Stock Requests board: waiting-customers drawer per product plus a
+// cross-page "Add to Purchase List" action that writes into the same
+// localStorage lists as the Purchase Planning builder. Row data arrives
+// through data-product / data-subs JSON attributes rendered by Blade, so all
+// x-* expressions stay CSP-safe.
+Alpine.data('stockRequestsBoard', () => ({
+    labels: {},
+    flashMessage: '',
+    inListCount: 0,
+    drawerOpen: false,
+    drawer: { product: null, subs: [] },
+    _flashTimer: null,
+
+    init() {
+        let config = {};
+        try { config = JSON.parse(this.$el.dataset.config || '{}'); } catch (e) { config = {}; }
+        this.labels = config.labels || {};
+        this.$nextTick(() => this.refreshAddButtons());
+    },
+
+    /* ---------- shared purchase-list storage ---------- */
+    readListsState() {
+        let saved = null;
+        try { saved = JSON.parse(safeLocalStorageGet(PURCHASE_LISTS_STORAGE_KEY) || 'null'); } catch (e) { saved = null; }
+        if (!saved || !Array.isArray(saved.lists) || saved.lists.length === 0) {
+            saved = {
+                lists: [1, 2, 3, 4].map((n) => ({
+                    name: `${this.labels.listName || 'Order List'} ${n}`,
+                    status: 'draft',
+                    items: [],
+                    updatedAt: new Date().toISOString(),
+                })),
+                activeIndex: 0,
+            };
+        }
+        saved.activeIndex = Math.min(Math.max(0, Number(saved.activeIndex) || 0), saved.lists.length - 1);
+        return saved;
+    },
+    writeListsState(state) {
+        safeLocalStorageSet(PURCHASE_LISTS_STORAGE_KEY, JSON.stringify(state));
+    },
+    keyInAnyList(state, key) {
+        return state.lists.some((list) => (list.items || []).some((item) => item.key === key));
+    },
+
+    /* ---------- add to purchase list ---------- */
+    addProduct(product) {
+        if (!product || !product.id) return;
+        const state = this.readListsState();
+        const list = state.lists[state.activeIndex];
+        if (!Array.isArray(list.items)) list.items = [];
+        const key = `p:${product.id}`;
+        const existing = list.items.find((item) => item.key === key);
+        if (existing) {
+            existing.qty = (parseInt(existing.qty, 10) || 1) + 1;
+        } else {
+            list.items.push({
+                key,
+                name: String(product.name || ''),
+                sku: String(product.sku || ''),
+                manual: false,
+                qty: Math.max(1, parseInt(product.qty, 10) || 1),
+                cost: Math.max(0, Number(product.cost) || 0),
+                note: this.labels.fromStockRequests || '',
+            });
+        }
+        list.updatedAt = new Date().toISOString();
+        this.writeListsState(state);
+        this.refreshAddButtons();
+        this.flash(existing ? (this.labels.qtyBumped || 'Quantity +1') : (this.labels.addedFlash || 'Added to purchase list'));
+    },
+    addFromRow(event) {
+        let product = {};
+        try { product = JSON.parse(event.currentTarget.closest('[data-product]')?.dataset.product || '{}'); } catch (e) { product = {}; }
+        this.addProduct(product);
+    },
+    addFromDrawer() { this.addProduct(this.drawer.product); },
+    refreshAddButtons() {
+        const state = this.readListsState();
+        let count = 0;
+        this.$root.querySelectorAll('[data-sr-add]').forEach((button) => {
+            const inList = this.keyInAnyList(state, `p:${button.dataset.id}`);
+            if (inList) count += 1;
+            button.classList.toggle('sr-added', inList);
+            button.title = inList
+                ? (this.labels.alreadyAdded || 'In purchase list — click to add +1')
+                : (this.labels.addToList || 'Add to purchase list');
+        });
+        this.inListCount = count;
+    },
+    get inListCountLabel() { return String(this.inListCount); },
+    flash(message) {
+        this.flashMessage = message;
+        if (this._flashTimer) clearTimeout(this._flashTimer);
+        this._flashTimer = setTimeout(() => { this.flashMessage = ''; }, 2200);
+    },
+    get hasFlash() { return this.flashMessage !== ''; },
+
+    /* ---------- waiting-customers drawer ---------- */
+    openDrawer(event) {
+        const host = event.currentTarget.closest('[data-product]');
+        let product = null;
+        let subs = [];
+        try { product = JSON.parse(host?.dataset.product || 'null'); } catch (e) { product = null; }
+        try { subs = JSON.parse(host?.dataset.subs || '[]'); } catch (e) { subs = []; }
+        if (!product) return;
+        this.drawer = { product, subs: Array.isArray(subs) ? subs : [] };
+        this.drawerOpen = true;
+    },
+    closeDrawer() { this.drawerOpen = false; },
+    get drawerSubs() { return this.drawer.subs; },
+    get drawerEmpty() { return this.drawer.subs.length === 0; },
+    get drawerName() { return this.drawer.product?.name || ''; },
+    get drawerMeta() {
+        const product = this.drawer.product;
+        if (!product) return '';
+        const parts = [];
+        if (product.sku) parts.push(product.sku);
+        parts.push(`${this.labels.stockWord || 'Stock'}: ${product.stock}`);
+        parts.push(`${product.pending} ${this.labels.pendingWord || 'pending'}`);
+        return parts.join(' · ');
+    },
+    get drawerNotifyUrl() { return this.drawer.product?.notifyUrl || ''; },
+    get drawerHasPending() { return (this.drawer.product?.pending || 0) > 0; },
+    subStatusLabel(sub) {
+        return sub.status === 'notified' ? (this.labels.notified || 'Notified') : (this.labels.waiting || 'Waiting');
+    },
+    subChipClass(sub) {
+        return sub.status === 'notified' ? 'sr-chip-notified' : 'sr-chip-waiting';
     },
 }));
 

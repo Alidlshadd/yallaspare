@@ -115,7 +115,9 @@ class OperationsInsightController extends Controller
 
         $requests = collect();
         $products = collect();
-        $summary = ['pending' => 0, 'notified' => 0, 'products' => 0];
+        $subscribersByProduct = collect();
+        $summary = ['pending' => 0, 'notified' => 0, 'products' => 0, 'high_demand' => 0, 'out_of_stock_requests' => 0];
+        $lowStockThreshold = max((int) Setting::getValue('low_stock_threshold', config('inventory.low_stock_threshold', 5)), 0);
 
         if ($hasTable) {
             $requestCounts = BackInStockSubscription::query()
@@ -162,14 +164,40 @@ class OperationsInsightController extends Controller
                 ->limit(12)
                 ->get();
 
+            // Waiting-customer drawer: all subscribers for the products on the
+            // current page (pending first, newest first), grouped by product.
+            $subscribersByProduct = BackInStockSubscription::query()
+                ->whereIn('product_id', $products->getCollection()->pluck('id'))
+                ->with('user:id,name,email')
+                ->orderByRaw('CASE WHEN notified_at IS NULL THEN 0 ELSE 1 END')
+                ->orderByDesc('created_at')
+                ->get()
+                ->groupBy('product_id');
+
             $summary = [
                 'pending' => BackInStockSubscription::query()->whereNull('notified_at')->count(),
                 'notified' => BackInStockSubscription::query()->whereNotNull('notified_at')->count(),
                 'products' => BackInStockSubscription::query()->distinct('product_id')->count('product_id'),
+                'high_demand' => BackInStockSubscription::query()
+                    ->whereNull('notified_at')
+                    ->select('product_id')
+                    ->groupBy('product_id')
+                    ->havingRaw('COUNT(*) >= 3')
+                    ->get()
+                    ->count(),
+                'out_of_stock_requests' => BackInStockSubscription::query()
+                    ->whereNull('notified_at')
+                    ->join('products', 'products.id', '=', 'back_in_stock_subscriptions.product_id')
+                    ->where('products.stock_quantity', '<=', 0)
+                    ->distinct('back_in_stock_subscriptions.product_id')
+                    ->count('back_in_stock_subscriptions.product_id'),
             ];
         }
 
-        return view('admin.operations.stock-requests', compact('hasTable', 'products', 'requests', 'summary', 'status', 'search'));
+        return view('admin.operations.stock-requests', compact(
+            'hasTable', 'products', 'requests', 'summary', 'status', 'search',
+            'subscribersByProduct', 'lowStockThreshold'
+        ));
     }
 
     public function markStockRequestsNotified(Product $product): RedirectResponse
