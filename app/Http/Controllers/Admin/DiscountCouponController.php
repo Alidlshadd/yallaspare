@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Coupon;
 use App\Models\Discount;
 use App\Models\Product;
 use App\Models\Setting;
@@ -263,8 +264,12 @@ class DiscountCouponController extends Controller
                     'id' => (int) $row->id,
                     'code' => (string) $row->code,
                     'discount' => $discount,
+                    'type' => (string) $row->type,
+                    'valueRaw' => (float) $row->value,
                     'usageUsed' => (int) ($row->used_count ?? 0),
                     'usageLimit' => (int) ($row->usage_limit ?? 0),
+                    'startsAt' => $startsAt ? $startsAt->toDateString() : '',
+                    'endsAt' => $endsAt ? $endsAt->toDateString() : '',
                     'expiry' => $endsAt ? $endsAt->toDateString() : 'No expiry',
                     'status' => $status,
                     'platforms' => ['Web'],
@@ -303,8 +308,12 @@ class DiscountCouponController extends Controller
                     'id' => 0,
                     'code' => $fallbackCode,
                     'discount' => $discount,
+                    'type' => $fallbackType,
+                    'valueRaw' => $fallbackValue,
                     'usageUsed' => 0,
                     'usageLimit' => (int) data_get($settings, 'coupon_usage_limit', 0),
+                    'startsAt' => $fallbackStarts,
+                    'endsAt' => $fallbackEnds,
                     'expiry' => $fallbackEnds !== '' ? $fallbackEnds : 'No expiry',
                     'status' => $status,
                     'platforms' => ['Web'],
@@ -406,6 +415,56 @@ class DiscountCouponController extends Controller
             'currencyLabel' => $currencyLabel,
             'currencyDecimals' => $currencyDecimals,
         ];
+    }
+
+    public function updateCoupon(Request $request, Coupon $coupon): RedirectResponse
+    {
+        $data = $request->validate([
+            'code' => [
+                'required', 'string', 'max:40', 'regex:/^[A-Za-z0-9_-]+$/',
+                Rule::unique('coupons', 'code')->ignore($coupon->id)->whereNull('deleted_at'),
+            ],
+            'type' => ['required', 'in:percent,fixed'],
+            'value' => ['required', 'numeric', 'min:0', 'max:100000000'],
+            'usage_limit' => ['nullable', 'integer', 'min:0', 'max:1000000'],
+            'starts_at' => ['nullable', 'date'],
+            'ends_at' => ['nullable', 'date', 'after_or_equal:starts_at'],
+        ]);
+
+        if ((string) $data['type'] === 'percent' && (float) $data['value'] > 100) {
+            return back()->withInput()->withErrors([
+                'value' => __('Coupon percentage cannot exceed 100.'),
+            ]);
+        }
+
+        $coupon->fill([
+            'code' => strtoupper((string) $data['code']),
+            'type' => (string) $data['type'],
+            'value' => round((float) $data['value'], 2),
+            'usage_limit' => (int) ($data['usage_limit'] ?? 0),
+            'starts_at' => $data['starts_at'] ?? null,
+            'ends_at' => $data['ends_at'] ?? null,
+        ])->save();
+
+        return back()->with('success', __('Coupon :code updated.', ['code' => $coupon->code]));
+    }
+
+    public function toggleCoupon(Coupon $coupon): RedirectResponse
+    {
+        $coupon->is_active = ! $coupon->is_active;
+        $coupon->save();
+
+        return back()->with('success', $coupon->is_active
+            ? __('Coupon :code activated.', ['code' => $coupon->code])
+            : __('Coupon :code paused.', ['code' => $coupon->code]));
+    }
+
+    public function destroyCoupon(Coupon $coupon): RedirectResponse
+    {
+        $code = $coupon->code;
+        $coupon->delete();
+
+        return back()->with('success', __('Coupon :code deleted.', ['code' => $code]));
     }
 
     public function update(Request $request): RedirectResponse

@@ -270,6 +270,15 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::get('/discounts/coupons/create', [DiscountCouponController::class, 'createCoupon'])
             ->middleware('can:' . User::PERMISSION_FINANCE_MANAGE)
             ->name('discounts.coupons.create');
+        Route::patch('/discounts/coupons/{coupon}', [DiscountCouponController::class, 'updateCoupon'])
+            ->middleware(['can:' . User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
+            ->name('discounts.coupons.update');
+        Route::patch('/discounts/coupons/{coupon}/toggle', [DiscountCouponController::class, 'toggleCoupon'])
+            ->middleware(['can:' . User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
+            ->name('discounts.coupons.toggle');
+        Route::delete('/discounts/coupons/{coupon}', [DiscountCouponController::class, 'destroyCoupon'])
+            ->middleware(['can:' . User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
+            ->name('discounts.coupons.destroy');
         Route::put('/discounts', [DiscountCouponController::class, 'update'])
             ->middleware(['can:' . User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
             ->name('discounts.update');

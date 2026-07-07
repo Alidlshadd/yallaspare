@@ -853,6 +853,125 @@ Alpine.data('dealerBoard', () => ({
     get drawerHasView() { return Boolean(this.dealer?.viewUrl); },
 }));
 
+// Coupon Management console: client-side table filtering, CSV export, the
+// edit drawer for real coupon rows (PATCH to admin.discounts.coupons.update),
+// and small settings-form helpers (generate code, clear dates, percent cap).
+// Row data arrives via data-coupon JSON attributes; everything stays CSP-safe.
+const sanitizeCouponCode = (value) => String(value || '').toUpperCase().replace(/[^A-Z0-9_-]/g, '').slice(0, 40);
+
+Alpine.data('couponConsole', () => ({
+    labels: {},
+    rows: [],
+    filter: { query: '', status: 'all' },
+    filterEmpty: false,
+    settingsOpen: false,
+    settingsCode: '',
+    settingsType: 'percent',
+    couponEnabled: false,
+    editOpen: false,
+    edit: { code: '', type: 'percent', value: '', usageLimit: '', startsAt: '', endsAt: '', updateUrl: '', usageLabel: '' },
+
+    init() {
+        let config = {};
+        try { config = JSON.parse(this.$el.dataset.config || '{}'); } catch (e) { config = {}; }
+        this.labels = config.labels || {};
+        this.rows = Array.isArray(config.rows) ? config.rows : [];
+        this.settingsOpen = Boolean(config.settingsOpen);
+        this.settingsCode = String(config.code || '');
+        this.settingsType = String(config.type || 'percent');
+        this.couponEnabled = Boolean(config.enabled);
+    },
+
+    /* ---------- table filter ---------- */
+    onSearchInput(event) {
+        this.filter.query = String(event.target.value || '').toLowerCase();
+        this.applyFilter();
+    },
+    onStatusChange(event) {
+        this.filter.status = String(event.target.value || 'all');
+        this.applyFilter();
+    },
+    applyFilter() {
+        let visible = 0;
+        this.$root.querySelectorAll('[data-coupon-row]').forEach((row) => {
+            const matchQuery = (row.dataset.code || '').includes(this.filter.query);
+            const matchStatus = this.filter.status === 'all' || row.dataset.status === this.filter.status;
+            const show = matchQuery && matchStatus;
+            row.classList.toggle('hidden', !show);
+            if (show) visible += 1;
+        });
+        this.filterEmpty = visible === 0;
+    },
+
+    /* ---------- csv export ---------- */
+    exportCsv() {
+        const headers = this.labels.csvHeaders || ['Code', 'Discount', 'Usage', 'Expiry', 'Status'];
+        const body = this.rows.map((row) => [row.code, row.discount, row.usage, row.expiry, row.status]);
+        const escapeCell = (value) => {
+            let cell = String(value ?? '');
+            if (/^[=+\-@\t\r]/.test(cell)) cell = `'${cell}`;
+            return `"${cell.replace(/"/g, '""')}"`;
+        };
+        const csv = '\ufeff' + [headers, ...body].map((row) => row.map(escapeCell).join(',')).join('\r\n');
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
+        link.download = 'coupons.csv';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(link.href);
+    },
+
+    /* ---------- edit drawer ---------- */
+    openEdit(event) {
+        let coupon = null;
+        try { coupon = JSON.parse(event.currentTarget.closest('[data-coupon]')?.dataset.coupon || 'null'); } catch (e) { coupon = null; }
+        if (!coupon || !coupon.updateUrl) return;
+        this.edit = {
+            code: String(coupon.code || ''),
+            type: String(coupon.type || 'percent'),
+            value: coupon.value != null ? String(coupon.value) : '',
+            usageLimit: coupon.usageLimit != null ? String(coupon.usageLimit) : '',
+            startsAt: String(coupon.startsAt || ''),
+            endsAt: String(coupon.endsAt || ''),
+            updateUrl: String(coupon.updateUrl),
+            usageLabel: String(coupon.usage || ''),
+        };
+        this.editOpen = true;
+    },
+    closeEdit() { this.editOpen = false; },
+    onEditCodeInput(event) {
+        this.edit.code = sanitizeCouponCode(event.target.value);
+        event.target.value = this.edit.code;
+    },
+    get editUpdateUrl() { return this.edit.updateUrl; },
+    get editUsageLabel() { return this.edit.usageLabel; },
+    get editValueMax() { return this.edit.type === 'percent' ? '100' : ''; },
+
+    /* ---------- settings form helpers ---------- */
+    toggleSettings() { this.settingsOpen = !this.settingsOpen; },
+    get settingsChevron() { return this.settingsOpen ? '▴' : '▾'; },
+    onSettingsCodeInput(event) {
+        this.settingsCode = sanitizeCouponCode(event.target.value);
+        event.target.value = this.settingsCode;
+    },
+    generateCode() {
+        this.settingsCode = `SAVE-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+    },
+    clearDates() {
+        if (this.$refs.couponStarts) this.$refs.couponStarts.value = '';
+        if (this.$refs.couponEnds) this.$refs.couponEnds.value = '';
+    },
+    get settingsValueMax() { return this.settingsType === 'percent' ? '100' : ''; },
+    get settingsDimClass() { return this.couponEnabled ? '' : 'opacity-60'; },
+    get settingsStateLabel() {
+        return this.couponEnabled ? (this.labels.live || 'Campaign Live') : (this.labels.draft || 'Draft Mode');
+    },
+    get settingsStateClass() {
+        return this.couponEnabled ? 'cp-chip-active' : 'cp-chip-paused';
+    },
+}));
+
 const ADMIN_SIDEBAR_DEFAULT_STORAGE_KEY = 'admin-sidebar-collapsed';
 const ADMIN_DESKTOP_QUERY = '(min-width: 1024px)';
 
