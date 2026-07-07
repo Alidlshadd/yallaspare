@@ -313,6 +313,374 @@ Alpine.data('inventoryForm', () => ({
     },
 }));
 
+// Purchase Planning "Purchase List Builder" side dock. Multiple named lists
+// with inline-editable qty/cost/notes, persisted to localStorage (no backend).
+// Config (currency, page budget, i18n labels) comes from a data-config JSON
+// attribute so the x-data expression stays CSP-safe. Item-level handlers read
+// the item key from data-key attributes (bound via :data-key in the template)
+// instead of call arguments, and add buttons in the server-rendered product
+// table are synced imperatively via refreshAddButtons().
+Alpine.data('purchaseBuilder', () => ({
+    lists: [],
+    activeIndex: 0,
+    viewIndex: null,
+    abcOpen: false,
+    flashMessage: '',
+    abc: { code: '', name: '', qty: '', cost: '', note: '' },
+    currency: { label: 'IQD', decimals: 0 },
+    budget: 0,
+    labels: {},
+    storageKey: 'ys-purchase-lists-v1',
+    _flashTimer: null,
+
+    init() {
+        let config = {};
+        try { config = JSON.parse(this.$el.dataset.config || '{}'); } catch (e) { config = {}; }
+        this.currency = config.currency || this.currency;
+        this.budget = Number(config.budget) || 0;
+        this.labels = config.labels || {};
+        this.restore();
+        this.$nextTick(() => this.refreshAddButtons());
+    },
+
+    /* ---------- persistence ---------- */
+    restore() {
+        let saved = null;
+        try { saved = JSON.parse(safeLocalStorageGet(this.storageKey) || 'null'); } catch (e) { saved = null; }
+        if (saved && Array.isArray(saved.lists) && saved.lists.length > 0) {
+            this.lists = saved.lists.map((list) => this.normalizeList(list));
+            this.activeIndex = Math.min(Math.max(0, Number(saved.activeIndex) || 0), this.lists.length - 1);
+        } else {
+            this.lists = [1, 2, 3, 4].map((n) => this.blankList(`${this.labels.listName || 'Order List'} ${n}`));
+            this.activeIndex = 0;
+        }
+    },
+    persist() {
+        safeLocalStorageSet(this.storageKey, JSON.stringify({
+            lists: this.lists,
+            activeIndex: this.activeIndex,
+        }));
+    },
+    // persist + resync the ✓/+ state of the product table's add buttons.
+    sync() {
+        this.persist();
+        this.refreshAddButtons();
+    },
+    blankList(name) {
+        return { name, status: 'draft', items: [], updatedAt: new Date().toISOString() };
+    },
+    normalizeList(list) {
+        const statuses = ['draft', 'saved', 'ordered'];
+        return {
+            name: String(list.name || ''),
+            status: statuses.includes(list.status) ? list.status : 'draft',
+            updatedAt: String(list.updatedAt || new Date().toISOString()),
+            items: (Array.isArray(list.items) ? list.items : []).map((item) => ({
+                key: String(item.key || ''),
+                name: String(item.name || ''),
+                sku: String(item.sku || ''),
+                manual: Boolean(item.manual),
+                qty: Math.max(1, parseInt(item.qty, 10) || 1),
+                cost: Math.max(0, Number(item.cost) || 0),
+                note: String(item.note || ''),
+            })),
+        };
+    },
+
+    /* ---------- helpers ---------- */
+    money(value) {
+        const decimals = Number(this.currency.decimals) || 0;
+        const amount = Number(value) || 0;
+        return `${amount.toLocaleString('en-US', { minimumFractionDigits: decimals, maximumFractionDigits: decimals })} ${this.currency.label}`;
+    },
+    activeList() { return this.lists[this.activeIndex]; },
+    findItem(list, key) { return list.items.find((item) => item.key === key) || null; },
+    itemFromEvent(event) {
+        const key = event.target.closest('[data-key]')?.dataset.key || '';
+        return this.findItem(this.activeList(), key);
+    },
+    touch(list) { list.updatedAt = new Date().toISOString(); },
+    flash(message) {
+        this.flashMessage = message;
+        if (this._flashTimer) clearTimeout(this._flashTimer);
+        this._flashTimer = setTimeout(() => { this.flashMessage = ''; }, 2200);
+    },
+    get hasFlash() { return this.flashMessage !== ''; },
+
+    /* ---------- product table ---------- */
+    addFromRow(event) {
+        const data = event.currentTarget.dataset;
+        const list = this.activeList();
+        const key = `p:${data.id}`;
+        const existing = this.findItem(list, key);
+        if (existing) {
+            existing.qty += 1;
+        } else {
+            list.items.push({
+                key,
+                name: data.name || '',
+                sku: data.sku || '',
+                manual: false,
+                qty: Math.max(1, parseInt(data.qty, 10) || 1),
+                cost: Math.max(0, Number(data.cost) || 0),
+                note: '',
+            });
+        }
+        this.touch(list);
+        this.sync();
+    },
+    refreshAddButtons() {
+        const list = this.activeList();
+        this.$root.querySelectorAll('[data-pp-add]').forEach((button) => {
+            const inList = Boolean(this.findItem(list, `p:${button.dataset.id}`));
+            button.classList.toggle('pp-added', inList);
+            button.textContent = inList ? '✓' : '+';
+            button.title = inList ? (this.labels.alreadyAdded || '') : (this.labels.addToList || '');
+        });
+    },
+
+    /* ---------- tabs / lists ---------- */
+    selectList(index) {
+        this.activeIndex = index;
+        this.sync();
+    },
+    newList() {
+        this.lists.push(this.blankList(`${this.labels.listName || 'Order List'} ${this.lists.length + 1}`));
+        this.activeIndex = this.lists.length - 1;
+        this.sync();
+    },
+    tabLabel(index) { return `${this.labels.listShort || 'List'} ${index + 1}`; },
+    tabCount(index) { return String(this.lists[index].items.length); },
+    tabClass(index) { return index === this.activeIndex ? 'pp-tab-on' : ''; },
+    get activeName() { return this.activeList().name; },
+    onNameInput(event) {
+        this.activeList().name = event.target.value;
+        this.persist();
+    },
+    statusLabel(status) { return this.labels[`status_${status}`] || status; },
+    statusClass(status) { return `pp-chip-${status}`; },
+    get activeStatusLabel() { return this.statusLabel(this.activeList().status); },
+    get activeStatusClass() { return this.statusClass(this.activeList().status); },
+
+    /* ---------- dock items ---------- */
+    get activeItems() { return this.activeList().items; },
+    get activeEmpty() { return this.activeItems.length === 0; },
+    rowTotalLabel(item) { return this.money(item.qty * item.cost); },
+    onQtyInput(event) {
+        const item = this.itemFromEvent(event);
+        const value = parseInt(event.target.value, 10);
+        if (item && Number.isFinite(value) && value >= 1) {
+            item.qty = value;
+            this.persist();
+        }
+    },
+    onQtyChange(event) {
+        const item = this.itemFromEvent(event);
+        if (item) event.target.value = String(item.qty);
+    },
+    onCostInput(event) {
+        const item = this.itemFromEvent(event);
+        const value = Number(event.target.value);
+        if (item && Number.isFinite(value) && value >= 0 && event.target.value !== '') {
+            item.cost = value;
+            this.persist();
+        }
+    },
+    onCostChange(event) {
+        const item = this.itemFromEvent(event);
+        if (item) event.target.value = String(item.cost);
+    },
+    onNoteInput(event) {
+        const item = this.itemFromEvent(event);
+        if (item) {
+            item.note = event.target.value;
+            this.persist();
+        }
+    },
+    removeItem(event) {
+        const key = event.target.closest('[data-key]')?.dataset.key || '';
+        const list = this.activeList();
+        list.items = list.items.filter((item) => item.key !== key);
+        this.touch(list);
+        this.sync();
+    },
+
+    /* ---------- totals / budget ---------- */
+    get itemsCountLabel() { return String(this.activeItems.length); },
+    get qtyTotalLabel() {
+        return this.activeItems.reduce((sum, item) => sum + item.qty, 0).toLocaleString('en-US');
+    },
+    get grandTotal() {
+        return this.activeItems.reduce((sum, item) => sum + item.qty * item.cost, 0);
+    },
+    get grandTotalLabel() { return this.money(this.grandTotal); },
+    get overBudget() { return this.budget > 0 && this.grandTotal > this.budget; },
+    get budgetWarningLabel() {
+        return `${this.labels.overBudget || 'Over budget'} — ${this.money(this.grandTotal - this.budget)}`;
+    },
+    get budgetRemainingLabel() {
+        if (this.budget <= 0) return '';
+        return `${this.labels.budgetRemaining || 'Budget remaining'}: ${this.money(this.budget - this.grandTotal)}`;
+    },
+    get hasBudget() { return this.budget > 0; },
+
+    /* ---------- add by code (manual items) ---------- */
+    toggleAbc() { this.abcOpen = !this.abcOpen; },
+    get abcChevron() { return this.abcOpen ? '▴' : '▾'; },
+    addManual() {
+        const code = this.abc.code.trim();
+        const qty = parseInt(this.abc.qty, 10);
+        if (code === '' || !Number.isFinite(qty) || qty < 1) return;
+        const list = this.activeList();
+        const key = `m:${code.toLowerCase()}`;
+        const existing = this.findItem(list, key);
+        if (existing) {
+            existing.qty += qty;
+        } else {
+            list.items.push({
+                key,
+                name: this.abc.name.trim() || code,
+                sku: code,
+                manual: true,
+                qty,
+                cost: Math.max(0, Number(this.abc.cost) || 0),
+                note: this.abc.note.trim(),
+            });
+        }
+        this.abc = { code: '', name: '', qty: '', cost: '', note: '' };
+        this.touch(list);
+        this.sync();
+        this.flash(this.labels.manualAdded || 'Added');
+    },
+
+    /* ---------- actions ---------- */
+    saveList() {
+        const list = this.activeList();
+        list.status = 'saved';
+        this.touch(list);
+        this.persist();
+        this.flash(this.labels.savedFlash || 'Saved');
+    },
+    saveDraft() {
+        const list = this.activeList();
+        list.status = 'draft';
+        this.touch(list);
+        this.persist();
+        this.flash(this.labels.draftFlash || 'Draft saved');
+    },
+    clearList() {
+        if (!window.confirm(this.labels.confirmClear || 'Clear this list?')) return;
+        const list = this.activeList();
+        list.items = [];
+        this.touch(list);
+        this.sync();
+    },
+    printList() { window.print(); },
+    exportCsv() {
+        const list = this.activeList();
+        const headers = this.labels.csvHeaders || ['Product', 'SKU', 'Quantity', 'Unit Cost', 'Row Total', 'Notes', 'Manual'];
+        const rows = list.items.map((item) => [
+            item.name, item.sku, item.qty, item.cost, item.qty * item.cost,
+            item.note, item.manual ? 'yes' : 'no',
+        ]);
+        const escapeCell = (value) => {
+            let cell = String(value ?? '');
+            // Guard against CSV formula injection (same policy as server exports).
+            if (/^[=+\-@\t\r]/.test(cell)) cell = `'${cell}`;
+            return `"${cell.replace(/"/g, '""')}"`;
+        };
+        const csv = '\ufeff' + [headers, ...rows]
+            .map((row) => row.map(escapeCell).join(','))
+            .join('\r\n');
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
+        link.download = `${(list.name || 'purchase-list').replace(/[^\w؀-ۿ-]+/g, '-').toLowerCase()}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(link.href);
+        this.flash(this.labels.exportedFlash || 'Exported');
+    },
+
+    /* ---------- recent lists ---------- */
+    get recentEntries() {
+        return this.lists
+            .map((list, index) => ({ list, index }))
+            .filter((entry) => entry.list.items.length > 0 || entry.list.status !== 'draft')
+            .sort((a, b) => (a.list.updatedAt < b.list.updatedAt ? 1 : -1))
+            .map((entry) => ({
+                index: entry.index,
+                name: entry.list.name,
+                meta: `${String(entry.list.updatedAt).slice(0, 10)} · ${entry.list.items.length} ${this.labels.itemsWord || 'items'}`,
+                totalLabel: this.money(entry.list.items.reduce((sum, item) => sum + item.qty * item.cost, 0)),
+                statusLabel: this.statusLabel(entry.list.status),
+                statusClass: this.statusClass(entry.list.status),
+            }));
+    },
+    get recentEmpty() { return this.recentEntries.length === 0; },
+    get hasRecent() { return this.recentEntries.length > 0; },
+    openView(entry) { this.viewIndex = entry.index; },
+    closeView() { this.viewIndex = null; },
+    get viewOpen() { return this.viewIndex !== null; },
+    viewedList() { return this.viewIndex === null ? null : this.lists[this.viewIndex]; },
+    get viewTitle() { return this.viewedList()?.name || ''; },
+    get viewMeta() {
+        const list = this.viewedList();
+        if (!list) return '';
+        return `${String(list.updatedAt).slice(0, 10)} · ${this.statusLabel(list.status)}`;
+    },
+    get viewItems() {
+        const list = this.viewedList();
+        return (list ? list.items : []).map((item) => ({
+            key: item.key,
+            name: item.name,
+            sku: item.sku,
+            manual: item.manual,
+            qtyLabel: String(item.qty),
+            unitLabel: this.money(item.cost),
+            totalLabel: this.money(item.qty * item.cost),
+        }));
+    },
+    get viewTotalLabel() {
+        const list = this.viewedList();
+        return this.money((list ? list.items : []).reduce((sum, item) => sum + item.qty * item.cost, 0));
+    },
+    markOrdered() {
+        const list = this.viewedList();
+        if (!list) return;
+        list.status = 'ordered';
+        this.touch(list);
+        this.persist();
+        this.flash(this.labels.orderedFlash || 'Marked as ordered');
+    },
+    deleteViewedList() {
+        if (this.viewIndex === null) return;
+        if (!window.confirm(this.labels.confirmDelete || 'Delete this list?')) return;
+        this.lists.splice(this.viewIndex, 1);
+        if (this.lists.length === 0) {
+            this.lists.push(this.blankList(`${this.labels.listName || 'Order List'} 1`));
+        }
+        if (this.activeIndex >= this.lists.length) this.activeIndex = this.lists.length - 1;
+        this.viewIndex = null;
+        this.sync();
+    },
+
+    /* ---------- print ---------- */
+    get printDateLabel() { return new Date().toISOString().slice(0, 10); },
+    get printItems() {
+        return this.activeItems.map((item) => ({
+            key: item.key,
+            name: item.name,
+            sku: item.sku,
+            manual: item.manual,
+            note: item.note,
+            qtyLabel: String(item.qty),
+            unitLabel: this.money(item.cost),
+            totalLabel: this.money(item.qty * item.cost),
+        }));
+    },
+}));
+
 const ADMIN_SIDEBAR_DEFAULT_STORAGE_KEY = 'admin-sidebar-collapsed';
 const ADMIN_DESKTOP_QUERY = '(min-width: 1024px)';
 
