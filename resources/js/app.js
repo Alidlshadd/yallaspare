@@ -83,6 +83,7 @@ Alpine.data('toggle', (initial = false) => ({
     toggle() { this.open = !this.open; },
     openNow() { this.open = true; },
     close() { this.open = false; },
+    get closed() { return !this.open; },
     get ariaExpanded() { return this.open ? 'true' : 'false'; },
 }));
 
@@ -969,6 +970,331 @@ Alpine.data('couponConsole', () => ({
     },
     get settingsStateClass() {
         return this.couponEnabled ? 'cp-chip-active' : 'cp-chip-paused';
+    },
+}));
+
+// Discount Rules "Price Tag Wall": tag-wall filtering/sorting/CSV plus the
+// scope builder (product picker) ported from the old inline
+// window.discountProductPicker to a registered component so it works under
+// the CSP Alpine build (the inline version relied on ternaries and an
+// object-literal x-data argument the CSP evaluator cannot parse). Config and
+// UI class strings arrive via a data-config JSON attribute; class strings
+// live in the Blade file so Tailwind's scanner sees them.
+Alpine.data('discountRules', () => ({
+    labels: {},
+    ui: {},
+    flashMessage: '',
+    _flashTimer: null,
+
+    /* tag wall */
+    wall: { query: '', status: 'all', sort: 'default' },
+    wallEmpty: false,
+    rows: [],
+
+    /* builder basics mirrored for the live summary + simulator */
+    basics: { label: '', type: 'percent', value: '', startsAt: '', endsAt: '' },
+    simPrice: '',
+
+    /* scope picker state (ported) */
+    scope: 'all',
+    searchUrl: '',
+    categoryOptions: [],
+    brandOptions: [],
+    filters: { query: '', categoryId: '', brand: '', stock: '' },
+    products: [],
+    loading: false,
+    initializedProductResults: false,
+    requestId: 0,
+    selectedCategoryCount: 0,
+    selectedBrandCount: 0,
+    selectedProductIds: [],
+    selectedProductMap: {},
+    meta: { currentPage: 1, lastPage: 1, perPage: 18, total: 0, hasMore: false },
+
+    init() {
+        let config = {};
+        try { config = JSON.parse(this.$el.dataset.config || '{}'); } catch (e) { config = {}; }
+        this.labels = config.labels || {};
+        this.ui = config.ui || {};
+        this.rows = Array.isArray(config.rows) ? config.rows : [];
+        this.basics = Object.assign(this.basics, config.basics || {});
+        this.scope = config.initialScope || 'all';
+        this.searchUrl = String(config.searchUrl || '');
+        this.categoryOptions = Array.isArray(config.categoryOptions) ? config.categoryOptions : [];
+        this.brandOptions = Array.isArray(config.brandOptions) ? config.brandOptions : [];
+        this.selectedProductIds = Array.from(new Set((config.initialSelectedIds || [])
+            .map((id) => Number(id))
+            .filter((id) => Number.isInteger(id) && id > 0)));
+        (Array.isArray(config.initialSelectedProducts) ? config.initialSelectedProducts : []).forEach((product) => {
+            const normalized = this.normalizeProduct(product);
+            this.selectedProductMap[String(normalized.id)] = normalized;
+        });
+
+        this.$nextTick(() => {
+            this.syncCategorySelection();
+            this.syncBrandSelection();
+        });
+
+        this.$watch('scope', (value) => {
+            if (value === 'products' && !this.initializedProductResults) {
+                this.refreshProducts();
+            }
+        });
+
+        if (this.scope === 'products') {
+            this.refreshProducts();
+        }
+    },
+
+    flash(message) {
+        this.flashMessage = message;
+        if (this._flashTimer) clearTimeout(this._flashTimer);
+        this._flashTimer = setTimeout(() => { this.flashMessage = ''; }, 2200);
+    },
+    get hasFlash() { return this.flashMessage !== ''; },
+
+    /* ---------- tag wall: filter / sort / export / duplicate ---------- */
+    onWallSearch(event) { this.wall.query = String(event.target.value || '').toLowerCase(); this.applyWall(); },
+    onWallStatus(event) { this.wall.status = String(event.target.value || 'all'); this.applyWall(); },
+    onWallSort(event) { this.wall.sort = String(event.target.value || 'default'); this.applyWall(); },
+    applyWall() {
+        const container = this.$refs.wall;
+        if (!container) return;
+        const tags = Array.from(container.querySelectorAll('[data-tag]'));
+        const statusOrder = { live: 0, scheduled: 1, draft: 2, expired: 3 };
+        let visible = 0;
+        tags.forEach((tag) => {
+            const matchQuery = (tag.dataset.name || '').includes(this.wall.query)
+                || (tag.dataset.scopeLabel || '').includes(this.wall.query);
+            const matchStatus = this.wall.status === 'all' || tag.dataset.status === this.wall.status;
+            const show = matchQuery && matchStatus;
+            tag.classList.toggle('hidden', !show);
+            if (show) visible += 1;
+        });
+        this.wallEmpty = visible === 0;
+
+        const sorted = tags.slice().sort((a, b) => {
+            if (this.wall.sort === 'value') return Number(b.dataset.value) - Number(a.dataset.value);
+            if (this.wall.sort === 'used') return Number(b.dataset.used) - Number(a.dataset.used);
+            if (this.wall.sort === 'name') return (a.dataset.name || '').localeCompare(b.dataset.name || '');
+            return (statusOrder[a.dataset.status] ?? 9) - (statusOrder[b.dataset.status] ?? 9);
+        });
+        sorted.forEach((tag) => container.appendChild(tag));
+        const newTag = container.querySelector('[data-tag-new]');
+        if (newTag) container.appendChild(newTag);
+    },
+    exportRules() {
+        const headers = this.labels.csvHeaders || ['Rule', 'Status', 'Value', 'Scope', 'Window', 'Used'];
+        const body = this.rows.map((row) => [row.name, row.status, row.value, row.scope, row.window, row.used]);
+        const escapeCell = (value) => {
+            let cell = String(value ?? '');
+            if (/^[=+\-@\t\r]/.test(cell)) cell = `'${cell}`;
+            return `"${cell.replace(/"/g, '""')}"`;
+        };
+        const csv = '\ufeff' + [headers, ...body].map((row) => row.map(escapeCell).join(',')).join('\r\n');
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8;' }));
+        link.download = 'discount-rules.csv';
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(link.href);
+        this.flash(this.labels.exportedFlash || 'Exported');
+    },
+    duplicateRule(event) {
+        let rule = null;
+        try { rule = JSON.parse(event.target.closest('[data-rule]')?.dataset.rule || 'null'); } catch (e) { rule = null; }
+        if (!rule) return;
+        this.basics.label = `${rule.name} ${this.labels.copySuffix || '(copy)'}`;
+        this.basics.type = rule.type === 'fixed' ? 'fixed' : 'percent';
+        this.basics.value = rule.value != null ? String(rule.value) : '';
+        this.basics.startsAt = String(rule.startsAt || '');
+        this.basics.endsAt = String(rule.endsAt || '');
+        const idField = this.$root.querySelector('input[name="discount_id"]');
+        if (idField) idField.value = '';
+        this.flash(this.labels.duplicatedFlash || 'Rule copied into the builder — save it as a new rule');
+        document.getElementById('discount-rule-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    },
+
+    /* ---------- builder summary + price simulator ---------- */
+    get summaryValueLabel() {
+        const value = Number(this.basics.value) || 0;
+        return this.basics.type === 'percent' ? `−${value}%` : `−${value.toLocaleString('en-US')}`;
+    },
+    get summaryLabelText() { return this.basics.label.trim() || (this.labels.noLabel || 'No label set'); },
+    get summaryWindowLabel() {
+        const starts = this.basics.startsAt || (this.labels.immediate || 'Immediate');
+        const ends = this.basics.endsAt || (this.labels.openEnded || 'Open-ended');
+        return `${String(starts).replace('T', ' ')} → ${String(ends).replace('T', ' ')}`;
+    },
+    onSimInput(event) { this.simPrice = event.target.value; },
+    get simOutLabel() {
+        const price = Number(this.simPrice) || 0;
+        const value = Number(this.basics.value) || 0;
+        const after = this.basics.type === 'percent'
+            ? price * (1 - Math.min(value, 100) / 100)
+            : Math.max(0, price - value);
+        const saved = price - after;
+        return `${Math.round(price).toLocaleString('en-US')} → ${Math.round(after).toLocaleString('en-US')} (−${Math.round(saved).toLocaleString('en-US')})`;
+    },
+
+    /* ---------- scope picker (CSP-safe port) ---------- */
+    get scopeIsAll() { return this.scope === 'all'; },
+    get scopeIsProducts() { return this.scope === 'products'; },
+    get scopeIsCategories() { return this.scope === 'categories'; },
+    get scopeIsBrands() { return this.scope === 'brands'; },
+    scopeCardOn(value) { return this.scope === value; },
+    get scopeAllCardClass() { return this.scope === 'all' ? this.ui.scopeOn : this.ui.scopeOff; },
+    get scopeProductsCardClass() { return this.scope === 'products' ? this.ui.scopeOn : this.ui.scopeOff; },
+    get scopeCategoriesCardClass() { return this.scope === 'categories' ? this.ui.scopeOn : this.ui.scopeOff; },
+    get scopeBrandsCardClass() { return this.scope === 'brands' ? this.ui.scopeOn : this.ui.scopeOff; },
+    get scopeBadgeLabel() {
+        if (this.scope === 'products') return this.labels.scopeProducts || 'Product Targeting';
+        if (this.scope === 'categories') return this.labels.scopeCategories || 'Category Targeting';
+        if (this.scope === 'brands') return this.labels.scopeBrands || 'Brand Targeting';
+        return this.labels.scopeAll || 'Storewide';
+    },
+    get scopeUtilizationLabel() {
+        if (this.scope === 'products') {
+            return `${this.selectedProductIds.length.toLocaleString()} ${this.labels.productsSelected || 'products selected'}`;
+        }
+        if (this.scope === 'categories') {
+            return `${this.selectedCategoryCount.toLocaleString()} / ${this.categoryOptions.length.toLocaleString()} ${this.labels.categoriesWord || 'categories'}`;
+        }
+        if (this.scope === 'brands') {
+            return `${this.selectedBrandCount.toLocaleString()} / ${this.brandOptions.length.toLocaleString()} ${this.labels.brandsWord || 'brands'}`;
+        }
+        return this.labels.fullCatalog || 'Applies across the full catalog';
+    },
+    normalizeProduct(product) {
+        return {
+            id: Number(product.id),
+            name: String(product.name || ''),
+            sku: product.sku ? String(product.sku) : '',
+            brand: product.brand ? String(product.brand) : '',
+            category: product.category ? String(product.category) : '',
+            stock_quantity: Number(product.stock_quantity || 0),
+            stock_state: String(product.stock_state || 'in_stock'),
+        };
+    },
+    get selectedProductList() {
+        return this.selectedProductIds
+            .map((id) => this.selectedProductMap[String(id)])
+            .filter(Boolean);
+    },
+    get selectedCountLabel() { return String(this.selectedProductIds.length); },
+    get selectionEmpty() { return this.selectedProductIds.length === 0; },
+    get hasSelection() { return this.selectedProductIds.length > 0; },
+    get productsEmpty() { return !this.loading && this.products.length === 0; },
+    get productsVisible() { return !this.loading && this.products.length > 0; },
+    isSelected(id) { return this.selectedProductIds.includes(Number(id)); },
+    productIsSelected(product) { return this.isSelected(product.id); },
+    productNotSelected(product) { return !this.isSelected(product.id); },
+    productCardClass(product) { return this.isSelected(product.id) ? this.ui.productOn : this.ui.productOff; },
+    productTickClass(product) { return this.isSelected(product.id) ? this.ui.tickOn : this.ui.tickOff; },
+    productPickLabel(product) {
+        return this.isSelected(product.id) ? (this.labels.selected || 'Selected') : (this.labels.selectProduct || 'Select product');
+    },
+    productSku(product) { return product.sku || (this.labels.noSku || 'No SKU'); },
+    productCategory(product) { return product.category || (this.labels.uncategorized || 'Uncategorized'); },
+    toggleProduct(product) {
+        const normalized = this.normalizeProduct(product);
+        if (this.isSelected(normalized.id)) {
+            this.removeProductId(normalized.id);
+            return;
+        }
+        this.selectedProductIds = [...this.selectedProductIds, normalized.id];
+        this.selectedProductMap[String(normalized.id)] = normalized;
+    },
+    removeProduct(product) { this.removeProductId(product.id); },
+    removeProductId(id) {
+        const numericId = Number(id);
+        this.selectedProductIds = this.selectedProductIds.filter((productId) => productId !== numericId);
+        delete this.selectedProductMap[String(numericId)];
+    },
+    clearSelectedProducts() {
+        this.selectedProductIds = [];
+        this.selectedProductMap = {};
+    },
+    syncCategorySelection() {
+        this.selectedCategoryCount = this.$root.querySelectorAll('input[name="discount_category_ids[]"]:checked').length;
+    },
+    syncBrandSelection() {
+        this.selectedBrandCount = this.$root.querySelectorAll('input[name="discount_brands[]"]:checked').length;
+    },
+    stockLabel(product) {
+        if (product.stock_state === 'out_of_stock') return this.labels.outOfStock || 'Out of stock';
+        if (product.stock_state === 'low_stock') return `${this.labels.lowStock || 'Low stock'}: ${Number(product.stock_quantity || 0)}`;
+        return `${this.labels.inStock || 'In stock'}: ${Number(product.stock_quantity || 0)}`;
+    },
+    stockToneClass(product) {
+        if (product.stock_state === 'out_of_stock') return this.ui.stockOut;
+        if (product.stock_state === 'low_stock') return this.ui.stockLow;
+        return this.ui.stockIn;
+    },
+    resetFilters() {
+        this.filters = { query: '', categoryId: '', brand: '', stock: '' };
+        this.refreshProducts();
+    },
+    refreshProducts() {
+        if (this.scope !== 'products') return;
+        this.fetchProducts(1, false);
+    },
+    loadMoreProducts() {
+        if (this.loading || !this.meta.hasMore) return;
+        this.fetchProducts(this.meta.currentPage + 1, true);
+    },
+    async fetchProducts(page = 1, append = false) {
+        const params = new URLSearchParams({
+            page: String(page),
+            per_page: String(this.meta.perPage || 18),
+        });
+        if (this.filters.query.trim() !== '') params.set('q', this.filters.query.trim());
+        if (this.filters.categoryId !== '') params.set('category_id', this.filters.categoryId);
+        if (this.filters.brand !== '') params.set('brand', this.filters.brand);
+        if (this.filters.stock !== '') params.set('stock', this.filters.stock);
+
+        const requestId = ++this.requestId;
+        this.initializedProductResults = true;
+        this.loading = true;
+
+        try {
+            const response = await fetch(`${this.searchUrl}?${params.toString()}`, {
+                headers: { Accept: 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+            });
+            if (!response.ok) throw new Error(`Product search failed with status ${response.status}`);
+            const payload = await response.json();
+            if (requestId !== this.requestId) return;
+
+            const nextProducts = Array.isArray(payload.data)
+                ? payload.data.map((product) => this.normalizeProduct(product))
+                : [];
+            const nextMeta = payload.meta || {};
+            nextProducts.forEach((product) => {
+                if (this.isSelected(product.id)) {
+                    this.selectedProductMap[String(product.id)] = product;
+                }
+            });
+            if (append) {
+                const existingIds = new Set(this.products.map((product) => product.id));
+                this.products = [...this.products, ...nextProducts.filter((product) => !existingIds.has(product.id))];
+            } else {
+                this.products = nextProducts;
+            }
+            this.meta = {
+                currentPage: Number(nextMeta.current_page || page),
+                lastPage: Number(nextMeta.last_page || page),
+                perPage: Number(nextMeta.per_page || this.meta.perPage || 18),
+                total: Number(nextMeta.total || 0),
+                hasMore: Boolean(nextMeta.has_more),
+            };
+        } catch (error) {
+            if (requestId !== this.requestId) return;
+            if (!append) this.products = [];
+            this.meta = { currentPage: 1, lastPage: 1, perPage: this.meta.perPage || 18, total: 0, hasMore: false };
+        } finally {
+            if (requestId === this.requestId) this.loading = false;
+        }
     },
 }));
 

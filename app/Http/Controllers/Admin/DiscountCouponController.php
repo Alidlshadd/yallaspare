@@ -777,10 +777,24 @@ class DiscountCouponController extends Controller
             default => ['Applies to the full product catalog'],
         };
 
+        $countdown = '';
+        if ($status === 'scheduled' && $discount->starts_at) {
+            $countdown = __('starts in :days', ['days' => max(1, (int) ceil(now()->diffInDays($discount->starts_at, false))) . 'd']);
+        } elseif ($status === 'active' && $discount->ends_at) {
+            $countdown = __('ends in :days', ['days' => max(1, (int) ceil(now()->diffInDays($discount->ends_at, false))) . 'd']);
+        }
+
         return [
             'id' => (int) $discount->id,
             'name' => (string) $discount->name,
             'isActive' => (bool) $discount->is_active,
+            'status' => $status === 'active' ? 'live' : $status,
+            'type' => (string) $discount->type,
+            'valueRaw' => (float) $discount->value,
+            'startsAt' => $discount->starts_at?->format('Y-m-d\TH:i') ?? '',
+            'endsAt' => $discount->ends_at?->format('Y-m-d\TH:i') ?? '',
+            'scope' => $formScope,
+            'countdown' => $countdown,
             'statusLabel' => ucfirst($status),
             'statusClass' => match ($status) {
                 'active' => 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/20 dark:text-emerald-300',
