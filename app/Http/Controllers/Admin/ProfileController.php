@@ -17,8 +17,12 @@ class ProfileController extends Controller
 {
     public function edit(Request $request): View
     {
+        $user = $request->user();
+
         return view('admin.profile.edit', [
-            'user' => $request->user(),
+            'user' => $user,
+            'effectivePermissions' => $user->effectivePermissions(),
+            'permissionGroups' => User::permissionGroups(),
         ]);
     }
 
