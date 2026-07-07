@@ -818,6 +818,41 @@ Alpine.data('stockRequestsBoard', () => ({
     },
 }));
 
+// Dealers Management quick-edit drawer. Row data (identity, current values,
+// form URLs, preformatted labels) arrives via data-dealer JSON attributes so
+// every x-* expression stays CSP-safe. The drawer's forms are plain POST
+// forms hitting the existing update/demote routes.
+Alpine.data('dealerBoard', () => ({
+    drawerOpen: false,
+    dealer: null,
+    form: { status: 'active', discount: '' },
+
+    openDrawer(event) {
+        let dealer = null;
+        try { dealer = JSON.parse(event.currentTarget.closest('[data-dealer]')?.dataset.dealer || 'null'); } catch (e) { dealer = null; }
+        if (!dealer) return;
+        this.dealer = dealer;
+        this.form.status = dealer.status || 'active';
+        this.form.discount = dealer.discount != null ? String(dealer.discount) : '';
+        this.drawerOpen = true;
+    },
+    closeDrawer() { this.drawerOpen = false; },
+
+    get drawerInitial() { return this.dealer?.initial || ''; },
+    get drawerName() { return this.dealer?.name || ''; },
+    get drawerMeta() { return this.dealer?.meta || ''; },
+    get drawerEmail() { return this.dealer?.email || ''; },
+    get drawerPhone() { return this.dealer?.phone || ''; },
+    get drawerOrdersLabel() { return this.dealer?.orders || '0'; },
+    get drawerRevenueLabel() { return this.dealer?.revenue || ''; },
+    get drawerStatusLabel() { return this.dealer?.statusLabel || ''; },
+    get drawerStatusClass() { return this.dealer?.statusClass || ''; },
+    get drawerUpdateUrl() { return this.dealer?.updateUrl || ''; },
+    get drawerDemoteUrl() { return this.dealer?.demoteUrl || ''; },
+    get drawerViewUrl() { return this.dealer?.viewUrl || ''; },
+    get drawerHasView() { return Boolean(this.dealer?.viewUrl); },
+}));
+
 const ADMIN_SIDEBAR_DEFAULT_STORAGE_KEY = 'admin-sidebar-collapsed';
 const ADMIN_DESKTOP_QUERY = '(min-width: 1024px)';
 
