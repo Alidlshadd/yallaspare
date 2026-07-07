@@ -225,6 +225,9 @@ Alpine.data('storeNav', () => ({
 Alpine.data('inventoryForm', () => ({
     products: [],
     labels: { na: 'N/A', part: 'Part:', oem: 'OEM:', stock: 'Stock:' },
+    // CSS class strings come from data-config so they live in the blade file,
+    // where Tailwind's content scanner can see them.
+    ui: { typeInActive: '', typeOutActive: '', typeIdle: '', projectedOk: '', projectedNegative: '' },
     productId: '',
     productSearch: '',
     productOpen: false,
@@ -236,11 +239,21 @@ Alpine.data('inventoryForm', () => ({
         try { config = JSON.parse(this.$el.dataset.config || '{}'); } catch (e) { config = {}; }
         this.products = Array.isArray(config.products) ? config.products : [];
         this.labels = config.labels || this.labels;
+        this.ui = config.ui || this.ui;
         this.productId = config.productId != null ? String(config.productId) : '';
         this.productSearch = config.productSearch || '';
         this.type = config.type || 'in';
         this.quantity = Number(config.quantity) || 1;
     },
+    setTypeIn() { this.type = 'in'; },
+    setTypeOut() { this.type = 'out'; },
+    get typeInClass() { return this.type === 'in' ? this.ui.typeInActive : this.ui.typeIdle; },
+    get typeOutClass() { return this.type === 'out' ? this.ui.typeOutActive : this.ui.typeIdle; },
+    get hasProductSearch() { return this.productSearch !== ''; },
+    get selectedStockText() { return this.selectedProduct ? String(this.selectedProduct.stock) : ''; },
+    get projectedStockText() { return this.projectedStock === null ? '' : String(this.projectedStock); },
+    get projectedNegative() { return this.projectedStock !== null && this.projectedStock < 0; },
+    get projectedStockClass() { return this.projectedNegative ? this.ui.projectedNegative : this.ui.projectedOk; },
     get selectedProduct() {
         return this.products.find((product) => String(product.id) === String(this.productId)) || null;
     },
@@ -253,6 +266,7 @@ Alpine.data('inventoryForm', () => ({
             ].some((value) => String(value || '').toLowerCase().includes(term)));
         return matches.slice(0, 50);
     },
+    get filteredProductsEmpty() { return this.filteredProducts.length === 0; },
     get projectedStock() {
         if (!this.selectedProduct) return null;
         return this.type === 'in'

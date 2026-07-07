@@ -18,7 +18,12 @@ use Illuminate\View\View;
 
 class InventoryMovementController extends Controller
 {
-    public function index(Request $request): View
+    /**
+     * Apply request filters shared by index and export.
+     *
+     * @return array{0: \Illuminate\Database\Eloquent\Builder, 1: string, 2: bool, 3: bool}
+     */
+    private function buildFilteredQuery(Request $request): array
     {
         $search = trim((string) $request->query('search', ''));
         $type = trim((string) $request->query('type', ''));
@@ -27,7 +32,6 @@ class InventoryMovementController extends Controller
         $from = trim((string) $request->query('from', ''));
         $to = trim((string) $request->query('to', ''));
         $hasWarehouseSupport = Schema::hasTable('warehouses') && Schema::hasColumn('inventory_movements', 'warehouse_id');
-        $hasWarehouseStockSupport = $hasWarehouseSupport && Schema::hasTable('product_warehouse_stocks');
         $hasPerformedAt = Schema::hasColumn('inventory_movements', 'performed_at');
         $dateExpression = $hasPerformedAt ? 'COALESCE(performed_at, created_at)' : 'created_at';
 
@@ -73,6 +77,21 @@ class InventoryMovementController extends Controller
         if ($to !== '') {
             $query->whereRaw("DATE({$dateExpression}) <= ?", [$to]);
         }
+
+        return [$query, $dateExpression, $hasWarehouseSupport, $hasPerformedAt];
+    }
+
+    public function index(Request $request): View
+    {
+        $search = trim((string) $request->query('search', ''));
+        $type = trim((string) $request->query('type', ''));
+        $productId = (int) $request->query('product_id', 0);
+        $warehouseId = (int) $request->query('warehouse_id', 0);
+        $from = trim((string) $request->query('from', ''));
+        $to = trim((string) $request->query('to', ''));
+
+        [$query, $dateExpression, $hasWarehouseSupport, $hasPerformedAt] = $this->buildFilteredQuery($request);
+        $hasWarehouseStockSupport = $hasWarehouseSupport && Schema::hasTable('product_warehouse_stocks');
 
         $statsQuery = clone $query;
 
@@ -120,6 +139,53 @@ class InventoryMovementController extends Controller
             'todayMovements',
             'netMovement'
         ));
+    }
+
+    public function export(Request $request): \Symfony\Component\HttpFoundation\StreamedResponse
+    {
+        [$query, $dateExpression, $hasWarehouseSupport] = $this->buildFilteredQuery($request);
+
+        $filename = 'inventory-movements-' . now()->format('Y-m-d-Hi') . '.csv';
+
+        return response()->streamDownload(function () use ($query, $dateExpression, $hasWarehouseSupport) {
+            $out = fopen('php://output', 'w');
+            $headers = ['Date', 'Product', 'SKU'];
+            if ($hasWarehouseSupport) {
+                $headers[] = 'Warehouse';
+            }
+            array_push($headers, 'Type', 'Quantity', 'Stock Before', 'Stock After', 'User', 'Reference', 'Note');
+            fputcsv($out, $headers);
+
+            $query
+                ->orderByRaw("{$dateExpression} DESC")
+                ->latest('id')
+                ->chunk(500, function ($movements) use ($out, $hasWarehouseSupport): void {
+                    foreach ($movements as $movement) {
+                        $movementDate = $movement->performed_at ?? $movement->created_at;
+                        $row = [
+                            $movementDate?->format('Y-m-d H:i'),
+                            $movement->product->name ?? 'Deleted Product',
+                            $movement->product->sku ?? '',
+                        ];
+                        if ($hasWarehouseSupport) {
+                            $row[] = $movement->warehouse->name ?? '';
+                        }
+                        array_push(
+                            $row,
+                            $movement->type,
+                            ($movement->type === InventoryMovement::TYPE_IN ? '+' : '-') . $movement->quantity,
+                            $movement->stock_before,
+                            $movement->stock_after,
+                            $movement->user->name ?? '',
+                            $movement->reference ?? '',
+                            $movement->note ?? ''
+                        );
+                        fputcsv($out, $row);
+                    }
+                });
+
+            fclose($out);
+        }, $filename, ['Content-Type' => 'text/csv']);
     }
 
     public function store(Request $request): RedirectResponse
