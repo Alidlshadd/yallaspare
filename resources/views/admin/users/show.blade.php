@@ -4,7 +4,64 @@
         $currencyDecimals = (int) ($systemSettings['currency_decimals'] ?? 0);
         $selectedPermissions = old('permissions', $user->effectivePermissions());
         $reviewAverage = $userReviews->avg('rating');
+        $dateOfBirth = $user->date_of_birth;
+        $userAge = $dateOfBirth && $dateOfBirth->isPast() ? $dateOfBirth->age : null;
+
+        $managerRoleList = [
+            \App\Models\User::ROLE_PRODUCT_MANAGER,
+            \App\Models\User::ROLE_ORDER_MANAGER,
+            \App\Models\User::ROLE_FINANCE_MANAGER,
+            \App\Models\User::ROLE_INVENTORY_MANAGER,
+            \App\Models\User::ROLE_SETTINGS_MANAGER,
+        ];
+
+        if ($user->role === \App\Models\User::ROLE_SUPER_ADMIN) {
+            $roleMeta = [
+                'label' => __('Super Admin'),
+                'chip' => 'border-violet-300 bg-violet-50 text-violet-700 dark:border-violet-400/40 dark:bg-violet-400/10 dark:text-violet-300',
+                'avatar' => 'bg-violet-100 text-violet-700 dark:bg-violet-400/15 dark:text-violet-300',
+            ];
+        } elseif ($user->role === \App\Models\User::ROLE_ADMIN) {
+            $roleMeta = [
+                'label' => __('Admin'),
+                'chip' => 'border-rose-300 bg-rose-50 text-rose-700 dark:border-rose-400/40 dark:bg-rose-400/10 dark:text-rose-300',
+                'avatar' => 'bg-rose-100 text-rose-700 dark:bg-rose-400/15 dark:text-rose-300',
+            ];
+        } elseif ($user->role === \App\Models\User::ROLE_DEALER) {
+            $roleMeta = [
+                'label' => __('Dealer'),
+                'chip' => 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300',
+                'avatar' => 'bg-amber-100 text-amber-700 dark:bg-amber-400/15 dark:text-amber-300',
+            ];
+        } elseif (in_array($user->role, $managerRoleList, true)) {
+            $roleMeta = [
+                'label' => __(ucwords(str_replace('_', ' ', $user->role))),
+                'chip' => 'border-cyan-300 bg-cyan-50 text-cyan-700 dark:border-cyan-400/40 dark:bg-cyan-400/10 dark:text-cyan-300',
+                'avatar' => 'bg-cyan-100 text-cyan-700 dark:bg-cyan-400/15 dark:text-cyan-300',
+            ];
+        } else {
+            $roleMeta = [
+                'label' => __('User'),
+                'chip' => 'border-blue-300 bg-blue-50 text-blue-700 dark:border-blue-400/40 dark:bg-blue-400/10 dark:text-blue-300',
+                'avatar' => 'bg-blue-100 text-blue-700 dark:bg-blue-400/15 dark:text-blue-300',
+            ];
+        }
+
+        $inputClasses = 'w-full rounded-lg border-gray-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100';
+        $labelClasses = 'mb-1.5 block text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-slate-400';
+
+        $orderStatusChip = function (string $status) {
+            return match ($status) {
+                'delivered' => 'border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-300',
+                'cancelled' => 'border-rose-300 bg-rose-50 text-rose-700 dark:border-rose-400/40 dark:bg-rose-400/10 dark:text-rose-300',
+                'pending' => 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300',
+                'processing' => 'border-cyan-300 bg-cyan-50 text-cyan-700 dark:border-cyan-400/40 dark:bg-cyan-400/10 dark:text-cyan-300',
+                'shipped' => 'border-blue-300 bg-blue-50 text-blue-700 dark:border-blue-400/40 dark:bg-blue-400/10 dark:text-blue-300',
+                default => 'border-gray-300 bg-gray-50 text-gray-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300',
+            };
+        };
     @endphp
+
     <x-slot name="header">
         <div class="flex items-center justify-between gap-3">
             <div>
@@ -13,329 +70,270 @@
             </div>
             <a
                 href="{{ route('admin.users.index') }}"
-                class="px-4 py-2 rounded-lg bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
+                class="rounded-lg border border-gray-300 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
             >
-                {{ __('Back to Users') }}
+                ← {{ __('Back to Users') }}
             </a>
         </div>
     </x-slot>
 
     <div class="py-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
-            @php
-                $dateOfBirth = $user->date_of_birth;
-                $userAge = $dateOfBirth && $dateOfBirth->isPast() ? $dateOfBirth->age : null;
-            @endphp
-
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-5">
             @if (session('success'))
-                <div class="rounded-[1.4rem] border border-emerald-200/80 bg-emerald-50/90 px-5 py-4 text-sm text-emerald-700 shadow-sm dark:border-emerald-900/60 dark:bg-emerald-950/20 dark:text-emerald-300">
+                <div class="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/20 dark:text-emerald-300">
                     {{ session('success') }}
                 </div>
             @endif
 
             @if (session('error'))
-                <div class="rounded-[1.4rem] border border-rose-200/80 bg-rose-50/90 px-5 py-4 text-sm text-rose-700 shadow-sm dark:border-rose-900/60 dark:bg-rose-950/20 dark:text-rose-300">
+                <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/60 dark:bg-red-950/20 dark:text-red-300">
                     {{ session('error') }}
                 </div>
             @endif
 
             @if ($errors->any())
-                <div class="rounded-[1.4rem] border border-rose-200/80 bg-rose-50/90 px-5 py-4 text-sm text-rose-700 shadow-sm dark:border-rose-900/60 dark:bg-rose-950/20 dark:text-rose-300">
+                <div class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700 dark:border-red-900/60 dark:bg-red-950/20 dark:text-red-300">
                     {{ $errors->first() }}
                 </div>
             @endif
 
-            <section class="rounded-[2rem] border border-slate-200/80 bg-[linear-gradient(180deg,rgba(255,255,255,0.98),rgba(248,250,252,0.98))] shadow-[0_22px_52px_rgba(15,23,42,0.08)] dark:border-slate-800 dark:bg-[linear-gradient(180deg,rgba(15,23,42,0.98),rgba(15,23,42,0.94))]">
-                <div class="border-b border-slate-200/80 bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.12),transparent_30%),linear-gradient(180deg,rgba(255,255,255,0.96),rgba(248,250,252,0.94))] px-5 py-5 dark:border-slate-800 dark:bg-[radial-gradient(circle_at_top_right,rgba(59,130,246,0.10),transparent_28%),linear-gradient(180deg,rgba(15,23,42,0.98),rgba(15,23,42,0.92))] sm:px-6">
-                    <div class="flex flex-wrap items-center justify-between gap-3">
-                        <div>
-                            <p class="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">{{ __('Admin Controls') }}</p>
-                            <h3 class="mt-1 text-xl font-semibold tracking-[-0.01em] text-slate-900 dark:text-slate-100">{{ __('Editable user profile') }}</h3>
-                            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('Change account identity, role posture, dealer settings, and verification state from one section.') }}</p>
+            {{-- Identity header --}}
+            <section class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <div class="flex flex-wrap items-center gap-4">
+                    <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl text-2xl font-extrabold {{ $roleMeta['avatar'] }}">
+                        {{ strtoupper(substr($user->name, 0, 1)) }}
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">{{ $user->name }}</h3>
+                            <span class="text-sm tabular-nums text-gray-400 dark:text-slate-500">#{{ $user->id }}</span>
+                            <span class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-bold {{ $roleMeta['chip'] }}">
+                                <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
+                                {{ $roleMeta['label'] }}
+                            </span>
+                            @if ($user->email_verified_at)
+                                <span class="inline-flex items-center gap-1 rounded-full border border-emerald-300 bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-300">
+                                    <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" /></svg>
+                                    {{ __('Verified email') }}
+                                </span>
+                            @else
+                                <span class="inline-flex items-center rounded-full border border-gray-300 bg-gray-50 px-2.5 py-0.5 text-[11px] font-bold text-gray-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-400">
+                                    {{ __('Unverified') }}
+                                </span>
+                            @endif
                         </div>
-                        <div class="flex flex-wrap items-center gap-2">
-                            <span class="inline-flex items-center rounded-full border border-slate-200 bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">User #{{ $user->id }}</span>
-                            <span class="inline-flex items-center rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-blue-700 dark:border-blue-900/60 dark:bg-blue-950/20 dark:text-blue-300">{{ ucwords(str_replace('_', ' ', $user->role)) }}</span>
+                        <div class="mt-1.5 flex flex-wrap gap-x-4 gap-y-0.5 text-sm text-gray-500 dark:text-slate-400">
+                            <span class="truncate">{{ $user->email }}</span>
+                            @if ($user->phone)
+                                <span dir="ltr">{{ $user->phone }}</span>
+                            @endif
+                            <span>{{ __('Joined') }} {{ $user->created_at?->format('d M Y') }}</span>
+                            @if ($userAge !== null)
+                                <span>{{ __('Age') }}: {{ $userAge }}</span>
+                            @endif
                         </div>
                     </div>
-                </div>
-
-                <div class="grid gap-6 p-5 lg:grid-cols-[1.15fr_0.85fr] sm:p-6">
-                    <form method="POST" action="{{ route('admin.users.update-details', $user) }}" class="space-y-5 rounded-[1.6rem] border border-slate-200/90 bg-white p-5 shadow-sm dark:border-slate-700/80 dark:bg-slate-900/80">
-                        @csrf
-                        @method('PATCH')
-
-                        <div class="grid gap-4 md:grid-cols-2">
-                            <div>
-                                <label for="name" class="mb-2 block text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Full Name') }}</label>
-                                <input id="name" type="text" name="name" value="{{ old('name', $user->name) }}" class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                            </div>
-                            <div>
-                                <label for="phone" class="mb-2 block text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Phone') }}</label>
-                                <input id="phone" type="text" name="phone" value="{{ old('phone', $user->phone) }}" class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                            </div>
-                            <div class="md:col-span-2">
-                                <label for="email" class="mb-2 block text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Email') }}</label>
-                                <input id="email" type="email" name="email" value="{{ old('email', $user->email) }}" class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                            </div>
-                            <div>
-                                <label for="date_of_birth" class="mb-2 block text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Date Of Birth') }}</label>
-                                <input id="date_of_birth" type="date" name="date_of_birth" value="{{ old('date_of_birth', $dateOfBirth?->format('Y-m-d')) }}" class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                            </div>
-                            <div>
-                                <label for="role" class="mb-2 block text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Role') }}</label>
-                                <select id="role" name="role" class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                                    @foreach ($roleOptions as $option)
-                                        <option value="{{ $option }}" @selected(old('role', $user->role) === $option)>{{ ucwords(str_replace('_', ' ', $option)) }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div>
-                                <label for="dealer_status" class="mb-2 block text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Dealer Status') }}</label>
-                                <select id="dealer_status" name="dealer_status" class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                                    @foreach ($dealerStatuses as $dealerStatus)
-                                        <option value="{{ $dealerStatus }}" @selected(old('dealer_status', $user->dealer_status) === $dealerStatus)>{{ ucwords(str_replace('_', ' ', $dealerStatus)) }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div>
-                                <label for="dealer_discount" class="mb-2 block text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Dealer Discount (%)') }}</label>
-                                <input id="dealer_discount" type="number" name="dealer_discount" min="0" max="100" step="0.01" value="{{ old('dealer_discount', number_format((float) $user->dealer_discount, 2, '.', '')) }}" class="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                            </div>
-                        </div>
-
-                        <label class="flex items-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-200">
-                            <input type="checkbox" name="email_verified" value="1" class="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500" @checked(old('email_verified', $user->email_verified_at !== null))>
-                            <span>{{ __('Mark this account as email verified') }}</span>
-                        </label>
-
-                        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/80">
-                            <div class="flex flex-wrap items-start justify-between gap-3">
-                                <div>
-                                    <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Module Permissions') }}</p>
-                                    <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Super admin always has every permission. Other roles can be narrowed or expanded here.') }}</p>
-                                </div>
-                                @if ($user->role === \App\Models\User::ROLE_SUPER_ADMIN)
-                                    <span class="rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-violet-700 dark:border-violet-900/60 dark:bg-violet-950/20 dark:text-violet-300">{{ __('All Access') }}</span>
-                                @endif
-                            </div>
-
-                            <div class="mt-4 grid gap-3 md:grid-cols-2">
-                                @foreach ($permissionGroups as $group => $permissions)
-                                    <div class="rounded-2xl border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-950">
-                                        <p class="text-xs font-semibold text-slate-800 dark:text-slate-100">{{ __($group) }}</p>
-                                        <div class="mt-3 space-y-2">
-                                            @foreach ($permissions as $permission => $label)
-                                                <label class="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-300">
-                                                    <input
-                                                        type="checkbox"
-                                                        name="permissions[]"
-                                                        value="{{ $permission }}"
-                                                        class="mt-0.5 h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500"
-                                                        @checked(in_array($permission, $selectedPermissions, true) || $user->role === \App\Models\User::ROLE_SUPER_ADMIN)
-                                                        @disabled($user->role === \App\Models\User::ROLE_SUPER_ADMIN)
-                                                    >
-                                                    <span>{{ __($label) }}</span>
-                                                </label>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-                        </div>
-
-                        <div class="flex flex-wrap items-center justify-between gap-3">
-                            <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('If the selected role is not `Dealer`, dealer status and discount will be reset automatically.') }}</p>
-                            <button type="submit" class="inline-flex items-center justify-center rounded-2xl bg-slate-900 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-700">
-                                {{ __('Save User Details') }}
-                            </button>
-                        </div>
-                    </form>
-
-                    <div class="space-y-4">
-                        <div class="rounded-[1.6rem] border border-slate-200/90 bg-white p-5 shadow-sm dark:border-slate-700/80 dark:bg-slate-900/80">
-                            <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Current Snapshot') }}</p>
-                            <div class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-                                <div>
-                                    <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500">{{ __('Age') }}</p>
-                                    <p class="mt-1 text-lg font-semibold text-slate-900 dark:text-slate-100">{{ $userAge !== null ? $userAge : '-' }}</p>
-                                </div>
-                                <div>
-                                    <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500">{{ __('Email Verified') }}</p>
-                                    <p class="mt-1 text-lg font-semibold text-slate-900 dark:text-slate-100">{{ $user->email_verified_at ? $user->email_verified_at->format('d M Y H:i') : 'No' }}</p>
-                                </div>
-                                <div>
-                                    <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500">{{ __('Created') }}</p>
-                                    <p class="mt-1 text-lg font-semibold text-slate-900 dark:text-slate-100">{{ $user->created_at?->format('d M Y H:i') }}</p>
-                                </div>
-                                <div>
-                                    <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500">{{ __('Updated') }}</p>
-                                    <p class="mt-1 text-lg font-semibold text-slate-900 dark:text-slate-100">{{ $user->updated_at?->format('d M Y H:i') }}</p>
-                                </div>
-                                <div class="sm:col-span-2">
-                                    <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500">{{ __('Last Order') }}</p>
-                                    <p class="mt-1 text-lg font-semibold text-slate-900 dark:text-slate-100">{{ $stats['last_order_at'] ? $stats['last_order_at']->format('d M Y H:i') : '-' }}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="rounded-[1.6rem] border border-slate-200/90 bg-white p-5 shadow-sm dark:border-slate-700/80 dark:bg-slate-900/80">
-                            <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Admin Notes') }}</p>
-                            <div class="mt-4 space-y-3 text-sm text-slate-600 dark:text-slate-300">
-                                <p>{{ __('Role changes respect the existing super admin safety rules.') }}</p>
-                                <p>{{ __('Dealer status and discount are only meaningful when the role is set to `Dealer`.') }}</p>
-                                <p>{{ __('Email verification can be toggled directly without opening another workflow.') }}</p>
-                            </div>
-                        </div>
-
-                        <form method="POST" action="{{ route('admin.users.update-password', $user) }}" class="space-y-4 rounded-[1.6rem] border border-amber-200/90 bg-amber-50/80 p-5 shadow-sm dark:border-amber-900/60 dark:bg-amber-950/20">
-                            @csrf
-                            @method('PATCH')
-
-                            <div>
-                                <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-amber-700 dark:text-amber-300">{{ __('Password Reset') }}</p>
-                                <h4 class="mt-1 text-base font-semibold text-slate-900 dark:text-slate-100">{{ __('Set a new password') }}</h4>
-                                <p class="mt-1 text-sm text-slate-600 dark:text-slate-300">{{ __('Existing passwords are encrypted and cannot be viewed. Super admins can replace the password from here.') }}</p>
-                            </div>
-
-                            <div>
-                                <label for="password" class="mb-2 block text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('New Password') }}</label>
-                                <x-password-input id="password" name="password" autocomplete="new-password" class="w-full rounded-2xl border border-amber-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20 dark:border-amber-900/60 dark:bg-slate-950 dark:text-slate-100" />
-                                @error('password')
-                                    <p class="mt-2 text-xs font-semibold text-rose-600 dark:text-rose-300">{{ $message }}</p>
-                                @enderror
-                            </div>
-
-                            <div>
-                                <label for="password_confirmation" class="mb-2 block text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Confirm New Password') }}</label>
-                                <x-password-input id="password_confirmation" name="password_confirmation" autocomplete="new-password" class="w-full rounded-2xl border border-amber-200 bg-white px-4 py-3 text-sm text-slate-900 focus:border-amber-500 focus:outline-none focus:ring-2 focus:ring-amber-500/20 dark:border-amber-900/60 dark:bg-slate-950 dark:text-slate-100" />
-                            </div>
-
-                            <button type="submit" class="inline-flex w-full items-center justify-center rounded-2xl bg-amber-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-amber-700">
-                                {{ __('Update Password') }}
-                            </button>
-                        </form>
+                    <div class="grid grid-cols-2 gap-x-6 gap-y-1 text-sm sm:text-end">
+                        <span class="text-[11px] font-bold uppercase tracking-widest text-gray-400 dark:text-slate-500">{{ __('Last Order') }}</span>
+                        <span class="text-[11px] font-bold uppercase tracking-widest text-gray-400 dark:text-slate-500">{{ __('Updated') }}</span>
+                        <span class="font-semibold tabular-nums text-gray-800 dark:text-slate-100">{{ $stats['last_order_at'] ? $stats['last_order_at']->format('d M Y') : '—' }}</span>
+                        <span class="font-semibold tabular-nums text-gray-800 dark:text-slate-100">{{ $user->updated_at?->format('d M Y') }}</span>
                     </div>
                 </div>
             </section>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 dark:border-slate-800 dark:bg-slate-900">
-                    <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-slate-400">{{ __('Total Orders') }}</p>
-                    <p class="mt-2 text-2xl font-bold text-gray-800 dark:text-slate-100">{{ number_format($stats['orders_total']) }}</p>
+            {{-- Insights --}}
+            <div class="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
+                <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-slate-700/60 dark:bg-slate-900">
+                    <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-slate-400">{{ __('Total Orders') }}</p>
+                    <p class="mt-2 text-2xl font-extrabold tabular-nums text-gray-900 dark:text-white">{{ number_format($stats['orders_total']) }}</p>
                 </div>
-                <div class="bg-white rounded-xl shadow-sm border border-emerald-100 p-4 dark:border-emerald-900/40 dark:bg-emerald-900/10">
-                    <p class="text-xs uppercase tracking-wide text-emerald-700 dark:text-emerald-300">{{ __('Delivered Orders') }}</p>
-                    <p class="mt-2 text-2xl font-bold text-emerald-700 dark:text-emerald-200">{{ number_format($stats['orders_delivered']) }}</p>
+                <div class="rounded-xl border border-emerald-300/70 bg-white p-4 shadow-sm dark:border-emerald-400/35 dark:bg-slate-900">
+                    <p class="text-[11px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-300">{{ __('Delivered Orders') }}</p>
+                    <p class="mt-2 text-2xl font-extrabold tabular-nums text-emerald-700 dark:text-emerald-300">{{ number_format($stats['orders_delivered']) }}</p>
                 </div>
-                <div class="bg-white rounded-xl shadow-sm border border-rose-100 p-4 dark:border-rose-900/40 dark:bg-rose-900/10">
-                    <p class="text-xs uppercase tracking-wide text-rose-700 dark:text-rose-300">{{ __('Cancelled Orders') }}</p>
-                    <p class="mt-2 text-2xl font-bold text-rose-700 dark:text-rose-200">{{ number_format($stats['orders_cancelled']) }}</p>
+                <div class="rounded-xl border border-rose-300/70 bg-white p-4 shadow-sm dark:border-rose-400/35 dark:bg-slate-900">
+                    <p class="text-[11px] font-bold uppercase tracking-widest text-rose-600 dark:text-rose-300">{{ __('Cancelled Orders') }}</p>
+                    <p class="mt-2 text-2xl font-extrabold tabular-nums text-rose-700 dark:text-rose-300">{{ number_format($stats['orders_cancelled']) }}</p>
                 </div>
-                <div class="bg-white rounded-xl shadow-sm border border-blue-100 p-4 dark:border-blue-900/40 dark:bg-blue-900/10">
-                    <p class="text-xs uppercase tracking-wide text-blue-700 dark:text-blue-300">{{ __('Total Spent') }}</p>
-                    <p class="mt-2 text-2xl font-bold text-blue-700 dark:text-blue-200">{{ number_format($stats['spent_total'], $currencyDecimals) }} {{ $currencyLabel }}</p>
+                <div class="rounded-xl border border-blue-300/70 bg-white p-4 shadow-sm dark:border-blue-400/35 dark:bg-slate-900">
+                    <p class="text-[11px] font-bold uppercase tracking-widest text-blue-600 dark:text-blue-300">{{ __('Total Spent') }}</p>
+                    <p class="mt-2 text-2xl font-extrabold tabular-nums text-blue-700 dark:text-blue-300">{{ number_format($stats['spent_total'], $currencyDecimals) }} <span class="text-sm font-bold">{{ $currencyLabel }}</span></p>
+                </div>
+                <div class="rounded-xl border border-amber-300/70 bg-white p-4 shadow-sm dark:border-amber-400/35 dark:bg-slate-900">
+                    <p class="text-[11px] font-bold uppercase tracking-widest text-amber-600 dark:text-amber-300">{{ __('Customer Reviews') }}</p>
+                    <p class="mt-2 text-2xl font-extrabold tabular-nums text-amber-700 dark:text-amber-300">{{ $reviewAverage ? number_format((float) $reviewAverage, 1) : '0.0' }}<span class="text-sm font-bold text-gray-400 dark:text-slate-500"> / 5 · {{ number_format($userReviews->count()) }}</span></p>
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden dark:border-slate-800 dark:bg-slate-900">
-                <div class="p-4 border-b border-gray-200 flex flex-wrap items-center justify-between gap-3 dark:border-slate-800">
+            {{-- Edit + side column --}}
+            <div class="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] items-start">
+                <form method="POST" action="{{ route('admin.users.update-details', $user) }}" class="space-y-5 rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                    @csrf
+                    @method('PATCH')
+
                     <div>
-                        <h3 class="font-semibold text-gray-800 dark:text-slate-100">{{ __('Customer Reviews') }}</h3>
-                        <p class="mt-1 text-xs text-gray-500 dark:text-slate-400">
-                            {{ __('All product reviews written by this user.') }}
-                        </p>
+                        <p class="text-[11px] font-bold uppercase tracking-widest text-amber-600 dark:text-amber-300">{{ __('Admin Controls') }}</p>
+                        <h3 class="mt-1 text-lg font-bold text-gray-900 dark:text-white">{{ __('Editable user profile') }}</h3>
+                        <p class="mt-1 text-sm text-gray-500 dark:text-slate-400">{{ __('Change account identity, role posture, dealer settings, and verification state from one section.') }}</p>
                     </div>
-                    <div class="flex flex-wrap items-center gap-2">
-                        <span class="inline-flex items-center rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
-                            {{ number_format($userReviews->count()) }} {{ __('reviews') }}
-                        </span>
-                        <span class="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-300">
-                            {{ $reviewAverage ? number_format((float) $reviewAverage, 1) : '0.0' }} / 5
-                        </span>
-                        @can(\App\Models\User::PERMISSION_PRODUCTS_MANAGE)
-                            <a
-                                href="{{ route('admin.reviews.index', ['search' => $user->email]) }}"
-                                class="inline-flex items-center rounded-lg bg-slate-900 px-3 py-2 text-xs font-semibold text-white transition hover:bg-slate-800 dark:bg-blue-600 dark:hover:bg-blue-700"
-                            >
-                                {{ __('Open Review Manager') }}
-                            </a>
-                        @endcan
+
+                    <div class="grid gap-4 md:grid-cols-2">
+                        <div>
+                            <label for="name" class="{{ $labelClasses }}">{{ __('Full Name') }}</label>
+                            <input id="name" type="text" name="name" value="{{ old('name', $user->name) }}" class="{{ $inputClasses }}">
+                        </div>
+                        <div>
+                            <label for="phone" class="{{ $labelClasses }}">{{ __('Phone') }}</label>
+                            <input id="phone" type="text" name="phone" value="{{ old('phone', $user->phone) }}" class="{{ $inputClasses }}">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label for="email" class="{{ $labelClasses }}">{{ __('Email') }}</label>
+                            <input id="email" type="email" name="email" value="{{ old('email', $user->email) }}" class="{{ $inputClasses }}">
+                        </div>
+                        <div>
+                            <label for="date_of_birth" class="{{ $labelClasses }}">{{ __('Date Of Birth') }}</label>
+                            <input id="date_of_birth" type="date" name="date_of_birth" value="{{ old('date_of_birth', $dateOfBirth?->format('Y-m-d')) }}" class="{{ $inputClasses }}">
+                        </div>
+                        <div>
+                            <label for="role" class="{{ $labelClasses }}">{{ __('Role') }}</label>
+                            <select id="role" name="role" class="{{ $inputClasses }}">
+                                @foreach ($roleOptions as $option)
+                                    <option value="{{ $option }}" @selected(old('role', $user->role) === $option)>{{ ucwords(str_replace('_', ' ', $option)) }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label for="dealer_status" class="{{ $labelClasses }}">{{ __('Dealer Status') }}</label>
+                            <select id="dealer_status" name="dealer_status" class="{{ $inputClasses }}">
+                                @foreach ($dealerStatuses as $dealerStatus)
+                                    <option value="{{ $dealerStatus }}" @selected(old('dealer_status', $user->dealer_status) === $dealerStatus)>{{ ucwords(str_replace('_', ' ', $dealerStatus)) }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div>
+                            <label for="dealer_discount" class="{{ $labelClasses }}">{{ __('Dealer Discount (%)') }}</label>
+                            <input id="dealer_discount" type="number" name="dealer_discount" min="0" max="100" step="0.01" value="{{ old('dealer_discount', number_format((float) $user->dealer_discount, 2, '.', '')) }}" class="{{ $inputClasses }}">
+                        </div>
                     </div>
-                </div>
 
-                <div class="divide-y divide-gray-200 dark:divide-slate-800">
-                    @forelse($userReviews as $review)
-                        <div class="grid gap-4 p-4 lg:grid-cols-[minmax(220px,0.8fr)_minmax(0,1.2fr)_auto]">
-                            <div class="flex items-center gap-3">
-                                <div class="h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-950">
-                                    @if($review->product?->image)
-                                        <img src="{{ asset('storage/' . ltrim((string) $review->product->image, '/')) }}" alt="{{ $review->product->name }}" class="h-full w-full object-contain">
-                                    @else
-                                        <div class="flex h-full w-full items-center justify-center text-slate-400 dark:text-slate-500">
-                                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16 9 11l4 4 3-3 4 4" />
-                                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 19h16" />
-                                            </svg>
-                                        </div>
-                                    @endif
-                                </div>
-                                <div class="min-w-0">
-                                    @if($review->product)
-                                        @can(\App\Models\User::PERMISSION_PRODUCTS_MANAGE)
-                                            <a href="{{ route('admin.products.edit', $review->product) }}" class="block truncate text-sm font-semibold text-blue-700 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-200">
-                                                {{ $review->product->name }}
-                                            </a>
-                                        @else
-                                            <p class="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $review->product->name }}</p>
-                                        @endcan
-                                        <p class="mt-1 truncate text-xs text-slate-500 dark:text-slate-400">{{ __('SKU:') }} {{ $review->product->sku ?: '-' }}</p>
-                                    @else
-                                        <p class="text-sm font-semibold text-slate-500 dark:text-slate-400">{{ __('Product unavailable') }}</p>
-                                    @endif
-                                </div>
-                            </div>
+                    <label class="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-700 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-200">
+                        <input type="checkbox" name="email_verified" value="1" class="h-4 w-4 rounded border-gray-300 text-amber-500 focus:ring-amber-400" @checked(old('email_verified', $user->email_verified_at !== null))>
+                        <span>{{ __('Mark this account as email verified') }}</span>
+                    </label>
 
+                    <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-slate-700 dark:bg-slate-800/60">
+                        <div class="flex flex-wrap items-start justify-between gap-3">
                             <div>
-                                <div class="flex flex-wrap items-center gap-2">
-                                    <span class="inline-flex items-center rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-300">
-                                        {{ (int) $review->rating }} / 5
-                                    </span>
-                                    <span class="inline-flex items-center rounded-full border px-2.5 py-1 text-xs font-semibold {{ $review->is_approved ? 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-300' : 'border-slate-200 bg-slate-50 text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300' }}">
-                                        {{ $review->is_approved ? __('Approved') : __('Hidden') }}
-                                    </span>
-                                    <span class="text-xs text-slate-500 dark:text-slate-400">
-                                        {{ optional($review->reviewed_at ?? $review->created_at)->format('M d, Y') ?: '-' }}
-                                    </span>
-                                </div>
-                                <p class="mt-3 text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $review->title ?: __('Customer review') }}</p>
-                                @if($review->comment)
-                                    <p class="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-300">{{ $review->comment }}</p>
-                                @endif
+                                <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-slate-400">{{ __('Module Permissions') }}</p>
+                                <p class="mt-1 text-xs text-gray-500 dark:text-slate-400">{{ __('Super admin always has every permission. Other roles can be narrowed or expanded here.') }}</p>
                             </div>
+                            @if ($user->role === \App\Models\User::ROLE_SUPER_ADMIN)
+                                <span class="inline-flex items-center gap-1.5 rounded-full border border-violet-300 bg-violet-50 px-2.5 py-0.5 text-[11px] font-bold text-violet-700 dark:border-violet-400/40 dark:bg-violet-400/10 dark:text-violet-300">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
+                                    {{ __('All Access') }}
+                                </span>
+                            @endif
+                        </div>
 
-                            @can(\App\Models\User::PERMISSION_PRODUCTS_MANAGE)
-                                <form method="POST" action="{{ route('admin.reviews.destroy', $review) }}" data-confirm="{{ __('Delete this review?') }}" class="lg:text-right">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="inline-flex items-center justify-center rounded-lg border border-rose-200 bg-white px-3 py-2 text-xs font-semibold text-rose-700 transition hover:bg-rose-50 dark:border-rose-900/50 dark:bg-slate-900 dark:text-rose-300 dark:hover:bg-rose-950/30">
-                                        {{ __('Delete') }}
-                                    </button>
-                                </form>
-                            @endcan
+                        <div class="mt-4 grid gap-3 md:grid-cols-2">
+                            @foreach ($permissionGroups as $group => $permissions)
+                                <div class="rounded-lg border border-gray-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-950">
+                                    <p class="text-xs font-bold text-gray-800 dark:text-slate-100">{{ __($group) }}</p>
+                                    <div class="mt-3 space-y-2">
+                                        @foreach ($permissions as $permission => $label)
+                                            <label class="flex items-start gap-3 text-sm text-gray-600 dark:text-slate-300">
+                                                <input
+                                                    type="checkbox"
+                                                    name="permissions[]"
+                                                    value="{{ $permission }}"
+                                                    class="mt-0.5 h-4 w-4 rounded border-gray-300 text-amber-500 focus:ring-amber-400"
+                                                    @checked(in_array($permission, $selectedPermissions, true) || $user->role === \App\Models\User::ROLE_SUPER_ADMIN)
+                                                    @disabled($user->role === \App\Models\User::ROLE_SUPER_ADMIN)
+                                                >
+                                                <span>{{ __($label) }}</span>
+                                            </label>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
-                    @empty
-                        <div class="px-6 py-12 text-center">
-                            <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('No reviews found for this user.') }}</p>
-                            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('Reviews will appear here after this customer rates purchased items.') }}</p>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-between gap-3">
+                        <p class="text-xs text-gray-500 dark:text-slate-400">{{ __('If the selected role is not `Dealer`, dealer status and discount will be reset automatically.') }}</p>
+                        <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-amber-400 px-5 py-2.5 text-sm font-bold text-slate-900 shadow-sm transition hover:bg-amber-300">
+                            {{ __('Save User Details') }}
+                        </button>
+                    </div>
+                </form>
+
+                <div class="space-y-4">
+                    <form method="POST" action="{{ route('admin.users.update-password', $user) }}" class="space-y-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                        @csrf
+                        @method('PATCH')
+
+                        <div>
+                            <p class="text-[11px] font-bold uppercase tracking-widest text-amber-600 dark:text-amber-300">{{ __('Password Reset') }}</p>
+                            <h4 class="mt-1 text-base font-bold text-gray-900 dark:text-white">{{ __('Set a new password') }}</h4>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-slate-400">{{ __('Existing passwords are encrypted and cannot be viewed. Super admins can replace the password from here.') }}</p>
                         </div>
-                    @endforelse
+
+                        <div>
+                            <label for="password" class="{{ $labelClasses }}">{{ __('New Password') }}</label>
+                            <x-password-input id="password" name="password" autocomplete="new-password" class="{{ $inputClasses }}" />
+                            @error('password')
+                                <p class="mt-2 text-xs font-semibold text-rose-600 dark:text-rose-300">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div>
+                            <label for="password_confirmation" class="{{ $labelClasses }}">{{ __('Confirm New Password') }}</label>
+                            <x-password-input id="password_confirmation" name="password_confirmation" autocomplete="new-password" class="{{ $inputClasses }}" />
+                        </div>
+
+                        <button type="submit" class="inline-flex w-full items-center justify-center rounded-lg bg-amber-400 px-5 py-2.5 text-sm font-bold text-slate-900 shadow-sm transition hover:bg-amber-300">
+                            {{ __('Update Password') }}
+                        </button>
+                    </form>
+
+                    <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-slate-400">{{ __('Current Snapshot') }}</p>
+                        <dl class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                            <div>
+                                <dt class="text-[11px] font-bold uppercase tracking-widest text-gray-400 dark:text-slate-500">{{ __('Email Verified') }}</dt>
+                                <dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-slate-100">{{ $user->email_verified_at ? $user->email_verified_at->format('d M Y H:i') : __('Unverified') }}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-[11px] font-bold uppercase tracking-widest text-gray-400 dark:text-slate-500">{{ __('Created') }}</dt>
+                                <dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-slate-100">{{ $user->created_at?->format('d M Y H:i') }}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-[11px] font-bold uppercase tracking-widest text-gray-400 dark:text-slate-500">{{ __('Updated') }}</dt>
+                                <dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-slate-100">{{ $user->updated_at?->format('d M Y H:i') }}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-[11px] font-bold uppercase tracking-widest text-gray-400 dark:text-slate-500">{{ __('Last Order') }}</dt>
+                                <dd class="mt-1 text-sm font-semibold text-gray-900 dark:text-slate-100">{{ $stats['last_order_at'] ? $stats['last_order_at']->format('d M Y H:i') : '—' }}</dd>
+                            </div>
+                        </dl>
+                    </div>
+
+                    <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-slate-400">{{ __('Admin Notes') }}</p>
+                        <ul class="mt-3 space-y-2 text-sm text-gray-600 dark:text-slate-300">
+                            <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400"></span>{{ __('Role changes respect the existing super admin safety rules.') }}</li>
+                            <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400"></span>{{ __('Dealer status and discount are only meaningful when the role is set to `Dealer`.') }}</li>
+                            <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400"></span>{{ __('Email verification can be toggled directly without opening another workflow.') }}</li>
+                        </ul>
+                    </div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden dark:border-slate-800 dark:bg-slate-900">
-                <div class="p-4 border-b border-gray-200 flex items-center justify-between dark:border-slate-800">
-                    <h3 class="font-semibold text-gray-800 dark:text-slate-100">{{ __('Recent Orders') }}</h3>
+            {{-- Recent Orders --}}
+            <div class="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden dark:border-slate-800 dark:bg-slate-900">
+                <div class="flex items-center justify-between gap-3 border-b border-gray-200 p-4 dark:border-slate-800">
+                    <h3 class="font-bold text-gray-800 dark:text-slate-100">{{ __('Recent Orders') }}</h3>
                     <p class="text-xs text-gray-500 dark:text-slate-400">Last {{ $recentOrders->count() }} order(s)</p>
                 </div>
 
@@ -343,24 +341,29 @@
                     <table class="w-full text-sm text-left">
                         <thead class="bg-gray-50 text-gray-600 dark:bg-slate-800/70 dark:text-slate-300">
                             <tr>
-                                <th class="p-4 font-semibold">{{ __('Order') }}</th>
-                                <th class="p-4 font-semibold">{{ __('Status') }}</th>
-                                <th class="p-4 font-semibold">{{ __('Amount') }}</th>
-                                <th class="p-4 font-semibold">{{ __('Date') }}</th>
-                                <th class="p-4 font-semibold text-right">{{ __('Action') }}</th>
+                                <th class="p-4 text-[11px] font-bold uppercase tracking-widest">{{ __('Order') }}</th>
+                                <th class="p-4 text-[11px] font-bold uppercase tracking-widest">{{ __('Status') }}</th>
+                                <th class="p-4 text-[11px] font-bold uppercase tracking-widest">{{ __('Amount') }}</th>
+                                <th class="p-4 text-[11px] font-bold uppercase tracking-widest">{{ __('Date') }}</th>
+                                <th class="p-4 text-[11px] font-bold uppercase tracking-widest text-right">{{ __('Action') }}</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200 dark:divide-slate-800">
                             @forelse($recentOrders as $order)
                                 <tr class="hover:bg-gray-50 transition dark:hover:bg-slate-800/60">
-                                    <td class="p-4 font-medium text-slate-900 dark:text-slate-100">{{ $order->order_number }}</td>
-                                    <td class="p-4 text-slate-700 dark:text-slate-300">{{ ucwords(str_replace('_', ' ', $order->status)) }}</td>
-                                    <td class="p-4 text-slate-900 dark:text-slate-100">{{ number_format((float) $order->total_amount, $currencyDecimals) }} {{ $currencyLabel }}</td>
-                                    <td class="p-4 text-gray-500 dark:text-slate-400">{{ $order->created_at?->format('d M Y H:i') }}</td>
+                                    <td class="p-4 font-semibold text-slate-900 dark:text-slate-100">{{ $order->order_number }}</td>
+                                    <td class="p-4">
+                                        <span class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-bold {{ $orderStatusChip((string) $order->status) }}">
+                                            <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
+                                            {{ ucwords(str_replace('_', ' ', $order->status)) }}
+                                        </span>
+                                    </td>
+                                    <td class="p-4 tabular-nums text-slate-900 dark:text-slate-100">{{ number_format((float) $order->total_amount, $currencyDecimals) }} {{ $currencyLabel }}</td>
+                                    <td class="p-4 tabular-nums text-gray-500 dark:text-slate-400">{{ $order->created_at?->format('d M Y H:i') }}</td>
                                     <td class="p-4 text-right">
                                         <a
                                             href="{{ route('admin.orders.show', $order) }}"
-                                            class="px-3 py-1.5 rounded-md bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800"
+                                            class="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
                                         >
                                             {{ __('Open Order') }}
                                         </a>
@@ -373,6 +376,100 @@
                             @endforelse
                         </tbody>
                     </table>
+                </div>
+            </div>
+
+            {{-- Reviews --}}
+            <div class="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden dark:border-slate-800 dark:bg-slate-900">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 p-4 dark:border-slate-800">
+                    <div>
+                        <h3 class="font-bold text-gray-800 dark:text-slate-100">{{ __('Customer Reviews') }}</h3>
+                        <p class="mt-1 text-xs text-gray-500 dark:text-slate-400">{{ __('All product reviews written by this user.') }}</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <span class="inline-flex items-center rounded-full border border-gray-300 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                            {{ number_format($userReviews->count()) }} {{ __('reviews') }}
+                        </span>
+                        <span class="inline-flex items-center rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300">
+                            ★ {{ $reviewAverage ? number_format((float) $reviewAverage, 1) : '0.0' }} / 5
+                        </span>
+                        @can(\App\Models\User::PERMISSION_PRODUCTS_MANAGE)
+                            <a
+                                href="{{ route('admin.reviews.index', ['search' => $user->email]) }}"
+                                class="inline-flex items-center rounded-lg bg-amber-400 px-3 py-1.5 text-xs font-bold text-slate-900 transition hover:bg-amber-300"
+                            >
+                                {{ __('Open Review Manager') }}
+                            </a>
+                        @endcan
+                    </div>
+                </div>
+
+                <div class="divide-y divide-gray-200 dark:divide-slate-800">
+                    @forelse($userReviews as $review)
+                        <div class="grid gap-4 p-4 lg:grid-cols-[minmax(220px,0.8fr)_minmax(0,1.2fr)_auto]">
+                            <div class="flex items-center gap-3">
+                                <div class="h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-slate-700 dark:bg-slate-950">
+                                    @if($review->product?->image)
+                                        <img src="{{ asset('storage/' . ltrim((string) $review->product->image, '/')) }}" alt="{{ $review->product->name }}" class="h-full w-full object-contain">
+                                    @else
+                                        <div class="flex h-full w-full items-center justify-center text-gray-400 dark:text-slate-500">
+                                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16 9 11l4 4 3-3 4 4" />
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 19h16" />
+                                            </svg>
+                                        </div>
+                                    @endif
+                                </div>
+                                <div class="min-w-0">
+                                    @if($review->product)
+                                        @can(\App\Models\User::PERMISSION_PRODUCTS_MANAGE)
+                                            <a href="{{ route('admin.products.edit', $review->product) }}" class="block truncate text-sm font-semibold text-amber-700 hover:text-amber-600 dark:text-amber-300 dark:hover:text-amber-200">
+                                                {{ $review->product->name }}
+                                            </a>
+                                        @else
+                                            <p class="truncate text-sm font-semibold text-gray-900 dark:text-slate-100">{{ $review->product->name }}</p>
+                                        @endcan
+                                        <p class="mt-1 truncate text-xs text-gray-500 dark:text-slate-400">{{ __('SKU:') }} {{ $review->product->sku ?: '-' }}</p>
+                                    @else
+                                        <p class="text-sm font-semibold text-gray-500 dark:text-slate-400">{{ __('Product unavailable') }}</p>
+                                    @endif
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="flex flex-wrap items-center gap-2">
+                                    <span class="inline-flex items-center rounded-full border border-amber-300 bg-amber-50 px-2.5 py-0.5 text-[11px] font-bold text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300">
+                                        ★ {{ (int) $review->rating }} / 5
+                                    </span>
+                                    <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-bold {{ $review->is_approved ? 'border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-300' : 'border-gray-300 bg-gray-50 text-gray-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300' }}">
+                                        {{ $review->is_approved ? __('Approved') : __('Hidden') }}
+                                    </span>
+                                    <span class="text-xs text-gray-500 dark:text-slate-400">
+                                        {{ optional($review->reviewed_at ?? $review->created_at)->format('M d, Y') ?: '-' }}
+                                    </span>
+                                </div>
+                                <p class="mt-3 text-sm font-semibold text-gray-900 dark:text-slate-100">{{ $review->title ?: __('Customer review') }}</p>
+                                @if($review->comment)
+                                    <p class="mt-2 text-sm leading-6 text-gray-700 dark:text-slate-300">{{ $review->comment }}</p>
+                                @endif
+                            </div>
+
+                            @can(\App\Models\User::PERMISSION_PRODUCTS_MANAGE)
+                                <form method="POST" action="{{ route('admin.reviews.destroy', $review) }}" data-confirm="{{ __('Delete this review?') }}" class="lg:text-right">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="rounded-lg border border-rose-300 bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-100 dark:border-rose-400/40 dark:bg-rose-400/10 dark:text-rose-300 dark:hover:bg-rose-400/20">
+                                        {{ __('Delete') }}
+                                    </button>
+                                </form>
+                            @endcan
+                        </div>
+                    @empty
+                        <div class="px-6 py-12 text-center">
+                            <p class="text-sm font-semibold text-gray-700 dark:text-slate-200">{{ __('No reviews found for this user.') }}</p>
+                            <p class="mt-1 text-sm text-gray-500 dark:text-slate-400">{{ __('Reviews will appear here after this customer rates purchased items.') }}</p>
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </div>
