@@ -31,7 +31,36 @@ class UserController extends Controller
 
         $search = trim((string) $request->query('search', ''));
 
+        $managerRoles = [
+            User::ROLE_PRODUCT_MANAGER,
+            User::ROLE_ORDER_MANAGER,
+            User::ROLE_FINANCE_MANAGER,
+            User::ROLE_INVENTORY_MANAGER,
+            User::ROLE_SETTINGS_MANAGER,
+        ];
+
+        $filter = (string) $request->query('filter', 'all');
+        if (! in_array($filter, ['all', 'super_admin', 'admin', 'manager', 'dealer', 'user', 'verified', 'unverified'], true)) {
+            $filter = 'all';
+        }
+
         $usersQuery = User::query();
+
+        match ($filter) {
+            'super_admin' => $usersQuery->where('role', User::ROLE_SUPER_ADMIN),
+            'admin' => $usersQuery->where('role', User::ROLE_ADMIN),
+            'manager' => $usersQuery->whereIn('role', $managerRoles),
+            'dealer' => $usersQuery->where('role', User::ROLE_DEALER),
+            'user' => $usersQuery->where(function (Builder $query) {
+                $query
+                    ->where('role', User::ROLE_USER)
+                    ->orWhere('role', 'customer')
+                    ->orWhereNull('role');
+            }),
+            'verified' => $usersQuery->whereNotNull('email_verified_at'),
+            'unverified' => $usersQuery->whereNull('email_verified_at'),
+            default => $usersQuery,
+        };
 
         if ($search !== '') {
             $usersQuery->where(function ($query) use ($search) {
@@ -76,27 +105,31 @@ class UserController extends Controller
 
         $totalUsers = User::count();
         $superAdminUsers = User::where('role', User::ROLE_SUPER_ADMIN)->count();
-        $adminUsers = User::query()
-            ->where('role', User::ROLE_ADMIN)
-            ->orWhere('role', User::ROLE_SUPER_ADMIN)
-            ->count();
+        $adminUsers = User::where('role', User::ROLE_ADMIN)->count();
+        $managerUsers = User::whereIn('role', $managerRoles)->count();
         $dealerUsers = User::where('role', User::ROLE_DEALER)->count();
         $regularUsers = User::query()
             ->where('role', User::ROLE_USER)
             ->orWhere('role', 'customer')
             ->orWhereNull('role')
             ->count();
+        $verifiedUsers = User::whereNotNull('email_verified_at')->count();
+        $unverifiedUsers = $totalUsers - $verifiedUsers;
         $roleOptions = User::allowedRoles();
         $currentUserId = (int) $request->user()->id;
 
         return view('admin.users.index', compact(
             'users',
             'search',
+            'filter',
             'totalUsers',
             'superAdminUsers',
             'adminUsers',
+            'managerUsers',
             'dealerUsers',
             'regularUsers',
+            'verifiedUsers',
+            'unverifiedUsers',
             'roleOptions',
             'currentUserId'
         ));

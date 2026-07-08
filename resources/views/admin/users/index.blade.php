@@ -9,8 +9,129 @@
         </div>
     </x-slot>
 
+    @php
+        $managerRoleList = [
+            \App\Models\User::ROLE_PRODUCT_MANAGER,
+            \App\Models\User::ROLE_ORDER_MANAGER,
+            \App\Models\User::ROLE_FINANCE_MANAGER,
+            \App\Models\User::ROLE_INVENTORY_MANAGER,
+            \App\Models\User::ROLE_SETTINGS_MANAGER,
+        ];
+
+        $roleMeta = function (?string $role) use ($managerRoleList) {
+            if ($role === \App\Models\User::ROLE_SUPER_ADMIN) {
+                return [
+                    'label' => __('Super Admin'),
+                    'chip' => 'border-violet-300 bg-violet-50 text-violet-700 dark:border-violet-400/40 dark:bg-violet-400/10 dark:text-violet-300',
+                    'avatar' => 'bg-violet-100 text-violet-700 dark:bg-violet-400/15 dark:text-violet-300',
+                ];
+            }
+            if ($role === \App\Models\User::ROLE_ADMIN) {
+                return [
+                    'label' => __('Admin'),
+                    'chip' => 'border-rose-300 bg-rose-50 text-rose-700 dark:border-rose-400/40 dark:bg-rose-400/10 dark:text-rose-300',
+                    'avatar' => 'bg-rose-100 text-rose-700 dark:bg-rose-400/15 dark:text-rose-300',
+                ];
+            }
+            if ($role === \App\Models\User::ROLE_DEALER) {
+                return [
+                    'label' => __('Dealer'),
+                    'chip' => 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300',
+                    'avatar' => 'bg-amber-100 text-amber-700 dark:bg-amber-400/15 dark:text-amber-300',
+                ];
+            }
+            if (in_array($role, $managerRoleList, true)) {
+                return [
+                    'label' => __(ucwords(str_replace('_', ' ', $role))),
+                    'chip' => 'border-cyan-300 bg-cyan-50 text-cyan-700 dark:border-cyan-400/40 dark:bg-cyan-400/10 dark:text-cyan-300',
+                    'avatar' => 'bg-cyan-100 text-cyan-700 dark:bg-cyan-400/15 dark:text-cyan-300',
+                ];
+            }
+
+            return [
+                'label' => __('User'),
+                'chip' => 'border-blue-300 bg-blue-50 text-blue-700 dark:border-blue-400/40 dark:bg-blue-400/10 dark:text-blue-300',
+                'avatar' => 'bg-blue-100 text-blue-700 dark:bg-blue-400/15 dark:text-blue-300',
+            ];
+        };
+
+        $roleFilters = [
+            'all' => ['label' => __('All accounts'), 'count' => $totalUsers, 'swatch' => 'bg-slate-400 dark:bg-slate-300'],
+            'super_admin' => ['label' => __('Super Admins'), 'count' => $superAdminUsers, 'swatch' => 'bg-violet-500'],
+            'admin' => ['label' => __('Admins'), 'count' => $adminUsers, 'swatch' => 'bg-rose-500'],
+            'manager' => ['label' => __('Managers'), 'count' => $managerUsers, 'swatch' => 'bg-cyan-500'],
+            'dealer' => ['label' => __('Dealers'), 'count' => $dealerUsers, 'swatch' => 'bg-amber-400'],
+            'user' => ['label' => __('Users'), 'count' => $regularUsers, 'swatch' => 'bg-blue-500'],
+        ];
+
+        $verifyFilters = [
+            'verified' => ['label' => __('Verified email'), 'count' => $verifiedUsers],
+            'unverified' => ['label' => __('Unverified'), 'count' => $unverifiedUsers],
+        ];
+
+        $filterUrl = fn (string $key) => route('admin.users.index', array_filter([
+            'filter' => $key === 'all' ? null : $key,
+            'search' => $search !== '' ? $search : null,
+        ]));
+
+        $sharePercent = fn (int $count) => $totalUsers > 0 ? round(($count / $totalUsers) * 100, 1) : 0;
+
+        $insightCards = [
+            'all' => [
+                'label' => __('Total Users'),
+                'count' => $totalUsers,
+                'caption' => __('All accounts'),
+                'card' => 'border-gray-200 dark:border-slate-700/60',
+                'accent' => 'text-gray-500 dark:text-slate-400',
+                'number' => 'text-gray-900 dark:text-white',
+            ],
+            'super_admin' => [
+                'label' => __('Super Admins'),
+                'count' => $superAdminUsers,
+                'caption' => __(':percent% of all accounts', ['percent' => $sharePercent($superAdminUsers)]),
+                'card' => 'border-violet-300/70 dark:border-violet-400/35',
+                'accent' => 'text-violet-600 dark:text-violet-300',
+                'number' => 'text-violet-700 dark:text-violet-300',
+            ],
+            'admin' => [
+                'label' => __('Admins'),
+                'count' => $adminUsers,
+                'caption' => __(':percent% of all accounts', ['percent' => $sharePercent($adminUsers)]),
+                'card' => 'border-rose-300/70 dark:border-rose-400/35',
+                'accent' => 'text-rose-600 dark:text-rose-300',
+                'number' => 'text-rose-700 dark:text-rose-300',
+            ],
+            'manager' => [
+                'label' => __('Managers'),
+                'count' => $managerUsers,
+                'caption' => __(':percent% of all accounts', ['percent' => $sharePercent($managerUsers)]),
+                'card' => 'border-cyan-300/70 dark:border-cyan-400/35',
+                'accent' => 'text-cyan-600 dark:text-cyan-300',
+                'number' => 'text-cyan-700 dark:text-cyan-300',
+            ],
+            'dealer' => [
+                'label' => __('Dealers'),
+                'count' => $dealerUsers,
+                'caption' => __(':percent% of all accounts', ['percent' => $sharePercent($dealerUsers)]),
+                'card' => 'border-amber-300/70 dark:border-amber-400/35',
+                'accent' => 'text-amber-600 dark:text-amber-300',
+                'number' => 'text-amber-700 dark:text-amber-300',
+            ],
+            'user' => [
+                'label' => __('Users'),
+                'count' => $regularUsers,
+                'caption' => __(':percent% of all accounts', ['percent' => $sharePercent($regularUsers)]),
+                'card' => 'border-blue-300/70 dark:border-blue-400/35',
+                'accent' => 'text-blue-600 dark:text-blue-300',
+                'number' => 'text-blue-700 dark:text-blue-300',
+            ],
+        ];
+
+        $exportParams = in_array($filter, ['super_admin', 'admin', 'dealer'], true) ? ['role' => $filter] : [];
+    @endphp
+
     <div class="py-10">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-5">
             @if(session('success'))
                 <div class="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/20 dark:text-emerald-300">
                     {{ session('success') }}
@@ -29,206 +150,236 @@
                 </div>
             @endif
 
-            <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 dark:border-slate-800 dark:bg-slate-900">
-                    <p class="text-xs uppercase tracking-wide text-gray-500 dark:text-slate-400">{{ __('Total Users') }}</p>
-                    <p class="mt-2 text-2xl font-bold text-gray-800 dark:text-slate-100">{{ number_format($totalUsers) }}</p>
-                </div>
-                <div class="bg-white rounded-xl shadow-sm border border-violet-100 p-4 dark:border-violet-900/50 dark:bg-slate-900">
-                    <p class="text-xs uppercase tracking-wide text-violet-700 dark:text-violet-300">{{ __('Super Admins') }}</p>
-                    <p class="mt-2 text-2xl font-bold text-violet-700 dark:text-violet-300">{{ number_format($superAdminUsers) }}</p>
-                </div>
-                <div class="bg-white rounded-xl shadow-sm border border-red-100 p-4 dark:border-red-900/50 dark:bg-slate-900">
-                    <p class="text-xs uppercase tracking-wide text-red-600 dark:text-red-300">{{ __('Admins') }}</p>
-                    <p class="mt-2 text-2xl font-bold text-red-700 dark:text-red-300">{{ number_format($adminUsers) }}</p>
-                </div>
-                <div class="bg-white rounded-xl shadow-sm border border-amber-100 p-4 dark:border-amber-900/50 dark:bg-slate-900">
-                    <p class="text-xs uppercase tracking-wide text-amber-600 dark:text-amber-300">{{ __('Dealers') }}</p>
-                    <p class="mt-2 text-2xl font-bold text-amber-700 dark:text-amber-300">{{ number_format($dealerUsers) }}</p>
-                </div>
-                <div class="bg-white rounded-xl shadow-sm border border-blue-100 p-4 dark:border-blue-900/50 dark:bg-slate-900">
-                    <p class="text-xs uppercase tracking-wide text-blue-600 dark:text-blue-300">{{ __('Users') }}</p>
-                    <p class="mt-2 text-2xl font-bold text-blue-700 dark:text-blue-300">{{ number_format($regularUsers) }}</p>
-                </div>
+            {{-- Insights --}}
+            <div class="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-6">
+                @foreach($insightCards as $key => $card)
+                    <a
+                        href="{{ $filterUrl($key) }}"
+                        @class([
+                            'rounded-xl border bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow dark:bg-slate-900',
+                            $card['card'],
+                            'ring-2 ring-amber-400/60' => $filter === $key,
+                        ])
+                    >
+                        <p class="text-[11px] font-bold uppercase tracking-widest {{ $card['accent'] }}">{{ $card['label'] }}</p>
+                        <p class="mt-2 text-2xl font-extrabold tabular-nums {{ $card['number'] }}">{{ number_format($card['count']) }}</p>
+                        <p class="mt-1 text-[11px] text-gray-400 dark:text-slate-500">{{ $card['caption'] }}</p>
+                    </a>
+                @endforeach
             </div>
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-4 dark:border-slate-800 dark:bg-slate-900">
-                <form method="GET" action="{{ route('admin.users.index') }}" class="flex flex-col sm:flex-row gap-3">
-                    <input
-                        type="text"
-                        name="search"
-                        value="{{ $search }}"
-                        placeholder="{{ __('Search by name, email, phone, id, or role...') }}"
-                        class="w-full rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-blue-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
-                    >
-                    <button
-                        type="submit"
-                        class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition"
-                    >
-                        {{ __('Search') }}
-                    </button>
-                    @if($search !== '')
-                        <a
-                            href="{{ route('admin.users.index') }}"
-                            class="px-5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg font-medium transition text-center dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700"
-                        >
-                            {{ __('Clear') }}
-                        </a>
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <p class="text-sm text-gray-500 dark:text-slate-400">
+                    {{ __('Showing') }} <span class="font-semibold text-gray-800 dark:text-slate-100">{{ $users->count() }}</span>
+                    {{ __('of') }} <span class="font-semibold text-gray-800 dark:text-slate-100">{{ number_format($users->total()) }}</span>
+                    @if($filter !== 'all')
+                        · <span class="font-semibold text-amber-600 dark:text-amber-300">{{ ($roleFilters[$filter] ?? $verifyFilters[$filter])['label'] }}</span>
                     @endif
-                </form>
+                    @if($search !== '')
+                        · "{{ $search }}"
+                    @endif
+                </p>
+                <a
+                    href="{{ route('admin.users.export-excel', $exportParams) }}"
+                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-amber-400 px-4 py-2 text-sm font-bold text-slate-900 shadow-sm transition hover:bg-amber-300"
+                >
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v11m0 0 4-4m-4 4-4-4" />
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M5 19h14" />
+                    </svg>
+                    {{ __('Export Excel') }}
+                </a>
             </div>
 
-            @can('manage-users')
-                <div class="rounded-lg border border-blue-200 bg-blue-50 px-4 py-3 text-sm text-blue-700 dark:border-blue-900/60 dark:bg-blue-950/20 dark:text-blue-300">
-                    {{ __('You are signed in as') }} <strong>{{ __('super_admin') }}</strong>{{ __('. You can update roles and delete users with safeguards.') }}
-                </div>
-            @endcan
+            <div class="grid gap-4 lg:grid-cols-[240px_minmax(0,1fr)] items-start">
+                {{-- Filter rail --}}
+                <aside class="rounded-xl border border-gray-200 bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-slate-900 lg:sticky lg:top-4">
+                    <form method="GET" action="{{ route('admin.users.index') }}" class="mb-3">
+                        @if($filter !== 'all')
+                            <input type="hidden" name="filter" value="{{ $filter }}">
+                        @endif
+                        <label for="users-search" class="sr-only">{{ __('Search') }}</label>
+                        <div class="relative">
+                            <svg class="pointer-events-none absolute inset-y-0 my-auto ms-3 h-4 w-4 text-gray-400 dark:text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                <circle cx="11" cy="11" r="7" />
+                                <path stroke-linecap="round" d="m20 20-3.5-3.5" />
+                            </svg>
+                            <input
+                                id="users-search"
+                                type="text"
+                                name="search"
+                                value="{{ $search }}"
+                                placeholder="{{ __('Search by name, email, phone, id, or role...') }}"
+                                class="w-full rounded-lg border-gray-300 bg-white ps-9 text-sm text-slate-900 placeholder:text-gray-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500"
+                            >
+                        </div>
+                        @if($search !== '')
+                            <a href="{{ route('admin.users.index', array_filter(['filter' => $filter === 'all' ? null : $filter])) }}" class="mt-2 inline-block text-xs font-semibold text-amber-600 hover:text-amber-500 dark:text-amber-300 dark:hover:text-amber-200">
+                                {{ __('Clear') }} ✕
+                            </a>
+                        @endif
+                    </form>
 
-            <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden dark:border-slate-800 dark:bg-slate-900">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left">
-                        <thead class="bg-gray-50 text-gray-600 dark:bg-slate-800/70 dark:text-slate-300">
-                            <tr>
-                                <th class="p-4 font-semibold">#</th>
-                                <th class="p-4 font-semibold">{{ __('User') }}</th>
-                                <th class="p-4 font-semibold">{{ __('Email') }}</th>
-                                <th class="p-4 font-semibold">{{ __('Role') }}</th>
-                                <th class="p-4 font-semibold">{{ __('Joined') }}</th>
-                                @can('manage-users')
-                                    <th class="p-4 font-semibold text-right">{{ __('Actions') }}</th>
-                                @endcan
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-200 dark:divide-slate-800">
-                            @forelse($users as $user)
-                                @php
-                                    $role = $user->role;
-                                    $isSelf = $currentUserId === (int) $user->id;
-                                    $isLastSuperAdmin = $role === \App\Models\User::ROLE_SUPER_ADMIN && $superAdminUsers <= 1;
-                                @endphp
-                                <tr class="hover:bg-gray-50 transition dark:hover:bg-slate-800/60">
-                                    <td class="p-4 font-medium dark:text-slate-100">#{{ $user->id }}</td>
-                                    <td class="p-4">
-                                        <div class="flex items-center gap-3">
-                                            <div class="w-9 h-9 rounded-full bg-blue-600 flex items-center justify-center text-white font-bold">
-                                                {{ strtoupper(substr($user->name, 0, 1)) }}
-                                            </div>
-                                            <div>
-                                                <div class="font-semibold text-gray-800 dark:text-slate-100">{{ $user->name }}</div>
-                                                @if($user->phone)
-                                                    <div class="text-xs text-gray-500 dark:text-slate-400">{{ $user->phone }}</div>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td class="p-4 text-gray-600 dark:text-slate-300">{{ $user->email }}</td>
-                                    <td class="p-4">
-                                        @if($role === \App\Models\User::ROLE_SUPER_ADMIN)
-                                            <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full bg-violet-100 text-violet-700 border border-violet-200">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-violet-500"></span>
-                                                {{ __('Super Admin') }}
-                                            </span>
-                                        @elseif($role === \App\Models\User::ROLE_ADMIN)
-                                            <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-700 border border-red-200">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-red-500"></span>
-                                                {{ __('Admin') }}
-                                            </span>
-                                        @elseif($role === \App\Models\User::ROLE_DEALER)
-                                            <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full bg-amber-100 text-amber-700 border border-amber-200">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-amber-500"></span>
-                                                {{ __('Dealer') }}
-                                            </span>
-                                        @elseif(in_array($role, [
-                                            \App\Models\User::ROLE_PRODUCT_MANAGER,
-                                            \App\Models\User::ROLE_ORDER_MANAGER,
-                                            \App\Models\User::ROLE_FINANCE_MANAGER,
-                                            \App\Models\User::ROLE_INVENTORY_MANAGER,
-                                            \App\Models\User::ROLE_SETTINGS_MANAGER,
-                                        ], true))
-                                            <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full bg-cyan-100 text-cyan-700 border border-cyan-200">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-cyan-500"></span>
-                                                {{ __(ucwords(str_replace('_', ' ', $role))) }}
-                                            </span>
-                                        @else
-                                            <span class="inline-flex items-center gap-1 px-3 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-700 border border-blue-200">
-                                                <span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                                                {{ __('User') }}
+                    <nav class="space-y-0.5" aria-label="{{ __('Role') }}">
+                        @foreach($roleFilters as $key => $item)
+                            <a
+                                href="{{ $filterUrl($key) }}"
+                                @class([
+                                    'flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition',
+                                    'border-s-2 border-amber-400 bg-amber-50 text-gray-900 dark:bg-amber-400/10 dark:text-white' => $filter === $key,
+                                    'text-gray-600 hover:bg-gray-50 dark:text-slate-300 dark:hover:bg-slate-800/60' => $filter !== $key,
+                                ])
+                            >
+                                <span class="flex items-center gap-2.5 min-w-0">
+                                    <span class="h-2 w-2 shrink-0 rounded-full {{ $item['swatch'] }}"></span>
+                                    <span class="truncate">{{ $item['label'] }}</span>
+                                </span>
+                                <span class="text-xs tabular-nums text-gray-400 dark:text-slate-500">{{ number_format($item['count']) }}</span>
+                            </a>
+                        @endforeach
+                    </nav>
+
+                    <hr class="my-3 border-gray-200 dark:border-slate-800">
+
+                    <nav class="space-y-0.5" aria-label="{{ __('Email') }}">
+                        @foreach($verifyFilters as $key => $item)
+                            <a
+                                href="{{ $filterUrl($key) }}"
+                                @class([
+                                    'flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition',
+                                    'border-s-2 border-amber-400 bg-amber-50 text-gray-900 dark:bg-amber-400/10 dark:text-white' => $filter === $key,
+                                    'text-gray-600 hover:bg-gray-50 dark:text-slate-300 dark:hover:bg-slate-800/60' => $filter !== $key,
+                                ])
+                            >
+                                <span class="flex items-center gap-2.5 min-w-0">
+                                    @if($key === 'verified')
+                                        <svg class="h-3.5 w-3.5 shrink-0 text-emerald-500 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" /></svg>
+                                    @else
+                                        <svg class="h-3.5 w-3.5 shrink-0 text-gray-400 dark:text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path stroke-linecap="round" d="M12 7.5V12l2.5 2.5" /></svg>
+                                    @endif
+                                    <span class="truncate">{{ $item['label'] }}</span>
+                                </span>
+                                <span class="text-xs tabular-nums text-gray-400 dark:text-slate-500">{{ number_format($item['count']) }}</span>
+                            </a>
+                        @endforeach
+                    </nav>
+                </aside>
+
+                {{-- User cards --}}
+                <div class="space-y-3 min-w-0">
+                    @forelse($users as $user)
+                        @php
+                            $role = $user->role;
+                            $meta = $roleMeta($role);
+                            $isSelf = $currentUserId === (int) $user->id;
+                            $isLastSuperAdmin = $role === \App\Models\User::ROLE_SUPER_ADMIN && $superAdminUsers <= 1;
+                        @endphp
+                        <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:border-gray-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700">
+                            <div class="flex flex-wrap items-center gap-3">
+                                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-extrabold {{ $meta['avatar'] }}">
+                                    {{ strtoupper(substr($user->name, 0, 1)) }}
+                                </div>
+
+                                <div class="min-w-0 flex-1">
+                                    <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
+                                        <span class="font-semibold text-gray-800 dark:text-slate-100">{{ $user->name }}</span>
+                                        <span class="text-xs tabular-nums text-gray-400 dark:text-slate-500">#{{ $user->id }}</span>
+                                        <span class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-bold {{ $meta['chip'] }}">
+                                            <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
+                                            {{ $meta['label'] }}
+                                        </span>
+                                        @if($user->email_verified_at)
+                                            <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400" title="{{ __('Verified email') }}">
+                                                <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" /></svg>
                                             </span>
                                         @endif
-                                    </td>
-                                    <td class="p-4 text-gray-500 dark:text-slate-400">{{ $user->created_at->format('d M Y') }}</td>
+                                    </div>
+                                    <div class="mt-1 flex flex-wrap gap-x-4 gap-y-0.5 text-xs text-gray-500 dark:text-slate-400">
+                                        <span class="truncate">{{ $user->email }}</span>
+                                        @if($user->phone)
+                                            <span dir="ltr">{{ $user->phone }}</span>
+                                        @endif
+                                        <span>{{ __('Joined') }} {{ $user->created_at->format('d M Y') }}</span>
+                                    </div>
+                                </div>
 
-                                    @can('manage-users')
-                                        <td class="p-4">
-                                            <div class="flex items-center justify-end gap-2">
-                                                <a
-                                                    href="{{ route('admin.users.show', $user) }}"
-                                                    class="px-3 py-1.5 rounded-md bg-blue-600 text-white text-xs font-semibold hover:bg-blue-700"
+                                @can('manage-users')
+                                    <div class="flex flex-wrap items-center gap-2">
+                                        <form method="POST" action="{{ route('admin.users.update-role', $user) }}" class="flex items-center gap-2">
+                                            @csrf
+                                            @method('PATCH')
+                                            <select
+                                                name="role"
+                                                class="rounded-lg border-gray-300 bg-white py-1.5 text-xs text-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                                                @disabled($isSelf)
+                                            >
+                                                @foreach($roleOptions as $option)
+                                                    <option value="{{ $option }}" @selected($role === $option)>
+                                                        {{ __(ucwords(str_replace('_', ' ', $option))) }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <button
+                                                type="submit"
+                                                class="rounded-lg bg-slate-900 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50 dark:bg-slate-700 dark:hover:bg-slate-600"
+                                                @disabled($isSelf || $isLastSuperAdmin)
+                                            >
+                                                {{ __('Update') }}
+                                            </button>
+                                        </form>
+
+                                        <a
+                                            href="{{ route('admin.users.show', $user) }}"
+                                            class="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+                                        >
+                                            {{ __('View Details') }}
+                                        </a>
+
+                                        @if($isSelf || $isLastSuperAdmin)
+                                            <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-gray-400 dark:text-slate-500" title="{{ $isSelf ? __('Self-protection enabled.') : __('Last super admin is protected.') }}">
+                                                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 11V8a4 4 0 0 1 8 0v3" />
+                                                    <rect x="5" y="11" width="14" height="9" rx="2" />
+                                                </svg>
+                                                {{ __('Protected') }}
+                                            </span>
+                                        @else
+                                            <form method="POST" action="{{ route('admin.users.destroy', $user) }}" data-danger-confirm data-danger-title="{{ __('Delete User') }}" data-danger-description="{{ __('This action is permanent. The selected user account will be deleted and cannot be undone.') }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button
+                                                    type="submit"
+                                                    class="rounded-lg border border-rose-300 bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-100 dark:border-rose-400/40 dark:bg-rose-400/10 dark:text-rose-300 dark:hover:bg-rose-400/20"
                                                 >
-                                                    {{ __('View Details') }}
-                                                </a>
+                                                    {{ __('Delete') }}
+                                                </button>
+                                            </form>
+                                        @endif
+                                    </div>
+                                @else
+                                    <a
+                                        href="{{ route('admin.users.show', $user) }}"
+                                        class="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+                                    >
+                                        {{ __('View Details') }}
+                                    </a>
+                                @endcan
+                            </div>
+                        </div>
+                    @empty
+                        <div class="rounded-xl border border-gray-200 bg-white p-12 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                            <p class="text-lg font-semibold text-gray-700 dark:text-slate-200">{{ __('No users found') }}</p>
+                            @if($search !== '')
+                                <p class="mt-1 text-sm text-gray-500 dark:text-slate-400">{{ __('No results for ":search".', ['search' => $search]) }}</p>
+                            @endif
+                        </div>
+                    @endforelse
 
-                                                <form method="POST" action="{{ route('admin.users.update-role', $user) }}" class="flex items-center gap-2">
-                                                    @csrf
-                                                    @method('PATCH')
-                                                    <select
-                                                        name="role"
-                                                        class="rounded-md border-gray-300 bg-white text-sm text-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
-                                                        @disabled($isSelf)
-                                                    >
-                                                        @foreach($roleOptions as $option)
-                                                            <option value="{{ $option }}" @selected($role === $option)>
-                                                                {{ __(ucwords(str_replace('_', ' ', $option))) }}
-                                                            </option>
-                                                        @endforeach
-                                                    </select>
-                                                    <button
-                                                        type="submit"
-                                                        class="px-3 py-1.5 rounded-md bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 disabled:opacity-60"
-                                                        @disabled($isSelf || $isLastSuperAdmin)
-                                                    >
-                                                        {{ __('Update') }}
-                                                    </button>
-                                                </form>
-
-                                                <form method="POST" action="{{ route('admin.users.destroy', $user) }}" data-danger-confirm data-danger-title="{{ __('Delete User') }}" data-danger-description="{{ __('This action is permanent. The selected user account will be deleted and cannot be undone.') }}">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button
-                                                        type="submit"
-                                                        class="px-3 py-1.5 rounded-md bg-red-600 text-white text-xs font-semibold hover:bg-red-700 disabled:opacity-60"
-                                                        @disabled($isSelf || $isLastSuperAdmin)
-                                                    >
-                                                        {{ __('Delete') }}
-                                                    </button>
-                                                </form>
-                                            </div>
-                                            @if($isSelf)
-                                                <p class="mt-1 text-[11px] text-gray-500 text-right dark:text-slate-400">{{ __('Self-protection enabled.') }}</p>
-                                            @elseif($isLastSuperAdmin)
-                                                <p class="mt-1 text-[11px] text-gray-500 text-right dark:text-slate-400">{{ __('Last super admin is protected.') }}</p>
-                                            @endif
-                                        </td>
-                                    @endcan
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="p-10 text-center text-gray-500 dark:text-slate-400">
-                                        <div class="flex flex-col items-center gap-2">
-                                            <p class="text-lg font-semibold text-gray-700 dark:text-slate-200">{{ __('No users found') }}</p>
-                                            @if($search !== '')
-                                                <p class="text-sm">{{ __('No results for ":search".', ['search' => $search]) }}</p>
-                                            @endif
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="p-4 border-t border-gray-200 dark:border-slate-800">
-                    {{ $users->links() }}
+                    @if($users->hasPages())
+                        <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                            {{ $users->links() }}
+                        </div>
+                    @endif
                 </div>
             </div>
         </div>
