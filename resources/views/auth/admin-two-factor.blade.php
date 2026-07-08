@@ -26,19 +26,19 @@
 
         <style>
             :root {
-                --admin-auth-bg: #0f172a;
-                --admin-auth-card: rgba(17, 24, 39, 0.86);
-                --admin-auth-card-strong: rgba(30, 41, 59, 0.78);
-                --admin-auth-input: #1e293b;
-                --admin-auth-border: rgba(148, 163, 184, 0.18);
-                --admin-auth-border-strong: rgba(203, 213, 225, 0.26);
-                --admin-auth-text: #f8fafc;
-                --admin-auth-muted: #cbd5e1;
-                --admin-auth-soft: #94a3b8;
-                --admin-auth-accent: #06b6d4;
-                --admin-auth-accent-hover: #0891b2;
-                --admin-auth-accent-text: #67e8f9;
-                --admin-auth-accent-soft: rgba(6, 182, 212, 0.13);
+                --admin-auth-bg: #04042a;
+                --admin-auth-card: rgba(8, 8, 46, 0.88);
+                --admin-auth-card-strong: rgba(13, 13, 58, 0.78);
+                --admin-auth-input: #0c0c3d;
+                --admin-auth-border: rgba(148, 155, 199, 0.16);
+                --admin-auth-border-strong: rgba(180, 186, 222, 0.24);
+                --admin-auth-text: #f4f5fb;
+                --admin-auth-muted: #c7cade;
+                --admin-auth-soft: #8e93b8;
+                --admin-auth-accent: #dfa92e;
+                --admin-auth-accent-hover: #d09d24;
+                --admin-auth-accent-text: #e9c464;
+                --admin-auth-accent-soft: rgba(223, 169, 46, 0.08);
                 --admin-auth-danger: #ef4444;
                 --admin-auth-warning: #f59e0b;
                 --admin-auth-success: #22c55e;
@@ -47,10 +47,8 @@
             body {
                 min-height: 100vh;
                 background:
-                    radial-gradient(circle at 16% 14%, rgba(6, 182, 212, 0.18), transparent 30rem),
-                    radial-gradient(circle at 84% 14%, rgba(239, 68, 68, 0.12), transparent 26rem),
-                    radial-gradient(circle at 60% 90%, rgba(139, 92, 246, 0.10), transparent 30rem),
-                    linear-gradient(145deg, #0b1220 0%, var(--admin-auth-bg) 48%, #111827 100%);
+                    radial-gradient(circle at 78% 8%, rgba(223, 169, 46, 0.03), transparent 26rem),
+                    linear-gradient(160deg, #030322 0%, var(--admin-auth-bg) 52%, #08083a 100%);
                 color: var(--admin-auth-text);
             }
 
@@ -68,11 +66,11 @@
                 z-index: 0;
                 pointer-events: none;
                 background-image:
-                    linear-gradient(rgba(148, 163, 184, 0.085) 1px, transparent 1px),
-                    linear-gradient(90deg, rgba(148, 163, 184, 0.085) 1px, transparent 1px);
+                    linear-gradient(rgba(148, 155, 199, 0.07) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(148, 155, 199, 0.07) 1px, transparent 1px);
                 background-size: 42px 42px;
                 mask-image: radial-gradient(circle at center, black, transparent 72%);
-                opacity: 0.22;
+                opacity: 0.18;
             }
 
             .admin-verify-shell::after {
@@ -81,9 +79,9 @@
                 inset: 0;
                 z-index: 0;
                 pointer-events: none;
-                background-image: radial-gradient(rgba(248, 250, 252, 0.12) 1px, transparent 1px);
+                background-image: radial-gradient(rgba(248, 250, 252, 0.10) 1px, transparent 1px);
                 background-size: 3px 3px;
-                opacity: 0.10;
+                opacity: 0.06;
                 mix-blend-mode: screen;
             }
 
@@ -107,9 +105,9 @@
                 z-index: 2;
                 pointer-events: auto;
                 background:
-                    linear-gradient(180deg, rgba(6, 182, 212, 0.11), rgba(239, 68, 68, 0.035)),
-                    rgba(15, 23, 42, 0.60);
-                border: 1px solid rgba(148, 163, 184, 0.14);
+                    linear-gradient(180deg, rgba(223, 169, 46, 0.03), rgba(223, 169, 46, 0.008)),
+                    rgba(6, 6, 40, 0.60);
+                border: 1px solid rgba(148, 155, 199, 0.13);
             }
 
             .admin-otp-grid {
@@ -138,28 +136,28 @@
             }
 
             .admin-otp-box:focus {
-                border-color: var(--admin-auth-accent);
-                box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.16), 0 16px 34px -28px rgba(6, 182, 212, 0.75);
+                border-color: rgba(223, 169, 46, 0.45);
+                box-shadow: 0 0 0 3px rgba(223, 169, 46, 0.08);
                 transform: translateY(-1px);
             }
 
             .admin-otp-box:not(:placeholder-shown) {
                 border-color: var(--admin-auth-border-strong);
-                background-color: #243147;
+                background-color: #12124a;
             }
 
             .admin-auth-button {
                 pointer-events: auto;
                 touch-action: manipulation;
                 background: linear-gradient(180deg, var(--admin-auth-accent), var(--admin-auth-accent-hover));
-                box-shadow: 0 1px 0 rgba(255, 255, 255, 0.18) inset, 0 20px 38px -26px rgba(6, 182, 212, 0.82);
+                box-shadow: 0 1px 0 rgba(255, 255, 255, 0.18) inset, 0 14px 26px -22px rgba(0, 0, 0, 0.6);
                 transition: transform 180ms ease, box-shadow 180ms ease, filter 180ms ease;
             }
 
             .admin-auth-button:hover {
                 filter: brightness(1.04);
                 transform: translateY(-1px);
-                box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 24px 44px -28px rgba(6, 182, 212, 0.9);
+                box-shadow: 0 1px 0 rgba(255, 255, 255, 0.2) inset, 0 16px 30px -24px rgba(0, 0, 0, 0.65);
             }
 
             .admin-auth-button:active {
@@ -171,6 +169,58 @@
                 cursor: wait;
                 opacity: 0.72;
                 transform: none;
+            }
+
+            .admin-otp-box.is-pop {
+                animation: admin-otp-pop 200ms ease;
+            }
+
+            @keyframes admin-otp-pop {
+                50% {
+                    transform: scale(1.07);
+                }
+            }
+
+            .admin-otp-grid.is-shake {
+                animation: admin-otp-shake 460ms cubic-bezier(0.36, 0.07, 0.19, 0.97);
+            }
+
+            @keyframes admin-otp-shake {
+                10%, 90% { transform: translateX(-2px); }
+                20%, 80% { transform: translateX(4px); }
+                30%, 50%, 70% { transform: translateX(-6px); }
+                40%, 60% { transform: translateX(6px); }
+            }
+
+            .admin-otp-box.is-error {
+                border-color: rgba(239, 68, 68, 0.55);
+                background-color: rgba(239, 68, 68, 0.08);
+                color: #fecaca;
+            }
+
+            .admin-otp-box.is-success {
+                border-color: rgba(34, 197, 94, 0.55);
+                background-color: rgba(34, 197, 94, 0.10);
+                color: #86efac;
+                transform: translateY(-2px);
+            }
+
+            .admin-auth-button.is-success {
+                background: linear-gradient(180deg, #2eb564, #27a457);
+                color: #ffffff;
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .admin-otp-box.is-pop,
+                .admin-otp-grid.is-shake,
+                .admin-auth-reveal {
+                    animation: none;
+                }
+
+                .admin-otp-box,
+                .admin-auth-button {
+                    transition: none;
+                }
             }
 
             .admin-auth-reveal {
@@ -206,7 +256,7 @@
         <main class="admin-verify-shell">
             <div class="relative z-10 flex min-h-screen flex-col px-4 py-4 sm:px-6 lg:px-8">
                 <header class="flex items-center justify-between gap-4">
-                    <a href="{{ url('/') }}" class="inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-2 text-white shadow-sm backdrop-blur transition hover:bg-white/[0.07] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/35">
+                    <a href="{{ url('/') }}" class="inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-2 text-white shadow-sm backdrop-blur transition hover:bg-white/[0.07] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300/30">
                         <x-brand-mark
                             :logo-url="$systemSettings['site_logo_url'] ?? null"
                             :brand="$systemSettings['site_name'] ?? 'YallaSpare'"
@@ -228,8 +278,8 @@
                     <div class="grid w-full max-w-5xl items-stretch gap-5 lg:grid-cols-[0.92fr_1.08fr]">
                         <aside class="admin-security-panel admin-auth-reveal hidden rounded-[2rem] p-7 lg:flex lg:flex-col lg:justify-between">
                             <div>
-                                <div class="inline-flex items-center gap-2 rounded-full border border-cyan-300/15 bg-cyan-300/10 px-3 py-1 text-xs font-semibold text-cyan-100">
-                                    <span class="h-1.5 w-1.5 rounded-full bg-cyan-300 shadow-[0_0_16px_rgba(103,232,249,0.9)]"></span>
+                                <div class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-xs font-semibold text-slate-200">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-amber-300/60"></span>
                                     {{ __('Privileged admin session') }}
                                 </div>
 
@@ -244,7 +294,7 @@
                             <div class="mt-10 space-y-3">
                                 <div class="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
                                     <div class="flex items-center gap-3">
-                                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-400/10 text-cyan-200">
+                                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06] text-slate-200">
                                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 3.75 5.25 6v5.25c0 4.13 2.88 7.98 6.75 8.99 3.87-1.01 6.75-4.86 6.75-8.99V6L12 3.75Z" />
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="m9.75 12 1.5 1.5 3.25-3.25" />
@@ -259,7 +309,7 @@
 
                                 <div class="rounded-2xl border border-white/10 bg-white/[0.04] p-4">
                                     <div class="flex items-center gap-3">
-                                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-400/10 text-rose-200">
+                                        <div class="flex h-10 w-10 items-center justify-center rounded-xl bg-white/[0.06] text-slate-200">
                                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4" />
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.25h.01" />
@@ -278,7 +328,7 @@
                         <section class="admin-auth-card admin-auth-reveal rounded-[1.75rem] p-5 sm:p-7 lg:p-8" style="animation-delay: 80ms">
                             <div class="mx-auto max-w-md">
                                 <div class="flex items-start justify-between gap-4">
-                                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl border border-cyan-300/20 bg-cyan-300/10 text-cyan-100 shadow-[0_18px_40px_-28px_rgba(6,182,212,0.8)]">
+                                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl border border-amber-300/10 bg-amber-300/[0.05] text-amber-200/70">
                                         <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M8 11V8a4 4 0 0 1 8 0v3" />
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 11h10.5A1.75 1.75 0 0 1 19 12.75v5.5A1.75 1.75 0 0 1 17.25 20H6.75A1.75 1.75 0 0 1 5 18.25v-5.5A1.75 1.75 0 0 1 6.75 11Z" />
@@ -290,7 +340,7 @@
                                 </div>
 
                                 <div class="mt-7">
-                                    <p class="text-sm font-semibold text-cyan-200">{{ __('YallaSpare admin security') }}</p>
+                                    <p class="text-sm font-semibold text-amber-200/60">{{ __('YallaSpare admin security') }}</p>
                                     <h1 class="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
                                         {{ __('Verification required') }}
                                     </h1>
@@ -308,10 +358,12 @@
                                 @endif
 
                                 @if ($errors->any())
-                                    <div class="mt-6 rounded-2xl border border-rose-400/25 bg-rose-400/10 px-4 py-3 text-sm font-medium text-rose-100">
+                                    <div class="mt-6 rounded-2xl border border-rose-400/25 bg-rose-400/10 px-4 py-3 text-sm font-medium text-rose-100" data-server-error>
                                         {{ $errors->first() }}
                                     </div>
                                 @endif
+
+                                <div class="mt-6 rounded-2xl border border-rose-400/25 bg-rose-400/10 px-4 py-3 text-sm font-medium text-rose-100" data-client-error hidden></div>
 
                                 <form method="POST" action="{{ route('admin.two-factor.verify') }}" class="mt-7" data-otp-form>
                                     @csrf
@@ -345,7 +397,7 @@
 
                                     <button
                                         type="submit"
-                                        class="admin-auth-button mt-7 inline-flex h-12 w-full items-center justify-center rounded-2xl px-5 text-sm font-semibold text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-300/70 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-950"
+                                        class="admin-auth-button mt-7 inline-flex h-12 w-full items-center justify-center rounded-2xl px-5 text-sm font-bold text-slate-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#04042a]"
                                         data-loading-button
                                         data-loading-text="{{ __('Verifying...') }}"
                                     >
@@ -358,7 +410,7 @@
                                         @csrf
                                         <button
                                             type="submit"
-                                            class="inline-flex items-center justify-center rounded-xl px-2 py-1.5 text-sm font-semibold text-cyan-200 transition hover:bg-cyan-300/10 hover:text-cyan-100 disabled:cursor-not-allowed disabled:text-slate-600 disabled:hover:bg-transparent"
+                                            class="inline-flex items-center justify-center rounded-xl px-2 py-1.5 text-sm font-semibold text-amber-200/70 transition hover:bg-amber-300/[0.06] hover:text-amber-100/90 disabled:cursor-not-allowed disabled:text-slate-500 disabled:hover:bg-transparent"
                                             data-resend-button
                                             @disabled(((int) ($resendCooldownSeconds ?? 0)) > 0)
                                         >
@@ -394,23 +446,120 @@
                 const form = document.querySelector('[data-otp-form]');
                 const boxes = Array.from(document.querySelectorAll('[data-otp-box]'));
                 const hidden = document.querySelector('[data-otp-value]');
+                const grid = document.querySelector('[data-otp-grid]');
+                const clientError = document.querySelector('[data-client-error]');
+                const serverError = document.querySelector('[data-server-error]');
 
                 if (!form || boxes.length === 0 || !hidden) {
                     return;
                 }
 
+                const button = form.querySelector('[data-loading-button]');
+                const label = form.querySelector('[data-button-label]');
+                const idleText = label ? label.textContent : '';
+                const verifiedText = @json(__('Verified'));
+                const failedText = @json(__('Verification failed. Please try again.'));
+                const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                let submitting = false;
+
                 const syncValue = () => {
                     hidden.value = boxes.map((box) => box.value.replace(/\D/g, '').slice(0, 1)).join('');
+                };
+
+                const popBox = (box) => {
+                    if (reducedMotion) {
+                        return;
+                    }
+                    box.classList.remove('is-pop');
+                    void box.offsetWidth;
+                    box.classList.add('is-pop');
+                };
+
+                const shakeGrid = () => {
+                    if (!grid || reducedMotion) {
+                        return;
+                    }
+                    grid.classList.remove('is-shake');
+                    void grid.offsetWidth;
+                    grid.classList.add('is-shake');
+                };
+
+                const clearBoxState = () => {
+                    boxes.forEach((box) => box.classList.remove('is-error', 'is-success'));
+                };
+
+                const setLoading = (on) => {
+                    if (button && label) {
+                        button.disabled = on;
+                        label.textContent = on ? (button.dataset.loadingText || idleText) : idleText;
+                    }
+                    boxes.forEach((box) => {
+                        box.readOnly = on;
+                    });
+                };
+
+                const showSuccess = (redirectUrl) => {
+                    clearBoxState();
+                    boxes.forEach((box, index) => {
+                        window.setTimeout(() => box.classList.add('is-success'), reducedMotion ? 0 : index * 70);
+                    });
+                    if (button && label) {
+                        button.classList.add('is-success');
+                        label.textContent = '✓ ' + verifiedText;
+                    }
+                    window.setTimeout(() => {
+                        window.location.assign(redirectUrl);
+                    }, reducedMotion ? 150 : 900);
+                };
+
+                const showFailure = (message) => {
+                    setLoading(false);
+                    if (clientError) {
+                        clientError.textContent = message;
+                        clientError.hidden = false;
+                    }
+                    if (serverError) {
+                        serverError.hidden = true;
+                    }
+                    boxes.forEach((box) => box.classList.add('is-error'));
+                    shakeGrid();
+                    window.setTimeout(() => {
+                        clearBoxState();
+                        boxes.forEach((box) => {
+                            box.value = '';
+                        });
+                        syncValue();
+                        boxes[0].focus();
+                    }, reducedMotion ? 0 : 700);
+                };
+
+                const maybeAutoSubmit = () => {
+                    if (submitting || hidden.value.length !== boxes.length) {
+                        return;
+                    }
+                    window.setTimeout(() => {
+                        if (!submitting && hidden.value.length === boxes.length) {
+                            if (typeof form.requestSubmit === 'function') {
+                                form.requestSubmit();
+                            } else {
+                                form.submit();
+                            }
+                        }
+                    }, reducedMotion ? 0 : 240);
                 };
 
                 const fillFromText = (text) => {
                     const digits = String(text || '').replace(/\D/g, '').slice(0, boxes.length).split('');
                     boxes.forEach((box, index) => {
                         box.value = digits[index] || '';
+                        if (digits[index]) {
+                            popBox(box);
+                        }
                     });
                     syncValue();
                     const next = boxes[Math.min(digits.length, boxes.length - 1)];
                     next?.focus();
+                    maybeAutoSubmit();
                 };
 
                 boxes.forEach((box, index) => {
@@ -424,9 +573,14 @@
                         event.target.value = value;
                         syncValue();
 
-                        if (value && boxes[index + 1]) {
-                            boxes[index + 1].focus();
+                        if (value) {
+                            popBox(box);
+                            if (boxes[index + 1]) {
+                                boxes[index + 1].focus();
+                            }
                         }
+
+                        maybeAutoSubmit();
                     });
 
                     box.addEventListener('keydown', (event) => {
@@ -451,13 +605,61 @@
                         return;
                     }
 
-                    const button = form.querySelector('[data-loading-button]');
-                    const label = form.querySelector('[data-button-label]');
-                    if (button && label) {
-                        button.disabled = true;
-                        label.textContent = button.dataset.loadingText || label.textContent;
+                    if (!window.fetch || submitting) {
+                        if (!submitting) {
+                            setLoading(true);
+                        } else {
+                            event.preventDefault();
+                        }
+                        return;
                     }
+
+                    event.preventDefault();
+                    submitting = true;
+                    if (clientError) {
+                        clientError.hidden = true;
+                    }
+                    setLoading(true);
+
+                    fetch(form.action, {
+                        method: 'POST',
+                        body: new FormData(form),
+                        credentials: 'same-origin',
+                        headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                    }).then(async (response) => {
+                        if (response.ok && !response.url.includes('/two-factor')) {
+                            showSuccess(response.url);
+                            return;
+                        }
+
+                        if (response.status === 419) {
+                            window.location.reload();
+                            return;
+                        }
+
+                        let message = failedText;
+                        try {
+                            const doc = new DOMParser().parseFromString(await response.text(), 'text/html');
+                            const parsedError = doc.querySelector('[data-server-error]');
+                            if (parsedError && parsedError.textContent.trim()) {
+                                message = parsedError.textContent.trim();
+                            }
+                        } catch (parseError) {
+                            // fall back to the generic message
+                        }
+
+                        submitting = false;
+                        showFailure(message);
+                    }).catch(() => {
+                        submitting = false;
+                        setLoading(true);
+                        form.submit();
+                    });
                 });
+
+                if (serverError) {
+                    shakeGrid();
+                }
             })();
 
             (function () {
