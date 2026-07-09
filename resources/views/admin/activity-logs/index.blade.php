@@ -43,7 +43,7 @@
                     {{ __('Showing') }} <span class="font-semibold text-gray-800 dark:text-slate-100">{{ $logs->count() }}</span>
                     {{ __('of') }} <span class="font-semibold text-gray-800 dark:text-slate-100">{{ number_format($logs->total()) }}</span>
                     @if(!empty($model))
-                        · <span class="font-semibold text-amber-600 dark:text-amber-300">{{ __($model) }}</span>
+                        · <span class="font-semibold text-gray-800 dark:text-slate-100">{{ __($model) }}</span>
                     @endif
                     @if(!empty($search))
                         · "{{ $search }}"
@@ -104,7 +104,7 @@
                             />
                         </div>
                         @if(!empty($search))
-                            <a href="{{ route('admin.activity-logs.index', array_filter(['model' => $model])) }}" class="shrink-0 text-xs font-semibold text-amber-600 hover:text-amber-500 dark:text-amber-300 dark:hover:text-amber-200">
+                            <a href="{{ route('admin.activity-logs.index', array_filter(['model' => $model])) }}" class="shrink-0 text-xs font-semibold text-gray-500 hover:text-gray-700 dark:text-slate-400 dark:hover:text-slate-200">
                                 {{ __('Clear') }} ✕
                             </a>
                         @endif

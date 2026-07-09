@@ -86,7 +86,7 @@
                 {{-- Header row: title + compact stat pills --}}
                 <div class="flex flex-col gap-4 border-b border-gray-200 px-5 py-4 dark:border-slate-800 lg:flex-row lg:items-start lg:justify-between">
                     <div>
-                        <p class="text-[11px] font-bold uppercase tracking-widest text-amber-600 dark:text-amber-300">{{ __('System Settings') }}</p>
+                        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-slate-400">{{ __('System Settings') }}</p>
                         <p class="mt-1 max-w-lg text-xs text-gray-500 dark:text-slate-400">{{ __('Configure branding, currency, and inventory defaults.') }}</p>
                     </div>
                     <div class="flex flex-wrap gap-2">
@@ -157,7 +157,7 @@
                                     @enderror
                                     @if(!empty($settings['site_logo']))
                                         <label class="mt-2 inline-flex items-center gap-2 text-xs text-gray-600 dark:text-slate-400">
-                                            <input type="checkbox" name="remove_logo" value="1" class="rounded border-gray-300 text-amber-500 focus:ring-amber-400 dark:border-slate-700">
+                                            <input type="checkbox" name="remove_logo" value="1" class="rounded border-gray-300 text-gray-400 focus:ring-amber-400 dark:border-slate-700 dark:text-slate-500">
                                             {{ __('Remove current logo') }}
                                         </label>
                                     @endif
@@ -178,7 +178,7 @@
                                     <source src="{{ $storefrontHeroVideoUrl }}" type="video/mp4">
                                 </video>
                                 <label class="mt-2 inline-flex items-center gap-2 text-xs text-gray-600 dark:text-slate-400">
-                                    <input type="checkbox" name="remove_storefront_hero_video" value="1" class="rounded border-gray-300 text-amber-500 focus:ring-amber-400 dark:border-slate-700">
+                                    <input type="checkbox" name="remove_storefront_hero_video" value="1" class="rounded border-gray-300 text-gray-400 focus:ring-amber-400 dark:border-slate-700 dark:text-slate-500">
                                     {{ __('Remove current hero video') }}
                                 </label>
                             @endif
