@@ -187,6 +187,27 @@ Alpine.data('appearanceForm', () => ({
     },
 }));
 
+// Admin settings page: paged sections with a tab strip. Initial section (e.g.
+// the one holding a validation error after a failed submit) comes from a
+// data-initial-section attribute to keep the x-data expression CSP-safe.
+Alpine.data('settingsConsole', () => ({
+    active: 'branding',
+    sections: ['branding', 'hero', 'currency', 'operations', 'providers', 'templates-en', 'templates-locale'],
+    init() {
+        const initial = this.$el.dataset.initialSection;
+        if (initial && this.sections.includes(initial)) {
+            this.active = initial;
+        }
+    },
+    setActive(key) { this.active = key; },
+    isActive(key) { return this.active === key; },
+    tabClass(key) {
+        return this.active === key
+            ? 'border-amber-400 text-gray-900 dark:text-white'
+            : 'border-transparent text-gray-500 hover:text-gray-700 dark:text-slate-400 dark:hover:text-slate-200';
+    },
+}));
+
 // Storefront primary nav: category mega-menu with hover-intent open/close.
 Alpine.data('storeNav', () => ({
     categoriesOpen: false,
