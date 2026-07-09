@@ -33,17 +33,17 @@
                             @if ($profilePhotoUrl)
                                 <img src="{{ $profilePhotoUrl }}" alt="{{ __(':name profile photo', ['name' => $user->name]) }}" class="h-20 w-20 rounded-xl border border-white/15 object-cover">
                             @else
-                                <div class="flex h-20 w-20 items-center justify-center rounded-xl border border-white/15 bg-amber-400 text-2xl font-black text-[#422006]">
+                                <div class="flex h-20 w-20 items-center justify-center rounded-xl border border-white/15 bg-[#04042a] text-2xl font-black text-amber-300">
                                     {{ $avatarInitial }}
                                 </div>
                             @endif
-                            <span class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-lg border border-[#04042a] {{ $isVerified ? 'bg-emerald-400 text-emerald-950' : 'bg-amber-300 text-amber-950' }}">
+                            <span class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-lg border border-[#04042a] {{ $isVerified ? 'bg-emerald-400 text-emerald-950' : 'bg-rose-400 text-rose-950' }}">
                                 <i class="fas {{ $isVerified ? 'fa-check' : 'fa-exclamation' }} text-[10px]"></i>
                             </span>
                         </div>
 
                         <div class="min-w-0">
-                            <p class="text-[11px] font-black uppercase tracking-[0.18em] text-amber-300">{{ __('Admin Profile') }}</p>
+                            <p class="text-[11px] font-black uppercase tracking-[0.18em] text-white/50">{{ __('Admin Profile') }}</p>
                             <h1 class="mt-1 truncate text-2xl font-black tracking-tight sm:text-3xl">{{ $user->name }}</h1>
                             <div class="mt-2 flex flex-wrap items-center gap-2 text-sm text-white/70">
                                 <span class="truncate">{{ $user->email }}</span>
@@ -57,10 +57,10 @@
 
                     <div class="flex flex-wrap gap-2">
                         <span class="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/10 px-3 py-2 text-xs font-bold text-white">
-                            <i class="fas fa-shield-halved text-amber-300"></i>
+                            <i class="fas fa-shield-halved text-white/70"></i>
                             {{ $roleLabel }}
                         </span>
-                        <span class="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-bold {{ $isVerified ? 'border-emerald-300/30 bg-emerald-400/10 text-emerald-100' : 'border-amber-300/30 bg-amber-400/10 text-amber-100' }}">
+                        <span class="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-bold {{ $isVerified ? 'border-emerald-300/30 bg-emerald-400/10 text-emerald-100' : 'border-rose-300/30 bg-rose-400/10 text-rose-100' }}">
                             <i class="fas {{ $isVerified ? 'fa-circle-check' : 'fa-circle-exclamation' }}"></i>
                             {{ $isVerified ? __('Verified Email') : __('Email Pending') }}
                         </span>
@@ -101,7 +101,7 @@
                     <div class="divide-y divide-slate-100 dark:divide-slate-800">
                         <div class="flex items-center justify-between gap-3 px-5 py-3">
                             <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">{{ __('Email') }}</span>
-                            <span class="inline-flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs font-bold {{ $isVerified ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300' : 'bg-amber-50 text-amber-700 dark:bg-amber-950/30 dark:text-amber-300' }}">
+                            <span class="inline-flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs font-bold {{ $isVerified ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300' : 'bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-300' }}">
                                 <i class="fas {{ $isVerified ? 'fa-check' : 'fa-clock' }} text-[10px]"></i>
                                 {{ $isVerified ? __('Verified') : __('Pending') }}
                             </span>
@@ -141,7 +141,7 @@
                                     </span>
                                 @endforeach
                                 @if ($remainingPermissionCount > 0)
-                                    <span class="inline-flex items-center rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1.5 text-xs font-black text-amber-700 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300">
+                                    <span class="inline-flex items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-black text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
                                         +{{ number_format($remainingPermissionCount) }}
                                     </span>
                                 @endif
@@ -191,7 +191,7 @@
                                     <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">{{ __('JPG, PNG, or WebP up to 2 MB') }}</p>
                                     @if ($profilePhotoUrl)
                                         <label class="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300">
-                                            <input type="checkbox" name="remove_profile_photo" value="1" class="rounded border-slate-300 text-amber-500 focus:ring-amber-400 dark:border-slate-700 dark:bg-slate-950">
+                                            <input type="checkbox" name="remove_profile_photo" value="1" class="rounded border-slate-300 text-slate-400 focus:ring-amber-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-500">
                                             <span>{{ __('Remove photo') }}</span>
                                         </label>
                                     @endif
@@ -224,7 +224,7 @@
                                             <p class="text-xs font-black uppercase tracking-[0.12em] text-slate-400">{{ __('Email Verification') }}</p>
                                             <p class="mt-1 text-sm font-bold text-slate-700 dark:text-slate-200">{{ $isVerified ? __('Verified address') : __('Verification required after email changes') }}</p>
                                         </div>
-                                        <span class="inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-black {{ $isVerified ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300' }}">
+                                        <span class="inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-black {{ $isVerified ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300' : 'bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300' }}">
                                             <i class="fas {{ $isVerified ? 'fa-circle-check' : 'fa-triangle-exclamation' }}"></i>
                                             {{ $isVerified ? __('Verified') : __('Pending') }}
                                         </span>
@@ -234,7 +234,7 @@
                         </div>
 
                         <div class="mt-5 flex flex-wrap items-center justify-end gap-3 border-t border-slate-200 pt-5 dark:border-slate-800">
-                            <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-lg bg-[#04042a] px-4 py-2.5 text-sm font-black text-white transition hover:bg-[#10104a] focus:outline-none focus:ring-4 focus:ring-[#04042a]/20">
+                            <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-black text-slate-900 shadow-sm transition hover:bg-amber-300 focus:outline-none focus:ring-4 focus:ring-amber-400/20">
                                 <i class="fas fa-floppy-disk"></i>
                                 {{ __('Save Profile') }}
                             </button>
