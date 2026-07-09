@@ -57,7 +57,58 @@ class AdminActivityLogController extends Controller
             'logs' => $logs,
             'model' => $model,
             'search' => $search,
+            'totalCount' => Activity::count(),
+            'modelCounts' => $this->modelFacetCounts(),
+            'todayCount' => Activity::where('created_at', '>=', now(config('app.timezone'))->startOfDay()->utc())->count(),
+            'topCauser' => $this->topCauser(),
         ]);
+    }
+
+    /**
+     * @return array<string, int>
+     */
+    private function modelFacetCounts(): array
+    {
+        $raw = Activity::query()
+            ->select('subject_type')
+            ->selectRaw('count(*) as aggregate')
+            ->whereNotNull('subject_type')
+            ->groupBy('subject_type')
+            ->pluck('aggregate', 'subject_type');
+
+        $counts = [];
+        foreach (self::MODEL_MAP as $label => $class) {
+            $counts[$label] = (int) ($raw[$class] ?? 0);
+        }
+
+        return $counts;
+    }
+
+    /**
+     * @return array{name: string, count: int}|null
+     */
+    private function topCauser(): ?array
+    {
+        $row = Activity::query()
+            ->select('causer_id')
+            ->selectRaw('count(*) as aggregate')
+            ->where('causer_type', User::class)
+            ->whereNotNull('causer_id')
+            ->groupBy('causer_id')
+            ->orderByDesc('aggregate')
+            ->first();
+
+        if (! $row) {
+            return null;
+        }
+
+        $causer = User::query()->select('id', 'name')->find($row->causer_id);
+
+        if (! $causer) {
+            return null;
+        }
+
+        return ['name' => $causer->name, 'count' => (int) $row->aggregate];
     }
 
     public function exportExcel(Request $request)
