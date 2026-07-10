@@ -98,4 +98,6 @@
         </button>
     </form>
 
+    @include('auth.partials.social-login')
+
 </x-auth-split-layout>

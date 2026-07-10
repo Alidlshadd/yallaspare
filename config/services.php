@@ -31,6 +31,24 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'google' => [
+        'client_id' => env('GOOGLE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_CLIENT_SECRET'),
+        'redirect' => env('GOOGLE_REDIRECT_URI') ?: rtrim((string) env('APP_URL', 'http://localhost'), '/') . '/auth/google/callback',
+    ],
+
+    'apple' => [
+        'client_id' => env('APPLE_CLIENT_ID'),
+        'client_secret' => env('APPLE_CLIENT_SECRET'),
+        'key_id' => env('APPLE_KEY_ID'),
+        'team_id' => env('APPLE_TEAM_ID'),
+        'private_key' => env('APPLE_PRIVATE_KEY'),
+        'passphrase' => env('APPLE_PASSPHRASE'),
+        'signer' => env('APPLE_SIGNER'),
+        'redirect' => env('APPLE_REDIRECT_URI') ?: rtrim((string) env('APP_URL', 'http://localhost'), '/') . '/auth/apple/callback',
+        'jwt_issued_time_leeway' => env('APPLE_JWT_ISSUED_TIME_LEEWAY', 'PT3S'),
+    ],
+
     'fib' => [
         'enabled' => env('FIB_PAYMENTS_ENABLED', false),
         'base_url' => env('FIB_BASE_URL', 'https://fib.stage.fib.iq'),
