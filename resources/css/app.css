@@ -810,6 +810,99 @@
         width: 100%;
     }
 
+    @keyframes adminPageEnter {
+        from {
+            opacity: 0;
+            transform: translateY(0.5rem);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @keyframes adminPopoverEnter {
+        from {
+            opacity: 0;
+            transform: translateY(-0.375rem) scale(0.985);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @keyframes adminModalBackdropEnter {
+        from { opacity: 0; }
+        to { opacity: 1; }
+    }
+
+    @keyframes adminModalSurfaceEnter {
+        from {
+            opacity: 0;
+            transform: translateY(0.75rem) scale(0.975);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+    }
+
+    @keyframes adminNotificationItemEnter {
+        from {
+            opacity: 0;
+            transform: translateX(0.375rem);
+        }
+        to {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    }
+
+    @keyframes adminStatusBreathe {
+        0%, 100% {
+            opacity: 0.72;
+            transform: scale(0.9);
+            box-shadow: 0 0 0 rgba(52, 211, 153, 0);
+        }
+        50% {
+            opacity: 1;
+            transform: scale(1);
+            box-shadow: 0 0 0.75rem rgba(52, 211, 153, 0.6);
+        }
+    }
+
+    .admin-page-enter {
+        animation: adminPageEnter 320ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .admin-popover-enter:not(.hidden) {
+        transform-origin: top right;
+        animation: adminPopoverEnter 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    [dir='rtl'] .admin-popover-enter:not(.hidden) {
+        transform-origin: top left;
+    }
+
+    .admin-danger-backdrop:not(.hidden) {
+        animation: adminModalBackdropEnter 180ms ease-out both;
+    }
+
+    .admin-danger-backdrop:not(.hidden) .admin-danger-surface {
+        animation: adminModalSurfaceEnter 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    .admin-notification-item {
+        animation: adminNotificationItemEnter 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+        animation-delay: calc(var(--admin-item-index, 0) * 35ms);
+    }
+
+    .admin-sidebar-status-dot {
+        animation: adminStatusBreathe 2.4s ease-in-out infinite;
+        will-change: transform, opacity, box-shadow;
+    }
+
     .admin-topbar-actions {
         justify-content: flex-end;
     }
@@ -1200,6 +1293,15 @@
     }
 
     @media (prefers-reduced-motion: reduce) {
+        .admin-page-enter,
+        .admin-popover-enter:not(.hidden),
+        .admin-danger-backdrop:not(.hidden),
+        .admin-danger-backdrop:not(.hidden) .admin-danger-surface,
+        .admin-notification-item,
+        .admin-sidebar-status-dot {
+            animation: none !important;
+        }
+
         .admin-sidebar,
         .admin-main,
         .admin-sidebar-brand-copy,

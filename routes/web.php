@@ -419,6 +419,12 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::patch('/users/{user}/password', [UserController::class, 'updatePassword'])
             ->middleware(['can:manage-users', 'throttle:admin-write'])
             ->name('users.update-password');
+        Route::patch('/users/{user}/ban', [UserController::class, 'updateBan'])
+            ->middleware(['can:manage-users', 'throttle:admin-write'])
+            ->name('users.update-ban');
+        Route::delete('/users/{user}/ban', [UserController::class, 'destroyBan'])
+            ->middleware(['can:manage-users', 'throttle:admin-write'])
+            ->name('users.destroy-ban');
         Route::delete('/users/{user}', [UserController::class, 'destroy'])
             ->middleware(['can:manage-users', 'throttle:admin-write'])
             ->name('users.destroy');

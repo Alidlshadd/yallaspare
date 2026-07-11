@@ -6,6 +6,7 @@
         $reviewAverage = $userReviews->avg('rating');
         $dateOfBirth = $user->date_of_birth;
         $userAge = $dateOfBirth && $dateOfBirth->isPast() ? $dateOfBirth->age : null;
+        $canManageBan = auth()->user()?->isSuperAdmin() || auth()->user()?->role === \App\Models\User::ROLE_ADMIN;
 
         $managerRoleList = [
             \App\Models\User::ROLE_PRODUCT_MANAGER,
@@ -111,6 +112,12 @@
                                 <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
                                 {{ $roleMeta['label'] }}
                             </span>
+                            @if($user->isBanned())
+                                <span class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-black {{ $user->isPermanentlyBanned() ? 'border-slate-950 bg-slate-950 text-white dark:border-black dark:bg-black' : 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300' }}">
+                                    <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
+                                    {{ $user->isPermanentlyBanned() ? __('Permanent Ban') : __('Temporarily Banned') }}
+                                </span>
+                            @endif
                             @if ($user->email_verified_at)
                                 <span class="inline-flex items-center gap-1 rounded-full border border-emerald-300 bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-300">
                                     <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" /></svg>
@@ -269,6 +276,116 @@
                 </form>
 
                 <div class="space-y-4">
+                    <section class="rounded-xl border border-rose-200 bg-white p-5 shadow-sm dark:border-rose-900/50 dark:bg-slate-900">
+                        <div class="flex items-start justify-between gap-3">
+                            <div>
+                                <p class="text-[11px] font-bold uppercase tracking-widest text-rose-600 dark:text-rose-300">{{ __('Account Access') }}</p>
+                                <h4 class="mt-1 text-base font-bold text-gray-900 dark:text-white">{{ __('Ban Management') }}</h4>
+                            </div>
+                            <span class="inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-black {{ $user->isBanned() ? ($user->isPermanentlyBanned() ? 'border-slate-950 bg-slate-950 text-white dark:border-black dark:bg-black' : 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300') : 'border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-300' }}">
+                                {{ $user->isBanned() ? ($user->isPermanentlyBanned() ? __('Permanent Ban') : __('Temporary Ban')) : __('Active') }}
+                            </span>
+                        </div>
+
+                        @if($user->isBanned())
+                            <dl class="mt-4 space-y-3 text-sm">
+                                @if($user->banned_until)
+                                    <div>
+                                        <dt class="text-xs font-bold uppercase tracking-wide text-gray-400 dark:text-slate-500">{{ __('Banned Until') }}</dt>
+                                        <dd class="mt-1 font-semibold text-gray-900 dark:text-slate-100">{{ $user->banned_until->format('d M Y H:i') }}</dd>
+                                    </div>
+                                @endif
+                                <div>
+                                    <dt class="text-xs font-bold uppercase tracking-wide text-gray-400 dark:text-slate-500">{{ __('Reason') }}</dt>
+                                    <dd class="mt-1 text-gray-700 dark:text-slate-300">{{ $user->ban_reason ?: __('No reason provided.') }}</dd>
+                                </div>
+                            </dl>
+
+                            @if($canManageBan)
+                                <form method="POST" action="{{ route('admin.users.destroy-ban', $user) }}" class="mt-4" data-danger-confirm data-danger-title="{{ __('Remove User Ban') }}" data-danger-description="{{ __('This user will be able to sign in again immediately.') }}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="inline-flex w-full items-center justify-center rounded-lg bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-emerald-500">
+                                        {{ __('Remove Ban') }}
+                                    </button>
+                                </form>
+                            @endif
+                        @elseif($canManageBan)
+                            <form method="POST" action="{{ route('admin.users.update-ban', $user) }}" class="mt-4 space-y-4" data-danger-confirm data-danger-title="{{ __('Ban User') }}" data-danger-description="{{ __('The user will be signed out from all devices and blocked from signing in.') }}">
+                                @csrf
+                                @method('PATCH')
+
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="rounded-xl border border-amber-200 bg-amber-50/70 p-3 dark:border-amber-400/25 dark:bg-amber-400/5">
+                                        <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-400 text-slate-950 shadow-sm">
+                                            <i class="fas fa-clock" aria-hidden="true"></i>
+                                        </div>
+                                        <p class="mt-3 text-sm font-black text-slate-900 dark:text-white">{{ __('Temporary Ban') }}</p>
+                                        <p class="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">{{ __('Locks the account for a selected period.') }}</p>
+                                    </div>
+                                    <div class="rounded-xl border border-slate-800 bg-slate-950 p-3 text-white shadow-sm dark:border-black dark:bg-black">
+                                        <div class="flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-white">
+                                            <i class="fas fa-lock" aria-hidden="true"></i>
+                                        </div>
+                                        <p class="mt-3 text-sm font-black">{{ __('Permanent Ban') }}</p>
+                                        <p class="mt-1 text-xs leading-5 text-slate-400">{{ __('Keeps the account locked until an admin removes it.') }}</p>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <label for="duration_days" class="{{ $labelClasses }}">{{ __('Temporary Ban Duration') }}</label>
+                                    <select id="duration_days" name="duration_days" class="{{ $inputClasses }}">
+                                        <option value="1">{{ __('1 day') }}</option>
+                                        <option value="7" selected>{{ __('7 days') }}</option>
+                                        <option value="30">{{ __('30 days') }}</option>
+                                        <option value="90">{{ __('90 days') }}</option>
+                                        <option value="365">{{ __('365 days') }}</option>
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label for="ban_reason" class="{{ $labelClasses }}">{{ __('Reason') }}</label>
+                                    <textarea id="ban_reason" name="ban_reason" rows="3" maxlength="500" required class="{{ $inputClasses }}" placeholder="{{ __('Explain why this account is being banned...') }}">{{ old('ban_reason') }}</textarea>
+                                </div>
+
+                                <div class="grid gap-3 sm:grid-cols-2">
+                                    <button
+                                        type="submit"
+                                        name="ban_type"
+                                        value="temporary"
+                                        data-danger-title="{{ __('Temporary Ban') }}"
+                                        data-danger-description="{{ __('The account will be locked for the selected duration and signed out from all devices.') }}"
+                                        class="group inline-flex min-h-12 items-center justify-between gap-3 rounded-xl bg-amber-400 px-4 py-3 text-start text-slate-950 shadow-sm transition hover:bg-amber-300 focus:outline-none focus:ring-4 focus:ring-amber-400/25"
+                                    >
+                                        <span>
+                                            <span class="block text-sm font-black">{{ __('Apply Temporary Ban') }}</span>
+                                            <span class="block text-[11px] font-semibold text-amber-950/65">{{ __('Uses selected duration') }}</span>
+                                        </span>
+                                        <i class="fas fa-arrow-right text-xs transition-transform group-hover:translate-x-0.5" aria-hidden="true"></i>
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        name="ban_type"
+                                        value="permanent"
+                                        data-danger-title="{{ __('Permanent Ban') }}"
+                                        data-danger-description="{{ __('The account will remain locked until a super admin or admin removes the ban.') }}"
+                                        class="group inline-flex min-h-12 items-center justify-between gap-3 rounded-xl border border-black bg-slate-950 px-4 py-3 text-start text-white shadow-lg shadow-slate-950/20 transition hover:bg-black focus:outline-none focus:ring-4 focus:ring-slate-950/20 dark:bg-black"
+                                    >
+                                        <span>
+                                            <span class="block text-sm font-black">{{ __('Apply Permanent Ban') }}</span>
+                                            <span class="block text-[11px] font-semibold text-slate-400">{{ __('No automatic expiry') }}</span>
+                                        </span>
+                                        <i class="fas fa-lock text-xs text-slate-300" aria-hidden="true"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        @else
+                            <p class="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-400">
+                                {{ __('Only super admins and admins can change account ban status.') }}
+                            </p>
+                        @endif
+                    </section>
+
                     <form method="POST" action="{{ route('admin.users.update-password', $user) }}" class="space-y-4 rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         @csrf
                         @method('PATCH')

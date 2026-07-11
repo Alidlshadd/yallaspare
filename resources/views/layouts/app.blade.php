@@ -773,7 +773,7 @@
 
                                     <div
                                         id="adminNotificationsDropdown"
-                                        class="hidden absolute {{ $isRtl ? 'left-0' : 'right-0' }} mt-2 w-[360px] max-w-[92vw] bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden z-30 dark:bg-slate-900 dark:border-slate-800 dark:shadow-black/30"
+                                        class="admin-popover-enter hidden absolute {{ $isRtl ? 'left-0' : 'right-0' }} mt-2 w-[360px] max-w-[92vw] bg-white border border-slate-200 rounded-2xl shadow-2xl overflow-hidden z-30 dark:bg-slate-900 dark:border-slate-800 dark:shadow-black/30"
                                     >
                                         <div class="px-4 py-3 border-b border-slate-100 flex items-center justify-between dark:border-slate-800">
                                             <p class="text-sm font-semibold text-slate-800 dark:text-slate-100">{{ __('Notifications') }}</p>
@@ -848,12 +848,12 @@
                         </div>
                     </header>
 
-                    <main class="admin-content flex-1 px-3 py-5 sm:px-6 sm:py-6 lg:px-8">
+                    <main class="admin-content admin-page-enter flex-1 px-3 py-5 sm:px-6 sm:py-6 lg:px-8">
                         {{ $slot }}
                     </main>
 
-                    <div id="adminDangerModal" class="fixed inset-0 z-[70] hidden items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm">
-                        <div class="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_30px_80px_rgba(15,23,42,0.35)] dark:border-slate-800 dark:bg-slate-900">
+                    <div id="adminDangerModal" class="admin-danger-backdrop fixed inset-0 z-[70] hidden items-center justify-center bg-slate-950/55 p-4 backdrop-blur-sm">
+                        <div class="admin-danger-surface w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_30px_80px_rgba(15,23,42,0.35)] dark:border-slate-800 dark:bg-slate-900">
                             <div class="flex items-start gap-3">
                                 <div class="flex h-10 w-10 items-center justify-center rounded-full bg-rose-50 text-rose-600 dark:bg-rose-900/30 dark:text-rose-300">
                                     <i class="fas fa-triangle-exclamation"></i>
@@ -1037,11 +1037,12 @@
                         }
 
                         container.textContent = '';
-                        items.forEach((item) => {
+                        items.forEach((item, index) => {
                             const wrapper = setClass(
                                 document.createElement('div'),
-                                `block rounded-lg px-2 py-2 ${item.read ? 'bg-white dark:bg-slate-900/60' : 'bg-indigo-50/50 dark:bg-indigo-500/10'} hover:bg-slate-50 dark:hover:bg-slate-800/80 transition`
+                                `admin-notification-item block rounded-lg px-2 py-2 ${item.read ? 'bg-white dark:bg-slate-900/60' : 'bg-indigo-50/50 dark:bg-indigo-500/10'} hover:bg-slate-50 dark:hover:bg-slate-800/80 transition`
                             );
+                            wrapper.style.setProperty('--admin-item-index', String(index));
 
                             const link = setClass(document.createElement('a'), 'block');
                             link.setAttribute('href', safeNotificationUrl(item.url));
@@ -1236,14 +1237,15 @@
                         }
 
                         event.preventDefault();
+                        const submitter = event.submitter instanceof HTMLButtonElement ? event.submitter : null;
                         window.adminDangerConfirm({
-                            title: form.dataset.dangerTitle || 'Delete Coupon',
-                            description: form.dataset.dangerDescription || 'This action is permanent and cannot be undone.',
+                            title: submitter?.dataset.dangerTitle || form.dataset.dangerTitle || 'Delete Coupon',
+                            description: submitter?.dataset.dangerDescription || form.dataset.dangerDescription || 'This action is permanent and cannot be undone.',
                         }).then((confirmed) => {
                             if (!confirmed) return;
                             form.dataset.dangerConfirmed = '1';
                             if (typeof form.requestSubmit === 'function') {
-                                form.requestSubmit();
+                                form.requestSubmit(submitter || undefined);
                             } else {
                                 form.submit();
                             }

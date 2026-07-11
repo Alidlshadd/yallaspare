@@ -342,6 +342,107 @@ class UserController extends Controller
         return back()->with('success', __('User password updated successfully.'));
     }
 
+    public function updateBan(Request $request, User $user, UserPrivilegeService $privileges): RedirectResponse
+    {
+        $this->authorize('manageUsers', User::class);
+        $actor = $request->user();
+
+        try {
+            $privileges->assertCanBan($actor, $user);
+        } catch (AuthorizationException $exception) {
+            AdminLogger::log('security.user_ban_blocked', $user, [
+                'actor_role' => $actor?->role,
+                'target_role' => $user->role,
+            ]);
+
+            return back()->with('error', $exception->getMessage());
+        }
+
+        if ((int) $actor->id === (int) $user->id) {
+            return back()->with('error', __('You cannot ban your own account.'));
+        }
+
+        if (
+            $user->role === User::ROLE_SUPER_ADMIN
+            && ! User::query()
+                ->where('role', User::ROLE_SUPER_ADMIN)
+                ->whereKeyNot($user->getKey())
+                ->where(function (Builder $query): void {
+                    $query->whereNull('banned_at')
+                        ->orWhere('banned_until', '<=', now());
+                })
+                ->exists()
+        ) {
+            return back()->with('error', __('At least one active super admin account must remain.'));
+        }
+
+        $data = $request->validate([
+            'ban_type' => ['required', Rule::in(['temporary', 'permanent'])],
+            'duration_days' => ['required_if:ban_type,temporary', 'nullable', 'integer', Rule::in([1, 7, 30, 90, 365])],
+            'ban_reason' => ['required', 'string', 'max:500'],
+        ]);
+
+        $bannedAt = now();
+        $bannedUntil = $data['ban_type'] === 'temporary'
+            ? $bannedAt->copy()->addDays((int) $data['duration_days'])
+            : null;
+
+        DB::transaction(function () use ($user, $data, $bannedAt, $bannedUntil): void {
+            $user->forceFill([
+                'banned_at' => $bannedAt,
+                'banned_until' => $bannedUntil,
+                'ban_reason' => trim($data['ban_reason']),
+                'remember_token' => Str::random(60),
+            ])->save();
+
+            $user->tokens()->delete();
+            if (Schema::hasTable('sessions')) {
+                DB::table('sessions')->where('user_id', $user->id)->delete();
+            }
+        });
+
+        AdminLogger::log('security.user_banned', $user, [
+            'ban_type' => $data['ban_type'],
+            'banned_until' => $bannedUntil?->toIso8601String(),
+            'sessions_revoked' => Schema::hasTable('sessions'),
+            'sanctum_tokens_revoked' => true,
+        ]);
+
+        return back()->with('success', $data['ban_type'] === 'permanent'
+            ? __('User permanently banned.')
+            : __('User temporarily banned until :date.', ['date' => $bannedUntil?->format('d M Y H:i')]));
+    }
+
+    public function destroyBan(Request $request, User $user, UserPrivilegeService $privileges): RedirectResponse
+    {
+        $this->authorize('manageUsers', User::class);
+        $actor = $request->user();
+
+        try {
+            $privileges->assertCanBan($actor, $user);
+        } catch (AuthorizationException $exception) {
+            AdminLogger::log('security.user_unban_blocked', $user, [
+                'actor_role' => $actor?->role,
+                'target_role' => $user->role,
+            ]);
+
+            return back()->with('error', $exception->getMessage());
+        }
+
+        $user->forceFill([
+            'banned_at' => null,
+            'banned_until' => null,
+            'ban_reason' => null,
+        ])->save();
+
+        AdminLogger::log('security.user_unbanned', $user, [
+            'actor_role' => $actor?->role,
+            'target_role' => $user->role,
+        ]);
+
+        return back()->with('success', __('User ban removed.'));
+    }
+
     public function destroy(Request $request, User $user, UserPrivilegeService $privileges): RedirectResponse
     {
         $this->authorize('delete', $user);

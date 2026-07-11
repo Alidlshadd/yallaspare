@@ -66,6 +66,10 @@ class UserPrivilegeService
 
     public function assertCanBan(User $actor, User $target): void
     {
+        if (! in_array(User::normalizeRole($actor->role), [User::ROLE_SUPER_ADMIN, User::ROLE_ADMIN], true)) {
+            throw new AuthorizationException(__('Only super admins and admins can ban user accounts.'));
+        }
+
         $this->assertCanPerformPrivilegedUserAction(
             $actor,
             $target,

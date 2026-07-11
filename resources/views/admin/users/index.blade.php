@@ -288,6 +288,12 @@
                                             <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
                                             {{ $meta['label'] }}
                                         </span>
+                                        @if($user->isBanned())
+                                            <span class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-black {{ $user->isPermanentlyBanned() ? 'border-slate-950 bg-slate-950 text-white dark:border-black dark:bg-black' : 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300' }}">
+                                                <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
+                                                {{ $user->isPermanentlyBanned() ? __('Permanent Ban') : __('Temporarily Banned') }}
+                                            </span>
+                                        @endif
                                         @if($user->email_verified_at)
                                             <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400" title="{{ __('Verified email') }}">
                                                 <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" /></svg>
