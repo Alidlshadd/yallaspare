@@ -275,6 +275,26 @@
         padding-inline-end: 3rem !important;
     }
 
+    .auth-login-input:-webkit-autofill,
+    .auth-login-input:-webkit-autofill:hover,
+    .auth-login-input:-webkit-autofill:focus,
+    .auth-login-input:-webkit-autofill:active {
+        -webkit-text-fill-color: #0f172a !important;
+        caret-color: #0f172a;
+        -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
+        box-shadow: 0 0 0 1000px #ffffff inset !important;
+    }
+
+    .dark .auth-login-input:-webkit-autofill,
+    .dark .auth-login-input:-webkit-autofill:hover,
+    .dark .auth-login-input:-webkit-autofill:focus,
+    .dark .auth-login-input:-webkit-autofill:active {
+        -webkit-text-fill-color: #f1f5f9 !important;
+        caret-color: #f1f5f9;
+        -webkit-box-shadow: 0 0 0 1000px #1e293b inset !important;
+        box-shadow: 0 0 0 1000px #1e293b inset !important;
+    }
+
     .password-input-toggle {
         position: absolute;
         inset-block: 0;
