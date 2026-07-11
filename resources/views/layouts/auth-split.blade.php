@@ -73,13 +73,13 @@
             color: #334155 !important;
         }
 
-        html:not(.dark) #auth-panel :is(input, select, textarea) {
+        html:not(.dark) #auth-panel :is(input:not([type='checkbox']):not([type='radio']), select, textarea) {
             background-color: #ffffff !important;
             border-color: #cbd5e1 !important;
             color: #0f172a !important;
         }
 
-        html:not(.dark) #auth-panel :is(input, select, textarea)::placeholder {
+        html:not(.dark) #auth-panel :is(input:not([type='checkbox']):not([type='radio']), select, textarea)::placeholder {
             color: #94a3b8 !important;
         }
 
