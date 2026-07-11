@@ -24,15 +24,13 @@ Route::middleware('guest')->group(function () {
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
-    Route::get('auth/{provider}', [SocialAuthController::class, 'redirect'])
-                ->whereIn('provider', ['google', 'apple'])
+    Route::get('auth/google/redirect', [SocialAuthController::class, 'redirectToGoogle'])
                 ->middleware('throttle:public-write')
-                ->name('social.redirect');
+                ->name('auth.google.redirect');
 
-    Route::match(['get', 'post'], 'auth/{provider}/callback', [SocialAuthController::class, 'callback'])
-                ->whereIn('provider', ['google', 'apple'])
+    Route::get('auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback'])
                 ->middleware('throttle:public-write')
-                ->name('social.callback');
+                ->name('auth.google.callback');
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
                 ->name('password.request');

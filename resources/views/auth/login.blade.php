@@ -13,6 +13,12 @@
 >
     <x-auth-session-status class="mt-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300" :status="session('status')" />
 
+    @if (session('auth_error'))
+        <div class="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-200" role="alert">
+            {{ session('auth_error') }}
+        </div>
+    @endif
+
     <form method="POST" action="{{ route('login') }}" class="mt-5 space-y-4" data-auth-form data-loading-button-text="Signing in...">
         @csrf
 
@@ -25,7 +31,9 @@
                 name="email"
                 :value="old('email')"
                 required
-                autofocus
+                @if (! session('auth_error'))
+                    autofocus
+                @endif
                 autocomplete="username"
                 placeholder="{{ __('you@example.com or +964...') }}"
             />

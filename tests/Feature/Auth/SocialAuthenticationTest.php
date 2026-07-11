@@ -13,24 +13,54 @@ class SocialAuthenticationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_social_login_buttons_are_rendered(): void
+    public function test_social_login_buttons_render_google_link_and_disabled_apple_button(): void
     {
         $this->get('/login')
             ->assertOk()
-            ->assertSee(route('social.redirect', ['provider' => 'google']), false)
-            ->assertSee(route('social.redirect', ['provider' => 'apple']), false)
+            ->assertSee(route('auth.google.redirect'), false)
             ->assertSee('Continue with Google')
-            ->assertSee('Continue with Apple');
+            ->assertSee('Continue with Apple')
+            ->assertSee('Coming soon')
+            ->assertSee('disabled', false)
+            ->assertDontSee('/auth/apple', false);
 
         $this->get('/register')
             ->assertOk()
-            ->assertSee(route('social.redirect', ['provider' => 'google']), false)
-            ->assertSee(route('social.redirect', ['provider' => 'apple']), false);
+            ->assertSee(route('auth.google.redirect'), false)
+            ->assertDontSee('/auth/apple', false);
     }
 
-    public function test_google_callback_creates_verified_user_and_social_account(): void
+    public function test_google_redirect_requires_provider_configuration_without_email_validation_error(): void
     {
-        $this->mockSocialiteUser('google', [
+        config([
+            'services.google.client_id' => null,
+            'services.google.client_secret' => null,
+            'services.google.redirect' => null,
+        ]);
+
+        $response = $this->get(route('auth.google.redirect'));
+
+        $response->assertRedirect(route('login'));
+        $response->assertSessionHas('auth_error', 'Google sign-in is not configured yet.');
+        $response->assertSessionDoesntHaveErrors(['email']);
+    }
+
+    public function test_password_login_still_works_after_social_login_changes(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'password',
+        ]);
+
+        $this->assertAuthenticatedAs($user);
+        $response->assertRedirect(route('user.shop.home'));
+    }
+
+    public function test_google_callback_creates_verified_user(): void
+    {
+        $this->mockGoogleUser([
             'id' => 'google-123',
             'name' => 'Buyer Account',
             'email' => 'Buyer@Example.com',
@@ -38,7 +68,7 @@ class SocialAuthenticationTest extends TestCase
             'avatar' => 'https://example.com/avatar.jpg',
         ]);
 
-        $response = $this->get(route('social.callback', ['provider' => 'google']));
+        $response = $this->get(route('auth.google.callback'));
 
         $response->assertRedirect(route('user.shop.home'));
         $this->assertAuthenticated();
@@ -46,103 +76,122 @@ class SocialAuthenticationTest extends TestCase
         $user = User::query()->where('email', 'buyer@example.com')->firstOrFail();
 
         $this->assertSame('Buyer Account', $user->name);
+        $this->assertSame('google-123', $user->google_id);
+        $this->assertSame('https://example.com/avatar.jpg', $user->avatar);
         $this->assertNotNull($user->email_verified_at);
-        $this->assertDatabaseHas('social_accounts', [
-            'user_id' => $user->id,
-            'provider' => 'google',
-            'provider_user_id' => 'google-123',
-            'email' => 'buyer@example.com',
-        ]);
     }
 
-    public function test_verified_social_email_links_existing_account(): void
+    public function test_google_callback_links_existing_email_without_duplicate_user(): void
     {
         $user = User::factory()->unverified()->create([
             'email' => 'buyer@example.com',
         ]);
 
-        $this->mockSocialiteUser('google', [
+        $this->mockGoogleUser([
             'id' => 'google-456',
             'name' => 'Buyer Account',
             'email' => 'buyer@example.com',
             'email_verified' => true,
+            'avatar' => 'https://example.com/buyer.jpg',
         ]);
 
-        $response = $this->get(route('social.callback', ['provider' => 'google']));
+        $response = $this->get(route('auth.google.callback'));
 
         $response->assertRedirect(route('user.shop.home'));
         $this->assertAuthenticatedAs($user);
-        $this->assertNotNull($user->fresh()->email_verified_at);
-        $this->assertDatabaseHas('social_accounts', [
-            'user_id' => $user->id,
-            'provider' => 'google',
-            'provider_user_id' => 'google-456',
-        ]);
+        $this->assertSame(1, User::query()->where('email', 'buyer@example.com')->count());
+
+        $freshUser = $user->fresh();
+        $this->assertSame('google-456', $freshUser->google_id);
+        $this->assertSame('https://example.com/buyer.jpg', $freshUser->avatar);
+        $this->assertNotNull($freshUser->email_verified_at);
     }
 
-    public function test_unverified_social_email_is_rejected(): void
-    {
-        User::factory()->create([
-            'email' => 'buyer@example.com',
-        ]);
-
-        $this->mockSocialiteUser('google', [
-            'id' => 'google-789',
-            'name' => 'Buyer Account',
-            'email' => 'buyer@example.com',
-            'email_verified' => false,
-        ]);
-
-        $response = $this->get(route('social.callback', ['provider' => 'google']));
-
-        $response->assertRedirect(route('login'));
-        $response->assertSessionHasErrors('email');
-        $this->assertGuest();
-        $this->assertDatabaseMissing('social_accounts', [
-            'provider' => 'google',
-            'provider_user_id' => 'google-789',
-        ]);
-    }
-
-    public function test_social_email_does_not_auto_link_admin_panel_accounts(): void
+    public function test_google_callback_binds_google_id_to_existing_user(): void
     {
         $user = User::factory()->create([
+            'email' => 'linked@example.com',
+            'google_id' => null,
+            'avatar' => null,
+        ]);
+
+        $this->mockGoogleUser([
+            'id' => 'google-linked',
+            'name' => 'Linked User',
+            'email' => 'linked@example.com',
+            'email_verified' => true,
+            'avatar' => 'https://example.com/linked.jpg',
+        ]);
+
+        $response = $this->get(route('auth.google.callback'));
+
+        $response->assertRedirect(route('user.shop.home'));
+        $this->assertAuthenticatedAs($user);
+        $this->assertSame('google-linked', $user->fresh()->google_id);
+        $this->assertSame('https://example.com/linked.jpg', $user->fresh()->avatar);
+    }
+
+    public function test_admin_google_login_redirects_to_admin_dashboard(): void
+    {
+        config(['security.admin_two_factor.enabled' => false]);
+
+        $admin = User::factory()->create([
             'email' => 'admin@example.com',
         ]);
-        $user->forceFill(['role' => User::ROLE_ADMIN])->save();
+        $admin->forceFill(['role' => User::ROLE_ADMIN])->save();
 
-        $this->mockSocialiteUser('google', [
+        $this->mockGoogleUser([
             'id' => 'google-admin',
             'name' => 'Admin Account',
             'email' => 'admin@example.com',
             'email_verified' => true,
         ]);
 
-        $response = $this->get(route('social.callback', ['provider' => 'google']));
+        $response = $this->get(route('auth.google.callback'));
 
-        $response->assertRedirect(route('login'));
-        $response->assertSessionHasErrors('email');
-        $this->assertGuest();
-        $this->assertDatabaseMissing('social_accounts', [
-            'provider' => 'google',
-            'provider_user_id' => 'google-admin',
-        ]);
+        $response->assertRedirect('/admin/dashboard');
+        $this->assertAuthenticatedAs($admin);
+        $this->assertSame('google-admin', $admin->fresh()->google_id);
     }
 
-    public function test_redirect_requires_provider_configuration(): void
+    public function test_user_google_login_redirects_to_user_home(): void
     {
-        config([
-            'services.google.client_id' => null,
-            'services.google.client_secret' => null,
+        $user = User::factory()->create([
+            'email' => 'customer@example.com',
         ]);
 
-        $response = $this->get(route('social.redirect', ['provider' => 'google']));
+        $this->mockGoogleUser([
+            'id' => 'google-user',
+            'name' => 'Customer Account',
+            'email' => 'customer@example.com',
+            'email_verified' => true,
+        ]);
 
-        $response->assertRedirect(route('login'));
-        $response->assertSessionHasErrors('email');
+        $response = $this->get(route('auth.google.callback'));
+
+        $response->assertRedirect(route('user.shop.home'));
+        $this->assertAuthenticatedAs($user);
+        $this->assertSame('google-user', $user->fresh()->google_id);
     }
 
-    private function mockSocialiteUser(string $provider, array $attributes): void
+    public function test_google_callback_rejects_missing_email(): void
+    {
+        $this->mockGoogleUser([
+            'id' => 'google-no-email',
+            'name' => 'No Email',
+            'email' => null,
+            'email_verified' => true,
+        ]);
+
+        $response = $this->get(route('auth.google.callback'));
+
+        $response->assertRedirect(route('login'));
+        $response->assertSessionHas('auth_error');
+        $response->assertSessionDoesntHaveErrors(['email']);
+        $this->assertGuest();
+    }
+
+    private function mockGoogleUser(array $attributes): void
     {
         $providerMock = Mockery::mock();
         $providerMock->shouldReceive('user')
@@ -151,7 +200,7 @@ class SocialAuthenticationTest extends TestCase
 
         Socialite::shouldReceive('driver')
             ->once()
-            ->with($provider)
+            ->with('google')
             ->andReturn($providerMock);
     }
 }

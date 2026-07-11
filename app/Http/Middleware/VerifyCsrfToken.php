@@ -13,6 +13,5 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         'csp-report',
-        'auth/apple/callback',
     ];
 }
