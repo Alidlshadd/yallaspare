@@ -64,6 +64,15 @@ class UserPrivilegeService
         );
     }
 
+    public function assertCanBan(User $actor, User $target): void
+    {
+        $this->assertCanPerformPrivilegedUserAction(
+            $actor,
+            $target,
+            __('Only super admins can suspend privileged accounts.')
+        );
+    }
+
     public function assertCanManageDealerLifecycle(User $actor, User $target): void
     {
         if ($actor->isSuperAdmin()) {

@@ -23,7 +23,7 @@
             <x-input-label for="email" :value="__('Email')" class="text-sm font-medium text-slate-300" />
             <x-text-input
                 id="email"
-                class="mt-2 block w-full rounded-lg border border-slate-700 bg-slate-800/90 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 transition duration-200 focus:border-red-500 focus:ring-red-500"
+                class="mt-2 block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition duration-200 focus:border-red-500 focus:ring-red-500 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100 dark:placeholder:text-slate-500"
                 type="email"
                 name="email"
                 :value="old('email', $request->email)"
@@ -40,7 +40,7 @@
             <x-password-input
                 id="password"
                 container-class="mt-2"
-                class="block w-full rounded-lg border border-slate-700 bg-slate-800/90 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 transition duration-200 focus:border-red-500 focus:ring-red-500"
+                class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition duration-200 focus:border-red-500 focus:ring-red-500 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100 dark:placeholder:text-slate-500"
                 name="password"
                 required
                 autocomplete="new-password"
@@ -57,7 +57,7 @@
             <x-password-input
                 id="password_confirmation"
                 container-class="mt-2"
-                class="block w-full rounded-lg border border-slate-700 bg-slate-800/90 px-3 py-2.5 text-sm text-slate-100 placeholder:text-slate-500 transition duration-200 focus:border-red-500 focus:ring-red-500"
+                class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition duration-200 focus:border-red-500 focus:ring-red-500 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100 dark:placeholder:text-slate-500"
                 name="password_confirmation"
                 required
                 autocomplete="new-password"

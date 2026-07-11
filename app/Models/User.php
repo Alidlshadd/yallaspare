@@ -51,8 +51,6 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
     protected $fillable = [
         'name',
         'email',
-        'google_id',
-        'avatar',
         'password',
         'phone',
         'phone_normalized',
@@ -82,9 +80,10 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
     ];
 
     /**
-     * Privilege/role fields intentionally excluded from $fillable to block
-     * mass-assignment escalation. Set these only via explicit forceFill()->save()
-     * in admin-gated controllers after validating against allowlists.
+     * Privilege/role and social-identity fields intentionally excluded from
+     * $fillable to block mass-assignment escalation and account linking abuse.
+     * Set these only via explicit forceFill()->save() in admin-gated
+     * controllers (or the social auth controller) after validation.
      *
      * @var array<int, string>
      */
@@ -93,6 +92,9 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
         'permissions',
         'dealer_status',
         'dealer_discount',
+        'google_id',
+        'apple_id',
+        'avatar',
     ];
 
     /**
@@ -127,7 +129,23 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
         'dealer_discount' => 'decimal:2',
         'date_of_birth' => 'date',
         'permissions' => 'array',
+        'banned_at' => 'datetime',
+        'banned_until' => 'datetime',
     ];
+
+    public function isBanned(): bool
+    {
+        if ($this->banned_at === null) {
+            return false;
+        }
+
+        return $this->banned_until === null || $this->banned_until->isFuture();
+    }
+
+    public function isPermanentlyBanned(): bool
+    {
+        return $this->banned_at !== null && $this->banned_until === null;
+    }
 
     protected function themePreference(): Attribute
     {
@@ -508,4 +526,5 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
     {
         return $this->hasMany(ProductView::class);
     }
+
 }

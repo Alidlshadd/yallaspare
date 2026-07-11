@@ -13,5 +13,8 @@ class VerifyCsrfToken extends Middleware
      */
     protected $except = [
         'csp-report',
+        // Apple sends the OAuth callback as a cross-site form POST, so no
+        // CSRF token (or session cookie) accompanies the request.
+        'auth/apple/callback',
     ];
 }

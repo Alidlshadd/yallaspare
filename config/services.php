@@ -31,10 +31,28 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    // Master switch for the social login section on the login/register pages.
+    // Buttons additionally require the per-provider 'enabled' flag and
+    // complete credentials before they are rendered.
+    'social_login' => [
+        'visible' => (bool) env('SOCIAL_LOGIN_VISIBLE', false),
+    ],
+
     'google' => [
+        'enabled' => (bool) env('GOOGLE_LOGIN_ENABLED', false),
         'client_id' => env('GOOGLE_CLIENT_ID'),
         'client_secret' => env('GOOGLE_CLIENT_SECRET'),
         'redirect' => env('GOOGLE_REDIRECT_URI'),
+    ],
+
+    'apple' => [
+        'enabled' => (bool) env('APPLE_LOGIN_ENABLED', false),
+        'client_id' => env('APPLE_CLIENT_ID'), // Services ID from Apple Developer.
+        'client_secret' => env('APPLE_CLIENT_SECRET'), // Optional pre-generated JWT; leave empty when using the key material below.
+        'team_id' => env('APPLE_TEAM_ID'),
+        'key_id' => env('APPLE_KEY_ID'),
+        'private_key' => env('APPLE_PRIVATE_KEY'), // Absolute path to the .p8 key file.
+        'redirect' => env('APPLE_REDIRECT_URI'),
     ],
 
     'fib' => [

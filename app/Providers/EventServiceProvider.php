@@ -27,6 +27,9 @@ class EventServiceProvider extends ServiceProvider
         Failed::class => [
             LogFailedLogin::class,
         ],
+        \SocialiteProviders\Manager\SocialiteWasCalled::class => [
+            \SocialiteProviders\Apple\AppleExtendSocialite::class.'@handle',
+        ],
     ];
 
     /**

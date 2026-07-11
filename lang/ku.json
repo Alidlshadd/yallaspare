@@ -2887,5 +2887,14 @@
     "Specific person": "کەسێکی تایبەت",
     "By email address": "بە ناونیشانی ئیمەیل",
     "verified": "پشتڕاستکراوە",
-    "Recipient email": "ئیمەیلی وەرگر"
+    "Recipient email": "ئیمەیلی وەرگر",
+    "Continue with Google": "بەردەوامبوون بە گووگڵ",
+    "Continue with Apple": "بەردەوامبوون بە ئەپڵ",
+    "Google sign-in is not configured yet.": "چوونەژوورەوە بە گووگڵ هێشتا ڕێکنەخراوە.",
+    "Apple sign-in is not configured yet.": "چوونەژوورەوە بە ئەپڵ هێشتا ڕێکنەخراوە.",
+    "We could not complete Google sign-in. Please try again.": "نەتوانرا چوونەژوورەوە بە گووگڵ تەواو بکرێت. تکایە دووبارە هەوڵ بدەرەوە.",
+    "We could not complete Apple sign-in. Please try again.": "نەتوانرا چوونەژوورەوە بە ئەپڵ تەواو بکرێت. تکایە دووبارە هەوڵ بدەرەوە.",
+    "We could not connect this Google account. Please use email and password or contact support.": "نەتوانرا ئەم هەژماری گووگڵە ببەسترێتەوە. تکایە ئیمەیڵ و وشەی نهێنی بەکاربهێنە یان پەیوەندی بە پشتگیری بکە.",
+    "We could not connect this Apple account. Please use email and password or contact support.": "نەتوانرا ئەم هەژماری ئەپڵە ببەسترێتەوە. تکایە ئیمەیڵ و وشەی نهێنی بەکاربهێنە یان پەیوەندی بە پشتگیری بکە.",
+    "Your account has been suspended. Please contact support.": "هەژمارەکەت ڕاگیراوە. تکایە پەیوەندی بە پشتگیری بکە."
 }

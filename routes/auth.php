@@ -32,6 +32,17 @@ Route::middleware('guest')->group(function () {
                 ->middleware('throttle:public-write')
                 ->name('auth.google.callback');
 
+    Route::get('auth/apple/redirect', [SocialAuthController::class, 'redirectToApple'])
+                ->middleware('throttle:public-write')
+                ->name('auth.apple.redirect');
+
+    // Apple posts the callback as a cross-site form POST (response_mode=form_post),
+    // so this route is POST-only and excluded from CSRF verification. State and
+    // nonce are validated against a single-use server-side cache entry instead.
+    Route::post('auth/apple/callback', [SocialAuthController::class, 'handleAppleCallback'])
+                ->middleware('throttle:public-write')
+                ->name('auth.apple.callback');
+
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
                 ->name('password.request');
 

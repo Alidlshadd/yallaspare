@@ -2887,5 +2887,14 @@
     "Specific person": "Specific person",
     "By email address": "By email address",
     "verified": "verified",
-    "Recipient email": "Recipient email"
+    "Recipient email": "Recipient email",
+    "Continue with Google": "Continue with Google",
+    "Continue with Apple": "Continue with Apple",
+    "Google sign-in is not configured yet.": "Google sign-in is not configured yet.",
+    "Apple sign-in is not configured yet.": "Apple sign-in is not configured yet.",
+    "We could not complete Google sign-in. Please try again.": "We could not complete Google sign-in. Please try again.",
+    "We could not complete Apple sign-in. Please try again.": "We could not complete Apple sign-in. Please try again.",
+    "We could not connect this Google account. Please use email and password or contact support.": "We could not connect this Google account. Please use email and password or contact support.",
+    "We could not connect this Apple account. Please use email and password or contact support.": "We could not connect this Apple account. Please use email and password or contact support.",
+    "Your account has been suspended. Please contact support.": "Your account has been suspended. Please contact support."
 }

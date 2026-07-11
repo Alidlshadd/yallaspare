@@ -2887,5 +2887,14 @@
     "Specific person": "شخص محدد",
     "By email address": "بعنوان البريد الإلكتروني",
     "verified": "موثق",
-    "Recipient email": "بريد المستلم"
+    "Recipient email": "بريد المستلم",
+    "Continue with Google": "المتابعة باستخدام جوجل",
+    "Continue with Apple": "المتابعة باستخدام آبل",
+    "Google sign-in is not configured yet.": "تسجيل الدخول عبر جوجل غير مُفعّل بعد.",
+    "Apple sign-in is not configured yet.": "تسجيل الدخول عبر آبل غير مُفعّل بعد.",
+    "We could not complete Google sign-in. Please try again.": "تعذّر إكمال تسجيل الدخول عبر جوجل. يرجى المحاولة مرة أخرى.",
+    "We could not complete Apple sign-in. Please try again.": "تعذّر إكمال تسجيل الدخول عبر آبل. يرجى المحاولة مرة أخرى.",
+    "We could not connect this Google account. Please use email and password or contact support.": "تعذّر ربط حساب جوجل هذا. يرجى استخدام البريد الإلكتروني وكلمة المرور أو التواصل مع الدعم.",
+    "We could not connect this Apple account. Please use email and password or contact support.": "تعذّر ربط حساب آبل هذا. يرجى استخدام البريد الإلكتروني وكلمة المرور أو التواصل مع الدعم.",
+    "Your account has been suspended. Please contact support.": "تم تعليق حسابك. يرجى التواصل مع الدعم."
 }
