@@ -46,6 +46,11 @@ class NewPasswordController extends Controller
                     'remember_token' => Str::random(60),
                 ])->save();
 
+                // A reset usually means the old credentials are suspected to be
+                // compromised: revoke every API token alongside the sessions
+                // that AuthenticateSession will drop on their next request.
+                $user->tokens()->delete();
+
                 event(new PasswordReset($user));
             }
         );

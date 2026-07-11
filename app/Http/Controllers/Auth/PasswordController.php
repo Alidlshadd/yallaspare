@@ -24,6 +24,11 @@ class PasswordController extends Controller
             'password' => Hash::make($validated['password']),
         ]);
 
+        // Other browser sessions are invalidated by AuthenticateSession (the
+        // password hash they carry no longer matches); API tokens must be
+        // revoked explicitly or a stolen token survives the password change.
+        $request->user()->tokens()->delete();
+
         return back()->with('status', __('password-updated'));
     }
 }

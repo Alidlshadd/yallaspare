@@ -74,6 +74,7 @@ class UserPrivilegeHardeningTest extends TestCase
         $admin = $this->userManager();
 
         $this->actingAs($admin)
+            ->withSession(['auth.password_confirmed_at' => time()])
             ->patch(route('admin.users.update-role', $admin), [
                 'role' => User::ROLE_ADMIN,
             ])
@@ -89,6 +90,7 @@ class UserPrivilegeHardeningTest extends TestCase
         $target = User::factory()->create(['role' => User::ROLE_USER]);
 
         $this->actingAs($admin)
+            ->withSession(['auth.password_confirmed_at' => time()])
             ->patch(route('admin.users.update-role', $target), [
                 'role' => User::ROLE_ADMIN,
             ])
@@ -103,6 +105,7 @@ class UserPrivilegeHardeningTest extends TestCase
         $target = User::factory()->create(['role' => User::ROLE_USER]);
 
         $this->actingAs($admin)
+            ->withSession(['auth.password_confirmed_at' => time()])
             ->patch(route('admin.users.update-role', $target), [
                 'role' => User::ROLE_FINANCE_MANAGER,
             ])
@@ -140,6 +143,7 @@ class UserPrivilegeHardeningTest extends TestCase
         ]);
 
         $this->actingAs($admin)
+            ->withSession(['auth.password_confirmed_at' => time()])
             ->patch(route('admin.users.update-password', $target), $this->passwordPayload())
             ->assertSessionHas('error');
 
@@ -155,6 +159,7 @@ class UserPrivilegeHardeningTest extends TestCase
         ]);
 
         $this->actingAs($admin)
+            ->withSession(['auth.password_confirmed_at' => time()])
             ->patch(route('admin.users.update-password', $target), $this->passwordPayload())
             ->assertSessionHas('error');
 
@@ -167,6 +172,7 @@ class UserPrivilegeHardeningTest extends TestCase
         $target = User::factory()->create(['role' => User::ROLE_ADMIN]);
 
         $this->actingAs($admin)
+            ->withSession(['auth.password_confirmed_at' => time()])
             ->delete(route('admin.users.destroy', $target))
             ->assertSessionHas('error');
 
@@ -179,6 +185,7 @@ class UserPrivilegeHardeningTest extends TestCase
         $target = User::factory()->create(['role' => User::ROLE_SUPER_ADMIN]);
 
         $this->actingAs($admin)
+            ->withSession(['auth.password_confirmed_at' => time()])
             ->delete(route('admin.users.destroy', $target))
             ->assertSessionHas('error');
 
@@ -203,6 +210,7 @@ class UserPrivilegeHardeningTest extends TestCase
         ]);
 
         $this->actingAs($superAdmin)
+            ->withSession(['auth.password_confirmed_at' => time()])
             ->patch(route('admin.users.update-password', $target), $this->passwordPayload())
             ->assertSessionHas('success');
 
@@ -221,6 +229,7 @@ class UserPrivilegeHardeningTest extends TestCase
         $target = User::factory()->create(['role' => User::ROLE_ADMIN]);
 
         $this->actingAs($superAdmin)
+            ->withSession(['auth.password_confirmed_at' => time()])
             ->delete(route('admin.users.destroy', $target))
             ->assertSessionHas('success');
 

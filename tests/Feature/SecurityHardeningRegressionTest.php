@@ -34,6 +34,7 @@ class SecurityHardeningRegressionTest extends TestCase
         ]);
 
         $this->actingAs($admin)
+            ->withSession(['auth.password_confirmed_at' => time()])
             ->patch(route('admin.users.update-role', $admin), [
                 'role' => User::ROLE_SUPER_ADMIN,
             ])

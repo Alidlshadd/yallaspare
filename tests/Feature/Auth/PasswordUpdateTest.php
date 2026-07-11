@@ -31,6 +31,24 @@ class PasswordUpdateTest extends TestCase
         $this->assertTrue(Hash::check('new-password1', $user->refresh()->password));
     }
 
+    public function test_password_update_revokes_api_tokens(): void
+    {
+        $user = User::factory()->create();
+        $user->createToken('mobile');
+
+        $this
+            ->actingAs($user)
+            ->from('/profile')
+            ->put('/password', [
+                'current_password' => 'password',
+                'password' => 'new-password1',
+                'password_confirmation' => 'new-password1',
+            ])
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame(0, $user->tokens()->count());
+    }
+
     public function test_correct_password_must_be_provided_to_update_password(): void
     {
         $user = User::factory()->create();

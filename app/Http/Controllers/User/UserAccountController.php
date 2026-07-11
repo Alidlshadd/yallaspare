@@ -118,6 +118,11 @@ class UserAccountController extends Controller
             'password' => Hash::make($request->validated()['password']),
         ]);
 
+        // Other browser sessions are invalidated by AuthenticateSession (the
+        // password hash they carry no longer matches); API tokens must be
+        // revoked explicitly or a stolen token survives the password change.
+        $request->user()->tokens()->delete();
+
         return redirect()
             ->route('user.account.edit')
             ->with('password_success', __('user.password_updated'));
