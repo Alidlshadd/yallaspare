@@ -69,6 +69,38 @@
             'unverified' => ['label' => __('Unverified'), 'count' => $unverifiedUsers],
         ];
 
+        $accessFilters = [
+            'active' => [
+                'label' => __('Active accounts'),
+                'count' => $activeUsers,
+                'swatch' => 'bg-emerald-500',
+                'selected' => 'border-s-2 border-emerald-500 bg-emerald-50 text-emerald-900 dark:bg-emerald-400/10 dark:text-emerald-200',
+            ],
+            'banned' => [
+                'label' => __('All banned'),
+                'count' => $bannedUsers,
+                'swatch' => 'bg-rose-500',
+                'selected' => 'border-s-2 border-rose-500 bg-rose-50 text-rose-900 dark:bg-rose-400/10 dark:text-rose-200',
+            ],
+            'temporarily_banned' => [
+                'label' => __('Temporary Ban'),
+                'count' => $temporarilyBannedUsers,
+                'swatch' => 'bg-amber-400',
+                'selected' => 'border-s-2 border-amber-400 bg-amber-50 text-amber-950 dark:bg-amber-400/10 dark:text-amber-200',
+            ],
+            'permanently_banned' => [
+                'label' => __('Permanent Ban'),
+                'count' => $permanentlyBannedUsers,
+                'swatch' => 'bg-slate-950 dark:bg-black',
+                'selected' => 'border-s-2 border-slate-950 bg-slate-100 text-slate-950 dark:border-white dark:bg-white/10 dark:text-white',
+            ],
+        ];
+
+        $activeFilterLabel = $roleFilters[$filter]['label']
+            ?? $verifyFilters[$filter]['label']
+            ?? $accessFilters[$filter]['label']
+            ?? null;
+
         $filterUrl = fn (string $key) => route('admin.users.index', array_filter([
             'filter' => $key === 'all' ? null : $key,
             'search' => $search !== '' ? $search : null,
@@ -172,8 +204,8 @@
                 <p class="text-sm text-gray-500 dark:text-slate-400">
                     {{ __('Showing') }} <span class="font-semibold text-gray-800 dark:text-slate-100">{{ $users->count() }}</span>
                     {{ __('of') }} <span class="font-semibold text-gray-800 dark:text-slate-100">{{ number_format($users->total()) }}</span>
-                    @if($filter !== 'all')
-                        · <span class="font-semibold text-amber-600 dark:text-amber-300">{{ ($roleFilters[$filter] ?? $verifyFilters[$filter])['label'] }}</span>
+                    @if($activeFilterLabel)
+                        · <span class="font-semibold text-amber-600 dark:text-amber-300">{{ $activeFilterLabel }}</span>
                     @endif
                     @if($search !== '')
                         · "{{ $search }}"
@@ -257,6 +289,30 @@
                                     @else
                                         <svg class="h-3.5 w-3.5 shrink-0 text-gray-400 dark:text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path stroke-linecap="round" d="M12 7.5V12l2.5 2.5" /></svg>
                                     @endif
+                                    <span class="truncate">{{ $item['label'] }}</span>
+                                </span>
+                                <span class="text-xs tabular-nums text-gray-400 dark:text-slate-500">{{ number_format($item['count']) }}</span>
+                            </a>
+                        @endforeach
+                    </nav>
+
+                    <hr class="my-3 border-gray-200 dark:border-slate-800">
+
+                    <div class="mb-1.5 px-3 text-[10px] font-black uppercase tracking-[0.16em] text-gray-400 dark:text-slate-500">
+                        {{ __('Access Status') }}
+                    </div>
+                    <nav class="space-y-0.5" aria-label="{{ __('Access Status') }}">
+                        @foreach($accessFilters as $key => $item)
+                            <a
+                                href="{{ $filterUrl($key) }}"
+                                @class([
+                                    'flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition',
+                                    $item['selected'] => $filter === $key,
+                                    'text-gray-600 hover:bg-gray-50 dark:text-slate-300 dark:hover:bg-slate-800/60' => $filter !== $key,
+                                ])
+                            >
+                                <span class="flex min-w-0 items-center gap-2.5">
+                                    <span class="h-2 w-2 shrink-0 rounded-full {{ $item['swatch'] }}"></span>
                                     <span class="truncate">{{ $item['label'] }}</span>
                                 </span>
                                 <span class="text-xs tabular-nums text-gray-400 dark:text-slate-500">{{ number_format($item['count']) }}</span>

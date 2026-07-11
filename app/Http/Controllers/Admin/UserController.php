@@ -40,7 +40,7 @@ class UserController extends Controller
         ];
 
         $filter = (string) $request->query('filter', 'all');
-        if (! in_array($filter, ['all', 'super_admin', 'admin', 'manager', 'dealer', 'user', 'verified', 'unverified'], true)) {
+        if (! in_array($filter, ['all', 'super_admin', 'admin', 'manager', 'dealer', 'user', 'verified', 'unverified', 'active', 'banned', 'temporarily_banned', 'permanently_banned'], true)) {
             $filter = 'all';
         }
 
@@ -59,6 +59,17 @@ class UserController extends Controller
             }),
             'verified' => $usersQuery->whereNotNull('email_verified_at'),
             'unverified' => $usersQuery->whereNull('email_verified_at'),
+            'active' => $usersQuery->where(function (Builder $query): void {
+                $query->whereNull('banned_at')
+                    ->orWhere(function (Builder $expiredQuery): void {
+                        $expiredQuery->whereNotNull('banned_until')->where('banned_until', '<=', now());
+                    });
+            }),
+            'banned' => $usersQuery->whereNotNull('banned_at')->where(function (Builder $query): void {
+                $query->whereNull('banned_until')->orWhere('banned_until', '>', now());
+            }),
+            'temporarily_banned' => $usersQuery->whereNotNull('banned_at')->where('banned_until', '>', now()),
+            'permanently_banned' => $usersQuery->whereNotNull('banned_at')->whereNull('banned_until'),
             default => $usersQuery,
         };
 
@@ -115,6 +126,10 @@ class UserController extends Controller
             ->count();
         $verifiedUsers = User::whereNotNull('email_verified_at')->count();
         $unverifiedUsers = $totalUsers - $verifiedUsers;
+        $temporarilyBannedUsers = User::whereNotNull('banned_at')->where('banned_until', '>', now())->count();
+        $permanentlyBannedUsers = User::whereNotNull('banned_at')->whereNull('banned_until')->count();
+        $bannedUsers = $temporarilyBannedUsers + $permanentlyBannedUsers;
+        $activeUsers = $totalUsers - $bannedUsers;
         $roleOptions = User::allowedRoles();
         $currentUserId = (int) $request->user()->id;
 
@@ -130,6 +145,10 @@ class UserController extends Controller
             'regularUsers',
             'verifiedUsers',
             'unverifiedUsers',
+            'activeUsers',
+            'bannedUsers',
+            'temporarilyBannedUsers',
+            'permanentlyBannedUsers',
             'roleOptions',
             'currentUserId'
         ));

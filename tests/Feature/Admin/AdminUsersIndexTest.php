@@ -89,4 +89,72 @@ class AdminUsersIndexTest extends TestCase
             ->assertOk()
             ->assertSee('Fallback Visible Account');
     }
+
+    public function test_ban_status_filters_limit_results(): void
+    {
+        $admin = $this->superAdmin();
+        User::factory()->create(['name' => 'Active Filter Account']);
+        User::factory()->create([
+            'name' => 'Temporary Ban Filter Account',
+            'banned_at' => now(),
+            'banned_until' => now()->addDays(7),
+            'ban_reason' => 'Temporary test',
+        ]);
+        User::factory()->create([
+            'name' => 'Permanent Ban Filter Account',
+            'banned_at' => now(),
+            'banned_until' => null,
+            'ban_reason' => 'Permanent test',
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.users.index', ['filter' => 'banned']))
+            ->assertOk()
+            ->assertSee('Temporary Ban Filter Account')
+            ->assertSee('Permanent Ban Filter Account')
+            ->assertDontSee('Active Filter Account');
+
+        $this->actingAs($admin)
+            ->get(route('admin.users.index', ['filter' => 'temporarily_banned']))
+            ->assertOk()
+            ->assertSee('Temporary Ban Filter Account')
+            ->assertDontSee('Permanent Ban Filter Account');
+
+        $this->actingAs($admin)
+            ->get(route('admin.users.index', ['filter' => 'permanently_banned']))
+            ->assertOk()
+            ->assertSee('Permanent Ban Filter Account')
+            ->assertDontSee('Temporary Ban Filter Account');
+
+        $this->actingAs($admin)
+            ->get(route('admin.users.index', ['filter' => 'active']))
+            ->assertOk()
+            ->assertSee('Active Filter Account')
+            ->assertDontSee('Temporary Ban Filter Account')
+            ->assertDontSee('Permanent Ban Filter Account');
+    }
+
+    public function test_users_sidebar_shows_access_status_counts(): void
+    {
+        $admin = $this->superAdmin();
+        User::factory()->create([
+            'banned_at' => now(),
+            'banned_until' => now()->addDay(),
+            'ban_reason' => 'Temporary count',
+        ]);
+        User::factory()->create([
+            'banned_at' => now(),
+            'banned_until' => null,
+            'ban_reason' => 'Permanent count',
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.users.index'))
+            ->assertOk()
+            ->assertSee('Access Status')
+            ->assertSee('Active accounts')
+            ->assertSee('All banned')
+            ->assertSee('Temporary Ban')
+            ->assertSee('Permanent Ban');
+    }
 }
