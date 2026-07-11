@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
@@ -33,6 +34,41 @@ class AuthenticationTest extends TestCase
 
         $this->assertAuthenticated();
         $response->assertRedirect(route('user.shop.home'));
+    }
+
+    public function test_remember_me_creates_a_persistent_login_cookie(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'password',
+            'remember' => '1',
+        ]);
+
+        $this->assertAuthenticatedAs($user);
+        $this->assertNotNull($user->fresh()->remember_token);
+        $response->assertCookie(Auth::guard('web')->getRecallerName());
+    }
+
+    public function test_remember_me_selection_is_restored_after_a_failed_login(): void
+    {
+        $user = User::factory()->create();
+
+        $response = $this->from('/login')->post('/login', [
+            'email' => $user->email,
+            'password' => 'wrong-password',
+            'remember' => '1',
+        ]);
+
+        $response->assertRedirect('/login');
+        $response->assertSessionHasInput('remember', '1');
+
+        $this->get('/login')
+            ->assertOk()
+            ->assertSee('id="remember_me"', false)
+            ->assertSee('value="1"', false)
+            ->assertSee('checked', false);
     }
 
     public function test_users_can_authenticate_with_normalized_phone(): void

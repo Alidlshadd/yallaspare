@@ -53,12 +53,14 @@
         </div>
 
         <div class="flex items-center justify-between gap-4">
-            <label for="remember_me" class="inline-flex items-center gap-2 text-sm text-slate-300">
+            <label for="remember_me" class="inline-flex cursor-pointer items-center gap-2 text-sm text-slate-300">
                 <input
                     id="remember_me"
                     type="checkbox"
                     name="remember"
-                    class="h-4 w-4 rounded border-slate-600 bg-slate-800 text-red-600 focus:ring-2 focus:ring-red-500 focus:ring-offset-0"
+                    value="1"
+                    @checked(old('remember'))
+                    class="h-4 w-4 cursor-pointer rounded border-slate-300 bg-white text-red-600 focus:ring-2 focus:ring-red-500 focus:ring-offset-0 dark:border-slate-600 dark:bg-slate-800"
                 >
                 <span>{{ __('Remember me') }}</span>
             </label>
