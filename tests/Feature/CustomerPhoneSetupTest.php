@@ -46,7 +46,7 @@ class CustomerPhoneSetupTest extends TestCase
                 'country_code' => '+964',
                 'phone' => '7704488315',
             ])
-            ->assertRedirect(route('user.shop.home'));
+            ->assertRedirect(route('phone.verify'));
 
         $this->assertSame('+9647704488315', $user->refresh()->phone);
         $this->assertNull($user->phone_verified_at);
@@ -65,7 +65,7 @@ class CustomerPhoneSetupTest extends TestCase
                 'country_code' => '+964',
                 'phone' => '+9647704488315',
             ])
-            ->assertRedirect(route('user.two-factor.challenge'));
+            ->assertRedirect(route('phone.verify'));
 
         $this->get(route('user.two-factor.challenge'))
             ->assertOk()

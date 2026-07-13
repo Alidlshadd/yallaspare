@@ -3,17 +3,16 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Services\OtpiqSmsService;
-use App\Support\PhoneVerificationCode;
+use App\Services\PhoneVerificationService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
-use Throwable;
 
 class PhoneVerificationController extends Controller
 {
-    public function send(Request $request, OtpiqSmsService $sms): RedirectResponse
+    public function __construct(private readonly PhoneVerificationService $phoneVerification) {}
+
+    public function send(Request $request): RedirectResponse
     {
         $user = $request->user();
 
@@ -27,26 +26,14 @@ class PhoneVerificationController extends Controller
             ]);
         }
 
-        $code = PhoneVerificationCode::generateFor($user);
-
-        try {
-            $sms->sendVerification($user, $code);
-        } catch (Throwable $exception) {
-            PhoneVerificationCode::forgetFor($user);
-
-            Log::warning('Phone verification SMS could not be sent.', [
-                'user_id' => $user->getKey(),
-                'exception' => $exception::class,
-                'message' => $exception->getMessage(),
-            ]);
-
+        if (! $this->phoneVerification->sendCode($user)) {
             return back()->withErrors([
                 'phone_verification' => __('user.phone_verification_send_failed'),
             ]);
         }
 
         return back()->with('phone_verification_sent', __('user.phone_verification_sent', [
-            'minutes' => PhoneVerificationCode::expiresIn(),
+            'minutes' => $this->phoneVerification->expiresInMinutes(),
         ]));
     }
 
@@ -57,15 +44,12 @@ class PhoneVerificationController extends Controller
         ]);
 
         $user = $request->user();
-        $code = PhoneVerificationCode::normalize((string) $request->input('verification_code'));
 
-        if (strlen($code) !== 6 || ! PhoneVerificationCode::verifyFor($user, $code)) {
+        if (! $this->phoneVerification->confirmCode($user, (string) $request->input('verification_code'))) {
             throw ValidationException::withMessages([
                 'verification_code' => __('user.phone_verification_invalid'),
             ]);
         }
-
-        $user->forceFill(['phone_verified_at' => now()])->save();
 
         return back()->with('phone_verification_success', __('user.phone_verification_complete'));
     }

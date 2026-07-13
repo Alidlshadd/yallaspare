@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\User;
 
-use App\Http\Controllers\Auth\UserTwoFactorController;
+use App\Http\Controllers\Auth\PhoneVerificationPromptController;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Rules\IraqiMobileNumber;
+use App\Services\PhoneVerificationService;
 use App\Support\IraqiPhoneNumber;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,14 +17,18 @@ class CustomerPhoneSetupController extends Controller
 {
     public function show(Request $request): View|RedirectResponse
     {
-        if (filled($request->user()?->phone_normalized)) {
+        $user = $request->user();
+
+        // Users with an unverified phone may still come back here to correct
+        // a mistyped number before requesting another verification code.
+        if (filled($user?->phone_normalized) && $user->phone_verified_at !== null) {
             return redirect()->intended(route('user.shop.home'));
         }
 
         return view('auth.add-phone');
     }
 
-    public function store(Request $request, UserTwoFactorController $twoFactor): RedirectResponse
+    public function store(Request $request, PhoneVerificationService $phoneVerification): RedirectResponse
     {
         $user = $request->user();
         abort_unless($user, 403);
@@ -38,16 +43,20 @@ class CustomerPhoneSetupController extends Controller
             'phone_verified_at' => null,
         ])->save();
 
-        if ((string) ($user->two_factor_preference ?? 'off') === 'email') {
-            $sent = $twoFactor->issueChallenge($request, 'email');
-            $redirect = redirect()->route('user.two-factor.challenge');
-
-            return $sent
-                ? $redirect->with('status', __('Phone number saved. We sent a verification code to your email.'))
-                : $redirect->withErrors(['code' => __('We could not send your verification code. Please try again shortly.')]);
+        if (! $phoneVerification->sendCode($user)) {
+            return redirect()->route('phone.verify')
+                ->with('success', __('Phone number added successfully.'))
+                ->withErrors([
+                    'code' => __('user.phone_verification_send_failed'),
+                ]);
         }
 
-        return redirect()->intended(route('user.shop.home'))
-            ->with('success', __('Phone number added successfully.'));
+        $request->session()->put(PhoneVerificationPromptController::LAST_SENT_SESSION_KEY, now()->timestamp);
+
+        return redirect()->route('phone.verify')
+            ->with('success', __('Phone number added successfully.'))
+            ->with('status', __('user.phone_verification_sent', [
+                'minutes' => $phoneVerification->expiresInMinutes(),
+            ]));
     }
 }

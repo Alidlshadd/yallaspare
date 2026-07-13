@@ -33,7 +33,7 @@ class RegistrationTest extends TestCase
         ]);
 
         $this->assertAuthenticated();
-        $response->assertRedirect(route('verification.notice'));
+        $response->assertRedirect(route('phone.verify'));
         $this->assertDatabaseHas('users', [
             'email' => 'test@example.com',
             'phone' => '+9647704488315',
@@ -63,7 +63,7 @@ class RegistrationTest extends TestCase
             'phone' => $input,
             'password' => 'YallaTest!2026',
             'password_confirmation' => 'YallaTest!2026',
-        ])->assertRedirect(route('verification.notice'));
+        ])->assertRedirect(route('phone.verify'));
 
         $this->assertDatabaseHas('users', [
             'email' => $email,

@@ -62,6 +62,10 @@ class PostLoginRedirector
             return $redirect;
         }
 
+        if ($user && $user->phone_verified_at === null) {
+            return redirect()->route('phone.verify');
+        }
+
         $intendedUrl = (string) $request->session()->get('url.intended', '');
         if ($intendedUrl !== '' && str_starts_with($intendedUrl, url('/admin'))) {
             $request->session()->forget('url.intended');

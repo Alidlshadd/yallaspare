@@ -99,6 +99,10 @@ class UserTwoFactorController extends Controller
         $request->session()->forget('user_2fa.challenge');
         $request->session()->put('user_2fa.verified_user_id', $user->id);
 
+        if ($user->phone_verified_at === null && ! $user->isAdminPanelUser()) {
+            return redirect()->route('phone.verify');
+        }
+
         return redirect()->intended(route('user.shop.home'));
     }
 

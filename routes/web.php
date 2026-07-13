@@ -127,7 +127,7 @@ Route::get('/brand/logo', function () {
 
 Route::post('/cart/{product}', [CartController::class, 'add'])->middleware('throttle:commerce-write')->name('cart.add');
 
-Route::middleware(['auth', 'verified', 'customer.area', 'customer.phone', 'user.2fa'])->group(function () {
+Route::middleware(['auth', 'verified', 'customer.area', 'customer.phone', 'customer.phone.verified', 'user.2fa'])->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::get('/cart/pending/resume', [CartController::class, 'resumePending'])->name('cart.pending.resume');
     Route::patch('/cart/items/{item}', [CartController::class, 'update'])->middleware('throttle:commerce-write')->name('cart.update');
@@ -144,7 +144,7 @@ Route::middleware(['auth', 'verified', 'customer.area', 'customer.phone', 'user.
     Route::post('/shop/products/{product}/reviews', [ProductReviewController::class, 'store'])->middleware('throttle:commerce-write')->name('shop.reviews.store');
 });
 
-Route::middleware(['auth', 'verified', 'customer.area', 'customer.phone', 'user.2fa'])->prefix('account')->name('account.')->group(function () {
+Route::middleware(['auth', 'verified', 'customer.area', 'customer.phone', 'customer.phone.verified', 'user.2fa'])->prefix('account')->name('account.')->group(function () {
     Route::get('/', function () {
         return redirect()->route('user.account.edit');
     })->name('index');
@@ -168,14 +168,27 @@ Route::prefix('user')->name('user.')->group(function () {
     Route::get('/shop', [UserShopController::class, 'shop'])->name('shop.index');
 });
 
-Route::middleware(['auth', 'verified', 'customer.area'])->prefix('user')->name('user.')->group(function () {
+// Phone setup runs before email verification in the onboarding flow, so it
+// must not require a verified email address.
+Route::middleware(['auth', 'customer.area'])->prefix('user')->name('user.')->group(function () {
     Route::get('/phone/setup', [CustomerPhoneSetupController::class, 'show'])->name('phone.setup');
     Route::post('/phone/setup', [CustomerPhoneSetupController::class, 'store'])
         ->middleware('throttle:phone-verification-send')
         ->name('phone.store');
 });
 
+// These two endpoints intentionally skip the verified-phone gate: they are the
+// actions an unverified user performs to become verified.
 Route::middleware(['auth', 'verified', 'customer.area', 'customer.phone', 'user.2fa'])->prefix('user')->name('user.')->group(function () {
+    Route::post('/account/phone/verification', [PhoneVerificationController::class, 'send'])
+        ->middleware('throttle:phone-verification-send')
+        ->name('account.phone-verification.send');
+    Route::post('/account/phone/verification/confirm', [PhoneVerificationController::class, 'verify'])
+        ->middleware('throttle:phone-verification-check')
+        ->name('account.phone-verification.verify');
+});
+
+Route::middleware(['auth', 'verified', 'customer.area', 'customer.phone', 'customer.phone.verified', 'user.2fa'])->prefix('user')->name('user.')->group(function () {
     Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
     Route::post('/wishlist/{product}', [WishlistController::class, 'store'])->middleware('throttle:commerce-write')->name('wishlist.store');
     Route::delete('/wishlist/{product}', [WishlistController::class, 'destroy'])->middleware('throttle:commerce-write')->name('wishlist.destroy');
@@ -187,12 +200,6 @@ Route::middleware(['auth', 'verified', 'customer.area', 'customer.phone', 'user.
     Route::get('/account/actions', [UserAccountController::class, 'actions'])->name('account.actions');
     Route::patch('/account', [UserAccountController::class, 'update'])->middleware('throttle:commerce-write')->name('account.update');
     Route::patch('/account/password', [UserAccountController::class, 'password'])->middleware('throttle:commerce-write')->name('account.password');
-    Route::post('/account/phone/verification', [PhoneVerificationController::class, 'send'])
-        ->middleware('throttle:phone-verification-send')
-        ->name('account.phone-verification.send');
-    Route::post('/account/phone/verification/confirm', [PhoneVerificationController::class, 'verify'])
-        ->middleware('throttle:phone-verification-check')
-        ->name('account.phone-verification.verify');
     Route::get('/settings', [UserSettingsController::class, 'edit'])->name('settings.edit');
     Route::patch('/settings', [UserSettingsController::class, 'update'])->name('settings.update');
     Route::get('/settings/appearance', [UserSettingsController::class, 'appearance'])->name('settings.appearance');
@@ -229,7 +236,7 @@ Route::get('/dashboard', function () {
 | PROFILE
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'verified', 'customer.phone', 'user.2fa', 'admin.2fa'])->prefix('profile')->name('profile.')->group(function () {
+Route::middleware(['auth', 'verified', 'customer.phone', 'customer.phone.verified', 'user.2fa', 'admin.2fa'])->prefix('profile')->name('profile.')->group(function () {
     Route::get('/', [ProfileController::class, 'edit'])->name('edit');
     Route::patch('/', [ProfileController::class, 'update'])->name('update');
     Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');

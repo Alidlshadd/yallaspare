@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Rules\IraqiMobileNumber;
+use App\Services\PhoneVerificationService;
 use App\Support\IraqiPhoneNumber;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
@@ -30,7 +31,7 @@ class RegisteredUserController extends Controller
      *
      * @throws ValidationException
      */
-    public function store(Request $request): RedirectResponse
+    public function store(Request $request, PhoneVerificationService $phoneVerification): RedirectResponse
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -51,6 +52,18 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect()->route('verification.notice');
+        // The account is kept even when SMS delivery fails; the user can
+        // request a new code from the phone verification page.
+        if (! $phoneVerification->sendCode($user)) {
+            return redirect()->route('phone.verify')->withErrors([
+                'code' => __('Your account was created, but the verification code could not be sent. Please try again.'),
+            ]);
+        }
+
+        $request->session()->put(PhoneVerificationPromptController::LAST_SENT_SESSION_KEY, now()->timestamp);
+
+        return redirect()->route('phone.verify')->with('status', __('user.phone_verification_sent', [
+            'minutes' => $phoneVerification->expiresInMinutes(),
+        ]));
     }
 }

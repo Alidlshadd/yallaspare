@@ -27,18 +27,25 @@ class PhoneVerificationTest extends TestCase
 
     public function test_personal_info_page_shows_unverified_phone_action(): void
     {
-        $user = User::factory()->create(['phone' => '0770 448 8315']);
+        $user = User::factory()->create(['phone' => '0770 448 8315', 'phone_verified_at' => null]);
+
+        // The verified-phone gate funnels unverified users to the dedicated
+        // verification page instead of the account area.
+        $this->actingAs($user)
+            ->get(route('user.account.personal'))
+            ->assertRedirect(route('phone.verify'));
+
+        $user->forceFill(['phone_verified_at' => now()])->save();
 
         $this->actingAs($user)
             ->get(route('user.account.personal'))
             ->assertOk()
-            ->assertSee(__('user.unverified'))
-            ->assertSee(__('user.send_verification_code'));
+            ->assertSee(__('user.verified'));
     }
 
     public function test_user_can_send_and_confirm_phone_verification_code(): void
     {
-        $user = User::factory()->create(['phone' => '0770 448 8315']);
+        $user = User::factory()->create(['phone' => '0770 448 8315', 'phone_verified_at' => null]);
         $sentCode = null;
 
         Http::fake(function (HttpRequest $request) use (&$sentCode) {
@@ -81,7 +88,7 @@ class PhoneVerificationTest extends TestCase
 
     public function test_invalid_phone_verification_code_is_rejected(): void
     {
-        $user = User::factory()->create(['phone' => '+964 770 448 8315']);
+        $user = User::factory()->create(['phone' => '+964 770 448 8315', 'phone_verified_at' => null]);
 
         Http::fake([
             'https://api.otpiq.test/api/sms' => Http::response([
@@ -135,7 +142,7 @@ class PhoneVerificationTest extends TestCase
 
     public function test_sms_failure_does_not_claim_that_a_code_was_sent(): void
     {
-        $user = User::factory()->create(['phone' => '0770 448 8315']);
+        $user = User::factory()->create(['phone' => '0770 448 8315', 'phone_verified_at' => null]);
 
         Http::fake([
             'https://api.otpiq.test/api/sms' => Http::response(['message' => 'Unauthorized'], 401),

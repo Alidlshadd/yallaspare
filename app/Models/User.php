@@ -433,7 +433,7 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
             }
 
             if ($query->exists()) {
-                $fail(__('This phone number is already registered.'));
+                $fail(__('This phone number is already registered. Please sign in or use another number.'));
             }
         };
     }
