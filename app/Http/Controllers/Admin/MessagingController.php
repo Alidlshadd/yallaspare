@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Rules\IraqiMobileNumber;
+use App\Services\OtpiqDeliveryException;
 use App\Services\OtpiqSmsService;
 use App\Support\IraqiPhoneNumber;
 use Illuminate\Http\RedirectResponse;
@@ -24,17 +25,41 @@ class MessagingController extends Controller
     {
         $withPhone = User::query()->whereNotNull('phone_normalized');
 
+        $whatsappEnabled = (bool) config('services.otpiq.whatsapp.enabled', false);
+        $whatsappConfigured = $this->otpiq->whatsappAvailable();
+        $templateStatus = $this->otpiq->whatsappTemplateStatus();
+        $whatsappReady = $this->otpiq->whatsappReady();
+        $whatsappMissing = $this->whatsappMissing($whatsappEnabled, $templateStatus);
+
+        $whatsappState = match (true) {
+            ! $whatsappEnabled => 'disabled',
+            $whatsappReady => 'ready',
+            default => 'attention',
+        };
+
         return view('admin.messaging.index', [
             'channels' => [
                 'sms' => [
                     'label' => 'SMS',
                     'available' => $this->otpiq->smsAvailable(),
+                    'state' => $this->otpiq->smsAvailable() ? 'ready' : 'attention',
                     'status' => $this->otpiq->smsAvailable() ? __('Ready') : __('Configuration required'),
+                    'missing' => $this->otpiq->smsAvailable() ? [] : [__('OTPIQ API key')],
                 ],
                 'whatsapp' => [
                     'label' => 'WhatsApp',
-                    'available' => $this->otpiq->whatsappAvailable(),
-                    'status' => $this->otpiq->whatsappAvailable() ? __('Ready') : __('Configuration required'),
+                    'available' => $whatsappReady,
+                    'state' => $whatsappState,
+                    'status' => match ($whatsappState) {
+                        'ready' => __('Ready'),
+                        'disabled' => __('Disabled'),
+                        default => __('Configuration required'),
+                    },
+                    'missing' => $whatsappMissing,
+                    'template_alert' => $whatsappEnabled
+                        && $whatsappConfigured
+                        && $templateStatus['checked']
+                        && $templateStatus['template_approved'] !== true,
                 ],
             ],
             'stats' => [
@@ -47,11 +72,14 @@ class MessagingController extends Controller
             'configuration' => [
                 'api_key' => $this->otpiq->smsAvailable(),
                 'base_url' => filled(config('services.otpiq.base_url')),
-                'whatsapp_enabled' => (bool) config('services.otpiq.whatsapp_enabled', false),
-                'whatsapp_account' => filled(config('services.otpiq.whatsapp_account_id')),
-                'whatsapp_phone' => filled(config('services.otpiq.whatsapp_phone_id')),
-                'whatsapp_template' => filled(config('services.otpiq.whatsapp_template_name')),
-                'template_name' => trim((string) config('services.otpiq.whatsapp_template_name')),
+                'whatsapp_enabled' => $whatsappEnabled,
+                'whatsapp_account' => filled(config('services.otpiq.whatsapp.account_id')),
+                'whatsapp_phone' => filled(config('services.otpiq.whatsapp.phone_id')),
+                'whatsapp_template' => filled(config('services.otpiq.whatsapp.template_name')),
+                'whatsapp_language' => filled(config('services.otpiq.whatsapp.template_language')),
+                'template_name' => trim((string) config('services.otpiq.whatsapp.template_name')),
+                'template_language' => trim((string) config('services.otpiq.whatsapp.template_language', 'en')),
+                'template_status' => $templateStatus,
             ],
         ]);
     }
@@ -66,7 +94,7 @@ class MessagingController extends Controller
         $channel = (string) $validated['channel'];
         $available = $channel === 'sms'
             ? $this->otpiq->smsAvailable()
-            : $this->otpiq->whatsappAvailable();
+            : $this->otpiq->whatsappReady();
 
         if (! $available) {
             return back()->withErrors([
@@ -86,6 +114,9 @@ class MessagingController extends Controller
             Log::error('Admin messaging test delivery failed', [
                 'admin_id' => $request->user()?->id,
                 'channel' => $channel,
+                'category' => $exception instanceof OtpiqDeliveryException
+                    ? $exception->category
+                    : 'unexpected',
                 'exception' => $exception::class,
             ]);
 
@@ -103,5 +134,42 @@ class MessagingController extends Controller
         return back()->with('success', __('A test verification code was sent via :channel', [
             'channel' => strtoupper($channel),
         ]));
+    }
+
+    /**
+     * Human-readable list of what still blocks the WhatsApp channel.
+     *
+     * @param  array{checked: bool, template_approved: ?bool}  $templateStatus
+     * @return array<int, string>
+     */
+    private function whatsappMissing(bool $whatsappEnabled, array $templateStatus): array
+    {
+        $missing = [];
+
+        if (! $this->otpiq->smsAvailable()) {
+            $missing[] = __('OTPIQ API key');
+        }
+
+        if (! $whatsappEnabled) {
+            $missing[] = __('WhatsApp channel enabled');
+        }
+
+        if (blank(config('services.otpiq.whatsapp.account_id'))) {
+            $missing[] = __('WhatsApp account ID');
+        }
+
+        if (blank(config('services.otpiq.whatsapp.phone_id'))) {
+            $missing[] = __('WhatsApp phone ID');
+        }
+
+        if (blank(config('services.otpiq.whatsapp.template_name'))) {
+            $missing[] = __('Approved template name');
+        }
+
+        if ($missing === [] && $templateStatus['checked'] && $templateStatus['template_approved'] !== true) {
+            $missing[] = __('An approved WhatsApp verification template is required.');
+        }
+
+        return $missing;
     }
 }

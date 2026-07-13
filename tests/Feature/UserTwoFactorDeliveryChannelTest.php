@@ -22,7 +22,7 @@ class UserTwoFactorDeliveryChannelTest extends TestCase
         config([
             'services.otpiq.api_key' => 'sk_dev_test_key',
             'services.otpiq.base_url' => 'https://api.otpiq.test/api',
-            'services.otpiq.whatsapp_enabled' => false,
+            'services.otpiq.whatsapp.enabled' => false,
         ]);
     }
 
@@ -90,10 +90,10 @@ class UserTwoFactorDeliveryChannelTest extends TestCase
         Http::assertNothingSent();
 
         config([
-            'services.otpiq.whatsapp_enabled' => true,
-            'services.otpiq.whatsapp_account_id' => 'wa-account',
-            'services.otpiq.whatsapp_phone_id' => 'wa-phone',
-            'services.otpiq.whatsapp_template_name' => 'yallaspare_otp',
+            'services.otpiq.whatsapp.enabled' => true,
+            'services.otpiq.whatsapp.account_id' => 'wa-account',
+            'services.otpiq.whatsapp.phone_id' => 'wa-phone',
+            'services.otpiq.whatsapp.template_name' => 'yallaspare_otp',
         ]);
         Http::fake([
             'https://api.otpiq.test/api/sms' => Http::response(['smsId' => 'wa-1234567890abcdef123456']),
@@ -108,6 +108,45 @@ class UserTwoFactorDeliveryChannelTest extends TestCase
             && $request['whatsappAccountId'] === 'wa-account'
             && $request['whatsappPhoneId'] === 'wa-phone'
             && $request['templateName'] === 'yallaspare_otp');
+    }
+
+    public function test_whatsapp_otp_verifies_the_phone_number(): void
+    {
+        Notification::fake();
+        config([
+            'services.otpiq.whatsapp.enabled' => true,
+            'services.otpiq.whatsapp.account_id' => 'wa-account',
+            'services.otpiq.whatsapp.phone_id' => 'wa-phone',
+            'services.otpiq.whatsapp.template_name' => 'yallaspare_otp',
+        ]);
+        $user = $this->twoFactorUser(['phone_verified_at' => null]);
+        $sentCode = null;
+
+        Http::fake(function (HttpRequest $request) use (&$sentCode) {
+            $sentCode = (string) $request['verificationCode'];
+
+            return Http::response(['smsId' => 'wa-1234567890abcdef123456']);
+        });
+
+        $this->loginAndOpenChallenge($user);
+
+        $this->post(route('user.two-factor.channel'), ['channel' => 'whatsapp'])
+            ->assertRedirect()
+            ->assertSessionHas('status');
+
+        $this->assertSame('whatsapp', session('user_2fa.challenge.channel'));
+        Http::assertSent(fn (HttpRequest $request): bool => $request['provider'] === 'whatsapp'
+            && $request['templateName'] === 'yallaspare_otp');
+
+        $this->post(route('user.two-factor.verify'), ['code' => $sentCode])
+            ->assertRedirect(route('user.shop.home'));
+
+        $this->assertNotNull($user->refresh()->phone_verified_at);
+        $this->assertNull(session('user_2fa.challenge'));
+
+        // A used OTP cannot be replayed: the challenge was consumed.
+        $this->post(route('user.two-factor.verify'), ['code' => $sentCode])
+            ->assertSessionHasErrors('code');
     }
 
     public function test_changing_method_invalidates_the_previous_otp(): void
