@@ -78,5 +78,6 @@ class Kernel extends HttpKernel
         'admin.2fa' => \App\Http\Middleware\EnsureAdminTwoFactorVerified::class,
         'user.2fa' => \App\Http\Middleware\EnsureUserTwoFactorVerified::class,
         'customer.area' => \App\Http\Middleware\EnsureCustomerAreaUser::class,
+        'customer.phone' => \App\Http\Middleware\EnsureCustomerHasPhone::class,
     ];
 }

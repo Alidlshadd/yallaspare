@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\View\Composers\HeaderComposer;
+use App\Mail\SupportContactRequestMail;
 use App\Models\BackInStockSubscription;
 use App\Models\Cart;
 use App\Models\CartItem;
@@ -20,21 +21,23 @@ use App\Models\Setting;
 use App\Models\User;
 use App\Models\UserAddress;
 use App\Models\VehicleBrand;
-use App\Mail\SupportContactRequestMail;
 use App\Models\Wishlist;
 use App\Notifications\AdminTwoFactorCode;
+use App\Rules\IraqiMobileNumber;
 use App\Rules\PhoneNumber;
-use App\Services\CheckoutTotals;
 use App\Services\Checkout\CheckoutService;
+use App\Services\CheckoutTotals;
 use App\Services\CouponService;
 use App\Services\Inventory\InventoryAdjustmentService;
 use App\Services\InvoiceRenderer;
 use App\Services\Orders\OrderStatusService;
 use App\Services\Payments\PaymentService;
-use App\Services\Reviews\ProductReviewEligibilityService;
 use App\Services\Returns\ReturnRefundService;
+use App\Services\Reviews\ProductReviewEligibilityService;
 use App\Services\Security\UserPrivilegeService;
+use App\Support\IraqiPhoneNumber;
 use App\Support\SqlSafe;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
@@ -46,7 +49,6 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Support\Facades\View;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password as PasswordRule;
 
@@ -122,15 +124,15 @@ class MobileController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')],
-            'phone' => ['nullable', 'string', 'max:20', new PhoneNumber(), User::uniquePhoneRule()],
+            'phone' => ['required', 'string', 'max:20', new IraqiMobileNumber, User::uniquePhoneRule()],
             'password' => ['required', 'string', PasswordRule::defaults()],
         ]);
 
-        $user = new User();
+        $user = new User;
         $user->forceFill([
             'name' => $data['name'],
             'email' => $data['email'],
-            'phone' => $data['phone'] ?? null,
+            'phone' => IraqiPhoneNumber::toE164($data['phone']),
             'password' => Hash::make($data['password']),
             'role' => User::ROLE_USER,
         ])->save();
@@ -185,8 +187,12 @@ class MobileController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
-            'phone' => ['nullable', 'string', 'max:20', new PhoneNumber(), User::uniquePhoneRule($user->id)],
+            'phone' => ['nullable', 'string', 'max:20', new IraqiMobileNumber, User::uniquePhoneRule($user->id)],
         ]);
+
+        if (array_key_exists('phone', $data) && $data['phone'] !== null) {
+            $data['phone'] = IraqiPhoneNumber::toE164($data['phone']);
+        }
 
         $user->update($data);
 
@@ -410,7 +416,7 @@ class MobileController extends Controller
         $titleKey = self::LEGAL_PAGES[$slug] ?? null;
         abort_if($titleKey === null, 404);
 
-        $viewName = 'legal.' . $slug;
+        $viewName = 'legal.'.$slug;
         abort_unless(View::exists($viewName), 404);
 
         $sections = view($viewName)->renderSections();
@@ -429,7 +435,7 @@ class MobileController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:120'],
             'email' => ['required', 'email', 'max:190'],
-            'phone' => ['nullable', 'string', 'max:40', new PhoneNumber()],
+            'phone' => ['nullable', 'string', 'max:40', new PhoneNumber],
             'topic' => ['required', 'string', 'max:40'],
             'subject' => ['required', 'string', 'max:160'],
             'message' => ['required', 'string', 'max:3000'],
@@ -511,7 +517,7 @@ class MobileController extends Controller
                     'name' => method_exists($category, 'localizedName') ? $category->localizedName() : ($category->name_en ?? $category->name ?? ''),
                     'description' => $category->description_en ?? '',
                     'product_count' => $category->products_count,
-                    'image_url' => $category->image ? asset('storage/' . $category->image) : null,
+                    'image_url' => $category->image ? asset('storage/'.$category->image) : null,
                 ]),
         ]);
     }
@@ -1198,6 +1204,7 @@ class MobileController extends Controller
                 'message' => null,
             ];
         }
+
         return [
             'valid' => (bool) ($couponPreview['valid'] ?? false),
             'code' => (string) ($couponPreview['code'] ?? ''),
@@ -1254,6 +1261,7 @@ class MobileController extends Controller
                         'product_id' => $orderItem->product_id,
                         'reason' => 'unavailable',
                     ];
+
                     continue;
                 }
 
@@ -1264,6 +1272,7 @@ class MobileController extends Controller
                         'product' => $this->productPayload($product, $user),
                         'reason' => 'out_of_stock',
                     ];
+
                     continue;
                 }
 
@@ -1279,6 +1288,7 @@ class MobileController extends Controller
                         'product' => $this->productPayload($product, $user),
                         'reason' => 'max_stock_in_cart',
                     ];
+
                     continue;
                 }
 
@@ -1324,7 +1334,7 @@ class MobileController extends Controller
         );
 
         return $renderer->render($order, $locale)
-            ->download('invoice-' . $order->id . '-' . $locale . '.pdf');
+            ->download('invoice-'.$order->id.'-'.$locale.'.pdf');
     }
 
     public function reviews(string $idOrSlug)
@@ -1427,7 +1437,7 @@ class MobileController extends Controller
 
         $order->update([
             'cancellation_requested_at' => now(),
-            'cancellation_reason' => trim($data['reason'] . "\n" . ($data['notes'] ?? '') . "\n" . ($data['attachment'] ?? '')),
+            'cancellation_reason' => trim($data['reason']."\n".($data['notes'] ?? '')."\n".($data['attachment'] ?? '')),
         ]);
 
         return response()->json(['message' => __('Cancellation request submitted.')]);
@@ -1447,7 +1457,7 @@ class MobileController extends Controller
         $order->returnRequests()->create([
             'user_id' => $request->user()->id,
             'reason' => $data['reason'],
-            'admin_note' => trim(($data['notes'] ?? '') . "\n" . ($data['attachment'] ?? '')),
+            'admin_note' => trim(($data['notes'] ?? '')."\n".($data['attachment'] ?? '')),
             'type' => 'return',
             'status' => ReturnRequest::STATUS_REQUESTED,
             'requested_at' => now(),
@@ -1465,7 +1475,7 @@ class MobileController extends Controller
             $latestOrder = $user->orders()->latest()->first();
             if ($latestOrder) {
                 $items->push([
-                    'id' => 'order-' . $latestOrder->id,
+                    'id' => 'order-'.$latestOrder->id,
                     'type' => 'order',
                     'title' => __('Order update'),
                     'message' => __('Order :order is :status.', [
@@ -1492,7 +1502,7 @@ class MobileController extends Controller
 
             if ($coupon) {
                 $items->push([
-                    'id' => 'coupon-' . $coupon->id,
+                    'id' => 'coupon-'.$coupon->id,
                     'type' => 'promotion',
                     'title' => __('Promotion'),
                     'message' => __(':code is active for eligible carts.', ['code' => $coupon->code]),
@@ -1515,7 +1525,7 @@ class MobileController extends Controller
 
             foreach ($lowStockProducts as $product) {
                 $items->push([
-                    'id' => 'stock-' . $product->id,
+                    'id' => 'stock-'.$product->id,
                     'type' => 'stock',
                     'title' => __('Stock alert'),
                     'message' => __(':name has :count left.', [
@@ -1547,7 +1557,7 @@ class MobileController extends Controller
             'metrics' => [
                 [
                     'label' => __('Dealer discount'),
-                    'value' => number_format((float) $user->dealer_discount, 0) . '%',
+                    'value' => number_format((float) $user->dealer_discount, 0).'%',
                     'delta' => 0,
                 ],
                 [
@@ -1720,7 +1730,7 @@ class MobileController extends Controller
 
         return response()->json(['data' => [
             'metrics' => [
-                ['label' => 'revenue', 'value' => 'IQD ' . number_format($revenue, 0), 'delta' => Order::query()->where('created_at', '>=', now()->subDays(30))->count()],
+                ['label' => 'revenue', 'value' => 'IQD '.number_format($revenue, 0), 'delta' => Order::query()->where('created_at', '>=', now()->subDays(30))->count()],
                 ['label' => 'products', 'value' => (string) Product::query()->count(), 'delta' => Product::query()->where('created_at', '>=', now()->subDays(30))->count()],
                 ['label' => 'orders', 'value' => (string) Order::query()->count(), 'delta' => Order::query()->where('created_at', '>=', now()->subDays(30))->count()],
                 ['label' => 'pending_orders', 'value' => (string) Order::query()->where('status', Order::STATUS_PENDING)->count(), 'delta' => 0],
@@ -1731,6 +1741,7 @@ class MobileController extends Controller
             'month_labels' => collect(range(5, 0))->map(fn ($i) => now()->subMonths($i)->format('M'))->values(),
             'month_orders' => collect(range(5, 0))->map(function ($i) {
                 $date = now()->subMonths($i);
+
                 return Order::query()->whereYear('created_at', $date->year)->whereMonth('created_at', $date->month)->count();
             })->values(),
             'stock_labels' => ['In', 'Out', 'Low', 'Active'],
@@ -1863,7 +1874,7 @@ class MobileController extends Controller
 
         try {
             $privileges->assertCanAssignRoleAndPermissions($authUser, $user, $role);
-        } catch (\Illuminate\Auth\Access\AuthorizationException) {
+        } catch (AuthorizationException) {
             abort(403);
         }
 
@@ -1894,7 +1905,7 @@ class MobileController extends Controller
 
         try {
             $privileges->assertCanManageDealerLifecycle($authUser, $user);
-        } catch (\Illuminate\Auth\Access\AuthorizationException) {
+        } catch (AuthorizationException) {
             abort(403);
         }
 
@@ -1954,18 +1965,18 @@ class MobileController extends Controller
     {
         $firstImage = $product->relationLoaded('images') ? $product->images->first() : $product->images()->first();
         if ($firstImage) {
-            return asset('storage/' . $firstImage->path);
+            return asset('storage/'.$firstImage->path);
         }
 
-        return $product->image ? asset('storage/' . $product->image) : null;
+        return $product->image ? asset('storage/'.$product->image) : null;
     }
 
     private function productPayload(Product $product, ?User $user): array
     {
         $pricing = $product->pricingFor($user);
-        $images = $product->images->map(fn ($image) => asset('storage/' . $image->path))->values()->all();
+        $images = $product->images->map(fn ($image) => asset('storage/'.$image->path))->values()->all();
         if ($images === [] && $product->image) {
-            $images[] = asset('storage/' . $product->image);
+            $images[] = asset('storage/'.$product->image);
         }
 
         return [
@@ -1984,7 +1995,7 @@ class MobileController extends Controller
             'discount_percent' => $pricing['discount_percent'],
             'stock_quantity' => (int) $product->stock_quantity,
             'low_stock_threshold' => (int) ($product->low_stock_threshold ?? 5),
-            'compatible_models' => $product->vehicleFitments->map(fn ($fitment) => trim(($fitment->brand?->name ?? '') . ' ' . ($fitment->model?->name ?? '') . ' ' . ($fitment->year_from ?? '') . '-' . ($fitment->year_to ?? '')))->filter()->values()->all()
+            'compatible_models' => $product->vehicleFitments->map(fn ($fitment) => trim(($fitment->brand?->name ?? '').' '.($fitment->model?->name ?? '').' '.($fitment->year_from ?? '').'-'.($fitment->year_to ?? '')))->filter()->values()->all()
                 ?: ($product->compatible_models ?? []),
             'images' => $images,
             'rating' => round((float) $product->reviews->avg('rating'), 1),
@@ -2052,7 +2063,7 @@ class MobileController extends Controller
             'city' => ['required', 'string', 'max:120'],
             'line1' => ['required', 'string', 'max:255'],
             'line2' => ['nullable', 'string', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:20', new PhoneNumber()],
+            'phone' => ['nullable', 'string', 'max:20', new PhoneNumber],
             'is_default' => ['nullable', 'boolean'],
         ]);
 
@@ -2085,7 +2096,7 @@ class MobileController extends Controller
     {
         $validator = ValidatorFacade::make(
             ['phone' => $address->phone],
-            ['phone' => ['required', new PhoneNumber()]],
+            ['phone' => ['required', new PhoneNumber]],
         );
 
         abort_if(
@@ -2133,7 +2144,7 @@ class MobileController extends Controller
 
     private function mobileAdminStepUpKey(User $user, int $tokenId): string
     {
-        return 'mobile-admin-step-up:' . $user->id . ':' . $tokenId;
+        return 'mobile-admin-step-up:'.$user->id.':'.$tokenId;
     }
 
     private function mobileTokenAbilities(User $user): array

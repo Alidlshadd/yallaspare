@@ -128,6 +128,7 @@ class EmailVerificationTest extends TestCase
         $this->postJson('/api/mobile/register', [
             'name' => 'Mobile User',
             'email' => 'mobile@example.com',
+            'phone' => '07704488315',
             'password' => 'YallaTest!2026',
         ])
             ->assertCreated()
@@ -139,6 +140,7 @@ class EmailVerificationTest extends TestCase
         Event::assertDispatched(\Illuminate\Auth\Events\Registered::class);
         $this->assertDatabaseHas('users', [
             'email' => 'mobile@example.com',
+            'phone' => '+9647704488315',
             'email_verified_at' => null,
         ]);
     }

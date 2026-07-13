@@ -45,6 +45,10 @@ class PostLoginRedirector
             return redirect()->route('verification.notice');
         }
 
+        if ($user && empty($user->phone_normalized)) {
+            return redirect()->route('user.phone.setup');
+        }
+
         if ($user && (string) ($user->two_factor_preference ?? 'off') === 'email') {
             $mailAvailable = app(UserTwoFactorController::class)->issueChallenge($request);
             $redirect = redirect()->route('user.two-factor.challenge');

@@ -28,18 +28,32 @@ class OtpiqSmsService
             throw new RuntimeException('The configured OTPiQ provider is not supported.');
         }
 
+        if ($provider === 'whatsapp' && ! $this->whatsappAvailable()) {
+            throw new RuntimeException('OTPIQ WhatsApp verification is not configured.');
+        }
+
+        $requestPayload = [
+            'phoneNumber' => $phoneNumber,
+            'smsType' => 'verification',
+            'provider' => $provider,
+            'verificationCode' => $code,
+        ];
+
+        if ($provider === 'whatsapp') {
+            $requestPayload += [
+                'whatsappAccountId' => (string) config('services.otpiq.whatsapp_account_id'),
+                'whatsappPhoneId' => (string) config('services.otpiq.whatsapp_phone_id'),
+                'templateName' => (string) config('services.otpiq.whatsapp_template_name'),
+            ];
+        }
+
         try {
             $response = Http::withToken($apiKey)
                 ->acceptJson()
                 ->asJson()
                 ->connectTimeout(5)
                 ->timeout(15)
-                ->post($baseUrl.'/sms', [
-                    'phoneNumber' => $phoneNumber,
-                    'smsType' => 'verification',
-                    'provider' => $provider,
-                    'verificationCode' => $code,
-                ]);
+                ->post($baseUrl.'/sms', $requestPayload);
         } catch (ConnectionException $exception) {
             throw new RuntimeException('Could not connect to OTPiQ.', previous: $exception);
         }
@@ -55,6 +69,20 @@ class OtpiqSmsService
         }
 
         return $payload;
+    }
+
+    public function smsAvailable(): bool
+    {
+        return filled(config('services.otpiq.api_key'));
+    }
+
+    public function whatsappAvailable(): bool
+    {
+        return $this->smsAvailable()
+            && (bool) config('services.otpiq.whatsapp_enabled', false)
+            && filled(config('services.otpiq.whatsapp_account_id'))
+            && filled(config('services.otpiq.whatsapp_phone_id'))
+            && filled(config('services.otpiq.whatsapp_template_name'));
     }
 
     public function internationalPhoneNumber(string $normalizedPhone): string

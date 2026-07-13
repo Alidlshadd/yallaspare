@@ -4,6 +4,7 @@ use App\Http\Controllers\Account\AccountAddressController;
 use App\Http\Controllers\Account\AccountOrdersController;
 use App\Http\Controllers\User\UserAccountController;
 use App\Http\Controllers\User\PhoneVerificationController;
+use App\Http\Controllers\User\CustomerPhoneSetupController;
 use App\Http\Controllers\User\UserSettingsController;
 use App\Http\Controllers\User\WishlistController;
 use App\Http\Controllers\User\ShopController as UserShopController;
@@ -125,7 +126,7 @@ Route::get('/brand/logo', function () {
 
 Route::post('/cart/{product}', [CartController::class, 'add'])->middleware('throttle:commerce-write')->name('cart.add');
 
-Route::middleware(['auth', 'verified', 'customer.area', 'user.2fa'])->group(function () {
+Route::middleware(['auth', 'verified', 'customer.area', 'customer.phone', 'user.2fa'])->group(function () {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::get('/cart/pending/resume', [CartController::class, 'resumePending'])->name('cart.pending.resume');
     Route::patch('/cart/items/{item}', [CartController::class, 'update'])->middleware('throttle:commerce-write')->name('cart.update');
@@ -142,7 +143,7 @@ Route::middleware(['auth', 'verified', 'customer.area', 'user.2fa'])->group(func
     Route::post('/shop/products/{product}/reviews', [ProductReviewController::class, 'store'])->middleware('throttle:commerce-write')->name('shop.reviews.store');
 });
 
-Route::middleware(['auth', 'verified', 'customer.area', 'user.2fa'])->prefix('account')->name('account.')->group(function () {
+Route::middleware(['auth', 'verified', 'customer.area', 'customer.phone', 'user.2fa'])->prefix('account')->name('account.')->group(function () {
     Route::get('/', function () {
         return redirect()->route('user.account.edit');
     })->name('index');
@@ -166,7 +167,14 @@ Route::prefix('user')->name('user.')->group(function () {
     Route::get('/shop', [UserShopController::class, 'shop'])->name('shop.index');
 });
 
-Route::middleware(['auth', 'verified', 'customer.area', 'user.2fa'])->prefix('user')->name('user.')->group(function () {
+Route::middleware(['auth', 'verified', 'customer.area'])->prefix('user')->name('user.')->group(function () {
+    Route::get('/phone/setup', [CustomerPhoneSetupController::class, 'show'])->name('phone.setup');
+    Route::post('/phone/setup', [CustomerPhoneSetupController::class, 'store'])
+        ->middleware('throttle:phone-verification-send')
+        ->name('phone.store');
+});
+
+Route::middleware(['auth', 'verified', 'customer.area', 'customer.phone', 'user.2fa'])->prefix('user')->name('user.')->group(function () {
     Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
     Route::post('/wishlist/{product}', [WishlistController::class, 'store'])->middleware('throttle:commerce-write')->name('wishlist.store');
     Route::delete('/wishlist/{product}', [WishlistController::class, 'destroy'])->middleware('throttle:commerce-write')->name('wishlist.destroy');
@@ -220,7 +228,7 @@ Route::get('/dashboard', function () {
 | PROFILE
 |--------------------------------------------------------------------------
 */
-Route::middleware(['auth', 'verified', 'user.2fa', 'admin.2fa'])->prefix('profile')->name('profile.')->group(function () {
+Route::middleware(['auth', 'verified', 'customer.phone', 'user.2fa', 'admin.2fa'])->prefix('profile')->name('profile.')->group(function () {
     Route::get('/', [ProfileController::class, 'edit'])->name('edit');
     Route::patch('/', [ProfileController::class, 'update'])->name('update');
     Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');

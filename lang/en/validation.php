@@ -13,6 +13,7 @@
 */
 
 return [
+    'iraqi_phone' => 'Enter a valid Iraqi mobile number, such as 07704488315 or +9647704488315.',
     'phone' => 'The :attribute must be a valid phone number (8–15 digits).',
 
     'password' => [

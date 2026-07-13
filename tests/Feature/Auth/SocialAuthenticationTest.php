@@ -165,7 +165,7 @@ class SocialAuthenticationTest extends TestCase
 
         $response = $this->get(route('auth.google.callback'));
 
-        $response->assertRedirect(route('user.shop.home'));
+        $response->assertRedirect(route('user.phone.setup'));
         $this->assertAuthenticated();
 
         $user = User::query()->where('email', 'buyer@example.com')->firstOrFail();
@@ -371,7 +371,7 @@ class SocialAuthenticationTest extends TestCase
             'state' => $query['state'],
         ]);
 
-        $response->assertRedirect(route('user.shop.home'));
+        $response->assertRedirect(route('user.phone.setup'));
         $this->assertAuthenticated();
 
         $user = User::query()->where('email', 'apple.buyer@example.com')->firstOrFail();
@@ -447,7 +447,7 @@ class SocialAuthenticationTest extends TestCase
         ]);
 
         $this->post(route('auth.apple.callback'), ['code' => 'fake-code', 'state' => $state])
-            ->assertRedirect(route('user.shop.home'));
+            ->assertRedirect(route('user.phone.setup'));
         $this->assertAuthenticated();
 
         Auth::guard('web')->logout();

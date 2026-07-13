@@ -98,17 +98,18 @@ Route::middleware('auth')->group(function () {
                 ->name('admin.two-factor.resend');
 
     Route::get('user/two-factor', [UserTwoFactorController::class, 'show'])
+                ->middleware('customer.phone')
                 ->name('user.two-factor.challenge');
 
     Route::post('user/two-factor', [UserTwoFactorController::class, 'verify'])
-                ->middleware('throttle:admin-2fa')
+                ->middleware(['customer.phone', 'throttle:admin-2fa'])
                 ->name('user.two-factor.verify');
 
     Route::post('user/two-factor/resend', [UserTwoFactorController::class, 'resend'])
-                ->middleware('throttle:admin-2fa')
+                ->middleware(['customer.phone', 'throttle:admin-2fa'])
                 ->name('user.two-factor.resend');
 
     Route::post('user/two-factor/channel', [UserTwoFactorController::class, 'changeChannel'])
-                ->middleware('throttle:admin-2fa')
+                ->middleware(['customer.phone', 'throttle:admin-2fa'])
                 ->name('user.two-factor.channel');
 });

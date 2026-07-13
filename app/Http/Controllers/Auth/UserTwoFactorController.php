@@ -18,9 +18,7 @@ use Throwable;
 
 class UserTwoFactorController extends Controller
 {
-    public function __construct(private readonly OtpiqSmsService $sms)
-    {
-    }
+    public function __construct(private readonly OtpiqSmsService $sms) {}
 
     public function show(Request $request): View|RedirectResponse
     {
@@ -73,8 +71,11 @@ class UserTwoFactorController extends Controller
         $challenge = $request->session()->get('user_2fa.challenge');
         $expiresAt = (int) ($challenge['expires_at'] ?? 0);
         $hash = (string) ($challenge['hash'] ?? '');
+        $channel = (string) ($challenge['channel'] ?? 'email');
+        $phoneMatches = ! in_array($channel, ['sms', 'whatsapp'], true)
+            || hash_equals((string) ($challenge['phone'] ?? ''), (string) $user->phone_normalized);
 
-        if ($expiresAt < now()->timestamp || ! Hash::check((string) $request->input('code'), $hash)) {
+        if ($expiresAt < now()->timestamp || ! $phoneMatches || ! Hash::check((string) $request->input('code'), $hash)) {
             RateLimiter::hit($key, 300);
 
             Log::channel('security')->warning('security event', [
@@ -90,6 +91,11 @@ class UserTwoFactorController extends Controller
         }
 
         RateLimiter::clear($key);
+
+        if (in_array($channel, ['sms', 'whatsapp'], true)) {
+            $user->forceFill(['phone_verified_at' => now()])->save();
+        }
+
         $request->session()->forget('user_2fa.challenge');
         $request->session()->put('user_2fa.verified_user_id', $user->id);
 
@@ -136,7 +142,7 @@ class UserTwoFactorController extends Controller
 
         if (! ($options[$channel]['available'] ?? false)) {
             throw ValidationException::withMessages([
-                'channel' => __('user.phone_channel_requires_verified_phone'),
+                'channel' => (string) ($options[$channel]['unavailable_message'] ?? __('user.two_factor_channel_send_failed')),
             ]);
         }
 
@@ -189,11 +195,17 @@ class UserTwoFactorController extends Controller
             return false;
         }
 
-        $request->session()->put('user_2fa.challenge', [
+        $challenge = [
             'hash' => Hash::make($code),
             'expires_at' => now()->addMinutes($ttl)->timestamp,
             'channel' => $channel,
-        ]);
+        ];
+
+        if (in_array($channel, ['sms', 'whatsapp'], true)) {
+            $challenge['phone'] = (string) $user->phone_normalized;
+        }
+
+        $request->session()->put('user_2fa.challenge', $challenge);
         $request->session()->forget('user_2fa.verified_user_id');
         $request->session()->put('user_2fa.last_sent_at', now()->timestamp);
 
@@ -237,11 +249,13 @@ class UserTwoFactorController extends Controller
     }
 
     /**
-     * @return array<string, array{label: string, description: string, destination: string, available: bool}>
+     * @return array<string, array{label: string, description: string, destination: string, available: bool, unavailable_message: string, action_url: ?string}>
      */
     private function channelOptions(User $user): array
     {
-        $phoneAvailable = filled($user->phone_normalized) && $user->phone_verified_at !== null;
+        $hasPhone = filled($user->phone_normalized);
+        $smsAvailable = $hasPhone && $this->sms->smsAvailable();
+        $whatsappAvailable = $hasPhone && $this->sms->whatsappAvailable();
 
         return [
             'email' => [
@@ -249,18 +263,28 @@ class UserTwoFactorController extends Controller
                 'description' => __('Receive the code in your email inbox.'),
                 'destination' => $this->maskedEmail((string) $user->email),
                 'available' => filled($user->email),
+                'unavailable_message' => __('Email verification is currently unavailable.'),
+                'action_url' => null,
             ],
             'sms' => [
                 'label' => __('SMS'),
                 'description' => __('Receive the code as a text message.'),
                 'destination' => $this->maskedPhone((string) $user->phone_normalized),
-                'available' => $phoneAvailable,
+                'available' => $smsAvailable,
+                'unavailable_message' => $hasPhone
+                    ? __('SMS verification is currently unavailable.')
+                    : __('Add a phone number to use SMS verification.'),
+                'action_url' => $hasPhone ? null : route('user.phone.setup'),
             ],
             'whatsapp' => [
                 'label' => __('WhatsApp'),
                 'description' => __('Receive the code in WhatsApp.'),
                 'destination' => $this->maskedPhone((string) $user->phone_normalized),
-                'available' => $phoneAvailable,
+                'available' => $whatsappAvailable,
+                'unavailable_message' => $hasPhone
+                    ? __('WhatsApp verification is currently unavailable.')
+                    : __('Add a phone number to use WhatsApp verification.'),
+                'action_url' => $hasPhone ? null : route('user.phone.setup'),
             ],
         ];
     }
@@ -290,9 +314,13 @@ class UserTwoFactorController extends Controller
     private function maskedPhone(string $phone): string
     {
         if ($phone === '') {
-            return __('No verified phone');
+            return __('No phone number');
         }
 
-        return str_repeat('•', max(strlen($phone) - 4, 4)).substr($phone, -4);
+        if (preg_match('/^(964)(\d{3})(\d{5})(\d{2})$/', $phone, $matches)) {
+            return '+'.$matches[1].' '.$matches[2].' *** **'.$matches[4];
+        }
+
+        return '+'.substr($phone, 0, 3).' *** *** '.substr($phone, -2);
     }
 }

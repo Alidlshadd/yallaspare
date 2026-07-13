@@ -79,6 +79,10 @@ return [
         'provider' => env('OTPIQ_PROVIDER', 'sms'),
         'default_country_code' => env('OTPIQ_DEFAULT_COUNTRY_CODE', '964'),
         'verification_ttl' => (int) env('OTPIQ_VERIFICATION_TTL', 10),
+        'whatsapp_enabled' => (bool) env('OTPIQ_WHATSAPP_ENABLED', false),
+        'whatsapp_account_id' => env('OTPIQ_WHATSAPP_ACCOUNT_ID'),
+        'whatsapp_phone_id' => env('OTPIQ_WHATSAPP_PHONE_ID'),
+        'whatsapp_template_name' => env('OTPIQ_WHATSAPP_TEMPLATE_NAME'),
     ],
 
 ];

@@ -184,6 +184,6 @@ class PhoneValidationTest extends TestCase
     public function test_user_mutator_normalizes_arabic_indic_phone(): void
     {
         $user = User::factory()->create(['phone' => '٠٧٧٠١٢٣٤٥٦٧']);
-        $this->assertSame('07701234567', $user->phone_normalized);
+        $this->assertSame('9647701234567', $user->phone_normalized);
     }
 }

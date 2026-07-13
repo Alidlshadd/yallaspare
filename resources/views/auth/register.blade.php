@@ -47,15 +47,30 @@
 
         <div>
             <x-input-label for="phone" :value="__('Phone')" class="text-sm font-medium text-slate-300" />
-            <x-text-input
-                id="phone"
-                class="mt-2 block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition duration-200 focus:border-red-500 focus:ring-red-500 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100 dark:placeholder:text-slate-500"
-                type="text"
-                name="phone"
-                :value="old('phone')"
-                autocomplete="tel"
-                placeholder="+964..."
-            />
+            <div class="mt-2 grid grid-cols-[7.5rem_minmax(0,1fr)] gap-2" dir="ltr">
+                <label class="sr-only" for="country_code">{{ __('Country code') }}</label>
+                <select
+                    id="country_code"
+                    name="country_code"
+                    class="rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-900 focus:border-red-500 focus:ring-red-500 dark:border-slate-700 dark:bg-slate-800/90 dark:text-white"
+                    required
+                >
+                    <option value="+964" @selected(old('country_code', '+964') === '+964')>🇮🇶 +964</option>
+                </select>
+                <input
+                    id="phone"
+                    class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition duration-200 focus:border-red-500 focus:ring-red-500 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100 dark:placeholder:text-slate-500"
+                    type="tel"
+                    inputmode="tel"
+                    name="phone"
+                    value="{{ old('phone') }}"
+                    required
+                    autocomplete="tel-national"
+                    placeholder="770 448 8315"
+                >
+            </div>
+            <p class="mt-2 text-xs leading-5 text-slate-400">{{ __('Iraq mobile number. Accepted: 07704488315, 7704488315, or +9647704488315.') }}</p>
+            <x-input-error :messages="$errors->get('country_code')" class="mt-2 text-sm text-red-400" />
             <x-input-error :messages="$errors->get('phone')" class="mt-2 text-sm text-red-400" />
         </div>
 

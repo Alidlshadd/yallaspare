@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Notifications\ImmediateResetPassword;
 use App\Notifications\ImmediateVerifyEmail;
 use App\Support\EmailVerificationCode;
+use App\Support\IraqiPhoneNumber;
 use App\Support\PhoneVerificationCode;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -357,7 +358,9 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
     public function setPhoneAttribute(?string $value): void
     {
         $phone = $value !== null ? trim($value) : null;
-        $normalized = self::normalizePhone($phone);
+        $e164 = IraqiPhoneNumber::toE164($phone);
+        $storedPhone = $e164 ?? ($phone !== '' ? $phone : null);
+        $normalized = self::normalizePhone($storedPhone);
         $currentNormalized = $this->attributes['phone_normalized'] ?? null;
 
         if ($this->exists && $currentNormalized !== $normalized) {
@@ -365,7 +368,7 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
             $this->attributes['phone_verified_at'] = null;
         }
 
-        $this->attributes['phone'] = $phone !== '' ? $phone : null;
+        $this->attributes['phone'] = $storedPhone;
         $this->attributes['phone_normalized'] = $normalized;
     }
 
@@ -408,13 +411,22 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
     public static function uniquePhoneRule(?int $ignoreUserId = null): \Closure
     {
         return function (string $attribute, mixed $value, \Closure $fail) use ($ignoreUserId): void {
-            $normalized = self::normalizePhone(is_scalar($value) ? (string) $value : null);
+            $normalized = IraqiPhoneNumber::digits($value)
+                ?? self::normalizePhone(is_scalar($value) ? (string) $value : null);
 
             if ($normalized === null) {
                 return;
             }
 
-            $query = self::query()->where('phone_normalized', $normalized);
+            $normalizedCandidates = [$normalized];
+
+            if (str_starts_with($normalized, '964') && strlen($normalized) === 13) {
+                $nationalNumber = substr($normalized, 3);
+                $normalizedCandidates[] = $nationalNumber;
+                $normalizedCandidates[] = '0'.$nationalNumber;
+            }
+
+            $query = self::query()->whereIn('phone_normalized', array_unique($normalizedCandidates));
 
             if ($ignoreUserId !== null) {
                 $query->whereKeyNot($ignoreUserId);

@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\User;
-use App\Rules\PhoneNumber;
+use App\Rules\IraqiMobileNumber;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
@@ -20,7 +20,7 @@ class UpdateProfileRequest extends FormRequest
         return [
             'first_name' => ['required', 'string', 'max:120'],
             'last_name' => ['nullable', 'string', 'max:120'],
-            'phone' => ['nullable', 'string', 'max:20', new PhoneNumber(), User::uniquePhoneRule($this->user()->id)],
+            'phone' => ['nullable', 'string', 'max:20', new IraqiMobileNumber(), User::uniquePhoneRule($this->user()->id)],
             'profile_photo' => ['nullable', 'image', 'max:2048'],
             'remove_profile_photo' => ['sometimes', 'boolean'],
             'dob_day' => ['nullable', 'integer', 'between:1,31', 'required_with:dob_month,dob_year'],
