@@ -23,4 +23,5 @@ yarn-error.log
 /storage/backups/db/*.sql
 .superpowers/
 /.claude
+/.playwright-mcp
 *.backup-pre-fix
