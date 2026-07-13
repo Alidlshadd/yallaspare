@@ -65,4 +65,8 @@ return [
     'email_verification' => [
         'max_attempts' => (int) env('EMAIL_VERIFICATION_MAX_ATTEMPTS', 5),
     ],
+
+    'phone_verification' => [
+        'max_attempts' => (int) env('PHONE_VERIFICATION_MAX_ATTEMPTS', 5),
+    ],
 ];

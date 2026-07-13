@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Notifications\ImmediateResetPassword;
 use App\Notifications\ImmediateVerifyEmail;
 use App\Support\EmailVerificationCode;
+use App\Support\PhoneVerificationCode;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Casts\Attribute;
@@ -114,6 +115,7 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'phone_verified_at' => 'datetime',
         'password' => 'hashed',
         'notify_order_updates' => 'boolean',
         'notify_promotions' => 'boolean',
@@ -355,8 +357,16 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
     public function setPhoneAttribute(?string $value): void
     {
         $phone = $value !== null ? trim($value) : null;
+        $normalized = self::normalizePhone($phone);
+        $currentNormalized = $this->attributes['phone_normalized'] ?? null;
+
+        if ($this->exists && $currentNormalized !== $normalized) {
+            PhoneVerificationCode::forgetFor($this);
+            $this->attributes['phone_verified_at'] = null;
+        }
+
         $this->attributes['phone'] = $phone !== '' ? $phone : null;
-        $this->attributes['phone_normalized'] = self::normalizePhone($phone);
+        $this->attributes['phone_normalized'] = $normalized;
     }
 
     public static function normalizePhone(?string $phone): ?string

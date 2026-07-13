@@ -73,4 +73,12 @@ return [
         'webhook_token' => env('ZAINCASH_WEBHOOK_TOKEN'),
     ],
 
+    'otpiq' => [
+        'api_key' => env('OTPIQ_API_KEY'),
+        'base_url' => env('OTPIQ_BASE_URL', 'https://api.otpiq.com/api'),
+        'provider' => env('OTPIQ_PROVIDER', 'sms'),
+        'default_country_code' => env('OTPIQ_DEFAULT_COUNTRY_CODE', '964'),
+        'verification_ttl' => (int) env('OTPIQ_VERIFICATION_TTL', 10),
+    ],
+
 ];

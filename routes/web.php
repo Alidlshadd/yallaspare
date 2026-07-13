@@ -3,6 +3,7 @@
 use App\Http\Controllers\Account\AccountAddressController;
 use App\Http\Controllers\Account\AccountOrdersController;
 use App\Http\Controllers\User\UserAccountController;
+use App\Http\Controllers\User\PhoneVerificationController;
 use App\Http\Controllers\User\UserSettingsController;
 use App\Http\Controllers\User\WishlistController;
 use App\Http\Controllers\User\ShopController as UserShopController;
@@ -177,6 +178,12 @@ Route::middleware(['auth', 'verified', 'customer.area', 'user.2fa'])->prefix('us
     Route::get('/account/actions', [UserAccountController::class, 'actions'])->name('account.actions');
     Route::patch('/account', [UserAccountController::class, 'update'])->middleware('throttle:commerce-write')->name('account.update');
     Route::patch('/account/password', [UserAccountController::class, 'password'])->middleware('throttle:commerce-write')->name('account.password');
+    Route::post('/account/phone/verification', [PhoneVerificationController::class, 'send'])
+        ->middleware('throttle:phone-verification-send')
+        ->name('account.phone-verification.send');
+    Route::post('/account/phone/verification/confirm', [PhoneVerificationController::class, 'verify'])
+        ->middleware('throttle:phone-verification-check')
+        ->name('account.phone-verification.verify');
     Route::get('/settings', [UserSettingsController::class, 'edit'])->name('settings.edit');
     Route::patch('/settings', [UserSettingsController::class, 'update'])->name('settings.update');
     Route::get('/settings/appearance', [UserSettingsController::class, 'appearance'])->name('settings.appearance');
