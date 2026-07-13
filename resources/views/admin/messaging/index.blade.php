@@ -148,7 +148,7 @@
                             <label for="phone" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ __('Iraq phone number') }}</label>
                             <div class="flex" dir="ltr">
                                 <span class="inline-flex items-center rounded-l-xl border border-r-0 border-slate-300 bg-slate-50 px-3 text-sm font-bold text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">+964</span>
-                                <input id="phone" name="phone" type="tel" inputmode="tel" value="{{ old('phone') }}" placeholder="770 448 8315" class="min-w-0 flex-1 rounded-r-xl border-slate-300 bg-white text-sm text-slate-900 focus:border-primary focus:ring-primary dark:border-slate-700 dark:bg-slate-950 dark:text-white" required>
+                                <input id="phone" name="phone" type="tel" inputmode="tel" value="{{ old('phone') }}" placeholder="0770 000 0000" class="min-w-0 flex-1 rounded-r-xl border-slate-300 bg-white text-sm text-slate-900 focus:border-primary focus:ring-primary dark:border-slate-700 dark:bg-slate-950 dark:text-white" required>
                             </div>
                             <p class="mt-1.5 text-xs leading-5 text-slate-400">{{ __('A random verification code will be generated and sent once') }}</p>
                             @error('phone')<p class="mt-1.5 text-xs font-semibold text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
