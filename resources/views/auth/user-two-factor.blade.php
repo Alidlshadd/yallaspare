@@ -3,7 +3,7 @@
     form-position="right"
     enter-direction="right"
     :panel-title="__('Verify it is really you')"
-    :panel-subtitle="__('A 6-digit code is on its way to :email. Enter it below to continue.', ['email' => $maskedEmail])"
+    :panel-subtitle="__('A 6-digit code is on its way via :channel to :destination. Enter it below to continue.', ['channel' => $currentChannelLabel, 'destination' => $maskedDestination])"
     :panel-tag="__('Identity check')"
     panel-theme="login"
     panel-button-action="none"
@@ -87,7 +87,7 @@
 
     <x-auth-session-status class="mt-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-700 dark:text-emerald-300" :status="session('status')" />
 
-    @if (! $mailAvailable)
+    @if (! $deliveryAvailable)
         <div class="mt-4 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm font-medium text-rose-700 dark:text-rose-300">
             {{ __('We could not send your verification code. Please try again shortly.') }}
         </div>
@@ -99,8 +99,14 @@
         </div>
     @enderror
 
+    @error('channel')
+        <div class="mt-4 rounded-lg border border-rose-500/30 bg-rose-500/10 px-3 py-2 text-sm font-medium text-rose-700 dark:text-rose-300">
+            {{ $message }}
+        </div>
+    @enderror
+
     <p class="mt-3 text-sm text-slate-600 dark:text-slate-300">
-        {{ __('Enter the 6-digit code we sent to :email.', ['email' => $maskedEmail]) }}
+        {{ __('Enter the 6-digit code sent via :channel to :destination.', ['channel' => $currentChannelLabel, 'destination' => $maskedDestination]) }}
     </p>
 
     @if ($codeExpiresAt > 0)
@@ -110,6 +116,75 @@
             </span>
         </p>
     @endif
+
+    <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-white/10 dark:bg-white/5">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+            <div>
+                <p class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{{ __('Delivery method') }}</p>
+                <p class="mt-1 text-sm font-semibold text-slate-900 dark:text-white">
+                    {{ $currentChannelLabel }}
+                    <span class="font-normal text-slate-500 dark:text-slate-400">· {{ $maskedDestination }}</span>
+                </p>
+            </div>
+            @if ($currentChannel === 'email')
+                <span class="rounded-full bg-red-50 px-2.5 py-1 text-[11px] font-semibold text-red-700 dark:bg-red-500/10 dark:text-red-300">{{ __('Default') }}</span>
+            @endif
+        </div>
+
+        <details class="group mt-3 border-t border-slate-200 pt-3 dark:border-white/10" @if($errors->has('channel')) open @endif>
+            <summary class="cursor-pointer list-none text-sm font-semibold text-red-600 transition hover:text-red-500 dark:text-red-400 dark:hover:text-red-300">
+                <span class="inline-flex items-center gap-1.5">
+                    {{ __('Change delivery method') }}
+                    <svg class="h-4 w-4 transition group-open:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                        <path fill-rule="evenodd" d="M5.22 7.22a.75.75 0 0 1 1.06 0L10 10.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 8.28a.75.75 0 0 1 0-1.06Z" clip-rule="evenodd" />
+                    </svg>
+                </span>
+            </summary>
+
+            <form method="POST" action="{{ route('user.two-factor.channel') }}" class="mt-3 space-y-2">
+                @csrf
+
+                @foreach ($channelOptions as $channelKey => $option)
+                    <label class="block {{ $option['available'] ? 'cursor-pointer' : 'cursor-not-allowed' }}">
+                        <input
+                            type="radio"
+                            name="channel"
+                            value="{{ $channelKey }}"
+                            class="peer sr-only"
+                            @checked($currentChannel === $channelKey)
+                            @disabled(! $option['available'])
+                        >
+                        <span class="flex items-center justify-between gap-3 rounded-lg border px-3 py-2.5 transition {{ $option['available'] ? 'border-slate-200 bg-white peer-checked:border-red-500 peer-checked:ring-2 peer-checked:ring-red-500/15 dark:border-white/10 dark:bg-slate-900' : 'border-slate-200 bg-slate-100 opacity-55 dark:border-white/10 dark:bg-slate-800' }}">
+                            <span class="min-w-0">
+                                <span class="flex items-center gap-2 text-sm font-semibold text-slate-900 dark:text-white">
+                                    {{ $option['label'] }}
+                                    @if ($channelKey === 'email')
+                                        <span class="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold text-slate-500 dark:bg-slate-800 dark:text-slate-400">{{ __('Default') }}</span>
+                                    @endif
+                                </span>
+                                <span class="mt-0.5 block text-xs text-slate-500 dark:text-slate-400">
+                                    {{ $option['description'] }}
+                                    @if ($option['available'])
+                                        · {{ $option['destination'] }}
+                                    @endif
+                                </span>
+                            </span>
+                            @if (! $option['available'])
+                                <span class="shrink-0 text-[10px] font-semibold uppercase tracking-wide text-amber-700 dark:text-amber-300">{{ __('Verify phone first') }}</span>
+                            @endif
+                        </span>
+                    </label>
+                @endforeach
+
+                <button
+                    type="submit"
+                    class="mt-2 inline-flex h-10 w-full items-center justify-center rounded-lg bg-slate-900 px-4 text-sm font-semibold text-white transition hover:bg-slate-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200"
+                >
+                    {{ __('Send code with selected method') }}
+                </button>
+            </form>
+        </details>
+    </div>
 
     <form method="POST" action="{{ route('user.two-factor.verify') }}" class="mt-5" data-auth-form data-otp-form>
         @csrf

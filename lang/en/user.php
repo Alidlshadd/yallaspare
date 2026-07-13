@@ -41,6 +41,8 @@ return [
     'verification_code' => 'Verification code',
     'verify_phone' => 'Verify phone',
     'phone_verification_saved_number_notice' => 'The code will be sent to your saved number: :phone. Save any phone changes first.',
+    'phone_channel_requires_verified_phone' => 'Verify and save a phone number before using SMS or WhatsApp.',
+    'two_factor_channel_send_failed' => 'We could not send a code with that method. Please try another option.',
     'delivery_information' => 'Delivery Information',
     'delivery_helper' => 'Used for Cash on Delivery deliveries.',
     'country' => 'Country',

@@ -12,7 +12,7 @@ class OtpiqSmsService
     /**
      * @return array<string, mixed>
      */
-    public function sendVerification(User $user, string $code): array
+    public function sendVerification(User $user, string $code, ?string $provider = null): array
     {
         $apiKey = trim((string) config('services.otpiq.api_key'));
 
@@ -22,6 +22,11 @@ class OtpiqSmsService
 
         $phoneNumber = $this->internationalPhoneNumber((string) $user->phone_normalized);
         $baseUrl = rtrim((string) config('services.otpiq.base_url', 'https://api.otpiq.com/api'), '/');
+        $provider ??= (string) config('services.otpiq.provider', 'sms');
+
+        if (! in_array($provider, ['auto', 'whatsapp-sms', 'telegram-sms', 'whatsapp-telegram-sms', 'sms', 'whatsapp', 'telegram'], true)) {
+            throw new RuntimeException('The configured OTPiQ provider is not supported.');
+        }
 
         try {
             $response = Http::withToken($apiKey)
@@ -32,7 +37,7 @@ class OtpiqSmsService
                 ->post($baseUrl.'/sms', [
                     'phoneNumber' => $phoneNumber,
                     'smsType' => 'verification',
-                    'provider' => (string) config('services.otpiq.provider', 'sms'),
+                    'provider' => $provider,
                     'verificationCode' => $code,
                 ]);
         } catch (ConnectionException $exception) {
@@ -60,6 +65,8 @@ class OtpiqSmsService
             $phone = substr($phone, 2);
         } elseif (str_starts_with($phone, '0')) {
             $phone = (string) config('services.otpiq.default_country_code', '964').substr($phone, 1);
+        } elseif (strlen($phone) === 10 && str_starts_with($phone, '7')) {
+            $phone = (string) config('services.otpiq.default_country_code', '964').$phone;
         }
 
         if (! preg_match('/^[0-9]{10,15}$/', $phone)) {

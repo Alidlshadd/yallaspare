@@ -107,4 +107,8 @@ Route::middleware('auth')->group(function () {
     Route::post('user/two-factor/resend', [UserTwoFactorController::class, 'resend'])
                 ->middleware('throttle:admin-2fa')
                 ->name('user.two-factor.resend');
+
+    Route::post('user/two-factor/channel', [UserTwoFactorController::class, 'changeChannel'])
+                ->middleware('throttle:admin-2fa')
+                ->name('user.two-factor.channel');
 });
