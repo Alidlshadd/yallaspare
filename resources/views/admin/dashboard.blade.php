@@ -142,7 +142,7 @@
     </div>
 
     {{-- ================= HERO BENTO GRID ================= --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4" data-animate-stagger>
 
         {{-- ============ TOTAL REVENUE — HERO 2x2 ============ --}}
         <div id="admin-revenue-section" class="relative sm:col-span-2 lg:col-span-2 lg:row-span-2 rounded-3xl bg-primary text-white p-7 overflow-hidden bento-shadow-lg corner-brackets scroll-mt-24" style="background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);">
@@ -383,7 +383,7 @@
     </div>
 
     {{-- ================= SYSTEM HEALTH ROW ================= --}}
-    <div class="grid grid-cols-2 lg:grid-cols-6 gap-4 mb-8">
+    <div class="grid grid-cols-2 lg:grid-cols-6 gap-4 mb-8" data-animate-stagger>
 
         {{-- Total Users with breakdown bar --}}
         <div class="relative rounded-3xl bg-white p-5 bento-shadow border border-slate-200/70 lg:col-span-2 overflow-hidden transition-shadow dark:bg-slate-900 dark:border-slate-800">
@@ -501,7 +501,7 @@
             </div>
         @endif
 
-        <div class="grid grid-cols-2 gap-3 lg:grid-cols-7">
+        <div class="grid grid-cols-2 gap-3 lg:grid-cols-7" data-animate-stagger>
             @foreach($siteAnalyticsCards as $card)
                 @php
                     $tone = $card['tone'] ?? 'slate';
@@ -739,7 +739,7 @@
         $catMax = $sortedCats ? max(array_column($sortedCats, 'count')) : 1;
     @endphp
 
-    <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-8">
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-8" data-animate="fade-up">
 
         {{-- ============ MONTHLY ORDERS TREND — COMPACT ============ --}}
         <div class="xl:col-span-2 relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5" style="background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);">
@@ -872,7 +872,7 @@
     </div>
 
     {{-- ================= OPERATIONAL KPI (30d) ================= --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 mb-8" data-animate-stagger>
 
         <div class="relative rounded-3xl bg-white p-5 bento-shadow border border-slate-200/70 overflow-hidden dark:bg-slate-900 dark:border-slate-800">
             <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-rose-400 to-rose-600"></div>
@@ -952,7 +952,7 @@
     </div>
 
     {{-- ================= INVENTORY HEALTH ================= --}}
-    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8" data-animate-stagger>
 
         <div class="relative rounded-3xl bg-white p-5 bento-shadow border border-slate-200/70 overflow-hidden dark:bg-slate-900 dark:border-slate-800">
             <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-amber-400 to-orange-500"></div>
@@ -1001,7 +1001,7 @@
         $stockIn = array_sum($movementInValues ?? []);
         $stockOut = array_sum($movementOutValues ?? []);
     @endphp
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-8">
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-8" data-animate="fade-up">
         <div class="relative rounded-3xl bg-white p-6 bento-shadow border border-slate-200/70 dark:bg-slate-900 dark:border-slate-800 overflow-hidden corner-brackets-dark">
             <div class="absolute top-0 left-0 right-0 h-[2px]" style="background: linear-gradient(90deg, #10b981, #14b8a6, #06b6d4);"></div>
             <div class="absolute -top-12 -right-12 h-40 w-40 rounded-full bg-emerald-500/5 blur-3xl"></div>
@@ -1238,7 +1238,7 @@
     </div>
 
     {{-- ================= RECENT ORDERS + TOP PRODUCTS ================= --}}
-    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4">
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-4" data-animate="fade-up">
 
         {{-- ============ RECENT ORDERS — FULL HERO ============ --}}
         <div class="relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5 sm:p-6" style="background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);">

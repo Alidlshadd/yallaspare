@@ -18,7 +18,9 @@
               referrerpolicy="no-referrer">
 
         <!-- Scripts -->
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
+        @vite(request()->routeIs('admin.*')
+            ? ['resources/css/app.css', 'resources/js/app.js', 'resources/js/motion/admin.js']
+            : ['resources/css/app.css', 'resources/js/app.js'])
 
         <style>
             html, body {

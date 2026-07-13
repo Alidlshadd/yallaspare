@@ -878,7 +878,8 @@
 
     .admin-popover-enter:not(.hidden) {
         transform-origin: top right;
-        animation: adminPopoverEnter 180ms cubic-bezier(0.22, 1, 0.36, 1) both;
+        /* Back-out curve: slight overshoot for a spring feel on the small pop. */
+        animation: adminPopoverEnter 240ms cubic-bezier(0.34, 1.35, 0.64, 1) both;
     }
 
     [dir='rtl'] .admin-popover-enter:not(.hidden) {
@@ -890,7 +891,7 @@
     }
 
     .admin-danger-backdrop:not(.hidden) .admin-danger-surface {
-        animation: adminModalSurfaceEnter 240ms cubic-bezier(0.22, 1, 0.36, 1) both;
+        animation: adminModalSurfaceEnter 300ms cubic-bezier(0.34, 1.25, 0.64, 1) both;
     }
 
     .admin-notification-item {

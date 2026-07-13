@@ -380,9 +380,9 @@
                 @endif
             </div>
         @else
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3" data-animate-stagger>
                 @foreach($categories as $category)
-                    <div class="cat-card">
+                    <div class="cat-card" data-motion-lift>
                         <div class="img-wrap">
                             @if($category->image)
                                 <img src="{{ asset('storage/' . ltrim((string) $category->image, '/')) }}"

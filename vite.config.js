@@ -9,6 +9,7 @@ export default defineConfig({
                 'resources/js/app.js',
                 'resources/js/storefront.js',
                 'resources/js/admin-analytics.js',
+                'resources/js/motion/admin.js',
             ],
             refresh: true,
         }),

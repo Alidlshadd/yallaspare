@@ -423,7 +423,7 @@
         </div>
 
         {{-- ═════════════ Stat tiles (left-stripe dialect) ═════════════ --}}
-        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-4">
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 mb-4" data-animate-stagger>
             @php
                 $statTiles = [
                     [
@@ -642,7 +642,7 @@
                 @endif
             </div>
         @else
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3" data-animate-stagger>
                 @foreach($products as $product)
                     @php
                         $isLow = $product->stock_quantity > 0 && $product->stock_quantity <= $lowStockThreshold;
@@ -652,7 +652,7 @@
                         $viewsCount = (int) optional($product->analytics)->views_count;
                         $lastViewedAt = optional($product->analytics)->last_viewed_at;
                     @endphp
-                    <div class="prod-card">
+                    <div class="prod-card" data-motion-lift>
                         <div class="img-wrap">
                             @if($product->image)
                                 <img src="{{ asset('storage/' . ltrim((string) $product->image, '/')) }}"
