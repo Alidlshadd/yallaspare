@@ -338,6 +338,7 @@
                     'admin.discounts.edit'         => __('Coupon Management'),
                     'admin.discounts.rules'        => __('Discount Rules'),
                     'admin.email.*'                => __('Email Center'),
+                    'admin.messaging.*'            => __('SMS & WhatsApp Center'),
                     'admin.settings.*'             => __('Settings'),
                     'admin.activity-logs.*'        => __('Activity Logs'),
                     'admin.profile.*'              => __('Profile'),
@@ -628,6 +629,15 @@
                                 >
                                     <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-envelope-open-text"></i></span>
                                     <span class="admin-nav-label">{{ __('Email Center') }}</span>
+                                </a>
+                                <a
+                                    href="{{ route('admin.messaging.index') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.messaging.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('SMS & WhatsApp Center') }}"
+                                    @if(request()->routeIs('admin.messaging.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-comments"></i></span>
+                                    <span class="admin-nav-label">{{ __('SMS & WhatsApp Center') }}</span>
                                 </a>
                             @endcan
                         @endif

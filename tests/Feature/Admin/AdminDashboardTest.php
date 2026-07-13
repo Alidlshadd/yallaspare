@@ -93,6 +93,7 @@ class AdminDashboardTest extends TestCase
             'admin.reviews.index',
             'admin.settings.edit',
             'admin.email.index',
+            'admin.messaging.index',
             'admin.vehicle-fitments.index',
             'admin.returns.index',
             'admin.activity-logs.index',

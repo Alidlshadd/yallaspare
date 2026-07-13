@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\DealerController;
 use App\Http\Controllers\Admin\InventoryMovementController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\EmailController;
+use App\Http\Controllers\Admin\MessagingController;
 use App\Http\Controllers\Admin\EmailTemplateController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\LowStockController;
@@ -479,6 +480,12 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::get('/email', [EmailController::class, 'index'])
             ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
             ->name('email.index');
+        Route::get('/messaging', [MessagingController::class, 'index'])
+            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
+            ->name('messaging.index');
+        Route::post('/messaging/test', [MessagingController::class, 'sendTest'])
+            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'throttle:phone-verification-send'])
+            ->name('messaging.test');
         Route::get('/email/outbox', [EmailController::class, 'outbox'])
             ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
             ->name('email.outbox');
