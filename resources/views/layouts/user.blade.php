@@ -125,7 +125,7 @@
         <x-loading-overlay message="{{ __('Processing, please wait...') }}" variant="full" />
 
         <div class="{{ $shellClasses }}">
-            <header data-store-header class="relative sticky top-0 z-40 border-0 bg-[linear-gradient(180deg,#070740_0%,#0a0d3f_100%)] text-white shadow-none transition-transform duration-300 ease-out will-change-transform" style="margin-top:0;border-top:0">
+            <header data-store-header class="relative sticky top-0 z-40 transform-gpu border-0 bg-[linear-gradient(180deg,#070740_0%,#0a0d3f_100%)] text-white shadow-none transition-transform duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform motion-reduce:duration-0" style="margin-top:0;border-top:0">
                 @php
                     $headerCategories = $headerCategories ?? $dropdownCategories ?? collect();
                 @endphp
