@@ -41,7 +41,8 @@ class PostLoginRedirector
             return redirect()->intended('/admin/dashboard');
         }
 
-        if ($user && ! $user->hasVerifiedEmail()) {
+        // One verified contact channel (email OR phone) activates the account.
+        if ($user && ! $user->hasVerifiedEmail() && $user->phone_verified_at === null) {
             return redirect()->route('verification.notice');
         }
 
@@ -60,10 +61,6 @@ class PostLoginRedirector
             }
 
             return $redirect;
-        }
-
-        if ($user && $user->phone_verified_at === null) {
-            return redirect()->route('phone.verify');
         }
 
         $intendedUrl = (string) $request->session()->get('url.intended', '');

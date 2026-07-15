@@ -5,8 +5,6 @@ namespace App\Providers;
 use App\Listeners\LogFailedLogin;
 use App\Listeners\LogSentEmail;
 use Illuminate\Auth\Events\Failed;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Mail\Events\MessageSent;
 
@@ -18,9 +16,8 @@ class EventServiceProvider extends ServiceProvider
      * @var array<class-string, array<int, class-string>>
      */
     protected $listen = [
-        Registered::class => [
-            SendEmailVerificationNotification::class,
-        ],
+        // The verification code email is sent explicitly by the registration
+        // controllers (web + mobile) so a mail failure never aborts sign-up.
         MessageSent::class => [
             LogSentEmail::class,
         ],
@@ -46,5 +43,15 @@ class EventServiceProvider extends ServiceProvider
     public function shouldDiscoverEvents(): bool
     {
         return false;
+    }
+
+    /**
+     * The framework would auto-listen SendEmailVerificationNotification on
+     * Registered. The registration controllers (web + mobile) send the code
+     * explicitly instead, so a mail failure never aborts sign-up.
+     */
+    protected function configureEmailVerification(): void
+    {
+        //
     }
 }

@@ -91,7 +91,8 @@ class MobileController extends Controller
             return response()->json(['message' => __('Email or password is incorrect.')], 422);
         }
 
-        if (! $user->hasVerifiedEmail()) {
+        // One verified contact channel (email OR phone) activates the account.
+        if (! $user->hasVerifiedEmail() && $user->phone_verified_at === null) {
             return response()->json([
                 'message' => __('Please verify your email address before signing in.'),
                 'verification_required' => true,
@@ -138,6 +139,18 @@ class MobileController extends Controller
         ])->save();
 
         event(new Registered($user));
+
+        // Sent explicitly (not via a Registered listener) so a mail failure
+        // never aborts the registration; the user can request a resend.
+        try {
+            $user->sendEmailVerificationNotification();
+        } catch (\Throwable $e) {
+            Log::error('Mobile registration verification email could not be sent.', [
+                'user_id' => $user->getKey(),
+                'exception' => $e::class,
+                'message' => $e->getMessage(),
+            ]);
+        }
 
         return response()->json([
             'message' => __('Registration complete. Please verify your email address before signing in.'),

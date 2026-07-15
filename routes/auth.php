@@ -1,10 +1,9 @@
 <?php
 
+use App\Http\Controllers\Auth\AccountVerificationController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\AdminTwoFactorController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
-use App\Http\Controllers\Auth\EmailVerificationNotificationController;
-use App\Http\Controllers\Auth\EmailVerificationPromptController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
@@ -59,20 +58,24 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-    Route::get('verify-email', EmailVerificationPromptController::class)
+    Route::get('verify-email', [AccountVerificationController::class, 'show'])
                 ->name('verification.notice');
 
-    Route::post('verify-email', [VerifyEmailController::class, 'store'])
-                ->middleware('throttle:6,1')
+    Route::post('verify-email', [AccountVerificationController::class, 'verify'])
+                ->middleware('throttle:phone-verification-check')
                 ->name('verification.verify');
 
     Route::get('verify-email/{id}/{hash}', [VerifyEmailController::class, 'fromSignedLink'])
                 ->middleware(['signed', 'throttle:6,1'])
                 ->name('verification.verify-link');
 
-    Route::post('email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
-                ->middleware('throttle:6,1')
+    Route::post('email/verification-notification', [AccountVerificationController::class, 'resend'])
+                ->middleware('throttle:phone-verification-send')
                 ->name('verification.send');
+
+    Route::post('verification/channel', [AccountVerificationController::class, 'changeChannel'])
+                ->middleware('throttle:phone-verification-send')
+                ->name('verification.channel');
 
     Route::get('phone/verify', [PhoneVerificationPromptController::class, 'show'])
                 ->name('phone.verify');

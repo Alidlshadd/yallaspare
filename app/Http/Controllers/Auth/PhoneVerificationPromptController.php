@@ -92,10 +92,8 @@ class PhoneVerificationPromptController extends Controller
 
     private function destination(Request $request): RedirectResponse
     {
-        if (! $request->user()->hasVerifiedEmail()) {
-            return redirect()->route('verification.notice');
-        }
-
+        // A verified phone alone activates the account, so there is no
+        // follow-up email verification step here.
         return redirect()->intended(route('user.shop.home'));
     }
 

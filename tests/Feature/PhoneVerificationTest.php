@@ -27,13 +27,13 @@ class PhoneVerificationTest extends TestCase
 
     public function test_personal_info_page_shows_unverified_phone_action(): void
     {
+        // A verified email is enough to reach the account area even while the
+        // phone is still unverified; the page offers the verify action inline.
         $user = User::factory()->create(['phone' => '0770 448 8315', 'phone_verified_at' => null]);
 
-        // The verified-phone gate funnels unverified users to the dedicated
-        // verification page instead of the account area.
         $this->actingAs($user)
             ->get(route('user.account.personal'))
-            ->assertRedirect(route('phone.verify'));
+            ->assertOk();
 
         $user->forceFill(['phone_verified_at' => now()])->save();
 

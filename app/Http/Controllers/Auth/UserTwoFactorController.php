@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Notifications\UserTwoFactorCode;
 use App\Services\OtpiqSmsService;
+use App\Support\VerificationChannels;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -99,8 +100,8 @@ class UserTwoFactorController extends Controller
         $request->session()->forget('user_2fa.challenge');
         $request->session()->put('user_2fa.verified_user_id', $user->id);
 
-        if ($user->phone_verified_at === null && ! $user->isAdminPanelUser()) {
-            return redirect()->route('phone.verify');
+        if ($user->phone_verified_at === null && ! $user->hasVerifiedEmail() && ! $user->isAdminPanelUser()) {
+            return redirect()->route('verification.notice');
         }
 
         return redirect()->intended(route('user.shop.home'));
@@ -257,40 +258,7 @@ class UserTwoFactorController extends Controller
      */
     private function channelOptions(User $user): array
     {
-        $hasPhone = filled($user->phone_normalized);
-        $smsAvailable = $hasPhone && $this->sms->smsAvailable();
-        $whatsappAvailable = $hasPhone && $this->sms->whatsappAvailable();
-
-        return [
-            'email' => [
-                'label' => __('Email'),
-                'description' => __('Receive the code in your email inbox.'),
-                'destination' => $this->maskedEmail((string) $user->email),
-                'available' => filled($user->email),
-                'unavailable_message' => __('Email verification is currently unavailable.'),
-                'action_url' => null,
-            ],
-            'sms' => [
-                'label' => __('SMS'),
-                'description' => __('Receive the code as a text message.'),
-                'destination' => $this->maskedPhone((string) $user->phone_normalized),
-                'available' => $smsAvailable,
-                'unavailable_message' => $hasPhone
-                    ? __('SMS verification is currently unavailable.')
-                    : __('Add a phone number to use SMS verification.'),
-                'action_url' => $hasPhone ? null : route('user.phone.setup'),
-            ],
-            'whatsapp' => [
-                'label' => __('WhatsApp'),
-                'description' => __('Receive the code in WhatsApp.'),
-                'destination' => $this->maskedPhone((string) $user->phone_normalized),
-                'available' => $whatsappAvailable,
-                'unavailable_message' => $hasPhone
-                    ? __('WhatsApp verification is currently unavailable.')
-                    : __('Add a phone number to use WhatsApp verification.'),
-                'action_url' => $hasPhone ? null : route('user.phone.setup'),
-            ],
-        ];
+        return VerificationChannels::optionsFor($user, $this->sms);
     }
 
     private function resendCooldownSeconds(Request $request): int
@@ -304,27 +272,4 @@ class UserTwoFactorController extends Controller
         return max(0, 60 - (now()->timestamp - $lastSentAt));
     }
 
-    private function maskedEmail(string $email): string
-    {
-        if (! str_contains($email, '@')) {
-            return $email;
-        }
-
-        [$name, $domain] = explode('@', $email, 2);
-
-        return substr($name, 0, 2).str_repeat('*', max(strlen($name) - 2, 1)).'@'.$domain;
-    }
-
-    private function maskedPhone(string $phone): string
-    {
-        if ($phone === '') {
-            return __('No phone number');
-        }
-
-        if (preg_match('/^(964)(\d{3})(\d{5})(\d{2})$/', $phone, $matches)) {
-            return '+'.$matches[1].' '.$matches[2].' *** **'.$matches[4];
-        }
-
-        return '+'.substr($phone, 0, 3).' *** *** '.substr($phone, -2);
-    }
 }

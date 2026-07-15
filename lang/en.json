@@ -2896,8 +2896,8 @@
     "We could not complete Apple sign-in. Please try again.": "We could not complete Apple sign-in. Please try again.",
     "We could not connect this Google account. Please use email and password or contact support.": "We could not connect this Google account. Please use email and password or contact support.",
     "We could not connect this Apple account. Please use email and password or contact support.": "We could not connect this Apple account. Please use email and password or contact support.",
-    "Your account has been suspended. Please contact support.": "Your account has been suspended. Please contact support."
-    ,":channel is already selected.": ":channel is already selected.",
+    "Your account has been suspended. Please contact support.": "Your account has been suspended. Please contact support.",
+    ":channel is already selected.": ":channel is already selected.",
     "A new verification code has been sent via :channel.": "A new verification code has been sent via :channel.",
     "Accepted: 07700000000, 7700000000, or +9647700000000.": "Accepted: 07700000000, 7700000000, or +9647700000000.",
     "Add a phone number to use SMS verification.": "Add a phone number to use SMS verification.",
@@ -2942,5 +2942,14 @@
     "Use another verification method": "Use another verification method",
     "We will invalidate the previous code after the new code is sent successfully.": "We will invalidate the previous code after the new code is sent successfully.",
     "WhatsApp verification is currently unavailable.": "WhatsApp verification is currently unavailable.",
-    "Your number is stored in international format and is never exposed to the browser after submission.": "Your number is stored in international format and is never exposed to the browser after submission."
+    "Your number is stored in international format and is never exposed to the browser after submission.": "Your number is stored in international format and is never exposed to the browser after submission.",
+    "Genuine & OEM parts": "Genuine & OEM parts",
+    "Find parts for your vehicle": "Find parts for your vehicle",
+    "Verify your account": "Verify your account",
+    "One quick step": "One quick step",
+    "Enter the one-time code we sent you to activate your account.": "Enter the one-time code we sent you to activate your account.",
+    "Other options": "Other options",
+    "Choose how to receive your code": "Choose how to receive your code",
+    "Your account has been verified.": "Your account has been verified.",
+    "We sent a 6-digit code to your email.": "We sent a 6-digit code to your email."
 }

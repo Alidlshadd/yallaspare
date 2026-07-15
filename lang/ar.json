@@ -2896,8 +2896,8 @@
     "We could not complete Apple sign-in. Please try again.": "تعذّر إكمال تسجيل الدخول عبر آبل. يرجى المحاولة مرة أخرى.",
     "We could not connect this Google account. Please use email and password or contact support.": "تعذّر ربط حساب جوجل هذا. يرجى استخدام البريد الإلكتروني وكلمة المرور أو التواصل مع الدعم.",
     "We could not connect this Apple account. Please use email and password or contact support.": "تعذّر ربط حساب آبل هذا. يرجى استخدام البريد الإلكتروني وكلمة المرور أو التواصل مع الدعم.",
-    "Your account has been suspended. Please contact support.": "تم تعليق حسابك. يرجى التواصل مع الدعم."
-    ,":channel is already selected.": "تم تحديد :channel بالفعل.",
+    "Your account has been suspended. Please contact support.": "تم تعليق حسابك. يرجى التواصل مع الدعم.",
+    ":channel is already selected.": "تم تحديد :channel بالفعل.",
     "A new verification code has been sent via :channel.": "تم إرسال رمز تحقق جديد عبر :channel.",
     "Accepted: 07700000000, 7700000000, or +9647700000000.": "الصيغ المقبولة: 07700000000 أو 7700000000 أو +9647700000000.",
     "Add a phone number to use SMS verification.": "أضف رقم هاتف لاستخدام التحقق عبر الرسائل النصية.",
@@ -2942,5 +2942,14 @@
     "Use another verification method": "استخدم طريقة تحقق أخرى",
     "We will invalidate the previous code after the new code is sent successfully.": "سنقوم بإبطال الرمز السابق بعد إرسال الرمز الجديد بنجاح.",
     "WhatsApp verification is currently unavailable.": "التحقق عبر واتساب غير متاح حالياً.",
-    "Your number is stored in international format and is never exposed to the browser after submission.": "يُخزّن رقمك بالصيغة الدولية ولا يُعرض في المتصفح أبداً بعد الإرسال."
+    "Your number is stored in international format and is never exposed to the browser after submission.": "يُخزّن رقمك بالصيغة الدولية ولا يُعرض في المتصفح أبداً بعد الإرسال.",
+    "Genuine & OEM parts": "قطع أصلية وقطع OEM",
+    "Find parts for your vehicle": "ابحث عن قطع لسيارتك",
+    "Verify your account": "تحقق من حسابك",
+    "One quick step": "خطوة واحدة سريعة",
+    "Enter the one-time code we sent you to activate your account.": "أدخل الرمز المؤقت الذي أرسلناه إليك لتفعيل حسابك.",
+    "Other options": "خيارات أخرى",
+    "Choose how to receive your code": "اختر طريقة استلام الرمز",
+    "Your account has been verified.": "تم التحقق من حسابك.",
+    "We sent a 6-digit code to your email.": "أرسلنا رمزاً من 6 أرقام إلى بريدك الإلكتروني."
 }

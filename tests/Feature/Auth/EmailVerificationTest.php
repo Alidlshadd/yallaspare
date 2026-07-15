@@ -19,66 +19,61 @@ class EmailVerificationTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_email_verification_screen_can_be_rendered(): void
+    public function test_account_verification_screen_can_be_rendered(): void
     {
-        $user = User::factory()->create([
+        $user = User::factory()->unverified()->unverifiedPhone()->create([
             'email' => 'customer@gmail.com',
-            'email_verified_at' => null,
         ]);
 
         $response = $this->actingAs($user)->get('/verify-email');
 
         $response->assertStatus(200);
-        $response->assertSee('Verify Email');
-        $response->assertSee('Verification code');
-        $response->assertSee('Verify Code');
-        $response->assertSee('Resend Verification Code');
-        $response->assertSee('Open Gmail');
-        $response->assertSee($user->email);
-        $response->assertDontSee('Verification Required');
-        $response->assertSee('data-resend-button', false);
-        $response->assertSee('data-cooldown-text', false);
-        $response->assertSee('data-cooldown-seconds="60"', false);
+        $response->assertSee('Verify your account');
+        $response->assertSee('Verify and continue');
+        $response->assertSee('Resend code');
+        $response->assertSee('Other options');
+        $response->assertSee('cu******@gmail.com');
+        $response->assertSee('data-otp-form', false);
+        $response->assertSee('data-channel-toggle', false);
+        $response->assertSee('data-channel-panel', false);
     }
 
-    public function test_verification_screen_hides_gmail_button_for_other_email_domains(): void
+    public function test_verification_screen_lists_email_sms_and_whatsapp_options(): void
     {
-        $user = User::factory()->create([
-            'email' => 'customer@example.com',
-            'email_verified_at' => null,
+        config([
+            'services.otpiq.api_key' => 'sk_dev_test_key',
+            'services.otpiq.base_url' => 'https://api.otpiq.test/api',
         ]);
+
+        $user = User::factory()->unverified()->unverifiedPhone()->create();
 
         $response = $this->actingAs($user)->get('/verify-email');
 
         $response->assertStatus(200);
-        $response->assertDontSee('Open Gmail');
+        $response->assertSee('Choose how to receive your code');
+        $response->assertSee('WhatsApp');
+        $response->assertSee('data-channel-form', false);
+        $response->assertSee(route('verification.channel'), false);
     }
 
-    public function test_verification_screen_shows_resend_success_state(): void
+    public function test_users_with_a_verified_phone_are_redirected_away_from_the_screen(): void
     {
-        $user = User::factory()->create([
-            'email_verified_at' => null,
-        ]);
+        $user = User::factory()->unverified()->create();
 
-        $response = $this->actingAs($user)
-            ->withSession(['status' => 'verification-code-sent'])
-            ->get('/verify-email');
-
-        $response->assertStatus(200);
-        $response->assertSee('A fresh verification code has been sent.');
-        $response->assertSee('data-verify-toast', false);
-        $response->assertSee('data-resend-sent="1"', false);
-        $response->assertSee('You can resend another code in :seconds seconds.');
+        $this->actingAs($user)
+            ->get('/verify-email')
+            ->assertRedirect(route('user.shop.home'));
     }
 
     public function test_resend_verification_email_sends_immediate_notification(): void
     {
         Notification::fake();
-        $user = User::factory()->unverified()->create();
+        $user = User::factory()->unverified()->unverifiedPhone()->create();
 
         $this->actingAs($user)
             ->post(route('verification.send'))
-            ->assertRedirect();
+            ->assertRedirect()
+            ->assertSessionHas('status');
 
         Notification::assertSentTo($user, ImmediateVerifyEmail::class);
         $this->assertFalse(new ImmediateVerifyEmail() instanceof ShouldQueue);
@@ -97,18 +92,27 @@ class EmailVerificationTest extends TestCase
         $this->assertContains('This verification code expires in 60 minutes.', $mail->introLines);
     }
 
-    public function test_unverified_users_cannot_access_verified_customer_routes(): void
+    public function test_completely_unverified_users_cannot_access_verified_customer_routes(): void
     {
-        $user = User::factory()->unverified()->create();
+        $user = User::factory()->unverified()->unverifiedPhone()->create();
 
         $this->actingAs($user)
             ->get(route('cart.index'))
             ->assertRedirect(route('verification.notice'));
     }
 
-    public function test_unverified_mobile_users_cannot_receive_login_tokens(): void
+    public function test_one_verified_channel_is_enough_for_customer_routes(): void
     {
-        $user = User::factory()->unverified()->create();
+        $phoneOnly = User::factory()->unverified()->create();
+        $emailOnly = User::factory()->unverifiedPhone()->create();
+
+        $this->actingAs($phoneOnly)->get(route('cart.index'))->assertOk();
+        $this->actingAs($emailOnly)->get(route('cart.index'))->assertOk();
+    }
+
+    public function test_completely_unverified_mobile_users_cannot_receive_login_tokens(): void
+    {
+        $user = User::factory()->unverified()->unverifiedPhone()->create();
 
         $this->postJson('/api/mobile/login', [
             'email' => $user->email,
@@ -119,6 +123,19 @@ class EmailVerificationTest extends TestCase
                 'verification_required' => true,
             ])
             ->assertJsonMissingPath('token');
+    }
+
+    public function test_mobile_users_with_only_a_verified_phone_can_receive_login_tokens(): void
+    {
+        $user = User::factory()->unverified()->create();
+
+        $this->postJson('/api/mobile/login', [
+            'email' => $user->email,
+            'password' => 'password',
+        ])
+            ->assertOk()
+            ->assertJsonPath('user.email_verified', false)
+            ->assertJsonStructure(['token']);
     }
 
     public function test_mobile_registration_requires_email_verification_before_token_issue(): void
@@ -147,7 +164,7 @@ class EmailVerificationTest extends TestCase
 
     public function test_existing_unverified_mobile_tokens_cannot_access_verified_api_routes(): void
     {
-        $user = User::factory()->unverified()->create();
+        $user = User::factory()->unverified()->unverifiedPhone()->create();
 
         Sanctum::actingAs($user);
 
@@ -156,36 +173,33 @@ class EmailVerificationTest extends TestCase
 
     public function test_email_can_be_verified_with_code(): void
     {
-        $user = User::factory()->create([
-            'email_verified_at' => null,
-        ]);
+        $user = User::factory()->unverified()->unverifiedPhone()->create();
 
         Event::fake();
         $code = EmailVerificationCode::generateFor($user);
 
         $response = $this->actingAs($user)->post(route('verification.verify'), [
-            'verification_code' => $code,
+            'code' => $code,
         ]);
 
         Event::assertDispatched(Verified::class);
         $this->assertTrue($user->fresh()->hasVerifiedEmail());
-        $response->assertRedirect(RouteServiceProvider::HOME.'?verified=1');
+        $response->assertRedirect(route('user.shop.home'));
+        $response->assertSessionHas('success');
     }
 
     public function test_email_is_not_verified_with_invalid_code(): void
     {
-        $user = User::factory()->create([
-            'email_verified_at' => null,
-        ]);
+        $user = User::factory()->unverified()->unverifiedPhone()->create();
         EmailVerificationCode::generateFor($user);
 
         $this->actingAs($user)
             ->from(route('verification.notice'))
             ->post(route('verification.verify'), [
-                'verification_code' => '000000',
+                'code' => '000000',
             ])
             ->assertRedirect(route('verification.notice'))
-            ->assertSessionHasErrors('verification_code');
+            ->assertSessionHasErrors('code');
 
         $this->assertFalse($user->fresh()->hasVerifiedEmail());
     }
@@ -194,26 +208,24 @@ class EmailVerificationTest extends TestCase
     {
         config(['security.email_verification.max_attempts' => 2]);
 
-        $user = User::factory()->create([
-            'email_verified_at' => null,
-        ]);
+        $user = User::factory()->unverified()->unverifiedPhone()->create();
         $code = EmailVerificationCode::generateFor($user);
 
         $this->actingAs($user)->post(route('verification.verify'), [
-            'verification_code' => '000000',
+            'code' => '000000',
         ]);
 
         $this->actingAs($user)->post(route('verification.verify'), [
-            'verification_code' => '111111',
+            'code' => '111111',
         ]);
 
         $this->actingAs($user)
             ->from(route('verification.notice'))
             ->post(route('verification.verify'), [
-                'verification_code' => $code,
+                'code' => $code,
             ])
             ->assertRedirect(route('verification.notice'))
-            ->assertSessionHasErrors('verification_code');
+            ->assertSessionHasErrors('code');
 
         $this->assertFalse($user->fresh()->hasVerifiedEmail());
     }

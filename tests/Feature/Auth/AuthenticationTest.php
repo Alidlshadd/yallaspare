@@ -86,9 +86,9 @@ class AuthenticationTest extends TestCase
         $response->assertRedirect(route('user.shop.home'));
     }
 
-    public function test_unverified_users_are_sent_to_email_verification_after_login(): void
+    public function test_completely_unverified_users_are_sent_to_account_verification_after_login(): void
     {
-        $user = User::factory()->unverified()->create();
+        $user = User::factory()->unverified()->unverifiedPhone()->create();
 
         $response = $this->post('/login', [
             'email' => $user->email,
@@ -97,6 +97,21 @@ class AuthenticationTest extends TestCase
 
         $this->assertAuthenticatedAs($user);
         $response->assertRedirect(route('verification.notice'));
+    }
+
+    public function test_users_with_only_a_verified_phone_can_sign_in_normally(): void
+    {
+        $user = User::factory()->unverified()->create([
+            'two_factor_preference' => 'off',
+        ]);
+
+        $response = $this->post('/login', [
+            'email' => $user->email,
+            'password' => 'password',
+        ]);
+
+        $this->assertAuthenticatedAs($user);
+        $response->assertRedirect(route('user.shop.home'));
     }
 
     public function test_users_can_not_authenticate_with_invalid_password(): void

@@ -2896,8 +2896,8 @@
     "We could not complete Apple sign-in. Please try again.": "نەتوانرا چوونەژوورەوە بە ئەپڵ تەواو بکرێت. تکایە دووبارە هەوڵ بدەرەوە.",
     "We could not connect this Google account. Please use email and password or contact support.": "نەتوانرا ئەم هەژماری گووگڵە ببەسترێتەوە. تکایە ئیمەیڵ و وشەی نهێنی بەکاربهێنە یان پەیوەندی بە پشتگیری بکە.",
     "We could not connect this Apple account. Please use email and password or contact support.": "نەتوانرا ئەم هەژماری ئەپڵە ببەسترێتەوە. تکایە ئیمەیڵ و وشەی نهێنی بەکاربهێنە یان پەیوەندی بە پشتگیری بکە.",
-    "Your account has been suspended. Please contact support.": "هەژمارەکەت ڕاگیراوە. تکایە پەیوەندی بە پشتگیری بکە."
-    ,":channel is already selected.": ":channel پێشتر هەڵبژێردراوە.",
+    "Your account has been suspended. Please contact support.": "هەژمارەکەت ڕاگیراوە. تکایە پەیوەندی بە پشتگیری بکە.",
+    ":channel is already selected.": ":channel پێشتر هەڵبژێردراوە.",
     "A new verification code has been sent via :channel.": "کۆدی پشتڕاستکردنەوەیەکی نوێ لە ڕێگەی :channel نێردرا.",
     "Accepted: 07700000000, 7700000000, or +9647700000000.": "قبوڵکراو: 07700000000 یان 7700000000 یان +9647700000000.",
     "Add a phone number to use SMS verification.": "ژمارەی مۆبایل زیاد بکە بۆ بەکارهێنانی پشتڕاستکردنەوە بە SMS.",
@@ -2942,5 +2942,14 @@
     "Use another verification method": "شێوازێکی تری پشتڕاستکردنەوە بەکاربهێنە",
     "We will invalidate the previous code after the new code is sent successfully.": "دوای ناردنی سەرکەوتووانەی کۆدە نوێکە، کۆدە پێشووەکە پووچەڵ دەکرێتەوە.",
     "WhatsApp verification is currently unavailable.": "پشتڕاستکردنەوە بە واتسئاپ لە ئێستادا بەردەست نییە.",
-    "Your number is stored in international format and is never exposed to the browser after submission.": "ژمارەکەت بە فۆرماتی نێودەوڵەتی پاشەکەوت دەکرێت و دوای ناردن هەرگیز لە وێبگەڕدا دەرناکەوێت."
+    "Your number is stored in international format and is never exposed to the browser after submission.": "ژمارەکەت بە فۆرماتی نێودەوڵەتی پاشەکەوت دەکرێت و دوای ناردن هەرگیز لە وێبگەڕدا دەرناکەوێت.",
+    "Genuine & OEM parts": "پارچەی ڕەسەن و OEM",
+    "Find parts for your vehicle": "پارچە بۆ ئۆتۆمبێلەکەت بدۆزەرەوە",
+    "Verify your account": "هەژمارەکەت پشتڕاست بکەرەوە",
+    "One quick step": "یەک هەنگاوی خێرا",
+    "Enter the one-time code we sent you to activate your account.": "ئەو کۆدە کاتییە بنووسە کە بۆمان ناردوویت بۆ چالاککردنی هەژمارەکەت.",
+    "Other options": "بژاردەکانی تر",
+    "Choose how to receive your code": "هەڵبژێرە چۆن کۆدەکە وەربگریت",
+    "Your account has been verified.": "هەژمارەکەت پشتڕاستکرایەوە.",
+    "We sent a 6-digit code to your email.": "کۆدێکی 6 ژمارەییمان بۆ ئیمەیڵەکەت نارد."
 }

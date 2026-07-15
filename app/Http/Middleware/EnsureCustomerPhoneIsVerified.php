@@ -12,13 +12,16 @@ class EnsureCustomerPhoneIsVerified
     {
         $user = $request->user();
 
+        // One verified contact channel is enough: a customer who confirmed
+        // their email is not forced through phone verification as well.
         if (
             $user
             && ! $user->isAdminPanelUser()
             && filled($user->phone_normalized)
             && $user->phone_verified_at === null
+            && ! $user->hasVerifiedEmail()
         ) {
-            return redirect()->route('phone.verify');
+            return redirect()->route('verification.notice');
         }
 
         return $next($request);
