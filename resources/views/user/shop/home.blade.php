@@ -21,8 +21,8 @@
     @endphp
 
     <div class="space-y-6 sm:space-y-8 lg:space-y-10">
-        <section class="mx-auto w-full overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-950 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:shadow-black/10 sm:rounded-3xl">
-            <div class="relative h-[170px] overflow-hidden sm:h-[210px] lg:h-[250px]">
+        <section class="relative mx-auto w-full overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-950 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:shadow-black/10 sm:rounded-3xl">
+            <div class="absolute inset-0 overflow-hidden">
                 @if ($heroVideoUrl)
                     @if ($heroImageUrl)
                         <img
@@ -57,87 +57,86 @@
                         <source src="{{ $heroVideoUrl }}" type="video/mp4">
                     </video>
                 @elseif ($heroImageUrl)
-                    <img src="{{ $heroImageUrl }}" alt="{{ __('Auto parts banner') }}" class="h-full w-full object-cover">
+                    <img src="{{ $heroImageUrl }}" alt="{{ __('Auto parts banner') }}" class="absolute inset-0 h-full w-full object-cover">
                 @else
-                    <div class="h-full w-full bg-[linear-gradient(135deg,#070740_0%,#111827_52%,#1f2937_100%)]"></div>
+                    <div class="absolute inset-0 h-full w-full bg-[linear-gradient(135deg,#070740_0%,#111827_52%,#1f2937_100%)]"></div>
                 @endif
 
-                <div class="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/45 to-slate-950/10"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-slate-950/15"></div>
+            </div>
 
-                <div class="absolute inset-0 flex items-center">
-                    <div class="max-w-2xl px-4 py-6 sm:px-8 lg:px-10">
-                        <h1 class="text-xl font-semibold tracking-[-0.03em] text-white sm:text-2xl lg:text-3xl">
-                            {{ $heroTitle }}
-                        </h1>
-                        <p class="mt-2 max-w-xl text-xs leading-5 text-slate-200 sm:mt-3 sm:text-sm sm:leading-6 lg:text-base">
-                            {{ $heroSubtitle }}
-                        </p>
-                        <a
-                            href="{{ $heroButtonUrl }}"
-                            class="mt-4 inline-flex items-center justify-center rounded-xl bg-white px-3.5 py-2 text-xs font-semibold text-primary transition duration-200 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 sm:mt-5 sm:rounded-2xl sm:px-4 sm:py-2.5 sm:text-sm"
-                        >
-                            {{ $heroButtonLabel }}
-                        </a>
-                    </div>
+            <div class="relative grid grid-cols-1 items-end gap-5 p-4 pt-48 sm:p-6 sm:pt-56 lg:min-h-[470px] lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end lg:gap-8 lg:p-11 lg:pt-28">
+                <div>
+                    <span class="inline-block rounded-full border border-white/30 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-slate-100">
+                        {{ __('Genuine & OEM parts') }}
+                    </span>
+                    <h1 class="mt-3 max-w-xl text-2xl font-bold leading-tight tracking-[-0.03em] text-white sm:mt-4 sm:text-3xl lg:text-[44px] lg:leading-[1.06]">
+                        {{ $heroTitle }}
+                    </h1>
+                    <p class="mt-2 max-w-xl text-xs leading-5 text-slate-300 sm:mt-3 sm:text-sm sm:leading-6 lg:text-base">
+                        {{ $heroSubtitle }}
+                    </p>
+                    <a
+                        href="{{ $heroButtonUrl }}"
+                        class="mt-4 inline-flex items-center justify-center rounded-xl border border-white/35 px-4 py-2 text-xs font-semibold text-white transition duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 sm:mt-5 sm:rounded-2xl sm:py-2.5 sm:text-sm"
+                    >
+                        {{ $heroButtonLabel }}
+                    </a>
                 </div>
+
+                <form
+                    id="vehicle-finder"
+                    method="GET"
+                    action="{{ route('shop.index') }}"
+                    class="flex flex-col gap-2.5 rounded-2xl border border-white/25 bg-white/10 p-4 backdrop-blur-xl sm:p-5"
+                    data-vehicle-finder
+                    data-model-map='@json($modelOptionsByBrand)'
+                    data-model-placeholder="{{ __('Model') }}"
+                    data-all-models-placeholder="{{ __('Select brand first') }}"
+                    data-no-models-placeholder="{{ __('No models for this brand yet') }}"
+                >
+                    <p class="text-sm font-semibold text-white">{{ __('Find parts for your vehicle') }}</p>
+
+                    <select
+                        name="brand"
+                        data-vehicle-brand
+                        class="w-full rounded-xl border-0 bg-white/95 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:ring-4 focus:ring-white/30"
+                    >
+                        <option value="">{{ __('Brand') }}</option>
+                        @foreach ($brandOptions as $option)
+                            <option value="{{ $option }}">{{ $option }}</option>
+                        @endforeach
+                    </select>
+
+                    <select
+                        name="model"
+                        data-vehicle-model
+                        class="w-full rounded-xl border-0 bg-white/95 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:ring-4 focus:ring-white/30"
+                    >
+                        <option value="">{{ __('Model') }}</option>
+                        @foreach ($modelOptions as $option)
+                            <option value="{{ $option }}">{{ $option }}</option>
+                        @endforeach
+                    </select>
+
+                    <select
+                        name="vehicle"
+                        class="w-full rounded-xl border-0 bg-white/95 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:ring-4 focus:ring-white/30"
+                    >
+                        <option value="">{{ __('Engine / Year') }}</option>
+                        @foreach ($engineOptions as $option)
+                            <option value="{{ $option }}">{{ $option }}</option>
+                        @endforeach
+                    </select>
+
+                    <button
+                        type="submit"
+                        class="mt-1 inline-flex items-center justify-center rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-primary transition duration-200 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+                    >
+                        {{ __('Find parts') }}
+                    </button>
+                </form>
             </div>
-        </section>
-
-        <section id="vehicle-finder" class="rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:rounded-3xl sm:p-6">
-            <div class="flex flex-col gap-2">
-                <h2 class="text-lg font-semibold text-slate-950 dark:text-white sm:text-xl">{{ __('Vehicle Finder') }}</h2>
-                <p class="text-xs leading-5 text-slate-500 dark:text-slate-400 sm:text-sm">{{ __('Pick your vehicle once and browse matching parts faster.') }}</p>
-            </div>
-
-            <form
-                method="GET"
-                action="{{ route('shop.index') }}"
-                class="mt-4 grid grid-cols-1 gap-2.5 sm:mt-6 sm:gap-3 md:grid-cols-2 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)_minmax(0,1fr)_auto]"
-                data-vehicle-finder
-                data-model-map='@json($modelOptionsByBrand)'
-                data-model-placeholder="{{ __('Model') }}"
-                data-all-models-placeholder="{{ __('Select brand first') }}"
-                data-no-models-placeholder="{{ __('No models for this brand yet') }}"
-            >
-                <select
-                    name="brand"
-                    data-vehicle-brand
-                    class="w-full rounded-xl border border-slate-200/80 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:border-primary/30 dark:focus:ring-primary/10 sm:rounded-2xl sm:px-4 sm:py-3"
-                >
-                    <option value="">{{ __('Brand') }}</option>
-                    @foreach ($brandOptions as $option)
-                        <option value="{{ $option }}">{{ $option }}</option>
-                    @endforeach
-                </select>
-
-                <select
-                    name="model"
-                    data-vehicle-model
-                    class="w-full rounded-xl border border-slate-200/80 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:border-primary/30 dark:focus:ring-primary/10 sm:rounded-2xl sm:px-4 sm:py-3"
-                >
-                    <option value="">{{ __('Model') }}</option>
-                    @foreach ($modelOptions as $option)
-                        <option value="{{ $option }}">{{ $option }}</option>
-                    @endforeach
-                </select>
-
-                <select
-                    name="vehicle"
-                    class="w-full rounded-xl border border-slate-200/80 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:border-primary/30 dark:focus:ring-primary/10 sm:rounded-2xl sm:px-4 sm:py-3"
-                >
-                    <option value="">{{ __('Engine / Year') }}</option>
-                    @foreach ($engineOptions as $option)
-                        <option value="{{ $option }}">{{ $option }}</option>
-                    @endforeach
-                </select>
-
-                <button
-                    type="submit"
-                    class="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-medium text-white transition duration-200 hover:bg-[#0a0a55] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 sm:rounded-2xl sm:px-5 sm:py-3 md:col-span-2 lg:col-span-1"
-                >
-                    {{ __('Find parts') }}
-                </button>
-            </form>
         </section>
 
         <section class="space-y-5">
