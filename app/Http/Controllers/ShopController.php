@@ -11,11 +11,11 @@ use App\Models\Setting;
 use App\Models\User;
 use App\Models\Wishlist;
 use App\Services\Analytics\ProductViewTracker;
+use App\Support\DbSchema;
 use App\Support\SqlSafe;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
 class ShopController extends Controller
@@ -30,7 +30,7 @@ class ShopController extends Controller
         }
 
         $productRelations = ['category', 'images'];
-        if (Schema::hasTable('product_reviews')) {
+        if (DbSchema::hasTable('product_reviews')) {
             $productRelations['reviews'] = fn ($query) => $query
                 ->where('is_approved', true)
                 ->with('user:id,name')
@@ -56,14 +56,14 @@ class ShopController extends Controller
         $isWishlisted = false;
         $isBackInStockSubscribed = false;
         $recentlyViewedProducts = collect();
-        if (auth()->check() && Schema::hasTable('wishlists')) {
+        if (auth()->check() && DbSchema::hasTable('wishlists')) {
             $isWishlisted = Wishlist::query()
                 ->where('user_id', auth()->id())
                 ->where('product_id', $product->id)
                 ->exists();
         }
 
-        if ($request->user() && Schema::hasTable('recently_viewed_products')) {
+        if ($request->user() && DbSchema::hasTable('recently_viewed_products')) {
             $this->recordRecentlyViewedProduct($request->user(), $product);
             $recentlyViewedProducts = RecentlyViewedProduct::query()
                 ->where('user_id', $request->user()->id)
@@ -78,7 +78,7 @@ class ShopController extends Controller
                 ->values();
         }
 
-        if ($request->user() && Schema::hasTable('back_in_stock_subscriptions')) {
+        if ($request->user() && DbSchema::hasTable('back_in_stock_subscriptions')) {
             $isBackInStockSubscribed = BackInStockSubscription::query()
                 ->where('user_id', $request->user()->id)
                 ->where('product_id', $product->id)
@@ -86,10 +86,10 @@ class ShopController extends Controller
         }
 
         $reviews = $product->relationLoaded('reviews') ? $product->reviews : collect();
-        $reviewCount = Schema::hasTable('product_reviews')
+        $reviewCount = DbSchema::hasTable('product_reviews')
             ? ProductReview::query()->where('product_id', $product->id)->where('is_approved', true)->count()
             : 0;
-        $averageRating = Schema::hasTable('product_reviews')
+        $averageRating = DbSchema::hasTable('product_reviews')
             ? (float) ProductReview::query()->where('product_id', $product->id)->where('is_approved', true)->avg('rating')
             : 0.0;
 

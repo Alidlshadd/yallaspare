@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use App\Support\DbSchema;
 use App\Support\LocalizedText;
+use App\Support\VehicleFilterCache;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -41,6 +42,24 @@ class Product extends Model {
                     $product->id
                 );
             }
+        });
+
+        // Only brand / compatible_models feed the storefront vehicle filter
+        // options, so routine edits (stock, price) keep the cache warm.
+        // created/updated instead of saved: wasRecentlyCreated stays true on
+        // the instance after insert, which would flush on every later save.
+        static::created(function (): void {
+            VehicleFilterCache::flush();
+        });
+
+        static::updated(function (self $product): void {
+            if ($product->wasChanged(['brand', 'compatible_models'])) {
+                VehicleFilterCache::flush();
+            }
+        });
+
+        static::deleted(function (): void {
+            VehicleFilterCache::flush();
         });
     }
 
@@ -225,56 +244,15 @@ class Product extends Model {
      */
     private function resolveDiscountedPrice(float $basePrice): array
     {
-        if ($basePrice <= 0 || !Schema::hasTable('discounts')) {
+        if ($basePrice <= 0 || !DbSchema::hasTable('discounts')) {
             return [
                 'price' => round(max(0, $basePrice), 2),
                 'discount_ids' => [],
             ];
         }
 
-        $now = now();
-        $hasBrandScope = Schema::hasColumn('discounts', 'brand_names');
-        $categoryId = (int) ($this->category_id ?? 0);
-        $brand = trim((string) ($this->brand ?? ''));
-
-        $discounts = Discount::query()
-            ->select(['id', 'scope', 'type', 'value', 'minimum_subtotal', 'usage_limit', 'used_count'])
-            ->where('is_active', true)
-            ->where(function ($query) use ($now): void {
-                $query->whereNull('starts_at')
-                    ->orWhere('starts_at', '<=', $now);
-            })
-            ->where(function ($query) use ($now): void {
-                $query->whereNull('ends_at')
-                    ->orWhere('ends_at', '>=', $now);
-            })
-            ->where(function ($query): void {
-                $query->whereNull('usage_limit')
-                    ->orWhere('usage_limit', '<=', 0)
-                    ->orWhereColumn('used_count', '<', 'usage_limit');
-            })
-            ->where(function ($query) use ($categoryId, $brand, $hasBrandScope): void {
-                $query->where('scope', 'catalog')
-                    ->orWhere(function ($productQuery): void {
-                        $productQuery->where('scope', 'product')
-                            ->whereHas('products', fn ($relation) => $relation->whereKey($this->getKey()));
-                    });
-
-                if ($categoryId > 0) {
-                    $query->orWhere(function ($categoryQuery) use ($categoryId): void {
-                        $categoryQuery->where('scope', 'category')
-                            ->whereHas('categories', fn ($relation) => $relation->whereKey($categoryId));
-                    });
-                }
-
-                if ($hasBrandScope && $brand !== '') {
-                    $query->orWhere(function ($brandQuery) use ($brand): void {
-                        $brandQuery->where('scope', 'brand')
-                            ->whereJsonContains('brand_names', $brand);
-                    });
-                }
-            })
-            ->get();
+        $discounts = Discount::activeForPricing()
+            ->filter(fn (Discount $discount): bool => $discount->appliesToProduct($this));
 
         $bestPrice = $basePrice;
         $bestDiscountId = null;

@@ -148,6 +148,10 @@ ok "Migrations up to date"
 # --- Caches (rebuild so pulled blades/config/routes take effect) -------------
 log "Refreshing caches"
 "${PHP_BIN}" artisan storage:link >/dev/null 2>&1 || true
+# Clear the application data cache right after migrations: App\Support\DbSchema
+# caches positive table/column checks forever, so schema changes (and
+# especially any manual `migrate:rollback`) require a cache:clear to be seen.
+"${PHP_BIN}" artisan cache:clear
 "${PHP_BIN}" artisan config:cache
 "${PHP_BIN}" artisan route:cache
 "${PHP_BIN}" artisan view:cache

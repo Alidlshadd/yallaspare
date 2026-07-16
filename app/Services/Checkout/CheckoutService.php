@@ -268,5 +268,9 @@ class CheckoutService
         }
 
         Discount::query()->whereKey($ids)->increment('used_count');
+
+        // Bulk increment bypasses model events, so drop the per-request
+        // pricing memo explicitly in case a limit was just exhausted.
+        Discount::flushActivePricingCache();
     }
 }

@@ -11,12 +11,13 @@ use App\Models\VehicleBrand;
 use App\Models\VehicleModel;
 use App\Models\Wishlist;
 use App\Services\Analytics\SearchTracker;
+use App\Support\DbSchema;
 use App\Support\LocalizedText;
 use App\Support\SqlSafe;
+use App\Support\VehicleFilterCache;
 use Illuminate\Support\Collection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -42,9 +43,9 @@ class ShopController extends Controller
         $engineOptions = $vehicleFilters['engineOptions'];
         $wishlistedProductIds = [];
 
-        if (Schema::hasTable('categories')) {
+        if (DbSchema::hasTable('categories')) {
             $categoryColumns = ['id', 'slug', 'name_en', 'name_ar', 'name_ku', 'description'];
-            $hasCategoryImage = Schema::hasColumn('categories', 'image');
+            $hasCategoryImage = DbSchema::hasColumn('categories', 'image');
 
             if ($hasCategoryImage) {
                 $categoryColumns[] = 'image';
@@ -68,12 +69,12 @@ class ShopController extends Controller
                 });
         }
 
-        if (Schema::hasTable('products')) {
+        if (DbSchema::hasTable('products')) {
             $featuredProductsQuery = Product::query()
                 ->with('category:id,slug,name_en,name_ar,name_ku')
                 ->where('is_active', true);
 
-            if (Schema::hasTable('wishlists')) {
+            if (DbSchema::hasTable('wishlists')) {
                 $featuredProductsQuery
                     ->withCount('wishlists')
                     ->orderByDesc('wishlists_count')
@@ -116,7 +117,7 @@ class ShopController extends Controller
                     ];
                 });
 
-            if ($customerUser && Schema::hasTable('wishlists')) {
+            if ($customerUser && DbSchema::hasTable('wishlists')) {
                 $wishlistedProductIds = Wishlist::query()
                     ->where('user_id', $customerUser->id)
                     ->whereIn('product_id', $featuredProducts->pluck('id'))
@@ -130,29 +131,9 @@ class ShopController extends Controller
                 ->where('brand', '!=', '')
                 ->distinct()
                 ->orderBy('brand')
+                ->limit(12)
                 ->pluck('brand')
-                ->take(12)
                 ->values();
-
-            $compatibleValues = Product::query()
-                ->whereNotNull('compatible_models')
-                ->pluck('compatible_models')
-                ->filter()
-                ->flatMap(function ($value) {
-                    $items = is_array($value) ? $value : (json_decode((string) $value, true) ?: []);
-
-                    return collect($items)
-                        ->map(fn ($item) => is_array($item) ? ($item['name'] ?? reset($item)) : $item)
-                        ->filter();
-                })
-                ->unique()
-                ->take(18)
-                ->values();
-
-            $vehicleFilters = $this->vehicleFilterOptions();
-            $brandOptions = $vehicleFilters['brandOptions'];
-            $modelOptions = $vehicleFilters['modelOptions'];
-            $engineOptions = $vehicleFilters['engineOptions'];
         }
 
         if ($featuredProducts->isEmpty()) {
@@ -245,7 +226,7 @@ class ShopController extends Controller
             $productsQuery->where(function ($query) use ($brand): void {
                 SqlSafe::whereLike($query, 'brand', $brand);
 
-                if (Schema::hasTable('product_vehicle_fitments') && Schema::hasTable('vehicle_brands')) {
+                if (DbSchema::hasTable('product_vehicle_fitments') && DbSchema::hasTable('vehicle_brands')) {
                     $query->orWhereHas('vehicleFitments.brand', function ($fitmentQuery) use ($brand): void {
                         SqlSafe::whereLike($fitmentQuery, 'name', $brand);
                     });
@@ -258,7 +239,7 @@ class ShopController extends Controller
             $productsQuery->where(function ($query) use ($model): void {
                 SqlSafe::whereLike($query, 'compatible_models', $model);
 
-                if (Schema::hasTable('product_vehicle_fitments') && Schema::hasTable('vehicle_models')) {
+                if (DbSchema::hasTable('product_vehicle_fitments') && DbSchema::hasTable('vehicle_models')) {
                     $query->orWhereHas('vehicleFitments.model', function ($fitmentQuery) use ($model): void {
                         SqlSafe::whereLike($fitmentQuery, 'name', $model);
                     });
@@ -271,7 +252,7 @@ class ShopController extends Controller
             $productsQuery->where(function ($query) use ($vehicle): void {
                 SqlSafe::whereLike($query, 'compatible_models', $vehicle);
 
-                if (Schema::hasTable('product_vehicle_fitments')) {
+                if (DbSchema::hasTable('product_vehicle_fitments')) {
                     $year = $this->extractVehicleYear($vehicle);
                     $engine = $this->extractVehicleEngine($vehicle);
 
@@ -315,7 +296,7 @@ class ShopController extends Controller
         }
 
         $wishlistedProductIds = [];
-        if ($customerUser && Schema::hasTable('wishlists')) {
+        if ($customerUser && DbSchema::hasTable('wishlists')) {
             $wishlistedProductIds = Wishlist::query()
                 ->where('user_id', $customerUser->id)
                 ->whereIn('product_id', $products->pluck('id'))
@@ -354,7 +335,7 @@ class ShopController extends Controller
 
     public function categories(): View
     {
-        $hasCategoryImage = Schema::hasColumn('categories', 'image');
+        $hasCategoryImage = DbSchema::hasColumn('categories', 'image');
         $columns = ['id', 'slug', 'name_en', 'name_ar', 'name_ku', 'description'];
 
         if ($hasCategoryImage) {
@@ -410,7 +391,7 @@ class ShopController extends Controller
 
     private function categoryImageUrl(Category $category): ?string
     {
-        if (! Schema::hasColumn('categories', 'image')) {
+        if (! DbSchema::hasColumn('categories', 'image')) {
             return null;
         }
 
@@ -421,6 +402,11 @@ class ShopController extends Controller
 
     private function vehicleFilterOptions(): array
     {
+        return VehicleFilterCache::remember(fn (): array => $this->buildVehicleFilterOptions());
+    }
+
+    private function buildVehicleFilterOptions(): array
+    {
         $brandOptions = collect();
         $modelOptions = collect();
         $engineOptions = collect();
@@ -428,7 +414,7 @@ class ShopController extends Controller
         $hasStructuredVehicleData = false;
         $hasFitmentData = false;
 
-        if (! Schema::hasTable('products')) {
+        if (! DbSchema::hasTable('products')) {
             return $this->vehicleFilterPayload($brandOptions, $modelOptions, $engineOptions, $modelOptionsByBrand, false, false);
         }
 
@@ -441,7 +427,7 @@ class ShopController extends Controller
             ->filter()
             ->values();
 
-        if (Schema::hasTable('vehicle_brands')) {
+        if (DbSchema::hasTable('vehicle_brands')) {
             $vehicleBrandRows = VehicleBrand::query()
                 ->with(['models:id,vehicle_brand_id,name'])
                 ->orderBy('name')
@@ -462,7 +448,7 @@ class ShopController extends Controller
             }
         }
 
-        if (Schema::hasTable('vehicle_models')) {
+        if (DbSchema::hasTable('vehicle_models')) {
             $vehicleModels = VehicleModel::query()
                 ->orderBy('name')
                 ->pluck('name')
@@ -475,7 +461,7 @@ class ShopController extends Controller
             }
         }
 
-        if (Schema::hasTable('product_vehicle_fitments')) {
+        if (DbSchema::hasTable('product_vehicle_fitments')) {
             $hasFitmentData = ProductVehicleFitment::query()->exists();
 
             $fitmentEngines = ProductVehicleFitment::query()
