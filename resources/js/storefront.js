@@ -888,10 +888,20 @@ const initProductGallery = () => {
     const qtyHiddenInputs = Array.from(document.querySelectorAll('#purchase-qty-hidden, #purchase-qty-hidden-guest'));
     const qtyMinus = document.querySelector('[data-qty-minus]');
     const qtyPlus = document.querySelector('[data-qty-plus]');
+    const qtyStepper = qtyInput ? qtyInput.closest('[data-qty-stepper]') : null;
+
+    const replayClass = (node, className) => {
+        if (!node) return;
+        node.classList.remove(className);
+        void node.offsetWidth;
+        node.classList.add(className);
+    };
+
+    const readMaxQty = () => Math.max(1, Number.parseInt(qtyInput.dataset.maxQuantity || qtyInput.getAttribute('max') || '99', 10) || 99);
 
     const syncQty = () => {
         if (!qtyInput) return;
-        const maxQty = Math.max(1, Number.parseInt(qtyInput.dataset.maxQuantity || qtyInput.getAttribute('max') || '99', 10) || 99);
+        const maxQty = readMaxQty();
         let value = Number.parseInt(qtyInput.value, 10);
         if (Number.isNaN(value) || value < 1) value = 1;
         if (value > maxQty) value = maxQty;
@@ -901,19 +911,28 @@ const initProductGallery = () => {
         });
     };
 
+    const stepQty = (delta, button) => {
+        const before = Number.parseInt(qtyInput.value, 10) || 1;
+        const next = Math.min(readMaxQty(), Math.max(1, before + delta));
+
+        replayClass(button, 'qty-ripple');
+
+        if (next === before) {
+            replayClass(qtyStepper, 'qty-shake');
+            return;
+        }
+
+        qtyInput.value = next;
+        syncQty();
+        replayClass(qtyInput, 'qty-bump');
+    };
+
     if (qtyMinus && qtyInput) {
-        qtyMinus.addEventListener('click', () => {
-            qtyInput.value = Math.max(1, (Number.parseInt(qtyInput.value, 10) || 1) - 1);
-            syncQty();
-        });
+        qtyMinus.addEventListener('click', () => stepQty(-1, qtyMinus));
     }
 
     if (qtyPlus && qtyInput) {
-        qtyPlus.addEventListener('click', () => {
-            const maxQty = Math.max(1, Number.parseInt(qtyInput.dataset.maxQuantity || qtyInput.getAttribute('max') || '99', 10) || 99);
-            qtyInput.value = Math.min(maxQty, (Number.parseInt(qtyInput.value, 10) || 1) + 1);
-            syncQty();
-        });
+        qtyPlus.addEventListener('click', () => stepQty(1, qtyPlus));
     }
 
     if (qtyInput) {

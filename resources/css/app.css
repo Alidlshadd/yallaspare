@@ -1770,3 +1770,62 @@
         border-color: #64748b;
     }
 }
+
+/* Product detail quantity stepper animation (design A: bump + ripple ring) */
+.qty-anim-btn {
+    position: relative;
+}
+.qty-anim-btn::after {
+    content: "";
+    position: absolute;
+    inset: 0.375rem;
+    border-radius: 0.625rem;
+    opacity: 0;
+    pointer-events: none;
+}
+.qty-anim-btn.qty-ripple::after {
+    animation: qty-ring 0.45s ease-out;
+}
+.dark .qty-anim-btn.qty-ripple::after {
+    animation-name: qty-ring-dark;
+}
+@keyframes qty-ring {
+    0% { opacity: 1; box-shadow: 0 0 0 0 rgba(7, 7, 64, 0.28); }
+    100% { opacity: 0; box-shadow: 0 0 0 12px rgba(7, 7, 64, 0); }
+}
+@keyframes qty-ring-dark {
+    0% { opacity: 1; box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.35); }
+    100% { opacity: 0; box-shadow: 0 0 0 12px rgba(251, 191, 36, 0); }
+}
+.qty-bump {
+    animation: qty-bump 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes qty-bump {
+    0% { transform: scale(1); }
+    35% { transform: scale(1.45); color: #f59e0b; }
+    100% { transform: scale(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .qty-anim-btn.qty-ripple::after,
+    .qty-bump {
+        animation: none;
+    }
+}
+
+/* Quantity stepper limit feedback (design C: shake when hitting min/max) */
+.qty-shake {
+    animation: qty-shake 0.4s ease;
+}
+@keyframes qty-shake {
+    0%, 100% { transform: translateX(0); border-color: #e11d48; }
+    20% { transform: translateX(-5px); }
+    40% { transform: translateX(5px); }
+    60% { transform: translateX(-3px); }
+    80% { transform: translateX(3px); }
+    99% { border-color: #e11d48; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .qty-shake {
+        animation: none;
+    }
+}

@@ -221,10 +221,10 @@
 
                         <div class="mt-4">
                             <label for="purchase-qty" class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{{ __('Quantity') }}</label>
-                            <div class="mt-2 flex items-center overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
-                                <button type="button" data-qty-minus class="inline-flex h-11 w-11 items-center justify-center text-slate-600 transition duration-150 hover:bg-slate-50 active:scale-90 dark:text-slate-300 dark:hover:bg-slate-800">-</button>
+                            <div data-qty-stepper class="mt-2 flex items-center overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
+                                <button type="button" data-qty-minus class="qty-anim-btn inline-flex h-11 w-11 items-center justify-center text-slate-600 transition duration-150 hover:bg-slate-50 hover:text-primary active:scale-90 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white">-</button>
                                 <input id="purchase-qty" type="text" inputmode="numeric" value="1" min="1" max="{{ $maxPurchasableQuantity }}" data-max-quantity="{{ $maxPurchasableQuantity }}" class="h-11 w-full border-0 bg-white text-center text-sm font-semibold text-slate-900 focus:ring-0 dark:bg-slate-900 dark:text-white">
-                                <button type="button" data-qty-plus class="inline-flex h-11 w-11 items-center justify-center text-slate-600 transition duration-150 hover:bg-slate-50 active:scale-90 dark:text-slate-300 dark:hover:bg-slate-800">+</button>
+                                <button type="button" data-qty-plus class="qty-anim-btn inline-flex h-11 w-11 items-center justify-center text-slate-600 transition duration-150 hover:bg-slate-50 hover:text-primary active:scale-90 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white">+</button>
                             </div>
                             @if ($inStock && $maxPurchasableQuantity <= 5)
                                 <p class="mt-2 text-xs font-semibold text-rose-600 dark:text-rose-400">{{ __('Only :quantity left in stock', ['quantity' => $maxPurchasableQuantity]) }}</p>
