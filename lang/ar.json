@@ -2951,5 +2951,9 @@
     "Other options": "خيارات أخرى",
     "Choose how to receive your code": "اختر طريقة استلام الرمز",
     "Your account has been verified.": "تم التحقق من حسابك.",
-    "We sent a 6-digit code to your email.": "أرسلنا رمزاً من 6 أرقام إلى بريدك الإلكتروني."
+    "We sent a 6-digit code to your email.": "أرسلنا رمزاً من 6 أرقام إلى بريدك الإلكتروني.",
+    "Enter a valid email address or Iraqi mobile number.": "أدخل بريداً إلكترونياً صالحاً أو رقم هاتف محمول عراقياً.",
+    "Enter your email or phone number to receive a secure password reset link.": "أدخل بريدك الإلكتروني أو رقم هاتفك لتلقي رابط آمن لإعادة تعيين كلمة المرور.",
+    "If an account matches these details, we sent a reset link to its registered email.": "إذا كان هناك حساب يطابق هذه البيانات، فقد أرسلنا رابط إعادة التعيين إلى بريده الإلكتروني المسجل.",
+    "Send Password Reset Link": "إرسال رابط إعادة تعيين كلمة المرور"
 }

@@ -17,7 +17,10 @@ class PasswordResetTest extends TestCase
     {
         $response = $this->get('/forgot-password');
 
-        $response->assertStatus(200);
+        $response
+            ->assertStatus(200)
+            ->assertSee('Email or phone')
+            ->assertSee('name="login"', false);
     }
 
     public function test_reset_password_link_can_be_requested(): void
@@ -37,8 +40,32 @@ class PasswordResetTest extends TestCase
         Notification::fake();
 
         $this->post('/forgot-password', ['email' => 'missing@example.com'])
-            ->assertSessionHas('status', 'If this email exists, we sent a reset link.')
+            ->assertSessionHas('status', 'If an account matches these details, we sent a reset link to its registered email.')
             ->assertSessionHasNoErrors();
+
+        Notification::assertNothingSent();
+    }
+
+    public function test_reset_password_link_can_be_requested_with_an_iraqi_phone_number(): void
+    {
+        Notification::fake();
+
+        $user = User::factory()->create(['phone' => '+964 750 448 8315']);
+
+        $this->post('/forgot-password', ['login' => '0750 448 8315'])
+            ->assertSessionHasNoErrors()
+            ->assertSessionHas('status');
+
+        Notification::assertSentTo($user, ImmediateResetPassword::class);
+    }
+
+    public function test_reset_password_link_phone_request_keeps_missing_users_private(): void
+    {
+        Notification::fake();
+
+        $this->post('/forgot-password', ['login' => '0750 000 0099'])
+            ->assertSessionHasNoErrors()
+            ->assertSessionHas('status');
 
         Notification::assertNothingSent();
     }

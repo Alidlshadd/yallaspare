@@ -2951,5 +2951,9 @@
     "Other options": "Other options",
     "Choose how to receive your code": "Choose how to receive your code",
     "Your account has been verified.": "Your account has been verified.",
-    "We sent a 6-digit code to your email.": "We sent a 6-digit code to your email."
+    "We sent a 6-digit code to your email.": "We sent a 6-digit code to your email.",
+    "Enter a valid email address or Iraqi mobile number.": "Enter a valid email address or Iraqi mobile number.",
+    "Enter your email or phone number to receive a secure password reset link.": "Enter your email or phone number to receive a secure password reset link.",
+    "If an account matches these details, we sent a reset link to its registered email.": "If an account matches these details, we sent a reset link to its registered email.",
+    "Send Password Reset Link": "Send Password Reset Link"
 }

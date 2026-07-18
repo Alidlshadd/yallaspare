@@ -3,7 +3,7 @@
     form-position="right"
     enter-direction="right"
     :panel-title="__('Reset Your Password')"
-    :panel-subtitle="__('Enter your email to receive a secure password reset link.')"
+    :panel-subtitle="__('Enter your email or phone number to receive a secure password reset link.')"
     :panel-tag="__('Account Recovery')"
     panel-theme="login"
     :panel-button-text="__('Back to Sign In')"
@@ -17,26 +17,26 @@
         @csrf
 
         <div>
-            <x-input-label for="email" :value="__('Email')" class="text-sm font-medium text-slate-300" />
+            <x-input-label for="login" :value="__('Email or phone')" class="text-sm font-medium text-slate-300" />
             <x-text-input
-                id="email"
+                id="login"
                 class="mt-2 block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition duration-200 focus:border-red-500 focus:ring-red-500 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100 dark:placeholder:text-slate-500"
-                type="email"
-                name="email"
-                :value="old('email')"
+                type="text"
+                name="login"
+                :value="old('login')"
                 required
                 autofocus
                 autocomplete="username"
-                placeholder="{{ __('you@example.com') }}"
+                placeholder="{{ __('you@example.com or +964...') }}"
             />
-            <x-input-error :messages="$errors->get('email')" class="mt-2 text-sm text-red-400" />
+            <x-input-error :messages="$errors->get('login')" class="mt-2 text-sm text-red-400" />
         </div>
 
         <button
             type="submit"
             class="pointer-events-auto touch-manipulation inline-flex w-full items-center justify-center rounded-lg bg-red-600 px-4 py-2.5 text-sm font-semibold text-white shadow-lg shadow-red-950/40 transition duration-200 hover:bg-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
         >
-            {{ __('Email Password Reset Link') }}
+            {{ __('Send Password Reset Link') }}
         </button>
     </form>
 </x-auth-split-layout>

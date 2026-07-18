@@ -3,16 +3,19 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Support\IraqiPhoneNumber;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Throwable;
 
 class PasswordResetLinkController extends Controller
 {
-    private const GENERIC_RESET_LINK_STATUS = 'If this email exists, we sent a reset link.';
+    private const GENERIC_RESET_LINK_STATUS = 'If an account matches these details, we sent a reset link to its registered email.';
 
     /**
      * Display the password reset link request view.
@@ -25,22 +28,45 @@ class PasswordResetLinkController extends Controller
     /**
      * Handle an incoming password reset link request.
      *
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     public function store(Request $request): RedirectResponse
     {
-        $request->validate([
-            'email' => ['required', 'email'],
+        // Keep accepting the previous `email` field for mobile clients and
+        // older forms while the web UI moves to the broader `login` field.
+        $request->merge([
+            'login' => trim((string) ($request->input('login') ?? $request->input('email'))),
         ]);
 
-        $email = (string) $request->input('email');
+        $validated = $request->validate([
+            'login' => [
+                'required',
+                'string',
+                'max:255',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    $login = is_string($value) ? trim($value) : '';
+
+                    if (preg_match('/[\r\n]/', $login)
+                        || (! filter_var($login, FILTER_VALIDATE_EMAIL) && IraqiPhoneNumber::digits($login) === null)) {
+                        $fail(__('Enter a valid email address or Iraqi mobile number.'));
+                    }
+                },
+            ],
+        ]);
+
+        $login = (string) $validated['login'];
+        $email = $this->emailForLogin($login);
+        $identifierType = filter_var($login, FILTER_VALIDATE_EMAIL) ? 'email' : 'phone';
 
         try {
-            $status = Password::sendResetLink(['email' => $email]);
+            $status = $email === null
+                ? Password::INVALID_USER
+                : Password::sendResetLink(['email' => $email]);
 
             Log::debug('Password reset link request processed.', [
-                'email_hash' => hash('sha256', mb_strtolower(trim($email))),
-                'email_domain' => $this->emailDomain($email),
+                'identifier_hash' => hash('sha256', mb_strtolower($login)),
+                'identifier_type' => $identifierType,
+                'email_domain' => $email !== null ? $this->emailDomain($email) : '',
                 'broker' => config('auth.defaults.passwords'),
                 'mailer' => config('mail.default'),
                 'queue_connection' => config('queue.default'),
@@ -48,8 +74,9 @@ class PasswordResetLinkController extends Controller
             ]);
         } catch (Throwable $exception) {
             Log::error('Password reset link mail failed.', [
-                'email_hash' => hash('sha256', mb_strtolower(trim($email))),
-                'email_domain' => $this->emailDomain($email),
+                'identifier_hash' => hash('sha256', mb_strtolower($login)),
+                'identifier_type' => $identifierType,
+                'email_domain' => $email !== null ? $this->emailDomain($email) : '',
                 'broker' => config('auth.defaults.passwords'),
                 'mailer' => config('mail.default'),
                 'queue_connection' => config('queue.default'),
@@ -59,6 +86,31 @@ class PasswordResetLinkController extends Controller
         }
 
         return back()->with('status', __(self::GENERIC_RESET_LINK_STATUS));
+    }
+
+    private function emailForLogin(string $login): ?string
+    {
+        if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
+            return $login;
+        }
+
+        $normalizedPhone = IraqiPhoneNumber::digits($login);
+
+        if ($normalizedPhone === null) {
+            return null;
+        }
+
+        $candidates = [$normalizedPhone];
+
+        if (str_starts_with($normalizedPhone, '964') && strlen($normalizedPhone) === 13) {
+            $nationalNumber = substr($normalizedPhone, 3);
+            $candidates[] = $nationalNumber;
+            $candidates[] = '0'.$nationalNumber;
+        }
+
+        return User::query()
+            ->whereIn('phone_normalized', array_unique($candidates))
+            ->value('email');
     }
 
     private function emailDomain(string $email): string
