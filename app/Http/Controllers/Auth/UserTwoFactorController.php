@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Notifications\UserTwoFactorCode;
 use App\Services\OtpiqSmsService;
 use App\Support\VerificationChannels;
+use App\Support\VerificationRateLimit;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -265,11 +266,10 @@ class UserTwoFactorController extends Controller
     {
         $lastSentAt = (int) $request->session()->get('user_2fa.last_sent_at', 0);
 
-        if ($lastSentAt < 1) {
-            return 0;
-        }
-
-        return max(0, 60 - (now()->timestamp - $lastSentAt));
+        return max(
+            $lastSentAt > 0 ? max(0, 60 - (now()->timestamp - $lastSentAt)) : 0,
+            VerificationRateLimit::remainingSeconds($request),
+        );
     }
 
 }

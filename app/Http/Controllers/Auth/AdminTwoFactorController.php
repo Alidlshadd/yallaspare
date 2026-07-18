@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Notifications\AdminTwoFactorCode;
+use App\Support\VerificationRateLimit;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -167,10 +168,9 @@ class AdminTwoFactorController extends Controller
     {
         $lastSentAt = (int) $request->session()->get('admin_2fa.last_sent_at', 0);
 
-        if ($lastSentAt < 1) {
-            return 0;
-        }
-
-        return max(0, 60 - (now()->timestamp - $lastSentAt));
+        return max(
+            $lastSentAt > 0 ? max(0, 60 - (now()->timestamp - $lastSentAt)) : 0,
+            VerificationRateLimit::remainingSeconds($request),
+        );
     }
 }

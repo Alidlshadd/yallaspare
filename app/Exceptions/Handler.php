@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Support\VerificationRateLimit;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\PostTooLargeException;
@@ -63,8 +64,23 @@ class Handler extends ExceptionHandler
             }
         });
 
-        $this->renderable(function (ThrottleRequestsException $e, Request $request): void {
+        $this->renderable(function (ThrottleRequestsException $e, Request $request): ?Response {
             $this->logSecurityEvent($request, 'throttle.exceeded', 'warning');
+
+            if ($this->isVerificationRequest($request) && ! $request->expectsJson()) {
+                $headers = $e->getHeaders();
+                $retryAfter = max(1, (int) ($headers['Retry-After'] ?? 60));
+
+                VerificationRateLimit::remember($request, $retryAfter);
+
+                return redirect()->back()
+                    ->withErrors([
+                        $this->verificationErrorKey($request) => __('Too many verification attempts. Please try again later.'),
+                    ])
+                    ->withHeaders($headers);
+            }
+
+            return null;
         });
 
         $this->renderable(function (HttpException $e, Request $request): void {
@@ -75,6 +91,36 @@ class Handler extends ExceptionHandler
                 $this->logSecurityEvent($request, 'authz.forbidden', 'notice');
             }
         });
+    }
+
+    private function isVerificationRequest(Request $request): bool
+    {
+        return $request->routeIs(
+            'verification.verify',
+            'verification.send',
+            'verification.channel',
+            'phone.verify.confirm',
+            'phone.verify.resend',
+            'user.two-factor.verify',
+            'user.two-factor.resend',
+            'user.two-factor.channel',
+            'admin.two-factor.verify',
+            'admin.two-factor.resend',
+            'user.account.phone-verification.send',
+            'user.account.phone-verification.verify',
+            'user.phone.store',
+        );
+    }
+
+    private function verificationErrorKey(Request $request): string
+    {
+        return match (true) {
+            $request->routeIs('verification.channel', 'user.two-factor.channel') => 'channel',
+            $request->routeIs('user.account.phone-verification.send') => 'phone_verification',
+            $request->routeIs('user.account.phone-verification.verify') => 'verification_code',
+            $request->routeIs('user.phone.store') => 'phone',
+            default => 'code',
+        };
     }
 
     /**

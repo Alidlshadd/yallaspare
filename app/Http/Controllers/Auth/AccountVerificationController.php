@@ -8,6 +8,7 @@ use App\Services\OtpiqSmsService;
 use App\Services\PhoneVerificationService;
 use App\Support\EmailVerificationCode;
 use App\Support\VerificationChannels;
+use App\Support\VerificationRateLimit;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -237,10 +238,9 @@ class AccountVerificationController extends Controller
     {
         $lastSentAt = (int) $request->session()->get(self::LAST_SENT_SESSION_KEY, 0);
 
-        if ($lastSentAt < 1) {
-            return 0;
-        }
-
-        return max(0, 60 - (now()->timestamp - $lastSentAt));
+        return max(
+            $lastSentAt > 0 ? max(0, 60 - (now()->timestamp - $lastSentAt)) : 0,
+            VerificationRateLimit::remainingSeconds($request),
+        );
     }
 }

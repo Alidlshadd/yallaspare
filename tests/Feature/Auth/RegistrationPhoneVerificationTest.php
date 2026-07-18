@@ -195,11 +195,15 @@ class RegistrationPhoneVerificationTest extends TestCase
             2
         );
 
-        // The route throttle allows 3 requests per 10 minutes; the 4th hit is rejected.
+        // The route throttle allows 3 requests per 10 minutes; the 4th hit is
+        // returned to the verification form instead of rendering a generic 429 page.
         $this->travel(61)->seconds();
         $this->post(route('verification.send'));
         $this->post(route('verification.send'));
-        $this->post(route('verification.send'))->assertStatus(429);
+        $this->post(route('verification.send'))
+            ->assertRedirect()
+            ->assertSessionHasErrors('code')
+            ->assertHeader('Retry-After');
     }
 
     public function test_unavailable_channels_cannot_be_selected(): void

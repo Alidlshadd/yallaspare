@@ -153,4 +153,28 @@ class PhoneVerificationTest extends TestCase
             ->assertSessionHasErrors('phone_verification')
             ->assertSessionMissing('phone_verification_sent');
     }
+
+    public function test_sms_send_throttle_returns_to_the_form_with_a_useful_error(): void
+    {
+        $user = User::factory()->create(['phone' => '0770 448 8315', 'phone_verified_at' => null]);
+
+        Http::fake([
+            'https://api.otpiq.test/api/sms' => Http::response([
+                'smsId' => 'sms-1234567890abcdef123456',
+            ]),
+        ]);
+
+        $this->actingAs($user);
+
+        for ($attempt = 0; $attempt < 3; $attempt++) {
+            $this->post(route('user.account.phone-verification.send'))->assertRedirect();
+        }
+
+        $this->post(route('user.account.phone-verification.send'))
+            ->assertRedirect()
+            ->assertSessionHasErrors('phone_verification')
+            ->assertHeader('Retry-After');
+
+        Http::assertSentCount(3);
+    }
 }

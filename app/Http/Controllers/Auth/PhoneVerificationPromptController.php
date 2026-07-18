@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Services\PhoneVerificationService;
+use App\Support\VerificationRateLimit;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -101,10 +102,9 @@ class PhoneVerificationPromptController extends Controller
     {
         $lastSentAt = (int) $request->session()->get(self::LAST_SENT_SESSION_KEY, 0);
 
-        if ($lastSentAt < 1) {
-            return 0;
-        }
-
-        return max(0, 60 - (now()->timestamp - $lastSentAt));
+        return max(
+            $lastSentAt > 0 ? max(0, 60 - (now()->timestamp - $lastSentAt)) : 0,
+            VerificationRateLimit::remainingSeconds($request),
+        );
     }
 }
