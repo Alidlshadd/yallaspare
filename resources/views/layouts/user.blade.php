@@ -527,12 +527,6 @@
                                     {{ __('About Us') }}
                                 </a>
                                 <a
-                                    href="{{ route('legal.vision') }}"
-                                    class="inline-flex items-center rounded-xl px-3 py-1 text-sm font-medium transition duration-200 {{ request()->routeIs('legal.vision') ? 'bg-white text-primary' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
-                                >
-                                    {{ __('Our Vision') }}
-                                </a>
-                                <a
                                     href="{{ route('legal.contact') }}"
                                     class="inline-flex items-center rounded-xl px-3 py-1 text-sm font-medium text-white/80 transition duration-200 hover:bg-white/10 hover:text-white"
                                 >

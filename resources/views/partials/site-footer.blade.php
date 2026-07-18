@@ -82,7 +82,12 @@
                 <p class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{{ __('Information') }}</p>
                 <div class="flex flex-col gap-2 text-sm">
                     <a href="{{ url('/about-us') }}" class="text-slate-600 transition hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">{{ __('About Us') }}</a>
-                    <a href="{{ url('/vision') }}" class="text-slate-600 transition hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">{{ __('Our Vision') }}</a>
+                    <a href="{{ url('/vision') }}" class="group inline-flex w-fit items-center gap-1.5 font-semibold text-amber-600 transition hover:text-amber-700 dark:text-amber-400 dark:hover:text-amber-300">
+                        <span>{{ __('Our Vision') }}</span>
+                        <svg class="h-3.5 w-3.5 transition-transform duration-200 group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                            <path fill-rule="evenodd" d="M3 10a.75.75 0 0 1 .75-.75h10.638L10.23 5.29a.75.75 0 1 1 1.04-1.08l5.5 5.25a.75.75 0 0 1 0 1.08l-5.5 5.25a.75.75 0 1 1-1.04-1.08l4.158-3.96H3.75A.75.75 0 0 1 3 10Z" clip-rule="evenodd" />
+                        </svg>
+                    </a>
                     <a href="{{ url('/contact') }}" class="text-slate-600 transition hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">{{ __('Contact Us') }}</a>
                 </div>
             </div>
