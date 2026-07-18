@@ -82,6 +82,7 @@
                 <p class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{{ __('Information') }}</p>
                 <div class="flex flex-col gap-2 text-sm">
                     <a href="{{ url('/about-us') }}" class="text-slate-600 transition hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">{{ __('About Us') }}</a>
+                    <a href="{{ url('/vision') }}" class="text-slate-600 transition hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">{{ __('Our Vision') }}</a>
                     <a href="{{ url('/contact') }}" class="text-slate-600 transition hover:text-slate-900 dark:text-slate-300 dark:hover:text-white">{{ __('Contact Us') }}</a>
                 </div>
             </div>

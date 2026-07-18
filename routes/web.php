@@ -91,6 +91,7 @@ Route::get('/privacy-policy', [LegalController::class, 'privacy'])->name('legal.
 Route::get('/terms', [LegalController::class, 'terms'])->name('legal.terms');
 Route::get('/support', [LegalController::class, 'support'])->name('legal.support');
 Route::get('/about-us', [LegalController::class, 'about'])->name('legal.about');
+Route::get('/vision', [LegalController::class, 'vision'])->name('legal.vision');
 Route::get('/contact', [LegalController::class, 'contact'])->name('legal.contact');
 Route::post('/contact', [LegalController::class, 'sendContact'])
     ->middleware('throttle:6,1')

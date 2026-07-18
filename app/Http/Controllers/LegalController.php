@@ -32,6 +32,20 @@ class LegalController extends Controller
         return view('legal.about');
     }
 
+    public function vision(): View
+    {
+        // Showcase numbers for the vision page stats band. Kept here (not in
+        // the view) so they are easy to update as the platform grows.
+        $stats = [
+            ['value' => 12400, 'suffix' => '+', 'label' => __('Parts listed')],
+            ['value' => 18, 'suffix' => '', 'label' => __('Cities served')],
+            ['value' => 9600, 'suffix' => '+', 'label' => __('Orders delivered')],
+            ['value' => 96, 'suffix' => '%', 'label' => __('Fit-match accuracy')],
+        ];
+
+        return view('legal.vision', ['stats' => $stats]);
+    }
+
     public function contact(): View
     {
         return view('legal.contact');

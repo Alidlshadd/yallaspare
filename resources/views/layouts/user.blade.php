@@ -32,6 +32,7 @@
         ? (Route::has('user.wishlist.index') ? route('user.wishlist.index') : url('/user/wishlist'))
         : route('login');
     $isUserHomeRoute = request()->routeIs('user.shop.home');
+    $isVisionRoute = request()->routeIs('legal.vision');
     $htmlClasses = trim('h-full'
         . ($fontSizePreference === 'large' ? ' user-font-large' : '')
         . ($fontSizePreference === 'xl' ? ' user-font-xl' : '')
@@ -41,9 +42,13 @@
         . ($highContrastMode ? ' user-high-contrast' : '')
     );
     $shellClasses = trim('min-h-screen bg-slate-50 dark:bg-slate-950');
-    $mainClasses = $isUserHomeRoute
-        ? 'mx-auto w-full max-w-7xl px-4 pb-8 pt-0 sm:px-6 sm:pb-10 sm:pt-0 lg:px-8 lg:pb-12 lg:pt-0'
-        : 'mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 sm:py-8 lg:px-8 lg:py-12';
+    // The vision page is a full-bleed showcase: sections manage their own
+    // width and padding, so the main wrapper must not constrain them.
+    $mainClasses = $isVisionRoute
+        ? 'w-full'
+        : ($isUserHomeRoute
+            ? 'mx-auto w-full max-w-7xl px-4 pb-8 pt-0 sm:px-6 sm:pb-10 sm:pt-0 lg:px-8 lg:pb-12 lg:pt-0'
+            : 'mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 sm:py-8 lg:px-8 lg:py-12');
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', $locale) }}" dir="{{ $dir }}" class="{{ $htmlClasses }}">
@@ -520,6 +525,12 @@
                                     class="inline-flex items-center rounded-xl px-3 py-1 text-sm font-medium text-white/80 transition duration-200 hover:bg-white/10 hover:text-white"
                                 >
                                     {{ __('About Us') }}
+                                </a>
+                                <a
+                                    href="{{ route('legal.vision') }}"
+                                    class="inline-flex items-center rounded-xl px-3 py-1 text-sm font-medium transition duration-200 {{ request()->routeIs('legal.vision') ? 'bg-white text-primary' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
+                                >
+                                    {{ __('Our Vision') }}
                                 </a>
                                 <a
                                     href="{{ route('legal.contact') }}"

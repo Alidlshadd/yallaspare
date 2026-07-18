@@ -1187,6 +1187,73 @@ const initCategoryRails = () => {
     });
 };
 
+// Vision page (/vision): reveal-on-scroll sections and count-up stats. This
+// page is the one storefront page allowed to be animation-heavy; everything
+// still collapses to a static layout for reduced-motion users.
+const initVisionPage = () => {
+    const page = document.querySelector('[data-vision-page]');
+
+    if (!page) {
+        return;
+    }
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+        || document.documentElement.classList.contains('user-reduced-motion');
+    const numberLocale = (document.documentElement.lang || 'en').startsWith('ar') ? 'ar' : 'en-US';
+    const formatCount = (value) => value.toLocaleString(numberLocale);
+
+    const runCounter = (element) => {
+        if (element.dataset.visionCountDone) {
+            return;
+        }
+
+        element.dataset.visionCountDone = '1';
+        const target = Number.parseInt(element.dataset.visionCount || '0', 10) || 0;
+
+        if (reducedMotion) {
+            element.textContent = formatCount(target);
+            return;
+        }
+
+        const duration = 1400;
+        const startedAt = performance.now();
+
+        const step = (now) => {
+            const progress = Math.min((now - startedAt) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            element.textContent = formatCount(Math.round(target * eased));
+
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        };
+
+        window.requestAnimationFrame(step);
+    };
+
+    const revealTargets = Array.from(page.querySelectorAll('[data-vision-reveal]'));
+
+    if (reducedMotion || typeof IntersectionObserver === 'undefined') {
+        revealTargets.forEach((element) => element.classList.add('vs-in'));
+        page.querySelectorAll('[data-vision-count]').forEach(runCounter);
+        return;
+    }
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (!entry.isIntersecting) {
+                return;
+            }
+
+            entry.target.classList.add('vs-in');
+            entry.target.querySelectorAll('[data-vision-count]').forEach(runCounter);
+            observer.unobserve(entry.target);
+        });
+    }, { threshold: 0.18 });
+
+    revealTargets.forEach((element) => observer.observe(element));
+};
+
 const boot = () => {
     initHeroVideos();
     initVehicleFinder();
@@ -1197,6 +1264,7 @@ const boot = () => {
     initProductGallery();
     initCartFeedback();
     initCategoryRails();
+    initVisionPage();
 };
 
 if (document.readyState === 'loading') {
