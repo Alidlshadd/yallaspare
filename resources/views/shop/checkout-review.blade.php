@@ -14,6 +14,8 @@
             </x-ui.alert>
         @endif
 
+        @include('shop.partials.checkout-steps', ['current' => 3])
+
         <section class="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:p-8">
             <p class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ __('Final Check') }}</p>
             <h1 class="mt-2 text-3xl font-semibold tracking-[-0.03em] text-slate-950 dark:text-white">{{ __('Review your order details') }}</h1>

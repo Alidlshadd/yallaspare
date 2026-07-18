@@ -142,6 +142,42 @@ class CheckoutController extends Controller
         return redirect()->route('checkout.success', $placedOrder)->with('success', $successMessage);
     }
 
+    public function delivery(Request $request): View|RedirectResponse
+    {
+        $user = $request->user();
+
+        $cart = Cart::query()
+            ->where('user_id', $user->id)
+            ->with('items.product')
+            ->first();
+
+        $items = $cart?->items ?? collect();
+
+        if ($items->isEmpty()) {
+            return redirect()->route('cart.index')->with('error', __('Cart is empty.'));
+        }
+
+        $subtotal = (float) $items->sum(function ($item) use ($user) {
+            $product = $item->product;
+
+            return $product ? $product->priceFor($user) * $item->quantity : 0;
+        });
+
+        $addresses = $user->addresses()->latest('is_default')->latest('id')->get();
+        $defaultAddress = $addresses->firstWhere('is_default', true) ?? $addresses->first();
+
+        return view('shop.checkout-delivery', [
+            'items' => $items,
+            'subtotal' => round($subtotal, 2),
+            'currencySymbol' => (string) Setting::getValue('currency_code', 'IQD'),
+            'addresses' => $addresses,
+            'defaultAddress' => $defaultAddress,
+            'defaultDeliveryNote' => (string) ($user->default_delivery_note ?? ''),
+            'defaultContactMethod' => (string) ($user->default_contact_method ?? 'phone'),
+            'expressCheckout' => (bool) ($user->express_checkout ?? false),
+        ]);
+    }
+
     public function review(Request $request): View|RedirectResponse
     {
         if (!auth()->check()) {

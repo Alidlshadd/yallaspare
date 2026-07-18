@@ -135,6 +135,7 @@ Route::middleware(['auth', 'verified', 'customer.area', 'customer.phone', 'custo
     Route::get('/checkout/options/{product}', [CheckoutController::class, 'options'])->name('checkout.options');
     Route::match(['get', 'post'], '/checkout/buy-now/{product}', [CheckoutController::class, 'buyNow'])->middleware('throttle:checkout-write')->name('checkout.buy-now');
     Route::post('/checkout/buy-now/{product}/place', [CheckoutController::class, 'placeBuyNow'])->middleware('throttle:checkout-write')->name('checkout.buy-now.place');
+    Route::get('/checkout/delivery', [CheckoutController::class, 'delivery'])->name('checkout.delivery');
     Route::match(['get', 'post'], '/checkout/review', [CheckoutController::class, 'review'])->middleware('throttle:checkout-write')->name('checkout.review');
     Route::post('/checkout', [CheckoutController::class, 'store'])->middleware('throttle:checkout-write')->name('checkout.store');
     Route::get('/checkout/success/{order}', [CheckoutController::class, 'success'])->name('checkout.success');

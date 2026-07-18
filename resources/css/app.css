@@ -1829,3 +1829,42 @@
         animation: none;
     }
 }
+
+/* Checkout step indicator: soft pulse ring on the active step */
+.checkout-step-active::after {
+    content: "";
+    position: absolute;
+    inset: -2px;
+    border-radius: 9999px;
+    animation: checkout-step-pulse 2.2s ease-out infinite;
+    pointer-events: none;
+}
+@keyframes checkout-step-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(7, 7, 64, 0.30); }
+    70% { box-shadow: 0 0 0 10px rgba(7, 7, 64, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(7, 7, 64, 0); }
+}
+.dark .checkout-step-active::after {
+    animation-name: checkout-step-pulse-dark;
+}
+@keyframes checkout-step-pulse-dark {
+    0% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.30); }
+    70% { box-shadow: 0 0 0 10px rgba(251, 191, 36, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(251, 191, 36, 0); }
+}
+
+/* Cart rows: staggered fade-in on load */
+.cart-row-in {
+    animation: cart-row-in 0.45s ease both;
+}
+@keyframes cart-row-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .checkout-step-active::after,
+    .cart-row-in {
+        animation: none;
+    }
+}
