@@ -289,7 +289,7 @@ class ShopController extends Controller
             default => $productsQuery->latest(),
         };
 
-        $products = $productsQuery->paginate(12)->withQueryString();
+        $products = $productsQuery->paginate(24)->withQueryString();
 
         if ($search !== '') {
             app(SearchTracker::class)->record($request, $search, (int) $products->total());
