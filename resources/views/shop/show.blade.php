@@ -222,9 +222,9 @@
                         <div class="mt-4">
                             <label for="purchase-qty" class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{{ __('Quantity') }}</label>
                             <div class="mt-2 flex items-center overflow-hidden rounded-xl border border-slate-200 dark:border-slate-700">
-                                <button type="button" data-qty-minus class="inline-flex h-11 w-11 items-center justify-center text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">-</button>
+                                <button type="button" data-qty-minus class="inline-flex h-11 w-11 items-center justify-center text-slate-600 transition duration-150 hover:bg-slate-50 active:scale-90 dark:text-slate-300 dark:hover:bg-slate-800">-</button>
                                 <input id="purchase-qty" type="text" inputmode="numeric" value="1" min="1" max="{{ $maxPurchasableQuantity }}" data-max-quantity="{{ $maxPurchasableQuantity }}" class="h-11 w-full border-0 bg-white text-center text-sm font-semibold text-slate-900 focus:ring-0 dark:bg-slate-900 dark:text-white">
-                                <button type="button" data-qty-plus class="inline-flex h-11 w-11 items-center justify-center text-slate-600 transition hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800">+</button>
+                                <button type="button" data-qty-plus class="inline-flex h-11 w-11 items-center justify-center text-slate-600 transition duration-150 hover:bg-slate-50 active:scale-90 dark:text-slate-300 dark:hover:bg-slate-800">+</button>
                             </div>
                             @if ($inStock && $maxPurchasableQuantity <= 5)
                                 <p class="mt-2 text-xs font-semibold text-rose-600 dark:text-rose-400">{{ __('Only :quantity left in stock', ['quantity' => $maxPurchasableQuantity]) }}</p>
@@ -237,13 +237,13 @@
                                     <form action="{{ route('cart.add', $product) }}" method="POST" id="purchase-form" class="js-add-cart-form space-y-2.5">
                                         @csrf
                                         <input type="hidden" name="quantity" id="purchase-qty-hidden" value="1">
-                                        <button type="submit" class="js-add-cart-button inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#0a0d55] disabled:cursor-wait disabled:opacity-80">
+                                        <button type="submit" class="js-add-cart-button inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-[#0a0d55] hover:shadow-lg hover:shadow-primary/25 active:translate-y-0 active:scale-[0.98] disabled:cursor-wait disabled:opacity-80">
                                             {{ __('Add to Cart') }}
                                         </button>
                                         <button
                                             type="submit"
                                             formaction="{{ route('checkout.buy-now', $product) }}"
-                                            class="inline-flex w-full items-center justify-center rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800"
+                                            class="inline-flex w-full items-center justify-center rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 transition duration-200 hover:-translate-y-0.5 hover:border-slate-400 hover:bg-slate-50 hover:shadow-md hover:shadow-slate-900/10 active:translate-y-0 active:scale-[0.98] dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800"
                                         >
                                             {{ __('Buy Now') }}
                                         </button>
@@ -252,7 +252,7 @@
                                         <form action="{{ route('user.wishlist.destroy', $product) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-rose-300 px-4 py-3 text-sm font-semibold text-rose-700 transition hover:border-rose-400 hover:bg-rose-50 dark:border-rose-900/50 dark:text-rose-300 dark:hover:border-rose-800 dark:hover:bg-rose-950/30">
+                                            <button type="submit" class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-rose-300 px-4 py-3 text-sm font-semibold text-rose-700 transition duration-200 hover:-translate-y-0.5 hover:border-rose-400 hover:bg-rose-50 hover:shadow-md hover:shadow-rose-900/10 active:translate-y-0 active:scale-[0.98] dark:border-rose-900/50 dark:text-rose-300 dark:hover:border-rose-800 dark:hover:bg-rose-950/30">
                                                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                                                     <path d="m12 20.25-1.45-1.32C5.4 14.36 2.25 11.5 2.25 7.97c0-2.48 1.95-4.47 4.43-4.47 1.4 0 2.75.65 3.57 1.66.82-1.01 2.17-1.66 3.57-1.66 2.48 0 4.43 1.99 4.43 4.47 0 3.53-3.15 6.39-8.3 10.96L12 20.25Z" />
                                                 </svg>
@@ -262,7 +262,7 @@
                                     @else
                                         <form action="{{ route('user.wishlist.store', $product) }}" method="POST">
                                             @csrf
-                                            <button type="submit" class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-primary/40 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800">
+                                            <button type="submit" class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 transition duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:bg-slate-50 hover:shadow-md hover:shadow-slate-900/10 active:translate-y-0 active:scale-[0.98] dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800">
                                                 <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="m12 20.25-1.45-1.32C5.4 14.36 2.25 11.5 2.25 7.97c0-2.48 1.95-4.47 4.43-4.47 1.4 0 2.75.65 3.57 1.66.82-1.01 2.17-1.66 3.57-1.66 2.48 0 4.43 1.99 4.43 4.47 0 3.53-3.15 6.39-8.3 10.96L12 20.25Z" />
                                                 </svg>
@@ -278,14 +278,14 @@
                                         <form action="{{ route('shop.back-in-stock.destroy', $product) }}" method="POST">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl border border-emerald-300 px-4 py-3 text-sm font-semibold text-emerald-700 transition hover:border-emerald-400 hover:bg-emerald-50 dark:border-emerald-900/50 dark:text-emerald-300 dark:hover:border-emerald-800 dark:hover:bg-emerald-950/30">
+                                            <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl border border-emerald-300 px-4 py-3 text-sm font-semibold text-emerald-700 transition duration-200 hover:-translate-y-0.5 hover:border-emerald-400 hover:bg-emerald-50 hover:shadow-md hover:shadow-emerald-900/10 active:translate-y-0 active:scale-[0.98] dark:border-emerald-900/50 dark:text-emerald-300 dark:hover:border-emerald-800 dark:hover:bg-emerald-950/30">
                                                 {{ __('Notification enabled') }}
                                             </button>
                                         </form>
                                     @else
                                         <form action="{{ route('shop.back-in-stock.store', $product) }}" method="POST">
                                             @csrf
-                                            <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-primary/40 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800">
+                                            <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 transition duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:bg-slate-50 hover:shadow-md hover:shadow-slate-900/10 active:translate-y-0 active:scale-[0.98] dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800">
                                                 {{ __('Notify me when available') }}
                                             </button>
                                         </form>
@@ -295,7 +295,7 @@
                                 @if ($inStock)
                                     <form action="{{ route('checkout.options', $product) }}" method="GET" class="space-y-2.5">
                                         <input type="hidden" name="quantity" id="purchase-qty-hidden-guest" value="1">
-                                        <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#0a0d55]">
+                                        <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-[#0a0d55] hover:shadow-lg hover:shadow-primary/25 active:translate-y-0 active:scale-[0.98]">
                                             {{ __('Login or Register to Order') }}
                                         </button>
                                     </form>
@@ -304,7 +304,7 @@
                                         {{ __('Currently unavailable') }}
                                     </button>
                                 @endif
-                                <a href="{{ route('login') }}" class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 transition hover:border-primary/40 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800">
+                                <a href="{{ route('login') }}" class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-300 px-4 py-3 text-sm font-semibold text-slate-700 transition duration-200 hover:-translate-y-0.5 hover:border-primary/40 hover:bg-slate-50 hover:shadow-md hover:shadow-slate-900/10 active:translate-y-0 active:scale-[0.98] dark:border-slate-700 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800">
                                     <span>{{ $inStock ? __('Login for wishlist') : __('Login for stock notification') }}</span>
                                 </a>
                             @endauth
@@ -363,21 +363,13 @@
         </section>
 
         <section class="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10">
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+            <div class="flex flex-wrap items-end justify-between gap-3">
                 <div>
                     <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Customer Reviews') }}</p>
                     <h2 class="mt-1 text-xl font-semibold tracking-[-0.02em] text-slate-950 dark:text-white">{{ __('Real buyer feedback') }}</h2>
-                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('Ratings from customers who purchased this product.') }}</p>
                 </div>
-                <div class="w-full rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm dark:border-amber-900/40 dark:bg-amber-900/15 sm:w-auto sm:min-w-56">
-                    <div class="flex items-center justify-between gap-4">
-                        <div>
-                            <p class="text-xs font-semibold uppercase tracking-[0.14em] text-amber-700 dark:text-amber-300">{{ __('Average rating') }}</p>
-                            <p class="mt-1 text-2xl font-bold text-slate-950 dark:text-white">
-                                {{ ($reviewCount ?? 0) > 0 ? number_format((float) $averageRating, 1) : '0.0' }}
-                                <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">/ 5</span>
-                            </p>
-                        </div>
+                @if (($reviewCount ?? 0) > 0)
+                    <div class="flex items-center gap-2 pb-0.5">
                         <div class="flex items-center gap-0.5" aria-hidden="true">
                             @for ($rating = 1; $rating <= 5; $rating++)
                                 <svg class="h-4 w-4 {{ $rating <= (int) round((float) ($averageRating ?? 0)) ? 'text-amber-500' : 'text-amber-200 dark:text-slate-700' }}" viewBox="0 0 20 20" fill="currentColor">
@@ -385,45 +377,55 @@
                                 </svg>
                             @endfor
                         </div>
+                        <p class="text-sm font-semibold text-slate-950 dark:text-white">
+                            {{ number_format((float) $averageRating, 1) }}
+                            <span class="font-medium text-slate-500 dark:text-slate-400">· {{ $reviewCount }} {{ __('reviews') }}</span>
+                        </p>
                     </div>
-                    <p class="mt-2 text-xs font-medium text-slate-600 dark:text-slate-300">{{ $reviewCount ?? 0 }} {{ __('reviews') }}</p>
-                </div>
+                @endif
             </div>
 
-            <div class="mt-5 grid grid-cols-1 gap-3 lg:grid-cols-2">
+            <div class="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 @forelse ($reviews as $review)
                     @php
                         $reviewerName = trim((string) ($review->user?->name ?? ''));
                         $reviewerFirstName = $reviewerName !== '' ? \Illuminate\Support\Str::before($reviewerName, ' ') : __('Customer');
                     @endphp
-                    <article class="rounded-2xl border border-slate-200 bg-slate-50/80 px-4 py-4 dark:border-slate-800 dark:bg-slate-950">
-                        <div class="flex flex-wrap items-start justify-between gap-3">
-                            <div class="flex min-w-0 items-start gap-3">
-                                <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold uppercase text-white shadow-sm">{{ \Illuminate\Support\Str::substr($reviewerFirstName, 0, 1) }}</span>
-                                <div class="min-w-0">
-                                    <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ $review->title ?: __('Customer review') }}</p>
-                                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">
-                                    {{ $reviewerFirstName }}
+                    <article class="relative flex h-full flex-col gap-3 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50/80 p-5 transition duration-300 hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md hover:shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-950 dark:hover:border-primary/30 dark:hover:shadow-black/20">
+                        <span class="pointer-events-none absolute -top-2 end-4 select-none font-serif text-6xl font-bold leading-none text-slate-200/90 dark:text-slate-800" aria-hidden="true">&rdquo;</span>
+
+                        <div class="flex items-center gap-0.5" aria-label="{{ __(':rating out of 5', ['rating' => (int) $review->rating]) }}">
+                            @for ($rating = 1; $rating <= 5; $rating++)
+                                <svg class="h-3.5 w-3.5 {{ $rating <= (int) $review->rating ? 'text-amber-500' : 'text-slate-300 dark:text-slate-700' }}" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                    <path d="M9.1 2.3c.3-.9 1.5-.9 1.8 0l1.4 4.2h4.4c.9 0 1.3 1.2.6 1.8l-3.6 2.6 1.4 4.2c.3.9-.7 1.6-1.5 1.1L10 13.6l-3.6 2.6c-.8.5-1.8-.2-1.5-1.1l1.4-4.2-3.6-2.6c-.7-.6-.3-1.8.6-1.8h4.4l1.4-4.2Z" />
+                                </svg>
+                            @endfor
+                        </div>
+
+                        <div class="flex-1 space-y-1.5">
+                            @if ($review->title)
+                                <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ $review->title }}</p>
+                            @endif
+                            @if ($review->comment)
+                                <p class="text-sm leading-6 text-slate-600 dark:text-slate-300">{{ $review->comment }}</p>
+                            @endif
+                        </div>
+
+                        <div class="flex items-center gap-3 border-t border-slate-200/80 pt-3 dark:border-slate-800">
+                            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-bold uppercase text-white shadow-sm">{{ \Illuminate\Support\Str::substr($reviewerFirstName, 0, 1) }}</span>
+                            <div class="min-w-0">
+                                <p class="truncate text-sm font-semibold text-slate-900 dark:text-white">{{ $reviewerFirstName }}</p>
+                                <p class="truncate text-xs text-slate-500 dark:text-slate-400">
                                     @if ($review->reviewed_at || $review->created_at)
-                                        · {{ optional($review->reviewed_at ?? $review->created_at)->format('M d, Y') }}
+                                        {{ optional($review->reviewed_at ?? $review->created_at)->format('M d, Y') }} ·
                                     @endif
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-1 rounded-full border border-amber-200 bg-white px-2.5 py-1 dark:border-amber-900/40 dark:bg-slate-900" aria-label="{{ __(':rating out of 5', ['rating' => (int) $review->rating]) }}">
-                                @for ($rating = 1; $rating <= 5; $rating++)
-                                    <svg class="h-3.5 w-3.5 {{ $rating <= (int) $review->rating ? 'text-amber-500' : 'text-slate-300 dark:text-slate-700' }}" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path d="M9.1 2.3c.3-.9 1.5-.9 1.8 0l1.4 4.2h4.4c.9 0 1.3 1.2.6 1.8l-3.6 2.6 1.4 4.2c.3.9-.7 1.6-1.5 1.1L10 13.6l-3.6 2.6c-.8.5-1.8-.2-1.5-1.1l1.4-4.2-3.6-2.6c-.7-.6-.3-1.8.6-1.8h4.4l1.4-4.2Z" />
-                                    </svg>
-                                @endfor
+                                    {{ __('Verified') }}
+                                </p>
                             </div>
                         </div>
-                        @if ($review->comment)
-                            <p class="mt-3 text-sm leading-6 text-slate-700 dark:text-slate-300">{{ $review->comment }}</p>
-                        @endif
                     </article>
                 @empty
-                    <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-400 lg:col-span-2">
+                    <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-400 sm:col-span-2 lg:col-span-3">
                         {{ __('No reviews yet. Delivered customers can be the first to rate this product from their order page.') }}
                     </div>
                 @endforelse
