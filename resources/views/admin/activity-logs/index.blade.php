@@ -7,7 +7,7 @@
     </x-slot>
 
     @php
-        $filters = ['All', 'Product', 'Catalog', 'Category', 'Inventory', 'User'];
+        $filters = ['All', 'Product', 'Category', 'Inventory', 'User', 'Order', 'Coupon', 'Discount', 'Setting'];
         $filterUrl = function (string $filter) use ($search) {
             return route('admin.activity-logs.index', array_filter([
                 'model' => $filter === 'All' ? null : $filter,
@@ -117,29 +117,14 @@
                                     <th class="w-12 px-3 py-3 text-left font-semibold"></th>
                                     <th class="px-4 py-3 text-left font-semibold">{{ __('Admin') }}</th>
                                     <th class="px-4 py-3 text-left font-semibold">{{ __('Action') }}</th>
-                                    <th class="px-4 py-3 text-left font-semibold">{{ __('Subject') }}</th>
+                                    <th class="px-4 py-3 text-left font-semibold">{{ __('Target') }}</th>
                                     <th class="px-4 py-3 text-left font-semibold">{{ __('Date') }}</th>
                                 </tr>
                             </thead>
 
                             @forelse($logs as $log)
                                 @php
-                                    $rawProps = $log->properties ?? null;
-                                    if ($rawProps instanceof \Spatie\Activitylog\ActivityProperties) {
-                                        $props = $rawProps->toArray();
-                                    } elseif ($rawProps instanceof \Illuminate\Support\Collection) {
-                                        $props = $rawProps->toArray();
-                                    } elseif (is_string($rawProps)) {
-                                        $decoded = json_decode($rawProps, true);
-                                        $props = is_array($decoded) ? $decoded : [];
-                                    } elseif (is_array($rawProps)) {
-                                        $props = $rawProps;
-                                    } elseif (is_object($rawProps) && method_exists($rawProps, 'toArray')) {
-                                        $props = $rawProps->toArray();
-                                    } else {
-                                        $props = [];
-                                    }
-
+                                    $props = \App\Support\ActivityLogPresenter::properties($log);
                                     $old = (array) ($props['old'] ?? []);
                                     $attributes = (array) ($props['attributes'] ?? []);
                                     $keys = array_unique(array_merge(array_keys($old), array_keys($attributes)));
@@ -153,9 +138,6 @@
                                         if (in_array($key, $ignoreKeys, true)) {
                                             return false;
                                         }
-                                        if (str_ends_with((string) $key, '_id')) {
-                                            return false;
-                                        }
                                         if (str_contains((string) $key, 'password')) {
                                             return false;
                                         }
@@ -163,6 +145,8 @@
                                     }));
 
                                     $causerInitial = strtoupper(substr((string) ($log->causer?->name ?: 'System'), 0, 1));
+                                    $target = \App\Support\ActivityLogPresenter::target($log);
+                                    $actorRole = \App\Support\ActivityLogPresenter::actorRole($log);
                                 @endphp
 
                                 <tbody x-data="toggle" class="border-b border-gray-100 dark:border-slate-800 last:border-b-0">
@@ -205,29 +189,77 @@
                                                 <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-100 text-[11px] font-extrabold text-gray-600 dark:bg-slate-800 dark:text-slate-300">
                                                     {{ $causerInitial }}
                                                 </span>
-                                                <span class="font-medium text-gray-800 dark:text-slate-100">
-                                                    {{ $log->causer?->name ?? 'System' }}
-                                                </span>
+                                                <div class="min-w-0">
+                                                    <div class="truncate font-semibold text-gray-800 dark:text-slate-100">{{ $log->causer?->name ?? __('System') }}</div>
+                                                    <div class="truncate text-[11px] text-gray-400 dark:text-slate-500">
+                                                        {{ $log->causer?->email ?: $actorRole }}
+                                                    </div>
+                                                </div>
                                             </div>
                                         </td>
-                                        <td class="px-4 py-3 text-gray-700 dark:text-slate-200">
-                                            {{ \App\Support\ActivityLabelHelper::label($log->description, $log->subject_type) }}
+                                        <td class="px-4 py-3">
+                                            <div class="font-semibold text-gray-700 dark:text-slate-200">{{ \App\Support\ActivityLabelHelper::label($log->description, $log->subject_type) }}</div>
+                                            <div class="mt-0.5 text-[11px] text-gray-400 dark:text-slate-500">{{ __('on :type', ['type' => $target['type']]) }}</div>
                                         </td>
-                                        <td class="px-4 py-3 font-mono text-xs text-gray-500 dark:text-slate-400">
-                                            @if($log->subject_type)
-                                                {{ class_basename($log->subject_type) }} #{{ $log->subject_id }}
-                                            @else
-                                                -
-                                            @endif
+                                        <td class="px-4 py-3">
+                                            <div class="flex min-w-[220px] items-center gap-2.5">
+                                                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-[11px] font-extrabold text-amber-700 ring-1 ring-inset ring-amber-200 dark:bg-amber-400/10 dark:text-amber-300 dark:ring-amber-400/20">
+                                                    {{ $target['initial'] }}
+                                                </span>
+                                                <div class="min-w-0">
+                                                    @if($target['url'])
+                                                        <a href="{{ $target['url'] }}" class="block truncate font-semibold text-gray-800 hover:text-amber-700 dark:text-slate-100 dark:hover:text-amber-300">{{ $target['name'] }}</a>
+                                                    @else
+                                                        <div class="truncate font-semibold text-gray-800 dark:text-slate-100">{{ $target['name'] }}</div>
+                                                    @endif
+                                                    <div class="truncate text-[11px] text-gray-400 dark:text-slate-500">
+                                                        {{ $target['type'] }} #{{ $target['id'] ?? '-' }}@if($target['secondary']) · {{ $target['secondary'] }}@endif
+                                                    </div>
+                                                </div>
+                                            </div>
                                         </td>
-                                        <td class="whitespace-nowrap px-4 py-3 font-mono text-xs text-gray-400 dark:text-slate-500">
-                                            {{ $log->created_at?->timezone(config('app.timezone'))->format('Y-m-d H:i') ?? '-' }}
+                                        <td class="whitespace-nowrap px-4 py-3">
+                                            <div class="font-mono text-xs text-gray-500 dark:text-slate-400">{{ $log->created_at?->timezone(config('app.timezone'))->format('Y-m-d H:i:s') ?? '-' }}</div>
+                                            <div class="mt-0.5 text-[11px] text-gray-400 dark:text-slate-500">{{ $log->created_at?->diffForHumans() }}</div>
                                         </td>
                                     </tr>
 
                                     <tr x-show="open" x-transition.opacity.duration.150ms>
                                         <td colspan="5" class="px-4 pb-4 pt-1">
                                             <div class="rounded-xl border border-gray-200 bg-gray-50/70 p-3 dark:border-slate-800 dark:bg-slate-900/50">
+                                                <div class="mb-3 grid gap-2 md:grid-cols-2 xl:grid-cols-4">
+                                                    <div class="rounded-lg border border-gray-200 bg-white px-3 py-2.5 dark:border-slate-800 dark:bg-slate-950/50">
+                                                        <div class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-slate-500">{{ __('Performed by') }}</div>
+                                                        <div class="mt-1 truncate text-sm font-bold text-gray-800 dark:text-slate-100">{{ $log->causer?->name ?? __('System action') }}</div>
+                                                        <div class="truncate text-[11px] text-gray-500 dark:text-slate-400">{{ $actorRole }}@if($log->causer?->email) · {{ $log->causer->email }}@endif</div>
+                                                    </div>
+                                                    <div class="rounded-lg border border-amber-200 bg-amber-50/60 px-3 py-2.5 dark:border-amber-400/20 dark:bg-amber-400/5">
+                                                        <div class="text-[10px] font-bold uppercase tracking-widest text-amber-700/70 dark:text-amber-300/70">{{ __('Affected record') }}</div>
+                                                        <div class="mt-1 truncate text-sm font-bold text-gray-800 dark:text-slate-100">{{ $target['name'] }}</div>
+                                                        <div class="truncate text-[11px] text-gray-500 dark:text-slate-400">{{ $target['type'] }} #{{ $target['id'] ?? '-' }}@if($target['secondary']) · {{ $target['secondary'] }}@endif</div>
+                                                    </div>
+                                                    <div class="rounded-lg border border-gray-200 bg-white px-3 py-2.5 dark:border-slate-800 dark:bg-slate-950/50">
+                                                        <div class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-slate-500">{{ __('Exact time') }}</div>
+                                                        <div class="mt-1 font-mono text-sm font-bold text-gray-800 dark:text-slate-100">{{ $log->created_at?->timezone(config('app.timezone'))->format('Y-m-d H:i:s') ?? '-' }}</div>
+                                                        <div class="text-[11px] text-gray-500 dark:text-slate-400">{{ config('app.timezone') }}</div>
+                                                    </div>
+                                                    <div class="rounded-lg border border-gray-200 bg-white px-3 py-2.5 dark:border-slate-800 dark:bg-slate-950/50">
+                                                        <div class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-slate-500">{{ __('Event context') }}</div>
+                                                        <div class="mt-1 font-mono text-sm font-bold text-gray-800 dark:text-slate-100">#{{ $log->id }} · {{ $log->event ?: $log->description }}</div>
+                                                        <div class="truncate text-[11px] text-gray-500 dark:text-slate-400">{{ $log->batch_uuid ? __('Batch: :id', ['id' => $log->batch_uuid]) : __('Single operation') }}</div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="mb-2 flex items-center justify-between gap-3">
+                                                    <div>
+                                                        <div class="text-xs font-bold text-gray-700 dark:text-slate-200">{{ __('Changed fields') }}</div>
+                                                        <div class="text-[11px] text-gray-400 dark:text-slate-500">{{ __('Previous and new values recorded for this action.') }}</div>
+                                                    </div>
+                                                    @if($target['url'])
+                                                        <a href="{{ $target['url'] }}" class="shrink-0 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[11px] font-bold text-gray-600 hover:border-amber-300 hover:text-amber-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-amber-400/40 dark:hover:text-amber-300">{{ __('Open target') }}</a>
+                                                    @endif
+                                                </div>
+
                                                 @if(empty($keys))
                                                     <span class="text-xs text-gray-400 dark:text-slate-500">{{ __('No field-level changes.') }}</span>
                                                 @else
@@ -241,11 +273,11 @@
                                                                 $delta = $isNumeric ? ($newVal - $oldVal) : null;
                                                             @endphp
                                                             <div class="grid grid-cols-[minmax(120px,180px),1fr] items-center gap-2 rounded-md border border-gray-200 bg-white/70 px-2 py-1.5 dark:border-slate-800 dark:bg-slate-900/40">
-                                                                <div class="truncate text-[11px] font-semibold text-gray-600 dark:text-slate-300">{{ \Illuminate\Support\Str::of($key)->replace('_', ' ')->title() }}</div>
+                                                                <div class="truncate text-[11px] font-semibold text-gray-600 dark:text-slate-300">{{ \App\Support\ActivityLogPresenter::fieldLabel((string) $key) }}</div>
                                                                 <div class="flex flex-wrap items-center gap-2 text-[11px]">
-                                                                    <span class="text-rose-600 line-through dark:text-rose-400">{{ is_scalar($oldVal) || $oldVal === null ? ($oldVal ?? '-') : '[...]' }}</span>
+                                                                    <span class="text-rose-600 line-through dark:text-rose-400">{{ \App\Support\ActivityLogPresenter::value((string) $key, $oldVal) }}</span>
                                                                     <span class="text-gray-400 dark:text-slate-500">→</span>
-                                                                    <span class="text-emerald-600 dark:text-emerald-400">{{ is_scalar($newVal) || $newVal === null ? ($newVal ?? '-') : '[...]' }}</span>
+                                                                    <span class="text-emerald-600 dark:text-emerald-400">{{ \App\Support\ActivityLogPresenter::value((string) $key, $newVal) }}</span>
                                                                     @if($delta !== null)
                                                                         <span class="ml-2 inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold {{ $delta >= 0 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-300' : 'bg-rose-100 text-rose-700 dark:bg-rose-400/10 dark:text-rose-300' }}">
                                                                             {{ $delta >= 0 ? '+' : '' }}{{ $delta }}

@@ -5,8 +5,12 @@ namespace App\Http\Controllers\Admin;
 use App\Exports\ActivityLogsExport;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Coupon;
+use App\Models\Discount;
 use App\Models\InventoryMovement;
+use App\Models\Order;
 use App\Models\Product;
+use App\Models\Setting;
 use App\Models\User;
 use App\Support\SqlSafe;
 use Illuminate\Http\Request;
@@ -23,6 +27,10 @@ class AdminActivityLogController extends Controller
         'Category' => Category::class,
         'Inventory' => InventoryMovement::class,
         'User' => User::class,
+        'Order' => Order::class,
+        'Coupon' => Coupon::class,
+        'Discount' => Discount::class,
+        'Setting' => Setting::class,
     ];
 
     public function index(): View
@@ -33,8 +41,8 @@ class AdminActivityLogController extends Controller
         $search = trim((string) request()->query('q', ''));
 
         $logs = Activity::query()
-            ->select(['id', 'log_name', 'description', 'subject_type', 'subject_id', 'causer_type', 'causer_id', 'properties', 'created_at'])
-            ->with(['causer:id,name,email'])
+            ->select(['id', 'log_name', 'description', 'event', 'subject_type', 'subject_id', 'causer_type', 'causer_id', 'properties', 'batch_uuid', 'created_at'])
+            ->with(['causer:id,name,email,role', 'subject'])
             ->when($model && isset(self::MODEL_MAP[$model]), function ($query) use ($model) {
                 $query->where('subject_type', self::MODEL_MAP[$model]);
             })
@@ -46,6 +54,19 @@ class AdminActivityLogController extends Controller
                     $q->orWhereHas('causer', function ($cq) use ($search) {
                         SqlSafe::whereLike($cq, 'name', $search);
                         SqlSafe::orWhereLike($cq, 'email', $search);
+                    });
+                    $q->orWhereHasMorph('subject', User::class, function ($sq) use ($search) {
+                        SqlSafe::whereLike($sq, 'name', $search);
+                        SqlSafe::orWhereLike($sq, 'email', $search);
+                        SqlSafe::orWhereLike($sq, 'phone', $search);
+                    });
+                    $q->orWhereHasMorph('subject', Product::class, function ($sq) use ($search) {
+                        SqlSafe::whereLike($sq, 'name_en', $search);
+                        SqlSafe::orWhereLike($sq, 'sku', $search);
+                        SqlSafe::orWhereLike($sq, 'brand', $search);
+                    });
+                    $q->orWhereHasMorph('subject', Category::class, function ($sq) use ($search) {
+                        SqlSafe::whereLike($sq, 'name_en', $search);
                     });
                 });
             })

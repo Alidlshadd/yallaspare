@@ -2,6 +2,7 @@
 
 namespace App\Exports;
 
+use App\Support\ActivityLogPresenter;
 use App\Support\SpreadsheetSanitizer;
 use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\FromQuery;
@@ -42,6 +43,11 @@ class ActivityLogsExport implements FromQuery, WithHeadings, WithMapping, Should
             'subject_id',
             'causer_name',
             'causer_email',
+            'causer_role',
+            'target_type',
+            'target_id',
+            'target_name',
+            'target_contact',
             'changed_attributes',
             'previous_values',
             'created_at',
@@ -50,9 +56,10 @@ class ActivityLogsExport implements FromQuery, WithHeadings, WithMapping, Should
 
     public function map($activity): array
     {
-        $properties = (array) ($activity->properties ?? []);
+        $properties = ActivityLogPresenter::properties($activity);
         $attributes = (array) ($properties['attributes'] ?? []);
         $old = (array) ($properties['old'] ?? []);
+        $target = ActivityLogPresenter::target($activity);
 
         return SpreadsheetSanitizer::row([
             $activity->id,
@@ -63,6 +70,11 @@ class ActivityLogsExport implements FromQuery, WithHeadings, WithMapping, Should
             (int) ($activity->subject_id ?? 0),
             (string) (optional($activity->causer)->name ?? ''),
             (string) (optional($activity->causer)->email ?? ''),
+            ActivityLogPresenter::actorRole($activity),
+            $target['type'],
+            $target['id'],
+            $target['name'],
+            $target['secondary'],
             $attributes !== [] ? json_encode($attributes, JSON_UNESCAPED_UNICODE) : '',
             $old !== [] ? json_encode($old, JSON_UNESCAPED_UNICODE) : '',
             optional($activity->created_at)->format('Y-m-d H:i'),
