@@ -209,7 +209,7 @@ class ShopController extends Controller
             'product_id' => $product->id,
         ]);
 
-        return back()->with('status', __('Back-in-stock notification enabled.'));
+        return back()->with('status', __('Request sent. We will notify you when this product is back in stock.'));
     }
 
     public function unsubscribeBackInStock(Request $request, Product $product): RedirectResponse

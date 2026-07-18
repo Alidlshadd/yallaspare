@@ -325,16 +325,25 @@
                                 >
                                     {{ __('View') }}
                                 </a>
-                                <form method="POST" action="{{ route('cart.add', (int) data_get($product, 'id')) }}" class="js-add-cart-form h-full">
-                                    @csrf
-                                    <button
-                                        type="submit"
-                                        @disabled((int) data_get($product, 'stock_quantity', 0) <= 0)
-                                        class="js-add-cart-button inline-flex h-full w-full items-center justify-center rounded-2xl px-4 py-3 text-sm font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 {{ (int) data_get($product, 'stock_quantity', 0) > 0 ? 'bg-primary text-white hover:bg-[#0a0a55]' : 'cursor-not-allowed border border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-500' }}"
-                                    >
-                                        {{ __('Add to Cart') }}
-                                    </button>
-                                </form>
+                                @if ((int) data_get($product, 'stock_quantity', 0) > 0)
+                                    <form method="POST" action="{{ route('cart.add', (int) data_get($product, 'id')) }}" class="js-add-cart-form h-full">
+                                        @csrf
+                                        <button type="submit" class="js-add-cart-button inline-flex h-full w-full items-center justify-center rounded-2xl bg-primary px-4 py-3 text-sm font-medium text-white transition duration-200 hover:bg-[#0a0a55] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
+                                            {{ __('Add to Cart') }}
+                                        </button>
+                                    </form>
+                                @elseif ($isCustomerAuthenticated)
+                                    <form method="POST" action="{{ route('shop.back-in-stock.store', (int) data_get($product, 'id')) }}" class="h-full">
+                                        @csrf
+                                        <button type="submit" class="inline-flex h-full w-full items-center justify-center rounded-2xl bg-primary px-4 py-3 text-sm font-medium text-white transition duration-200 hover:bg-[#0a0a55] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
+                                            {{ __('Send Request') }}
+                                        </button>
+                                    </form>
+                                @else
+                                    <a href="{{ route('login') }}" class="inline-flex h-full w-full items-center justify-center rounded-2xl bg-primary px-4 py-3 text-center text-sm font-medium text-white transition duration-200 hover:bg-[#0a0a55] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
+                                        {{ __('Send Request') }}
+                                    </a>
+                                @endif
                             </div>
                         </div>
                     </article>
@@ -357,4 +366,3 @@
         </style>
     @endpush
 @endsection
-

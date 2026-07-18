@@ -140,23 +140,36 @@
     </div>
 
     @if ($customerUser)
-        <form method="POST" action="{{ route('cart.add', $product->id) }}" class="js-add-cart-form relative z-20 mt-3">
-            @csrf
-            <button
-                type="submit"
-                @disabled(! $inStock)
-                class="js-add-cart-button inline-flex w-full items-center justify-center rounded-xl px-3 py-2.5 text-xs font-semibold uppercase tracking-[0.05em] transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-80 {{ $inStock ? 'bg-primary text-white hover:bg-primary-hover active:translate-y-0.5' : 'cursor-not-allowed border border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-500' }}"
-            >
-                {{ $inStock ? __('Add to Cart') : __('Out of Stock') }}
-            </button>
-        </form>
+        @if ($inStock)
+            <form method="POST" action="{{ route('cart.add', $product->id) }}" class="js-add-cart-form relative z-20 mt-3">
+                @csrf
+                <button
+                    type="submit"
+                    class="js-add-cart-button inline-flex w-full items-center justify-center rounded-xl bg-primary px-3 py-2.5 text-xs font-semibold uppercase tracking-[0.05em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-80"
+                >
+                    {{ __('Add to Cart') }}
+                </button>
+            </form>
+        @else
+            <form method="POST" action="{{ route('shop.back-in-stock.store', $product) }}" class="relative z-20 mt-3">
+                @csrf
+                <button
+                    type="submit"
+                    class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-3 py-2.5 text-xs font-semibold uppercase tracking-[0.05em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                >
+                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M5 19h14" />
+                    </svg>
+                    {{ __('Send Request') }}
+                </button>
+            </form>
+        @endif
     @else
         <a
-            href="{{ $inStock ? route('checkout.options', $product) : '#' }}"
-            aria-disabled="{{ $inStock ? 'false' : 'true' }}"
-            class="relative z-20 mt-3 inline-flex w-full items-center justify-center rounded-xl px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-[0.05em] transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 {{ $inStock ? 'bg-primary text-white hover:bg-primary-hover active:translate-y-0.5' : 'pointer-events-none cursor-not-allowed border border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-500' }}"
+            href="{{ $inStock ? route('checkout.options', $product) : route('login') }}"
+            class="relative z-20 mt-3 inline-flex w-full items-center justify-center rounded-xl bg-primary px-3 py-2.5 text-center text-xs font-semibold uppercase tracking-[0.05em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
         >
-            {{ $inStock ? __('Order Now') : __('Out of Stock') }}
+            {{ $inStock ? __('Order Now') : __('Send Request') }}
         </a>
     @endif
 </article>
@@ -290,23 +303,36 @@
     </div>
 
     @if ($customerUser)
-        <form method="POST" action="{{ route('cart.add', $product->id) }}" class="js-add-cart-form relative z-20 mt-4">
-            @csrf
-            <button
-                type="submit"
-                @disabled(! $inStock)
-                class="js-add-cart-button inline-flex w-full items-center justify-center rounded-2xl px-3 py-3 text-[0.78rem] font-semibold uppercase tracking-[0.04em] transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-80 sm:px-4 sm:tracking-[0.1em] {{ $inStock ? 'bg-primary text-white hover:bg-primary-hover active:translate-y-0.5' : 'cursor-not-allowed border border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-500' }}"
-            >
-                {{ $inStock ? __('Add to Cart') : __('Out of Stock') }}
-            </button>
-        </form>
+        @if ($inStock)
+            <form method="POST" action="{{ route('cart.add', $product->id) }}" class="js-add-cart-form relative z-20 mt-4">
+                @csrf
+                <button
+                    type="submit"
+                    class="js-add-cart-button inline-flex w-full items-center justify-center rounded-2xl bg-primary px-3 py-3 text-[0.78rem] font-semibold uppercase tracking-[0.04em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-80 sm:px-4 sm:tracking-[0.1em]"
+                >
+                    {{ __('Add to Cart') }}
+                </button>
+            </form>
+        @else
+            <form method="POST" action="{{ route('shop.back-in-stock.store', $product) }}" class="relative z-20 mt-4">
+                @csrf
+                <button
+                    type="submit"
+                    class="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-3 py-3 text-[0.78rem] font-semibold uppercase tracking-[0.04em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:px-4 sm:tracking-[0.1em]"
+                >
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M5 19h14" />
+                    </svg>
+                    {{ __('Send Request') }}
+                </button>
+            </form>
+        @endif
     @else
         <a
-            href="{{ $inStock ? route('checkout.options', $product) : '#' }}"
-            aria-disabled="{{ $inStock ? 'false' : 'true' }}"
-            class="relative z-20 mt-4 inline-flex w-full items-center justify-center rounded-2xl px-3 py-3 text-center text-[0.78rem] font-semibold uppercase tracking-[0.04em] transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:px-4 sm:tracking-[0.1em] {{ $inStock ? 'bg-primary text-white hover:bg-primary-hover active:translate-y-0.5' : 'pointer-events-none cursor-not-allowed border border-slate-200 bg-slate-100 text-slate-400 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-500' }}"
+            href="{{ $inStock ? route('checkout.options', $product) : route('login') }}"
+            class="relative z-20 mt-4 inline-flex w-full items-center justify-center rounded-2xl bg-primary px-3 py-3 text-center text-[0.78rem] font-semibold uppercase tracking-[0.04em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:px-4 sm:tracking-[0.1em]"
         >
-            {{ $inStock ? __('Login or Register to Order') : __('Out of Stock') }}
+            {{ $inStock ? __('Login or Register to Order') : __('Send Request') }}
         </a>
     @endif
 </article>

@@ -2959,5 +2959,7 @@
     "Enter a valid email address or Iraqi mobile number.": "أدخل بريداً إلكترونياً صالحاً أو رقم هاتف محمول عراقياً.",
     "Enter your email or phone number to receive a secure password reset link.": "أدخل بريدك الإلكتروني أو رقم هاتفك لتلقي رابط آمن لإعادة تعيين كلمة المرور.",
     "If an account matches these details, we sent a reset link to its registered email.": "إذا كان هناك حساب يطابق هذه البيانات، فقد أرسلنا رابط إعادة التعيين إلى بريده الإلكتروني المسجل.",
-    "Send Password Reset Link": "إرسال رابط إعادة تعيين كلمة المرور"
+    "Send Password Reset Link": "إرسال رابط إعادة تعيين كلمة المرور",
+    "Send Request": "إرسال طلب",
+    "Request sent. We will notify you when this product is back in stock.": "تم إرسال الطلب. سنبلغك عند توفر هذا المنتج مجدداً."
 }

@@ -2959,5 +2959,7 @@
     "Enter a valid email address or Iraqi mobile number.": "ئیمەیڵێکی دروست یان ژمارەی مۆبایلی عێراقی بنووسە.",
     "Enter your email or phone number to receive a secure password reset link.": "ئیمەیڵ یان ژمارەی مۆبایلەکەت بنووسە بۆ وەرگرتنی بەستەری پارێزراوی نوێکردنەوەی وشەی نهێنی.",
     "If an account matches these details, we sent a reset link to its registered email.": "ئەگەر هەژمارێک لەگەڵ ئەم زانیارییانە بگونجێت، بەستەری نوێکردنەوەمان بۆ ئیمەیڵی تۆمارکراوی ناردووە.",
-    "Send Password Reset Link": "ناردنی بەستەری نوێکردنەوەی وشەی نهێنی"
+    "Send Password Reset Link": "ناردنی بەستەری نوێکردنەوەی وشەی نهێنی",
+    "Send Request": "ناردنی داواکاری",
+    "Request sent. We will notify you when this product is back in stock.": "داواکارییەکە نێردرا. کاتێک بەرهەمەکە دووبارە بەردەست بوو ئاگادارت دەکەینەوە."
 }

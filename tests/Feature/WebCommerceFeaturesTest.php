@@ -114,6 +114,31 @@ class WebCommerceFeaturesTest extends TestCase
         ]);
     }
 
+    public function test_out_of_stock_product_card_offers_a_stock_request_action(): void
+    {
+        $user = User::factory()->create();
+        $product = Product::factory()->create([
+            'name_en' => 'Requested Water Pump',
+            'stock_quantity' => 0,
+            'is_active' => true,
+        ]);
+
+        $this->actingAs($user)
+            ->get(route('shop.index'))
+            ->assertOk()
+            ->assertSee(__('Send Request'))
+            ->assertSee(route('shop.back-in-stock.store', $product), false);
+
+        $this->post(route('shop.back-in-stock.store', $product))
+            ->assertRedirect()
+            ->assertSessionHas('status', __('Request sent. We will notify you when this product is back in stock.'));
+
+        $this->assertDatabaseHas('back_in_stock_subscriptions', [
+            'user_id' => $user->id,
+            'product_id' => $product->id,
+        ]);
+    }
+
     public function test_back_in_stock_subscription_is_not_created_for_stocked_product(): void
     {
         $user = User::factory()->create();

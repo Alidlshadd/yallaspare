@@ -2959,5 +2959,7 @@
     "Enter a valid email address or Iraqi mobile number.": "Enter a valid email address or Iraqi mobile number.",
     "Enter your email or phone number to receive a secure password reset link.": "Enter your email or phone number to receive a secure password reset link.",
     "If an account matches these details, we sent a reset link to its registered email.": "If an account matches these details, we sent a reset link to its registered email.",
-    "Send Password Reset Link": "Send Password Reset Link"
+    "Send Password Reset Link": "Send Password Reset Link",
+    "Send Request": "Send Request",
+    "Request sent. We will notify you when this product is back in stock.": "Request sent. We will notify you when this product is back in stock."
 }
