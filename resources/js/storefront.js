@@ -1124,6 +1124,50 @@ const initCartFeedback = () => {
     }, true);
 };
 
+const initCategoryRails = () => {
+    document.querySelectorAll('[data-category-rail]').forEach((rail) => {
+        const scroller = rail.querySelector('[data-category-scroll]');
+        if (!scroller) {
+            return;
+        }
+
+        const prev = rail.querySelector('[data-category-prev]');
+        const next = rail.querySelector('[data-category-next]');
+        const fadeStart = rail.querySelector('[data-category-fade-start]');
+        const fadeEnd = rail.querySelector('[data-category-fade-end]');
+        const isRtl = (document.documentElement.getAttribute('dir') || 'ltr') === 'rtl';
+
+        const sync = () => {
+            const max = Math.max(0, scroller.scrollWidth - scroller.clientWidth);
+            const position = Math.min(Math.abs(scroller.scrollLeft), max);
+            const atStart = position <= 1;
+            const atEnd = position >= max - 1;
+
+            fadeStart?.classList.toggle('opacity-0', atStart);
+            fadeEnd?.classList.toggle('opacity-0', atEnd);
+
+            if (prev) {
+                prev.disabled = atStart;
+            }
+
+            if (next) {
+                next.disabled = atEnd;
+            }
+        };
+
+        const scrollByStep = (direction) => {
+            const step = Math.max(180, Math.round(scroller.clientWidth * 0.6));
+            scroller.scrollBy({ left: step * direction * (isRtl ? -1 : 1), behavior: 'smooth' });
+        };
+
+        prev?.addEventListener('click', () => scrollByStep(-1));
+        next?.addEventListener('click', () => scrollByStep(1));
+        scroller.addEventListener('scroll', sync, { passive: true });
+        window.addEventListener('resize', sync);
+        sync();
+    });
+};
+
 const boot = () => {
     initHeroVideos();
     initVehicleFinder();
@@ -1133,6 +1177,7 @@ const boot = () => {
     initHeaderDropdowns();
     initProductGallery();
     initCartFeedback();
+    initCategoryRails();
 };
 
 if (document.readyState === 'loading') {

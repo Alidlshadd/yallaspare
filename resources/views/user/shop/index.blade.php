@@ -149,7 +149,31 @@
 
             @if ($categories->isNotEmpty())
                 <div class="border-t border-slate-200/80 dark:border-slate-800">
-                    <div class="flex gap-2 overflow-x-auto p-3 sm:p-3.5 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                    <div class="flex items-center gap-1.5 p-3 sm:p-3.5" data-category-rail>
+                        <button
+                            type="button"
+                            data-category-prev
+                            aria-label="{{ __('Scroll categories backward') }}"
+                            class="hidden h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200/80 bg-white text-slate-500 transition duration-200 hover:border-primary/30 hover:text-primary disabled:cursor-default disabled:opacity-35 disabled:hover:border-slate-200/80 disabled:hover:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-white dark:disabled:hover:border-slate-700 dark:disabled:hover:text-slate-300 md:inline-flex"
+                        >
+                            <svg class="h-3.5 w-3.5 rtl:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m15 6-6 6 6 6" />
+                            </svg>
+                        </button>
+
+                        <div class="relative min-w-0 flex-1">
+                            <div
+                                data-category-fade-start
+                                class="pointer-events-none absolute inset-y-0 start-0 z-10 w-8 bg-gradient-to-r from-white to-transparent opacity-0 transition-opacity duration-200 dark:from-slate-900 rtl:bg-gradient-to-l"
+                                aria-hidden="true"
+                            ></div>
+                            <div
+                                data-category-fade-end
+                                class="pointer-events-none absolute inset-y-0 end-0 z-10 w-8 bg-gradient-to-l from-white to-transparent transition-opacity duration-200 dark:from-slate-900 rtl:bg-gradient-to-r"
+                                aria-hidden="true"
+                            ></div>
+
+                            <div data-category-scroll class="flex gap-2 overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                         <a
                             href="{{ $categoryUrl(null) }}"
                             @class([
@@ -175,6 +199,19 @@
                                 <span class="{{ (int) $activeCategory === (int) $category->id ? 'text-white/70' : 'text-slate-400 dark:text-slate-500' }} text-[10px] font-bold">{{ number_format($category->products_count) }}</span>
                             </a>
                         @endforeach
+                            </div>
+                        </div>
+
+                        <button
+                            type="button"
+                            data-category-next
+                            aria-label="{{ __('Scroll categories forward') }}"
+                            class="hidden h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200/80 bg-white text-slate-500 transition duration-200 hover:border-primary/30 hover:text-primary disabled:cursor-default disabled:opacity-35 disabled:hover:border-slate-200/80 disabled:hover:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-white dark:disabled:hover:border-slate-700 dark:disabled:hover:text-slate-300 md:inline-flex"
+                        >
+                            <svg class="h-3.5 w-3.5 rtl:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="m9 6 6 6-6 6" />
+                            </svg>
+                        </button>
                     </div>
                 </div>
             @endif
