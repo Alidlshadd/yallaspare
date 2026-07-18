@@ -507,7 +507,7 @@
 
             {{-- ===== Terminal footer ===== --}}
             <div class="flex flex-wrap items-center justify-between gap-2 border-t border-[#23246b] bg-[#03031e]/80 px-4 py-2.5 text-[11px] uppercase tracking-[0.16em] text-[#4a5288]">
-                <span>{{ __('Paid statuses') }}: <span class="text-[#34d399]">DELIVERED + COMPLETED</span></span>
+                <span>{{ __('Paid statuses') }}: <span class="text-[#34d399]">{{ __('Delivered') }} + {{ __('Completed') }}</span></span>
                 <span>{{ $chartDaysCount }} {{ __('sessions') }} &middot; {{ number_format($windowOrders) }} {{ __('orders in window') }}</span>
             </div>
         </section>

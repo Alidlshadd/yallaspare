@@ -451,7 +451,7 @@
             <div class="rounded-xl border border-gray-200 bg-white shadow-sm overflow-hidden dark:border-slate-800 dark:bg-slate-900">
                 <div class="flex items-center justify-between gap-3 border-b border-gray-200 p-4 dark:border-slate-800">
                     <h3 class="font-bold text-gray-800 dark:text-slate-100">{{ __('Recent Orders') }}</h3>
-                    <p class="text-xs text-gray-500 dark:text-slate-400">Last {{ $recentOrders->count() }} order(s)</p>
+                    <p class="text-xs text-gray-500 dark:text-slate-400">{{ __('Last :count orders', ['count' => $recentOrders->count()]) }}</p>
                 </div>
 
                 <div class="overflow-x-auto">

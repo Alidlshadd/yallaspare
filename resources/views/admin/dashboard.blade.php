@@ -155,7 +155,7 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <span class="text-[10px] uppercase tracking-widest text-white/60 font-bold">{{ __('Total Revenue') }}</span>
-                        <span class="text-[10px] font-mono text-cyan-300/80 px-1.5 py-0.5 rounded bg-cyan-400/10 border border-cyan-400/20">YS · LIVE</span>
+                        <span class="text-[10px] font-mono text-cyan-300/80 px-1.5 py-0.5 rounded bg-cyan-400/10 border border-cyan-400/20">YS · {{ __('Live') }}</span>
                     </div>
                     <p class="mt-1.5 text-xs text-white/50">{{ __('Completed orders · all time') }}</p>
                 </div>
@@ -755,7 +755,7 @@
                         <div class="text-[10px] uppercase tracking-widest text-white/60 font-bold inline-flex items-center gap-2">
                             <span class="pulse-dot text-emerald-400 inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
                             {{ __('Performance · Live') }}
-                            <span class="font-mono text-cyan-300/80 px-1.5 py-0.5 rounded bg-cyan-400/10 border border-cyan-400/20">YTD · {{ date('Y') }}</span>
+                            <span class="font-mono text-cyan-300/80 px-1.5 py-0.5 rounded bg-cyan-400/10 border border-cyan-400/20">{{ __('YTD') }} · {{ date('Y') }}</span>
                         </div>
                         <h3 class="mt-1 text-xl font-bold tracking-tight">{{ __('Monthly Orders Trend') }}</h3>
                     </div>
@@ -798,7 +798,7 @@
                     <div class="h-72 flex flex-col items-center justify-center text-white/40">
                         <i class="fas fa-chart-line text-5xl mb-3 opacity-30"></i>
                         <p class="text-sm font-bold">{{ __('No orders data available') }}</p>
-                        <p class="text-[11px] mt-1 font-mono text-white/30">— awaiting first orders —</p>
+                        <p class="text-[11px] mt-1 font-mono text-white/30">— {{ __('Awaiting first orders') }} —</p>
                     </div>
                 @endif
             </div>
@@ -839,7 +839,7 @@
                     <div class="mt-4">
                         <div class="flex items-center justify-between mb-2">
                             <p class="text-[9px] uppercase tracking-widest text-white/45 font-bold">{{ __('Top Categories') }}</p>
-                            <p class="text-[9px] uppercase tracking-widest font-mono text-white/40">TOP 5 / {{ $catCount }}</p>
+                            <p class="text-[9px] uppercase tracking-widest font-mono text-white/40">{{ __('Top 5') }} / {{ $catCount }}</p>
                         </div>
                         <div class="space-y-1.5">
                             @foreach(array_slice($sortedCats, 0, 5) as $i => $cat)
@@ -1030,7 +1030,7 @@
                         <span class="absolute inset-0 grid place-items-center"><span class="h-2 w-2 rounded-full bg-emerald-500/40"></span></span>
                     </div>
                     <p class="mt-3 text-sm font-bold">{{ __('No stock movement trend data yet') }}</p>
-                    <p class="text-[11px] mt-1 font-mono text-slate-400">— awaiting signal —</p>
+                    <p class="text-[11px] mt-1 font-mono text-slate-400">— {{ __('Awaiting signal') }} —</p>
                 </div>
             @endif
         </div>
@@ -1072,7 +1072,7 @@
                         <span class="absolute inset-0 grid place-items-center"><span class="h-2 w-2 rounded-full bg-cyan-500/40"></span></span>
                     </div>
                     <p class="mt-3 text-sm font-bold">{{ __('No recent inventory movement data') }}</p>
-                    <p class="text-[11px] mt-1 font-mono text-slate-400">— awaiting signal —</p>
+                    <p class="text-[11px] mt-1 font-mono text-slate-400">— {{ __('Awaiting signal') }} —</p>
                 </div>
             @endif
         </div>
@@ -1209,7 +1209,7 @@
                                         <i class="fas fa-box text-white text-base"></i>
                                     </div>
                                     @if($isFresh)
-                                        <span class="absolute -bottom-1 -right-1 inline-flex items-center text-[7px] uppercase tracking-widest font-bold font-mono px-1 py-px rounded ring-2 ring-[#0a0d3f]" style="background: #fbbf24; color: #422006;">NEW</span>
+                                        <span class="absolute -bottom-1 -right-1 inline-flex items-center text-[7px] uppercase tracking-widest font-bold font-mono px-1 py-px rounded ring-2 ring-[#0a0d3f]" style="background: #fbbf24; color: #422006;">{{ __('New') }}</span>
                                     @endif
                                 </div>
 
@@ -1231,7 +1231,7 @@
                 <div class="h-32 flex flex-col items-center justify-center text-white/40">
                     <i class="fas fa-box text-4xl mb-2 opacity-30"></i>
                     <p class="text-sm font-bold">{{ __('No recent products added yet') }}</p>
-                    <p class="text-[11px] mt-1 font-mono text-white/30">— awaiting first product —</p>
+                    <p class="text-[11px] mt-1 font-mono text-white/30">— {{ __('Awaiting first product') }} —</p>
                 </div>
             @endif
         </div>
@@ -1325,7 +1325,7 @@
                     <div class="h-56 flex flex-col items-center justify-center text-white/40">
                         <i class="fas fa-shopping-cart text-5xl mb-3 opacity-30"></i>
                         <p class="text-base font-bold">{{ __('No recent orders') }}</p>
-                        <p class="text-[11px] mt-1 font-mono text-white/30">— awaiting first order —</p>
+                        <p class="text-[11px] mt-1 font-mono text-white/30">— {{ __('Awaiting first order') }} —</p>
                     </div>
                 @endif
             </div>
@@ -1461,7 +1461,7 @@
                     <div class="h-56 flex flex-col items-center justify-center text-white/40">
                         <i class="fas fa-trophy text-5xl mb-3 opacity-30"></i>
                         <p class="text-base font-bold">{{ __('No product sales yet') }}</p>
-                        <p class="text-[11px] mt-1 font-mono text-white/30">— awaiting first sale —</p>
+                        <p class="text-[11px] mt-1 font-mono text-white/30">— {{ __('Awaiting first sale') }} —</p>
                     </div>
                 @endif
             </div>
