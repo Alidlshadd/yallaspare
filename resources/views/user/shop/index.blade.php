@@ -47,7 +47,7 @@
 
         <section
             x-data="{ filtersOpen: false }"
-            class="z-30 rounded-2xl border border-slate-200/90 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.08)] dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/20 sm:rounded-[1.4rem] lg:sticky lg:top-3"
+            class="sticky top-2 z-30 rounded-2xl border border-slate-200/90 bg-white shadow-[0_18px_45px_rgba(15,23,42,0.08)] dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/20 sm:rounded-[1.4rem] lg:top-3"
         >
             <form
                 action="{{ route('shop.index') }}"
@@ -62,29 +62,14 @@
                     <input type="hidden" name="category" value="{{ $activeCategoryModel?->slug ?: $activeCategory }}">
                 @endif
 
-                <div class="flex items-center gap-2 p-3 sm:p-3.5">
-                    <div class="relative min-w-0 flex-1">
-                        <span class="pointer-events-none absolute inset-y-0 start-3 flex items-center text-slate-400 dark:text-slate-500">
-                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="m21 21-4.35-4.35" />
-                                <circle cx="11" cy="11" r="6" />
-                            </svg>
-                        </span>
-                        <label for="shop-filter-search" class="sr-only">{{ __('Search catalog') }}</label>
-                        <input
-                            type="search"
-                            id="shop-filter-search"
-                            name="search"
-                            value="{{ $search }}"
-                            placeholder="{{ __('Search part name, OEM number, SKU...') }}"
-                            autocomplete="off"
-                            class="block w-full rounded-xl border border-slate-200/80 bg-slate-50 py-2.5 pe-3 ps-10 text-sm text-slate-900 outline-none transition duration-200 placeholder:text-slate-400 focus:border-primary/30 focus:bg-white focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:placeholder:text-slate-500 dark:focus:bg-slate-900"
-                        />
-                    </div>
+                @if ($search !== '')
+                    <input type="hidden" name="search" value="{{ $search }}">
+                @endif
 
+                <div class="p-3 sm:p-3.5 lg:hidden">
                     <button
                         type="button"
-                        class="inline-flex shrink-0 items-center gap-1.5 rounded-xl border border-slate-200/80 bg-white px-3 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800 lg:hidden"
+                        class="inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-slate-200/80 bg-white px-3 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
                         @click="filtersOpen = !filtersOpen"
                         :aria-expanded="filtersOpen ? 'true' : 'false'"
                         aria-controls="shop-filter-fields"
@@ -99,18 +84,11 @@
                             </span>
                         @endif
                     </button>
-
-                    <button
-                        type="submit"
-                        class="hidden shrink-0 items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition duration-200 hover:bg-[#0a0a55] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 lg:inline-flex"
-                    >
-                        {{ __('Apply filters') }}
-                    </button>
                 </div>
 
                 <div
                     id="shop-filter-fields"
-                    class="border-t border-slate-200/80 p-3 dark:border-slate-800 sm:p-3.5 lg:grid lg:grid-cols-[repeat(4,minmax(0,1fr))_auto] lg:items-center lg:gap-2"
+                    class="border-t border-slate-200/80 p-3 dark:border-slate-800 sm:p-3.5 lg:border-0 lg:grid lg:grid-cols-[repeat(4,minmax(0,1fr))_auto] lg:items-center lg:gap-2"
                     :class="filtersOpen ? 'grid grid-cols-1 gap-2 sm:grid-cols-2' : 'hidden lg:grid'"
                 >
                     <div>
@@ -155,7 +133,7 @@
                     <div class="mt-1 grid grid-cols-2 gap-2 sm:col-span-2 lg:col-span-1 lg:mt-0 lg:flex">
                         <button
                             type="submit"
-                            class="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition duration-200 hover:bg-[#0a0a55] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20 lg:hidden"
+                            class="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition duration-200 hover:bg-[#0a0a55] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
                         >
                             {{ __('Apply filters') }}
                         </button>
