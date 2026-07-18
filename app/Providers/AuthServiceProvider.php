@@ -32,6 +32,11 @@ class AuthServiceProvider extends ServiceProvider
             Gate::define($permission, fn (User $user): bool => $user->hasPermission($permission));
         }
 
+        Gate::define('stock-requests.manage', fn (User $user): bool => $user->hasAnyPermission([
+            User::PERMISSION_STOCK_MANAGE,
+            User::PERMISSION_PRODUCTS_MANAGE,
+        ]));
+
         Gate::define('manage-users', [UserPolicy::class, 'manageUsers']);
         Gate::define('manage-dealers', [UserPolicy::class, 'manageDealers']);
     }

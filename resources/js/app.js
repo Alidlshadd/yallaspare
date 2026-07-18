@@ -832,6 +832,7 @@ Alpine.data('stockRequestsBoard', () => ({
     },
     get drawerNotifyUrl() { return this.drawer.product?.notifyUrl || ''; },
     get drawerHasPending() { return (this.drawer.product?.pending || 0) > 0; },
+    get drawerCanNotify() { return this.drawerHasPending && (this.drawer.product?.stock || 0) > 0; },
     subStatusLabel(sub) {
         return sub.status === 'notified' ? (this.labels.notified || 'Notified') : (this.labels.waiting || 'Waiting');
     },

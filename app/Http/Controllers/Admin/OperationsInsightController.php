@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\BackInStockSubscription;
+use App\Services\BackInStockNotificationService;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -157,7 +158,7 @@ class OperationsInsightController extends Controller
                 ->withQueryString();
 
             $requests = BackInStockSubscription::query()
-                ->with(['product:id,name_en,name_ar,name_ku,sku,brand,stock_quantity', 'user:id,name,email'])
+                ->with(['product:id,name_en,name_ar,name_ku,sku,brand,stock_quantity,slug', 'user:id,name,email,phone'])
                 ->when($status === 'pending', fn ($q) => $q->whereNull('notified_at'))
                 ->when($status === 'notified', fn ($q) => $q->whereNotNull('notified_at'))
                 ->latest()
@@ -168,7 +169,7 @@ class OperationsInsightController extends Controller
             // current page (pending first, newest first), grouped by product.
             $subscribersByProduct = BackInStockSubscription::query()
                 ->whereIn('product_id', $products->getCollection()->pluck('id'))
-                ->with('user:id,name,email')
+                ->with('user:id,name,email,phone')
                 ->orderByRaw('CASE WHEN notified_at IS NULL THEN 0 ELSE 1 END')
                 ->orderByDesc('created_at')
                 ->get()
@@ -200,20 +201,25 @@ class OperationsInsightController extends Controller
         ));
     }
 
-    public function markStockRequestsNotified(Product $product): RedirectResponse
+    public function markStockRequestsNotified(Product $product, BackInStockNotificationService $notifications): RedirectResponse
     {
         if (! Schema::hasTable('back_in_stock_subscriptions')) {
             return back()->with('error', __('Back-in-stock subscriptions are not available.'));
         }
 
-        $count = BackInStockSubscription::query()
-            ->where('product_id', $product->id)
-            ->whereNull('notified_at')
-            ->update(['notified_at' => now(), 'updated_at' => now()]);
+        if ((int) $product->stock_quantity <= 0) {
+            return back()->with('error', __('Add stock before sending customer notifications.'));
+        }
 
-        AdminLogger::log('stock_requests.marked_notified', $product, ['count' => $count]);
+        $count = $notifications->notify($product);
 
-        return back()->with('success', __('Marked :count stock requests as notified.', ['count' => $count]));
+        AdminLogger::log('stock_requests.notifications_sent', $product, ['count' => $count]);
+
+        if ($count === 0) {
+            return back()->with('error', __('No pending customer notifications could be sent.'));
+        }
+
+        return back()->with('success', __('Sent restock notifications to :count customers.', ['count' => $count]));
     }
 
     public function searchInsights(Request $request): View

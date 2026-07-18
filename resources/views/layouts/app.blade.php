@@ -330,7 +330,7 @@
                     'admin.reviews.*'              => __('Customer Reviews'),
                     'admin.inventory.*'            => __('Inventory Movements'),
                     'admin.purchase-planning.*'    => __('Purchase Planning'),
-                    'admin.stock-requests.*'       => __('Stock Requests'),
+                    'admin.stock-requests.*'       => __('Product Requests'),
                     'admin.dead-stock.*'           => __('Dead Stock'),
                     'admin.orders.*'               => __('Orders Management'),
                     'admin.returns.*'              => __('Returns & Refunds'),
@@ -428,6 +428,7 @@
                         $canOrders     = $adminUserForNav?->can(\App\Models\User::PERMISSION_ORDERS_MANAGE);
                         $canFinance    = $adminUserForNav?->can(\App\Models\User::PERMISSION_FINANCE_VIEW);
                         $canStock      = $adminUserForNav?->can(\App\Models\User::PERMISSION_STOCK_MANAGE);
+                        $canStockRequests = $adminUserForNav?->can('stock-requests.manage');
                         $canDealers    = $adminUserForNav?->can('manage-dealers');
                         $canFinanceMgr = $adminUserForNav?->can(\App\Models\User::PERMISSION_FINANCE_MANAGE);
                         $canSettings   = $adminUserForNav?->can(\App\Models\User::PERMISSION_SETTINGS_MANAGE);
@@ -521,6 +522,19 @@
                         @endif
 
                         {{-- ── ANALYTICS ── --}}
+                        @if($canStockRequests)
+                            <div class="admin-nav-section" aria-hidden="true"><span>{{ __('Customer Demand') }}</span></div>
+                            <a
+                                href="{{ route('admin.stock-requests.index') }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.stock-requests.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Product Requests') }}"
+                                @if(request()->routeIs('admin.stock-requests.*')) aria-current="page" @endif
+                            >
+                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-bell-concierge"></i></span>
+                                <span class="admin-nav-label">{{ __('Product Requests') }}</span>
+                            </a>
+                        @endif
+
                         @if($hasAnalytics)
                             <div class="admin-nav-section" aria-hidden="true"><span>{{ __('Analytics') }}</span></div>
                             @can(\App\Models\User::PERMISSION_FINANCE_VIEW)
@@ -572,15 +586,6 @@
                                 >
                                     <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-cart-flatbed"></i></span>
                                     <span class="admin-nav-label">{{ __('Purchase Planning') }}</span>
-                                </a>
-                                <a
-                                    href="{{ route('admin.stock-requests.index') }}"
-                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.stock-requests.*')) }}"
-                                    data-admin-sidebar-tooltip="{{ __('Stock Requests') }}"
-                                    @if(request()->routeIs('admin.stock-requests.*')) aria-current="page" @endif
-                                >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-bell"></i></span>
-                                    <span class="admin-nav-label">{{ __('Stock Requests') }}</span>
                                 </a>
                             @endcan
                         @endif

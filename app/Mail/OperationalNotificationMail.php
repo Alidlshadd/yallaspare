@@ -69,7 +69,9 @@ class OperationalNotificationMail extends Mailable implements ShouldQueue
             return array_merge($data, $this->buildOrderViewData($type));
         }
 
-        if (str_contains($type, 'stock') || str_contains($type, 'inventory')) {
+        if ($type === 'back_in_stock') {
+            $data['eyebrow'] = __('Back in stock');
+        } elseif (str_contains($type, 'stock') || str_contains($type, 'inventory')) {
             $data['view'] = 'emails.inventory.low-stock-alert';
             $data['eyebrow'] = __('Inventory alert');
         } elseif (str_contains($type, 'dealer')) {

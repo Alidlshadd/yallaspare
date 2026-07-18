@@ -269,11 +269,11 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::get('/purchase-planning', [OperationsInsightController::class, 'purchasePlanning'])
             ->middleware('can:' . User::PERMISSION_STOCK_MANAGE)
             ->name('purchase-planning.index');
-        Route::get('/stock-requests', [OperationsInsightController::class, 'stockRequests'])
-            ->middleware('can:' . User::PERMISSION_STOCK_MANAGE)
+        Route::get('/product-requests', [OperationsInsightController::class, 'stockRequests'])
+            ->middleware('can:stock-requests.manage')
             ->name('stock-requests.index');
-        Route::patch('/stock-requests/{product}/notify', [OperationsInsightController::class, 'markStockRequestsNotified'])
-            ->middleware(['can:' . User::PERMISSION_STOCK_MANAGE, 'throttle:admin-write'])
+        Route::patch('/product-requests/{product}/notify', [OperationsInsightController::class, 'markStockRequestsNotified'])
+            ->middleware(['can:stock-requests.manage', 'throttle:admin-write'])
             ->name('stock-requests.notify');
         Route::get('/search-insights', [OperationsInsightController::class, 'searchInsights'])
             ->middleware('can:' . User::PERMISSION_DASHBOARD_VIEW)

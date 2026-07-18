@@ -1,8 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
         <div>
-            <h2 class="text-2xl font-semibold text-slate-800 dark:text-slate-100">{{ __('Stock Requests') }}</h2>
-            <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Review products customers are waiting for and mark restock notifications as handled.') }}</p>
+            <h2 class="text-2xl font-semibold text-slate-800 dark:text-slate-100">{{ __('Product Requests') }}</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('See who is waiting for unavailable products and send real restock notifications.') }}</p>
         </div>
     </x-slot>
 
@@ -85,6 +85,19 @@
             @if(session('success'))
                 <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/20 dark:text-emerald-300">{{ session('success') }}</div>
             @endif
+            @if(session('error'))
+                <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/20 dark:text-rose-300">{{ session('error') }}</div>
+            @endif
+
+            <section class="sr-hero flex flex-col gap-3 rounded-2xl px-5 py-4 text-white shadow-sm sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-xs font-black uppercase tracking-[0.14em] text-amber-400">{{ __('Automatic restock notifications') }}</p>
+                    <p class="mt-1 text-sm text-white/75">{{ __('When stock changes from zero to available, waiting customers are notified automatically.') }}</p>
+                </div>
+                <span class="inline-flex w-fit items-center gap-2 rounded-full bg-emerald-400/15 px-3 py-1.5 text-xs font-extrabold text-emerald-300 ring-1 ring-inset ring-emerald-300/25">
+                    <span class="h-2 w-2 rounded-full bg-emerald-400"></span>{{ __('Active') }}
+                </span>
+            </section>
 
             {{-- ============ summary cards ============ --}}
             <section class="grid gap-3 md:grid-cols-3 xl:grid-cols-6">
@@ -184,7 +197,7 @@
                                         $rowSubs = ($subscribersByProduct[$product->id] ?? collect())->map(fn ($sub) => [
                                             'id' => $sub->id,
                                             'name' => $sub->user?->name ?? __('Guest'),
-                                            'email' => $sub->user?->email ?? '',
+                                            'email' => $sub->user?->email ?: ($sub->user?->phone ?? ''),
                                             'date' => $sub->created_at?->diffForHumans() ?? '',
                                             'status' => $sub->notified_at ? 'notified' : 'waiting',
                                         ])->values();
@@ -226,12 +239,14 @@
                                                 <a href="{{ route('admin.products.edit', $product) }}" class="sr-icon-btn" title="{{ __('View product') }}" aria-label="{{ __('View product') }}">
                                                     <i class="fas fa-up-right-from-square"></i>
                                                 </a>
-                                                @if($pending > 0)
+                                                @if($pending > 0 && $stock > 0)
                                                     <form method="POST" action="{{ route('admin.stock-requests.notify', $product) }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button class="rounded-lg bg-[#04042a] px-2.5 py-1.5 text-[11px] font-bold text-white hover:bg-[#10104a]">{{ __('Mark notified') }}</button>
+                                                        <button class="rounded-lg bg-[#04042a] px-2.5 py-1.5 text-[11px] font-bold text-white hover:bg-[#10104a]">{{ __('Send Notifications') }}</button>
                                                     </form>
+                                                @elseif($pending > 0)
+                                                    <span class="rounded-lg bg-amber-50 px-2.5 py-1.5 text-[11px] font-bold text-amber-700 dark:bg-amber-950/40 dark:text-amber-300">{{ __('Awaiting stock') }}</span>
                                                 @else
                                                     <span class="rounded-lg bg-emerald-50 px-2.5 py-1.5 text-[11px] font-bold text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-300">{{ __('Done') }}</span>
                                                 @endif
@@ -270,7 +285,7 @@
                                 <div class="flex items-start justify-between gap-2">
                                     <div class="min-w-0">
                                         <div class="truncate text-sm font-bold text-slate-900 dark:text-slate-100">{{ $requestRow->product?->name ?? __('Deleted product') }}</div>
-                                        <div class="mt-0.5 truncate text-xs text-slate-500">{{ $requestRow->user?->name ?? __('Guest') }} · {{ $requestRow->user?->email }}</div>
+                                        <div class="mt-0.5 truncate text-xs text-slate-500">{{ $requestRow->user?->name ?? __('Guest') }} · {{ $requestRow->user?->email ?: $requestRow->user?->phone }}</div>
                                     </div>
                                     <span class="inline-flex shrink-0 rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wide {{ $requestRow->notified_at ? 'sr-chip-notified' : 'sr-chip-waiting' }}">
                                         {{ $requestRow->notified_at ? __('Notified') : __('Waiting') }}
@@ -325,11 +340,12 @@
 
                     <p class="px-5 pt-2 text-xs font-extrabold text-emerald-600 dark:text-emerald-400" x-show="hasFlash" x-cloak x-text="flashMessage"></p>
                     <div class="flex flex-wrap items-center gap-2 border-t border-slate-200 px-5 py-3.5 dark:border-slate-800">
-                        <form method="POST" :action="drawerNotifyUrl" x-show="drawerHasPending">
+                        <form method="POST" :action="drawerNotifyUrl" x-show="drawerCanNotify">
                             @csrf
                             @method('PATCH')
-                            <button class="rounded-lg bg-[#04042a] px-3.5 py-2 text-xs font-extrabold text-white hover:bg-[#10104a]">{{ __('Mark all notified') }}</button>
+                            <button class="rounded-lg bg-[#04042a] px-3.5 py-2 text-xs font-extrabold text-white hover:bg-[#10104a]">{{ __('Send Notifications') }}</button>
                         </form>
+                        <span class="rounded-lg bg-amber-50 px-3.5 py-2 text-xs font-extrabold text-amber-700 dark:bg-amber-950/40 dark:text-amber-300" x-show="drawerHasPending && !drawerCanNotify">{{ __('Awaiting stock') }}</span>
                         <button type="button" class="rounded-lg bg-amber-400 px-3.5 py-2 text-xs font-extrabold text-[#422006] hover:bg-amber-300" @click="addFromDrawer">
                             <i class="fas fa-cart-plus me-1"></i>{{ __('Add to Purchase List') }}
                         </button>

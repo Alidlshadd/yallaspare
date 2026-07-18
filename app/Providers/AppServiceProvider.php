@@ -15,6 +15,7 @@ use App\Observers\AdminAuditObserver;
 use App\Observers\CartItemCacheObserver;
 use App\Observers\CategoryCacheObserver;
 use App\Observers\OrderAnalyticsObserver;
+use App\Observers\ProductStockObserver;
 use App\Observers\WishlistCacheObserver;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Lang;
@@ -80,6 +81,7 @@ class AppServiceProvider extends ServiceProvider
         Category::observe(CategoryCacheObserver::class);
         CartItem::observe(CartItemCacheObserver::class);
         Product::observe(AdminAuditObserver::class);
+        Product::observe(ProductStockObserver::class);
         User::observe(AdminAuditObserver::class);
         Wishlist::observe(WishlistCacheObserver::class);
         Order::observe(AdminAuditObserver::class);

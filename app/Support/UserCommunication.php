@@ -4,6 +4,7 @@ namespace App\Support;
 
 use App\Mail\OperationalNotificationMail;
 use App\Models\Order;
+use App\Models\Product;
 use App\Models\Setting;
 use App\Models\User;
 use App\Services\Security\WebhookSecurityService;
@@ -74,6 +75,40 @@ class UserCommunication
             );
 
             return self::dispatch($user, 'order_status_updated', $subject, $message, $context);
+        });
+    }
+
+    public static function sendBackInStock(User $user, Product $product): array
+    {
+        if (! (bool) ($user->notify_stock_alerts ?? true)) {
+            return [];
+        }
+
+        return self::withUserLocale($user, function () use ($user, $product) {
+            $productName = $product->localizedName($user->preferredLocale());
+            $context = [
+                'product_id' => $product->id,
+                'product_name' => $productName,
+                'sku' => (string) ($product->sku ?? ''),
+                'stock' => (int) $product->stock_quantity,
+                'customer_name' => $user->name,
+                'action_url' => route('shop.show', $product),
+                'action_text' => __('View product'),
+            ];
+
+            [$subject, $message] = self::renderTemplate(
+                $user,
+                'back_in_stock',
+                __(':product is back in stock', ['product' => $productName]),
+                implode(PHP_EOL, [
+                    __('The product you requested is available again.'),
+                    __('Product: :product', ['product' => $productName]),
+                    __('Order soon while stock is available.'),
+                ]),
+                $context
+            );
+
+            return self::dispatch($user, 'back_in_stock', $subject, $message, $context);
         });
     }
 
