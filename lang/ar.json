@@ -3512,5 +3512,11 @@
     "Online ordering": "طلب عبر الإنترنت",
     "Hours to report damage": "ساعة للإبلاغ عن التلف",
     "Delivery checklist": "قائمة التحقق للتوصيل",
-    "Damaged package?": "الطرد تالف؟"
+    "Damaged package?": "الطرد تالف؟",
+    "On this page": "في هذه الصفحة",
+    "Open a return request": "افتح طلب إرجاع",
+    "hours": "ساعة",
+    "conditions": "شروط",
+    "refund": "استرداد",
+    "exchange": "استبدال"
 }
