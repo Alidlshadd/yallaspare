@@ -2061,6 +2061,160 @@
     [dir="rtl"] .del-truck { left: auto; inset-inline-start: 12%; }
 }
 
+/* About page ("Vitrin"): glowing hero, flowing gradient headline,
+   infinite category marquee, scrollytelling rail, bento cards.
+   Dark mode intentionally turns the glow up, not down. */
+.abt-blob {
+    position: absolute;
+    border-radius: 9999px;
+    filter: blur(52px);
+    pointer-events: none;
+    animation: abt-breathe 7s ease-in-out infinite;
+}
+.abt-b1 {
+    width: 340px;
+    height: 340px;
+    top: -150px;
+    inset-inline-start: -90px;
+    background: rgb(251 191 36 / 0.3);
+}
+.abt-b2 {
+    width: 400px;
+    height: 400px;
+    bottom: -230px;
+    inset-inline-end: -110px;
+    background: rgb(99 102 241 / 0.16);
+    animation-delay: 2.5s;
+}
+.dark .abt-b1 { background: rgb(251 191 36 / 0.22); }
+.dark .abt-b2 { background: rgb(99 102 241 / 0.24); }
+@keyframes abt-breathe {
+    0%, 100% { transform: scale(1); opacity: 0.8; }
+    50% { transform: scale(1.15); opacity: 1; }
+}
+.abt-grad {
+    background: linear-gradient(92deg, #f59e0b 10%, #fb923c 55%, #f59e0b 90%);
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    animation: abt-shimmer 4s linear infinite;
+}
+.dark .abt-grad {
+    background-image: linear-gradient(92deg, #fbbf24 10%, #fb923c 55%, #fbbf24 90%);
+    filter: drop-shadow(0 0 26px rgb(251 191 36 / 0.35));
+}
+@keyframes abt-shimmer {
+    to { background-position: 200% 0; }
+}
+.abt-marquee {
+    overflow: hidden;
+    background: #070740;
+    padding: 14px 0;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+.dark .abt-marquee {
+    background: #0b0d2e;
+    box-shadow: inset 0 1px 0 rgb(251 191 36 / 0.15), inset 0 -1px 0 rgb(251 191 36 / 0.15);
+}
+.abt-track {
+    display: flex;
+    align-items: center;
+    gap: 34px;
+    width: max-content;
+    animation: abt-scroll 22s linear infinite;
+}
+.abt-track span {
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgb(255 255 255 / 0.85);
+    white-space: nowrap;
+}
+.abt-track .abt-dot { color: #fbbf24; }
+.dark .abt-track .abt-dot { text-shadow: 0 0 12px rgb(251 191 36 / 0.8); }
+@keyframes abt-scroll {
+    to { transform: translateX(-50%); }
+}
+[dir="rtl"] .abt-track {
+    animation-name: abt-scroll-rtl;
+}
+@keyframes abt-scroll-rtl {
+    to { transform: translateX(50%); }
+}
+.abt-dotr {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 12px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #94a3b8;
+    transition: color 0.3s;
+}
+.dark .abt-dotr { color: #64748b; }
+.abt-dotr i {
+    width: 12px;
+    height: 12px;
+    border-radius: 9999px;
+    background: #e2e8f0;
+    flex: none;
+    transition: background 0.3s;
+}
+.dark .abt-dotr i { background: #1e293b; }
+.abt-dotr.abt-on { color: #070740; }
+.dark .abt-dotr.abt-on { color: #fff; }
+.abt-dotr.abt-on i {
+    background: #f59e0b;
+    animation: abt-dotpulse 2.2s ease-out infinite;
+}
+@keyframes abt-dotpulse {
+    0% { box-shadow: 0 0 0 3px rgb(245 158 11 / 0.25); }
+    70% { box-shadow: 0 0 0 10px rgb(245 158 11 / 0); }
+    100% { box-shadow: 0 0 0 3px rgb(245 158 11 / 0.25); }
+}
+.abt-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.abt-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 18px 36px rgb(7 7 64 / 0.1);
+}
+.dark .abt-card:hover {
+    box-shadow: 0 18px 40px rgb(0 0 0 / 0.5), 0 0 0 1px rgb(251 191 36 / 0.15);
+}
+.abt-dark {
+    background: #070740;
+}
+.dark .abt-dark {
+    background: linear-gradient(135deg, #0b0d2e, #070740);
+    border: 1px solid rgb(251 191 36 / 0.25);
+}
+.abt-glow {
+    position: absolute;
+    top: -70px;
+    inset-inline-end: -70px;
+    width: 200px;
+    height: 200px;
+    border-radius: 9999px;
+    background: rgb(251 191 36 / 0.22);
+    filter: blur(34px);
+    animation: abt-breathe 6s ease-in-out infinite;
+}
+.dark .abt-glow { background: rgb(251 191 36 / 0.3); }
+@media (prefers-reduced-motion: reduce) {
+    .abt-blob,
+    .abt-grad,
+    .abt-track,
+    .abt-dotr.abt-on i,
+    .abt-glow {
+        animation: none;
+    }
+}
+
 /* =========================================================
    Vision page ("The road ahead") — full-bleed showcase.
    Light theme is the default; .dark switches to the navy

@@ -29,21 +29,28 @@ class LegalController extends Controller
 
     public function about(): View
     {
-        return view('legal.about');
+        return view('legal.about', ['stats' => $this->showcaseStats()]);
     }
 
     public function vision(): View
     {
-        // Showcase numbers for the vision page stats band. Kept here (not in
-        // the view) so they are easy to update as the platform grows.
-        $stats = [
+        return view('legal.vision', ['stats' => $this->showcaseStats()]);
+    }
+
+    /**
+     * Showcase numbers shared by the vision and about pages. Kept here (not
+     * in the views) so they are easy to update as the platform grows.
+     *
+     * @return array<int, array{value: int, suffix: string, label: string}>
+     */
+    private function showcaseStats(): array
+    {
+        return [
             ['value' => 12400, 'suffix' => '+', 'label' => __('Parts listed')],
             ['value' => 18, 'suffix' => '', 'label' => __('Cities served')],
             ['value' => 9600, 'suffix' => '+', 'label' => __('Orders delivered')],
             ['value' => 96, 'suffix' => '%', 'label' => __('Fit-match accuracy')],
         ];
-
-        return view('legal.vision', ['stats' => $stats]);
     }
 
     public function contact(): View

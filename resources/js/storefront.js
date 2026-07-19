@@ -1254,6 +1254,37 @@ const initVisionPage = () => {
     revealTargets.forEach((element) => observer.observe(element));
 };
 
+// About page (/about-us): the sticky story rail follows the panel currently
+// in view. Reveal and count-up animations come from the shared vision system.
+const initAboutPage = () => {
+    const page = document.querySelector('[data-about-page]');
+
+    if (!page) {
+        return;
+    }
+
+    const dots = Array.from(page.querySelectorAll('[data-about-dot]'));
+    const panels = Array.from(page.querySelectorAll('[data-about-panel]'));
+
+    if (dots.length === 0 || panels.length === 0 || typeof IntersectionObserver === 'undefined') {
+        return;
+    }
+
+    const setActive = (key) => {
+        dots.forEach((dot) => dot.classList.toggle('abt-on', dot.dataset.aboutDot === key));
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                setActive(entry.target.dataset.aboutPanel);
+            }
+        });
+    }, { rootMargin: '-40% 0px -50% 0px' });
+
+    panels.forEach((panel) => observer.observe(panel));
+};
+
 const boot = () => {
     initHeroVideos();
     initVehicleFinder();
@@ -1265,6 +1296,7 @@ const boot = () => {
     initCartFeedback();
     initCategoryRails();
     initVisionPage();
+    initAboutPage();
 };
 
 if (document.readyState === 'loading') {
