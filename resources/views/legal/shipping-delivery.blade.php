@@ -4,117 +4,132 @@
 @section('meta_description', __('Shipping process, delivery times, tracking details, and important delivery information for orders.'))
 
 @section('content')
-    <section class="mx-auto w-full max-w-[900px] space-y-8">
-        <header class="rounded-3xl border border-slate-200/70 bg-gradient-to-br from-white via-slate-50 to-slate-100/70 p-8 shadow-sm dark:border-slate-800/70 dark:from-slate-900 dark:via-slate-900 dark:to-slate-800/60">
-            <p class="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">{{ __('Customer Service') }}</p>
-            <h1 class="mt-4 text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl dark:text-slate-100">{{ __('Shipping & Delivery') }}</h1>
-            <p class="mt-5 text-base leading-relaxed text-slate-600 dark:text-slate-300">
-                {{ __('We aim to deliver your orders as quickly and safely as possible. Below you can find information about our shipping and delivery process.') }}
+    <div data-vision-page class="mx-auto w-full max-w-5xl">
+        <section class="sup-in">
+            <p class="text-xs font-semibold uppercase tracking-[0.22em] text-amber-600 dark:text-amber-400">{{ __('Shipping & Delivery') }}</p>
+            <h1 class="mt-5 text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl dark:text-slate-100">{{ __('The journey of your part') }}</h1>
+            <p class="mt-6 max-w-3xl text-base leading-relaxed text-slate-600 dark:text-slate-300">
+                {{ __('From checkout to your door — every step of your order on one road.') }}
             </p>
-        </header>
-
-        <section class="rounded-2xl border border-slate-200/70 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900/60">
-            <h2 class="flex items-center gap-3 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-primary dark:bg-slate-800">
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M12 3v6M12 21v-3M3 12h4M17 12h4M5.6 5.6l2.8 2.8M15.6 15.6l2.8 2.8M18.4 5.6l-2.8 2.8M8.4 15.6l-2.8 2.8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                    </svg>
-                </span>
-                {{ __('1. Order Processing') }}
-            </h2>
-            <div class="mt-4 space-y-3 text-base leading-relaxed text-slate-600 dark:text-slate-300">
-                <p>{{ __('Orders can be placed 24/7 through our website.') }}</p>
-                <p>{{ __('After your order is confirmed, our team will prepare the product and send it to the shipping company as soon as possible.') }}</p>
-            </div>
         </section>
 
-        <section class="rounded-2xl border border-slate-200/70 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900/60">
-            <h2 class="flex items-center gap-3 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-primary dark:bg-slate-800">
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M3 7h12v9H3zM15 10h3l3 3v3h-6z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                        <circle cx="7" cy="18" r="1.5" stroke="currentColor" stroke-width="1.8" />
-                        <circle cx="17" cy="18" r="1.5" stroke="currentColor" stroke-width="1.8" />
-                    </svg>
-                </span>
-                {{ __('2. Delivery Partners') }}
-            </h2>
-            <div class="mt-4 space-y-3 text-base leading-relaxed text-slate-600 dark:text-slate-300">
-                <p>{{ __('Orders are shipped through reliable delivery partners to ensure safe and fast delivery.') }}</p>
-                <p>{{ __('We work with trusted shipping partners to deliver orders quickly and safely.') }}</p>
+        {{-- Animated road: flowing center dashes + delivery truck driving across --}}
+        <div class="del-road sup-in mt-10" style="animation-delay: .15s" aria-hidden="true">
+            <div class="del-road-dash"></div>
+            <div class="del-truck">
+                <svg viewBox="0 0 96 44" class="h-[52px] w-[113px]">
+                    {{-- cargo box --}}
+                    <rect x="2" y="4" width="56" height="28" rx="3" fill="#ffffff" />
+                    <rect x="2" y="25" width="56" height="4" fill="#fbbf24" />
+                    <rect x="2.75" y="4.75" width="54.5" height="26.5" rx="2.5" fill="none" stroke="#94a3b8" stroke-width="1.5" />
+                    {{-- cab --}}
+                    <path d="M58 32V12h14.5a5 5 0 0 1 4.2 2.3L82.5 23a6 6 0 0 1 1 3.3V32H58Z" fill="#2a35a0" stroke="#94a3b8" stroke-width="1" />
+                    <path d="M62 15.5h9.2l4.6 7H62v-7Z" fill="#bfdbfe" />
+                    {{-- bumper + headlight --}}
+                    <rect x="83" y="27.5" width="4" height="5.5" rx="1.5" fill="#94a3b8" />
+                    <circle cx="84" cy="25" r="1.8" fill="#fbbf24" />
+                    {{-- chassis line --}}
+                    <rect x="4" y="31" width="80" height="2.5" rx="1.25" fill="#0b0d2e" />
+                    {{-- wheels --}}
+                    <circle cx="17" cy="36" r="6.5" fill="#0b0d2e" stroke="#64748b" stroke-width="2" />
+                    <circle cx="17" cy="36" r="2.2" fill="#cbd5e1" />
+                    <circle cx="69" cy="36" r="6.5" fill="#0b0d2e" stroke="#64748b" stroke-width="2" />
+                    <circle cx="69" cy="36" r="2.2" fill="#cbd5e1" />
+                </svg>
             </div>
-        </section>
+        </div>
 
-        <section class="rounded-2xl border border-slate-200/70 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900/60">
-            <h2 class="flex items-center gap-3 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-primary dark:bg-slate-800">
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M3 12h18M6 6h12M8 18h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                    </svg>
-                </span>
-                {{ __('3. Delivery Time') }}
-            </h2>
-            <div class="mt-4 space-y-3 text-base leading-relaxed text-slate-600 dark:text-slate-300">
-                <p>{{ __('Delivery time depends on your location.') }}</p>
-                <p>{{ __('Estimated delivery times:') }}</p>
-                <ul class="list-disc space-y-2 pl-6">
+        {{-- The four stops of the journey --}}
+        <section class="del-steps mt-12">
+            <article data-vision-reveal class="del-step">
+                <span class="del-tag">{{ __('Step 1') }}</span>
+                <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-100">{{ __('Order received') }}</h2>
+                <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                    {{ __('Orders can be placed 24/7 through our website.') }}
+                </p>
+            </article>
+
+            <article data-vision-reveal class="del-step">
+                <span class="del-tag">{{ __('Step 2') }}</span>
+                <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-100">{{ __('Prepared in the warehouse') }}</h2>
+                <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                    {{ __('After your order is confirmed, our team will prepare the product and send it to the shipping company as soon as possible.') }}
+                </p>
+            </article>
+
+            <article data-vision-reveal class="del-step del-step-now">
+                <span class="del-tag del-tag-now">{{ __('On the road') }}</span>
+                <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-100">{{ __('Handed to the courier') }}</h2>
+                <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                    {{ __('Once your order is shipped, you may receive a tracking number from the shipping company to follow the delivery status.') }}
+                    {{ __('Orders are shipped through reliable delivery partners to ensure safe and fast delivery.') }}
+                </p>
+            </article>
+
+            <article data-vision-reveal class="del-step">
+                <span class="del-tag">{{ __('Step 4') }}</span>
+                <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-100">{{ __('At your door') }}</h2>
+                <ul class="mt-2 list-disc space-y-1.5 ps-5 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
                     <li>{{ __('Local deliveries: 1 business days') }}</li>
                     <li>{{ __('Other cities: 1 - 3 business days') }}</li>
                 </ul>
-                <p>{{ __('Please note that delivery times may vary depending on shipping conditions and holidays.') }}</p>
+                <p class="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                    {{ __('Please note that delivery times may vary depending on shipping conditions and holidays.') }}
+                </p>
+            </article>
+        </section>
+
+        {{-- Stats band --}}
+        <section data-vision-reveal class="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-3">
+            <div class="rounded-2xl border border-slate-200/80 bg-white p-6 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <p class="text-3xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">1–3</p>
+                <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">{{ __('Business days to deliver') }}</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200/80 bg-white p-6 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <p class="text-3xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">7/24</p>
+                <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">{{ __('Online ordering') }}</p>
+            </div>
+            <div class="rounded-2xl border border-slate-200/80 bg-white p-6 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <p class="text-3xl font-semibold tracking-tight text-slate-900 dark:text-slate-100"><span data-vision-count="24">0</span></p>
+                <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">{{ __('Hours to report damage') }}</p>
             </div>
         </section>
 
-        <section class="rounded-2xl border border-slate-200/70 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900/60">
-            <h2 class="flex items-center gap-3 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-primary dark:bg-slate-800">
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.8" />
-                        <path d="M12 8v4l3 2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </span>
-                {{ __('4. Order Tracking') }}
-            </h2>
-            <p class="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-300">
-                {{ __('Once your order is shipped, you may receive a tracking number from the shipping company to follow the delivery status.') }}
-            </p>
-        </section>
-
-        <section class="rounded-2xl border border-slate-200/70 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900/60">
-            <h2 class="flex items-center gap-3 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-slate-100 text-primary dark:bg-slate-800">
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M6 4h12v16H6zM9 8h6M9 12h6M9 16h4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
-                    </svg>
-                </span>
-                {{ __('5. Delivery Notes') }}
-            </h2>
-            <p class="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-300">
+        {{-- Delivery checklist --}}
+        <section data-vision-reveal class="mt-12 rounded-2xl border border-slate-200/80 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <h2 class="text-xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">{{ __('Delivery checklist') }}</h2>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
                 {{ __('Please make sure the following information is correct when placing your order:') }}
             </p>
-            <ul class="mt-3 list-disc space-y-2 pl-6 text-base leading-relaxed text-slate-600 dark:text-slate-300">
-                <li>{{ __('Full name') }}</li>
-                <li>{{ __('Correct phone number') }}</li>
-                <li>{{ __('Accurate delivery address') }}</li>
+            <ul class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                <li class="flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 dark:bg-slate-800/60 dark:text-slate-200">
+                    <svg class="h-4 w-4 shrink-0 text-amber-500" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m4.5 10.5 3.5 3.5 7.5-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    {{ __('Full name') }}
+                </li>
+                <li class="flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 dark:bg-slate-800/60 dark:text-slate-200">
+                    <svg class="h-4 w-4 shrink-0 text-amber-500" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m4.5 10.5 3.5 3.5 7.5-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    {{ __('Correct phone number') }}
+                </li>
+                <li class="flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 dark:bg-slate-800/60 dark:text-slate-200">
+                    <svg class="h-4 w-4 shrink-0 text-amber-500" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m4.5 10.5 3.5 3.5 7.5-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                    {{ __('Accurate delivery address') }}
+                </li>
             </ul>
-            <p class="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-300">
-                {{ __('Incorrect information may cause delays in delivery.') }}
-            </p>
+            <p class="mt-4 text-xs text-slate-500 dark:text-slate-400">{{ __('Incorrect information may cause delays in delivery.') }}</p>
         </section>
 
-        <section class="rounded-2xl border border-slate-200/70 bg-slate-50 p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900/70">
-            <h2 class="flex items-center gap-3 text-2xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">
-                <span class="inline-flex h-9 w-9 items-center justify-center rounded-lg bg-white text-primary dark:bg-slate-800">
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                        <path d="M12 3l9 16H3L12 3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
-                        <path d="M12 9v4M12 17h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
-                    </svg>
-                </span>
-                {{ __('6. Important Information') }}
+        {{-- Damaged package warning --}}
+        <section data-vision-reveal class="mt-6 rounded-2xl border border-amber-300/70 bg-amber-50/70 p-7 dark:border-amber-400/25 dark:bg-amber-400/5">
+            <h2 class="flex items-center gap-3 text-xl font-semibold tracking-tight text-amber-900 dark:text-amber-200">
+                <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                    <path d="M12 3l9 16H3L12 3z" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" />
+                    <path d="M12 9v4M12 17h.01" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                </svg>
+                {{ __('Damaged package?') }}
             </h2>
-            <p class="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-300">
+            <p class="mt-3 text-sm leading-relaxed text-amber-900/90 dark:text-amber-200/90">
                 {{ __('If the package appears damaged during delivery, please inform the delivery driver and contact our support team immediately.') }}
             </p>
         </section>
-    </section>
+    </div>
 @endsection

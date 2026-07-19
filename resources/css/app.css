@@ -1869,6 +1869,198 @@
     }
 }
 
+/* Support page (service desk): sections cascade in on load,
+   the "open now" dot breathes like a status light */
+.sup-in {
+    animation: sup-in 0.55s cubic-bezier(0.22, 0.9, 0.3, 1) both;
+}
+@keyframes sup-in {
+    from { opacity: 0; transform: translateY(16px) scale(0.985); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.sup-dot::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: 9999px;
+    animation: sup-dot-pulse 2s ease-out infinite;
+}
+@keyframes sup-dot-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.45); }
+    70% { box-shadow: 0 0 0 7px rgba(16, 185, 129, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+    .sup-in,
+    .sup-dot::after {
+        animation: none;
+    }
+}
+
+/* Shipping & Delivery page: asphalt band with flowing dashes and a
+   delivery truck driving across; roadside journey timeline below */
+.del-road {
+    position: relative;
+    height: 104px;
+    border-radius: 18px;
+    background: #0b0d2e;
+    overflow: hidden;
+}
+.del-road::before,
+.del-road::after {
+    content: "";
+    position: absolute;
+    left: 14px;
+    right: 14px;
+    height: 3px;
+    border-radius: 2px;
+    background: #f59e0b;
+    opacity: 0.85;
+}
+.del-road::before { top: 12px; }
+.del-road::after { bottom: 12px; }
+.del-road-dash {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 50%;
+    height: 4px;
+    margin-top: -2px;
+    background: repeating-linear-gradient(90deg, #fbbf24 0 30px, transparent 30px 60px);
+    animation: del-flow 1.2s linear infinite;
+}
+@keyframes del-flow {
+    to { background-position: 60px 0; }
+}
+[dir="rtl"] .del-road-dash {
+    animation-name: del-flow-rtl;
+}
+@keyframes del-flow-rtl {
+    to { background-position: -60px 0; }
+}
+.del-truck {
+    position: absolute;
+    top: 24px;
+    left: -90px;
+    animation: del-drive 9s linear infinite;
+    filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.45));
+}
+.del-truck svg {
+    animation: del-bob 0.5s ease-in-out infinite alternate;
+}
+@keyframes del-drive {
+    from { left: -90px; }
+    to { left: calc(100% + 30px); }
+}
+@keyframes del-bob {
+    from { transform: translateY(0); }
+    to { transform: translateY(-2px); }
+}
+[dir="rtl"] .del-truck {
+    animation-name: del-drive-rtl;
+}
+[dir="rtl"] .del-truck svg {
+    transform: scaleX(-1);
+}
+@keyframes del-drive-rtl {
+    from { left: calc(100% + 30px); }
+    to { left: -90px; }
+}
+.del-steps {
+    position: relative;
+    padding-inline-start: 34px;
+}
+.del-steps::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: 10px;
+    top: 8px;
+    bottom: 8px;
+    width: 4px;
+    border-radius: 4px;
+    background: repeating-linear-gradient(180deg, #fbbf24 0 16px, #e2e8f0 16px 30px);
+}
+.dark .del-steps::before {
+    background: repeating-linear-gradient(180deg, #fbbf24 0 16px, #1e293b 16px 30px);
+}
+.del-step {
+    position: relative;
+    margin-top: 16px;
+    border: 1px solid rgb(226 232 240 / 0.8);
+    border-radius: 16px;
+    background: #fff;
+    padding: 20px 22px;
+    box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+}
+.del-step:first-child { margin-top: 0; }
+.dark .del-step {
+    border-color: #1e293b;
+    background: #0f172a;
+}
+.del-step::before {
+    content: "";
+    position: absolute;
+    inset-inline-start: -31px;
+    top: 24px;
+    width: 15px;
+    height: 15px;
+    border-radius: 9999px;
+    background: #fff;
+    border: 4px solid #070740;
+}
+.dark .del-step::before {
+    background: #0f172a;
+    border-color: #e2e8f0;
+}
+.del-step-now {
+    border-color: rgb(251 191 36 / 0.7);
+    box-shadow: 0 0 0 4px rgb(251 191 36 / 0.12);
+}
+.del-step-now::before {
+    border-color: #f59e0b;
+    background: #fef3c7;
+    animation: del-now-pulse 2.2s ease-out infinite;
+}
+@keyframes del-now-pulse {
+    0% { box-shadow: 0 0 0 0 rgb(245 158 11 / 0.4); }
+    70% { box-shadow: 0 0 0 9px rgb(245 158 11 / 0); }
+    100% { box-shadow: 0 0 0 0 rgb(245 158 11 / 0); }
+}
+.del-tag {
+    float: inline-end;
+    margin-inline-start: 12px;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 9999px;
+    background: #eef2fb;
+    color: #070740;
+}
+.dark .del-tag {
+    background: #1e293b;
+    color: #cbd5e1;
+}
+.del-tag-now {
+    background: #fef3c7;
+    color: #b45309;
+}
+.dark .del-tag-now {
+    background: rgb(251 191 36 / 0.15);
+    color: #fcd34d;
+}
+@media (prefers-reduced-motion: reduce) {
+    .del-road-dash,
+    .del-truck,
+    .del-truck svg,
+    .del-step-now::before {
+        animation: none;
+    }
+    .del-truck { left: 12%; }
+    [dir="rtl"] .del-truck { left: auto; inset-inline-start: 12%; }
+}
+
 /* =========================================================
    Vision page ("The road ahead") — full-bleed showcase.
    Light theme is the default; .dark switches to the navy
