@@ -28,7 +28,7 @@ class AdminMessagingCenterTest extends TestCase
     {
         $admin = $this->settingsManager();
         User::factory()->create([
-            'phone' => '+9647704488315',
+            'phone' => '+9647501234567',
             'phone_verified_at' => now(),
             'sms_notifications' => true,
             'whatsapp_notifications' => true,
@@ -119,14 +119,14 @@ class AdminMessagingCenterTest extends TestCase
         $this->actingAs($admin)
             ->post(route('admin.messaging.test'), [
                 'channel' => 'whatsapp',
-                'phone' => '7704488315',
+                'phone' => '7704488311',
             ])
             ->assertSessionHasErrors('channel');
 
         Http::assertNotSent(fn (HttpRequest $request): bool => str_ends_with($request->url(), '/sms'));
     }
 
-    public function test_settings_manager_can_send_sms_test_with_e164_payload(): void
+    public function test_sms_test_uses_the_authenticated_admin_saved_phone_and_ignores_another_submitted_number(): void
     {
         $admin = $this->settingsManager();
 
@@ -137,7 +137,7 @@ class AdminMessagingCenterTest extends TestCase
         $this->actingAs($admin)
             ->post(route('admin.messaging.test'), [
                 'channel' => 'sms',
-                'phone' => '07704488315',
+                'phone' => '07704488311',
             ])
             ->assertRedirect()
             ->assertSessionHas('success');
@@ -156,7 +156,7 @@ class AdminMessagingCenterTest extends TestCase
         $this->actingAs($admin)
             ->post(route('admin.messaging.test'), [
                 'channel' => 'whatsapp',
-                'phone' => '7704488315',
+                'phone' => '7704488311',
             ])
             ->assertSessionHasErrors('channel');
 
@@ -176,12 +176,13 @@ class AdminMessagingCenterTest extends TestCase
         $this->actingAs($admin)
             ->post(route('admin.messaging.test'), [
                 'channel' => 'whatsapp',
-                'phone' => '+9647704488315',
+                'phone' => '+9647704488311',
             ])
             ->assertSessionHas('success');
 
         Http::assertSent(fn (HttpRequest $request): bool => str_ends_with($request->url(), '/sms')
             && $request['provider'] === 'whatsapp'
+            && $request['phoneNumber'] === '9647704488315'
             && $request['whatsappAccountId'] === 'wa-account'
             && $request['whatsappPhoneId'] === 'wa-phone'
             && $request['templateName'] === 'yallaspare_otp');
@@ -195,10 +196,27 @@ class AdminMessagingCenterTest extends TestCase
         $this->actingAs($admin)
             ->post(route('admin.messaging.test'), [
                 'channel' => 'sms',
-                'phone' => '7704488315',
+                'phone' => '7704488311',
             ])
-            ->assertSessionHasErrors('phone')
+            ->assertSessionHasErrors('test_delivery')
             ->assertSessionDoesntHaveErrors('provider_error');
+    }
+
+    public function test_admin_without_a_saved_phone_cannot_send_a_test_message(): void
+    {
+        Http::fake();
+        $admin = $this->settingsManager();
+        $admin->forceFill(['phone' => null])->save();
+
+        $response = $this->actingAs($admin)
+            ->post(route('admin.messaging.test'), [
+                'channel' => 'sms',
+                'phone' => '07704488311',
+            ]);
+
+        $response->assertSessionHasErrors('test_delivery');
+
+        Http::assertNothingSent();
     }
 
     private function settingsManager(): User
@@ -206,6 +224,7 @@ class AdminMessagingCenterTest extends TestCase
         return User::factory()->create([
             'role' => User::ROLE_SETTINGS_MANAGER,
             'email_verified_at' => now(),
+            'phone' => '+9647704488315',
         ]);
     }
 

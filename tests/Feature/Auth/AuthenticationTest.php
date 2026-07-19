@@ -86,6 +86,71 @@ class AuthenticationTest extends TestCase
         $response->assertRedirect(route('user.shop.home'));
     }
 
+    public function test_shared_phone_login_selects_the_account_matching_the_password(): void
+    {
+        User::factory()->create([
+            'email' => 'first-admin@example.com',
+            'phone' => '+964 750 123 4567',
+            'password' => 'FirstAdmin!2026',
+            'role' => User::ROLE_ADMIN,
+        ]);
+        $secondAdmin = User::factory()->create([
+            'email' => 'second-admin@example.com',
+            'phone' => '+964 750 123 4567',
+            'password' => 'SecondAdmin!2026',
+            'role' => User::ROLE_PRODUCT_MANAGER,
+        ]);
+
+        $this->post('/login', [
+            'email' => '0750 123 4567',
+            'password' => 'SecondAdmin!2026',
+        ]);
+
+        $this->assertAuthenticatedAs($secondAdmin);
+    }
+
+    public function test_shared_phone_login_requires_email_when_password_is_also_shared(): void
+    {
+        foreach ([User::ROLE_ADMIN, User::ROLE_ORDER_MANAGER] as $index => $role) {
+            User::factory()->create([
+                'email' => "same-password-admin-{$index}@example.com",
+                'phone' => '+964 750 123 4567',
+                'password' => 'SharedAdmin!2026',
+                'role' => $role,
+            ]);
+        }
+
+        $this->post('/login', [
+            'email' => '0750 123 4567',
+            'password' => 'SharedAdmin!2026',
+        ])->assertSessionHasErrors('email');
+
+        $this->assertGuest();
+    }
+
+    public function test_mobile_shared_phone_login_selects_the_account_matching_the_password(): void
+    {
+        User::factory()->create([
+            'email' => 'mobile-first-admin@example.com',
+            'phone' => '+964 750 123 4567',
+            'password' => 'MobileFirst!2026',
+            'role' => User::ROLE_ADMIN,
+        ]);
+        $secondAdmin = User::factory()->create([
+            'email' => 'mobile-second-admin@example.com',
+            'phone' => '+964 750 123 4567',
+            'password' => 'MobileSecond!2026',
+            'role' => User::ROLE_FINANCE_MANAGER,
+        ]);
+
+        $this->postJson('/api/mobile/login', [
+            'email' => '0750 123 4567',
+            'password' => 'MobileSecond!2026',
+        ])
+            ->assertOk()
+            ->assertJsonPath('user.id', $secondAdmin->id);
+    }
+
     public function test_completely_unverified_users_are_sent_to_account_verification_after_login(): void
     {
         $user = User::factory()->unverified()->unverifiedPhone()->create();

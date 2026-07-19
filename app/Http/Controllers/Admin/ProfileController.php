@@ -32,7 +32,7 @@ class ProfileController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', Rule::unique(User::class)->ignore($user->id)],
-            'phone' => ['nullable', 'string', 'max:30', new PhoneNumber(), User::uniquePhoneRule($user->id)],
+            'phone' => ['nullable', 'string', 'max:30', new PhoneNumber(), User::uniquePhoneRule($user->id, $user->role)],
             'profile_photo' => ['nullable', 'image', 'max:2048'],
             'remove_profile_photo' => ['sometimes', 'boolean'],
         ]);

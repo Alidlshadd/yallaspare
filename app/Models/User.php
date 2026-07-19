@@ -219,6 +219,33 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
         ];
     }
 
+    /**
+     * Roles that may share a phone number with another account.
+     *
+     * Customer and dealer phone numbers remain unique. Admin-panel roles use
+     * email as the unambiguous account identifier and may reuse an operational
+     * phone number across multiple staff accounts.
+     *
+     * @return array<int, string>
+     */
+    public static function phoneSharingRoles(): array
+    {
+        return [
+            self::ROLE_SUPER_ADMIN,
+            self::ROLE_ADMIN,
+            self::ROLE_PRODUCT_MANAGER,
+            self::ROLE_ORDER_MANAGER,
+            self::ROLE_FINANCE_MANAGER,
+            self::ROLE_INVENTORY_MANAGER,
+            self::ROLE_SETTINGS_MANAGER,
+        ];
+    }
+
+    public static function roleMaySharePhone(?string $role): bool
+    {
+        return in_array(self::normalizeRole($role), self::phoneSharingRoles(), true);
+    }
+
     public static function permissionGroups(): array
     {
         return [
@@ -408,25 +435,47 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
         return $digits !== '' ? $digits : null;
     }
 
-    public static function uniquePhoneRule(?int $ignoreUserId = null): \Closure
+    /**
+     * Return current and legacy normalized forms that may represent one Iraqi
+     * phone number in the users table.
+     *
+     * @return array<int, string>
+     */
+    public static function phoneLookupCandidates(?string $phone): array
     {
-        return function (string $attribute, mixed $value, \Closure $fail) use ($ignoreUserId): void {
-            $normalized = IraqiPhoneNumber::digits($value)
-                ?? self::normalizePhone(is_scalar($value) ? (string) $value : null);
+        $normalized = IraqiPhoneNumber::digits($phone) ?? self::normalizePhone($phone);
 
-            if ($normalized === null) {
+        if ($normalized === null) {
+            return [];
+        }
+
+        $candidates = [$normalized];
+
+        if (str_starts_with($normalized, '964') && strlen($normalized) === 13) {
+            $nationalNumber = substr($normalized, 3);
+            $candidates[] = $nationalNumber;
+            $candidates[] = '0'.$nationalNumber;
+        }
+
+        return array_values(array_unique($candidates));
+    }
+
+    public static function uniquePhoneRule(?int $ignoreUserId = null, ?string $role = null): \Closure
+    {
+        return function (string $attribute, mixed $value, \Closure $fail) use ($ignoreUserId, $role): void {
+            if (self::roleMaySharePhone($role)) {
                 return;
             }
 
-            $normalizedCandidates = [$normalized];
+            $normalizedCandidates = self::phoneLookupCandidates(
+                is_scalar($value) ? (string) $value : null
+            );
 
-            if (str_starts_with($normalized, '964') && strlen($normalized) === 13) {
-                $nationalNumber = substr($normalized, 3);
-                $normalizedCandidates[] = $nationalNumber;
-                $normalizedCandidates[] = '0'.$nationalNumber;
+            if ($normalizedCandidates === []) {
+                return;
             }
 
-            $query = self::query()->whereIn('phone_normalized', array_unique($normalizedCandidates));
+            $query = self::query()->whereIn('phone_normalized', $normalizedCandidates);
 
             if ($ignoreUserId !== null) {
                 $query->whereKeyNot($ignoreUserId);

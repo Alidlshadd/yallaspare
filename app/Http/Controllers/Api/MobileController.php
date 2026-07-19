@@ -77,7 +77,7 @@ class MobileController extends Controller
         ]);
 
         $login = trim((string) $credentials['email']);
-        $user = $this->userForLogin($login);
+        $user = $this->userForLogin($login, (string) $credentials['password']);
 
         if (! $user) {
             $this->debugLoginFailure('user_not_found', $login);
@@ -200,7 +200,7 @@ class MobileController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users', 'email')->ignore($user->id)],
-            'phone' => ['nullable', 'string', 'max:20', new IraqiMobileNumber, User::uniquePhoneRule($user->id)],
+            'phone' => ['nullable', 'string', 'max:20', new IraqiMobileNumber, User::uniquePhoneRule($user->id, $user->role)],
         ]);
 
         if (array_key_exists('phone', $data) && $data['phone'] !== null) {
@@ -2198,7 +2198,7 @@ class MobileController extends Controller
             : $query->whereRaw('1 = 0');
     }
 
-    private function userForLogin(string $login): ?User
+    private function userForLogin(string $login, string $password): ?User
     {
         if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
             return User::query()
@@ -2206,14 +2206,17 @@ class MobileController extends Controller
                 ->first();
         }
 
-        $normalizedPhone = User::normalizePhone($login);
-        if ($normalizedPhone === null) {
+        $phoneCandidates = User::phoneLookupCandidates($login);
+        if ($phoneCandidates === []) {
             return null;
         }
 
-        return User::query()
-            ->where('phone_normalized', $normalizedPhone)
-            ->first();
+        $passwordMatches = User::query()
+            ->whereIn('phone_normalized', $phoneCandidates)
+            ->get()
+            ->filter(fn (User $user): bool => Hash::check($password, (string) $user->password));
+
+        return $passwordMatches->count() === 1 ? $passwordMatches->first() : null;
     }
 
     private function debugLoginFailure(string $reason, string $login, ?User $user = null): void

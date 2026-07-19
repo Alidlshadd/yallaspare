@@ -94,23 +94,29 @@ class PasswordResetLinkController extends Controller
             return $login;
         }
 
-        $normalizedPhone = IraqiPhoneNumber::digits($login);
-
-        if ($normalizedPhone === null) {
+        $candidates = User::phoneLookupCandidates($login);
+        if ($candidates === []) {
             return null;
         }
 
-        $candidates = [$normalizedPhone];
+        $matches = User::query()
+            ->whereIn('phone_normalized', $candidates)
+            ->get(['email', 'role']);
 
-        if (str_starts_with($normalizedPhone, '964') && strlen($normalizedPhone) === 13) {
-            $nationalNumber = substr($normalizedPhone, 3);
-            $candidates[] = $nationalNumber;
-            $candidates[] = '0'.$nationalNumber;
+        if ($matches->count() === 1) {
+            return (string) $matches->first()->email;
         }
 
-        return User::query()
-            ->whereIn('phone_normalized', array_unique($candidates))
-            ->value('email');
+        // A customer/dealer number remains unique and takes precedence over
+        // staff accounts sharing the same operational phone. If only multiple
+        // staff accounts match, email is required to choose the intended one.
+        $nonSharingMatches = $matches->reject(
+            fn (User $user): bool => User::roleMaySharePhone($user->role)
+        );
+
+        return $nonSharingMatches->count() === 1
+            ? (string) $nonSharingMatches->first()->email
+            : null;
     }
 
     private function emailDomain(string $email): string

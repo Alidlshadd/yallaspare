@@ -20,7 +20,7 @@ class UpdateProfileRequest extends FormRequest
         return [
             'first_name' => ['required', 'string', 'max:120'],
             'last_name' => ['nullable', 'string', 'max:120'],
-            'phone' => ['nullable', 'string', 'max:20', new IraqiMobileNumber(), User::uniquePhoneRule($this->user()->id)],
+            'phone' => ['nullable', 'string', 'max:20', new IraqiMobileNumber(), User::uniquePhoneRule($this->user()->id, $this->user()->role)],
             'profile_photo' => ['nullable', 'image', 'max:2048'],
             'remove_profile_photo' => ['sometimes', 'boolean'],
             'dob_day' => ['nullable', 'integer', 'between:1,31', 'required_with:dob_month,dob_year'],

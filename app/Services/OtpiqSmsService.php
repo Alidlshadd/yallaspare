@@ -28,7 +28,18 @@ class OtpiqSmsService
             );
         }
 
-        $phoneNumber = $this->internationalPhoneNumber((string) $user->phone_normalized);
+        if ($this->productionUsesDevelopmentKey()) {
+            throw new OtpiqDeliveryException(
+                OtpiqDeliveryException::CATEGORY_NOT_CONFIGURED,
+                'A development OTPiQ key cannot be used in production.',
+            );
+        }
+
+        // Never trust a phone number supplied only in memory or directly by a
+        // form. Every delivery target must belong to an existing account and
+        // is read again from the database immediately before the API request.
+        $account = $this->persistedAccount($user);
+        $phoneNumber = $this->internationalPhoneNumber((string) $account->phone_normalized);
         $provider ??= (string) config('services.otpiq.provider', 'sms');
 
         if (! in_array($provider, ['auto', 'whatsapp-sms', 'telegram-sms', 'whatsapp-telegram-sms', 'sms', 'whatsapp', 'telegram'], true)) {
@@ -100,7 +111,14 @@ class OtpiqSmsService
 
     public function smsAvailable(): bool
     {
-        return filled(config('services.otpiq.api_key'));
+        return filled(config('services.otpiq.api_key'))
+            && ! $this->productionUsesDevelopmentKey();
+    }
+
+    public function productionUsesDevelopmentKey(): bool
+    {
+        return (string) config('app.env') === 'production'
+            && str_starts_with(trim((string) config('services.otpiq.api_key')), 'sk_dev');
     }
 
     /**
@@ -252,6 +270,29 @@ class OtpiqSmsService
     private function baseUrl(): string
     {
         return rtrim((string) config('services.otpiq.base_url', 'https://api.otpiq.com/api'), '/');
+    }
+
+    private function persistedAccount(User $user): User
+    {
+        if (! $user->exists || $user->getKey() === null) {
+            throw new OtpiqDeliveryException(
+                OtpiqDeliveryException::CATEGORY_VALIDATION,
+                'Verification messages can only be sent to a saved account phone number.',
+            );
+        }
+
+        $account = User::query()
+            ->select(['id', 'phone', 'phone_normalized'])
+            ->find($user->getKey());
+
+        if (! $account || empty($account->phone_normalized)) {
+            throw new OtpiqDeliveryException(
+                OtpiqDeliveryException::CATEGORY_VALIDATION,
+                'The account does not have a saved phone number.',
+            );
+        }
+
+        return $account;
     }
 
     /**

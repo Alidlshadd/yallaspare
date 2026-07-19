@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use App\Models\User;
+use App\Services\OtpiqDeliveryException;
+use App\Services\OtpiqSmsService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Client\Request as HttpRequest;
 use Illuminate\Support\Facades\Http;
@@ -138,6 +140,64 @@ class PhoneVerificationTest extends TestCase
         $service = app(\App\Services\OtpiqSmsService::class);
 
         $this->assertSame('9647704488315', $service->internationalPhoneNumber('7704488315'));
+    }
+
+    public function test_sms_service_uses_the_database_phone_when_the_model_is_tampered_with_in_memory(): void
+    {
+        $user = User::factory()->create(['phone' => '+9647704488315']);
+        $user->phone = '+9647704488311';
+
+        Http::fake([
+            'https://api.otpiq.test/api/sms' => Http::response([
+                'smsId' => 'sms-saved-account-phone',
+            ]),
+        ]);
+
+        app(OtpiqSmsService::class)->sendVerification($user, '123456');
+
+        Http::assertSent(fn (HttpRequest $request): bool => $request['phoneNumber'] === '9647704488315');
+    }
+
+    public function test_sms_service_rejects_a_phone_that_does_not_belong_to_a_saved_account(): void
+    {
+        $recipient = new User();
+        $recipient->phone = '+9647704488311';
+        Http::fake();
+
+        $exception = null;
+
+        try {
+            app(OtpiqSmsService::class)->sendVerification($recipient, '123456');
+        } catch (OtpiqDeliveryException $caught) {
+            $exception = $caught;
+        }
+
+        $this->assertInstanceOf(OtpiqDeliveryException::class, $exception);
+        $this->assertSame(OtpiqDeliveryException::CATEGORY_VALIDATION, $exception->category);
+        Http::assertNothingSent();
+    }
+
+    public function test_production_rejects_a_development_key_that_can_redirect_sms(): void
+    {
+        config([
+            'app.env' => 'production',
+            'services.otpiq.api_key' => 'sk_dev_redirects_to_dashboard_phone',
+        ]);
+        $user = User::factory()->create(['phone' => '+9647704488311']);
+        Http::fake();
+
+        $exception = null;
+
+        try {
+            app(OtpiqSmsService::class)->sendVerification($user, '123456');
+        } catch (OtpiqDeliveryException $caught) {
+            $exception = $caught;
+        }
+
+        $this->assertInstanceOf(OtpiqDeliveryException::class, $exception);
+        $this->assertSame(OtpiqDeliveryException::CATEGORY_NOT_CONFIGURED, $exception->category);
+        $this->assertFalse(app(OtpiqSmsService::class)->smsAvailable());
+        Http::assertNothingSent();
     }
 
     public function test_sms_failure_does_not_claim_that_a_code_was_sent(): void

@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\UserAddress;
 use App\Rules\PhoneNumber;
 use Illuminate\Contracts\Validation\Validator as ValidatorContract;
+use Illuminate\Database\QueryException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Validator;
 use Tests\TestCase;
@@ -111,6 +112,55 @@ class PhoneValidationTest extends TestCase
         );
 
         $this->assertTrue($ignoredValidator->passes());
+    }
+
+    public function test_privileged_roles_may_reuse_the_same_phone_number(): void
+    {
+        $phone = '+964 750 123 4567';
+        User::factory()->create(['phone' => $phone]);
+
+        foreach (User::phoneSharingRoles() as $index => $role) {
+            $validator = Validator::make(
+                ['phone' => $phone],
+                ['phone' => ['nullable', new PhoneNumber(), User::uniquePhoneRule(null, $role)]],
+            );
+
+            $this->assertTrue($validator->passes(), "The {$role} role should be allowed to share a phone.");
+
+            User::factory()->create([
+                'email' => "privileged-phone-{$index}@example.com",
+                'phone' => $phone,
+                'role' => $role,
+            ]);
+        }
+
+        $this->assertSame(count(User::phoneSharingRoles()) + 1, User::where('phone_normalized', '9647501234567')->count());
+    }
+
+    public function test_dealer_phone_numbers_remain_unique(): void
+    {
+        User::factory()->create(['phone' => '+964 750 123 4567']);
+
+        $validator = Validator::make(
+            ['phone' => '0750 123 4567'],
+            ['phone' => ['nullable', new PhoneNumber(), User::uniquePhoneRule(null, User::ROLE_DEALER)]],
+        );
+
+        $this->assertTrue($validator->fails());
+        $this->assertArrayHasKey('phone', $validator->errors()->toArray());
+    }
+
+    public function test_database_still_rejects_duplicate_customer_phone_numbers(): void
+    {
+        User::factory()->create(['phone' => '+964 750 123 4567']);
+
+        $this->expectException(QueryException::class);
+
+        User::factory()->create([
+            'email' => 'duplicate-customer-phone@example.com',
+            'phone' => '+964 750 123 4567',
+            'role' => User::ROLE_USER,
+        ]);
     }
 
     public function test_mobile_register_uses_phone_number_rule(): void

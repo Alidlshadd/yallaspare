@@ -4,10 +4,9 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use App\Rules\IraqiMobileNumber;
 use App\Services\OtpiqDeliveryException;
 use App\Services\OtpiqSmsService;
-use App\Support\IraqiPhoneNumber;
+use App\Support\VerificationChannels;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -21,9 +20,10 @@ class MessagingController extends Controller
     {
     }
 
-    public function index(): View
+    public function index(Request $request): View
     {
         $withPhone = User::query()->whereNotNull('phone_normalized');
+        $admin = $request->user();
 
         $whatsappEnabled = (bool) config('services.otpiq.whatsapp.enabled', false);
         $whatsappConfigured = $this->otpiq->whatsappAvailable();
@@ -81,6 +81,8 @@ class MessagingController extends Controller
                 'template_language' => trim((string) config('services.otpiq.whatsapp.template_language', 'en')),
                 'template_status' => $templateStatus,
             ],
+            'testPhone' => VerificationChannels::maskedPhone((string) $admin?->phone_normalized),
+            'testPhoneAvailable' => filled($admin?->phone_normalized),
         ]);
     }
 
@@ -88,7 +90,6 @@ class MessagingController extends Controller
     {
         $validated = $request->validate([
             'channel' => ['required', Rule::in(['sms', 'whatsapp'])],
-            'phone' => ['required', 'string', 'max:30', new IraqiMobileNumber()],
         ]);
 
         $channel = (string) $validated['channel'];
@@ -104,8 +105,14 @@ class MessagingController extends Controller
             ])->withInput();
         }
 
-        $recipient = new User();
-        $recipient->phone = IraqiPhoneNumber::toE164($validated['phone']);
+        $recipient = $request->user();
+
+        if (! $recipient || empty($recipient->phone_normalized)) {
+            return back()->withErrors([
+                'test_delivery' => __('Add a phone number to use SMS verification.'),
+            ]);
+        }
+
         $code = (string) random_int(100000, 999999);
 
         try {
@@ -121,8 +128,8 @@ class MessagingController extends Controller
             ]);
 
             return back()->withErrors([
-                'phone' => __('The test message could not be sent. Check the provider configuration and try again'),
-            ])->withInput();
+                'test_delivery' => __('The test message could not be sent. Check the provider configuration and try again'),
+            ]);
         }
 
         Log::channel('security')->notice('security event', [

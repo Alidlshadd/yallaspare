@@ -70,6 +70,47 @@ class PasswordResetTest extends TestCase
         Notification::assertNothingSent();
     }
 
+    public function test_phone_reset_prefers_the_customer_when_staff_share_its_number(): void
+    {
+        Notification::fake();
+
+        $customer = User::factory()->create([
+            'email' => 'shared-phone-customer@example.com',
+            'phone' => '+964 750 448 8315',
+        ]);
+        $admin = User::factory()->create([
+            'email' => 'shared-phone-admin@example.com',
+            'phone' => '+964 750 448 8315',
+            'role' => User::ROLE_ADMIN,
+        ]);
+
+        $this->post('/forgot-password', ['login' => '0750 448 8315'])
+            ->assertSessionHasNoErrors()
+            ->assertSessionHas('status');
+
+        Notification::assertSentTo($customer, ImmediateResetPassword::class);
+        Notification::assertNotSentTo($admin, ImmediateResetPassword::class);
+    }
+
+    public function test_phone_reset_requires_email_when_multiple_staff_accounts_share_the_number(): void
+    {
+        Notification::fake();
+
+        foreach ([User::ROLE_ADMIN, User::ROLE_SETTINGS_MANAGER] as $index => $role) {
+            User::factory()->create([
+                'email' => "shared-phone-staff-{$index}@example.com",
+                'phone' => '+964 750 448 8315',
+                'role' => $role,
+            ]);
+        }
+
+        $this->post('/forgot-password', ['login' => '0750 448 8315'])
+            ->assertSessionHasNoErrors()
+            ->assertSessionHas('status');
+
+        Notification::assertNothingSent();
+    }
+
     public function test_reset_password_screen_can_be_rendered(): void
     {
         Notification::fake();

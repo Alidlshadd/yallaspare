@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -43,7 +44,7 @@ class LoginRequest extends FormRequest
         $this->ensureIsNotRateLimited();
 
         $login = trim((string) $this->input('email'));
-        $user = $this->userForLogin($login);
+        $user = $this->userForLogin($login, (string) $this->input('password'));
 
         if (
             ! $user ||
@@ -90,7 +91,7 @@ class LoginRequest extends FormRequest
         return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
     }
 
-    private function userForLogin(string $login): ?User
+    private function userForLogin(string $login, string $password): ?User
     {
         if (filter_var($login, FILTER_VALIDATE_EMAIL)) {
             return User::query()
@@ -98,18 +99,18 @@ class LoginRequest extends FormRequest
                 ->first();
         }
 
-        $normalizedPhone = $this->normalizePhone($login);
-        if ($normalizedPhone === null) {
+        $phoneCandidates = User::phoneLookupCandidates($login);
+        if ($phoneCandidates === []) {
             return null;
         }
 
-        return User::query()
-            ->where('phone_normalized', $normalizedPhone)
-            ->first();
-    }
+        $passwordMatches = User::query()
+            ->whereIn('phone_normalized', $phoneCandidates)
+            ->get()
+            ->filter(fn (User $user): bool => Hash::check($password, (string) $user->password));
 
-    private function normalizePhone(string $phone): ?string
-    {
-        return User::normalizePhone($phone);
+        // If two shared-phone accounts also use the same password, phone alone
+        // cannot identify the intended account. Require email login in that case.
+        return $passwordMatches->count() === 1 ? $passwordMatches->first() : null;
     }
 }

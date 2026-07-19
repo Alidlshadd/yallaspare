@@ -35,7 +35,7 @@ class CustomerPhoneSetupController extends Controller
 
         $validated = $request->validate([
             'country_code' => ['required', Rule::in(['+964'])],
-            'phone' => ['required', 'string', 'max:30', new IraqiMobileNumber(), User::uniquePhoneRule($user->id)],
+            'phone' => ['required', 'string', 'max:30', new IraqiMobileNumber(), User::uniquePhoneRule($user->id, $user->role)],
         ]);
 
         $user->forceFill([
