@@ -116,7 +116,7 @@
             <article id="contact-form" data-vision-reveal class="ct-form-card scroll-mt-28 overflow-hidden rounded-[2rem] border border-slate-200/80 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <header class="border-b border-slate-200/80 px-6 py-7 sm:px-8 dark:border-slate-800">
                     <div class="flex items-start gap-4">
-                        <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20 dark:bg-amber-400 dark:text-primary">
+                        <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20 dark:bg-amber-400 dark:text-[#070740]">
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                                 <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v9a2.5 2.5 0 0 1-2.5 2.5H9l-5 4v-4.8a2.5 2.5 0 0 1-1-2V5.5Z" stroke-linecap="round" stroke-linejoin="round" /><path d="M8 8h8M8 12h5" stroke-linecap="round" />
                             </svg>
@@ -179,7 +179,7 @@
 
                     <div class="flex flex-col gap-4 border-t border-slate-200/80 pt-7 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800">
                         <p class="max-w-sm text-xs leading-5 text-slate-500 dark:text-slate-400">{{ __('Our team will help you find the correct spare part.') }}</p>
-                        <button type="submit" class="ct-submit inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-sm font-extrabold text-white shadow-lg shadow-primary/20 transition hover:-translate-y-0.5 hover:bg-[#10105f] hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 dark:bg-amber-400 dark:text-primary dark:shadow-amber-400/10 dark:hover:bg-amber-300">
+                        <button type="submit" class="ct-submit inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-sm font-extrabold text-white shadow-lg shadow-primary/20 transition hover:-translate-y-0.5 hover:bg-[#10105f] hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 dark:bg-amber-400 dark:text-[#070740] dark:shadow-amber-400/10 dark:hover:bg-amber-300">
                             {{ __('Send Message') }}
                             <svg class="ct-arrow h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />

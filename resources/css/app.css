@@ -12,6 +12,8 @@
         --muted: #64748b;
         --primary: #070b1f;
         --primary-hover: #0a0f2c;
+        --primary-solid: #070740;
+        --primary-solid-hover: #0a0d55;
         --focus: rgba(7, 11, 31, 0.14);
         --danger: #b42318;
         --success: #15803d;
@@ -30,6 +32,8 @@
         --muted: #94a3b8;
         --primary: #e2e8f0;
         --primary-hover: #cbd5e1;
+        --primary-solid: #4f46e5;
+        --primary-solid-hover: #4338ca;
         --focus: rgba(148, 163, 184, 0.32);
         --danger: #f87171;
         --success: #4ade80;
@@ -1347,11 +1351,11 @@
     }
 
     .bg-primary {
-        background-color: var(--primary);
+        background-color: var(--primary-solid);
     }
 
     .bg-primary-hover {
-        background-color: var(--primary-hover);
+        background-color: var(--primary-solid-hover);
     }
 
     .ring-focus {
