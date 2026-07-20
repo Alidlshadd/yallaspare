@@ -388,7 +388,7 @@
                     </span>
                 </div>
 
-                <div class="mt-5 grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <div class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
                     @foreach ($reviewableItems as $item)
                         @php
                             $itemProduct = $item->product;

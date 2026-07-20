@@ -315,7 +315,7 @@
             </div>
         </section>
 
-        <section class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+        <section class="grid grid-cols-1 gap-4 md:grid-cols-2">
             <article class="rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10">
                 <h2 class="text-base font-semibold text-slate-900 dark:text-white">{{ __('Product Details') }}</h2>
                 <p class="mt-3 text-sm leading-7 text-slate-600 dark:text-slate-300">

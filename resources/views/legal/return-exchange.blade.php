@@ -13,14 +13,14 @@
             </p>
             <a
                 href="{{ route('legal.contact', ['topic' => 'order']) }}"
-                class="mt-6 inline-flex items-center gap-2 rounded-xl bg-amber-400 px-5 py-3 text-sm font-bold text-primary dark:text-[#070740] shadow-sm transition hover:-translate-y-0.5 hover:bg-amber-300 hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 lg:hidden"
+                class="mt-6 inline-flex items-center gap-2 rounded-xl bg-amber-400 px-5 py-3 text-sm font-bold text-primary dark:text-[#070740] shadow-sm transition hover:-translate-y-0.5 hover:bg-amber-300 hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:hidden"
             >
                 {{ __('Open a return request') }} <span aria-hidden="true">&rarr;</span>
             </a>
         </section>
 
-        <div class="mt-10 lg:grid lg:grid-cols-[230px,1fr] lg:gap-10">
-            <aside class="hidden lg:block">
+        <div class="mt-10 md:grid md:grid-cols-[200px,1fr] md:gap-8 lg:grid-cols-[230px,1fr] lg:gap-10">
+            <aside class="hidden md:block">
                 <nav class="sup-in sticky top-24 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900" style="animation-delay: .12s">
                     <p class="px-3 pb-2 pt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">{{ __('On this page') }}</p>
                     <a href="#period" class="block rounded-lg px-3 py-2 text-sm text-slate-600 transition hover:bg-slate-100 hover:text-primary dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white">{{ __('Return Period') }}</a>

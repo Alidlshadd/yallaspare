@@ -57,7 +57,7 @@
                     </x-slot>
                 </x-ui.empty>
             @else
-                <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                     @foreach ($addresses as $savedAddress)
                         <x-ui.card>
                             <div class="flex items-start justify-between gap-3">

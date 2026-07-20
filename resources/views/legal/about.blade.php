@@ -45,8 +45,8 @@
         </div>
 
         {{-- Scrollytelling: sticky rail + story panels --}}
-        <section class="mt-14 lg:grid lg:grid-cols-[240px,1fr] lg:gap-12">
-            <aside class="hidden lg:block">
+        <section class="mt-14 md:grid md:grid-cols-[210px,1fr] md:gap-8 lg:grid-cols-[240px,1fr] lg:gap-12">
+            <aside class="hidden md:block">
                 <div class="sticky top-28 space-y-1">
                     <div data-about-dot="why" class="abt-dotr abt-on"><i aria-hidden="true"></i>{{ __('Why we exist') }}</div>
                     <div data-about-dot="how" class="abt-dotr"><i aria-hidden="true"></i>{{ __('How we work') }}</div>
@@ -55,24 +55,24 @@
             </aside>
             <div class="space-y-8">
                 <article data-vision-reveal data-about-panel="why" class="rounded-3xl border border-slate-200/80 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-amber-600 lg:hidden dark:text-amber-400">{{ __('Why we exist') }}</p>
-                    <h2 class="mt-2 text-2xl font-extrabold tracking-tight text-primary lg:mt-0 dark:text-white">{{ __('Because the wrong part is lost time.') }}</h2>
+                    <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-amber-600 md:hidden dark:text-amber-400">{{ __('Why we exist') }}</p>
+                    <h2 class="mt-2 text-2xl font-extrabold tracking-tight text-primary md:mt-0 dark:text-white">{{ __('Because the wrong part is lost time.') }}</h2>
                     <p class="mt-4 max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-slate-300">
                         {{ __('Shop after shop, wrong parts, days of waiting — YallaSpare was founded to break that loop.') }}
                         {{ __('All products are carefully selected to ensure quality and compatibility with different vehicle models.') }}
                     </p>
                 </article>
                 <article data-vision-reveal data-about-panel="how" class="rounded-3xl border border-slate-200/80 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-amber-600 lg:hidden dark:text-amber-400">{{ __('How we work') }}</p>
-                    <h2 class="mt-2 text-2xl font-extrabold tracking-tight text-primary lg:mt-0 dark:text-white">{{ __('A simple promise, kept every day.') }}</h2>
+                    <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-amber-600 md:hidden dark:text-amber-400">{{ __('How we work') }}</p>
+                    <h2 class="mt-2 text-2xl font-extrabold tracking-tight text-primary md:mt-0 dark:text-white">{{ __('A simple promise, kept every day.') }}</h2>
                     <p class="mt-4 max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-slate-300">
                         {{ __('Our mission is to provide high-quality auto spare parts, competitive prices, and fast delivery while maintaining excellent customer service.') }}
                         {{ __('If you are not sure which part you need, our support team can help you find the correct product.') }}
                     </p>
                 </article>
                 <article data-vision-reveal data-about-panel="next" class="rounded-3xl border border-slate-200/80 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-amber-600 lg:hidden dark:text-amber-400">{{ __("Where we're going") }}</p>
-                    <h2 class="mt-2 text-2xl font-extrabold tracking-tight text-primary lg:mt-0 dark:text-white">{{ __('This is only the beginning.') }}</h2>
+                    <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-amber-600 md:hidden dark:text-amber-400">{{ __("Where we're going") }}</p>
+                    <h2 class="mt-2 text-2xl font-extrabold tracking-tight text-primary md:mt-0 dark:text-white">{{ __('This is only the beginning.') }}</h2>
                     <p class="mt-4 max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-slate-300">
                         {{ __('A mobile app, VIN matching, same-day delivery, and more are on the road ahead — see the full journey on Our Vision.') }}
                     </p>

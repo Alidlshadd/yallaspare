@@ -15,8 +15,8 @@
         <div class="mt-8 h-px w-full bg-slate-200/70 dark:bg-slate-800/70"></div>
     </section>
 
-    <section class="mx-auto mt-14 grid w-full max-w-5xl grid-cols-1 gap-14 lg:grid-cols-[220px_minmax(0,1fr)]">
-        <aside class="hidden lg:block">
+    <section class="mx-auto mt-14 grid w-full max-w-5xl grid-cols-1 gap-14 md:grid-cols-[190px_minmax(0,1fr)] md:gap-10 lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-14">
+        <aside class="hidden md:block">
             <nav aria-label="{{ __('Terms sections') }}" class="sticky top-24">
                 <ul class="space-y-1.5 text-sm">
                     <li>
