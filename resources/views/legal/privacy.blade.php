@@ -84,21 +84,7 @@
             </div>
         </section>
 
-        <div class="mt-10 md:grid md:grid-cols-[210px,1fr] md:gap-8 lg:grid-cols-[230px,1fr] lg:gap-10">
-            <nav class="pv-toc hidden md:block sticky top-24" aria-label="{{ __('On this page') }}">
-                <a href="#pv-1" data-privacy-dot="pv-1"><span class="pv-toc-dot"></span>{{ __('Personal Information') }}</a>
-                <a href="#pv-2" data-privacy-dot="pv-2"><span class="pv-toc-dot"></span>{{ __('Browsing') }}</a>
-                <a href="#pv-3" data-privacy-dot="pv-3"><span class="pv-toc-dot"></span>{{ __('Shopping Data') }}</a>
-                <a href="#pv-4" data-privacy-dot="pv-4"><span class="pv-toc-dot"></span>{{ __('Payment') }}</a>
-                <a href="#pv-5" data-privacy-dot="pv-5"><span class="pv-toc-dot"></span>{{ __('SSL Security') }}</a>
-                <a href="#pv-6" data-privacy-dot="pv-6"><span class="pv-toc-dot"></span>{{ __('Cookies') }}</a>
-                <a href="#pv-7" data-privacy-dot="pv-7"><span class="pv-toc-dot"></span>{{ __('Copyright') }}</a>
-                <a href="#pv-8" data-privacy-dot="pv-8"><span class="pv-toc-dot"></span>{{ __('Data Security') }}</a>
-                <a href="#pv-9" data-privacy-dot="pv-9"><span class="pv-toc-dot"></span>{{ __('Third-Party Links') }}</a>
-                <a href="#pv-10" data-privacy-dot="pv-10"><span class="pv-toc-dot"></span>{{ __('Policy Changes') }}</a>
-                <a href="#pv-11" data-privacy-dot="pv-11"><span class="pv-toc-dot"></span>{{ __('Contact Us') }}</a>
-            </nav>
-
+        <div class="mt-10">
             <div class="space-y-5">
                 <article id="pv-1" data-privacy-panel="pv-1" data-vision-reveal class="pv-card pv-c1">
                     <div class="pv-card-head">
