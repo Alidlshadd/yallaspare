@@ -2831,13 +2831,13 @@
 }
 @media (max-width: 767px) {
     .vs-roadwrap::before {
-        inset-inline-start: 39px;
         left: auto;
+        inset-inline-start: 39px;
         transform: none;
     }
     .vs-roadwrap::after {
-        inset-inline-start: 6px;
         left: auto;
+        inset-inline-start: 6px;
         width: 66px;
         transform: none;
     }
