@@ -5,7 +5,17 @@
 
 @section('content')
     <div data-vision-page data-contact-page class="ct-page mx-auto w-full max-w-6xl">
-        <section class="ct-hero relative overflow-hidden rounded-[2rem]">
+        <div class="ct-ticker sup-in">
+            <span class="ct-ticker-item"><span class="ct-live-dot"></span>{{ __('Support online now') }}</span>
+            <span class="ct-ticker-div"></span>
+            <span class="ct-ticker-item">{{ __('Avg reply time · 12 min') }}</span>
+            <span class="ct-ticker-div"></span>
+            <span class="ct-ticker-item">{{ __('Erbil, Iraq · GMT+3') }}</span>
+            <span class="ct-ticker-div"></span>
+            <span class="ct-ticker-item" dir="ltr">Mon–Sat, 09:00–18:00</span>
+        </div>
+
+        <section class="ct-hero relative mt-4 overflow-hidden rounded-[2rem]">
             <span class="ct-grid" aria-hidden="true"></span>
             <span class="ct-orb ct-orb-one" aria-hidden="true"></span>
             <span class="ct-orb ct-orb-two" aria-hidden="true"></span>
@@ -38,7 +48,9 @@
                     </div>
                 </div>
 
-                <div class="ct-signal-wrap sup-in" style="animation-delay: .18s" aria-hidden="true">
+                <div class="ct-signal-wrap ct-hud sup-in" style="animation-delay: .18s" aria-hidden="true">
+                    <span class="ct-hc2"></span>
+                    <span class="ct-hc3"></span>
                     <div class="ct-signal">
                         <span class="ct-ring ct-ring-one"></span>
                         <span class="ct-ring ct-ring-two"></span>
@@ -50,8 +62,11 @@
                             </svg>
                         </span>
                         <span class="ct-signal-label">
-                            <b>{{ __('Phone / WhatsApp') }}</b>
-                            <small dir="ltr">+964 770 448 8315</small>
+                            <span class="ct-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+                            <span>
+                                <b>{{ __('Phone / WhatsApp') }}</b>
+                                <small dir="ltr">+964 770 448 8315</small>
+                            </span>
                         </span>
                     </div>
                 </div>
@@ -85,6 +100,7 @@
                     <small>{{ __('Phone / WhatsApp') }}</small>
                     <b dir="ltr">+964 770 448 8315</b>
                 </span>
+                <span class="ct-eq ct-eq-key" aria-hidden="true"><i></i><i></i><i></i></span>
             </a>
 
             <a href="mailto:support@yallaspare.com" class="ct-channel group flex items-center gap-4 rounded-2xl px-4 py-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
@@ -97,6 +113,7 @@
                     <small>{{ __('Email') }}</small>
                     <b class="truncate">support@yallaspare.com</b>
                 </span>
+                <span class="ct-eq ct-eq-key" aria-hidden="true"><i></i><i></i><i></i></span>
             </a>
 
             <a href="{{ url('/') }}" class="ct-channel group flex items-center gap-4 rounded-2xl px-4 py-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
@@ -109,12 +126,13 @@
                     <small>{{ __('Website') }}</small>
                     <b>{{ __('www.yallaspare.com') }}</b>
                 </span>
+                <span class="ct-eq ct-eq-key" aria-hidden="true"><i></i><i></i><i></i></span>
             </a>
         </section>
 
         <section class="mt-16 grid gap-6 lg:grid-cols-[minmax(0,1.55fr)_minmax(300px,.75fr)] lg:items-start">
             <article id="contact-form" data-vision-reveal class="ct-form-card scroll-mt-28 overflow-hidden rounded-[2rem] border border-slate-200/80 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                <header class="border-b border-slate-200/80 px-6 py-7 sm:px-8 dark:border-slate-800">
+                <header class="flex flex-wrap items-start justify-between gap-4 border-b border-slate-200/80 px-6 py-7 sm:px-8 dark:border-slate-800">
                     <div class="flex items-start gap-4">
                         <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20 dark:bg-amber-400 dark:text-[#070740]">
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -126,6 +144,7 @@
                             <h2 class="mt-1 text-2xl font-black tracking-tight text-primary sm:text-3xl dark:text-white">{{ __('Send a Support Request') }}</h2>
                         </div>
                     </div>
+                    <span class="ct-ticket-id"><span class="ct-live-dot" style="width:5px;height:5px;"></span>{{ __('REQ · NEW') }}</span>
                 </header>
 
                 <form method="POST" action="{{ route('legal.contact.send') }}" class="space-y-7 p-6 sm:p-8" data-testid="contact-form">
