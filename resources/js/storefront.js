@@ -1285,6 +1285,35 @@ const initAboutPage = () => {
     panels.forEach((panel) => observer.observe(panel));
 };
 
+const initPrivacyPage = () => {
+    const page = document.querySelector('[data-privacy-page]');
+
+    if (!page) {
+        return;
+    }
+
+    const dots = Array.from(page.querySelectorAll('[data-privacy-dot]'));
+    const panels = Array.from(page.querySelectorAll('[data-privacy-panel]'));
+
+    if (dots.length === 0 || panels.length === 0 || typeof IntersectionObserver === 'undefined') {
+        return;
+    }
+
+    const setActive = (key) => {
+        dots.forEach((dot) => dot.classList.toggle('pv-on', dot.dataset.privacyDot === key));
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                setActive(entry.target.dataset.privacyPanel);
+            }
+        });
+    }, { rootMargin: '-40% 0px -50% 0px' });
+
+    panels.forEach((panel) => observer.observe(panel));
+};
+
 const boot = () => {
     initHeroVideos();
     initVehicleFinder();
@@ -1297,6 +1326,7 @@ const boot = () => {
     initCategoryRails();
     initVisionPage();
     initAboutPage();
+    initPrivacyPage();
 };
 
 if (document.readyState === 'loading') {
