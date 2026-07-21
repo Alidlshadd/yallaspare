@@ -31,6 +31,7 @@ use App\Http\Controllers\Admin\ReturnRequestController;
 use App\Http\Controllers\Admin\VehicleFitmentController;
 use App\Http\Controllers\Admin\ProductReviewController as AdminProductReviewController;
 use App\Http\Controllers\Admin\DiscountCouponController;
+use App\Http\Controllers\Admin\PopupController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\OperationsInsightController;
 use App\Http\Controllers\ShopController as CatalogShopController;
@@ -316,6 +317,29 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::delete('/discounts/rules/{discount}', [DiscountCouponController::class, 'destroyRule'])
             ->middleware(['can:' . User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
             ->name('discounts.destroy-rule');
+
+        // Storefront announcement popups
+        Route::get('/popups', [PopupController::class, 'index'])
+            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
+            ->name('popups.index');
+        Route::get('/popups/create', [PopupController::class, 'create'])
+            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
+            ->name('popups.create');
+        Route::post('/popups', [PopupController::class, 'store'])
+            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
+            ->name('popups.store');
+        Route::get('/popups/{popup}/edit', [PopupController::class, 'edit'])
+            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
+            ->name('popups.edit');
+        Route::put('/popups/{popup}', [PopupController::class, 'update'])
+            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
+            ->name('popups.update');
+        Route::patch('/popups/{popup}/toggle', [PopupController::class, 'toggle'])
+            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
+            ->name('popups.toggle');
+        Route::delete('/popups/{popup}', [PopupController::class, 'destroy'])
+            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
+            ->name('popups.destroy');
 
         // Products
         Route::resource('products', ProductController::class)

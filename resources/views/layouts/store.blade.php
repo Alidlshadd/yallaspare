@@ -164,6 +164,7 @@
     </main>
 
     @include('partials.site-footer')
+    @include('partials.store-popup')
     @include('partials.language-switcher-script')
 </body>
 </html>

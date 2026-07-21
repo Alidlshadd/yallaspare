@@ -604,6 +604,7 @@
 
             @include('partials.site-footer')
         </div>
+        @include('partials.store-popup')
         @include('partials.cart-feedback-script')
         @stack('scripts')
     </body>

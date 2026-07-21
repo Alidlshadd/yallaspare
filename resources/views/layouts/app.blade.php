@@ -340,6 +340,7 @@
                     'admin.discounts.edit'         => __('Coupon Management'),
                     'admin.discounts.rules'        => __('Discount Rules'),
                     'admin.email.*'                => __('Email Center'),
+                    'admin.popups.*'               => __('Popups'),
                     'admin.messaging.*'            => __('SMS & WhatsApp Center'),
                     'admin.settings.*'             => __('Settings'),
                     'admin.activity-logs.*'        => __('Activity Logs'),
@@ -645,6 +646,15 @@
                                 >
                                     <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-comments"></i></span>
                                     <span class="admin-nav-label">{{ __('SMS & WhatsApp Center') }}</span>
+                                </a>
+                                <a
+                                    href="{{ route('admin.popups.index') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.popups.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Popups') }}"
+                                    @if(request()->routeIs('admin.popups.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-bullhorn"></i></span>
+                                    <span class="admin-nav-label">{{ __('Popups') }}</span>
                                 </a>
                             @endcan
                         @endif
