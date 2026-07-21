@@ -3625,5 +3625,7 @@
     "This action is permanent. The selected popup will be deleted and cannot be recovered.": "هذا الإجراء نهائي. سيتم حذف النافذة المنبثقة المحددة ولا يمكن استعادتها.",
     "Every visit": "كل زيارة",
     "Once per session": "مرة واحدة لكل جلسة",
-    "Every :days days": "كل :days أيام"
+    "Every :days days": "كل :days أيام",
+    "Your popup title": "عنوان النافذة المنبثقة",
+    "Live preview — this is what visitors will see": "معاينة حية — هذا ما سيراه الزوار"
 }

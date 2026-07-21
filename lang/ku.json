@@ -3625,5 +3625,7 @@
     "This action is permanent. The selected popup will be deleted and cannot be recovered.": "ئەم کردارە هەمیشەییە. پۆپئەپە هەڵبژێردراوەکە دەسڕدرێتەوە و ناتوانرێت بگەڕێنرێتەوە.",
     "Every visit": "هەر سەردانێک",
     "Once per session": "جارێک بۆ هەر دانیشتنێک",
-    "Every :days days": "هەر :days ڕۆژ جارێک"
+    "Every :days days": "هەر :days ڕۆژ جارێک",
+    "Your popup title": "ناونیشانی پۆپئەپەکەت",
+    "Live preview — this is what visitors will see": "پێشبینینی زیندوو — سەردانکەران ئەمە دەبینن"
 }

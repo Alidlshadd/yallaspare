@@ -29,6 +29,24 @@ class AdminPopupManagementTest extends TestCase
             ->assertSee($popup->title_en);
     }
 
+    public function test_admin_can_view_create_popup_page(): void
+    {
+        $this->actingAs($this->admin())
+            ->get(route('admin.popups.create'))
+            ->assertOk()
+            ->assertSee('popupPreviewTitle', false);
+    }
+
+    public function test_admin_can_view_edit_popup_page(): void
+    {
+        $popup = Popup::factory()->create(['title_en' => 'Edit page preview check']);
+
+        $this->actingAs($this->admin())
+            ->get(route('admin.popups.edit', $popup))
+            ->assertOk()
+            ->assertSee('Edit page preview check');
+    }
+
     public function test_regular_user_cannot_access_popup_management(): void
     {
         $user = User::factory()->create([

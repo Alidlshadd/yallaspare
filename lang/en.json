@@ -3625,5 +3625,7 @@
     "This action is permanent. The selected popup will be deleted and cannot be recovered.": "This action is permanent. The selected popup will be deleted and cannot be recovered.",
     "Every visit": "Every visit",
     "Once per session": "Once per session",
-    "Every :days days": "Every :days days"
+    "Every :days days": "Every :days days",
+    "Your popup title": "Your popup title",
+    "Live preview — this is what visitors will see": "Live preview — this is what visitors will see"
 }
