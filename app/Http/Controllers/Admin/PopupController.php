@@ -103,7 +103,20 @@ class PopupController extends Controller
                 'string',
                 'max:2048',
                 function (string $attribute, mixed $value, \Closure $fail): void {
-                    if (preg_match('/^(javascript|data|vbscript):/i', trim((string) $value)) === 1) {
+                    $url = self::sanitizeButtonUrl($value);
+
+                    if ($url === '') {
+                        return;
+                    }
+
+                    // Relative path (but not scheme-relative //host).
+                    if (str_starts_with($url, '/') && ! str_starts_with($url, '//')) {
+                        return;
+                    }
+
+                    $scheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
+
+                    if (! in_array($scheme, ['http', 'https'], true)) {
                         $fail(__('This link type is not allowed.'));
                     }
                 },
@@ -121,12 +134,23 @@ class PopupController extends Controller
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
+        $validated['button_url'] = self::sanitizeButtonUrl($validated['button_url'] ?? null) ?: null;
         $validated['frequency_days'] = (int) ($validated['frequency_days'] ?? 7) ?: 7;
         $validated['pages'] = in_array('all', $validated['pages'], true) ? ['all'] : array_values($validated['pages']);
 
         unset($validated['image'], $validated['remove_image']);
 
         return $validated;
+    }
+
+    /**
+     * Strip ASCII control characters so a scheme like "java\tscript:" cannot
+     * be smuggled past validation, then trim. The stored value goes through
+     * the same normalization as the validated one.
+     */
+    private static function sanitizeButtonUrl(mixed $value): string
+    {
+        return trim((string) preg_replace('/[\x00-\x1F\x7F]/', '', (string) $value));
     }
 
     private function deleteImage(Popup $popup): void

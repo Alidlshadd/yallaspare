@@ -67,19 +67,50 @@ class AdminPopupManagementTest extends TestCase
         $this->assertSame(['home', 'shop'], Popup::query()->first()->pages);
     }
 
-    public function test_javascript_button_url_is_rejected(): void
+    public function test_unsafe_button_urls_are_rejected(): void
     {
-        $this->actingAs($this->admin())
-            ->post(route('admin.popups.store'), [
-                'title_en' => 'Bad popup',
-                'button_url' => 'javascript:alert(1)',
-                'pages' => ['all'],
-                'frequency' => 'every_visit',
-                'delay_seconds' => 0,
-            ])
-            ->assertSessionHasErrors('button_url');
+        $admin = $this->admin();
+
+        foreach ([
+            'javascript:alert(1)',
+            "java\tscript:alert(1)",
+            "java\nscript:alert(1)",
+            'data:text/html,<script>alert(1)</script>',
+            'vbscript:msgbox(1)',
+            '//evil.example.com/phish',
+            'ftp://evil.example.com/file',
+        ] as $unsafeUrl) {
+            $this->actingAs($admin)
+                ->post(route('admin.popups.store'), [
+                    'title_en' => 'Bad popup',
+                    'button_url' => $unsafeUrl,
+                    'pages' => ['all'],
+                    'frequency' => 'every_visit',
+                    'delay_seconds' => 0,
+                ])
+                ->assertSessionHasErrors('button_url');
+        }
 
         $this->assertDatabaseCount('popups', 0);
+    }
+
+    public function test_safe_button_urls_are_accepted(): void
+    {
+        $admin = $this->admin();
+
+        foreach (['/shop', 'https://example.com/campaign', 'http://example.com'] as $index => $safeUrl) {
+            $this->actingAs($admin)
+                ->post(route('admin.popups.store'), [
+                    'title_en' => 'Safe popup ' . $index,
+                    'button_url' => $safeUrl,
+                    'pages' => ['all'],
+                    'frequency' => 'every_visit',
+                    'delay_seconds' => 0,
+                ])
+                ->assertSessionDoesntHaveErrors('button_url');
+        }
+
+        $this->assertDatabaseCount('popups', 3);
     }
 
     public function test_selecting_all_collapses_page_targeting(): void
