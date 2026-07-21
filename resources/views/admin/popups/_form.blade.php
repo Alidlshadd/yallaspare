@@ -37,8 +37,28 @@
         @method('PUT')
     @endif
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 items-start">
-        <div class="lg:col-span-2 space-y-4">
+    {{-- ═════════════ Live preview ═════════════ --}}
+    <div data-animate="fade-up" class="max-w-xl mx-auto">
+        <div data-motion-lift class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl overflow-hidden bento-shadow">
+            <div class="relative h-52 sm:h-60 flex items-end overflow-hidden" style="background: linear-gradient(160deg, #0a1533 0%, #1a2f5f 45%, #35558f 100%);">
+                <img id="popupPreviewImg" src="{{ $previewImageUrl }}" alt=""
+                     class="absolute inset-0 h-full w-full object-contain {{ $previewImageUrl === '' ? 'hidden' : '' }}">
+                <div class="absolute inset-0 popup-preview-scrim"></div>
+                <div class="relative px-5 pb-5 pt-2 text-white">
+                    <div id="popupPreviewTitle" class="font-bold leading-tight text-lg sm:text-xl" style="font-family: 'Space Grotesk', sans-serif;">
+                        {{ $previewTitle !== '' ? $previewTitle : __('Your popup title') }}
+                    </div>
+                    <p id="popupPreviewDesc" class="text-xs text-white/75 mt-1.5 {{ $previewDescription === '' ? 'hidden' : '' }}">{{ $previewDescription }}</p>
+                    <span id="popupPreviewButton" class="inline-block mt-2.5 rounded-full bg-[#e85d2a] px-3.5 py-1.5 text-xs font-bold text-white {{ $previewButtonLabel === '' ? 'hidden' : '' }}">{{ $previewButtonLabel }}</span>
+                </div>
+            </div>
+            <div class="p-3 text-center">
+                <p class="text-[10.5px] font-bold text-slate-500 dark:text-slate-400">{{ __('Live preview — this is what visitors will see') }}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="space-y-4">
 
             {{-- ═════════════ Content ═════════════ --}}
             <div data-animate="fade-up" class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-5 sm:p-6 bento-shadow">
@@ -251,30 +271,6 @@
                 </div>
             </div>
 
-        </div>
-
-        {{-- ═════════════ Live preview ═════════════ --}}
-        <div class="lg:col-span-1">
-            <div data-animate="fade-up" class="lg:sticky lg:top-6 space-y-2">
-                <div data-motion-lift class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl overflow-hidden bento-shadow">
-                    <div class="relative h-52 flex items-end overflow-hidden" style="background: linear-gradient(160deg, #0a1533 0%, #1a2f5f 45%, #35558f 100%);">
-                        <img id="popupPreviewImg" src="{{ $previewImageUrl }}" alt=""
-                             class="absolute inset-0 h-full w-full object-contain {{ $previewImageUrl === '' ? 'hidden' : '' }}">
-                        <div class="absolute inset-0 popup-preview-scrim"></div>
-                        <div class="relative px-4 pb-4 pt-2 text-white">
-                            <div id="popupPreviewTitle" class="font-bold leading-tight" style="font-family: 'Space Grotesk', sans-serif;">
-                                {{ $previewTitle !== '' ? $previewTitle : __('Your popup title') }}
-                            </div>
-                            <p id="popupPreviewDesc" class="text-[11px] text-white/75 mt-1 {{ $previewDescription === '' ? 'hidden' : '' }}">{{ $previewDescription }}</p>
-                            <span id="popupPreviewButton" class="inline-block mt-2 rounded-full bg-[#e85d2a] px-3 py-1 text-[11px] font-bold text-white {{ $previewButtonLabel === '' ? 'hidden' : '' }}">{{ $previewButtonLabel }}</span>
-                        </div>
-                    </div>
-                    <div class="p-3 text-center">
-                        <p class="text-[10.5px] font-bold text-slate-500 dark:text-slate-400">{{ __('Live preview — this is what visitors will see') }}</p>
-                    </div>
-                </div>
-            </div>
-        </div>
     </div>
 
     {{-- ═════════════ Actions ═════════════ --}}
