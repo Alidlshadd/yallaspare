@@ -3622,5 +3622,8 @@
     "Pages": "الصفحات",
     "Always on": "دائمًا مفعّل",
     "Delete Popup": "حذف النافذة المنبثقة",
-    "This action is permanent. The selected popup will be deleted and cannot be recovered.": "هذا الإجراء نهائي. سيتم حذف النافذة المنبثقة المحددة ولا يمكن استعادتها."
+    "This action is permanent. The selected popup will be deleted and cannot be recovered.": "هذا الإجراء نهائي. سيتم حذف النافذة المنبثقة المحددة ولا يمكن استعادتها.",
+    "Every visit": "كل زيارة",
+    "Once per session": "مرة واحدة لكل جلسة",
+    "Every :days days": "كل :days أيام"
 }

@@ -3622,5 +3622,8 @@
     "Pages": "Pages",
     "Always on": "Always on",
     "Delete Popup": "Delete Popup",
-    "This action is permanent. The selected popup will be deleted and cannot be recovered.": "This action is permanent. The selected popup will be deleted and cannot be recovered."
+    "This action is permanent. The selected popup will be deleted and cannot be recovered.": "This action is permanent. The selected popup will be deleted and cannot be recovered.",
+    "Every visit": "Every visit",
+    "Once per session": "Once per session",
+    "Every :days days": "Every :days days"
 }

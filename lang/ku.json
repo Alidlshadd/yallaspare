@@ -3622,5 +3622,8 @@
     "Pages": "پەڕەکان",
     "Always on": "هەمیشە چالاک",
     "Delete Popup": "سڕینەوەی پۆپئەپ",
-    "This action is permanent. The selected popup will be deleted and cannot be recovered.": "ئەم کردارە هەمیشەییە. پۆپئەپە هەڵبژێردراوەکە دەسڕدرێتەوە و ناتوانرێت بگەڕێنرێتەوە."
+    "This action is permanent. The selected popup will be deleted and cannot be recovered.": "ئەم کردارە هەمیشەییە. پۆپئەپە هەڵبژێردراوەکە دەسڕدرێتەوە و ناتوانرێت بگەڕێنرێتەوە.",
+    "Every visit": "هەر سەردانێک",
+    "Once per session": "جارێک بۆ هەر دانیشتنێک",
+    "Every :days days": "هەر :days ڕۆژ جارێک"
 }
