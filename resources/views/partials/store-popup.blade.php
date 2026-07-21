@@ -27,7 +27,7 @@
 
         <div
             data-popup-card
-            class="relative flex min-h-[19rem] w-full max-w-md flex-col justify-end overflow-hidden rounded-3xl shadow-[0_40px_90px_-30px_rgba(5,12,30,0.65)] sm:min-h-[22rem]"
+            class="relative flex min-h-[19rem] w-full max-w-md flex-col justify-end overflow-hidden rounded-3xl shadow-[0_40px_90px_-30px_rgba(5,12,30,0.65)] sm:min-h-[24rem] sm:max-w-lg lg:min-h-[28rem] lg:max-w-xl"
             style="background: linear-gradient(160deg, #0a1533 0%, #1a2f5f 45%, #35558f 100%);"
         >
             @if($popupImageUrl)
@@ -39,21 +39,21 @@
                 type="button"
                 data-popup-close
                 aria-label="{{ __('Close') }}"
-                class="absolute top-3 z-10 grid h-9 w-9 place-items-center rounded-full bg-white/95 text-[#14213d] shadow-lg transition hover:bg-white ltr:right-3 rtl:left-3"
+                class="absolute top-3 z-10 grid h-9 w-9 place-items-center rounded-full bg-white/95 text-[#14213d] shadow-lg transition hover:bg-white ltr:right-3 rtl:left-3 lg:h-10 lg:w-10"
             >
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                <svg class="h-4 w-4 lg:h-[1.1rem] lg:w-[1.1rem]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
             </button>
 
-            <div class="relative flex flex-col gap-2.5 p-6 pb-7 sm:p-7">
-                <h2 class="store-title text-2xl font-bold leading-tight text-white sm:text-[1.65rem]">{{ $storePopup->localizedTitle() }}</h2>
+            <div class="relative flex flex-col gap-3 p-6 pb-7 sm:p-7 lg:gap-4 lg:p-9 lg:pb-10">
+                <h2 class="store-title text-2xl font-bold leading-tight text-white sm:text-[1.65rem] lg:text-[2rem]">{{ $storePopup->localizedTitle() }}</h2>
                 @if($storePopup->localizedDescription())
-                    <p class="text-sm leading-relaxed text-white/80">{{ $storePopup->localizedDescription() }}</p>
+                    <p class="text-sm leading-relaxed text-white/80 lg:text-base">{{ $storePopup->localizedDescription() }}</p>
                 @endif
                 @if($storePopup->hasButton())
                     <a
                         href="{{ $storePopup->button_url }}"
                         data-popup-action
-                        class="mt-2 inline-block self-start rounded-full bg-[#e85d2a] px-6 py-2.5 text-sm font-bold text-white shadow-[0_10px_24px_-12px_rgba(232,93,42,0.8)] transition hover:bg-[#b83a14]"
+                        class="mt-2 inline-block self-start rounded-full bg-[#e85d2a] px-6 py-2.5 text-sm font-bold text-white shadow-[0_10px_24px_-12px_rgba(232,93,42,0.8)] transition hover:bg-[#b83a14] lg:px-7 lg:py-3 lg:text-base"
                     >{{ $storePopup->localizedButtonLabel() }}</a>
                 @endif
             </div>
