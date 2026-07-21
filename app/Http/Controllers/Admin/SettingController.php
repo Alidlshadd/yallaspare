@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Rules\SafeLinkUrl;
 use App\Support\Branding;
 use App\Support\SecureImageStorage;
 use Illuminate\Http\RedirectResponse;
@@ -60,21 +61,7 @@ class SettingController extends Controller
             'storefront_hero_title' => ['required', 'string', 'max:120'],
             'storefront_hero_subtitle' => ['required', 'string', 'max:300'],
             'storefront_hero_button_label' => ['required', 'string', 'max:40'],
-            'storefront_hero_button_url' => [
-                'nullable',
-                'string',
-                'max:2048',
-                function (string $attribute, mixed $value, \Closure $fail): void {
-                    $url = trim((string) $value);
-                    if ($url === '') {
-                        return;
-                    }
-
-                    if (preg_match('/^(javascript|data):/i', $url) === 1) {
-                        $fail(__('The storefront hero button URL is not allowed.'));
-                    }
-                },
-            ],
+            'storefront_hero_button_url' => ['nullable', 'string', 'max:2048', new SafeLinkUrl()],
             'storefront_hero_video' => [
                 'nullable',
                 'file',
@@ -234,7 +221,7 @@ class SettingController extends Controller
             'storefront_hero_title' => $data['storefront_hero_title'],
             'storefront_hero_subtitle' => $data['storefront_hero_subtitle'],
             'storefront_hero_button_label' => $data['storefront_hero_button_label'],
-            'storefront_hero_button_url' => trim((string) ($data['storefront_hero_button_url'] ?? '')),
+            'storefront_hero_button_url' => SafeLinkUrl::sanitize($data['storefront_hero_button_url'] ?? ''),
             'storefront_hero_image' => $heroImage,
             'storefront_hero_video' => $heroVideo,
             'sms_provider_webhook_url' => (string) ($data['sms_provider_webhook_url'] ?? ''),

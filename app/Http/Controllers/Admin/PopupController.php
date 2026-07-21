@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Popup;
+use App\Rules\SafeLinkUrl;
 use App\Support\SecureImageStorage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -98,29 +99,7 @@ class PopupController extends Controller
             'button_label_en' => ['nullable', 'string', 'max:60'],
             'button_label_ar' => ['nullable', 'string', 'max:60'],
             'button_label_ku' => ['nullable', 'string', 'max:60'],
-            'button_url' => [
-                'nullable',
-                'string',
-                'max:2048',
-                function (string $attribute, mixed $value, \Closure $fail): void {
-                    $url = self::sanitizeButtonUrl($value);
-
-                    if ($url === '') {
-                        return;
-                    }
-
-                    // Relative path (but not scheme-relative //host).
-                    if (str_starts_with($url, '/') && ! str_starts_with($url, '//')) {
-                        return;
-                    }
-
-                    $scheme = strtolower((string) parse_url($url, PHP_URL_SCHEME));
-
-                    if (! in_array($scheme, ['http', 'https'], true)) {
-                        $fail(__('This link type is not allowed.'));
-                    }
-                },
-            ],
+            'button_url' => ['nullable', 'string', 'max:2048', new SafeLinkUrl()],
             'image' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
             'remove_image' => ['nullable', 'boolean'],
             'is_active' => ['nullable', 'boolean'],
@@ -134,23 +113,13 @@ class PopupController extends Controller
         ]);
 
         $validated['is_active'] = $request->boolean('is_active');
-        $validated['button_url'] = self::sanitizeButtonUrl($validated['button_url'] ?? null) ?: null;
+        $validated['button_url'] = SafeLinkUrl::sanitize($validated['button_url'] ?? null) ?: null;
         $validated['frequency_days'] = (int) ($validated['frequency_days'] ?? 7) ?: 7;
         $validated['pages'] = in_array('all', $validated['pages'], true) ? ['all'] : array_values($validated['pages']);
 
         unset($validated['image'], $validated['remove_image']);
 
         return $validated;
-    }
-
-    /**
-     * Strip ASCII control characters so a scheme like "java\tscript:" cannot
-     * be smuggled past validation, then trim. The stored value goes through
-     * the same normalization as the validated one.
-     */
-    private static function sanitizeButtonUrl(mixed $value): string
-    {
-        return trim((string) preg_replace('/[\x00-\x1F\x7F]/', '', (string) $value));
     }
 
     private function deleteImage(Popup $popup): void
