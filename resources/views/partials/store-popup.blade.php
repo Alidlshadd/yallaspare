@@ -31,7 +31,7 @@
             style="background: linear-gradient(160deg, #0a1533 0%, #1a2f5f 45%, #35558f 100%);"
         >
             @if($popupImageUrl)
-                <img src="{{ $popupImageUrl }}" alt="" class="absolute inset-0 h-full w-full object-cover">
+                <img src="{{ $popupImageUrl }}" alt="" class="absolute inset-0 h-full w-full object-contain">
             @endif
             <div class="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-[#060c1c]/90"></div>
 
