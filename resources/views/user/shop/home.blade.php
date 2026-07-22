@@ -184,172 +184,29 @@
             </div>
         </section>
 
-        <section class="space-y-5">
-            <div class="flex items-center justify-between">
-                <div>
-                    <h2 class="text-xl font-semibold text-slate-950 dark:text-white">{{ __('Popular Right Now') }}</h2>
-                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('Fast-moving essentials selected from current inventory.') }}</p>
-                </div>
-                <a
-                    href="{{ route('shop.index') }}"
-                    class="inline-flex items-center rounded-full px-3 py-2 text-sm font-medium text-slate-600 transition duration-200 hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white dark:focus-visible:ring-primary/30"
-                >
-                    {{ __('View catalog') }}
-                </a>
-            </div>
+        @include('user.shop.partials.home-product-rail', [
+            'title' => __('New Arrivals'),
+            'subtitle' => __('Freshly added to our catalog.'),
+            'products' => $newArrivals,
+            'badge' => 'new',
+            'viewAllUrl' => route('shop.index'),
+        ])
 
-            <div class="grid auto-rows-fr grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4">
-                @foreach ($featuredProducts as $product)
-                    @php
-                        $models = collect(data_get($product, 'compatible_models', []))->values();
-                        $visibleModels = $models->take(2);
-                        $extraCount = max(0, $models->count() - 2);
-                        $wishlistCount = (int) data_get($product, 'wishlist_count', 0);
-                        $isWishlisted = in_array((int) data_get($product, 'id', 0), $wishlistedProductIds ?? [], true);
-                        $hasDiscount = (bool) data_get($product, 'has_discount', false);
-                        $discountPercent = (int) data_get($product, 'discount_percent', 0);
-                        $discountAmount = (float) data_get($product, 'discount_amount', 0);
-                    @endphp
-                    <article class="flex h-full min-h-full flex-col overflow-hidden rounded-3xl border border-slate-200/80 bg-white shadow-sm shadow-slate-900/5 transition duration-200 hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-lg hover:shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 dark:hover:border-primary/30 dark:hover:shadow-black/20">
-                        <div class="relative h-52 overflow-hidden bg-slate-100 p-4 dark:bg-slate-800/80">
-                            @if ($hasDiscount)
-                                <span class="absolute left-3 top-3 z-10 inline-flex rounded-full bg-rose-600 px-3 py-1 text-xs font-bold text-white shadow-sm">
-                                    -{{ $discountPercent }}%
-                                </span>
-                            @endif
-                            @if ($isCustomerAuthenticated)
-                                @php
-                                    $productId = (int) data_get($product, 'id');
-                                    $storeUrl = route('user.wishlist.store', $productId);
-                                    $destroyUrl = route('user.wishlist.destroy', $productId);
-                                @endphp
-                                <div class="absolute right-3 top-3 z-10">
-                                    <form
-                                        method="POST"
-                                        action="{{ $isWishlisted ? $destroyUrl : $storeUrl }}"
-                                        class="js-wishlist-form"
-                                        data-wishlisted="{{ $isWishlisted ? '1' : '0' }}"
-                                        data-store-url="{{ $storeUrl }}"
-                                        data-destroy-url="{{ $destroyUrl }}"
-                                    >
-                                        @csrf
-                                        @if ($isWishlisted)
-                                            @method('DELETE')
-                                        @endif
-                                        <button
-                                            type="submit"
-                                            class="js-wishlist-button inline-flex items-center justify-center rounded-full border bg-white/95 p-1.5 text-[11px] font-semibold shadow-sm transition focus:outline-none focus-visible:ring-2 dark:bg-slate-900/95 {{ $isWishlisted ? 'border-rose-200 text-rose-700 hover:bg-rose-50 focus-visible:ring-rose-300 dark:border-rose-900/60 dark:text-rose-300' : 'border-slate-200 text-slate-500 hover:border-primary/30 hover:text-primary focus-visible:ring-primary/20 dark:border-slate-700 dark:text-slate-400' }}"
-                                            aria-label="{{ $isWishlisted ? 'Remove from wishlist' : 'Add to wishlist' }}"
-                                        >
-                                            <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                                                <path d="m12 20.25-1.45-1.32C5.4 14.36 2.25 11.5 2.25 7.97c0-2.48 1.95-4.47 4.43-4.47 1.4 0 2.75.65 3.57 1.66.82-1.01 2.17-1.66 3.57-1.66 2.48 0 4.43 1.99 4.43 4.47 0 3.53-3.15 6.39-8.3 10.96L12 20.25Z" />
-                                            </svg>
-                                        </button>
-                                    </form>
-                                </div>
-                            @else
-                                <span class="absolute right-3 top-3 inline-flex items-center justify-center rounded-full border bg-white/95 p-1.5 text-[11px] font-semibold shadow-sm dark:bg-slate-900/95 {{ $wishlistCount > 0 ? 'border-rose-200 text-rose-700 dark:border-rose-900/60 dark:text-rose-300' : 'border-slate-200 text-slate-500 dark:border-slate-700 dark:text-slate-400' }}">
-                                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                                        <path d="m12 20.25-1.45-1.32C5.4 14.36 2.25 11.5 2.25 7.97c0-2.48 1.95-4.47 4.43-4.47 1.4 0 2.75.65 3.57 1.66.82-1.01 2.17-1.66 3.57-1.66 2.48 0 4.43 1.99 4.43 4.47 0 3.53-3.15 6.39-8.3 10.96L12 20.25Z" />
-                                    </svg>
-                                </span>
-                            @endif
-                            @if (data_get($product, 'image'))
-                                <a href="{{ data_get($product, 'detail_url') }}" class="block h-full w-full">
-                                    <img src="{{ data_get($product, 'image') }}" alt="{{ data_get($product, 'name') }}" class="h-full w-full object-contain" loading="lazy">
-                                </a>
-                            @else
-                                <div class="flex h-full w-full items-center justify-center text-slate-400 dark:text-slate-500">
-                                    <svg class="h-10 w-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 16 9 11l4 4 3-3 4 4" />
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 19h16" />
-                                        <circle cx="9" cy="8" r="1.5" />
-                                    </svg>
-                                </div>
-                            @endif
-                        </div>
+        @include('user.shop.partials.home-product-rail', [
+            'title' => __('Best Sellers'),
+            'subtitle' => __('The parts our customers order the most.'),
+            'products' => $bestSellers,
+            'badge' => 'best',
+            'viewAllUrl' => route('shop.index'),
+        ])
 
-                        <div class="flex flex-1 flex-col space-y-4 p-5">
-                            <div class="flex items-start justify-between gap-3">
-                                <div class="min-w-0">
-                                    <a href="{{ data_get($product, 'detail_url') }}" class="line-clamp-2 block min-h-[3rem] text-base font-semibold leading-6 text-slate-950 transition hover:text-primary dark:text-white dark:hover:text-slate-200">
-                                        {{ data_get($product, 'name') }}
-                                    </a>
-                                    <div class="mt-2 space-y-1">
-                                        <div class="flex flex-wrap items-end gap-2">
-                                            <p class="text-xl font-bold tracking-[-0.02em] text-primary dark:text-white">
-                                                {{ number_format((float) data_get($product, 'price', 0), 0) }} {{ $currencySymbol }}
-                                            </p>
-                                            @if ($hasDiscount)
-                                                <p class="text-sm font-semibold text-slate-400 line-through dark:text-slate-500">
-                                                    {{ number_format((float) data_get($product, 'base_price', 0), 0) }}
-                                                </p>
-                                            @endif
-                                        </div>
-                                        @if ($hasDiscount)
-                                            <span class="inline-flex rounded-full bg-emerald-100 px-2.5 py-1 text-[11px] font-bold text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">
-                                                {{ __('Save') }} {{ number_format($discountAmount, 0) }} {{ $currencySymbol }}
-                                            </span>
-                                        @endif
-                                    </div>
-                                </div>
-
-                                @if ((int) data_get($product, 'stock_quantity', 0) > 0)
-                                    <span class="inline-flex shrink-0 rounded-full border border-emerald-100 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 dark:border-emerald-500/10 dark:bg-emerald-500/10 dark:text-emerald-300">
-                                        {{ __('In stock') }}
-                                    </span>
-                                @else
-                                    <span class="inline-flex shrink-0 rounded-full border border-rose-100 bg-rose-50 px-2.5 py-1 text-xs font-semibold text-rose-700 dark:border-rose-500/10 dark:bg-rose-500/10 dark:text-rose-300">
-                                        {{ __('Out of stock') }}
-                                    </span>
-                                @endif
-                            </div>
-
-                            <div class="flex min-h-[3.25rem] flex-wrap content-start gap-2">
-                                @foreach ($visibleModels as $model)
-                                    <span class="inline-flex rounded-full border border-slate-200/80 bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                                        {{ $model }}
-                                    </span>
-                                @endforeach
-                                @if ($extraCount > 0)
-                                    <span class="inline-flex rounded-full border border-slate-200/80 bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                                        +{{ $extraCount }} more
-                                    </span>
-                                @endif
-                            </div>
-
-                            <div class="mt-auto grid grid-cols-2 items-stretch gap-3">
-                                <a
-                                    href="{{ data_get($product, 'detail_url') }}"
-                                    class="inline-flex h-full items-center justify-center rounded-2xl border border-slate-200/80 px-4 py-3 text-sm font-medium text-slate-700 transition duration-200 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-white dark:focus-visible:ring-primary/30"
-                                >
-                                    {{ __('View') }}
-                                </a>
-                                @if ((int) data_get($product, 'stock_quantity', 0) > 0)
-                                    <form method="POST" action="{{ route('cart.add', (int) data_get($product, 'id')) }}" class="js-add-cart-form h-full">
-                                        @csrf
-                                        <button type="submit" class="js-add-cart-button inline-flex h-full w-full items-center justify-center rounded-2xl bg-primary px-4 py-3 text-sm font-medium text-white transition duration-200 hover:bg-[#0a0a55] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
-                                            {{ __('Add to Cart') }}
-                                        </button>
-                                    </form>
-                                @elseif ($isCustomerAuthenticated)
-                                    <form method="POST" action="{{ route('shop.back-in-stock.store', (int) data_get($product, 'id')) }}" class="h-full">
-                                        @csrf
-                                        <button type="submit" class="inline-flex h-full w-full items-center justify-center rounded-2xl bg-primary px-4 py-3 text-sm font-medium text-white transition duration-200 hover:bg-[#0a0a55] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
-                                            {{ __('Send Request') }}
-                                        </button>
-                                    </form>
-                                @else
-                                    <a href="{{ route('login') }}" class="inline-flex h-full w-full items-center justify-center rounded-2xl bg-primary px-4 py-3 text-center text-sm font-medium text-white transition duration-200 hover:bg-[#0a0a55] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
-                                        {{ __('Send Request') }}
-                                    </a>
-                                @endif
-                            </div>
-                        </div>
-                    </article>
-                @endforeach
-            </div>
-        </section>
+        @include('user.shop.partials.home-product-rail', [
+            'title' => __('Popular Right Now'),
+            'subtitle' => __('Fast-moving essentials selected from current inventory.'),
+            'products' => $featuredProducts,
+            'badge' => 'popular',
+            'viewAllUrl' => route('shop.index'),
+        ])
     </div>
 
     @push('scripts')

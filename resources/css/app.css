@@ -3600,3 +3600,149 @@
     .tos-card { transition: none; }
     .tos-card:hover { transform: none; }
 }
+
+/* =========================================================
+   Home page — Best Sellers / New Arrivals rails.
+   Same marquee technique as the About page (.abt-marquee),
+   scoped separately since these rows can repeat per section.
+========================================================= */
+.hpr-marquee {
+    overflow: hidden;
+    background: #070740;
+    border-radius: 9999px;
+    padding: 10px 0;
+    -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+    mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+}
+.dark .hpr-marquee {
+    background: #0b0d2e;
+    box-shadow: inset 0 1px 0 rgb(251 191 36 / 0.12), inset 0 -1px 0 rgb(251 191 36 / 0.12);
+}
+.hpr-marquee-track {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    width: max-content;
+    animation: hpr-scroll 20s linear infinite;
+}
+.hpr-marquee-track span {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: rgb(255 255 255 / 0.85);
+    white-space: nowrap;
+}
+@keyframes hpr-scroll {
+    to { transform: translateX(-50%); }
+}
+[dir="rtl"] .hpr-marquee-track {
+    animation-name: hpr-scroll-rtl;
+}
+@keyframes hpr-scroll-rtl {
+    to { transform: translateX(50%); }
+}
+
+.hpr-rail {
+    display: flex;
+    gap: 16px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding: 4px 2px 8px;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+.hpr-rail::-webkit-scrollbar { display: none; }
+
+.hpr-card {
+    scroll-snap-align: start;
+    flex: 0 0 auto;
+    width: 240px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 1.5rem;
+    border: 1px solid rgb(226 232 240 / 0.8);
+    background: #fff;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px rgb(15 23 42 / 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.dark .hpr-card { border-color: #1e293b; background: #0f172a; box-shadow: 0 1px 2px rgb(0 0 0 / 0.2), 0 8px 24px rgb(0 0 0 / 0.25); }
+.hpr-card:hover { transform: translateY(-4px); border-color: rgb(7 7 64 / 0.2); box-shadow: 0 14px 30px rgb(15 23 42 / 0.12); }
+.dark .hpr-card:hover { border-color: rgb(251 191 36 / 0.3); box-shadow: 0 14px 30px rgb(0 0 0 / 0.35); }
+
+.hpr-ribbon {
+    position: absolute;
+    top: 10px;
+    inset-inline-start: 10px;
+    z-index: 10;
+    display: inline-flex;
+    align-items: center;
+    border-radius: 9999px;
+    background: #fbbf24;
+    color: #070740;
+    padding: 4px 10px;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    box-shadow: 0 2px 6px rgb(0 0 0 / 0.15);
+}
+.hpr-ribbon-new {
+    background: #059669;
+    color: #fff;
+}
+.dark .hpr-ribbon-new { background: #34d399; color: #052e21; }
+.hpr-ribbon-popular {
+    background: #4338ca;
+    color: #fff;
+}
+.dark .hpr-ribbon-popular { background: #818cf8; color: #1e1b4b; }
+
+.hpr-arrow {
+    position: absolute;
+    top: 90px;
+    z-index: 20;
+    display: none;
+    height: 34px;
+    width: 34px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 9999px;
+    border: 1px solid rgb(226 232 240 / 0.8);
+    background: #fff;
+    color: #64748b;
+    box-shadow: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px rgb(15 23 42 / 0.06);
+    transition: color 0.2s ease, border-color 0.2s ease;
+}
+.dark .hpr-arrow { border-color: #1e293b; background: #0f172a; color: #cbd5e1; }
+.hpr-arrow:hover { border-color: rgb(7 7 64 / 0.3); color: #070740; }
+.dark .hpr-arrow:hover { border-color: rgb(251 191 36 / 0.4); color: #fff; }
+.hpr-arrow:disabled { cursor: default; opacity: 0.35; }
+.hpr-arrow-prev { inset-inline-start: -14px; }
+.hpr-arrow-next { inset-inline-end: -14px; }
+@media (min-width: 768px) {
+    .hpr-arrow { display: inline-flex; }
+}
+
+.hpr-fade {
+    position: absolute;
+    top: 0;
+    bottom: 8px;
+    width: 32px;
+    z-index: 10;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+.hpr-fade-start { inset-inline-start: 0; background: linear-gradient(90deg, #f8fafc, transparent); }
+.dark .hpr-fade-start { background: linear-gradient(90deg, #0b1220, transparent); }
+.hpr-fade-end { inset-inline-end: 0; background: linear-gradient(-90deg, #f8fafc, transparent); }
+.dark .hpr-fade-end { background: linear-gradient(-90deg, #0b1220, transparent); }
+[dir="rtl"] .hpr-fade-start { background: linear-gradient(-90deg, #f8fafc, transparent); }
+[dir="rtl"] .dark .hpr-fade-start { background: linear-gradient(-90deg, #0b1220, transparent); }
+[dir="rtl"] .hpr-fade-end { background: linear-gradient(90deg, #f8fafc, transparent); }
+[dir="rtl"] .dark .hpr-fade-end { background: linear-gradient(90deg, #0b1220, transparent); }
+
+@media (prefers-reduced-motion: reduce) {
+    .hpr-marquee-track { animation: none; }
+    .hpr-card { transition: none; }
+    .hpr-card:hover { transform: none; }
+}

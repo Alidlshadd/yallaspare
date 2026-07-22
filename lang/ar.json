@@ -3627,5 +3627,13 @@
     "Once per session": "مرة واحدة لكل جلسة",
     "Every :days days": "كل :days أيام",
     "Your popup title": "عنوان النافذة المنبثقة",
-    "Live preview — this is what visitors will see": "معاينة حية — هذا ما سيراه الزوار"
+    "Live preview — this is what visitors will see": "معاينة حية — هذا ما سيراه الزوار",
+    "Best Sellers": "الأكثر مبيعاً",
+    "Best Seller": "الأكثر مبيعاً",
+    "New Arrivals": "وصل حديثاً",
+    "The parts our customers order the most.": "القطع التي يطلبها عملاؤنا أكثر من غيرها.",
+    "Freshly added to our catalog.": "أُضيفت حديثاً إلى كتالوجنا.",
+    "Scroll backward": "التمرير للخلف",
+    "Scroll forward": "التمرير للأمام",
+    "Popular": "الأكثر رواجاً"
 }

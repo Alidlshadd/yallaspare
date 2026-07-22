@@ -4,6 +4,8 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
+use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ProductVehicleFitment;
 use App\Models\Setting;
@@ -36,6 +38,8 @@ class ShopController extends Controller
 
         $categories = collect();
         $featuredProducts = collect();
+        $bestSellers = collect();
+        $newArrivals = collect();
         $brands = collect();
         $vehicleFilters = $this->vehicleFilterOptions();
         $brandOptions = $vehicleFilters['brandOptions'];
@@ -86,41 +90,27 @@ class ShopController extends Controller
             $featuredProducts = $featuredProductsQuery
                 ->take(8)
                 ->get()
-                ->map(function (Product $product) use ($nameField, $customerUser) {
-                    $models = collect($product->compatible_models ?? [])
-                        ->map(fn ($item) => is_array($item) ? ($item['name'] ?? reset($item)) : $item)
-                        ->filter()
-                        ->values();
+                ->map(fn (Product $product) => $this->mapHomeProduct($product, $nameField, $customerUser));
 
-                    $imagePath = trim((string) $product->image);
-                    $imageUrl = $imagePath !== ''
-                        ? asset('storage/' . ltrim($imagePath, '/'))
-                        : null;
-
-                    $pricing = $product->pricingFor($customerUser);
-
-                    return [
-                        'id' => $product->id,
-                        'name' => LocalizedText::first($product->{$nameField}, $product->name_en, $product->name_ar, $product->name_ku),
-                        'price' => (float) $pricing['price'],
-                        'base_price' => (float) $pricing['base_price'],
-                        'discount_amount' => (float) $pricing['discount_amount'],
-                        'discount_percent' => (int) $pricing['discount_percent'],
-                        'has_discount' => (bool) $pricing['has_discount'],
-                        'stock_quantity' => (int) $product->stock_quantity,
-                        'wishlist_count' => (int) ($product->wishlists_count ?? 0),
-                        'image' => $imageUrl,
-                        'brand' => $product->brand,
-                        'category_slug' => $product->category?->slug,
-                        'compatible_models' => $models,
-                        'detail_url' => route('shop.show', $product),
-                    ];
-                });
+            $bestSellers = $this->bestSellingProducts($nameField, $customerUser);
+            $newArrivals = Product::query()
+                ->with('category:id,slug,name_en,name_ar,name_ku')
+                ->where('is_active', true)
+                ->latest('created_at')
+                ->take(10)
+                ->get()
+                ->map(fn (Product $product) => $this->mapHomeProduct($product, $nameField, $customerUser));
 
             if ($customerUser && DbSchema::hasTable('wishlists')) {
+                $wishlistCandidateIds = $featuredProducts->pluck('id')
+                    ->merge($bestSellers->pluck('id'))
+                    ->merge($newArrivals->pluck('id'))
+                    ->unique()
+                    ->values();
+
                 $wishlistedProductIds = Wishlist::query()
                     ->where('user_id', $customerUser->id)
-                    ->whereIn('product_id', $featuredProducts->pluck('id'))
+                    ->whereIn('product_id', $wishlistCandidateIds)
                     ->pluck('product_id')
                     ->map(fn ($id) => (int) $id)
                     ->all();
@@ -147,6 +137,8 @@ class ShopController extends Controller
         return view('user.shop.home', [
             'categories' => $categories,
             'featuredProducts' => $featuredProducts,
+            'bestSellers' => $bestSellers,
+            'newArrivals' => $newArrivals,
             'wishlistedProductIds' => $wishlistedProductIds,
             'brands' => $brands,
             'brandOptions' => $brandOptions,
@@ -559,6 +551,71 @@ class ShopController extends Controller
         }
 
         return strtoupper(str_replace(' ', '', $matches[0]));
+    }
+
+    private function mapHomeProduct(Product $product, string $nameField, $customerUser): array
+    {
+        $models = collect($product->compatible_models ?? [])
+            ->map(fn ($item) => is_array($item) ? ($item['name'] ?? reset($item)) : $item)
+            ->filter()
+            ->values();
+
+        $imagePath = trim((string) $product->image);
+        $imageUrl = $imagePath !== ''
+            ? asset('storage/' . ltrim($imagePath, '/'))
+            : null;
+
+        $pricing = $product->pricingFor($customerUser);
+
+        return [
+            'id' => $product->id,
+            'name' => LocalizedText::first($product->{$nameField}, $product->name_en, $product->name_ar, $product->name_ku),
+            'price' => (float) $pricing['price'],
+            'base_price' => (float) $pricing['base_price'],
+            'discount_amount' => (float) $pricing['discount_amount'],
+            'discount_percent' => (int) $pricing['discount_percent'],
+            'has_discount' => (bool) $pricing['has_discount'],
+            'stock_quantity' => (int) $product->stock_quantity,
+            'wishlist_count' => (int) ($product->wishlists_count ?? 0),
+            'image' => $imageUrl,
+            'brand' => $product->brand,
+            'category_slug' => $product->category?->slug,
+            'compatible_models' => $models,
+            'detail_url' => route('shop.show', $product),
+        ];
+    }
+
+    private function bestSellingProducts(string $nameField, $customerUser): Collection
+    {
+        if (! DbSchema::hasTable('order_items') || ! DbSchema::hasTable('orders')) {
+            return collect();
+        }
+
+        $rankedProductIds = OrderItem::query()
+            ->selectRaw('product_id, SUM(quantity) as total_qty')
+            ->whereHas('order', fn ($query) => $query->where('status', '!=', Order::STATUS_CANCELLED))
+            ->groupBy('product_id')
+            ->orderByDesc('total_qty')
+            ->limit(20)
+            ->pluck('product_id');
+
+        if ($rankedProductIds->isEmpty()) {
+            return collect();
+        }
+
+        $products = Product::query()
+            ->with('category:id,slug,name_en,name_ar,name_ku')
+            ->where('is_active', true)
+            ->whereIn('id', $rankedProductIds)
+            ->get()
+            ->keyBy('id');
+
+        return $rankedProductIds
+            ->map(fn ($id) => $products->get($id))
+            ->filter()
+            ->take(10)
+            ->values()
+            ->map(fn (Product $product) => $this->mapHomeProduct($product, $nameField, $customerUser));
     }
 
     private function fallbackProducts(): Collection
