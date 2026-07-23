@@ -153,26 +153,36 @@
                 </a>
             </div>
 
-            <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-5">
+            <div class="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-5">
                 @forelse ($categories as $category)
                     <a
                         href="{{ route('shop.index', ['category' => data_get($category, 'slug') ?: data_get($category, 'id')]) }}"
-                        class="group flex min-h-0 flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm shadow-slate-900/5 transition duration-200 hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md hover:shadow-slate-900/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 dark:hover:border-primary/30 dark:hover:shadow-black/20 sm:min-h-56 sm:rounded-3xl"
+                        class="group relative flex h-40 flex-col overflow-hidden rounded-2xl border border-slate-200/80 shadow-sm shadow-slate-900/5 transition duration-200 hover:shadow-lg hover:shadow-slate-900/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-2 dark:border-slate-800 dark:shadow-black/10 sm:h-48 sm:rounded-3xl"
                     >
-                        <div class="flex h-28 items-center justify-center overflow-hidden bg-slate-100 p-1.5 text-primary transition duration-200 group-hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-200 dark:group-hover:bg-slate-700 sm:h-36">
+                        <div class="absolute inset-0 flex items-center justify-center bg-slate-100 text-primary dark:bg-slate-800 dark:text-slate-200">
                             @if (data_get($category, 'image'))
-                                <img src="{{ data_get($category, 'image') }}" alt="{{ data_get($category, 'name') }}" class="h-full w-full scale-[1.08] object-contain transition duration-300 group-hover:scale-[1.1]" loading="lazy">
+                                <img
+                                    src="{{ data_get($category, 'image') }}"
+                                    alt="{{ data_get($category, 'name') }}"
+                                    class="h-full w-full object-contain p-6 transition duration-300 group-hover:scale-[1.06]"
+                                    loading="lazy"
+                                >
                             @else
-                                <svg class="h-9 w-9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
+                                <svg class="h-10 w-10 transition duration-300 group-hover:scale-[1.06]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 7h16M7 4h10a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2Z" />
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 10h6M9 14h4" />
                                 </svg>
                             @endif
                         </div>
-                        <div class="flex flex-1 flex-col p-4">
-                            <p class="text-sm font-semibold text-slate-900 dark:text-white">{{ data_get($category, 'name') }}</p>
+
+                        <div
+                            class="absolute inset-x-0 bottom-0 flex flex-col-reverse bg-gradient-to-t from-primary via-primary/95 to-transparent px-4 pb-3 pt-8"
+                        >
+                            <p class="text-sm font-semibold leading-snug text-white">{{ data_get($category, 'name') }}</p>
                             @if (filled(data_get($category, 'description')))
-                                <p class="mt-2 line-clamp-2 text-xs leading-5 text-slate-500 dark:text-slate-400">{{ data_get($category, 'description') }}</p>
+                                <p class="mb-0 line-clamp-2 max-h-0 overflow-hidden text-xs leading-5 text-white/80 opacity-0 transition-all duration-200 group-hover:mb-2 group-hover:max-h-10 group-hover:opacity-100 group-focus-visible:mb-2 group-focus-visible:max-h-10 group-focus-visible:opacity-100">
+                                    {{ data_get($category, 'description') }}
+                                </p>
                             @endif
                         </div>
                     </a>

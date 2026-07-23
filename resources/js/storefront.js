@@ -1314,6 +1314,37 @@ const initPrivacyPage = () => {
     panels.forEach((panel) => observer.observe(panel));
 };
 
+const initCategoriesSearch = () => {
+    const input = document.querySelector('[data-category-search-input]');
+    const grid = document.querySelector('[data-category-grid]');
+    const emptyMessage = document.querySelector('[data-category-empty]');
+
+    if (!input || !grid) {
+        return;
+    }
+
+    const cards = Array.from(grid.querySelectorAll('[data-category-card]'));
+
+    input.addEventListener('input', () => {
+        const query = input.value.trim().toLowerCase();
+        let visibleCount = 0;
+
+        cards.forEach((card) => {
+            const matches = query === ''
+                || (card.dataset.categoryName || '').includes(query)
+                || (card.dataset.categoryDescription || '').includes(query);
+
+            card.classList.toggle('hidden', !matches);
+
+            if (matches) {
+                visibleCount += 1;
+            }
+        });
+
+        emptyMessage?.classList.toggle('hidden', visibleCount !== 0);
+    });
+};
+
 const boot = () => {
     initHeroVideos();
     initVehicleFinder();
@@ -1324,6 +1355,7 @@ const boot = () => {
     initProductGallery();
     initCartFeedback();
     initCategoryRails();
+    initCategoriesSearch();
     initVisionPage();
     initAboutPage();
     initPrivacyPage();

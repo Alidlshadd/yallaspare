@@ -345,6 +345,7 @@ class ShopController extends Controller
         return view('user.shop.categories', [
             'categories' => $categories,
             'hasCategoryImage' => $hasCategoryImage,
+            'totalActiveProducts' => DbSchema::hasTable('products') ? Product::query()->where('is_active', true)->count() : 0,
         ]);
     }
 
