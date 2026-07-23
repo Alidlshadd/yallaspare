@@ -3687,10 +3687,28 @@
     box-shadow: 0 2px 6px rgb(0 0 0 / 0.15);
 }
 .hpr-ribbon-new {
-    background: #059669;
-    color: #fff;
+    top: 13px;
+    inset-inline-start: -34px;
+    width: 150px;
+    display: block;
+    text-align: center;
+    border-radius: 0;
+    padding: 4.5px 0;
+    background: #070740;
+    color: #fbbf24;
+    border-top: 1px solid rgb(251 191 36 / 0.55);
+    border-bottom: 1px solid rgb(0 0 0 / 0.25);
+    box-shadow: 0 3px 8px rgb(0 0 0 / 0.22);
+    transform: rotate(-45deg);
+    transform-origin: center;
 }
-.dark .hpr-ribbon-new { background: #34d399; color: #052e21; }
+[dir="rtl"] .hpr-ribbon-new { transform: rotate(45deg); }
+.dark .hpr-ribbon-new {
+    background: #fbbf24;
+    color: #070740;
+    border-top-color: rgb(255 255 255 / 0.35);
+    border-bottom-color: rgb(0 0 0 / 0.3);
+}
 .hpr-ribbon-popular {
     background: #4338ca;
     color: #fff;
