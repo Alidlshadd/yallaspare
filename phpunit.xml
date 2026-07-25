@@ -19,6 +19,21 @@
         </include>
     </source>
     <php>
+        <!--
+            Admin bootstrap values are pinned so the suite does not inherit them
+            from whatever .env the machine happens to have. They match the
+            fallbacks in AdminSeeder, which AdminSeederTest asserts against.
+        -->
+        <env name="ADMIN_EMAIL" value="admin@yallaspare.com"/>
+        <env name="ADMIN_NAME" value="Super Admin"/>
+        <env name="ADMIN_PASSWORD" value=""/>
+        <!--
+            Matches the non-production default in config/security.php. Admin
+            tests assume 2FA is off and the ones covering it turn it on
+            themselves, so leaving this to the environment made ~120 tests
+            depend on a value .env.example legitimately sets the other way.
+        -->
+        <env name="ADMIN_TWO_FACTOR_ENABLED" value="false"/>
         <env name="APP_ENV" value="testing"/>
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="CACHE_DRIVER" value="array"/>
