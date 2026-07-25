@@ -467,14 +467,9 @@
                                         </span>
                                         <span class="text-sm font-semibold">{{ __('Wishlist') }}</span>
                                     </a>
-                                @else
-                                    <a href="{{ route('login') }}" class="inline-flex h-9 items-center rounded-full border border-white/10 bg-white/5 px-3.5 text-sm font-semibold text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25">
-                                        {{ __('Login') }}
-                                    </a>
-                                    <a href="{{ route('register') }}" class="inline-flex h-9 items-center rounded-full bg-white px-3.5 text-sm font-semibold text-primary transition duration-200 hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/40">
-                                        {{ __('Register') }}
-                                    </a>
                                 @endif
+                                {{-- Guests get their Login/Register pair in the row above; repeating
+                                     it here put the same two buttons on screen twice. --}}
 
                                 <a
                                     href="{{ url('/support') }}"
