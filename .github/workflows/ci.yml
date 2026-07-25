@@ -1,0 +1,94 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# A newer push to the same branch makes the previous run irrelevant.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: Tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, dom, xml, libxml, curl, fileinfo, bcmath, intl, zip, gd, sqlite3, pdo_sqlite
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ runner.os }}-php8.3-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-php8.3-
+
+      # Written before composer install so the post-autoload artisan hooks
+      # boot against a real config file rather than bare defaults.
+      - name: Create .env
+        run: cp .env.example .env
+
+      - name: Install PHP dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress --no-ansi
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+
+      - name: Install JS dependencies
+        run: npm ci
+
+      # public/build is gitignored, and Blade templates call @vite, so the
+      # manifest has to exist before any test renders a view. Building here
+      # doubles as the guard against broken Vite/Tailwind config.
+      - name: Build assets
+        run: npm run build
+
+      - name: Generate application key
+        run: php artisan key:generate
+
+      # phpunit.xml pins the suite to sqlite :memory:, so no database service
+      # is needed and nothing touches the real .env values.
+      - name: Run test suite
+        run: vendor/bin/phpunit --no-coverage
+
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    # Advisories appear without anyone touching this repository, so a finding
+    # reports rather than blocks. Flip this off once the backlog is clear.
+    continue-on-error: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          tools: composer:v2
+
+      - name: Audit PHP dependencies
+        run: composer audit --no-interaction
+
+      - name: Audit JS dependencies
+        run: npm audit --audit-level=high
