@@ -1,7 +1,5 @@
 // Header theme switch. The layouts already apply the stored theme before paint;
 // this module only keeps the switch in sync and reacts to clicks.
-const VALID_THEMES = ['light', 'dark'];
-
 const currentTheme = () => (document.documentElement.classList.contains('dark') ? 'dark' : 'light');
 
 const storeTheme = (key, theme) => {
@@ -45,9 +43,10 @@ export const initThemeToggles = () => {
 
     const paint = (theme) => {
         roots.forEach((root) => {
-            root.querySelectorAll('[data-theme-value]').forEach((button) => {
-                button.setAttribute('aria-pressed', button.dataset.themeValue === theme ? 'true' : 'false');
-            });
+            root.setAttribute('aria-pressed', theme === 'dark' ? 'true' : 'false');
+            root.title = theme === 'dark'
+                ? (root.dataset.themeLabelLight || '')
+                : (root.dataset.themeLabelDark || '');
         });
     };
 
@@ -58,6 +57,12 @@ export const initThemeToggles = () => {
 
     paint(currentTheme());
 
+    // Enable the icon transition only after the stored theme is on screen,
+    // otherwise a dark reload animates its way in from the wrong icon.
+    requestAnimationFrame(() => {
+        roots.forEach((root) => root.setAttribute('data-theme-ready', ''));
+    });
+
     // The appearance settings page flips the theme on its own, so mirror any
     // change made outside the switch instead of going stale.
     new MutationObserver(() => paint(currentTheme())).observe(document.documentElement, {
@@ -66,18 +71,8 @@ export const initThemeToggles = () => {
     });
 
     roots.forEach((root) => {
-        root.addEventListener('click', (event) => {
-            const button = event.target.closest('[data-theme-value]');
-
-            if (! button || ! root.contains(button)) {
-                return;
-            }
-
-            const theme = VALID_THEMES.includes(button.dataset.themeValue) ? button.dataset.themeValue : 'light';
-
-            if (theme === currentTheme()) {
-                return;
-            }
+        root.addEventListener('click', () => {
+            const theme = currentTheme() === 'dark' ? 'light' : 'dark';
 
             applyTheme(theme);
             storeTheme(root.dataset.themeStorage || 'user-theme', theme);

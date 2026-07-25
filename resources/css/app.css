@@ -1319,6 +1319,64 @@
             transition: none !important;
         }
     }
+
+    /* Theme switch: sun and moon share one slot and swap with a quarter turn,
+       so the button reads as a single icon that changes rather than two. */
+    .theme-switch {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .theme-switch:active {
+        transform: scale(0.94);
+    }
+
+    .theme-switch-icon {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform-origin: center;
+    }
+
+    /* Held back until the switch has painted its stored theme once, so a dark
+       reload lands on the sun instead of spinning into it. */
+    .theme-switch[data-theme-ready] .theme-switch-icon {
+        transition:
+            opacity 220ms ease,
+            transform 420ms cubic-bezier(0.34, 1.4, 0.64, 1);
+    }
+
+    /* Resting icon sits centred; the one on deck waits a quarter turn away. */
+    .theme-switch[aria-pressed='false'] .theme-switch-icon[data-theme-icon-for='light'],
+    .theme-switch[aria-pressed='true'] .theme-switch-icon[data-theme-icon-for='dark'] {
+        opacity: 1;
+        transform: translate(-50%, -50%) rotate(0deg) scale(1);
+    }
+
+    .theme-switch[aria-pressed='false'] .theme-switch-icon[data-theme-icon-for='dark'] {
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(-90deg) scale(0.4);
+    }
+
+    .theme-switch[aria-pressed='true'] .theme-switch-icon[data-theme-icon-for='light'] {
+        opacity: 0;
+        transform: translate(-50%, -50%) rotate(90deg) scale(0.4);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .theme-switch,
+        .theme-switch-icon {
+            transition: none;
+        }
+
+        .theme-switch:active {
+            transform: none;
+        }
+
+        .theme-switch-icon {
+            transform: translate(-50%, -50%) !important;
+        }
+    }
 }
 
 @layer utilities {
