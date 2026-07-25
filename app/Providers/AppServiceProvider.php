@@ -87,7 +87,7 @@ class AppServiceProvider extends ServiceProvider
         Order::observe(AdminAuditObserver::class);
         Order::observe(OrderAnalyticsObserver::class);
 
-        View::composer(['layouts.user', 'layouts.store'], HeaderComposer::class);
+        View::composer('layouts.user', HeaderComposer::class);
     }
 
     /**

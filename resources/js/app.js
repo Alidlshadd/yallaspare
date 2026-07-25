@@ -2,6 +2,8 @@ import './bootstrap';
 
 import Alpine from '@alpinejs/csp';
 
+import { initThemeToggles } from './theme-toggle';
+
 window.Alpine = Alpine;
 
 // Alpine.data() registrations — keeps component logic out of inline directives,
@@ -92,21 +94,6 @@ Alpine.data('reveal', (initial = true) => ({
     show: Boolean(initial),
     hide() { this.show = false; },
     autoHide(ms = 2000) { setTimeout(() => { this.show = false; }, ms); },
-}));
-
-// Store top menu: collapses on small screens, always visible ≥ 640px.
-Alpine.data('storeMenu', () => ({
-    open: false,
-    wide: window.innerWidth >= 640,
-    init() {
-        this._onResize = () => { this.wide = window.innerWidth >= 640; };
-        window.addEventListener('resize', this._onResize, { passive: true });
-    },
-    destroy() { window.removeEventListener('resize', this._onResize); },
-    toggle() { this.open = !this.open; },
-    close() { this.open = false; },
-    get visible() { return this.open || this.wide; },
-    get ariaExpanded() { return this.open ? 'true' : 'false'; },
 }));
 
 // Account dropdown used by the user layout and account header.
@@ -2135,12 +2122,14 @@ if (document.readyState === 'loading') {
         initAddToCartAnimations();
         initLoadingSystem();
         initDeclarativeInteractions();
+        initThemeToggles();
     }, { once: true });
 } else {
     initAdminSidebars();
     initAddToCartAnimations();
     initLoadingSystem();
     initDeclarativeInteractions();
+    initThemeToggles();
 }
 
 Alpine.start();

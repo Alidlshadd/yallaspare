@@ -773,14 +773,7 @@
                                     <x-language-switcher variant="dark" />
                                 </div>
 
-                                <button
-                                    id="adminThemeToggle"
-                                    type="button"
-                                    class="topbar-action inline-flex"
-                                    aria-label="{{ __('Toggle dark mode') }}"
-                                >
-                                    <i id="adminThemeIcon" class="fas fa-moon text-[13px]"></i>
-                                </button>
+                                <x-theme-toggle storage="admin-theme" />
                                 <div class="relative">
                                     <button
                                         id="adminNotificationsButton"
@@ -926,16 +919,10 @@
         @if(request()->routeIs('admin.*'))
             <script nonce="{{ $cspNonce }}">
                 (function () {
-                    const themeToggle = document.getElementById('adminThemeToggle');
-                    const themeIcon = document.getElementById('adminThemeIcon');
                     const themeStorageKey = 'admin-theme';
                     const lightDefaultResetKey = 'admin-theme-light-default-20260523';
                     const applyTheme = (isDark) => {
                         document.documentElement.classList.toggle('dark', isDark);
-                        if (themeIcon) {
-                            themeIcon.classList.toggle('fa-moon', !isDark);
-                            themeIcon.classList.toggle('fa-sun', isDark);
-                        }
                     };
                     let storedTheme = localStorage.getItem(themeStorageKey);
 
@@ -953,14 +940,6 @@
                     }
 
                     applyTheme(selectedTheme === 'dark');
-
-                    if (themeToggle) {
-                        themeToggle.addEventListener('click', () => {
-                            const isDark = !document.documentElement.classList.contains('dark');
-                            applyTheme(isDark);
-                            localStorage.setItem(themeStorageKey, isDark ? 'dark' : 'light');
-                        });
-                    }
 
                     const languageDropdowns = Array.from(document.querySelectorAll('[data-header-dropdown]'));
                     const closeLanguageDropdowns = (except = null) => {

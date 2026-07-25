@@ -153,6 +153,11 @@
                             <div class="flex items-center gap-2">
                                 <x-language-switcher variant="dark" />
 
+                                <x-theme-toggle
+                                    storage="user-theme"
+                                    :persist-url="$isCustomerAuthenticated ? route('user.settings.appearance.update') : null"
+                                />
+
                             @if ($isCustomerAuthenticated)
                                 <div class="relative" data-header-account>
                                     <button
@@ -230,6 +235,12 @@
 
                             <div class="flex shrink-0 items-center gap-1.5">
                                 <x-language-switcher variant="dark" />
+
+                                <x-theme-toggle
+                                    size="auto"
+                                    storage="user-theme"
+                                    :persist-url="$isCustomerAuthenticated ? route('user.settings.appearance.update') : null"
+                                />
 
                             @if ($isCustomerAuthenticated)
                             <div class="relative" data-header-account>
