@@ -1,0 +1,46 @@
+includes:
+    - vendor/larastan/larastan/extension.neon
+
+parameters:
+    # Starting point, not a destination. Level 0 already catches unknown
+    # classes, unknown methods and Larastan's Laravel-specific rules, which is
+    # where the real findings were. Raise once the level 0 set stays at zero:
+    # measured counts on this codebase were 0/1 -> 105, 2 -> 199, 3 -> 207,
+    # 4 -> 296, 5 -> 313.
+    level: 0
+
+    paths:
+        - app
+        - config
+        - database
+        - routes
+
+    # Generated, vendored, or tool-written. Nobody edits these by hand, and
+    # compiled Blade in storage/framework/views would report on template output
+    # rather than on the templates themselves.
+    excludePaths:
+        analyseAndScan:
+            - bootstrap/cache
+            - storage
+            - public
+            - vendor
+            - node_modules
+
+    ignoreErrors:
+        # AdminSeeder reads ADMIN_EMAIL/NAME/PASSWORD through env() on purpose.
+        # Moving it to config() would break AdminSeederTest, which drives those
+        # values with putenv() to exercise the seeder's own fallbacks. The
+        # failure mode under a cached config is that the seeder skips with a
+        # warning rather than creating a weak admin, so this is worth leaving
+        # until the seeder and its test are reworked together.
+        -
+            message: "#Called 'env' outside of the config directory#"
+            path: database/seeders/AdminSeeder.php
+
+        # The suggested rewrite is wrong here: the query groups by product_id
+        # and filters with HAVING, so ->count() on the builder would count rows
+        # per group instead of counting the groups. Collecting and counting is
+        # the correct read.
+        -
+            message: "#Called 'count' on Laravel collection, but could have been retrieved as a query#"
+            path: app/Http/Controllers/Admin/OperationsInsightController.php
