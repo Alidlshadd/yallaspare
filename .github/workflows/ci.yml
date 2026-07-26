@@ -5,6 +5,10 @@ on:
     branches: [main]
   pull_request:
     branches: [main]
+  # Advisories get published against code that has not changed, so check the
+  # dependencies on a timer as well as on pushes.
+  schedule:
+    - cron: '0 6 * * 1'
 
 # A newer push to the same branch makes the previous run irrelevant.
 concurrency:
@@ -104,9 +108,6 @@ jobs:
     name: Dependency audit
     runs-on: ubuntu-latest
     timeout-minutes: 10
-    # Advisories appear without anyone touching this repository, so a finding
-    # reports rather than blocks. Flip this off once the backlog is clear.
-    continue-on-error: true
 
     steps:
       - uses: actions/checkout@v4
@@ -118,8 +119,10 @@ jobs:
           coverage: none
           tools: composer:v2
 
+      # --locked audits composer.lock directly. This job installs nothing, and
+      # without it composer has no installed set to read and exits 1.
       - name: Audit PHP dependencies
-        run: composer audit --no-interaction
+        run: composer audit --locked --no-interaction
 
       - name: Audit JS dependencies
         run: npm audit --audit-level=high
