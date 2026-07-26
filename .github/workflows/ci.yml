@@ -73,6 +73,44 @@ jobs:
       - name: Run test suite
         run: vendor/bin/phpunit --no-coverage
 
+  static-analysis:
+    name: Static analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, dom, xml, libxml, curl, fileinfo, bcmath, intl, zip, gd
+          coverage: none
+          tools: composer:v2
+
+      - name: Cache Composer packages
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: composer-${{ runner.os }}-php8.3-${{ hashFiles('composer.lock') }}
+          restore-keys: composer-${{ runner.os }}-php8.3-
+
+      # Larastan boots the framework to resolve models and relations, so unlike
+      # the formatting job this one needs the package:discover hook to run,
+      # which in turn needs a config file to read.
+      - name: Create .env
+        run: cp .env.example .env
+
+      - name: Install PHP dependencies
+        run: composer install --prefer-dist --no-interaction --no-progress --no-ansi
+
+      - name: Generate application key
+        run: php artisan key:generate
+
+      - name: Run PHPStan
+        run: vendor/bin/phpstan analyse --no-progress --memory-limit=2G
+
   format:
     name: Formatting
     runs-on: ubuntu-latest
