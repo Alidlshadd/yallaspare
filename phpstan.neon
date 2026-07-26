@@ -24,7 +24,9 @@ parameters:
             - storage
             - public
             - vendor
-            - node_modules
+            # (?) marks it optional: the static analysis CI job never runs
+            # npm ci, and PHPStan treats a missing excludePath as an error.
+            - node_modules (?)
 
     ignoreErrors:
         # AdminSeeder reads ADMIN_EMAIL/NAME/PASSWORD through env() on purpose.
