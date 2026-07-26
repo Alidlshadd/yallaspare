@@ -1,0 +1,9 @@
+# Revisions that only reformat code. Listing them here keeps `git blame` on
+# the commit that last changed a line's meaning instead of the one that moved
+# its whitespace.
+#
+# Locally:  git config blame.ignoreRevsFile .git-blame-ignore-revs
+# GitHub applies this file automatically.
+
+# Apply Laravel Pint across the codebase
+61fc8b21b5c859aa54a44fa3b249248295edde03
