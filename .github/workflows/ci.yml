@@ -91,8 +91,11 @@ jobs:
           key: composer-${{ runner.os }}-php8.3-${{ hashFiles('composer.lock') }}
           restore-keys: composer-${{ runner.os }}-php8.3-
 
+      # --no-scripts because a formatting check has no reason to boot the
+      # framework: the post-autoload package:discover hook needs a .env this
+      # job deliberately does not create, and pint only needs the autoloader.
       - name: Install PHP dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress --no-ansi
+        run: composer install --prefer-dist --no-interaction --no-progress --no-ansi --no-scripts
 
       - name: Check formatting
         run: vendor/bin/pint --test
