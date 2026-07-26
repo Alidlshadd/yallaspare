@@ -13,9 +13,16 @@ class AdminSeederTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->resetAdminEnvToSeederDefaults();
+    }
+
     protected function tearDown(): void
     {
-        $this->clearAdminEnv();
+        $this->resetAdminEnvToSeederDefaults();
 
         parent::tearDown();
     }
@@ -80,11 +87,18 @@ class AdminSeederTest extends TestCase
         $this->app->make(AdminSeeder::class)->run();
     }
 
-    private function clearAdminEnv(): void
+    /**
+     * Unsetting these is not enough to reach AdminSeeder's own fallbacks: a
+     * .env that defines the keys — as .env.example does, with an empty
+     * ADMIN_EMAIL placeholder — repopulates them on the next application boot,
+     * and an empty string is a present value, so env() never falls back.
+     * Pinning them to the seeder's defaults makes the outcome the same on any
+     * machine regardless of what .env holds.
+     */
+    private function resetAdminEnvToSeederDefaults(): void
     {
-        foreach (['ADMIN_NAME', 'ADMIN_EMAIL', 'ADMIN_PASSWORD'] as $key) {
-            putenv($key);
-            unset($_ENV[$key], $_SERVER[$key]);
-        }
+        $this->setAdminEnv('ADMIN_EMAIL', 'admin@yallaspare.com');
+        $this->setAdminEnv('ADMIN_NAME', 'Super Admin');
+        $this->setAdminEnv('ADMIN_PASSWORD', '');
     }
 }
