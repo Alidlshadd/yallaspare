@@ -50,7 +50,7 @@ class TrustHosts extends Middleware
     {
         return array_values(array_filter(array_map(
             'trim',
-            explode(',', (string) env('TRUSTED_HOSTS', ''))
+            explode(',', (string) config('security.trusted_hosts', ''))
         )));
     }
 

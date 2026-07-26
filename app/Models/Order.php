@@ -4,6 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Order extends Model
 {
@@ -205,42 +208,42 @@ class Order extends Model
         };
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    public function items()
+    public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
     }
 
-    public function statusHistory()
+    public function statusHistory(): HasMany
     {
         return $this->hasMany(OrderStatusHistory::class)->latest('id');
     }
 
-    public function coupon()
+    public function coupon(): BelongsTo
     {
         return $this->belongsTo(Coupon::class);
     }
 
-    public function adminNotes()
+    public function adminNotes(): HasMany
     {
         return $this->hasMany(OrderAdminNote::class)->latest('id');
     }
 
-    public function returnRequests()
+    public function returnRequests(): HasMany
     {
         return $this->hasMany(ReturnRequest::class)->latest('id');
     }
 
-    public function payments()
+    public function payments(): HasMany
     {
         return $this->hasMany(Payment::class)->latest('id');
     }
 
-    public function latestPayment()
+    public function latestPayment(): HasOne
     {
         return $this->hasOne(Payment::class)->latestOfMany();
     }

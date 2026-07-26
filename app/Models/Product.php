@@ -8,6 +8,9 @@ use App\Support\VehicleFilterCache;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
@@ -72,7 +75,7 @@ class Product extends Model
             ->dontSubmitEmptyLogs();
     }
 
-    public function category()
+    public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
     }
@@ -121,47 +124,47 @@ class Product extends Model
         return 'slug';
     }
 
-    public function inventoryMovements()
+    public function inventoryMovements(): HasMany
     {
         return $this->hasMany(InventoryMovement::class);
     }
 
-    public function orderItems()
+    public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
     }
 
-    public function wishlists()
+    public function wishlists(): HasMany
     {
         return $this->hasMany(Wishlist::class);
     }
 
-    public function reviews()
+    public function reviews(): HasMany
     {
         return $this->hasMany(ProductReview::class);
     }
 
-    public function views()
+    public function views(): HasMany
     {
         return $this->hasMany(ProductView::class);
     }
 
-    public function analytics()
+    public function analytics(): HasOne
     {
         return $this->hasOne(ProductAnalytic::class);
     }
 
-    public function vehicleFitments()
+    public function vehicleFitments(): HasMany
     {
         return $this->hasMany(ProductVehicleFitment::class);
     }
 
-    public function images()
+    public function images(): HasMany
     {
         return $this->hasMany(ProductImage::class)->orderBy('sort_order')->orderBy('id');
     }
 
-    public function primaryImage()
+    public function primaryImage(): HasOne
     {
         return $this->hasOne(ProductImage::class)->where('is_primary', true)->oldest('sort_order')->oldest('id');
     }

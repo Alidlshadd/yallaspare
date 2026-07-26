@@ -11,6 +11,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -596,27 +597,27 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
         return $this->role === self::ROLE_DEALER;
     }
 
-    public function orders()
+    public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
     }
 
-    public function addresses()
+    public function addresses(): HasMany
     {
         return $this->hasMany(UserAddress::class);
     }
 
-    public function inventoryMovements()
+    public function inventoryMovements(): HasMany
     {
         return $this->hasMany(InventoryMovement::class);
     }
 
-    public function productReviews()
+    public function productReviews(): HasMany
     {
         return $this->hasMany(ProductReview::class);
     }
 
-    public function productViews()
+    public function productViews(): HasMany
     {
         return $this->hasMany(ProductView::class);
     }

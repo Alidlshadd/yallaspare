@@ -88,7 +88,7 @@ class TrustProxies extends Middleware
      */
     private function resolveTrustedProxies(): array|string|null
     {
-        $value = trim((string) env('TRUSTED_PROXIES', ''));
+        $value = trim((string) config('security.trusted_proxies', ''));
 
         if ($value === '') {
             return null;

@@ -239,7 +239,7 @@ class DiscountCouponController extends Controller
                 ->limit(200)
                 ->get();
 
-            $coupons = $couponRows->map(function ($row) {
+            $coupons = $couponRows->map(function ($row) use ($currencyDecimals, $currencyLabel) {
                 $startsAt = $row->starts_at ? Carbon::parse((string) $row->starts_at) : null;
                 $endsAt = $row->ends_at ? Carbon::parse((string) $row->ends_at) : null;
 

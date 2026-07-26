@@ -1,6 +1,12 @@
 <?php
 
 return [
+    // Read here rather than from the middleware directly: env() returns null
+    // once php artisan config:cache has run, which would silently empty both
+    // of these in production — the environment they exist for.
+    'trusted_hosts' => env('TRUSTED_HOSTS', ''),
+    'trusted_proxies' => env('TRUSTED_PROXIES', ''),
+
     'intrusion_prevention' => [
         'enabled' => env('INTRUSION_PREVENTION_ENABLED', env('APP_ENV') === 'production'),
         'window_minutes' => (int) env('INTRUSION_PREVENTION_WINDOW_MINUTES', 10),

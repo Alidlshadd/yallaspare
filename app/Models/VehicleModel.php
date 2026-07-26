@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Concerns\FlushesVehicleFilterCache;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class VehicleModel extends Model
 {
@@ -17,7 +18,7 @@ class VehicleModel extends Model
         'slug',
     ];
 
-    public function brand()
+    public function brand(): BelongsTo
     {
         return $this->belongsTo(VehicleBrand::class, 'vehicle_brand_id');
     }
