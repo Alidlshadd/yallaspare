@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Models\Coupon;
 use App\Models\Discount;
 use App\Models\Setting;
 use App\Models\User;

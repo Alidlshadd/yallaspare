@@ -9,7 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasTable('carts') || !Schema::hasColumn('carts', 'user_id')) {
+        if (! Schema::hasTable('carts') || ! Schema::hasColumn('carts', 'user_id')) {
             return;
         }
 
@@ -19,6 +19,7 @@ return new class extends Migration
 
         if (DB::connection()->getDriverName() === 'sqlite') {
             $this->rebuildSqliteCartsTable(nullable: false);
+
             return;
         }
 
@@ -37,12 +38,13 @@ return new class extends Migration
 
     public function down(): void
     {
-        if (!Schema::hasTable('carts') || !Schema::hasColumn('carts', 'user_id')) {
+        if (! Schema::hasTable('carts') || ! Schema::hasColumn('carts', 'user_id')) {
             return;
         }
 
         if (DB::connection()->getDriverName() === 'sqlite') {
             $this->rebuildSqliteCartsTable(nullable: true);
+
             return;
         }
 

@@ -9,7 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (Schema::hasTable('products') && !Schema::hasColumn('products', 'low_stock_threshold')) {
+        if (Schema::hasTable('products') && ! Schema::hasColumn('products', 'low_stock_threshold')) {
             Schema::table('products', function (Blueprint $table) {
                 $table->unsignedInteger('low_stock_threshold')->nullable()->after('stock_quantity');
             });

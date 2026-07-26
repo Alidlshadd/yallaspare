@@ -82,7 +82,7 @@ class AdminActivityLogPageTest extends TestCase
             ->where('subject_id', $target->id)
             ->latest('id')
             ->firstOrFail();
-        $export = new ActivityLogsExport();
+        $export = new ActivityLogsExport;
         $row = $export->map($activity);
 
         $this->assertContains('Export Admin', $row);

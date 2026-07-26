@@ -16,10 +16,10 @@ class OrderCompletedTrackingTest extends TestCase
     {
         $user = User::factory()->create(['email_verified_at' => now()]);
 
-        $order = new Order();
+        $order = new Order;
         $order->forceFill([
             'user_id' => $user->id,
-            'order_number' => 'TEST-' . uniqid(),
+            'order_number' => 'TEST-'.uniqid(),
             'total_amount' => 49.99,
             'subtotal_amount' => 49.99,
             'shipping_fee' => 0,

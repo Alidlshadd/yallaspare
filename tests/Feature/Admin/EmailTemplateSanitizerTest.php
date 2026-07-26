@@ -68,8 +68,8 @@ class EmailTemplateSanitizerTest extends TestCase
     public function test_thirty_thousand_character_body_is_not_truncated(): void
     {
         $paragraph = '<p>'
-            . str_repeat('Legit sentence with <strong>bold</strong> and <em>italic</em> text. ', 250)
-            . '</p>';
+            .str_repeat('Legit sentence with <strong>bold</strong> and <em>italic</em> text. ', 250)
+            .'</p>';
         $body = str_repeat($paragraph, 3);
 
         $this->assertGreaterThan(30000, mb_strlen($body), 'Fixture too short');

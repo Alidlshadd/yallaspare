@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Str;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Product>
+ * @extends Factory<Product>
  */
 class ProductFactory extends Factory
 {
@@ -28,7 +28,7 @@ class ProductFactory extends Factory
             'price' => fake()->numberBetween(1000, 50000),
             'dealer_price' => null,
             'stock_quantity' => fake()->numberBetween(0, 100),
-            'sku' => 'SKU-' . Str::upper(Str::random(8)),
+            'sku' => 'SKU-'.Str::upper(Str::random(8)),
             'brand' => fake()->company(),
             'compatible_models' => [],
             'image' => null,

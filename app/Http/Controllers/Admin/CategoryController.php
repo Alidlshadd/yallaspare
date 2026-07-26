@@ -11,11 +11,11 @@ use App\Support\SecureImageStorage;
 use App\Support\SqlSafe;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -158,7 +158,7 @@ class CategoryController extends Controller
     public function exportExcel()
     {
         try {
-            return Excel::download(new CategoriesExport(), 'categories.xlsx');
+            return Excel::download(new CategoriesExport, 'categories.xlsx');
         } catch (\Throwable $e) {
             Log::error('Categories Excel export failed', [
                 'error' => $e->getMessage(),
@@ -181,7 +181,7 @@ class CategoryController extends Controller
             $header = $parsed['header'];
             $requiredColumns = ['name_en', 'name_ar', 'name_ku'];
             foreach ($requiredColumns as $column) {
-                if (!in_array($column, $header, true)) {
+                if (! in_array($column, $header, true)) {
                     return back()->with('error', __('Missing required column: :column', ['column' => $column]));
                 }
             }
@@ -199,6 +199,7 @@ class CategoryController extends Controller
                         'name_en' => $rowData['name_en'] ?? '',
                         'message' => implode('; ', $rowValidator->errors()->all()),
                     ];
+
                     continue;
                 }
 
@@ -232,8 +233,8 @@ class CategoryController extends Controller
             }
 
             $message = __('Import completed successfully. Total imported rows: :imported.', ['imported' => $imported]);
-            if (!empty($errors)) {
-                $message .= ' ' . __('Some rows were skipped. Please review the import errors.');
+            if (! empty($errors)) {
+                $message .= ' '.__('Some rows were skipped. Please review the import errors.');
             }
 
             return redirect()
@@ -259,7 +260,7 @@ class CategoryController extends Controller
             ->when($ignoreId !== null, fn ($q) => $q->where('id', '!=', $ignoreId))
             ->where('slug', $slug)
             ->exists()) {
-            $slug = $baseSlug . '-' . $counter;
+            $slug = $baseSlug.'-'.$counter;
             $counter++;
         }
 
@@ -301,7 +302,7 @@ class CategoryController extends Controller
         return $bestDelimiter;
     }
 
-    private function parseImportFile(\Illuminate\Http\UploadedFile $file): array
+    private function parseImportFile(UploadedFile $file): array
     {
         $extension = strtolower($file->getClientOriginalExtension());
         $path = $file->getRealPath();
@@ -334,7 +335,7 @@ class CategoryController extends Controller
             rewind($handle);
 
             $rawHeader = fgetcsv($handle, 0, $delimiter);
-            if (!$rawHeader) {
+            if (! $rawHeader) {
                 throw new \RuntimeException(__('Import file is empty.'));
             }
 

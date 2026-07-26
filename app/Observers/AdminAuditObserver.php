@@ -11,7 +11,7 @@ class AdminAuditObserver
 {
     public function created(Model $model): void
     {
-        $this->log($model, $this->actionPrefix($model) . '.created', [
+        $this->log($model, $this->actionPrefix($model).'.created', [
             'new' => $this->filterAttributes($model->getAttributes()),
             'changed' => array_keys($model->getAttributes()),
         ]);
@@ -33,7 +33,7 @@ class AdminAuditObserver
             $old[$key] = $model->getOriginal($key);
         }
 
-        $this->log($model, $this->actionPrefix($model) . '.updated', [
+        $this->log($model, $this->actionPrefix($model).'.updated', [
             'old' => $this->filterAttributes($old),
             'new' => $this->filterAttributes($changes),
             'changed' => array_keys($changes),
@@ -42,7 +42,7 @@ class AdminAuditObserver
 
     public function deleted(Model $model): void
     {
-        $this->log($model, $this->actionPrefix($model) . '.deleted', [
+        $this->log($model, $this->actionPrefix($model).'.deleted', [
             'old' => $this->filterAttributes($model->getAttributes()),
             'changed' => array_keys($model->getAttributes()),
         ]);
@@ -50,7 +50,7 @@ class AdminAuditObserver
 
     public function restored(Model $model): void
     {
-        $this->log($model, $this->actionPrefix($model) . '.restored', [
+        $this->log($model, $this->actionPrefix($model).'.restored', [
             'new' => $this->filterAttributes($model->getAttributes()),
             'changed' => array_keys($model->getAttributes()),
         ]);

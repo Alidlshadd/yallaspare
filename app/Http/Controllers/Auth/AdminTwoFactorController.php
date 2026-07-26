@@ -47,7 +47,7 @@ class AdminTwoFactorController extends Controller
             'code' => ['required', 'digits:6'],
         ]);
 
-        $key = 'admin-2fa:' . $user->id . '|' . $request->ip();
+        $key = 'admin-2fa:'.$user->id.'|'.$request->ip();
         if (RateLimiter::tooManyAttempts($key, 5)) {
             Log::channel('security')->warning('security event', [
                 'event' => 'auth.2fa_locked_attempt',

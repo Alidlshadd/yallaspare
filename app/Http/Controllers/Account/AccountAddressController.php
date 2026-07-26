@@ -22,7 +22,7 @@ class AccountAddressController extends Controller
     public function create(): View
     {
         return view('account.addresses.create', [
-            'address' => new UserAddress(),
+            'address' => new UserAddress,
         ]);
     }
 

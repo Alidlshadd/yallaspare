@@ -8,11 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class Category extends Model {
+class Category extends Model
+{
     use HasFactory, LogsActivity;
 
-    protected $fillable = ['name_en','name_ar','name_ku','slug','description','image'];
-    public function products() {
+    protected $fillable = ['name_en', 'name_ar', 'name_ku', 'slug', 'description', 'image'];
+
+    public function products()
+    {
         return $this->hasMany(Product::class);
     }
 

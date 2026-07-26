@@ -12,17 +12,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('orders', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('user_id')->constrained()->cascadeOnDelete();
-    $table->string('order_number')->unique();
-    $table->decimal('total_amount', 10, 2);
-    $table->enum('status', ['pending','processing','shipped','delivered','cancelled'])->default('pending');
-    $table->string('payment_method')->default('cash_on_delivery');
-    $table->string('delivery_address');
-    $table->string('delivery_city');
-    $table->string('delivery_phone');
-    $table->timestamps();
-});
+            $table->id();
+            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->string('order_number')->unique();
+            $table->decimal('total_amount', 10, 2);
+            $table->enum('status', ['pending', 'processing', 'shipped', 'delivered', 'cancelled'])->default('pending');
+            $table->string('payment_method')->default('cash_on_delivery');
+            $table->string('delivery_address');
+            $table->string('delivery_city');
+            $table->string('delivery_phone');
+            $table->timestamps();
+        });
 
     }
 

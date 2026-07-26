@@ -77,7 +77,7 @@ class AdminSeederTest extends TestCase
 
     private function setAdminEnv(string $key, string $value): void
     {
-        putenv($key . '=' . $value);
+        putenv($key.'='.$value);
         $_ENV[$key] = $value;
         $_SERVER[$key] = $value;
     }

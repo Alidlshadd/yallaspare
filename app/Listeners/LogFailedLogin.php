@@ -8,9 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 class LogFailedLogin
 {
-    public function __construct(private readonly Request $request)
-    {
-    }
+    public function __construct(private readonly Request $request) {}
 
     public function handle(Failed $event): void
     {

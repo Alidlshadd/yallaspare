@@ -10,6 +10,5 @@ class PaymentRedirectData
         public readonly ?string $providerTransactionId = null,
         public readonly ?string $providerReference = null,
         public readonly array $rawResponse = [],
-    ) {
-    }
+    ) {}
 }

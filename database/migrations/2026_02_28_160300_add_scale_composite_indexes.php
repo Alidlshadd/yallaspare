@@ -79,7 +79,7 @@ return new class extends Migration
 
     private function dropIndexIfExists(string $table, string $indexName): void
     {
-        if (!Schema::hasTable($table) || !$this->indexExists($table, $indexName)) {
+        if (! Schema::hasTable($table) || ! $this->indexExists($table, $indexName)) {
             return;
         }
 
@@ -90,7 +90,7 @@ return new class extends Migration
 
     private function indexExists(string $table, string $indexName): bool
     {
-        if (!Schema::hasTable($table)) {
+        if (! Schema::hasTable($table)) {
             return false;
         }
 

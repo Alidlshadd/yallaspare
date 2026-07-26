@@ -10,11 +10,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            if (!Schema::hasColumn('users', 'dealer_status')) {
+            if (! Schema::hasColumn('users', 'dealer_status')) {
                 $table->string('dealer_status')->default('active')->after('role');
             }
 
-            if (!Schema::hasColumn('users', 'dealer_discount')) {
+            if (! Schema::hasColumn('users', 'dealer_discount')) {
                 $table->decimal('dealer_discount', 5, 2)->default(0)->after('dealer_status');
             }
         });

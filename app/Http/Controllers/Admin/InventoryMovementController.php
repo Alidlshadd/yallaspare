@@ -8,20 +8,22 @@ use App\Models\Product;
 use App\Models\Warehouse;
 use App\Support\AdminLogger;
 use App\Support\SqlSafe;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class InventoryMovementController extends Controller
 {
     /**
      * Apply request filters shared by index and export.
      *
-     * @return array{0: \Illuminate\Database\Eloquent\Builder, 1: string, 2: bool, 3: bool}
+     * @return array{0: Builder, 1: string, 2: bool, 3: bool}
      */
     private function buildFilteredQuery(Request $request): array
     {
@@ -141,16 +143,16 @@ class InventoryMovementController extends Controller
         ));
     }
 
-    public function export(Request $request): \Symfony\Component\HttpFoundation\StreamedResponse
+    public function export(Request $request): StreamedResponse
     {
         [$query, $dateExpression, $hasWarehouseSupport] = $this->buildFilteredQuery($request);
 
-        $filename = 'inventory-movements-' . now()->format('Y-m-d-Hi') . '.csv';
+        $filename = 'inventory-movements-'.now()->format('Y-m-d-Hi').'.csv';
 
         // Guard user-controlled cells against CSV formula injection: a value
         // starting with =, +, -, @, tab, or CR would execute in spreadsheets.
         $safeCell = fn ($value) => (is_string($value) && preg_match('/^[=+\-@\t\r]/', $value))
-            ? "'" . $value
+            ? "'".$value
             : $value;
 
         return response()->streamDownload(function () use ($query, $dateExpression, $hasWarehouseSupport, $safeCell) {
@@ -179,7 +181,7 @@ class InventoryMovementController extends Controller
                         array_push(
                             $row,
                             $movement->type,
-                            ($movement->type === InventoryMovement::TYPE_IN ? 'in +' : 'out -') . $movement->quantity,
+                            ($movement->type === InventoryMovement::TYPE_IN ? 'in +' : 'out -').$movement->quantity,
                             $movement->stock_before,
                             $movement->stock_after,
                             $safeCell($movement->user->name ?? ''),
@@ -320,6 +322,7 @@ class InventoryMovementController extends Controller
         $headers = fgetcsv($handle);
         if (! is_array($headers) || $headers === []) {
             fclose($handle);
+
             return back()->with('error', __('Uploaded CSV does not contain a header row.'));
         }
 
@@ -332,6 +335,7 @@ class InventoryMovementController extends Controller
         $missing = array_diff($required, $headers);
         if ($missing !== []) {
             fclose($handle);
+
             return back()->with('error', __('CSV is missing required columns: :missing', [
                 'missing' => implode(', ', $missing),
             ]));
@@ -442,7 +446,7 @@ class InventoryMovementController extends Controller
             } catch (\Throwable $e) {
                 $skipped++;
                 if (count($errors) < 20) {
-                    $errors[] = "Row {$rowNumber}: " . $e->getMessage();
+                    $errors[] = "Row {$rowNumber}: ".$e->getMessage();
                 }
             }
         }
@@ -456,7 +460,7 @@ class InventoryMovementController extends Controller
 
         if ($skipped > 0) {
             return back()
-                ->with('error', $summary . ' — ' . implode(' | ', $errors));
+                ->with('error', $summary.' — '.implode(' | ', $errors));
         }
 
         return back()->with('success', __('Bulk inventory import: :summary', ['summary' => $summary]));

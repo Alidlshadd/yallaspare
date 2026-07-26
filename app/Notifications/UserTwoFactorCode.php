@@ -10,8 +10,7 @@ class UserTwoFactorCode extends Notification
     public function __construct(
         public readonly string $code,
         public readonly int $ttlMinutes
-    ) {
-    }
+    ) {}
 
     public function via(object $notifiable): array
     {

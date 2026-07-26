@@ -19,9 +19,7 @@ use Illuminate\Support\Str;
 
 class CheckoutService
 {
-    public function __construct(private readonly CouponService $couponService)
-    {
-    }
+    public function __construct(private readonly CouponService $couponService) {}
 
     public function placeCartOrder(
         Cart $cart,
@@ -151,10 +149,10 @@ class CheckoutService
             ? Order::PAYMENT_PENDING
             : Order::PAYMENT_PENDING_PAYMENT;
 
-        $order = new Order();
+        $order = new Order;
         $order->forceFill([
             'user_id' => $user->id,
-            'order_number' => 'ORD-' . now()->format('YmdHis') . '-' . Str::upper(Str::random(6)),
+            'order_number' => 'ORD-'.now()->format('YmdHis').'-'.Str::upper(Str::random(6)),
             'subtotal_amount' => $subtotalAmount,
             'shipping_fee' => $shippingFee,
             'discount_amount' => $discountAmount,
@@ -247,7 +245,7 @@ class CheckoutService
 
         return trim(collect([
             $baseNotes !== '' ? $baseNotes : null,
-            'Preferred contact: ' . ucfirst($contactMethod),
+            'Preferred contact: '.ucfirst($contactMethod),
         ])->filter()->implode(PHP_EOL));
     }
 

@@ -58,7 +58,7 @@ class IntrusionPrevention
             return 0;
         }
 
-        $payload = strtolower($request->path() . ' ' . $request->getQueryString() . ' ' . json_encode($request->except([
+        $payload = strtolower($request->path().' '.$request->getQueryString().' '.json_encode($request->except([
             'password',
             'password_confirmation',
             'current_password',
@@ -94,11 +94,11 @@ class IntrusionPrevention
 
     private function hitKey(string $ip): string
     {
-        return 'ips:hits:' . sha1($ip);
+        return 'ips:hits:'.sha1($ip);
     }
 
     private function blockKey(string $ip): string
     {
-        return 'ips:block:' . sha1($ip);
+        return 'ips:block:'.sha1($ip);
     }
 }

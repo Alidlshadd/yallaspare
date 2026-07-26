@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\ProductReview;
+use App\Models\Setting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -106,7 +107,7 @@ class AdminProductsCrudTest extends TestCase
     {
         $user = $this->adminUser();
         $category = $this->createCategory();
-        \App\Models\Setting::setValue('low_stock_threshold', '5');
+        Setting::setValue('low_stock_threshold', '5');
 
         Product::factory()->create([
             'category_id' => $category->id,
@@ -335,7 +336,7 @@ class AdminProductsCrudTest extends TestCase
         $category = $this->createCategory();
         $csv = implode("\n", [
             'name_en,name_ar,name_ku,price,stock_quantity,sku,brand,category_id,is_active',
-            'Imported Stock Product,Imported Stock Product,Imported Stock Product,15000,20,SKU-IMPORT-STOCK-20,Bosch,' . $category->id . ',1',
+            'Imported Stock Product,Imported Stock Product,Imported Stock Product,15000,20,SKU-IMPORT-STOCK-20,Bosch,'.$category->id.',1',
         ]);
 
         $this->actingAs($user)->post(route('admin.products.import'), [

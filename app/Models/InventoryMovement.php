@@ -12,6 +12,7 @@ class InventoryMovement extends Model
     use HasFactory, LogsActivity;
 
     public const TYPE_IN = 'in';
+
     public const TYPE_OUT = 'out';
 
     protected $fillable = [

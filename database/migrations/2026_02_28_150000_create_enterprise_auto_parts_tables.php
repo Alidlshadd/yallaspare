@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasTable('product_brands')) {
+        if (! Schema::hasTable('product_brands')) {
             Schema::create('product_brands', function (Blueprint $table) {
                 $table->id();
                 $table->string('name');
@@ -19,7 +19,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('car_brands')) {
+        if (! Schema::hasTable('car_brands')) {
             Schema::create('car_brands', function (Blueprint $table) {
                 $table->id();
                 $table->string('name');
@@ -30,7 +30,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('car_models')) {
+        if (! Schema::hasTable('car_models')) {
             Schema::create('car_models', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('car_brand_id')->constrained('car_brands')->restrictOnDelete();
@@ -46,7 +46,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('engine_types')) {
+        if (! Schema::hasTable('engine_types')) {
             Schema::create('engine_types', function (Blueprint $table) {
                 $table->id();
                 $table->string('code', 50)->nullable();
@@ -62,7 +62,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('vehicle_years')) {
+        if (! Schema::hasTable('vehicle_years')) {
             Schema::create('vehicle_years', function (Blueprint $table) {
                 $table->id();
                 $table->unsignedSmallInteger('year');
@@ -71,7 +71,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('product_compatibilities')) {
+        if (! Schema::hasTable('product_compatibilities')) {
             Schema::create('product_compatibilities', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('product_id')->constrained()->cascadeOnDelete();
@@ -92,7 +92,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('part_numbers')) {
+        if (! Schema::hasTable('part_numbers')) {
             Schema::create('part_numbers', function (Blueprint $table) {
                 $table->id();
                 $table->enum('type', ['oem', 'aftermarket', 'interchange']);
@@ -107,7 +107,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('product_part_numbers')) {
+        if (! Schema::hasTable('product_part_numbers')) {
             Schema::create('product_part_numbers', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('product_id')->constrained()->cascadeOnDelete();
@@ -120,7 +120,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('warehouses')) {
+        if (! Schema::hasTable('warehouses')) {
             Schema::create('warehouses', function (Blueprint $table) {
                 $table->id();
                 $table->string('code', 40)->unique();
@@ -140,7 +140,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('product_warehouse_stocks')) {
+        if (! Schema::hasTable('product_warehouse_stocks')) {
             Schema::create('product_warehouse_stocks', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('product_id')->constrained()->cascadeOnDelete();
@@ -156,7 +156,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('stock_transactions')) {
+        if (! Schema::hasTable('stock_transactions')) {
             Schema::create('stock_transactions', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('product_id')->constrained()->cascadeOnDelete();
@@ -191,7 +191,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('suppliers')) {
+        if (! Schema::hasTable('suppliers')) {
             Schema::create('suppliers', function (Blueprint $table) {
                 $table->id();
                 $table->string('name');
@@ -210,7 +210,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('supplier_products')) {
+        if (! Schema::hasTable('supplier_products')) {
             Schema::create('supplier_products', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('supplier_id')->constrained('suppliers')->cascadeOnDelete();
@@ -227,7 +227,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('purchase_invoices')) {
+        if (! Schema::hasTable('purchase_invoices')) {
             Schema::create('purchase_invoices', function (Blueprint $table) {
                 $table->id();
                 $table->string('invoice_number', 80)->unique();
@@ -250,7 +250,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('purchase_invoice_items')) {
+        if (! Schema::hasTable('purchase_invoice_items')) {
             Schema::create('purchase_invoice_items', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('purchase_invoice_id')->constrained('purchase_invoices')->cascadeOnDelete();
@@ -266,7 +266,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('product_images')) {
+        if (! Schema::hasTable('product_images')) {
             Schema::create('product_images', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('product_id')->constrained()->cascadeOnDelete();
@@ -282,7 +282,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('product_variants')) {
+        if (! Schema::hasTable('product_variants')) {
             Schema::create('product_variants', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('parent_product_id')->constrained('products')->cascadeOnDelete();
@@ -295,7 +295,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('price_histories')) {
+        if (! Schema::hasTable('price_histories')) {
             Schema::create('price_histories', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('product_id')->constrained()->cascadeOnDelete();
@@ -313,7 +313,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('discounts')) {
+        if (! Schema::hasTable('discounts')) {
             Schema::create('discounts', function (Blueprint $table) {
                 $table->id();
                 $table->string('name');
@@ -335,7 +335,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('discount_product')) {
+        if (! Schema::hasTable('discount_product')) {
             Schema::create('discount_product', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('discount_id')->constrained('discounts')->cascadeOnDelete();
@@ -345,7 +345,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('discount_category')) {
+        if (! Schema::hasTable('discount_category')) {
             Schema::create('discount_category', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('discount_id')->constrained('discounts')->cascadeOnDelete();
@@ -355,7 +355,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('coupons')) {
+        if (! Schema::hasTable('coupons')) {
             Schema::create('coupons', function (Blueprint $table) {
                 $table->id();
                 $table->string('code', 80)->unique();
@@ -376,7 +376,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('coupon_usages')) {
+        if (! Schema::hasTable('coupon_usages')) {
             Schema::create('coupon_usages', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('coupon_id')->constrained('coupons')->cascadeOnDelete();
@@ -391,7 +391,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('tax_classes')) {
+        if (! Schema::hasTable('tax_classes')) {
             Schema::create('tax_classes', function (Blueprint $table) {
                 $table->id();
                 $table->string('name')->unique();
@@ -401,7 +401,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('tax_rates')) {
+        if (! Schema::hasTable('tax_rates')) {
             Schema::create('tax_rates', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('tax_class_id')->constrained('tax_classes')->cascadeOnDelete();
@@ -419,7 +419,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('shipping_zones')) {
+        if (! Schema::hasTable('shipping_zones')) {
             Schema::create('shipping_zones', function (Blueprint $table) {
                 $table->id();
                 $table->string('name')->unique();
@@ -436,7 +436,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('shipping_methods')) {
+        if (! Schema::hasTable('shipping_methods')) {
             Schema::create('shipping_methods', function (Blueprint $table) {
                 $table->id();
                 $table->string('name');
@@ -448,7 +448,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('shipping_rate_rules')) {
+        if (! Schema::hasTable('shipping_rate_rules')) {
             Schema::create('shipping_rate_rules', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('shipping_zone_id')->constrained('shipping_zones')->cascadeOnDelete();
@@ -466,7 +466,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('admin_security_events')) {
+        if (! Schema::hasTable('admin_security_events')) {
             Schema::create('admin_security_events', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
@@ -484,7 +484,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('audit_logs')) {
+        if (! Schema::hasTable('audit_logs')) {
             Schema::create('audit_logs', function (Blueprint $table) {
                 $table->id();
                 $table->string('event_type');
@@ -506,7 +506,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('roles')) {
+        if (! Schema::hasTable('roles')) {
             Schema::create('roles', function (Blueprint $table) {
                 $table->id();
                 $table->string('name')->unique();
@@ -516,7 +516,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('permissions')) {
+        if (! Schema::hasTable('permissions')) {
             Schema::create('permissions', function (Blueprint $table) {
                 $table->id();
                 $table->string('name')->unique();
@@ -526,7 +526,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('role_permission')) {
+        if (! Schema::hasTable('role_permission')) {
             Schema::create('role_permission', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('role_id')->constrained('roles')->cascadeOnDelete();
@@ -536,7 +536,7 @@ return new class extends Migration
             });
         }
 
-        if (!Schema::hasTable('user_role')) {
+        if (! Schema::hasTable('user_role')) {
             Schema::create('user_role', function (Blueprint $table) {
                 $table->id();
                 $table->foreignId('user_id')->constrained()->cascadeOnDelete();

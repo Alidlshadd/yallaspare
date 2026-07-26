@@ -59,13 +59,13 @@ class MobileCommerceFeaturesTest extends TestCase
         $newer = Product::factory()->create(['name_en' => 'Newer Product', 'is_active' => true]);
 
         $this->actingAs($user, 'sanctum')
-            ->postJson('/api/mobile/recently-viewed/' . $older->id)
+            ->postJson('/api/mobile/recently-viewed/'.$older->id)
             ->assertCreated();
 
         $this->travel(1)->minute();
 
         $this->actingAs($user, 'sanctum')
-            ->postJson('/api/mobile/recently-viewed/' . $newer->slug)
+            ->postJson('/api/mobile/recently-viewed/'.$newer->slug)
             ->assertCreated();
 
         $response = $this->actingAs($user, 'sanctum')->getJson('/api/mobile/recently-viewed');
@@ -87,19 +87,19 @@ class MobileCommerceFeaturesTest extends TestCase
         $product = Product::factory()->create(['stock_quantity' => 0, 'is_active' => true]);
 
         $this->actingAs($user, 'sanctum')
-            ->postJson('/api/mobile/products/' . $product->slug . '/back-in-stock')
+            ->postJson('/api/mobile/products/'.$product->slug.'/back-in-stock')
             ->assertCreated()
             ->assertJsonPath('data.subscribed', true)
             ->assertJsonPath('data.available_now', false);
 
         $this->actingAs($user, 'sanctum')
-            ->postJson('/api/mobile/products/' . $product->slug . '/back-in-stock')
+            ->postJson('/api/mobile/products/'.$product->slug.'/back-in-stock')
             ->assertOk();
 
         $this->assertSame(1, BackInStockSubscription::query()->where('user_id', $user->id)->where('product_id', $product->id)->count());
 
         $this->actingAs($user, 'sanctum')
-            ->deleteJson('/api/mobile/products/' . $product->slug . '/back-in-stock')
+            ->deleteJson('/api/mobile/products/'.$product->slug.'/back-in-stock')
             ->assertOk();
 
         $this->assertSame(0, BackInStockSubscription::query()->where('user_id', $user->id)->where('product_id', $product->id)->count());
@@ -111,7 +111,7 @@ class MobileCommerceFeaturesTest extends TestCase
         $product = Product::factory()->create(['stock_quantity' => 3, 'is_active' => true]);
 
         $this->actingAs($user, 'sanctum')
-            ->postJson('/api/mobile/products/' . $product->id . '/back-in-stock')
+            ->postJson('/api/mobile/products/'.$product->id.'/back-in-stock')
             ->assertOk()
             ->assertJsonPath('data.subscribed', false)
             ->assertJsonPath('data.available_now', true);
@@ -144,7 +144,7 @@ class MobileCommerceFeaturesTest extends TestCase
         ]);
 
         $response = $this->actingAs($user, 'sanctum')
-            ->postJson('/api/mobile/orders/' . $order->id . '/reorder');
+            ->postJson('/api/mobile/orders/'.$order->id.'/reorder');
 
         $response->assertOk();
         $this->assertSame(3, $response->json('added.0.added_quantity'));
@@ -176,7 +176,7 @@ class MobileCommerceFeaturesTest extends TestCase
         ]);
 
         $this->actingAs($user, 'sanctum')
-            ->postJson('/api/mobile/orders/' . $order->id . '/reorder', ['replace_cart' => true])
+            ->postJson('/api/mobile/orders/'.$order->id.'/reorder', ['replace_cart' => true])
             ->assertOk();
 
         $this->assertDatabaseMissing('cart_items', ['product_id' => $existingProduct->id]);
@@ -185,10 +185,10 @@ class MobileCommerceFeaturesTest extends TestCase
 
     private function orderFor(User $user): Order
     {
-        $order = new Order();
+        $order = new Order;
         $order->forceFill([
             'user_id' => $user->id,
-            'order_number' => 'ORD-TEST-' . fake()->unique()->numberBetween(1000, 9999),
+            'order_number' => 'ORD-TEST-'.fake()->unique()->numberBetween(1000, 9999),
             'subtotal_amount' => 0,
             'shipping_fee' => 0,
             'discount_amount' => 0,

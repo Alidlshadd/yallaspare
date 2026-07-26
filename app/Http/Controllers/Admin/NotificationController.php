@@ -34,7 +34,7 @@ class NotificationController extends Controller
             $cacheBucket
         );
 
-        $sharedPayload = Cache::remember($cacheKey, now()->addSeconds($cacheTtl), function () use ($lowStockThreshold) {
+        $sharedPayload = Cache::remember($cacheKey, now()->addSeconds($cacheTtl), function () {
             $outOfStockProducts = Product::query()
                 ->where('stock_quantity', '<=', 0)
                 ->orderBy('updated_at', 'desc')
@@ -133,7 +133,7 @@ class NotificationController extends Controller
             ->concat($outItems)
             ->concat($lowItems)
             ->concat($dealerItems)
-            ->filter(fn ($item) => !$item['read'])
+            ->filter(fn ($item) => ! $item['read'])
             ->count();
 
         return response()->json([
@@ -217,7 +217,7 @@ class NotificationController extends Controller
 
     private function readKeysFor(int $userId, Collection $items): array
     {
-        if (!Schema::hasTable('admin_notification_reads')) {
+        if (! Schema::hasTable('admin_notification_reads')) {
             return [];
         }
 
@@ -239,6 +239,6 @@ class NotificationController extends Controller
 
     private function makeKey(string $type, int $id, ?int $timestamp): string
     {
-        return $type . ':' . $id . ':' . ((string) ($timestamp ?? 0));
+        return $type.':'.$id.':'.((string) ($timestamp ?? 0));
     }
 }

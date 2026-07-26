@@ -81,7 +81,7 @@ class AdminActivityLog extends Model
         $parts = [];
         foreach ($data as $key => $value) {
             if (is_scalar($value) || $value === null) {
-                $parts[] = Str::of((string) $key)->replace('_', ' ')->title() . ': ' . ($value ?? '—');
+                $parts[] = Str::of((string) $key)->replace('_', ' ')->title().': '.($value ?? '—');
             }
         }
 
@@ -97,14 +97,14 @@ class AdminActivityLog extends Model
 
         $lines = [];
         foreach ($changed as $key) {
-            if (!array_key_exists($key, $old) && !array_key_exists($key, $new)) {
+            if (! array_key_exists($key, $old) && ! array_key_exists($key, $new)) {
                 continue;
             }
             $from = array_key_exists($key, $old) ? $old[$key] : null;
             $to = array_key_exists($key, $new) ? $new[$key] : null;
             $lines[] = Str::of((string) $key)->replace('_', ' ')->title()
-                . ': ' . (is_scalar($from) || $from === null ? ($from ?? '—') : '[...]')
-                . ' → ' . (is_scalar($to) || $to === null ? ($to ?? '—') : '[...]');
+                .': '.(is_scalar($from) || $from === null ? ($from ?? '—') : '[...]')
+                .' → '.(is_scalar($to) || $to === null ? ($to ?? '—') : '[...]');
         }
 
         return $lines;

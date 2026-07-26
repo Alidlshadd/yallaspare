@@ -3,19 +3,19 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Product;
-use App\Models\Order;
-use App\Models\ReturnRequest;
-use App\Models\User;
 use App\Models\Category;
 use App\Models\InventoryMovement;
+use App\Models\Order;
+use App\Models\Product;
+use App\Models\ReturnRequest;
 use App\Models\Setting;
+use App\Models\User;
 use App\Services\Analytics\AnalyticsQueryService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
-use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -30,7 +30,7 @@ class DashboardController extends Controller
         $currencyDecimals = strtoupper($currencyCode) === 'IQD' ? 0 : 2;
         $allowedAnalyticsDays = [7, 14, 30];
         $analyticsDays = (int) $request->query('analytics_days', 14);
-        if (!in_array($analyticsDays, $allowedAnalyticsDays, true)) {
+        if (! in_array($analyticsDays, $allowedAnalyticsDays, true)) {
             $analyticsDays = 14;
         }
         $cacheTtl = max((int) config('performance.dashboard_cache_ttl', 300), 15);
@@ -223,7 +223,7 @@ class DashboardController extends Controller
             $categoryCounts = $categoryData->pluck('products_count')->toArray();
 
             $monthlyOrders = Order::select(
-                DB::raw($this->monthExpression('created_at') . ' as month'),
+                DB::raw($this->monthExpression('created_at').' as month'),
                 DB::raw('COUNT(*) as total')
             )
                 ->whereYear('created_at', $now->year)

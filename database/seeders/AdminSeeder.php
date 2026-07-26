@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use RuntimeException;
 
@@ -23,6 +23,7 @@ class AdminSeeder extends Seeder
         if ($password === '') {
             if ($isProduction) {
                 $this->command?->warn('AdminSeeder skipped: set ADMIN_PASSWORD to create the initial production admin.');
+
                 return;
             }
 
@@ -37,6 +38,7 @@ class AdminSeeder extends Seeder
 
         if ($isProduction && $user->exists) {
             $this->command?->info('AdminSeeder skipped: production admin already exists.');
+
             return;
         }
 

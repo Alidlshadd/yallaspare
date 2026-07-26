@@ -11,9 +11,10 @@ use App\Models\Setting;
 use App\Services\CouponService;
 use App\Support\SqlSafe;
 use Carbon\Carbon;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Validation\Rule;
@@ -21,9 +22,7 @@ use Illuminate\View\View;
 
 class DiscountCouponController extends Controller
 {
-    public function __construct(private readonly CouponService $couponService)
-    {
-    }
+    public function __construct(private readonly CouponService $couponService) {}
 
     public function createCoupon(): View
     {
@@ -118,11 +117,13 @@ class DiscountCouponController extends Controller
             ->when($stock !== '', function ($builder) use ($stock) {
                 if ($stock === 'in_stock') {
                     $builder->where('stock_quantity', '>', 0);
+
                     return;
                 }
 
                 if ($stock === 'out_of_stock') {
                     $builder->where('stock_quantity', '<=', 0);
+
                     return;
                 }
 
@@ -147,7 +148,7 @@ class DiscountCouponController extends Controller
     }
 
     /**
-     * @return array{0: \Illuminate\Support\Collection<int, \App\Models\Product>, 1: \Illuminate\Support\Collection<int, \App\Models\Category>, 2: \Illuminate\Support\Collection<int, string>}
+     * @return array{0: Collection<int, Product>, 1: Collection<int, Category>, 2: Collection<int, string>}
      */
     private function loadDiscountResources(bool $includeProducts = true): array
     {
@@ -238,7 +239,7 @@ class DiscountCouponController extends Controller
                 ->limit(200)
                 ->get();
 
-            $coupons = $couponRows->map(function ($row) use ($now) {
+            $coupons = $couponRows->map(function ($row) {
                 $startsAt = $row->starts_at ? Carbon::parse((string) $row->starts_at) : null;
                 $endsAt = $row->ends_at ? Carbon::parse((string) $row->ends_at) : null;
 
@@ -255,9 +256,9 @@ class DiscountCouponController extends Controller
 
                 $discount = (string) $row->value;
                 if ((string) $row->type === 'percent') {
-                    $discount = number_format((float) $row->value, 2) . '%';
+                    $discount = number_format((float) $row->value, 2).'%';
                 } elseif ((string) $row->type === 'fixed') {
-                    $discount = number_format((float) $row->value, $currencyDecimals) . ' ' . $currencyLabel;
+                    $discount = number_format((float) $row->value, $currencyDecimals).' '.$currencyLabel;
                 }
 
                 return [
@@ -301,8 +302,8 @@ class DiscountCouponController extends Controller
                 }
 
                 $discount = $fallbackType === 'percent'
-                    ? number_format($fallbackValue, 2) . '%'
-                    : number_format($fallbackValue, $currencyDecimals) . ' ' . $currencyLabel;
+                    ? number_format($fallbackValue, 2).'%'
+                    : number_format($fallbackValue, $currencyDecimals).' '.$currencyLabel;
 
                 $coupons[] = [
                     'id' => 0,
@@ -398,9 +399,9 @@ class DiscountCouponController extends Controller
             ['label' => 'Dealer Portal', 'value' => 0, 'color' => 'bg-slate-500'],
         ];
 
-        $avgDiscountLabel = number_format($avgDiscountValue, 2) . $avgDiscountSuffix;
+        $avgDiscountLabel = number_format($avgDiscountValue, 2).$avgDiscountSuffix;
         if ($avgDiscountSuffix === '') {
-            $avgDiscountLabel .= ' ' . $currencyLabel;
+            $avgDiscountLabel .= ' '.$currencyLabel;
         }
 
         return [
@@ -633,13 +634,13 @@ class DiscountCouponController extends Controller
         $discountId = (int) ($data['discount_id'] ?? 0);
         $discount = $discountId > 0
             ? Discount::query()->findOrFail($discountId)
-            : new Discount();
+            : new Discount;
 
         DB::transaction(function () use ($request, $data, $discount, $discountScope, $discountType, $discountValue, $selectedProducts, $selectedCategories, $selectedBrands): void {
             $discount->fill([
                 'name' => trim((string) ($data['discount_label'] ?? '')) !== ''
                     ? trim((string) $data['discount_label'])
-                    : 'Discount Rule ' . now()->format('Y-m-d H:i'),
+                    : 'Discount Rule '.now()->format('Y-m-d H:i'),
                 'scope' => $this->mapFormScopeToDiscountScope($discountScope),
                 'type' => $discountType,
                 'value' => $discountValue,
@@ -698,7 +699,7 @@ class DiscountCouponController extends Controller
      */
     private function buildDiscountRuleFormState(?Discount $discount): array
     {
-        if (!$discount) {
+        if (! $discount) {
             return [
                 'id' => null,
                 'is_active' => false,
@@ -749,9 +750,9 @@ class DiscountCouponController extends Controller
             default => 0,
         };
         $targetLabel = match ($formScope) {
-            'products' => number_format($targetCount) . ' products',
-            'categories' => number_format($targetCount) . ' categories',
-            'brands' => number_format($targetCount) . ' brands',
+            'products' => number_format($targetCount).' products',
+            'categories' => number_format($targetCount).' categories',
+            'brands' => number_format($targetCount).' brands',
             default => __('Full catalog'),
         };
         $valueLabel = (string) $discount->value;
@@ -779,9 +780,9 @@ class DiscountCouponController extends Controller
 
         $countdown = '';
         if ($status === 'scheduled' && $discount->starts_at) {
-            $countdown = __('starts in :days', ['days' => max(1, (int) ceil(now()->diffInDays($discount->starts_at, false))) . 'd']);
+            $countdown = __('starts in :days', ['days' => max(1, (int) ceil(now()->diffInDays($discount->starts_at, false))).'d']);
         } elseif ($status === 'active' && $discount->ends_at) {
-            $countdown = __('ends in :days', ['days' => max(1, (int) ceil(now()->diffInDays($discount->ends_at, false))) . 'd']);
+            $countdown = __('ends in :days', ['days' => max(1, (int) ceil(now()->diffInDays($discount->ends_at, false))).'d']);
         }
 
         return [
@@ -816,13 +817,13 @@ class DiscountCouponController extends Controller
             'usedCount' => (int) $discount->used_count,
             'createdAtLabel' => $discount->created_at?->format('Y-m-d H:i') ?? __('Unknown'),
             'updatedAtLabel' => $discount->updated_at?->format('Y-m-d H:i') ?? __('Unknown'),
-            'editUrl' => route('admin.discounts.rules', ['discount' => $discount->id]) . '#discount-rule-form',
+            'editUrl' => route('admin.discounts.rules', ['discount' => $discount->id]).'#discount-rule-form',
         ];
     }
 
     private function resolveDiscountStatus(Discount $discount): string
     {
-        if (!$discount->is_active) {
+        if (! $discount->is_active) {
             return 'draft';
         }
 
@@ -839,7 +840,7 @@ class DiscountCouponController extends Controller
 
     private function discountWindowLabel(Discount $discount): string
     {
-        if (!$discount->starts_at && !$discount->ends_at) {
+        if (! $discount->starts_at && ! $discount->ends_at) {
             return __('No schedule window');
         }
 

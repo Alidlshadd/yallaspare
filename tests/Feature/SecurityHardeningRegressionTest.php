@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use App\Jobs\SendEmailBroadcastJob;
-use App\Models\AdminActivityLog;
 use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Category;
@@ -16,8 +15,8 @@ use App\Models\User;
 use App\Models\UserAddress;
 use App\Notifications\AdminTwoFactorCode;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use ReflectionClass;
 use Tests\TestCase;
 
@@ -225,7 +224,7 @@ class SecurityHardeningRegressionTest extends TestCase
         $payload = '</script><script>alert(1)</script>';
         $product = Product::factory()->create([
             'category_id' => $category->id,
-            'name_en' => 'Brake ' . $payload,
+            'name_en' => 'Brake '.$payload,
             'name_ar' => 'Brake',
             'name_ku' => 'Brake',
             'is_active' => true,
@@ -340,7 +339,7 @@ class SecurityHardeningRegressionTest extends TestCase
     {
         return Order::query()->forceCreate(array_merge([
             'user_id' => $user->id,
-            'order_number' => 'ORD-' . uniqid(),
+            'order_number' => 'ORD-'.uniqid(),
             'subtotal_amount' => 10000,
             'shipping_fee' => 0,
             'discount_amount' => 0,

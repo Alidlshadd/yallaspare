@@ -9,11 +9,11 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\Setting;
 use App\Models\User;
+use App\Services\Orders\OrderStatusService;
 use App\Support\AdminLogger;
 use App\Support\Branding;
 use App\Support\SqlSafe;
 use App\Support\UserCommunication;
-use App\Services\Orders\OrderStatusService;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -93,20 +93,20 @@ class OrderController extends Controller
             $query->whereHas('user', fn ($q) => $q->where('role', User::ROLE_USER));
         }
 
-        if (!empty($from)) {
+        if (! empty($from)) {
             $query->whereDate('created_at', '>=', $from);
         }
-        if (!empty($to)) {
+        if (! empty($to)) {
             $query->whereDate('created_at', '<=', $to);
         }
 
         $orders = $query->latest('id')->paginate(12)->withQueryString();
 
         $statsQuery = Order::query();
-        if (!empty($from)) {
+        if (! empty($from)) {
             $statsQuery->whereDate('created_at', '>=', $from);
         }
-        if (!empty($to)) {
+        if (! empty($to)) {
             $statsQuery->whereDate('created_at', '<=', $to);
         }
         if ($association === 'dealer') {
@@ -133,6 +133,7 @@ class OrderController extends Controller
         $transitionOptions = $orders->getCollection()
             ->mapWithKeys(function (Order $order) {
                 $allowed = Order::nextStatuses((string) $order->status);
+
                 return [$order->id => array_values(array_unique(array_merge([$order->status], $allowed)))];
             })
             ->toArray();
@@ -204,7 +205,7 @@ class OrderController extends Controller
         try {
             $pdf = Pdf::loadView('admin.orders.invoice', [
                 'order' => $order,
-                'invoiceNumber' => 'INV-' . $year . '-' . str_pad((string) $order->id, 5, '0', STR_PAD_LEFT),
+                'invoiceNumber' => 'INV-'.$year.'-'.str_pad((string) $order->id, 5, '0', STR_PAD_LEFT),
                 'currency' => 'IQD',
                 'logoPath' => $this->invoiceLogoPath(),
                 'subtotal' => $subtotal,
@@ -218,7 +219,7 @@ class OrderController extends Controller
             app()->setLocale($previousLocale);
         }
 
-        return $pdf->download('invoice-' . $order->id . '-' . $locale . '.pdf');
+        return $pdf->download('invoice-'.$order->id.'-'.$locale.'.pdf');
     }
 
     private function invoiceLocale(Request $request, Order $order): string
@@ -242,7 +243,7 @@ class OrderController extends Controller
 
         $storagePath = Branding::storagePathFromValue($logoValue);
         if ($storagePath && Branding::isSafeLogoPath($storagePath)) {
-            $publicStoragePath = public_path('storage/' . ltrim($storagePath, '/'));
+            $publicStoragePath = public_path('storage/'.ltrim($storagePath, '/'));
             if (is_file($publicStoragePath)) {
                 return str_replace('\\', '/', $publicStoragePath);
             }
@@ -305,7 +306,7 @@ class OrderController extends Controller
 
         $status = Order::normalizedStatus($data['status']);
 
-        if (!in_array($status, Order::allowedStatuses(), true)) {
+        if (! in_array($status, Order::allowedStatuses(), true)) {
             return back()->with('error', __('Invalid order status.'));
         }
 

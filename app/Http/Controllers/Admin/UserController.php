@@ -13,9 +13,9 @@ use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -211,14 +211,14 @@ class UserController extends Controller
                 'nullable',
                 'string',
                 'max:30',
-                new PhoneNumber(),
+                new PhoneNumber,
                 User::uniquePhoneRule($user->id, (string) $request->input('role', $user->role)),
             ],
             'date_of_birth' => ['nullable', 'date', 'before:today'],
-            'role' => ['required', 'string', 'in:' . implode(',', User::allowedRoles())],
+            'role' => ['required', 'string', 'in:'.implode(',', User::allowedRoles())],
             'permissions' => ['nullable', 'array'],
             'permissions.*' => ['string', Rule::in(User::allowedPermissions())],
-            'dealer_status' => ['nullable', 'string', 'in:' . implode(',', User::allowedDealerStatuses())],
+            'dealer_status' => ['nullable', 'string', 'in:'.implode(',', User::allowedDealerStatuses())],
             'dealer_discount' => ['nullable', 'numeric', 'min:0', 'max:100'],
         ]);
 
@@ -285,7 +285,7 @@ class UserController extends Controller
         $this->authorize('updateRole', $user);
 
         $data = $request->validate([
-            'role' => ['required', 'string', 'in:' . implode(',', User::allowedRoles())],
+            'role' => ['required', 'string', 'in:'.implode(',', User::allowedRoles())],
         ]);
 
         $newRole = User::normalizeRole($data['role']);

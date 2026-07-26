@@ -36,23 +36,23 @@ return new class extends Migration
 
     private function createImmutableTriggers(string $table, string $message): void
     {
-        if (!Schema::hasTable($table)) {
+        if (! Schema::hasTable($table)) {
             return;
         }
 
         $updateTrigger = "trg_{$table}_block_update";
         $deleteTrigger = "trg_{$table}_block_delete";
 
-        if (!$this->triggerExists($updateTrigger)) {
+        if (! $this->triggerExists($updateTrigger)) {
             DB::unprepared(
-                "CREATE TRIGGER `{$updateTrigger}` BEFORE UPDATE ON `{$table}` FOR EACH ROW " .
+                "CREATE TRIGGER `{$updateTrigger}` BEFORE UPDATE ON `{$table}` FOR EACH ROW ".
                 "BEGIN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = '{$message}'; END"
             );
         }
 
-        if (!$this->triggerExists($deleteTrigger)) {
+        if (! $this->triggerExists($deleteTrigger)) {
             DB::unprepared(
-                "CREATE TRIGGER `{$deleteTrigger}` BEFORE DELETE ON `{$table}` FOR EACH ROW " .
+                "CREATE TRIGGER `{$deleteTrigger}` BEFORE DELETE ON `{$table}` FOR EACH ROW ".
                 "BEGIN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = '{$message}'; END"
             );
         }
@@ -60,7 +60,7 @@ return new class extends Migration
 
     private function dropTriggerIfExists(string $triggerName): void
     {
-        if (!$this->triggerExists($triggerName)) {
+        if (! $this->triggerExists($triggerName)) {
             return;
         }
 

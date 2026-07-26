@@ -174,7 +174,7 @@ class ReturnRefundSecurityTest extends TestCase
     {
         return Order::query()->forceCreate(array_merge([
             'user_id' => $user->id,
-            'order_number' => 'ORD-' . uniqid(),
+            'order_number' => 'ORD-'.uniqid(),
             'subtotal_amount' => 10000,
             'shipping_fee' => 0,
             'discount_amount' => 0,

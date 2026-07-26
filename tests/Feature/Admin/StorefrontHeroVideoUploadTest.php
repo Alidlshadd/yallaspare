@@ -66,7 +66,7 @@ class StorefrontHeroVideoUploadTest extends TestCase
         $video = $this->fakeMp4Upload(
             '12983897_3840_2160_30fps.mp4',
             'video/mp4',
-            $this->fakeMp4Bytes() . str_repeat("\0", 1024) . '<script'
+            $this->fakeMp4Bytes().str_repeat("\0", 1024).'<script'
         );
 
         $response = $this
@@ -249,9 +249,9 @@ class StorefrontHeroVideoUploadTest extends TestCase
     private function fakeMp4Bytes(): string
     {
         return pack('N', 24)
-            . 'ftypisom'
-            . pack('N', 512)
-            . 'isomiso2avc1mp41'
-            . str_repeat("\0", 1024);
+            .'ftypisom'
+            .pack('N', 512)
+            .'isomiso2avc1mp41'
+            .str_repeat("\0", 1024);
     }
 }

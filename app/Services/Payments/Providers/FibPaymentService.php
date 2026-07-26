@@ -54,7 +54,7 @@ class FibPaymentService implements PaymentProviderInterface
 
         $response = Http::withToken($this->accessToken())
             ->acceptJson()
-            ->get($this->url('/protected/v1/payments/' . rawurlencode((string) $payment->provider_payment_id) . '/status'))
+            ->get($this->url('/protected/v1/payments/'.rawurlencode((string) $payment->provider_payment_id).'/status'))
             ->throw()
             ->json();
 
@@ -121,6 +121,6 @@ class FibPaymentService implements PaymentProviderInterface
 
     private function url(string $path): string
     {
-        return rtrim((string) config('services.fib.base_url'), '/') . $path;
+        return rtrim((string) config('services.fib.base_url'), '/').$path;
     }
 }

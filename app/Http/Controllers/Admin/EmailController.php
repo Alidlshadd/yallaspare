@@ -8,9 +8,10 @@ use App\Mail\OperationalNotificationMail;
 use App\Models\EmailBroadcast;
 use App\Models\EmailLog;
 use App\Models\User;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Schema;
@@ -58,9 +59,9 @@ class EmailController extends Controller
 
         return [
             'customers' => (clone $base)->where('role', User::ROLE_USER)->count(),
-            'dealers'   => (clone $base)->where('role', User::ROLE_DEALER)->count(),
-            'admins'    => (clone $base)->whereIn('role', [User::ROLE_ADMIN, User::ROLE_SETTINGS_MANAGER])->count(),
-            'total'     => (clone $base)->count(),
+            'dealers' => (clone $base)->where('role', User::ROLE_DEALER)->count(),
+            'admins' => (clone $base)->whereIn('role', [User::ROLE_ADMIN, User::ROLE_SETTINGS_MANAGER])->count(),
+            'total' => (clone $base)->count(),
         ];
     }
 
@@ -312,7 +313,7 @@ class EmailController extends Controller
     }
 
     /**
-     * @return \Illuminate\Support\Collection<int, EmailLog>
+     * @return Collection<int, EmailLog>
      */
     private function recentLogs()
     {
@@ -548,7 +549,7 @@ class EmailController extends Controller
                 (string) $data['subject'],
                 trim((string) ($data['body'] ?? '')) !== ''
                     ? trim((string) $data['body'])
-                    : "This is a YallaSpare admin test email.\n\nMailer: {$mailer}\nSent at: " . now()->toDateTimeString(),
+                    : "This is a YallaSpare admin test email.\n\nMailer: {$mailer}\nSent at: ".now()->toDateTimeString(),
                 [
                     'type' => 'mail_test',
                     'mailer' => $mailer,
@@ -589,8 +590,8 @@ class EmailController extends Controller
                 EmailBroadcast::AUDIENCE_ROLE,
                 EmailBroadcast::AUDIENCE_USER,
             ])],
-            'audience_role' => ['nullable', 'required_if:audience_type,' . EmailBroadcast::AUDIENCE_ROLE, Rule::in(array_keys($this->broadcastAudienceRoles()))],
-            'recipient_email' => ['nullable', 'required_if:audience_type,' . EmailBroadcast::AUDIENCE_USER, 'email:rfc', 'max:255'],
+            'audience_role' => ['nullable', 'required_if:audience_type,'.EmailBroadcast::AUDIENCE_ROLE, Rule::in(array_keys($this->broadcastAudienceRoles()))],
+            'recipient_email' => ['nullable', 'required_if:audience_type,'.EmailBroadcast::AUDIENCE_USER, 'email:rfc', 'max:255'],
             'purpose' => ['required', Rule::in([EmailBroadcast::PURPOSE_PROMOTIONAL, EmailBroadcast::PURPOSE_OPERATIONAL])],
             'subject' => ['required', 'string', 'max:160'],
             'message' => ['required', 'string', 'max:5000'],
@@ -741,7 +742,7 @@ class EmailController extends Controller
                 EmailBroadcast::STATUS_SENDING,
             ]))
             ->when($search !== '', function ($q) use ($search) {
-                $needle = '%' . str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $search) . '%';
+                $needle = '%'.str_replace(['\\', '%', '_'], ['\\\\', '\\%', '\\_'], $search).'%';
                 $q->where('subject', 'like', $needle);
             })
             ->latest('id')
@@ -915,9 +916,9 @@ class EmailController extends Controller
         if (str_contains($value, '@')) {
             [$name, $domain] = explode('@', $value, 2);
 
-            return mb_substr($name, 0, 2) . str_repeat('*', max(3, mb_strlen($name) - 2)) . '@' . $domain;
+            return mb_substr($name, 0, 2).str_repeat('*', max(3, mb_strlen($name) - 2)).'@'.$domain;
         }
 
-        return mb_substr($value, 0, 2) . str_repeat('*', max(3, mb_strlen($value) - 2));
+        return mb_substr($value, 0, 2).str_repeat('*', max(3, mb_strlen($value) - 2));
     }
 }

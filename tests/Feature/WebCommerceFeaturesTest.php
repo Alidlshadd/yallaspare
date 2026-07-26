@@ -205,10 +205,10 @@ class WebCommerceFeaturesTest extends TestCase
 
     private function orderFor(User $user): Order
     {
-        $order = new Order();
+        $order = new Order;
         $order->forceFill([
             'user_id' => $user->id,
-            'order_number' => 'WEB-TEST-' . fake()->unique()->numberBetween(1000, 9999),
+            'order_number' => 'WEB-TEST-'.fake()->unique()->numberBetween(1000, 9999),
             'subtotal_amount' => 0,
             'shipping_fee' => 0,
             'discount_amount' => 0,

@@ -12,7 +12,7 @@ class IsAdmin
     {
         $user = auth()->user();
 
-        if (!$user || !$user->isAdminPanelUser()) {
+        if (! $user || ! $user->isAdminPanelUser()) {
             abort(403);
         }
 

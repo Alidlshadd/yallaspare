@@ -4,18 +4,15 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exports\ReturnsExport;
 use App\Http\Controllers\Controller;
-use App\Models\Order;
 use App\Models\ReturnRequest;
 use App\Models\User;
 use App\Services\Returns\ReturnRefundService;
-use App\Support\AdminLogger;
 use App\Support\SqlSafe;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -86,7 +83,7 @@ class ReturnRequestController extends Controller
     public function update(Request $request, ReturnRequest $return, ReturnRefundService $refunds): RedirectResponse
     {
         $data = $request->validate([
-            'status' => ['required', 'in:' . implode(',', ReturnRequest::allowedStatuses())],
+            'status' => ['required', 'in:'.implode(',', ReturnRequest::allowedStatuses())],
             'admin_note' => ['nullable', 'string', 'max:3000'],
             'refund_amount' => ['nullable', 'numeric', 'min:0', 'max:100000000'],
         ]);
@@ -157,7 +154,7 @@ class ReturnRequestController extends Controller
                 try {
                     $note = trim((string) ($data['admin_note'] ?? ''));
                     if ($note !== '' && trim((string) $return->admin_note) !== '') {
-                        $note = trim((string) $return->admin_note) . "\n---\n" . $note;
+                        $note = trim((string) $return->admin_note)."\n---\n".$note;
                     }
 
                     $refunds->updateStatus(
@@ -172,7 +169,7 @@ class ReturnRequestController extends Controller
                 } catch (ValidationException $exception) {
                     $outcome = [
                         'outcome' => 'skipped',
-                        'reason' => "Return #{$return->id}: " . implode(' ', $exception->validator->errors()->all()),
+                        'reason' => "Return #{$return->id}: ".implode(' ', $exception->validator->errors()->all()),
                     ];
                 }
             }

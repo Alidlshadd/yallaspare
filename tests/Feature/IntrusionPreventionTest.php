@@ -2,8 +2,8 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Cache;
 use Tests\TestCase;
 
 class IntrusionPreventionTest extends TestCase
@@ -28,10 +28,10 @@ class IntrusionPreventionTest extends TestCase
     {
         $client = $this->withServerVariables(['REMOTE_ADDR' => '203.0.113.10']);
 
-        $client->get('/user/shop?q=' . urlencode("' OR 1=1 --"))
+        $client->get('/user/shop?q='.urlencode("' OR 1=1 --"))
             ->assertOk();
 
-        $client->get('/user/shop?q=' . urlencode("' UNION SELECT password FROM users --"))
+        $client->get('/user/shop?q='.urlencode("' UNION SELECT password FROM users --"))
             ->assertTooManyRequests();
 
         $client->get('/user/shop')

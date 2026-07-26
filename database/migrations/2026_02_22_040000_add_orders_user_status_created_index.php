@@ -9,7 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasTable('orders')) {
+        if (! Schema::hasTable('orders')) {
             return;
         }
 
@@ -24,11 +24,11 @@ return new class extends Migration
 
     public function down(): void
     {
-        if (!Schema::hasTable('orders')) {
+        if (! Schema::hasTable('orders')) {
             return;
         }
 
-        if (!$this->indexExists('orders', 'orders_user_status_created_idx')) {
+        if (! $this->indexExists('orders', 'orders_user_status_created_idx')) {
             return;
         }
 

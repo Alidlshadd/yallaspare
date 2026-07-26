@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Schema;
 class AnalyticsQueryService
 {
     public const CACHE_TTL_SECONDS = 300;
+
     public const ALLOWED_DAYS = [7, 30, 90, 365];
 
     /**
@@ -267,7 +268,7 @@ class AnalyticsQueryService
     }
 
     /**
-     * @param array<string, mixed> $kpi
+     * @param  array<string, mixed>  $kpi
      */
     private function snapshotHasData(array $kpi, Collection ...$collections): bool
     {

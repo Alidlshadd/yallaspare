@@ -33,7 +33,7 @@ class ProductDiscountPricingTest extends TestCase
     private function makeDiscount(array $attributes = []): Discount
     {
         return Discount::query()->create(array_merge([
-            'name' => 'Test discount ' . fake()->unique()->word(),
+            'name' => 'Test discount '.fake()->unique()->word(),
             'scope' => 'catalog',
             'type' => 'percent',
             'value' => 10,

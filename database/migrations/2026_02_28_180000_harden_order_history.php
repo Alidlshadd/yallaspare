@@ -9,7 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasTable('orders')) {
+        if (! Schema::hasTable('orders')) {
             return;
         }
 
@@ -32,7 +32,7 @@ return new class extends Migration
 
     private function ensureOrdersSoftDeletes(): void
     {
-        if (!Schema::hasColumn('orders', 'deleted_at')) {
+        if (! Schema::hasColumn('orders', 'deleted_at')) {
             Schema::table('orders', function (Blueprint $table) {
                 $table->softDeletes();
             });
@@ -41,7 +41,7 @@ return new class extends Migration
 
     private function hardenOrderItemOrderFk(): void
     {
-        if (!Schema::hasTable('order_items') || !Schema::hasColumn('order_items', 'order_id')) {
+        if (! Schema::hasTable('order_items') || ! Schema::hasColumn('order_items', 'order_id')) {
             return;
         }
 
@@ -54,15 +54,15 @@ return new class extends Migration
 
         DB::statement("ALTER TABLE `order_items` DROP FOREIGN KEY `{$constraint}`");
         DB::statement(
-            "ALTER TABLE `order_items` ADD CONSTRAINT `{$constraint}` " .
-            "FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) " .
-            "ON DELETE RESTRICT ON UPDATE CASCADE"
+            "ALTER TABLE `order_items` ADD CONSTRAINT `{$constraint}` ".
+            'FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) '.
+            'ON DELETE RESTRICT ON UPDATE CASCADE'
         );
     }
 
     private function hardenOrderStatusHistoryOrderFk(): void
     {
-        if (!Schema::hasTable('order_status_histories') || !Schema::hasColumn('order_status_histories', 'order_id')) {
+        if (! Schema::hasTable('order_status_histories') || ! Schema::hasColumn('order_status_histories', 'order_id')) {
             return;
         }
 
@@ -75,9 +75,9 @@ return new class extends Migration
 
         DB::statement("ALTER TABLE `order_status_histories` DROP FOREIGN KEY `{$constraint}`");
         DB::statement(
-            "ALTER TABLE `order_status_histories` ADD CONSTRAINT `{$constraint}` " .
-            "FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) " .
-            "ON DELETE RESTRICT ON UPDATE CASCADE"
+            "ALTER TABLE `order_status_histories` ADD CONSTRAINT `{$constraint}` ".
+            'FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) '.
+            'ON DELETE RESTRICT ON UPDATE CASCADE'
         );
     }
 
@@ -90,7 +90,7 @@ return new class extends Migration
         }
 
         DB::unprepared(
-            "CREATE TRIGGER `{$triggerName}` BEFORE DELETE ON `orders` FOR EACH ROW " .
+            "CREATE TRIGGER `{$triggerName}` BEFORE DELETE ON `orders` FOR EACH ROW ".
             "BEGIN SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'Physical delete blocked: use soft delete on orders'; END"
         );
     }

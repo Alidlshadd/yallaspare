@@ -12,23 +12,23 @@ use App\Services\Checkout\CheckoutService;
 use App\Services\CouponService;
 use App\Services\Payments\PaymentService;
 use App\Support\UserCommunication;
-use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
 class CheckoutController extends Controller
 {
     private const REVIEW_SESSION_KEY = 'checkout.review';
+
     private const COUPON_SESSION_KEY = 'checkout.coupon_code';
+
     private const BUY_NOW_COUPON_SESSION_KEY = 'checkout.buy_now_coupon_code';
 
     public function __construct(
         private readonly CheckoutService $checkoutService,
         private readonly PaymentService $paymentService,
-    )
-    {
-    }
+    ) {}
 
     public function options(Request $request, Product $product): View|RedirectResponse
     {
@@ -134,7 +134,7 @@ class CheckoutController extends Controller
         $channels = UserCommunication::sendOrderPlaced($user, $placedOrder);
         $successMessage = __('Order placed successfully.');
         if ($channels !== []) {
-            $successMessage .= ' ' . __('Confirmation sent via :channels.', ['channels' => implode(', ', $channels)]);
+            $successMessage .= ' '.__('Confirmation sent via :channels.', ['channels' => implode(', ', $channels)]);
         }
 
         $request->session()->forget(self::BUY_NOW_COUPON_SESSION_KEY);
@@ -180,7 +180,7 @@ class CheckoutController extends Controller
 
     public function review(Request $request): View|RedirectResponse
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return redirect()->route('login');
         }
 
@@ -188,7 +188,7 @@ class CheckoutController extends Controller
         if ($request->isMethod('get')) {
             $savedReview = $request->session()->get(self::REVIEW_SESSION_KEY);
 
-            if (!is_array($savedReview)) {
+            if (! is_array($savedReview)) {
                 return redirect()
                     ->route('cart.index')
                     ->with('error', __('Review your cart before placing the order.'));
@@ -318,7 +318,7 @@ class CheckoutController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return redirect()->route('login');
         }
 
@@ -351,7 +351,7 @@ class CheckoutController extends Controller
             ->with('items.product')
             ->first();
 
-        if (!$cart || $cart->items->isEmpty()) {
+        if (! $cart || $cart->items->isEmpty()) {
             return back()->with('error', __('Cart is empty.'));
         }
 
@@ -394,7 +394,7 @@ class CheckoutController extends Controller
         $successMessage = __('Order placed successfully.');
 
         if ($channels !== []) {
-            $successMessage .= ' ' . __('Confirmation sent via :channels.', ['channels' => implode(', ', $channels)]);
+            $successMessage .= ' '.__('Confirmation sent via :channels.', ['channels' => implode(', ', $channels)]);
         }
 
         $request->session()->forget(self::REVIEW_SESSION_KEY);
@@ -505,5 +505,4 @@ class CheckoutController extends Controller
 
         return min(max(1, $quantity), $maxQuantity);
     }
-
 }

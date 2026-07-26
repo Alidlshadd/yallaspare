@@ -146,7 +146,7 @@ class ShopController extends Controller
                     'sku' => (string) $product->sku,
                     'brand' => (string) $product->brand,
                     'price' => $price,
-                    'price_formatted' => trim(number_format($price, 2) . ' ' . $currencyLabel),
+                    'price_formatted' => trim(number_format($price, 2).' '.$currencyLabel),
                     'stock_quantity' => (int) $product->stock_quantity,
                     'image_url' => $this->primaryImageUrl($product),
                     'url' => route('shop.show', $product),
@@ -248,9 +248,9 @@ class ShopController extends Controller
     {
         $firstImage = $product->relationLoaded('images') ? $product->images->first() : $product->images()->first();
         if ($firstImage) {
-            return asset('storage/' . ltrim((string) $firstImage->path, '/'));
+            return asset('storage/'.ltrim((string) $firstImage->path, '/'));
         }
 
-        return $product->image ? asset('storage/' . ltrim((string) $product->image, '/')) : null;
+        return $product->image ? asset('storage/'.ltrim((string) $product->image, '/')) : null;
     }
 }

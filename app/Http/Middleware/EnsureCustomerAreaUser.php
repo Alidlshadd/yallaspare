@@ -11,7 +11,7 @@ class EnsureCustomerAreaUser
     /**
      * Keep admin-panel accounts out of customer-only commerce and account pages.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next): Response
     {

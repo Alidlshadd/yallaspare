@@ -122,7 +122,7 @@ class MobileProductReviewSecurityTest extends TestCase
     {
         $order = Order::query()->forceCreate([
             'user_id' => $user->id,
-            'order_number' => 'ORD-MOBILE-REVIEW-' . uniqid(),
+            'order_number' => 'ORD-MOBILE-REVIEW-'.uniqid(),
             'subtotal_amount' => 10000,
             'shipping_fee' => 0,
             'discount_amount' => 0,

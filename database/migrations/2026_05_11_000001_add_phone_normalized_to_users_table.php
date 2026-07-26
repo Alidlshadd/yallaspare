@@ -31,6 +31,7 @@ return new class extends Migration
                         DB::table('users')
                             ->where('id', $user->id)
                             ->update(['phone_normalized' => null]);
+
                         continue;
                     }
 

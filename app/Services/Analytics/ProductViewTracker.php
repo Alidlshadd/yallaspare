@@ -7,8 +7,8 @@ use App\Models\ProductView;
 use App\Support\BotDetector;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Schema;
 use Throwable;
 
 class ProductViewTracker

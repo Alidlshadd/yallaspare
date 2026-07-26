@@ -27,6 +27,7 @@ use Throwable;
 class AccountVerificationController extends Controller
 {
     public const CHANNEL_SESSION_KEY = 'account_verification.channel';
+
     public const LAST_SENT_SESSION_KEY = 'account_verification.last_sent_at';
 
     public function __construct(
@@ -221,7 +222,7 @@ class AccountVerificationController extends Controller
     }
 
     /**
-     * @param array<string, array{available: bool}> $options
+     * @param  array<string, array{available: bool}>  $options
      */
     private function currentChannel(Request $request, array $options): string
     {

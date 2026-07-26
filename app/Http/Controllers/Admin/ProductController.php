@@ -3,26 +3,26 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exports\ProductsExport;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreProductRequest;
 use App\Http\Requests\Admin\UpdateProductRequest;
-use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\ProductImage;
 use App\Models\Setting;
 use App\Support\SecureImageStorage;
 use App\Support\SqlSafe;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Illuminate\Database\QueryException;
-use Illuminate\Validation\Rule;
+use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class ProductController extends Controller
@@ -101,11 +101,11 @@ class ProductController extends Controller
         $sort = $request->get('sort', 'id');
         $direction = $request->get('dir', 'desc');
 
-        if (!in_array($sort, $allowedSorts, true)) {
+        if (! in_array($sort, $allowedSorts, true)) {
             $sort = 'id';
         }
 
-        if (!in_array($direction, ['asc', 'desc'], true)) {
+        if (! in_array($direction, ['asc', 'desc'], true)) {
             $direction = 'desc';
         }
 
@@ -208,7 +208,7 @@ class ProductController extends Controller
 
         $sku = $request->filled('sku')
             ? $request->sku
-            : 'SKU-' . Str::upper(Str::random(10));
+            : 'SKU-'.Str::upper(Str::random(10));
 
         $dealerPrice = $request->filled('dealer_price') ? (float) $request->dealer_price : null;
         $basePrice = (float) $request->price;
@@ -395,7 +395,7 @@ class ProductController extends Controller
     public function exportExcel()
     {
         try {
-            return Excel::download(new ProductsExport(), 'products.xlsx');
+            return Excel::download(new ProductsExport, 'products.xlsx');
         } catch (\Throwable $e) {
             Log::error('Products Excel export failed', [
                 'error' => $e->getMessage(),
@@ -422,7 +422,7 @@ class ProductController extends Controller
             $header = $parsed['header'];
             $requiredColumns = ['name_en', 'name_ar', 'name_ku', 'price', 'stock_quantity'];
             foreach ($requiredColumns as $column) {
-                if (!in_array($column, $header, true)) {
+                if (! in_array($column, $header, true)) {
                     return back()->with('error', __('Missing required column: :column', ['column' => $column]));
                 }
             }
@@ -447,7 +447,7 @@ class ProductController extends Controller
             foreach ($parsed['rows'] as $entry) {
                 $rowNumber = $entry['row'];
                 $rowData = $entry['data'];
-                if (!isset($rowData['category_name']) && isset($rowData['category'])) {
+                if (! isset($rowData['category_name']) && isset($rowData['category'])) {
                     $rowData['category_name'] = $rowData['category'];
                 }
 
@@ -459,6 +459,7 @@ class ProductController extends Controller
                         'sku' => $rowData['sku'] ?? '',
                         'message' => implode('; ', $rowValidator->errors()->all()),
                     ];
+
                     continue;
                 }
 
@@ -474,6 +475,7 @@ class ProductController extends Controller
                         'sku' => $rowData['sku'] ?? '',
                         'message' => __('Category is required and must match category_id, category_slug, or category_name.'),
                     ];
+
                     continue;
                 }
 
@@ -489,6 +491,7 @@ class ProductController extends Controller
                             'sku' => $providedSku,
                             'message' => __('Duplicate SKU found in file. Keep SKU unique per file.'),
                         ];
+
                         continue;
                     }
 
@@ -497,7 +500,7 @@ class ProductController extends Controller
                         ->value('id');
                 } else {
                     do {
-                        $sku = 'SKU-' . Str::upper(Str::random(10));
+                        $sku = 'SKU-'.Str::upper(Str::random(10));
                         $skuKey = strtolower($sku);
                     } while (isset($seenSkusInFile[$skuKey]) || Product::where('sku', $sku)->exists());
                 }
@@ -532,7 +535,7 @@ class ProductController extends Controller
                 ];
             }
 
-            if (!empty($errors)) {
+            if (! empty($errors)) {
                 return redirect()
                     ->to($this->productsIndexReturnUrl($request))
                     ->with('error', __('Import validation failed. No rows were imported.'))
@@ -583,8 +586,8 @@ class ProductController extends Controller
             }
 
             $message = __('Import completed successfully. Created: :created, Updated: :updated.', ['created' => $created, 'updated' => $updated]);
-            if (!empty($errors)) {
-                $message .= ' ' . __('Some rows were skipped. Please review the import errors.');
+            if (! empty($errors)) {
+                $message .= ' '.__('Some rows were skipped. Please review the import errors.');
             }
 
             return redirect()
@@ -671,6 +674,7 @@ class ProductController extends Controller
         }
 
         $normalized = strtolower(trim((string) $value));
+
         return in_array($normalized, ['1', 'true', 'yes', 'active'], true);
     }
 
@@ -737,6 +741,7 @@ class ProductController extends Controller
 
         if (! $primaryImage) {
             $product->update(['image' => null]);
+
             return;
         }
 
@@ -765,7 +770,7 @@ class ProductController extends Controller
         return $bestDelimiter;
     }
 
-    private function parseImportFile(\Illuminate\Http\UploadedFile $file): array
+    private function parseImportFile(UploadedFile $file): array
     {
         $extension = strtolower($file->getClientOriginalExtension());
         $path = $file->getRealPath();
@@ -798,7 +803,7 @@ class ProductController extends Controller
             rewind($handle);
 
             $rawHeader = fgetcsv($handle, 0, $delimiter);
-            if (!$rawHeader) {
+            if (! $rawHeader) {
                 throw new \RuntimeException(__('Import file is empty.'));
             }
 
@@ -891,7 +896,7 @@ class ProductController extends Controller
     ): ?int {
         $categoryIdRaw = trim((string) ($rowData['category_id'] ?? ''));
         if ($categoryIdRaw !== '') {
-            if (!is_numeric($categoryIdRaw)) {
+            if (! is_numeric($categoryIdRaw)) {
                 return null;
             }
 
@@ -938,8 +943,8 @@ class ProductController extends Controller
             return route('admin.products.index');
         }
 
-        $query = isset($parts['query']) ? '?' . $parts['query'] : '';
+        $query = isset($parts['query']) ? '?'.$parts['query'] : '';
 
-        return $path . $query;
+        return $path.$query;
     }
 }

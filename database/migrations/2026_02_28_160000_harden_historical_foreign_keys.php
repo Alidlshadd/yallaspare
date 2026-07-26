@@ -52,7 +52,7 @@ return new class extends Migration
         string $referencedTable,
         string $referencedColumn
     ): void {
-        if (!Schema::hasTable($table) || !Schema::hasTable($referencedTable) || !Schema::hasColumn($table, $column)) {
+        if (! Schema::hasTable($table) || ! Schema::hasTable($referencedTable) || ! Schema::hasColumn($table, $column)) {
             return;
         }
 
@@ -67,9 +67,9 @@ return new class extends Migration
 
         DB::statement("ALTER TABLE `{$table}` DROP FOREIGN KEY `{$constraint}`");
         DB::statement(
-            "ALTER TABLE `{$table}` ADD CONSTRAINT `{$constraint}` " .
-            "FOREIGN KEY (`{$column}`) REFERENCES `{$referencedTable}`(`{$referencedColumn}`) " .
-            "ON DELETE RESTRICT ON UPDATE CASCADE"
+            "ALTER TABLE `{$table}` ADD CONSTRAINT `{$constraint}` ".
+            "FOREIGN KEY (`{$column}`) REFERENCES `{$referencedTable}`(`{$referencedColumn}`) ".
+            'ON DELETE RESTRICT ON UPDATE CASCADE'
         );
     }
 

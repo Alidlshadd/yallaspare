@@ -13,8 +13,7 @@ class PaymentVerificationResult
         public readonly ?string $providerReference = null,
         public readonly ?string $failureReason = null,
         public readonly array $rawResponse = [],
-    ) {
-    }
+    ) {}
 
     public function isPaid(): bool
     {

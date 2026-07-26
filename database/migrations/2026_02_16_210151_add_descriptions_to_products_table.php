@@ -10,25 +10,24 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up()
-{
-    Schema::table('products', function (Blueprint $table) {
+    {
+        Schema::table('products', function (Blueprint $table) {
 
-    if (!Schema::hasColumn('products', 'description_en')) {
-        $table->text('description_en')->nullable();
+            if (! Schema::hasColumn('products', 'description_en')) {
+                $table->text('description_en')->nullable();
+            }
+
+            if (! Schema::hasColumn('products', 'description_ar')) {
+                $table->text('description_ar')->nullable();
+            }
+
+            if (! Schema::hasColumn('products', 'description_ku')) {
+                $table->text('description_ku')->nullable();
+            }
+
+        });
+
     }
-
-    if (!Schema::hasColumn('products', 'description_ar')) {
-        $table->text('description_ar')->nullable();
-    }
-
-    if (!Schema::hasColumn('products', 'description_ku')) {
-        $table->text('description_ku')->nullable();
-    }
-
-});
-
-    
-}
 
     /**
      * Reverse the migrations.

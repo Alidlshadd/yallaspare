@@ -2,28 +2,28 @@
 
 namespace App\Providers;
 
-use App\Models\Setting;
+use App\Http\View\Composers\HeaderComposer;
 use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Setting;
 use App\Models\User;
 use App\Models\Wishlist;
-use App\Http\View\Composers\HeaderComposer;
-use App\Support\Branding;
 use App\Observers\AdminAuditObserver;
 use App\Observers\CartItemCacheObserver;
 use App\Observers\CategoryCacheObserver;
 use App\Observers\OrderAnalyticsObserver;
 use App\Observers\ProductStockObserver;
 use App\Observers\WishlistCacheObserver;
-use Illuminate\Support\ServiceProvider;
+use App\Support\Branding;
+use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 
 class AppServiceProvider extends ServiceProvider
@@ -126,7 +126,7 @@ class AppServiceProvider extends ServiceProvider
         $settings['site_logo_version'] = (string) ($settings['site_logo_version'] ?? '');
         if ($settings['site_logo_url'] !== null && $settings['site_logo_version'] !== '') {
             $separator = str_contains($settings['site_logo_url'], '?') ? '&' : '?';
-            $settings['site_logo_url'] .= $separator . 'sv=' . urlencode($settings['site_logo_version']);
+            $settings['site_logo_url'] .= $separator.'sv='.urlencode($settings['site_logo_version']);
         }
 
         return $settings;

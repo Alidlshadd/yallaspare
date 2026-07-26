@@ -66,14 +66,14 @@ class UserAccountController extends Controller
 
         $profilePhotoPath = $user->profile_photo_path;
         if ($request->boolean('remove_profile_photo')) {
-            if (!empty($profilePhotoPath)) {
+            if (! empty($profilePhotoPath)) {
                 Storage::disk('public')->delete($profilePhotoPath);
             }
             $profilePhotoPath = null;
         }
 
         if ($request->hasFile('profile_photo')) {
-            if (!empty($profilePhotoPath)) {
+            if (! empty($profilePhotoPath)) {
                 Storage::disk('public')->delete($profilePhotoPath);
             }
             $profilePhotoPath = SecureImageStorage::store($request->file('profile_photo'), 'users/profile-photos');

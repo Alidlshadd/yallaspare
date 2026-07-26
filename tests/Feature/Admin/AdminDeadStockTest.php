@@ -28,7 +28,7 @@ class AdminDeadStockTest extends TestCase
 
         $order = Order::forceCreate([
             'user_id' => $customer->id,
-            'order_number' => 'ORD-DEAD-' . uniqid(),
+            'order_number' => 'ORD-DEAD-'.uniqid(),
             'subtotal_amount' => 25000,
             'shipping_fee' => 0,
             'discount_amount' => 0,

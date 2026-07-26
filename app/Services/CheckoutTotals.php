@@ -10,7 +10,7 @@ final class CheckoutTotals
      * @param  iterable<array{quantity:int|float, unit_price:int|float}>  $items
      * @param  float  $shippingFee  Resolved shipping fee (caller decides source).
      * @param  array{valid:bool, discount:float, free_shipping:bool}|null  $couponPreview
-     *         Output of CouponService::preview(), or null when no code submitted.
+     *                                                                                     Output of CouponService::preview(), or null when no code submitted.
      * @return array{subtotal:float, shipping_fee:float, discount_amount:float, grand_total:float}
      */
     public function compute(iterable $items, float $shippingFee, ?array $couponPreview): array

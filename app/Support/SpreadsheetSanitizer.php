@@ -17,7 +17,7 @@ class SpreadsheetSanitizer
 
         $first = $value[0];
         if ($first === "\t" || in_array($first, ['=', '+', '-', '@'], true)) {
-            return "'" . $value;
+            return "'".$value;
         }
 
         return $value;

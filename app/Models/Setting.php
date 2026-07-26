@@ -78,7 +78,7 @@ class Setting extends Model
     {
         return Cache::remember(self::CACHE_KEY, now()->addHours(6), function () {
             try {
-                if (!Schema::hasTable('settings')) {
+                if (! Schema::hasTable('settings')) {
                     return [];
                 }
 

@@ -36,7 +36,7 @@ class ProductReviewTest extends TestCase
     {
         $order = Order::forceCreate([
             'user_id' => $user->id,
-            'order_number' => 'ORD-REVIEW-' . $user->id . '-' . $product->id,
+            'order_number' => 'ORD-REVIEW-'.$user->id.'-'.$product->id,
             'total_amount' => 100,
             'status' => Order::STATUS_DELIVERED,
             'payment_method' => 'cash_on_delivery',

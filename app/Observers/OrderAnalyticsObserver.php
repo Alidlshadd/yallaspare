@@ -15,7 +15,7 @@ class OrderAnalyticsObserver
     {
         try {
             $this->recorder->record('order_completed', [
-                'user_id'  => $order->user_id,
+                'user_id' => $order->user_id,
                 'metadata' => [
                     'order_id' => $order->id,
                     'order_number' => $order->order_number,

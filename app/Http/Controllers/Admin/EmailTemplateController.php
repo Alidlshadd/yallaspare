@@ -7,14 +7,11 @@ use App\Models\EmailTemplate;
 use App\Services\Email\EmailHtmlSanitizer;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class EmailTemplateController extends Controller
 {
-    public function __construct(private readonly EmailHtmlSanitizer $sanitizer)
-    {
-    }
+    public function __construct(private readonly EmailHtmlSanitizer $sanitizer) {}
 
     public function index(): View
     {
@@ -25,14 +22,14 @@ class EmailTemplateController extends Controller
             $overrides = EmailTemplate::query()
                 ->with('editor:id,name')
                 ->get()
-                ->keyBy(fn (EmailTemplate $t) => $t->template_key . '|' . $t->locale);
+                ->keyBy(fn (EmailTemplate $t) => $t->template_key.'|'.$t->locale);
         }
 
         $rows = [];
         foreach ($registry as $key => $entry) {
             $rowLocales = [];
             foreach (EmailTemplate::LOCALES as $locale) {
-                $override = $overrides->get($key . '|' . $locale);
+                $override = $overrides->get($key.'|'.$locale);
                 $rowLocales[$locale] = [
                     'has_override' => $override !== null,
                     'updated_at' => $override?->updated_at,
@@ -152,7 +149,7 @@ class EmailTemplateController extends Controller
     private function interpolate(string $html, array $vars): string
     {
         foreach ($vars as $token => $value) {
-            $html = str_replace('{' . $token . '}', e((string) $value), $html);
+            $html = str_replace('{'.$token.'}', e((string) $value), $html);
         }
 
         return $html;
@@ -260,52 +257,52 @@ class EmailTemplateController extends Controller
         $registry = [
             'verify-email' => [
                 'subject_key' => 'Verify your email address',
-                'body' => '<p>' . __('Enter this verification code on the YallaSpare verification screen to protect your account and unlock checkout, order tracking, and account settings.') . '</p>'
-                    . '<p><strong>' . __('Verification code: :code', ['code' => '{code}']) . '</strong></p>'
-                    . '<p>' . __('This one-time code expires automatically. Do not share it with anyone, including YallaSpare support.') . '</p>',
+                'body' => '<p>'.__('Enter this verification code on the YallaSpare verification screen to protect your account and unlock checkout, order tracking, and account settings.').'</p>'
+                    .'<p><strong>'.__('Verification code: :code', ['code' => '{code}']).'</strong></p>'
+                    .'<p>'.__('This one-time code expires automatically. Do not share it with anyone, including YallaSpare support.').'</p>',
             ],
             'reset-password' => [
                 'subject_key' => 'Reset your password',
-                'body' => '<p>' . __('Choose a new password using the secure reset link below.') . '</p>'
-                    . '<p><a href="{url}">' . __('Reset password') . '</a></p>'
-                    . '<p>' . __('If you did not request this, you can safely ignore this email.') . '</p>',
+                'body' => '<p>'.__('Choose a new password using the secure reset link below.').'</p>'
+                    .'<p><a href="{url}">'.__('Reset password').'</a></p>'
+                    .'<p>'.__('If you did not request this, you can safely ignore this email.').'</p>',
             ],
             'two-factor-code' => [
                 'subject_key' => 'Admin sign-in code',
-                'body' => '<p>' . __('Use this one-time code to finish signing in to your admin account.') . '</p>'
-                    . '<p><strong>' . __('Code: :code', ['code' => '{code}']) . '</strong></p>'
-                    . '<p>' . __('The code is valid for :count minutes.', ['count' => '{expires}']) . '</p>',
+                'body' => '<p>'.__('Use this one-time code to finish signing in to your admin account.').'</p>'
+                    .'<p><strong>'.__('Code: :code', ['code' => '{code}']).'</strong></p>'
+                    .'<p>'.__('The code is valid for :count minutes.', ['count' => '{expires}']).'</p>',
             ],
             'welcome' => [
                 'subject_key' => 'Welcome to YallaSpare',
-                'body' => '<p>' . __('Welcome, :name!', ['name' => '{name}']) . '</p>'
-                    . '<p>' . __('Your account is ready for checkout, order tracking, and saved settings.') . '</p>'
-                    . '<p><a href="{url}">' . __('Open Your Account') . '</a></p>',
+                'body' => '<p>'.__('Welcome, :name!', ['name' => '{name}']).'</p>'
+                    .'<p>'.__('Your account is ready for checkout, order tracking, and saved settings.').'</p>'
+                    .'<p><a href="{url}">'.__('Open Your Account').'</a></p>',
             ],
             'order-status' => [
                 'subject_key' => 'Your order is on the way',
-                'body' => '<p>' . __('Your YallaSpare order #:order has shipped and will arrive in 2-3 business days.', ['order' => '{order}']) . '</p>'
-                    . '<p><a href="{url}">' . __('Track your order') . '</a></p>',
+                'body' => '<p>'.__('Your YallaSpare order #:order has shipped and will arrive in 2-3 business days.', ['order' => '{order}']).'</p>'
+                    .'<p><a href="{url}">'.__('Track your order').'</a></p>',
             ],
             'dealer' => [
                 'subject_key' => 'Dealer status approved',
-                'body' => '<p>' . __('Your YallaSpare dealer application has been approved. You can now access dealer pricing, order tools, and inventory management.') . '</p>'
-                    . '<p><a href="{url}">' . __('View dealer dashboard') . '</a></p>',
+                'body' => '<p>'.__('Your YallaSpare dealer application has been approved. You can now access dealer pricing, order tools, and inventory management.').'</p>'
+                    .'<p><a href="{url}">'.__('View dealer dashboard').'</a></p>',
             ],
             'security-alert' => [
                 'subject_key' => 'New admin sign-in detected',
-                'body' => '<p>' . __('A YallaSpare admin account was just signed in from a new device.') . '</p>'
-                    . '<p>' . __('If this was you, no further action is needed.') . '</p>',
+                'body' => '<p>'.__('A YallaSpare admin account was just signed in from a new device.').'</p>'
+                    .'<p>'.__('If this was you, no further action is needed.').'</p>',
             ],
             'low-stock' => [
                 'subject_key' => 'Products below threshold',
-                'body' => '<p>' . __(':count products dropped below the low-stock threshold. Replenish them before the next sales cycle to avoid lost orders.', ['count' => '{count}']) . '</p>'
-                    . '<p><a href="{url}">' . __('Manage inventory') . '</a></p>',
+                'body' => '<p>'.__(':count products dropped below the low-stock threshold. Replenish them before the next sales cycle to avoid lost orders.', ['count' => '{count}']).'</p>'
+                    .'<p><a href="{url}">'.__('Manage inventory').'</a></p>',
             ],
             'support' => [
                 'subject_key' => 'New support request',
-                'body' => '<p>' . __('A customer submitted a support request.') . '</p>'
-                    . '<p><strong>' . __('Topic: :topic', ['topic' => '{topic}']) . '</strong></p>',
+                'body' => '<p>'.__('A customer submitted a support request.').'</p>'
+                    .'<p><strong>'.__('Topic: :topic', ['topic' => '{topic}']).'</strong></p>',
             ],
         ];
 

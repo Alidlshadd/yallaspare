@@ -9,7 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasColumn('users', 'is_admin')) {
+        if (! Schema::hasColumn('users', 'is_admin')) {
             return;
         }
 
@@ -42,7 +42,7 @@ return new class extends Migration
             ->whereNotIn('role', ['admin', 'super_admin'])
             ->update(['is_admin' => false]);
 
-        if (!$this->indexExists('users', 'users_is_admin_idx')) {
+        if (! $this->indexExists('users', 'users_is_admin_idx')) {
             Schema::table('users', function (Blueprint $table) {
                 $table->index('is_admin', 'users_is_admin_idx');
             });

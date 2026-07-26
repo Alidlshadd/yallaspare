@@ -22,7 +22,7 @@ class SqlInjectionProtectionTest extends TestCase
             'is_active' => true,
         ]);
 
-        $this->get('/user/shop?q=' . urlencode("' OR 1=1 --"))
+        $this->get('/user/shop?q='.urlencode("' OR 1=1 --"))
             ->assertOk()
             ->assertDontSee('Brake Pad');
     }
@@ -37,7 +37,7 @@ class SqlInjectionProtectionTest extends TestCase
             'is_active' => true,
         ]);
 
-        $this->get('/user/shop?q=' . urlencode('%'))
+        $this->get('/user/shop?q='.urlencode('%'))
             ->assertOk()
             ->assertDontSee('Brake Pad');
     }

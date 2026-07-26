@@ -19,7 +19,7 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class ProductsExport implements FromCollection, WithHeadings, ShouldAutoSize, WithColumnFormatting, WithStyles, WithEvents, WithDrawings
+class ProductsExport implements FromCollection, ShouldAutoSize, WithColumnFormatting, WithDrawings, WithEvents, WithHeadings, WithStyles
 {
     private ?Collection $productsCache = null;
 
@@ -126,16 +126,16 @@ class ProductsExport implements FromCollection, WithHeadings, ShouldAutoSize, Wi
                 continue;
             }
 
-            $fullPath = storage_path('app/public/' . ltrim($imagePath, '/'));
-            if (!is_file($fullPath)) {
+            $fullPath = storage_path('app/public/'.ltrim($imagePath, '/'));
+            if (! is_file($fullPath)) {
                 continue;
             }
 
-            $drawing = new Drawing();
+            $drawing = new Drawing;
             $drawing->setName((string) ($product->name_en ?? 'Product image'));
             $drawing->setDescription('Product image');
             $drawing->setPath($fullPath);
-            $drawing->setCoordinates('A' . ($index + 2));
+            $drawing->setCoordinates('A'.($index + 2));
             $drawing->setHeight(44);
             $drawing->setOffsetX(8);
             $drawing->setOffsetY(4);

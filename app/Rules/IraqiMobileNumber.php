@@ -12,7 +12,7 @@ class IraqiMobileNumber implements ValidationRule
     {
         $hasFormatError = false;
 
-        (new PhoneNumber())->validate($attribute, $value, function () use (&$hasFormatError): void {
+        (new PhoneNumber)->validate($attribute, $value, function () use (&$hasFormatError): void {
             $hasFormatError = true;
         });
 

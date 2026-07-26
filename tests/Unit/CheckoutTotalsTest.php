@@ -12,7 +12,7 @@ class CheckoutTotalsTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $this->totals = new CheckoutTotals();
+        $this->totals = new CheckoutTotals;
     }
 
     public function test_empty_items_returns_zero_subtotal_with_shipping_only(): void

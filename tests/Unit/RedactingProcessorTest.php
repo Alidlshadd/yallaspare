@@ -12,7 +12,7 @@ class RedactingProcessorTest extends TestCase
     private function record(string $message, array $context = [], array $extra = []): LogRecord
     {
         return new LogRecord(
-            datetime: new \DateTimeImmutable(),
+            datetime: new \DateTimeImmutable,
             channel: 'test',
             level: Level::Info,
             message: $message,
@@ -23,7 +23,7 @@ class RedactingProcessorTest extends TestCase
 
     public function test_redacts_sensitive_keys_in_context(): void
     {
-        $processor = new RedactingProcessor();
+        $processor = new RedactingProcessor;
         $record = $this->record('login attempt', [
             'user' => 'jane',
             'password' => 'super-secret',
@@ -41,7 +41,7 @@ class RedactingProcessorTest extends TestCase
 
     public function test_redacts_sensitive_keys_recursively(): void
     {
-        $processor = new RedactingProcessor();
+        $processor = new RedactingProcessor;
         $record = $this->record('payload', [
             'request' => [
                 'body' => [
@@ -59,7 +59,7 @@ class RedactingProcessorTest extends TestCase
 
     public function test_redacts_emails_in_message(): void
     {
-        $processor = new RedactingProcessor();
+        $processor = new RedactingProcessor;
         $result = $processor($this->record('user signed up: john.doe+x@example.com here'));
 
         $this->assertStringNotContainsString('john.doe', $result->message);
@@ -68,7 +68,7 @@ class RedactingProcessorTest extends TestCase
 
     public function test_redacts_bearer_tokens(): void
     {
-        $processor = new RedactingProcessor();
+        $processor = new RedactingProcessor;
         $result = $processor($this->record('Authorization: Bearer eyJhbGciOiJIUzI1NiJ9.foo'));
 
         $this->assertStringNotContainsString('eyJhbGciOiJIUzI1NiJ9.foo', $result->message);
@@ -77,7 +77,7 @@ class RedactingProcessorTest extends TestCase
 
     public function test_redacts_long_hex_strings(): void
     {
-        $processor = new RedactingProcessor();
+        $processor = new RedactingProcessor;
         $hex = str_repeat('a1b2c3d4', 6);
         $result = $processor($this->record("session={$hex}"));
 
@@ -87,7 +87,7 @@ class RedactingProcessorTest extends TestCase
 
     public function test_redacts_phone_numbers_in_context_strings(): void
     {
-        $processor = new RedactingProcessor();
+        $processor = new RedactingProcessor;
         $result = $processor($this->record('user info', [
             'note' => 'reach me at +905551234567 anytime',
         ]));
@@ -98,7 +98,7 @@ class RedactingProcessorTest extends TestCase
 
     public function test_preserves_non_sensitive_data(): void
     {
-        $processor = new RedactingProcessor();
+        $processor = new RedactingProcessor;
         $record = $this->record('benign event', [
             'id' => 42,
             'status' => 'ok',

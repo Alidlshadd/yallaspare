@@ -9,7 +9,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        if (!Schema::hasColumn('users', 'role')) {
+        if (! Schema::hasColumn('users', 'role')) {
             Schema::table('users', function (Blueprint $table) {
                 $table->string('role')->default('user')->after('email');
             });
@@ -42,7 +42,7 @@ return new class extends Migration
 
         try {
             DB::statement("ALTER TABLE users MODIFY role VARCHAR(255) NOT NULL DEFAULT 'user'");
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Ignore driver-specific ALTER syntax issues.
         }
     }
@@ -56,7 +56,7 @@ return new class extends Migration
 
         try {
             DB::statement("ALTER TABLE users MODIFY role VARCHAR(255) NOT NULL DEFAULT 'customer'");
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Ignore driver-specific ALTER syntax issues.
         }
     }

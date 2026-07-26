@@ -99,7 +99,7 @@ class PopupController extends Controller
             'button_label_en' => ['nullable', 'string', 'max:60'],
             'button_label_ar' => ['nullable', 'string', 'max:60'],
             'button_label_ku' => ['nullable', 'string', 'max:60'],
-            'button_url' => ['nullable', 'string', 'max:2048', new SafeLinkUrl()],
+            'button_url' => ['nullable', 'string', 'max:2048', new SafeLinkUrl],
             'image' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
             'remove_image' => ['nullable', 'boolean'],
             'is_active' => ['nullable', 'boolean'],

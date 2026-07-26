@@ -8,15 +8,25 @@ use Illuminate\View\View;
 class AuthSplitLayout extends Component
 {
     public string $panelTitle;
+
     public string $panelSubtitle;
+
     public ?string $panelTag;
+
     public ?string $panelButtonText;
+
     public ?string $panelButtonHref;
+
     public string $panelButtonAction;
+
     public ?string $panelExitDirection;
+
     public string $panelTheme;
+
     public string $heading;
+
     public string $formPosition;
+
     public string $enterDirection;
 
     public function __construct(

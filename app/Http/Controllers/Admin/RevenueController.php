@@ -164,7 +164,7 @@ class RevenueController extends Controller
             ->whereIn('orders.status', $paidStatuses)
             ->whereBetween('orders.created_at', [$start, $end])
             ->select(
-                DB::raw("COALESCE(categories.id, 0) as category_id"),
+                DB::raw('COALESCE(categories.id, 0) as category_id'),
                 DB::raw("COALESCE(NULLIF({$localizedCategoryColumn}, ''), categories.name_en, 'Uncategorized') as category_name"),
                 DB::raw('COALESCE(SUM(order_items.subtotal), 0) as revenue_total'),
                 DB::raw('COALESCE(SUM(order_items.quantity), 0) as units_sold')
@@ -275,7 +275,7 @@ class RevenueController extends Controller
             ->get()
             ->keyBy('order_day');
 
-        $filename = 'revenue-' . $start->toDateString() . '-to-' . $end->toDateString() . '.csv';
+        $filename = 'revenue-'.$start->toDateString().'-to-'.$end->toDateString().'.csv';
 
         return response()->streamDownload(function () use ($dailyRows, $start, $end, $rangeDays) {
             $out = fopen('php://output', 'w');
@@ -292,7 +292,7 @@ class RevenueController extends Controller
                 fputcsv($out, [$key, $orders, $revenue]);
             }
 
-            fputcsv($out, ['Total (' . $start->toDateString() . ' to ' . $end->toDateString() . ')', $totalOrders, $totalRevenue]);
+            fputcsv($out, ['Total ('.$start->toDateString().' to '.$end->toDateString().')', $totalOrders, $totalRevenue]);
             fclose($out);
         }, $filename, ['Content-Type' => 'text/csv']);
     }
@@ -304,7 +304,7 @@ class RevenueController extends Controller
     {
         $allowedDays = [7, 30, 90, 365];
         $days = (int) $request->query('days', 30);
-        if (!in_array($days, $allowedDays, true)) {
+        if (! in_array($days, $allowedDays, true)) {
             $days = 30;
         }
 

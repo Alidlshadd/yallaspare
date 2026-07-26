@@ -54,7 +54,7 @@ class ProfanityFilter
             ->unique()
             // Whole-word match bounded by non-letters, so list entries never
             // fire inside longer legitimate words. Unicode-aware for AR/KU.
-            ->map(fn (string $word) => '/(?<!\p{L})' . preg_quote($word, '/') . '(?!\p{L})/iu')
+            ->map(fn (string $word) => '/(?<!\p{L})'.preg_quote($word, '/').'(?!\p{L})/iu')
             ->values()
             ->all();
 

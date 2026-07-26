@@ -16,8 +16,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
-use Symfony\Component\HttpFoundation\Response;
 use Illuminate\View\View;
+use Symfony\Component\HttpFoundation\Response;
 
 class AccountOrdersController extends Controller
 {
@@ -82,7 +82,7 @@ class AccountOrdersController extends Controller
         $locale = $renderer->resolveLocale($explicit !== '' ? $explicit : null, $order, auth()->user());
 
         return $renderer->render($order, $locale)
-            ->download('invoice-' . $order->id . '-' . $locale . '.pdf');
+            ->download('invoice-'.$order->id.'-'.$locale.'.pdf');
     }
 
     public function reorder(Request $request, Order $order): RedirectResponse
@@ -113,6 +113,7 @@ class AccountOrdersController extends Controller
             foreach ($order->items as $item) {
                 if (! $item->product_id) {
                     $skippedCount++;
+
                     continue;
                 }
 
@@ -127,6 +128,7 @@ class AccountOrdersController extends Controller
 
                 if ($maxQuantity < 1) {
                     $skippedCount++;
+
                     continue;
                 }
 
@@ -216,7 +218,7 @@ class AccountOrdersController extends Controller
                     continue;
                 }
 
-                $product = \App\Models\Product::query()
+                $product = Product::query()
                     ->whereKey($item->product_id)
                     ->lockForUpdate()
                     ->first();
@@ -288,5 +290,4 @@ class AccountOrdersController extends Controller
 
         return back()->with('status', __('Return request sent. Our team will review it shortly.'));
     }
-
 }

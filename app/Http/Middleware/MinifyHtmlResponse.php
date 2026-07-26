@@ -63,7 +63,7 @@ class MinifyHtmlResponse
     {
         $preserved = [];
         $stash = function (string $value) use (&$preserved): string {
-            $key = "\x01MIN" . count($preserved) . "\x01";
+            $key = "\x01MIN".count($preserved)."\x01";
             $preserved[$key] = $value;
 
             return $key;

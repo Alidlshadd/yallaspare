@@ -11,8 +11,8 @@ use Symfony\Component\HttpFoundation\Response;
 class RecordAnalyticsEvent
 {
     private const ASSET_EXTENSIONS = [
-        'js','css','map','png','jpg','jpeg','gif','svg','webp','ico',
-        'woff','woff2','ttf','eot','otf','mp4','webm','mp3','pdf','txt','xml','json',
+        'js', 'css', 'map', 'png', 'jpg', 'jpeg', 'gif', 'svg', 'webp', 'ico',
+        'woff', 'woff2', 'ttf', 'eot', 'otf', 'mp4', 'webm', 'mp3', 'pdf', 'txt', 'xml', 'json',
     ];
 
     public function __construct(private readonly AnalyticsRecorder $recorder) {}
@@ -46,6 +46,7 @@ class RecordAnalyticsEvent
     private function isAsset(string $path): bool
     {
         $ext = strtolower(pathinfo($path, PATHINFO_EXTENSION));
+
         return $ext !== '' && in_array($ext, self::ASSET_EXTENSIONS, true);
     }
 }

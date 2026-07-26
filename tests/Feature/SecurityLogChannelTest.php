@@ -78,7 +78,7 @@ class SecurityLogChannelTest extends TestCase
             'two_factor_preference' => 'email',
         ]);
 
-        $key = 'user-2fa:' . $user->id . '|127.0.0.1';
+        $key = 'user-2fa:'.$user->id.'|127.0.0.1';
         for ($i = 0; $i < 5; $i++) {
             RateLimiter::hit($key, 300);
         }
@@ -117,7 +117,7 @@ class SecurityLogChannelTest extends TestCase
             'email_verified_at' => now(),
         ]);
 
-        $key = 'admin-2fa:' . $admin->id . '|127.0.0.1';
+        $key = 'admin-2fa:'.$admin->id.'|127.0.0.1';
         for ($i = 0; $i < 5; $i++) {
             RateLimiter::hit($key, 300);
         }

@@ -28,7 +28,7 @@ return new class extends Migration
     {
         if (Schema::hasTable('products')) {
             Schema::table('products', function (Blueprint $table) {
-                if (!Schema::hasColumn('products', 'currency_code')) {
+                if (! Schema::hasColumn('products', 'currency_code')) {
                     $table->string('currency_code', 3)->default('IQD')->after('price');
                 }
             });
@@ -36,7 +36,7 @@ return new class extends Migration
 
         if (Schema::hasTable('order_items')) {
             Schema::table('order_items', function (Blueprint $table) {
-                if (!Schema::hasColumn('order_items', 'currency_code')) {
+                if (! Schema::hasColumn('order_items', 'currency_code')) {
                     $table->string('currency_code', 3)->nullable()->after('unit_price');
                 }
             });
@@ -44,7 +44,7 @@ return new class extends Migration
 
         if (Schema::hasTable('price_histories')) {
             Schema::table('price_histories', function (Blueprint $table) {
-                if (!Schema::hasColumn('price_histories', 'currency_code')) {
+                if (! Schema::hasColumn('price_histories', 'currency_code')) {
                     $table->string('currency_code', 3)->default('IQD')->after('new_price');
                 }
             });
@@ -52,10 +52,10 @@ return new class extends Migration
 
         if (Schema::hasTable('stock_transactions')) {
             Schema::table('stock_transactions', function (Blueprint $table) {
-                if (!Schema::hasColumn('stock_transactions', 'unit_cost')) {
+                if (! Schema::hasColumn('stock_transactions', 'unit_cost')) {
                     $table->decimal('unit_cost', 15, 4)->nullable()->after('quantity_change');
                 }
-                if (!Schema::hasColumn('stock_transactions', 'currency_code')) {
+                if (! Schema::hasColumn('stock_transactions', 'currency_code')) {
                     $table->string('currency_code', 3)->default('IQD')->after('unit_cost');
                 }
             });
@@ -63,7 +63,7 @@ return new class extends Migration
 
         if (Schema::hasTable('discounts')) {
             Schema::table('discounts', function (Blueprint $table) {
-                if (!Schema::hasColumn('discounts', 'currency_code')) {
+                if (! Schema::hasColumn('discounts', 'currency_code')) {
                     $table->string('currency_code', 3)->default('IQD')->after('value');
                 }
             });
@@ -71,7 +71,7 @@ return new class extends Migration
 
         if (Schema::hasTable('coupons')) {
             Schema::table('coupons', function (Blueprint $table) {
-                if (!Schema::hasColumn('coupons', 'currency_code')) {
+                if (! Schema::hasColumn('coupons', 'currency_code')) {
                     $table->string('currency_code', 3)->default('IQD')->after('value');
                 }
             });
@@ -79,7 +79,7 @@ return new class extends Migration
 
         if (Schema::hasTable('coupon_usages')) {
             Schema::table('coupon_usages', function (Blueprint $table) {
-                if (!Schema::hasColumn('coupon_usages', 'currency_code')) {
+                if (! Schema::hasColumn('coupon_usages', 'currency_code')) {
                     $table->string('currency_code', 3)->default('IQD')->after('discount_amount');
                 }
             });
@@ -87,7 +87,7 @@ return new class extends Migration
 
         if (Schema::hasTable('supplier_products')) {
             Schema::table('supplier_products', function (Blueprint $table) {
-                if (!Schema::hasColumn('supplier_products', 'currency_code')) {
+                if (! Schema::hasColumn('supplier_products', 'currency_code')) {
                     $table->string('currency_code', 3)->default('IQD')->after('last_cost_price');
                 }
             });
@@ -95,7 +95,7 @@ return new class extends Migration
 
         if (Schema::hasTable('purchase_invoice_items')) {
             Schema::table('purchase_invoice_items', function (Blueprint $table) {
-                if (!Schema::hasColumn('purchase_invoice_items', 'currency_code')) {
+                if (! Schema::hasColumn('purchase_invoice_items', 'currency_code')) {
                     $table->string('currency_code', 3)->default('IQD')->after('line_total');
                 }
             });
@@ -109,45 +109,45 @@ return new class extends Migration
         }
 
         // Run this migration in low traffic or through pt-online-schema-change for very large tables.
-        $this->tryAlter("ALTER TABLE `products` MODIFY `price` DECIMAL(15,4) NOT NULL");
-        $this->tryAlter("ALTER TABLE `products` MODIFY `dealer_price` DECIMAL(15,4) NULL DEFAULT NULL");
-        $this->tryAlter("ALTER TABLE `products` MODIFY `cost_price` DECIMAL(15,4) NULL DEFAULT NULL");
+        $this->tryAlter('ALTER TABLE `products` MODIFY `price` DECIMAL(15,4) NOT NULL');
+        $this->tryAlter('ALTER TABLE `products` MODIFY `dealer_price` DECIMAL(15,4) NULL DEFAULT NULL');
+        $this->tryAlter('ALTER TABLE `products` MODIFY `cost_price` DECIMAL(15,4) NULL DEFAULT NULL');
 
-        $this->tryAlter("ALTER TABLE `orders` MODIFY `total_amount` DECIMAL(15,4) NOT NULL");
-        $this->tryAlter("ALTER TABLE `orders` MODIFY `subtotal_amount` DECIMAL(15,4) NULL DEFAULT NULL");
-        $this->tryAlter("ALTER TABLE `orders` MODIFY `discount_amount` DECIMAL(15,4) NOT NULL DEFAULT 0.0000");
-        $this->tryAlter("ALTER TABLE `orders` MODIFY `tax_amount` DECIMAL(15,4) NOT NULL DEFAULT 0.0000");
-        $this->tryAlter("ALTER TABLE `orders` MODIFY `shipping_amount` DECIMAL(15,4) NOT NULL DEFAULT 0.0000");
+        $this->tryAlter('ALTER TABLE `orders` MODIFY `total_amount` DECIMAL(15,4) NOT NULL');
+        $this->tryAlter('ALTER TABLE `orders` MODIFY `subtotal_amount` DECIMAL(15,4) NULL DEFAULT NULL');
+        $this->tryAlter('ALTER TABLE `orders` MODIFY `discount_amount` DECIMAL(15,4) NOT NULL DEFAULT 0.0000');
+        $this->tryAlter('ALTER TABLE `orders` MODIFY `tax_amount` DECIMAL(15,4) NOT NULL DEFAULT 0.0000');
+        $this->tryAlter('ALTER TABLE `orders` MODIFY `shipping_amount` DECIMAL(15,4) NOT NULL DEFAULT 0.0000');
 
-        $this->tryAlter("ALTER TABLE `order_items` MODIFY `unit_price` DECIMAL(15,4) NOT NULL");
-        $this->tryAlter("ALTER TABLE `order_items` MODIFY `subtotal` DECIMAL(15,4) NOT NULL");
-        $this->tryAlter("ALTER TABLE `order_items` MODIFY `tax_amount` DECIMAL(15,4) NOT NULL DEFAULT 0.0000");
-        $this->tryAlter("ALTER TABLE `order_items` MODIFY `discount_amount` DECIMAL(15,4) NOT NULL DEFAULT 0.0000");
+        $this->tryAlter('ALTER TABLE `order_items` MODIFY `unit_price` DECIMAL(15,4) NOT NULL');
+        $this->tryAlter('ALTER TABLE `order_items` MODIFY `subtotal` DECIMAL(15,4) NOT NULL');
+        $this->tryAlter('ALTER TABLE `order_items` MODIFY `tax_amount` DECIMAL(15,4) NOT NULL DEFAULT 0.0000');
+        $this->tryAlter('ALTER TABLE `order_items` MODIFY `discount_amount` DECIMAL(15,4) NOT NULL DEFAULT 0.0000');
 
-        $this->tryAlter("ALTER TABLE `price_histories` MODIFY `old_price` DECIMAL(15,4) NULL DEFAULT NULL");
-        $this->tryAlter("ALTER TABLE `price_histories` MODIFY `new_price` DECIMAL(15,4) NOT NULL");
-        $this->tryAlter("ALTER TABLE `price_histories` MODIFY `old_dealer_price` DECIMAL(15,4) NULL DEFAULT NULL");
-        $this->tryAlter("ALTER TABLE `price_histories` MODIFY `new_dealer_price` DECIMAL(15,4) NULL DEFAULT NULL");
+        $this->tryAlter('ALTER TABLE `price_histories` MODIFY `old_price` DECIMAL(15,4) NULL DEFAULT NULL');
+        $this->tryAlter('ALTER TABLE `price_histories` MODIFY `new_price` DECIMAL(15,4) NOT NULL');
+        $this->tryAlter('ALTER TABLE `price_histories` MODIFY `old_dealer_price` DECIMAL(15,4) NULL DEFAULT NULL');
+        $this->tryAlter('ALTER TABLE `price_histories` MODIFY `new_dealer_price` DECIMAL(15,4) NULL DEFAULT NULL');
 
-        $this->tryAlter("ALTER TABLE `supplier_products` MODIFY `last_cost_price` DECIMAL(15,4) NULL DEFAULT NULL");
-        $this->tryAlter("ALTER TABLE `purchase_invoices` MODIFY `subtotal` DECIMAL(15,4) NOT NULL DEFAULT 0.0000");
-        $this->tryAlter("ALTER TABLE `purchase_invoices` MODIFY `discount_total` DECIMAL(15,4) NOT NULL DEFAULT 0.0000");
-        $this->tryAlter("ALTER TABLE `purchase_invoices` MODIFY `tax_total` DECIMAL(15,4) NOT NULL DEFAULT 0.0000");
-        $this->tryAlter("ALTER TABLE `purchase_invoices` MODIFY `grand_total` DECIMAL(15,4) NOT NULL DEFAULT 0.0000");
-        $this->tryAlter("ALTER TABLE `purchase_invoice_items` MODIFY `unit_cost` DECIMAL(15,4) NOT NULL");
-        $this->tryAlter("ALTER TABLE `purchase_invoice_items` MODIFY `line_discount` DECIMAL(15,4) NOT NULL DEFAULT 0.0000");
-        $this->tryAlter("ALTER TABLE `purchase_invoice_items` MODIFY `tax_amount` DECIMAL(15,4) NOT NULL DEFAULT 0.0000");
-        $this->tryAlter("ALTER TABLE `purchase_invoice_items` MODIFY `line_total` DECIMAL(15,4) NOT NULL");
+        $this->tryAlter('ALTER TABLE `supplier_products` MODIFY `last_cost_price` DECIMAL(15,4) NULL DEFAULT NULL');
+        $this->tryAlter('ALTER TABLE `purchase_invoices` MODIFY `subtotal` DECIMAL(15,4) NOT NULL DEFAULT 0.0000');
+        $this->tryAlter('ALTER TABLE `purchase_invoices` MODIFY `discount_total` DECIMAL(15,4) NOT NULL DEFAULT 0.0000');
+        $this->tryAlter('ALTER TABLE `purchase_invoices` MODIFY `tax_total` DECIMAL(15,4) NOT NULL DEFAULT 0.0000');
+        $this->tryAlter('ALTER TABLE `purchase_invoices` MODIFY `grand_total` DECIMAL(15,4) NOT NULL DEFAULT 0.0000');
+        $this->tryAlter('ALTER TABLE `purchase_invoice_items` MODIFY `unit_cost` DECIMAL(15,4) NOT NULL');
+        $this->tryAlter('ALTER TABLE `purchase_invoice_items` MODIFY `line_discount` DECIMAL(15,4) NOT NULL DEFAULT 0.0000');
+        $this->tryAlter('ALTER TABLE `purchase_invoice_items` MODIFY `tax_amount` DECIMAL(15,4) NOT NULL DEFAULT 0.0000');
+        $this->tryAlter('ALTER TABLE `purchase_invoice_items` MODIFY `line_total` DECIMAL(15,4) NOT NULL');
 
-        $this->tryAlter("ALTER TABLE `discounts` MODIFY `value` DECIMAL(15,4) NOT NULL");
-        $this->tryAlter("ALTER TABLE `discounts` MODIFY `minimum_subtotal` DECIMAL(15,4) NULL DEFAULT NULL");
-        $this->tryAlter("ALTER TABLE `coupons` MODIFY `value` DECIMAL(15,4) NOT NULL DEFAULT 0.0000");
-        $this->tryAlter("ALTER TABLE `coupons` MODIFY `minimum_subtotal` DECIMAL(15,4) NULL DEFAULT NULL");
-        $this->tryAlter("ALTER TABLE `coupon_usages` MODIFY `discount_amount` DECIMAL(15,4) NOT NULL DEFAULT 0.0000");
+        $this->tryAlter('ALTER TABLE `discounts` MODIFY `value` DECIMAL(15,4) NOT NULL');
+        $this->tryAlter('ALTER TABLE `discounts` MODIFY `minimum_subtotal` DECIMAL(15,4) NULL DEFAULT NULL');
+        $this->tryAlter('ALTER TABLE `coupons` MODIFY `value` DECIMAL(15,4) NOT NULL DEFAULT 0.0000');
+        $this->tryAlter('ALTER TABLE `coupons` MODIFY `minimum_subtotal` DECIMAL(15,4) NULL DEFAULT NULL');
+        $this->tryAlter('ALTER TABLE `coupon_usages` MODIFY `discount_amount` DECIMAL(15,4) NOT NULL DEFAULT 0.0000');
 
-        $this->tryAlter("ALTER TABLE `shipping_rate_rules` MODIFY `min_subtotal` DECIMAL(15,4) NULL DEFAULT NULL");
-        $this->tryAlter("ALTER TABLE `shipping_rate_rules` MODIFY `max_subtotal` DECIMAL(15,4) NULL DEFAULT NULL");
-        $this->tryAlter("ALTER TABLE `shipping_rate_rules` MODIFY `rate` DECIMAL(15,4) NOT NULL");
+        $this->tryAlter('ALTER TABLE `shipping_rate_rules` MODIFY `min_subtotal` DECIMAL(15,4) NULL DEFAULT NULL');
+        $this->tryAlter('ALTER TABLE `shipping_rate_rules` MODIFY `max_subtotal` DECIMAL(15,4) NULL DEFAULT NULL');
+        $this->tryAlter('ALTER TABLE `shipping_rate_rules` MODIFY `rate` DECIMAL(15,4) NOT NULL');
     }
 
     private function createAccountingEventsTable(): void
@@ -186,15 +186,15 @@ return new class extends Migration
         $tables = ['price_histories', 'stock_transactions', 'audit_logs'];
 
         foreach ($tables as $tableName) {
-            if (!Schema::hasTable($tableName)) {
+            if (! Schema::hasTable($tableName)) {
                 continue;
             }
 
             Schema::table($tableName, function (Blueprint $table) use ($tableName) {
-                if (!Schema::hasColumn($tableName, 'previous_hash')) {
+                if (! Schema::hasColumn($tableName, 'previous_hash')) {
                     $table->char('previous_hash', 64)->nullable();
                 }
-                if (!Schema::hasColumn($tableName, 'current_hash')) {
+                if (! Schema::hasColumn($tableName, 'current_hash')) {
                     $table->char('current_hash', 64)->nullable()->after('previous_hash');
                 }
             });
@@ -213,19 +213,19 @@ return new class extends Migration
     {
         if (Schema::hasTable('admin_activity_logs')) {
             Schema::table('admin_activity_logs', function (Blueprint $table) {
-                if (!Schema::hasColumn('admin_activity_logs', 'is_anomaly')) {
+                if (! Schema::hasColumn('admin_activity_logs', 'is_anomaly')) {
                     $table->boolean('is_anomaly')->default(false)->after('risk_score');
                 }
-                if (!Schema::hasColumn('admin_activity_logs', 'anomaly_type')) {
+                if (! Schema::hasColumn('admin_activity_logs', 'anomaly_type')) {
                     $table->string('anomaly_type')->nullable()->after('is_anomaly');
                 }
-                if (!Schema::hasColumn('admin_activity_logs', 'anomaly_score')) {
+                if (! Schema::hasColumn('admin_activity_logs', 'anomaly_score')) {
                     $table->unsignedTinyInteger('anomaly_score')->default(0)->after('anomaly_type');
                 }
-                if (!Schema::hasColumn('admin_activity_logs', 'reviewed_at')) {
+                if (! Schema::hasColumn('admin_activity_logs', 'reviewed_at')) {
                     $table->timestamp('reviewed_at')->nullable()->after('anomaly_score');
                 }
-                if (!Schema::hasColumn('admin_activity_logs', 'reviewed_by')) {
+                if (! Schema::hasColumn('admin_activity_logs', 'reviewed_by')) {
                     $table->foreignId('reviewed_by')->nullable()->constrained('users')->nullOnDelete()->after('reviewed_at');
                 }
             });
@@ -236,13 +236,13 @@ return new class extends Migration
 
         if (Schema::hasTable('price_histories')) {
             Schema::table('price_histories', function (Blueprint $table) {
-                if (!Schema::hasColumn('price_histories', 'is_anomaly')) {
+                if (! Schema::hasColumn('price_histories', 'is_anomaly')) {
                     $table->boolean('is_anomaly')->default(false)->after('reason');
                 }
-                if (!Schema::hasColumn('price_histories', 'anomaly_reason')) {
+                if (! Schema::hasColumn('price_histories', 'anomaly_reason')) {
                     $table->string('anomaly_reason')->nullable()->after('is_anomaly');
                 }
-                if (!Schema::hasColumn('price_histories', 'anomaly_score')) {
+                if (! Schema::hasColumn('price_histories', 'anomaly_score')) {
                     $table->unsignedTinyInteger('anomaly_score')->default(0)->after('anomaly_reason');
                 }
             });
@@ -253,16 +253,16 @@ return new class extends Migration
 
         if (Schema::hasTable('stock_transactions')) {
             Schema::table('stock_transactions', function (Blueprint $table) {
-                if (!Schema::hasColumn('stock_transactions', 'is_bulk_adjustment')) {
+                if (! Schema::hasColumn('stock_transactions', 'is_bulk_adjustment')) {
                     $table->boolean('is_bulk_adjustment')->default(false)->after('transaction_type');
                 }
-                if (!Schema::hasColumn('stock_transactions', 'is_anomaly')) {
+                if (! Schema::hasColumn('stock_transactions', 'is_anomaly')) {
                     $table->boolean('is_anomaly')->default(false)->after('is_bulk_adjustment');
                 }
-                if (!Schema::hasColumn('stock_transactions', 'anomaly_reason')) {
+                if (! Schema::hasColumn('stock_transactions', 'anomaly_reason')) {
                     $table->string('anomaly_reason')->nullable()->after('is_anomaly');
                 }
-                if (!Schema::hasColumn('stock_transactions', 'anomaly_score')) {
+                if (! Schema::hasColumn('stock_transactions', 'anomaly_score')) {
                     $table->unsignedTinyInteger('anomaly_score')->default(0)->after('anomaly_reason');
                 }
             });
@@ -293,16 +293,16 @@ return new class extends Migration
         ) {
             if (DB::connection()->getDriverName() === 'sqlite') {
                 DB::statement(
-                    "UPDATE order_items
+                    'UPDATE order_items
                      SET currency_code = (SELECT orders.currency_code FROM orders WHERE orders.id = order_items.order_id)
-                     WHERE currency_code IS NULL"
+                     WHERE currency_code IS NULL'
                 );
             } else {
                 DB::statement(
-                    "UPDATE `order_items` oi
+                    'UPDATE `order_items` oi
                      JOIN `orders` o ON o.id = oi.order_id
                      SET oi.currency_code = o.currency_code
-                     WHERE oi.currency_code IS NULL"
+                     WHERE oi.currency_code IS NULL'
                 );
             }
         }
@@ -522,7 +522,7 @@ return new class extends Migration
 
     private function createIndexIfMissing(string $table, array $columns, string $indexName): void
     {
-        if (!Schema::hasTable($table) || $this->indexExists($table, $indexName)) {
+        if (! Schema::hasTable($table) || $this->indexExists($table, $indexName)) {
             return;
         }
 
@@ -593,7 +593,7 @@ return new class extends Migration
     {
         try {
             DB::statement($sql);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Keep migration idempotent across different starting schemas.
         }
     }

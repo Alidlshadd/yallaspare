@@ -11,15 +11,21 @@ class EmailBroadcast extends Model
     use HasFactory;
 
     public const AUDIENCE_ALL = 'all';
+
     public const AUDIENCE_ROLE = 'role';
+
     public const AUDIENCE_USER = 'user';
 
     public const PURPOSE_PROMOTIONAL = 'promotional';
+
     public const PURPOSE_OPERATIONAL = 'operational';
 
     public const STATUS_QUEUED = 'queued';
+
     public const STATUS_SENDING = 'sending';
+
     public const STATUS_SENT = 'sent';
+
     public const STATUS_FAILED = 'failed';
 
     protected $fillable = [

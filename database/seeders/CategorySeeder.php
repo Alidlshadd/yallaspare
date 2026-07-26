@@ -2,35 +2,33 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Category;
+use Illuminate\Database\Seeder;
 
 class CategorySeeder extends Seeder
 {
     public function run(): void
     {
-       
-
 
         Category::create([
             'name_en' => 'Engine Parts',
             'name_ar' => 'قطع المحرك',
             'name_ku' => 'Parçeyên Motor',
-            'slug'    => 'engine-parts'
+            'slug' => 'engine-parts',
         ]);
 
         Category::create([
             'name_en' => 'Brakes',
             'name_ar' => 'الفرامل',
             'name_ku' => 'Fren',
-            'slug'    => 'brakes'
+            'slug' => 'brakes',
         ]);
 
         Category::create([
             'name_en' => 'Suspension',
             'name_ar' => 'نظام التعليق',
             'name_ku' => 'Suspension',
-            'slug'    => 'suspension'
+            'slug' => 'suspension',
         ]);
 
         $sampleCategories = [

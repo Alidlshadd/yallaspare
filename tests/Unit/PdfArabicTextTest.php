@@ -39,7 +39,7 @@ class PdfArabicTextTest extends TestCase
             $this->assertContains(
                 mb_ord($char, 'UTF-8'),
                 $allowed,
-                'Unexpected codepoint in shaped Kurdish word: U+' . dechex(mb_ord($char, 'UTF-8'))
+                'Unexpected codepoint in shaped Kurdish word: U+'.dechex(mb_ord($char, 'UTF-8'))
             );
         }
 

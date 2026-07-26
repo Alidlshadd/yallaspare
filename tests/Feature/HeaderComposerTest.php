@@ -23,7 +23,7 @@ class HeaderComposerTest extends TestCase
         Category::factory()->create(['name_en' => 'Brakes', 'name_ar' => 'فرامل', 'name_ku' => 'بڕەک', 'slug' => 'brakes']);
         Category::factory()->create(['name_en' => 'Engines', 'name_ar' => 'محركات', 'name_ku' => 'بزوێنەر', 'slug' => 'engines']);
 
-        $result = (new HeaderComposer())->dropdownCategories('en');
+        $result = (new HeaderComposer)->dropdownCategories('en');
 
         $this->assertCount(2, $result);
         $this->assertSame('Brakes', $result->first()['label']);
@@ -35,7 +35,7 @@ class HeaderComposerTest extends TestCase
     {
         Category::factory()->create(['name_en' => 'Brakes', 'name_ar' => 'فرامل', 'name_ku' => 'بڕەک', 'slug' => 'brakes']);
 
-        $result = (new HeaderComposer())->dropdownCategories('ar');
+        $result = (new HeaderComposer)->dropdownCategories('ar');
 
         $this->assertSame('فرامل', $result->first()['label']);
     }
@@ -46,8 +46,8 @@ class HeaderComposerTest extends TestCase
         Cache::flush();
         DB::enableQueryLog();
 
-        $first = (new HeaderComposer())->dropdownCategories('en');
-        $second = (new HeaderComposer())->dropdownCategories('en');
+        $first = (new HeaderComposer)->dropdownCategories('en');
+        $second = (new HeaderComposer)->dropdownCategories('en');
 
         $categoryQueries = collect(DB::getQueryLog())
             ->filter(fn ($q) => str_contains(strtolower($q['query']), 'from "categories"'))
@@ -59,7 +59,7 @@ class HeaderComposerTest extends TestCase
 
     public function test_cart_count_for_guest_is_zero(): void
     {
-        $this->assertSame(0, (new HeaderComposer())->cartCountFor(null));
+        $this->assertSame(0, (new HeaderComposer)->cartCountFor(null));
     }
 
     public function test_cart_count_for_authenticated_user_sums_item_quantities(): void
@@ -72,7 +72,7 @@ class HeaderComposerTest extends TestCase
         CartItem::create(['cart_id' => $cart->id, 'product_id' => $productA->id, 'quantity' => 2]);
         CartItem::create(['cart_id' => $cart->id, 'product_id' => $productB->id, 'quantity' => 3]);
 
-        $this->assertSame(5, (new HeaderComposer())->cartCountFor($user));
+        $this->assertSame(5, (new HeaderComposer)->cartCountFor($user));
     }
 
     public function test_cart_for_authenticated_user_eager_loads_items(): void
@@ -83,7 +83,7 @@ class HeaderComposerTest extends TestCase
         $cart = Cart::create(['user_id' => $user->id]);
         CartItem::create(['cart_id' => $cart->id, 'product_id' => $product->id, 'quantity' => 1]);
 
-        $headerCart = (new HeaderComposer())->cartFor($user);
+        $headerCart = (new HeaderComposer)->cartFor($user);
 
         $this->assertNotNull($headerCart);
         $this->assertTrue($headerCart->relationLoaded('items'));
@@ -92,7 +92,7 @@ class HeaderComposerTest extends TestCase
 
     public function test_wishlist_count_for_guest_is_zero(): void
     {
-        $this->assertSame(0, (new HeaderComposer())->wishlistCountFor(null));
+        $this->assertSame(0, (new HeaderComposer)->wishlistCountFor(null));
     }
 
     public function test_wishlist_count_for_authenticated_user(): void
@@ -104,7 +104,7 @@ class HeaderComposerTest extends TestCase
         Wishlist::create(['user_id' => $user->id, 'product_id' => $a->id]);
         Wishlist::create(['user_id' => $user->id, 'product_id' => $b->id]);
 
-        $this->assertSame(2, (new HeaderComposer())->wishlistCountFor($user));
+        $this->assertSame(2, (new HeaderComposer)->wishlistCountFor($user));
     }
 
     public function test_compose_shares_expected_variables_on_view(): void
@@ -114,7 +114,7 @@ class HeaderComposerTest extends TestCase
         $this->actingAs($user);
 
         $view = view('welcome');
-        (new HeaderComposer())->compose($view);
+        (new HeaderComposer)->compose($view);
         $data = $view->getData();
 
         $this->assertArrayHasKey('headerCart', $data);
@@ -128,11 +128,11 @@ class HeaderComposerTest extends TestCase
     {
         Cache::flush();
         Category::factory()->create(['name_en' => 'First', 'slug' => 'first']);
-        $before = (new HeaderComposer())->dropdownCategories('en');
+        $before = (new HeaderComposer)->dropdownCategories('en');
         $this->assertCount(1, $before);
 
         Category::factory()->create(['name_en' => 'Second', 'slug' => 'second']);
-        $after = (new HeaderComposer())->dropdownCategories('en');
+        $after = (new HeaderComposer)->dropdownCategories('en');
 
         $this->assertCount(2, $after, 'Cache must invalidate when a Category is saved');
     }
@@ -145,7 +145,7 @@ class HeaderComposerTest extends TestCase
         $product = Product::factory()->create();
         $cart = Cart::create(['user_id' => $user->id]);
         $item = CartItem::create(['cart_id' => $cart->id, 'product_id' => $product->id, 'quantity' => 1]);
-        $composer = new HeaderComposer();
+        $composer = new HeaderComposer;
 
         $this->assertSame(1, $composer->cartCountFor($user));
 
@@ -161,7 +161,7 @@ class HeaderComposerTest extends TestCase
         Category::factory()->create();
         $product = Product::factory()->create();
         $wishlist = Wishlist::create(['user_id' => $user->id, 'product_id' => $product->id]);
-        $composer = new HeaderComposer();
+        $composer = new HeaderComposer;
 
         $this->assertSame(1, $composer->wishlistCountFor($user));
 

@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Admin;
 
-use App\Mail\OperationalNotificationMail;
 use App\Jobs\SendEmailBroadcastJob;
+use App\Mail\OperationalNotificationMail;
 use App\Models\EmailBroadcast;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;

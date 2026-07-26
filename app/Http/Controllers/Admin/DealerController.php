@@ -107,7 +107,7 @@ class DealerController extends Controller
         }
 
         $data = $request->validate([
-            'dealer_status' => ['required', 'in:' . implode(',', User::allowedDealerStatuses())],
+            'dealer_status' => ['required', 'in:'.implode(',', User::allowedDealerStatuses())],
             'dealer_discount' => ['required', 'numeric', 'min:0', 'max:100'],
         ]);
 

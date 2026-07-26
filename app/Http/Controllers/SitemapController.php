@@ -46,7 +46,7 @@ class SitemapController extends Controller
             foreach (Category::query()->select(['id', 'slug', 'updated_at'])->get() as $category) {
                 $slug = $category->slug ?: (string) $category->id;
                 $entries[] = [
-                    'loc' => url('/categories/' . $slug),
+                    'loc' => url('/categories/'.$slug),
                     'lastmod' => optional($category->updated_at)->toAtomString(),
                     'changefreq' => 'weekly',
                     'priority' => '0.7',
@@ -65,7 +65,7 @@ class SitemapController extends Controller
             foreach ($products as $product) {
                 $slug = $product->slug ?: (string) $product->id;
                 $entries[] = [
-                    'loc' => url('/shop/products/' . $slug),
+                    'loc' => url('/shop/products/'.$slug),
                     'lastmod' => optional($product->updated_at)->toAtomString(),
                     'changefreq' => 'weekly',
                     'priority' => '0.6',
@@ -88,19 +88,19 @@ class SitemapController extends Controller
 
         foreach ($entries as $entry) {
             $lines[] = '  <url>';
-            $lines[] = '    <loc>' . htmlspecialchars($entry['loc'], ENT_XML1 | ENT_QUOTES) . '</loc>';
+            $lines[] = '    <loc>'.htmlspecialchars($entry['loc'], ENT_XML1 | ENT_QUOTES).'</loc>';
             if ($entry['lastmod'] !== null) {
-                $lines[] = '    <lastmod>' . htmlspecialchars($entry['lastmod'], ENT_XML1 | ENT_QUOTES) . '</lastmod>';
+                $lines[] = '    <lastmod>'.htmlspecialchars($entry['lastmod'], ENT_XML1 | ENT_QUOTES).'</lastmod>';
             }
-            $lines[] = '    <changefreq>' . $entry['changefreq'] . '</changefreq>';
-            $lines[] = '    <priority>' . $entry['priority'] . '</priority>';
+            $lines[] = '    <changefreq>'.$entry['changefreq'].'</changefreq>';
+            $lines[] = '    <priority>'.$entry['priority'].'</priority>';
 
             foreach (self::LOCALES as $appLocale => $hreflang) {
                 $separator = str_contains($entry['loc'], '?') ? '&amp;' : '?';
-                $href = $entry['loc'] . $separator . 'lang=' . $appLocale;
-                $lines[] = '    <xhtml:link rel="alternate" hreflang="' . $hreflang . '" href="' . htmlspecialchars($href, ENT_XML1 | ENT_QUOTES) . '" />';
+                $href = $entry['loc'].$separator.'lang='.$appLocale;
+                $lines[] = '    <xhtml:link rel="alternate" hreflang="'.$hreflang.'" href="'.htmlspecialchars($href, ENT_XML1 | ENT_QUOTES).'" />';
             }
-            $lines[] = '    <xhtml:link rel="alternate" hreflang="x-default" href="' . htmlspecialchars($entry['loc'], ENT_XML1 | ENT_QUOTES) . '" />';
+            $lines[] = '    <xhtml:link rel="alternate" hreflang="x-default" href="'.htmlspecialchars($entry['loc'], ENT_XML1 | ENT_QUOTES).'" />';
 
             $lines[] = '  </url>';
         }

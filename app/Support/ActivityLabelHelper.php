@@ -56,6 +56,6 @@ class ActivityLabelHelper
         $fallbackSubject = $subjectBase ? Str::of($subjectBase)->snake(' ')->headline()->lower() : 'item';
         $fallbackAction = $description !== '' ? Str::of($description)->replace('_', ' ')->headline()->lower() : 'changed';
 
-        return Str::of($fallbackAction . ' ' . $fallbackSubject)->headline();
+        return Str::of($fallbackAction.' '.$fallbackSubject)->headline();
     }
 }

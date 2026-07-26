@@ -10,7 +10,6 @@ use App\Models\EmailBroadcast;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\UserAddress;
-use App\Notifications\ImmediateResetPassword;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Mail;

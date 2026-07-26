@@ -9,8 +9,7 @@ class AppLayout extends Component
 {
     public function __construct(
         public bool $hideNavigation = false,
-    ) {
-    }
+    ) {}
 
     /**
      * Get the view / contents that represents the component.

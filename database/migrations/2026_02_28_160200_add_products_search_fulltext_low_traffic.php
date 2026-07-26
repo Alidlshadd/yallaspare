@@ -12,7 +12,7 @@ return new class extends Migration
             return;
         }
 
-        if (!Schema::hasTable('products')) {
+        if (! Schema::hasTable('products')) {
             return;
         }
 
@@ -24,15 +24,15 @@ return new class extends Migration
         // For very large tables, prefer pt-online-schema-change/gh-ost.
         try {
             DB::statement(
-                "ALTER TABLE `products` " .
-                "ALGORITHM=INPLACE, LOCK=NONE, " .
-                "ADD FULLTEXT INDEX `products_search_fulltext_idx` (`sku`, `name_en`, `name_ar`, `name_ku`, `brand`)"
+                'ALTER TABLE `products` '.
+                'ALGORITHM=INPLACE, LOCK=NONE, '.
+                'ADD FULLTEXT INDEX `products_search_fulltext_idx` (`sku`, `name_en`, `name_ar`, `name_ku`, `brand`)'
             );
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Fallback for servers that reject explicit algorithm/lock hints.
             DB::statement(
-                "ALTER TABLE `products` " .
-                "ADD FULLTEXT INDEX `products_search_fulltext_idx` (`sku`, `name_en`, `name_ar`, `name_ku`, `brand`)"
+                'ALTER TABLE `products` '.
+                'ADD FULLTEXT INDEX `products_search_fulltext_idx` (`sku`, `name_en`, `name_ar`, `name_ku`, `brand`)'
             );
         }
     }
@@ -44,11 +44,11 @@ return new class extends Migration
             return;
         }
 
-        if (!Schema::hasTable('products') || !$this->indexExists('products', 'products_search_fulltext_idx')) {
+        if (! Schema::hasTable('products') || ! $this->indexExists('products', 'products_search_fulltext_idx')) {
             return;
         }
 
-        DB::statement("ALTER TABLE `products` DROP INDEX `products_search_fulltext_idx`");
+        DB::statement('ALTER TABLE `products` DROP INDEX `products_search_fulltext_idx`');
     }
 
     private function indexExists(string $table, string $indexName): bool

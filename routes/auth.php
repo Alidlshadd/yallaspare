@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\Auth\AccountVerificationController;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\AdminTwoFactorController;
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\ConfirmablePasswordController;
 use App\Http\Controllers\Auth\NewPasswordController;
 use App\Http\Controllers\Auth\PasswordController;
@@ -16,115 +16,115 @@ use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
     Route::get('register', [RegisteredUserController::class, 'create'])
-                ->name('register');
+        ->name('register');
 
     Route::post('register', [RegisteredUserController::class, 'store']);
 
     Route::get('login', [AuthenticatedSessionController::class, 'create'])
-                ->name('login');
+        ->name('login');
 
     Route::post('login', [AuthenticatedSessionController::class, 'store']);
 
     Route::get('auth/google/redirect', [SocialAuthController::class, 'redirectToGoogle'])
-                ->middleware('throttle:public-write')
-                ->name('auth.google.redirect');
+        ->middleware('throttle:public-write')
+        ->name('auth.google.redirect');
 
     Route::get('auth/google/callback', [SocialAuthController::class, 'handleGoogleCallback'])
-                ->middleware('throttle:public-write')
-                ->name('auth.google.callback');
+        ->middleware('throttle:public-write')
+        ->name('auth.google.callback');
 
     Route::get('auth/apple/redirect', [SocialAuthController::class, 'redirectToApple'])
-                ->middleware('throttle:public-write')
-                ->name('auth.apple.redirect');
+        ->middleware('throttle:public-write')
+        ->name('auth.apple.redirect');
 
     // Apple posts the callback as a cross-site form POST (response_mode=form_post),
     // so this route is POST-only and excluded from CSRF verification. State and
     // nonce are validated against a single-use server-side cache entry instead.
     Route::post('auth/apple/callback', [SocialAuthController::class, 'handleAppleCallback'])
-                ->middleware('throttle:public-write')
-                ->name('auth.apple.callback');
+        ->middleware('throttle:public-write')
+        ->name('auth.apple.callback');
 
     Route::get('forgot-password', [PasswordResetLinkController::class, 'create'])
-                ->name('password.request');
+        ->name('password.request');
 
     Route::post('forgot-password', [PasswordResetLinkController::class, 'store'])
-                ->name('password.email');
+        ->name('password.email');
 
     Route::get('reset-password/{token}', [NewPasswordController::class, 'create'])
-                ->name('password.reset');
+        ->name('password.reset');
 
     Route::post('reset-password', [NewPasswordController::class, 'store'])
-                ->name('password.store');
+        ->name('password.store');
 });
 
 Route::middleware('auth')->group(function () {
     Route::get('verify-email', [AccountVerificationController::class, 'show'])
-                ->name('verification.notice');
+        ->name('verification.notice');
 
     Route::post('verify-email', [AccountVerificationController::class, 'verify'])
-                ->middleware('throttle:phone-verification-check')
-                ->name('verification.verify');
+        ->middleware('throttle:phone-verification-check')
+        ->name('verification.verify');
 
     Route::get('verify-email/{id}/{hash}', [VerifyEmailController::class, 'fromSignedLink'])
-                ->middleware(['signed', 'throttle:6,1'])
-                ->name('verification.verify-link');
+        ->middleware(['signed', 'throttle:6,1'])
+        ->name('verification.verify-link');
 
     Route::post('email/verification-notification', [AccountVerificationController::class, 'resend'])
-                ->middleware('throttle:phone-verification-send')
-                ->name('verification.send');
+        ->middleware('throttle:phone-verification-send')
+        ->name('verification.send');
 
     Route::post('verification/channel', [AccountVerificationController::class, 'changeChannel'])
-                ->middleware('throttle:phone-verification-send')
-                ->name('verification.channel');
+        ->middleware('throttle:phone-verification-send')
+        ->name('verification.channel');
 
     Route::get('phone/verify', [PhoneVerificationPromptController::class, 'show'])
-                ->name('phone.verify');
+        ->name('phone.verify');
 
     Route::post('phone/verify', [PhoneVerificationPromptController::class, 'verify'])
-                ->middleware('throttle:phone-verification-check')
-                ->name('phone.verify.confirm');
+        ->middleware('throttle:phone-verification-check')
+        ->name('phone.verify.confirm');
 
     Route::post('phone/verify/resend', [PhoneVerificationPromptController::class, 'resend'])
-                ->middleware('throttle:phone-verification-send')
-                ->name('phone.verify.resend');
+        ->middleware('throttle:phone-verification-send')
+        ->name('phone.verify.resend');
 
     Route::get('confirm-password', [ConfirmablePasswordController::class, 'show'])
-                ->name('password.confirm');
+        ->name('password.confirm');
 
     Route::post('confirm-password', [ConfirmablePasswordController::class, 'store'])
-                ->middleware('throttle:6,1');
+        ->middleware('throttle:6,1');
 
     Route::put('password', [PasswordController::class, 'update'])
-                ->middleware(['user.2fa', 'admin.2fa'])
-                ->name('password.update');
+        ->middleware(['user.2fa', 'admin.2fa'])
+        ->name('password.update');
 
     Route::post('logout', [AuthenticatedSessionController::class, 'destroy'])
-                ->name('logout');
+        ->name('logout');
 
     Route::get('admin/two-factor', [AdminTwoFactorController::class, 'show'])
-                ->name('admin.two-factor.challenge');
+        ->name('admin.two-factor.challenge');
 
     Route::post('admin/two-factor', [AdminTwoFactorController::class, 'verify'])
-                ->middleware('throttle:admin-2fa')
-                ->name('admin.two-factor.verify');
+        ->middleware('throttle:admin-2fa')
+        ->name('admin.two-factor.verify');
 
     Route::post('admin/two-factor/resend', [AdminTwoFactorController::class, 'resend'])
-                ->middleware('throttle:admin-2fa')
-                ->name('admin.two-factor.resend');
+        ->middleware('throttle:admin-2fa')
+        ->name('admin.two-factor.resend');
 
     Route::get('user/two-factor', [UserTwoFactorController::class, 'show'])
-                ->middleware('customer.phone')
-                ->name('user.two-factor.challenge');
+        ->middleware('customer.phone')
+        ->name('user.two-factor.challenge');
 
     Route::post('user/two-factor', [UserTwoFactorController::class, 'verify'])
-                ->middleware(['customer.phone', 'throttle:admin-2fa'])
-                ->name('user.two-factor.verify');
+        ->middleware(['customer.phone', 'throttle:admin-2fa'])
+        ->name('user.two-factor.verify');
 
     Route::post('user/two-factor/resend', [UserTwoFactorController::class, 'resend'])
-                ->middleware(['customer.phone', 'throttle:admin-2fa'])
-                ->name('user.two-factor.resend');
+        ->middleware(['customer.phone', 'throttle:admin-2fa'])
+        ->name('user.two-factor.resend');
 
     Route::post('user/two-factor/channel', [UserTwoFactorController::class, 'changeChannel'])
-                ->middleware(['customer.phone', 'throttle:admin-2fa'])
-                ->name('user.two-factor.channel');
+        ->middleware(['customer.phone', 'throttle:admin-2fa'])
+        ->name('user.two-factor.channel');
 });

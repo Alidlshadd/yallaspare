@@ -20,7 +20,9 @@ use Throwable;
 class SettingController extends Controller
 {
     private const HERO_VIDEO_MAX_KILOBYTES = 51200;
+
     private const HERO_VIDEO_MAX_BYTES = self::HERO_VIDEO_MAX_KILOBYTES * 1024;
+
     private const HERO_VIDEO_DIRECTORY = 'home/hero';
 
     public function edit(): View
@@ -61,11 +63,11 @@ class SettingController extends Controller
             'storefront_hero_title' => ['required', 'string', 'max:120'],
             'storefront_hero_subtitle' => ['required', 'string', 'max:300'],
             'storefront_hero_button_label' => ['required', 'string', 'max:40'],
-            'storefront_hero_button_url' => ['nullable', 'string', 'max:2048', new SafeLinkUrl()],
+            'storefront_hero_button_url' => ['nullable', 'string', 'max:2048', new SafeLinkUrl],
             'storefront_hero_video' => [
                 'nullable',
                 'file',
-                'max:' . self::HERO_VIDEO_MAX_KILOBYTES,
+                'max:'.self::HERO_VIDEO_MAX_KILOBYTES,
                 'mimes:mp4',
                 'mimetypes:video/mp4,video/quicktime,application/mp4,video/x-m4v,application/octet-stream',
                 function (string $attribute, mixed $value, \Closure $fail): void {
@@ -145,7 +147,7 @@ class SettingController extends Controller
                 // This prevents broken settings when storage write fails.
                 $storedPath = $this->storeLogoWithTransparentBackground($uploadedLogo);
                 $storedPath = str_replace('\\', '/', (string) $storedPath);
-                if ($storedPath === '' || !Storage::disk('public')->exists($storedPath)) {
+                if ($storedPath === '' || ! Storage::disk('public')->exists($storedPath)) {
                     throw new \RuntimeException(__('Stored logo file was not found after upload.'));
                 }
 
@@ -186,7 +188,7 @@ class SettingController extends Controller
 
             try {
                 $storedHeroVideo = $this->storeHeroVideo($uploadedHeroVideo);
-                if ($storedHeroVideo === '' || !Storage::disk('public')->exists($storedHeroVideo)) {
+                if ($storedHeroVideo === '' || ! Storage::disk('public')->exists($storedHeroVideo)) {
                     throw new \RuntimeException(__('Stored hero video was not found after upload.'));
                 }
 
@@ -276,7 +278,7 @@ class SettingController extends Controller
         $transparent = imagecolorallocatealpha($image, 255, 255, 255, 127);
         $changed = false;
         $visited = [];
-        $queue = new \SplQueue();
+        $queue = new \SplQueue;
 
         for ($x = 0; $x < $width; $x++) {
             $this->queueWhiteLogoPixel($image, $queue, $visited, $width, $x, 0);
@@ -325,7 +327,7 @@ class SettingController extends Controller
             return $this->storeOriginalLogo($uploadedLogo);
         }
 
-        $storedPath = 'settings/' . (string) Str::uuid() . '.png';
+        $storedPath = 'settings/'.(string) Str::uuid().'.png';
         Storage::disk('public')->put($storedPath, $pngData);
 
         return $storedPath;
@@ -373,7 +375,7 @@ class SettingController extends Controller
         $disk = Storage::disk('public');
         $disk->makeDirectory(self::HERO_VIDEO_DIRECTORY);
 
-        $filename = (string) Str::uuid() . '.mp4';
+        $filename = (string) Str::uuid().'.mp4';
         $storedPath = $disk->putFileAs(self::HERO_VIDEO_DIRECTORY, $uploadedHeroVideo, $filename);
         $storedPath = str_replace('\\', '/', (string) $storedPath);
 

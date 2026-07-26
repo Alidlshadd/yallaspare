@@ -11,15 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::create('categories', function (Blueprint $table) {
-    $table->id();
-    $table->string('name_en');
-    $table->string('name_ar');
-    $table->string('name_ku');
-    $table->string('slug')->unique();
-    $table->text('description')->nullable();
-    $table->timestamps();
-});
+        Schema::create('categories', function (Blueprint $table) {
+            $table->id();
+            $table->string('name_en');
+            $table->string('name_ar');
+            $table->string('name_ku');
+            $table->string('slug')->unique();
+            $table->text('description')->nullable();
+            $table->timestamps();
+        });
 
     }
 

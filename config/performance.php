@@ -11,4 +11,3 @@ return [
     // unique filter set, rather than one per minute as before.
     'cache_bucket_minutes' => (int) env('ADMIN_CACHE_BUCKET_MINUTES', 5),
 ];
-

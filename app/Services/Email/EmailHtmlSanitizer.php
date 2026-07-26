@@ -23,7 +23,7 @@ class EmailHtmlSanitizer
 
     public function __construct()
     {
-        $config = (new HtmlSanitizerConfig())
+        $config = (new HtmlSanitizerConfig)
             ->withMaxInputLength(65000)
             ->allowLinkSchemes(['http', 'https', 'mailto', 'tel']);
 

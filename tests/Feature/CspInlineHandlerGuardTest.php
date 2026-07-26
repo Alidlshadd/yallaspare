@@ -26,7 +26,7 @@ class CspInlineHandlerGuardTest extends TestCase
             $lines = preg_split('/\r?\n/', $file->getContents()) ?: [];
             foreach ($lines as $index => $line) {
                 if (preg_match('/\son[a-z]{3,20}\s*=\s*["\']/i', $line)) {
-                    $violations[] = $file->getRelativePathname() . ':' . ($index + 1);
+                    $violations[] = $file->getRelativePathname().':'.($index + 1);
                 }
             }
         }
@@ -34,7 +34,7 @@ class CspInlineHandlerGuardTest extends TestCase
         $this->assertSame(
             [],
             $violations,
-            "Inline event handlers found (blocked by nonce CSP):\n" . implode("\n", $violations)
+            "Inline event handlers found (blocked by nonce CSP):\n".implode("\n", $violations)
         );
     }
 }

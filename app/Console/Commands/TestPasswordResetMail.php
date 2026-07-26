@@ -48,14 +48,14 @@ class TestPasswordResetMail extends Command
                 'exception_message' => $exception->getMessage(),
             ]);
 
-            $this->error('Could not query users table: ' . $exception->getMessage());
+            $this->error('Could not query users table: '.$exception->getMessage());
 
             return self::FAILURE;
         }
 
-        $this->line('Password broker: ' . config('auth.defaults.passwords'));
-        $this->line('Reset token table: ' . config('auth.passwords.'.config('auth.defaults.passwords').'.table'));
-        $this->line('Account exists: ' . ($user ? 'yes (id ' . $user->id . ')' : 'no'));
+        $this->line('Password broker: '.config('auth.defaults.passwords'));
+        $this->line('Reset token table: '.config('auth.passwords.'.config('auth.defaults.passwords').'.table'));
+        $this->line('Account exists: '.($user ? 'yes (id '.$user->id.')' : 'no'));
 
         if (! $this->option('send')) {
             $this->warn('Dry run only. Re-run with --send to send a real reset link.');
@@ -83,7 +83,7 @@ class TestPasswordResetMail extends Command
             ]);
 
             if ($status !== Password::RESET_LINK_SENT) {
-                $this->warn('Broker returned status: ' . $status);
+                $this->warn('Broker returned status: '.$status);
 
                 return self::FAILURE;
             }
@@ -103,7 +103,7 @@ class TestPasswordResetMail extends Command
                 'exception_message' => $exception->getMessage(),
             ]);
 
-            $this->error('Password reset email failed: ' . $exception::class);
+            $this->error('Password reset email failed: '.$exception::class);
             $this->line($exception->getMessage());
 
             return self::FAILURE;
@@ -115,31 +115,31 @@ class TestPasswordResetMail extends Command
         $mailerConfig = (array) config("mail.mailers.{$mailer}", []);
 
         $this->line('Mail summary:');
-        $this->line('  MAIL_MAILER=' . $mailer);
-        $this->line('  TRANSPORT=' . (string) ($mailerConfig['transport'] ?? $mailer));
-        $this->line('  MAIL_HOST=' . (string) ($mailerConfig['host'] ?? ''));
-        $this->line('  MAIL_PORT=' . (string) ($mailerConfig['port'] ?? ''));
-        $this->line('  MAIL_ENCRYPTION=' . (string) ($mailerConfig['encryption'] ?? ''));
-        $this->line('  MAIL_USERNAME=' . $this->mask((string) ($mailerConfig['username'] ?? '')));
-        $this->line('  MAIL_FROM_ADDRESS=' . (string) config('mail.from.address'));
+        $this->line('  MAIL_MAILER='.$mailer);
+        $this->line('  TRANSPORT='.(string) ($mailerConfig['transport'] ?? $mailer));
+        $this->line('  MAIL_HOST='.(string) ($mailerConfig['host'] ?? ''));
+        $this->line('  MAIL_PORT='.(string) ($mailerConfig['port'] ?? ''));
+        $this->line('  MAIL_ENCRYPTION='.(string) ($mailerConfig['encryption'] ?? ''));
+        $this->line('  MAIL_USERNAME='.$this->mask((string) ($mailerConfig['username'] ?? '')));
+        $this->line('  MAIL_FROM_ADDRESS='.(string) config('mail.from.address'));
     }
 
     private function printQueueSummary(): void
     {
         $this->line('Queue summary:');
-        $this->line('  QUEUE_CONNECTION=' . (string) config('queue.default'));
+        $this->line('  QUEUE_CONNECTION='.(string) config('queue.default'));
         $this->line('  password reset notification=immediate');
 
         try {
             if (Schema::hasTable('jobs')) {
-                $this->line('  pending jobs=' . DB::table('jobs')->count());
+                $this->line('  pending jobs='.DB::table('jobs')->count());
             }
 
             if (Schema::hasTable('failed_jobs')) {
-                $this->line('  failed jobs=' . DB::table('failed_jobs')->count());
+                $this->line('  failed jobs='.DB::table('failed_jobs')->count());
             }
         } catch (Throwable $exception) {
-            $this->warn('  queue table counts unavailable: ' . $exception->getMessage());
+            $this->warn('  queue table counts unavailable: '.$exception->getMessage());
         }
     }
 
@@ -152,10 +152,10 @@ class TestPasswordResetMail extends Command
         if (str_contains($value, '@')) {
             [$name, $domain] = explode('@', $value, 2);
 
-            return mb_substr($name, 0, 2) . str_repeat('*', max(3, mb_strlen($name) - 2)) . '@' . $domain;
+            return mb_substr($name, 0, 2).str_repeat('*', max(3, mb_strlen($name) - 2)).'@'.$domain;
         }
 
-        return mb_substr($value, 0, 2) . str_repeat('*', max(3, mb_strlen($value) - 2));
+        return mb_substr($value, 0, 2).str_repeat('*', max(3, mb_strlen($value) - 2));
     }
 
     private function emailDomain(string $email): string

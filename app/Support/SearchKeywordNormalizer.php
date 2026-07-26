@@ -5,6 +5,7 @@ namespace App\Support;
 class SearchKeywordNormalizer
 {
     public const MAX_LENGTH = 80;
+
     public const MIN_LENGTH = 2;
 
     public static function normalize(?string $raw): ?string

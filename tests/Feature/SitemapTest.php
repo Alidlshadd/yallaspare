@@ -24,11 +24,11 @@ class SitemapTest extends TestCase
         $response = $this->get('/sitemap.xml');
 
         $xml = $response->getContent();
-        $this->assertStringContainsString('<loc>' . url('/') . '</loc>', $xml);
-        $this->assertStringContainsString('<loc>' . url('/shop') . '</loc>', $xml);
-        $this->assertStringContainsString('<loc>' . url('/categories') . '</loc>', $xml);
-        $this->assertStringContainsString('<loc>' . url('/privacy-policy') . '</loc>', $xml);
-        $this->assertStringContainsString('<loc>' . url('/terms') . '</loc>', $xml);
+        $this->assertStringContainsString('<loc>'.url('/').'</loc>', $xml);
+        $this->assertStringContainsString('<loc>'.url('/shop').'</loc>', $xml);
+        $this->assertStringContainsString('<loc>'.url('/categories').'</loc>', $xml);
+        $this->assertStringContainsString('<loc>'.url('/privacy-policy').'</loc>', $xml);
+        $this->assertStringContainsString('<loc>'.url('/terms').'</loc>', $xml);
     }
 
     public function test_sitemap_includes_active_categories(): void
@@ -48,7 +48,7 @@ class SitemapTest extends TestCase
 
         $response = $this->get('/sitemap.xml');
 
-        $this->assertStringContainsString('/shop/products/' . $product->slug, $response->getContent());
+        $this->assertStringContainsString('/shop/products/'.$product->slug, $response->getContent());
     }
 
     public function test_sitemap_emits_hreflang_alternates_per_url(): void

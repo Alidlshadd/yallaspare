@@ -18,8 +18,7 @@ class PaymentService
     public function __construct(
         private readonly FibPaymentService $fib,
         private readonly ZainCashPaymentService $zainCash,
-    ) {
-    }
+    ) {}
 
     public function checkoutMethods(): array
     {
@@ -263,7 +262,7 @@ class PaymentService
                         'from_status' => $previousStatus,
                         'to_status' => Order::STATUS_PROCESSING,
                         'changed_by' => $order->user_id,
-                        'note' => 'Payment verified via ' . $source,
+                        'note' => 'Payment verified via '.$source,
                         'created_at' => now(),
                     ]);
                 }

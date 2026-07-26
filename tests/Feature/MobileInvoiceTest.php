@@ -16,7 +16,7 @@ class MobileInvoiceTest extends TestCase
     {
         return Order::query()->forceCreate(array_merge([
             'user_id' => $user->id,
-            'order_number' => 'TEST-' . Str::upper(Str::random(8)),
+            'order_number' => 'TEST-'.Str::upper(Str::random(8)),
             'total_amount' => 25000,
             'subtotal_amount' => 25000,
             'shipping_fee' => 5000,
@@ -42,7 +42,7 @@ class MobileInvoiceTest extends TestCase
         $order = $this->makeOrderFor($owner);
 
         $this->actingAs($intruder, 'sanctum')
-            ->get('/api/mobile/orders/' . $order->id . '/invoice')
+            ->get('/api/mobile/orders/'.$order->id.'/invoice')
             ->assertStatus(403);
     }
 
@@ -61,14 +61,14 @@ class MobileInvoiceTest extends TestCase
         $order = $this->makeOrderFor($user);
 
         $response = $this->actingAs($user, 'sanctum')
-            ->get('/api/mobile/orders/' . $order->id . '/invoice');
+            ->get('/api/mobile/orders/'.$order->id.'/invoice');
 
         $response->assertOk();
         $response->assertHeader('Content-Type', 'application/pdf');
         $disposition = $response->headers->get('Content-Disposition');
         $this->assertNotNull($disposition);
         $this->assertStringContainsString('attachment', $disposition);
-        $this->assertStringContainsString('invoice-' . $order->id . '-en.pdf', $disposition);
+        $this->assertStringContainsString('invoice-'.$order->id.'-en.pdf', $disposition);
     }
 
     public function test_invoice_lang_query_overrides_everything(): void
@@ -78,11 +78,11 @@ class MobileInvoiceTest extends TestCase
 
         $response = $this->actingAs($user, 'sanctum')
             ->withHeaders(['Accept-Language' => 'ku'])
-            ->get('/api/mobile/orders/' . $order->id . '/invoice?lang=ar');
+            ->get('/api/mobile/orders/'.$order->id.'/invoice?lang=ar');
 
         $response->assertOk();
         $this->assertStringContainsString(
-            'invoice-' . $order->id . '-ar.pdf',
+            'invoice-'.$order->id.'-ar.pdf',
             (string) $response->headers->get('Content-Disposition'),
         );
     }
@@ -94,11 +94,11 @@ class MobileInvoiceTest extends TestCase
 
         $response = $this->actingAs($user, 'sanctum')
             ->withHeaders(['Accept-Language' => 'ku'])
-            ->get('/api/mobile/orders/' . $order->id . '/invoice');
+            ->get('/api/mobile/orders/'.$order->id.'/invoice');
 
         $response->assertOk();
         $this->assertStringContainsString(
-            'invoice-' . $order->id . '-ar.pdf',
+            'invoice-'.$order->id.'-ar.pdf',
             (string) $response->headers->get('Content-Disposition'),
         );
     }
@@ -110,11 +110,11 @@ class MobileInvoiceTest extends TestCase
 
         $response = $this->actingAs($user, 'sanctum')
             ->withHeaders(['Accept-Language' => 'ku'])
-            ->get('/api/mobile/orders/' . $order->id . '/invoice');
+            ->get('/api/mobile/orders/'.$order->id.'/invoice');
 
         $response->assertOk();
         $this->assertStringContainsString(
-            'invoice-' . $order->id . '-ku.pdf',
+            'invoice-'.$order->id.'-ku.pdf',
             (string) $response->headers->get('Content-Disposition'),
         );
     }
@@ -125,11 +125,11 @@ class MobileInvoiceTest extends TestCase
         $order = $this->makeOrderFor($user);
 
         $response = $this->actingAs($user, 'sanctum')
-            ->get('/api/mobile/orders/' . $order->id . '/invoice');
+            ->get('/api/mobile/orders/'.$order->id.'/invoice');
 
         $response->assertOk();
         $this->assertStringContainsString(
-            'invoice-' . $order->id . '-en.pdf',
+            'invoice-'.$order->id.'-en.pdf',
             (string) $response->headers->get('Content-Disposition'),
         );
     }
@@ -140,11 +140,11 @@ class MobileInvoiceTest extends TestCase
         $order = $this->makeOrderFor($user);
 
         $response = $this->actingAs($user, 'sanctum')
-            ->get('/api/mobile/orders/' . $order->id . '/invoice?lang=tr');
+            ->get('/api/mobile/orders/'.$order->id.'/invoice?lang=tr');
 
         $response->assertOk();
         $this->assertStringContainsString(
-            'invoice-' . $order->id . '-en.pdf',
+            'invoice-'.$order->id.'-en.pdf',
             (string) $response->headers->get('Content-Disposition'),
         );
     }

@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Notifications\ImmediateVerifyEmail;
 use App\Providers\RouteServiceProvider;
 use App\Support\EmailVerificationCode;
+use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -76,7 +77,7 @@ class EmailVerificationTest extends TestCase
             ->assertSessionHas('status');
 
         Notification::assertSentTo($user, ImmediateVerifyEmail::class);
-        $this->assertFalse(new ImmediateVerifyEmail() instanceof ShouldQueue);
+        $this->assertFalse(new ImmediateVerifyEmail instanceof ShouldQueue);
     }
 
     public function test_verification_email_has_branded_copy(): void
@@ -154,7 +155,7 @@ class EmailVerificationTest extends TestCase
             ])
             ->assertJsonMissingPath('token');
 
-        Event::assertDispatched(\Illuminate\Auth\Events\Registered::class);
+        Event::assertDispatched(Registered::class);
         $this->assertDatabaseHas('users', [
             'email' => 'mobile@example.com',
             'phone' => '+9647704488315',

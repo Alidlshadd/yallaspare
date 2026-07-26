@@ -85,7 +85,7 @@ class Discount extends Model
     private static function loadActiveForPricing(): Collection
     {
         if (! DbSchema::hasTable('discounts')) {
-            return new Collection();
+            return new Collection;
         }
 
         $now = now();

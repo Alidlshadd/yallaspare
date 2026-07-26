@@ -207,6 +207,6 @@ class OperationalNotificationMail extends Mailable implements ShouldQueue
         $decimals = (int) Setting::getValue('currency_decimals', 0);
         $code = (string) Setting::getValue('currency_code', 'IQD');
 
-        return number_format($amount, $decimals) . ' ' . $code;
+        return number_format($amount, $decimals).' '.$code;
     }
 }

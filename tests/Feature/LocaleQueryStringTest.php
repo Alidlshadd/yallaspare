@@ -15,7 +15,7 @@ class LocaleQueryStringTest extends TestCase
         $request->setLaravelSession($this->app['session.store']);
         $request->session()->put('locale', 'en');
 
-        (new SetLocale())->handle($request, fn ($req) => new Response());
+        (new SetLocale)->handle($request, fn ($req) => new Response);
 
         $this->assertSame('ar', app()->getLocale());
         $this->assertSame('en', $request->session()->get('locale'),
@@ -28,7 +28,7 @@ class LocaleQueryStringTest extends TestCase
         $request->setLaravelSession($this->app['session.store']);
         $request->session()->put('locale', 'ku');
 
-        (new SetLocale())->handle($request, fn ($req) => new Response());
+        (new SetLocale)->handle($request, fn ($req) => new Response);
 
         $this->assertSame('ku', app()->getLocale());
     }
@@ -39,7 +39,7 @@ class LocaleQueryStringTest extends TestCase
         $request->setLaravelSession($this->app['session.store']);
         $request->session()->put('locale', 'ar');
 
-        (new SetLocale())->handle($request, fn ($req) => new Response());
+        (new SetLocale)->handle($request, fn ($req) => new Response);
 
         $this->assertSame('ar', app()->getLocale());
     }
@@ -49,7 +49,7 @@ class LocaleQueryStringTest extends TestCase
         $request = Request::create('/', 'GET');
         $request->setLaravelSession($this->app['session.store']);
 
-        (new SetLocale())->handle($request, fn ($req) => new Response());
+        (new SetLocale)->handle($request, fn ($req) => new Response);
 
         $this->assertSame('en', app()->getLocale());
     }

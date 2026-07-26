@@ -33,7 +33,7 @@ class CartController extends Controller
         $items = $cart?->items ?? collect();
         $subtotal = $items->sum(function (CartItem $item): float {
             $product = $item->product;
-            if (!$product) {
+            if (! $product) {
                 return 0;
             }
 
@@ -89,7 +89,7 @@ class CartController extends Controller
                 ->with('status', __('Please sign in or register to add items to your cart.'));
         }
 
-        if (!$product->is_active) {
+        if (! $product->is_active) {
             return back()->with('error', __('This product is not available right now.'));
         }
 
@@ -136,8 +136,8 @@ class CartController extends Controller
                 'ok' => true,
                 'cart_count' => $cartCount,
                 'cart_items_label' => __('Items (:count)', ['count' => $cartCount]),
-                'cart_ref' => '#' . str_pad((string) $cart->id, 6, '0', STR_PAD_LEFT),
-                'cart_total_formatted' => trim($currencyLabel . ' ' . number_format($subtotal, 2)),
+                'cart_ref' => '#'.str_pad((string) $cart->id, 6, '0', STR_PAD_LEFT),
+                'cart_total_formatted' => trim($currencyLabel.' '.number_format($subtotal, 2)),
                 'message' => $message,
             ]);
         }
@@ -148,7 +148,7 @@ class CartController extends Controller
     public function update(Request $request, CartItem $item): RedirectResponse
     {
         $cart = Cart::query()->where('user_id', auth()->id())->first();
-        if (!$cart || $item->cart_id !== $cart->id) {
+        if (! $cart || $item->cart_id !== $cart->id) {
             abort(403);
         }
 
@@ -188,7 +188,7 @@ class CartController extends Controller
     public function remove(CartItem $item): RedirectResponse
     {
         $cart = Cart::query()->where('user_id', auth()->id())->first();
-        if (!$cart || $item->cart_id !== $cart->id) {
+        if (! $cart || $item->cart_id !== $cart->id) {
             abort(403);
         }
 
@@ -317,6 +317,7 @@ class CartController extends Controller
             if ($maxQuantity < 1) {
                 $item->delete();
                 $changed = true;
+
                 continue;
             }
 

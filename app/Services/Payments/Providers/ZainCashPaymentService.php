@@ -48,7 +48,7 @@ class ZainCashPaymentService implements PaymentProviderInterface
         }
 
         return new PaymentRedirectData(
-            redirectUrl: $this->url('/transaction/pay?id=' . rawurlencode($transactionId)),
+            redirectUrl: $this->url('/transaction/pay?id='.rawurlencode($transactionId)),
             providerPaymentId: $transactionId,
             providerTransactionId: $transactionId,
             rawResponse: is_array($response) ? $response : [],
@@ -140,6 +140,6 @@ class ZainCashPaymentService implements PaymentProviderInterface
 
     private function url(string $path): string
     {
-        return rtrim((string) config('services.zaincash.base_url'), '/') . $path;
+        return rtrim((string) config('services.zaincash.base_url'), '/').$path;
     }
 }

@@ -75,6 +75,6 @@ class EmailVerificationCode
 
     private static function keyFor(User $user): string
     {
-        return 'email-verification-code:' . $user->getKey() . ':' . sha1((string) $user->getEmailForVerification());
+        return 'email-verification-code:'.$user->getKey().':'.sha1((string) $user->getEmailForVerification());
     }
 }

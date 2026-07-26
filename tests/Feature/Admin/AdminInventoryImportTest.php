@@ -16,7 +16,7 @@ class AdminInventoryImportTest extends TestCase
 
     private function makeCsv(string $content): UploadedFile
     {
-        $path = tempnam(sys_get_temp_dir(), 'inv_import_') . '.csv';
+        $path = tempnam(sys_get_temp_dir(), 'inv_import_').'.csv';
         file_put_contents($path, $content);
 
         return new UploadedFile($path, 'inventory.csv', 'text/csv', null, true);
@@ -64,8 +64,8 @@ class AdminInventoryImportTest extends TestCase
         [$admin, $p1, $p2] = $this->makeAdminAndProducts();
 
         $csv = "product_sku,type,quantity,reference,note\n"
-            . "SKU-A,in,20,PO-1,Restock\n"
-            . "SKU-B,in,15,PO-1,Restock\n";
+            ."SKU-A,in,20,PO-1,Restock\n"
+            ."SKU-B,in,15,PO-1,Restock\n";
 
         $this->actingAs($admin)
             ->post(route('admin.inventory.import'), [
@@ -84,10 +84,10 @@ class AdminInventoryImportTest extends TestCase
         [$admin, $p1] = $this->makeAdminAndProducts();
 
         $csv = "product_sku,type,quantity\n"
-            . "SKU-A,in,5\n"
-            . "SKU-MISSING,in,3\n"
-            . "SKU-A,bogus,2\n"
-            . "SKU-A,out,9999\n";
+            ."SKU-A,in,5\n"
+            ."SKU-MISSING,in,3\n"
+            ."SKU-A,bogus,2\n"
+            ."SKU-A,out,9999\n";
 
         $response = $this->actingAs($admin)
             ->post(route('admin.inventory.import'), [

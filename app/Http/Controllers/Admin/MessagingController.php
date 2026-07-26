@@ -16,9 +16,7 @@ use Throwable;
 
 class MessagingController extends Controller
 {
-    public function __construct(private readonly OtpiqSmsService $otpiq)
-    {
-    }
+    public function __construct(private readonly OtpiqSmsService $otpiq) {}
 
     public function index(Request $request): View
     {

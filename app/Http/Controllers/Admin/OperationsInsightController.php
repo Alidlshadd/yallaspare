@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\BackInStockSubscription;
-use App\Services\BackInStockNotificationService;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\SearchAnalytic;
 use App\Models\Setting;
+use App\Services\BackInStockNotificationService;
 use App\Support\AdminLogger;
 use App\Support\SqlSafe;
 use Illuminate\Http\RedirectResponse;
@@ -397,7 +397,7 @@ class OperationsInsightController extends Controller
 
         $buckets = [];
         foreach ($idleOptions as $option) {
-            $buckets[$option] = (int) ($row->{'bucket_' . $option} ?? 0);
+            $buckets[$option] = (int) ($row->{'bucket_'.$option} ?? 0);
         }
 
         return $buckets;

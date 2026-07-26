@@ -37,15 +37,15 @@ class TestMail extends Command
         }
 
         $this->line('Mailer summary:');
-        $this->line('  MAIL_MAILER=' . $mailer);
-        $this->line('  TRANSPORT=' . $transport);
-        $this->line('  MAIL_HOST=' . (string) ($mailerConfig['host'] ?? ''));
-        $this->line('  MAIL_PORT=' . (string) ($mailerConfig['port'] ?? ''));
-        $this->line('  MAIL_ENCRYPTION=' . (string) ($mailerConfig['encryption'] ?? ''));
-        $this->line('  MAIL_USERNAME=' . $this->mask($smtpUsername));
-        $this->line('  MAIL_FROM_ADDRESS=' . $fromAddress);
-        $this->line('  MAIL_FROM_NAME=' . $fromName);
-        $this->line('  QUEUE_CONNECTION=' . (string) config('queue.default'));
+        $this->line('  MAIL_MAILER='.$mailer);
+        $this->line('  TRANSPORT='.$transport);
+        $this->line('  MAIL_HOST='.(string) ($mailerConfig['host'] ?? ''));
+        $this->line('  MAIL_PORT='.(string) ($mailerConfig['port'] ?? ''));
+        $this->line('  MAIL_ENCRYPTION='.(string) ($mailerConfig['encryption'] ?? ''));
+        $this->line('  MAIL_USERNAME='.$this->mask($smtpUsername));
+        $this->line('  MAIL_FROM_ADDRESS='.$fromAddress);
+        $this->line('  MAIL_FROM_NAME='.$fromName);
+        $this->line('  QUEUE_CONNECTION='.(string) config('queue.default'));
 
         if ($transport === 'smtp' && $this->smtpLooksIncomplete($smtpUsername, $smtpPassword, $fromAddress)) {
             $this->error('SMTP is not configured. Update MAIL_USERNAME, MAIL_PASSWORD, and MAIL_FROM_ADDRESS in .env first.');
@@ -57,7 +57,7 @@ class TestMail extends Command
             if ($this->option('queue')) {
                 Mail::mailer($mailer)->to($recipient)->queue(new OperationalNotificationMail(
                     $subject,
-                    "This is a queued YallaSpare test email.\n\nMailer: {$mailer}\nFrom: {$fromAddress}\nQueued at: " . now()->toDateTimeString(),
+                    "This is a queued YallaSpare test email.\n\nMailer: {$mailer}\nFrom: {$fromAddress}\nQueued at: ".now()->toDateTimeString(),
                     ['type' => 'mail_test']
                 ));
 
@@ -67,7 +67,7 @@ class TestMail extends Command
             }
 
             Mail::mailer($mailer)->raw(
-                "This is a YallaSpare test email.\n\nMailer: {$mailer}\nFrom: {$fromAddress}\nSent at: " . now()->toDateTimeString(),
+                "This is a YallaSpare test email.\n\nMailer: {$mailer}\nFrom: {$fromAddress}\nSent at: ".now()->toDateTimeString(),
                 function ($message) use ($recipient, $subject): void {
                     $message->to($recipient)->subject($subject);
                 }
@@ -89,7 +89,7 @@ class TestMail extends Command
                 'message' => $e->getMessage(),
             ]);
 
-            $this->error('Mail test failed: ' . $e::class);
+            $this->error('Mail test failed: '.$e::class);
             $this->line($e->getMessage());
             $this->warn('The exact failure was also written to laravel.log without exposing the SMTP password.');
 
@@ -131,9 +131,9 @@ class TestMail extends Command
         if (str_contains($value, '@')) {
             [$name, $domain] = explode('@', $value, 2);
 
-            return mb_substr($name, 0, 2) . str_repeat('*', max(3, mb_strlen($name) - 2)) . '@' . $domain;
+            return mb_substr($name, 0, 2).str_repeat('*', max(3, mb_strlen($name) - 2)).'@'.$domain;
         }
 
-        return mb_substr($value, 0, 2) . str_repeat('*', max(3, mb_strlen($value) - 2));
+        return mb_substr($value, 0, 2).str_repeat('*', max(3, mb_strlen($value) - 2));
     }
 }

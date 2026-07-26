@@ -37,6 +37,7 @@ class MobileCheckoutReviewTest extends TestCase
             'phone' => '+964 770 000 0000',
             'is_default' => true,
         ], $addressOverrides));
+
         return $user->fresh();
     }
 

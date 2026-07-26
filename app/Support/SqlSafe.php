@@ -4,7 +4,6 @@ namespace App\Support;
 
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder as QueryBuilder;
-use Illuminate\Support\Facades\DB;
 
 class SqlSafe
 {
@@ -22,7 +21,7 @@ class SqlSafe
         $term = str_replace('%', '!%', $term);
         $term = str_replace('_', '!_', $term);
 
-        return '%' . $term . '%';
+        return '%'.$term.'%';
     }
 
     public static function whereLike(EloquentBuilder|QueryBuilder $query, string $column, mixed $value, string $boolean = 'and'): void
@@ -34,7 +33,7 @@ class SqlSafe
         $wrappedColumn = $grammar->wrap($column);
 
         $query->whereRaw(
-            $wrappedColumn . " LIKE ? ESCAPE '!'",
+            $wrappedColumn." LIKE ? ESCAPE '!'",
             [self::containsPattern($value)],
             $boolean
         );

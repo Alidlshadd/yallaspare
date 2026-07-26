@@ -53,6 +53,7 @@ class PdfArabicText
             if ($currentArabic === null || $isArabic === $currentArabic) {
                 $current .= $char;
                 $currentArabic = $isArabic;
+
                 continue;
             }
 
@@ -89,6 +90,7 @@ class PdfArabicText
 
             if ($forms === null) {
                 $shaped[] = $char;
+
                 continue;
             }
 
@@ -135,6 +137,7 @@ class PdfArabicText
                 if ($ligature !== null) {
                     $result[] = self::chr($ligature);
                     $i++; // consume the alef
+
                     continue;
                 }
             }

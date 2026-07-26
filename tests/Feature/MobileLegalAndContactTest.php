@@ -131,8 +131,7 @@ class MobileLegalAndContactTest extends TestCase
         ]);
 
         $response->assertOk();
-        Mail::assertQueued(SupportContactRequestMail::class, fn ($mail) =>
-            $mail->data['phone'] === '+964 770 123 4567'
+        Mail::assertQueued(SupportContactRequestMail::class, fn ($mail) => $mail->data['phone'] === '+964 770 123 4567'
         );
     }
 }

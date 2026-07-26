@@ -146,7 +146,7 @@ return new class extends Migration
 
     private function dropTriggerIfExists(string $triggerName): void
     {
-        if (!$this->triggerExists($triggerName)) {
+        if (! $this->triggerExists($triggerName)) {
             return;
         }
 
@@ -173,7 +173,7 @@ return new class extends Migration
 
     private function dropIndexIfExists(string $table, string $indexName): void
     {
-        if (!Schema::hasTable($table) || !$this->indexExists($table, $indexName)) {
+        if (! Schema::hasTable($table) || ! $this->indexExists($table, $indexName)) {
             return;
         }
 

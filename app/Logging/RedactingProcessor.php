@@ -59,6 +59,7 @@ class RedactingProcessor implements ProcessorInterface
         foreach ($data as $key => $value) {
             if (is_string($key) && in_array(strtolower($key), self::SENSITIVE_KEYS, true)) {
                 $data[$key] = '[redacted]';
+
                 continue;
             }
 

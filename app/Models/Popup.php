@@ -61,21 +61,21 @@ class Popup extends Model
 
     public function localizedTitle(): string
     {
-        $field = 'title_' . app()->getLocale();
+        $field = 'title_'.app()->getLocale();
 
         return LocalizedText::first($this->{$field} ?? '', $this->title_en, $this->title_ar, $this->title_ku, '');
     }
 
     public function localizedDescription(): ?string
     {
-        $field = 'description_' . app()->getLocale();
+        $field = 'description_'.app()->getLocale();
 
         return LocalizedText::nullable($this->{$field} ?? '', $this->description_en);
     }
 
     public function localizedButtonLabel(): ?string
     {
-        $field = 'button_label_' . app()->getLocale();
+        $field = 'button_label_'.app()->getLocale();
 
         return LocalizedText::nullable($this->{$field} ?? '', $this->button_label_en);
     }

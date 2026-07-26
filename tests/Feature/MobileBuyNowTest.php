@@ -61,7 +61,7 @@ class MobileBuyNowTest extends TestCase
         $product = Product::factory()->create(['stock_quantity' => 10, 'is_active' => false]);
 
         $this->actingAs($user, 'sanctum')
-            ->postJson('/api/mobile/products/' . $product->id . '/buy-now/preview', [])
+            ->postJson('/api/mobile/products/'.$product->id.'/buy-now/preview', [])
             ->assertStatus(422)
             ->assertJsonPath('message', __('errors.product_unavailable'));
     }
@@ -72,7 +72,7 @@ class MobileBuyNowTest extends TestCase
         $product = Product::factory()->create(['stock_quantity' => 0, 'is_active' => true]);
 
         $this->actingAs($user, 'sanctum')
-            ->postJson('/api/mobile/products/' . $product->id . '/buy-now/preview', [])
+            ->postJson('/api/mobile/products/'.$product->id.'/buy-now/preview', [])
             ->assertStatus(422)
             ->assertJsonPath('message', __('errors.stock_insufficient'));
     }
@@ -83,7 +83,7 @@ class MobileBuyNowTest extends TestCase
         $product = Product::factory()->create(['price' => 10000, 'stock_quantity' => 3, 'is_active' => true]);
 
         $response = $this->actingAs($user, 'sanctum')
-            ->postJson('/api/mobile/products/' . $product->id . '/buy-now/preview', ['quantity' => 5]);
+            ->postJson('/api/mobile/products/'.$product->id.'/buy-now/preview', ['quantity' => 5]);
 
         $response->assertOk();
         $this->assertSame(3, (int) $response->json('data.quantity'));
@@ -96,7 +96,7 @@ class MobileBuyNowTest extends TestCase
         $product = Product::factory()->create(['price' => 12500, 'stock_quantity' => 10, 'is_active' => true]);
 
         $response = $this->actingAs($user, 'sanctum')
-            ->postJson('/api/mobile/products/' . $product->id . '/buy-now/preview', ['quantity' => 2]);
+            ->postJson('/api/mobile/products/'.$product->id.'/buy-now/preview', ['quantity' => 2]);
 
         $response->assertOk();
         $totals = $response->json('data.totals');
@@ -114,7 +114,7 @@ class MobileBuyNowTest extends TestCase
         $product = Product::factory()->create(['price' => 10000, 'stock_quantity' => 5, 'is_active' => true]);
 
         $response = $this->actingAs($user, 'sanctum')
-            ->postJson('/api/mobile/products/' . $product->id . '/buy-now/preview', [
+            ->postJson('/api/mobile/products/'.$product->id.'/buy-now/preview', [
                 'quantity' => 1,
                 'coupon_code' => 'NO-SUCH-CODE',
             ]);
@@ -135,7 +135,7 @@ class MobileBuyNowTest extends TestCase
         $product = Product::factory()->create(['price' => 10000, 'stock_quantity' => 5, 'is_active' => true]);
 
         $this->actingAs($user, 'sanctum')
-            ->postJson('/api/mobile/products/' . $product->id . '/buy-now/place', [])
+            ->postJson('/api/mobile/products/'.$product->id.'/buy-now/place', [])
             ->assertStatus(422);
     }
 
@@ -145,7 +145,7 @@ class MobileBuyNowTest extends TestCase
         $product = Product::factory()->create(['price' => 12500, 'stock_quantity' => 10, 'is_active' => true]);
 
         $response = $this->actingAs($user, 'sanctum')
-            ->postJson('/api/mobile/products/' . $product->id . '/buy-now/place', ['quantity' => 2]);
+            ->postJson('/api/mobile/products/'.$product->id.'/buy-now/place', ['quantity' => 2]);
 
         $response->assertOk();
         $orderId = $response->json('order.id');
@@ -169,7 +169,7 @@ class MobileBuyNowTest extends TestCase
         $product = Product::factory()->create(['price' => 10000, 'stock_quantity' => 1, 'is_active' => true]);
 
         $this->actingAs($user, 'sanctum')
-            ->postJson('/api/mobile/products/' . $product->id . '/buy-now/place', ['quantity' => 5])
+            ->postJson('/api/mobile/products/'.$product->id.'/buy-now/place', ['quantity' => 5])
             ->assertStatus(422)
             ->assertJsonPath('message', __('errors.stock_insufficient'));
 
@@ -183,7 +183,7 @@ class MobileBuyNowTest extends TestCase
         $product = Product::factory()->create(['price' => 10000, 'stock_quantity' => 5, 'is_active' => false]);
 
         $this->actingAs($user, 'sanctum')
-            ->postJson('/api/mobile/products/' . $product->id . '/buy-now/place', ['quantity' => 1])
+            ->postJson('/api/mobile/products/'.$product->id.'/buy-now/place', ['quantity' => 1])
             ->assertStatus(422)
             ->assertJsonPath('message', __('errors.product_unavailable'));
 
@@ -196,7 +196,7 @@ class MobileBuyNowTest extends TestCase
         $product = Product::factory()->create(['price' => 10000, 'stock_quantity' => 5, 'is_active' => true]);
 
         $this->actingAs($user, 'sanctum')
-            ->postJson('/api/mobile/products/' . $product->id . '/buy-now/place', [
+            ->postJson('/api/mobile/products/'.$product->id.'/buy-now/place', [
                 'quantity' => 1,
                 'coupon_code' => 'NO-SUCH',
             ])
@@ -228,7 +228,7 @@ class MobileBuyNowTest extends TestCase
         ]);
 
         $this->actingAs($user, 'sanctum')
-            ->postJson('/api/mobile/products/' . $product->id . '/buy-now/place', [
+            ->postJson('/api/mobile/products/'.$product->id.'/buy-now/place', [
                 'quantity' => 2,
                 'address_id' => $other->id,
                 'payment_method' => 'cash_on_delivery',

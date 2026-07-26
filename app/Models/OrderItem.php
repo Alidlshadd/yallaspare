@@ -20,12 +20,12 @@ class OrderItem extends Model
     // 🔗 Product relation
     public function product()
     {
-        return $this->belongsTo(\App\Models\Product::class);
+        return $this->belongsTo(Product::class);
     }
 
     // 🔗 Order relation
     public function order()
     {
-        return $this->belongsTo(\App\Models\Order::class);
+        return $this->belongsTo(Order::class);
     }
 }

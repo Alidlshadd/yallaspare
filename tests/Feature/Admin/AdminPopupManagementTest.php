@@ -119,7 +119,7 @@ class AdminPopupManagementTest extends TestCase
         foreach (['/shop', 'https://example.com/campaign', 'http://example.com'] as $index => $safeUrl) {
             $this->actingAs($admin)
                 ->post(route('admin.popups.store'), [
-                    'title_en' => 'Safe popup ' . $index,
+                    'title_en' => 'Safe popup '.$index,
                     'button_url' => $safeUrl,
                     'pages' => ['all'],
                     'frequency' => 'every_visit',

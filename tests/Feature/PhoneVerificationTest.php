@@ -137,7 +137,7 @@ class PhoneVerificationTest extends TestCase
 
     public function test_iraqi_mobile_without_zero_is_converted_to_international_format(): void
     {
-        $service = app(\App\Services\OtpiqSmsService::class);
+        $service = app(OtpiqSmsService::class);
 
         $this->assertSame('9647704488315', $service->internationalPhoneNumber('7704488315'));
     }
@@ -160,7 +160,7 @@ class PhoneVerificationTest extends TestCase
 
     public function test_sms_service_rejects_a_phone_that_does_not_belong_to_a_saved_account(): void
     {
-        $recipient = new User();
+        $recipient = new User;
         $recipient->phone = '+9647704488311';
         Http::fake();
 

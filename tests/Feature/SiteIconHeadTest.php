@@ -12,7 +12,9 @@ class SiteIconHeadTest extends TestCase
     use RefreshDatabase;
 
     private const PUBLIC_SEO_TITLE = 'YallaSpare | Auto Spare Parts Platform in Iraq';
+
     private const PUBLIC_SEO_DESCRIPTION = 'YallaSpare is an auto spare parts platform built for Iraq, helping customers find trusted parts, check vehicle compatibility, order easily, and get reliable support.';
+
     private const HEAD_ICON_VERSION = '20260616b';
 
     private string $logoPath = 'settings/test-head-logo.png';
@@ -41,23 +43,23 @@ class SiteIconHeadTest extends TestCase
         $iconVersion = self::HEAD_ICON_VERSION;
 
         $this->assertStringContainsString('rel="icon"', $head);
-        $this->assertStringContainsString('favicon.ico?v=' . $iconVersion, $head);
-        $this->assertStringContainsString('favicon.png?v=' . $iconVersion, $head);
-        $this->assertStringContainsString('favicon-32x32.png?v=' . $iconVersion, $head);
-        $this->assertStringContainsString('favicon-16x16.png?v=' . $iconVersion, $head);
-        $this->assertStringContainsString('apple-touch-icon.png?v=' . $iconVersion, $head);
-        $this->assertStringContainsString('site.webmanifest?v=' . $iconVersion, $head);
+        $this->assertStringContainsString('favicon.ico?v='.$iconVersion, $head);
+        $this->assertStringContainsString('favicon.png?v='.$iconVersion, $head);
+        $this->assertStringContainsString('favicon-32x32.png?v='.$iconVersion, $head);
+        $this->assertStringContainsString('favicon-16x16.png?v='.$iconVersion, $head);
+        $this->assertStringContainsString('apple-touch-icon.png?v='.$iconVersion, $head);
+        $this->assertStringContainsString('site.webmanifest?v='.$iconVersion, $head);
         $this->assertStringContainsString('/brand/logo?v=', $head);
         $this->assertStringContainsString('sv=head-logo-version', $head);
         $this->assertStringContainsString('property="og:image"', $head);
-        $this->assertStringContainsString('icons/yallaspare-og-preview.png?v=' . $iconVersion, $head);
+        $this->assertStringContainsString('icons/yallaspare-og-preview.png?v='.$iconVersion, $head);
         $this->assertStringContainsString('name="twitter:image"', $head);
         $this->assertStringContainsString('<title>Yalla Spare</title>', $head);
-        $this->assertStringContainsString('name="description" content="' . self::PUBLIC_SEO_DESCRIPTION . '"', $head);
-        $this->assertStringContainsString('property="og:title" content="' . self::PUBLIC_SEO_TITLE . '"', $head);
-        $this->assertStringContainsString('property="og:description" content="' . self::PUBLIC_SEO_DESCRIPTION . '"', $head);
-        $this->assertStringContainsString('name="twitter:title" content="' . self::PUBLIC_SEO_TITLE . '"', $head);
-        $this->assertStringContainsString('name="twitter:description" content="' . self::PUBLIC_SEO_DESCRIPTION . '"', $head);
+        $this->assertStringContainsString('name="description" content="'.self::PUBLIC_SEO_DESCRIPTION.'"', $head);
+        $this->assertStringContainsString('property="og:title" content="'.self::PUBLIC_SEO_TITLE.'"', $head);
+        $this->assertStringContainsString('property="og:description" content="'.self::PUBLIC_SEO_DESCRIPTION.'"', $head);
+        $this->assertStringContainsString('name="twitter:title" content="'.self::PUBLIC_SEO_TITLE.'"', $head);
+        $this->assertStringContainsString('name="twitter:description" content="'.self::PUBLIC_SEO_DESCRIPTION.'"', $head);
     }
 
     public function test_public_head_does_not_reference_old_cube_fallback_assets(): void
@@ -90,8 +92,8 @@ class SiteIconHeadTest extends TestCase
         ] as $path) {
             $fullPath = public_path($path);
 
-            $this->assertFileExists($fullPath, $path . ' is missing.');
-            $this->assertGreaterThan(0, filesize($fullPath), $path . ' is empty.');
+            $this->assertFileExists($fullPath, $path.' is missing.');
+            $this->assertGreaterThan(0, filesize($fullPath), $path.' is empty.');
         }
 
         $manifest = json_decode((string) file_get_contents(public_path('site.webmanifest')), true);

@@ -48,7 +48,7 @@ return new class extends Migration
 
         $superAdminExists = DB::table('users')->where('role', $roleSuperAdmin)->exists();
 
-        if (!$superAdminExists) {
+        if (! $superAdminExists) {
             $candidate = DB::table('users')
                 ->whereIn('role', [$roleAdmin, $roleSuperAdmin])
                 ->orderBy('id')

@@ -67,9 +67,9 @@ class TrustHosts extends Middleware
         if (Str::startsWith($host, '*.')) {
             $quotedHost = preg_quote(Str::after($host, '*.'), '/');
 
-            return ['^(.*\.)?' . $quotedHost . '$'];
+            return ['^(.*\.)?'.$quotedHost.'$'];
         }
 
-        return ['^' . preg_quote($host, '/') . '$'];
+        return ['^'.preg_quote($host, '/').'$'];
     }
 }

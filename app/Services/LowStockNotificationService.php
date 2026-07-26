@@ -12,12 +12,12 @@ class LowStockNotificationService
 
     public function makeKey(int $productId): string
     {
-        return 'low_stock:' . $productId;
+        return 'low_stock:'.$productId;
     }
 
     public function getUnreadLowStockCount(int $userId): int
     {
-        $cacheKey = 'notifications:low_stock:unread_count:user:' . $userId;
+        $cacheKey = 'notifications:low_stock:unread_count:user:'.$userId;
 
         return (int) Cache::remember($cacheKey, now()->addSeconds(self::CACHE_TTL_SECONDS), function () use ($userId) {
             return Product::query()

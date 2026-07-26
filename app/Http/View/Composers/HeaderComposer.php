@@ -96,7 +96,7 @@ class HeaderComposer
 
                 return [
                     'count' => $count,
-                    'ref' => '#' . str_pad((string) $cart->id, 6, '0', STR_PAD_LEFT),
+                    'ref' => '#'.str_pad((string) $cart->id, 6, '0', STR_PAD_LEFT),
                     'subtotal' => round($subtotal, 2),
                     'total_formatted' => null,
                 ];
@@ -127,7 +127,7 @@ class HeaderComposer
 
     public function dropdownCategories(string $locale): Collection
     {
-        $cacheKey = self::CATEGORY_CACHE_PREFIX . $locale;
+        $cacheKey = self::CATEGORY_CACHE_PREFIX.$locale;
 
         return Cache::remember($cacheKey, self::CATEGORY_CACHE_TTL_SECONDS, function () use ($locale): Collection {
             try {
@@ -164,7 +164,7 @@ class HeaderComposer
                             ),
                             'desc' => $category->localized_description,
                             'url' => route('shop.index', ['category' => $category->slug ?: $category->id]),
-                            'image' => $imagePath !== '' ? asset('storage/' . ltrim($imagePath, '/')) : null,
+                            'image' => $imagePath !== '' ? asset('storage/'.ltrim($imagePath, '/')) : null,
                         ];
                     })
                     ->values();
@@ -177,7 +177,7 @@ class HeaderComposer
     public static function forgetCategoryCache(): void
     {
         foreach (['en', 'ar', 'ku'] as $locale) {
-            Cache::forget(self::CATEGORY_CACHE_PREFIX . $locale);
+            Cache::forget(self::CATEGORY_CACHE_PREFIX.$locale);
         }
     }
 
@@ -187,7 +187,7 @@ class HeaderComposer
             return;
         }
 
-        Cache::forget(self::CART_SUMMARY_CACHE_PREFIX . $userId);
+        Cache::forget(self::CART_SUMMARY_CACHE_PREFIX.$userId);
     }
 
     public static function forgetWishlistCacheForUser(?int $userId): void
@@ -196,7 +196,7 @@ class HeaderComposer
             return;
         }
 
-        Cache::forget(self::WISHLIST_COUNT_CACHE_PREFIX . $userId);
+        Cache::forget(self::WISHLIST_COUNT_CACHE_PREFIX.$userId);
     }
 
     /**
@@ -214,11 +214,11 @@ class HeaderComposer
 
     private function cartSummaryCacheKey(int $userId): string
     {
-        return self::CART_SUMMARY_CACHE_PREFIX . $userId;
+        return self::CART_SUMMARY_CACHE_PREFIX.$userId;
     }
 
     private function wishlistCountCacheKey(int $userId): string
     {
-        return self::WISHLIST_COUNT_CACHE_PREFIX . $userId;
+        return self::WISHLIST_COUNT_CACHE_PREFIX.$userId;
     }
 }

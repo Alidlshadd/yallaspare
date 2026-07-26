@@ -36,7 +36,7 @@ class AdminBulkUpdateTest extends TestCase
 
         $order = Order::forceCreate([
             'user_id' => $customer->id,
-            'order_number' => 'ORD-' . uniqid(),
+            'order_number' => 'ORD-'.uniqid(),
             'subtotal_amount' => 20000,
             'shipping_fee' => 0,
             'discount_amount' => 0,

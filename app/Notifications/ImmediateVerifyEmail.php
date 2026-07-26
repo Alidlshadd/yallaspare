@@ -8,9 +8,7 @@ use Illuminate\Notifications\Notification;
 
 class ImmediateVerifyEmail extends Notification
 {
-    public function __construct(private ?string $code = null)
-    {
-    }
+    public function __construct(private ?string $code = null) {}
 
     public function via(object $notifiable): array
     {

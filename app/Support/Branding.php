@@ -28,19 +28,19 @@ class Branding
 
         $storagePath = self::storagePathFromValue($value);
         if (self::isSafeLogoPath($storagePath) && Storage::disk('public')->exists($storagePath)) {
-            $fullPath = storage_path('app/public/' . $storagePath);
+            $fullPath = storage_path('app/public/'.$storagePath);
             $version = is_file($fullPath)
                 ? (string) filemtime($fullPath)
                 : md5($storagePath);
 
-            return '/brand/logo?v=' . rawurlencode($version);
+            return '/brand/logo?v='.rawurlencode($version);
         }
 
         $publicPath = self::publicPathFromValue($value);
         if (self::isSafeLogoPath($publicPath) && is_file(public_path(ltrim($publicPath, '/')))) {
             $version = (string) filemtime(public_path(ltrim($publicPath, '/')));
 
-            return $publicPath . '?v=' . $version;
+            return $publicPath.'?v='.$version;
         }
 
         return null;
@@ -123,7 +123,7 @@ class Branding
         }
 
         if (Str::startsWith($normalized, ['storage/', 'images/'])) {
-            return '/' . ltrim($normalized, '/');
+            return '/'.ltrim($normalized, '/');
         }
 
         return null;
@@ -142,7 +142,7 @@ class Branding
 
         $storagePath = self::storagePathFromValue($logoValue);
         if ($storagePath && self::isSafeLogoPath($storagePath)) {
-            $publicStoragePath = public_path('storage/' . ltrim($storagePath, '/'));
+            $publicStoragePath = public_path('storage/'.ltrim($storagePath, '/'));
             if (is_file($publicStoragePath)) {
                 return str_replace('\\', '/', $publicStoragePath);
             }

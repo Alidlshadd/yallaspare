@@ -20,12 +20,12 @@ class UpdateProfileRequest extends FormRequest
         return [
             'first_name' => ['required', 'string', 'max:120'],
             'last_name' => ['nullable', 'string', 'max:120'],
-            'phone' => ['nullable', 'string', 'max:20', new IraqiMobileNumber(), User::uniquePhoneRule($this->user()->id, $this->user()->role)],
+            'phone' => ['nullable', 'string', 'max:20', new IraqiMobileNumber, User::uniquePhoneRule($this->user()->id, $this->user()->role)],
             'profile_photo' => ['nullable', 'image', 'max:2048'],
             'remove_profile_photo' => ['sometimes', 'boolean'],
             'dob_day' => ['nullable', 'integer', 'between:1,31', 'required_with:dob_month,dob_year'],
             'dob_month' => ['nullable', 'integer', 'between:1,12', 'required_with:dob_day,dob_year'],
-            'dob_year' => ['nullable', 'integer', 'between:1900,' . now()->year, 'required_with:dob_day,dob_month'],
+            'dob_year' => ['nullable', 'integer', 'between:1900,'.now()->year, 'required_with:dob_day,dob_month'],
             'country' => ['required', 'string', 'max:120'],
             'city' => ['required', 'string', 'max:120'],
             'address_line1' => ['required', 'string', 'max:255'],
@@ -72,6 +72,7 @@ class UpdateProfileRequest extends FormRequest
 
             if (! checkdate($monthInt, $dayInt, $yearInt)) {
                 $validator->errors()->add('dob_day', 'Please enter a valid date of birth.');
+
                 return;
             }
 

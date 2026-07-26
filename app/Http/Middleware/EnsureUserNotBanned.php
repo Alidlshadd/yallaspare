@@ -42,7 +42,7 @@ class EnsureUserNotBanned
 
         $reason = trim((string) $user->ban_reason);
         if ($reason !== '') {
-            $message .= ' ' . __('Reason: :reason', ['reason' => $reason]);
+            $message .= ' '.__('Reason: :reason', ['reason' => $reason]);
         }
 
         return $message;

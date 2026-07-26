@@ -2,50 +2,51 @@
 
 use App\Http\Controllers\Account\AccountAddressController;
 use App\Http\Controllers\Account\AccountOrdersController;
-use App\Http\Controllers\User\UserAccountController;
-use App\Http\Controllers\User\PhoneVerificationController;
-use App\Http\Controllers\User\CustomerPhoneSetupController;
-use App\Http\Controllers\User\UserSettingsController;
-use App\Http\Controllers\User\WishlistController;
-use App\Http\Controllers\User\ShopController as UserShopController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\CspReportController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Admin\OrderController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\CategoryController;
-use App\Http\Controllers\Admin\DealerController;
-use App\Http\Controllers\Admin\InventoryMovementController;
-use App\Http\Controllers\Admin\SettingController;
-use App\Http\Controllers\Admin\EmailController;
-use App\Http\Controllers\Admin\MessagingController;
-use App\Http\Controllers\Admin\EmailTemplateController;
-use App\Http\Controllers\Admin\NotificationController;
-use App\Http\Controllers\Admin\LowStockController;
 use App\Http\Controllers\Admin\AdminActivityLogController;
 use App\Http\Controllers\Admin\AnalyticsController as AdminAnalyticsController;
-use App\Http\Controllers\Admin\RevenueController;
-use App\Http\Controllers\Admin\ReturnRequestController;
-use App\Http\Controllers\Admin\VehicleFitmentController;
-use App\Http\Controllers\Admin\ProductReviewController as AdminProductReviewController;
+use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\DealerController;
 use App\Http\Controllers\Admin\DiscountCouponController;
-use App\Http\Controllers\Admin\PopupController;
-use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+use App\Http\Controllers\Admin\EmailController;
+use App\Http\Controllers\Admin\EmailTemplateController;
+use App\Http\Controllers\Admin\InventoryMovementController;
+use App\Http\Controllers\Admin\LowStockController;
+use App\Http\Controllers\Admin\MessagingController;
+use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\OperationsInsightController;
-use App\Http\Controllers\ShopController as CatalogShopController;
-use App\Http\Controllers\ProductReviewController;
+use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\PopupController;
+use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductReviewController as AdminProductReviewController;
+use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+use App\Http\Controllers\Admin\ReturnRequestController;
+use App\Http\Controllers\Admin\RevenueController;
+use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\VehicleFitmentController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\CspReportController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\PaymentReturnController;
+use App\Http\Controllers\ProductReviewController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ShopController as CatalogShopController;
+use App\Http\Controllers\SitemapController;
+use App\Http\Controllers\User\CustomerPhoneSetupController;
+use App\Http\Controllers\User\PhoneVerificationController;
+use App\Http\Controllers\User\ShopController as UserShopController;
+use App\Http\Controllers\User\UserAccountController;
+use App\Http\Controllers\User\UserSettingsController;
+use App\Http\Controllers\User\WishlistController;
 use App\Models\Setting;
 use App\Models\User;
 use App\Support\Branding;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\URL;
 
 /*
 |--------------------------------------------------------------------------
@@ -57,7 +58,7 @@ Route::get('/', function () {
     return redirect()->route('user.shop.home');
 })->name('home');
 
-Route::get('/sitemap.xml', [\App\Http\Controllers\SitemapController::class, 'index'])->name('sitemap');
+Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
 
 Route::post('/language/{locale}', function (Request $request, string $locale) {
     abort_unless(in_array($locale, ['en', 'ar', 'ku'], true), 404);
@@ -76,9 +77,9 @@ Route::post('/language/{locale}', function (Request $request, string $locale) {
     // such as https://example.com.evil.com or https://example.com:8080.
     $appBase = rtrim(url('/'), '/');
     $isInternal = $redirectTo === $appBase
-        || str_starts_with($redirectTo, $appBase . '/')
-        || str_starts_with($redirectTo, $appBase . '?')
-        || str_starts_with($redirectTo, $appBase . '#');
+        || str_starts_with($redirectTo, $appBase.'/')
+        || str_starts_with($redirectTo, $appBase.'?')
+        || str_starts_with($redirectTo, $appBase.'#');
     $targetUrl = $isInternal ? $redirectTo : $previousUrl;
 
     return redirect()->to($targetUrl);
@@ -106,7 +107,7 @@ Route::get('/distance-sales-agreement', [LegalController::class, 'distanceSalesA
 Route::get('/brand/logo', function () {
     $logoPath = Branding::storagePathFromValue((string) Setting::getValue('site_logo', ''));
 
-    if (!Branding::isSafeLogoPath($logoPath) || !Storage::disk('public')->exists($logoPath)) {
+    if (! Branding::isSafeLogoPath($logoPath) || ! Storage::disk('public')->exists($logoPath)) {
         abort(404);
     }
 
@@ -116,10 +117,10 @@ Route::get('/brand/logo', function () {
     }
 
     return response()->file(
-        storage_path('app/public/' . $logoPath),
+        storage_path('app/public/'.$logoPath),
         [
             'Content-Type' => $mimeType,
-            'Content-Disposition' => 'inline; filename="' . basename($logoPath) . '"',
+            'Content-Disposition' => 'inline; filename="'.basename($logoPath).'"',
             'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
             'Pragma' => 'no-cache',
             'Expires' => '0',
@@ -245,7 +246,6 @@ Route::middleware(['auth', 'verified', 'customer.phone', 'customer.phone.verifie
     Route::delete('/', [ProfileController::class, 'destroy'])->name('destroy');
 });
 
-
 Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
     ->prefix('admin')
     ->name('admin.')
@@ -253,7 +253,7 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
 
         // Dashboard
         Route::get('/dashboard', [DashboardController::class, 'index'])
-            ->middleware('can:' . User::PERMISSION_DASHBOARD_VIEW)
+            ->middleware('can:'.User::PERMISSION_DASHBOARD_VIEW)
             ->name('dashboard');
         Route::get('/profile', [AdminProfileController::class, 'edit'])
             ->name('profile.edit');
@@ -261,16 +261,16 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
             ->middleware('throttle:admin-write')
             ->name('profile.update');
         Route::get('/revenue', [RevenueController::class, 'index'])
-            ->middleware('can:' . User::PERMISSION_FINANCE_VIEW)
+            ->middleware('can:'.User::PERMISSION_FINANCE_VIEW)
             ->name('revenue.index');
         Route::get('/revenue/export', [RevenueController::class, 'export'])
-            ->middleware('can:' . User::PERMISSION_FINANCE_VIEW)
+            ->middleware('can:'.User::PERMISSION_FINANCE_VIEW)
             ->name('revenue.export');
         Route::get('/analytics', [AdminAnalyticsController::class, 'index'])
-            ->middleware('can:' . User::PERMISSION_DASHBOARD_VIEW)
+            ->middleware('can:'.User::PERMISSION_DASHBOARD_VIEW)
             ->name('analytics.index');
         Route::get('/purchase-planning', [OperationsInsightController::class, 'purchasePlanning'])
-            ->middleware('can:' . User::PERMISSION_STOCK_MANAGE)
+            ->middleware('can:'.User::PERMISSION_STOCK_MANAGE)
             ->name('purchase-planning.index');
         Route::get('/product-requests', [OperationsInsightController::class, 'stockRequests'])
             ->middleware('can:stock-requests.manage')
@@ -279,91 +279,91 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
             ->middleware(['can:stock-requests.manage', 'throttle:admin-write'])
             ->name('stock-requests.notify');
         Route::get('/search-insights', [OperationsInsightController::class, 'searchInsights'])
-            ->middleware('can:' . User::PERMISSION_DASHBOARD_VIEW)
+            ->middleware('can:'.User::PERMISSION_DASHBOARD_VIEW)
             ->name('search-insights.index');
         Route::get('/dead-stock', [OperationsInsightController::class, 'deadStock'])
-            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_PRODUCTS_MANAGE)
             ->name('dead-stock.index');
         Route::get('/discounts', [DiscountCouponController::class, 'edit'])
-            ->middleware('can:' . User::PERMISSION_FINANCE_MANAGE)
+            ->middleware('can:'.User::PERMISSION_FINANCE_MANAGE)
             ->name('discounts.edit');
         Route::get('/discounts/rules', [DiscountCouponController::class, 'rules'])
-            ->middleware('can:' . User::PERMISSION_FINANCE_MANAGE)
+            ->middleware('can:'.User::PERMISSION_FINANCE_MANAGE)
             ->name('discounts.rules');
         Route::get('/discounts/products/search', [DiscountCouponController::class, 'searchProducts'])
-            ->middleware('can:' . User::PERMISSION_FINANCE_MANAGE)
+            ->middleware('can:'.User::PERMISSION_FINANCE_MANAGE)
             ->name('discounts.products.search');
         Route::get('/discounts/coupons/create', [DiscountCouponController::class, 'createCoupon'])
-            ->middleware('can:' . User::PERMISSION_FINANCE_MANAGE)
+            ->middleware('can:'.User::PERMISSION_FINANCE_MANAGE)
             ->name('discounts.coupons.create');
         Route::patch('/discounts/coupons/{coupon}', [DiscountCouponController::class, 'updateCoupon'])
-            ->middleware(['can:' . User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
             ->name('discounts.coupons.update');
         Route::patch('/discounts/coupons/{coupon}/toggle', [DiscountCouponController::class, 'toggleCoupon'])
-            ->middleware(['can:' . User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
             ->name('discounts.coupons.toggle');
         Route::delete('/discounts/coupons/{coupon}', [DiscountCouponController::class, 'destroyCoupon'])
-            ->middleware(['can:' . User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
             ->name('discounts.coupons.destroy');
         Route::put('/discounts', [DiscountCouponController::class, 'update'])
-            ->middleware(['can:' . User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
             ->name('discounts.update');
         Route::put('/discounts/rules', [DiscountCouponController::class, 'updateRules'])
-            ->middleware(['can:' . User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
             ->name('discounts.update-rules');
         Route::patch('/discounts/rules/{discount}/status', [DiscountCouponController::class, 'updateRuleStatus'])
-            ->middleware(['can:' . User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
             ->name('discounts.update-rule-status');
         Route::delete('/discounts/rules/{discount}', [DiscountCouponController::class, 'destroyRule'])
-            ->middleware(['can:' . User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
             ->name('discounts.destroy-rule');
 
         // Storefront announcement popups
         Route::get('/popups', [PopupController::class, 'index'])
-            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_SETTINGS_MANAGE)
             ->name('popups.index');
         Route::get('/popups/create', [PopupController::class, 'create'])
-            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_SETTINGS_MANAGE)
             ->name('popups.create');
         Route::post('/popups', [PopupController::class, 'store'])
-            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
             ->name('popups.store');
         Route::get('/popups/{popup}/edit', [PopupController::class, 'edit'])
-            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_SETTINGS_MANAGE)
             ->name('popups.edit');
         Route::put('/popups/{popup}', [PopupController::class, 'update'])
-            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
             ->name('popups.update');
         Route::patch('/popups/{popup}/toggle', [PopupController::class, 'toggle'])
-            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
             ->name('popups.toggle');
         Route::delete('/popups/{popup}', [PopupController::class, 'destroy'])
-            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
             ->name('popups.destroy');
 
         // Products
         Route::resource('products', ProductController::class)
             ->except(['show'])
-            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write']);
+            ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write']);
         Route::post('/products/import', [ProductController::class, 'import'])
-            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('products.import');
         Route::get('/products/export-excel', [ProductController::class, 'exportExcel'])
-            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_PRODUCTS_MANAGE)
             ->name('products.export-excel');
         Route::get('/products/{productIdentifier}', [ProductController::class, 'editByIdentifier'])
-            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_PRODUCTS_MANAGE)
             ->name('products.edit-by-identifier');
 
         // Categories
         Route::resource('categories', CategoryController::class)
             ->except(['show'])
-            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write']);
+            ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write']);
         Route::post('/categories/import', [CategoryController::class, 'import'])
-            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('categories.import');
         Route::get('/categories/export-excel', [CategoryController::class, 'exportExcel'])
-            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_PRODUCTS_MANAGE)
             ->name('categories.export-excel');
 
         // Orders
@@ -371,90 +371,90 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         // BEFORE Route::resource('orders'), otherwise the resource's /orders/{order}
         // show route swallows them and route-model-binding returns 404.
         Route::get('/orders/export-excel', [OrderController::class, 'exportExcel'])
-            ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_ORDERS_MANAGE)
             ->name('orders.export-excel');
         Route::resource('orders', OrderController::class)
             ->only(['index', 'show', 'update', 'destroy'])
-            ->middleware(['can:' . User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write']);
+            ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write']);
         Route::get('/orders/{order}/invoice', [OrderController::class, 'invoice'])
-            ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_ORDERS_MANAGE)
             ->name('orders.invoice');
         Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])
-            ->middleware(['can:' . User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('orders.update-status');
         Route::post('/orders/bulk-status', [OrderController::class, 'bulkUpdateStatus'])
-            ->middleware(['can:' . User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('orders.bulk-status');
         Route::patch('/orders/{order}/payment', [OrderController::class, 'updatePayment'])
-            ->middleware(['can:' . User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('orders.update-payment');
         Route::post('/orders/{order}/admin-notes', [OrderController::class, 'storeAdminNote'])
-            ->middleware(['can:' . User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('orders.admin-notes.store');
 
         // Returns / Refunds
         Route::get('/returns', [ReturnRequestController::class, 'index'])
-            ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_ORDERS_MANAGE)
             ->name('returns.index');
         Route::get('/returns/export-excel', [ReturnRequestController::class, 'exportExcel'])
-            ->middleware('can:' . User::PERMISSION_ORDERS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_ORDERS_MANAGE)
             ->name('returns.export-excel');
         Route::patch('/returns/{return}', [ReturnRequestController::class, 'update'])
-            ->middleware(['can:' . User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('returns.update');
         Route::post('/returns/bulk-update', [ReturnRequestController::class, 'bulkUpdate'])
-            ->middleware(['can:' . User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('returns.bulk-update');
 
         // Reviews
         Route::get('/reviews', [AdminProductReviewController::class, 'index'])
-            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_PRODUCTS_MANAGE)
             ->name('reviews.index');
         Route::get('/reviews/export-excel', [AdminProductReviewController::class, 'exportExcel'])
-            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_PRODUCTS_MANAGE)
             ->name('reviews.export-excel');
         Route::delete('/reviews/{review}', [AdminProductReviewController::class, 'destroy'])
-            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('reviews.destroy');
 
         // Vehicle Finder
         Route::get('/vehicle-fitments', [VehicleFitmentController::class, 'index'])
-            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_PRODUCTS_MANAGE)
             ->name('vehicle-fitments.index');
         Route::get('/vehicle-fitments/products/search', [VehicleFitmentController::class, 'searchProducts'])
-            ->middleware('can:' . User::PERMISSION_PRODUCTS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_PRODUCTS_MANAGE)
             ->name('vehicle-fitments.products.search');
         Route::post('/vehicle-fitments/brands', [VehicleFitmentController::class, 'storeBrand'])
-            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('vehicle-fitments.brands.store');
         Route::post('/vehicle-fitments/models', [VehicleFitmentController::class, 'storeModel'])
-            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('vehicle-fitments.models.store');
         Route::patch('/vehicle-fitments/brands/{brand}', [VehicleFitmentController::class, 'updateBrand'])
-            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('vehicle-fitments.brands.update');
         Route::patch('/vehicle-fitments/models/{model}', [VehicleFitmentController::class, 'updateModel'])
-            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('vehicle-fitments.models.update');
         Route::delete('/vehicle-fitments/brands/{brand}', [VehicleFitmentController::class, 'destroyBrand'])
-            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('vehicle-fitments.brands.destroy');
         Route::delete('/vehicle-fitments/models/{model}', [VehicleFitmentController::class, 'destroyModel'])
-            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('vehicle-fitments.models.destroy');
         Route::post('/vehicle-fitments', [VehicleFitmentController::class, 'storeFitment'])
-            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('vehicle-fitments.store');
         Route::delete('/vehicle-fitments/{fitment}', [VehicleFitmentController::class, 'destroyFitment'])
-            ->middleware(['can:' . User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('vehicle-fitments.destroy');
 
         // Users
         Route::get('/users', [UserController::class, 'index'])
-            ->middleware('can:' . User::PERMISSION_USERS_VIEW)
+            ->middleware('can:'.User::PERMISSION_USERS_VIEW)
             ->name('users.index');
         Route::get('/users/export-excel', [UserController::class, 'exportExcel'])
-            ->middleware('can:' . User::PERMISSION_USERS_VIEW)
+            ->middleware('can:'.User::PERMISSION_USERS_VIEW)
             ->name('users.export-excel');
         Route::get('/users/{user}', [UserController::class, 'show'])
             ->middleware('can:manage-users')
@@ -491,90 +491,90 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
 
         // Inventory Movements
         Route::get('/inventory/movements', [InventoryMovementController::class, 'index'])
-            ->middleware('can:' . User::PERMISSION_STOCK_MANAGE)
+            ->middleware('can:'.User::PERMISSION_STOCK_MANAGE)
             ->name('inventory.index');
         Route::post('/inventory/movements', [InventoryMovementController::class, 'store'])
-            ->middleware(['can:' . User::PERMISSION_STOCK_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_STOCK_MANAGE, 'throttle:admin-write'])
             ->name('inventory.store');
         Route::post('/inventory/movements/import', [InventoryMovementController::class, 'import'])
-            ->middleware(['can:' . User::PERMISSION_STOCK_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_STOCK_MANAGE, 'throttle:admin-write'])
             ->name('inventory.import');
         Route::get('/inventory/movements/export', [InventoryMovementController::class, 'export'])
-            ->middleware('can:' . User::PERMISSION_STOCK_MANAGE)
+            ->middleware('can:'.User::PERMISSION_STOCK_MANAGE)
             ->name('inventory.export');
 
         // System Settings
         Route::get('/settings', [SettingController::class, 'edit'])
-            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_SETTINGS_MANAGE)
             ->name('settings.edit');
         Route::put('/settings', [SettingController::class, 'update'])
-            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'password.confirm', 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'password.confirm', 'throttle:admin-write'])
             ->name('settings.update');
         Route::get('/email', [EmailController::class, 'index'])
-            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_SETTINGS_MANAGE)
             ->name('email.index');
         Route::get('/messaging', [MessagingController::class, 'index'])
-            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_SETTINGS_MANAGE)
             ->name('messaging.index');
         Route::post('/messaging/test', [MessagingController::class, 'sendTest'])
-            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'throttle:phone-verification-send'])
+            ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'throttle:phone-verification-send'])
             ->name('messaging.test');
         Route::get('/email/outbox', [EmailController::class, 'outbox'])
-            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_SETTINGS_MANAGE)
             ->name('email.outbox');
         Route::post('/email/test', [EmailController::class, 'sendTest'])
-            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
             ->name('email.test');
         Route::get('/email/broadcasts/create', [EmailController::class, 'createBroadcast'])
-            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_SETTINGS_MANAGE)
             ->name('email.broadcasts.create');
         Route::post('/email/broadcast', [EmailController::class, 'sendBroadcast'])
-            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
             ->name('email.broadcast');
         Route::get('/email/preview/{template}', [EmailController::class, 'preview'])
-            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_SETTINGS_MANAGE)
             ->where('template', '[a-z0-9-]+')
             ->name('email.preview');
 
         // Email template editor
         Route::get('/email/templates', [EmailTemplateController::class, 'index'])
-            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_SETTINGS_MANAGE)
             ->name('email.templates.index');
         Route::get('/email/templates/{key}/{locale}/edit', [EmailTemplateController::class, 'edit'])
-            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_SETTINGS_MANAGE)
             ->where(['key' => '[a-z0-9-]+', 'locale' => 'en|ar|ku'])
             ->name('email.templates.edit');
         Route::patch('/email/templates/{key}/{locale}', [EmailTemplateController::class, 'update'])
-            ->middleware(['can:' . User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
+            ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
             ->where(['key' => '[a-z0-9-]+', 'locale' => 'en|ar|ku'])
             ->name('email.templates.update');
         Route::get('/email/templates/{key}/{locale}/preview', [EmailTemplateController::class, 'preview'])
-            ->middleware('can:' . User::PERMISSION_SETTINGS_MANAGE)
+            ->middleware('can:'.User::PERMISSION_SETTINGS_MANAGE)
             ->where(['key' => '[a-z0-9-]+', 'locale' => 'en|ar|ku'])
             ->name('email.templates.preview');
 
         // Notifications
         Route::get('/notifications', [NotificationController::class, 'index'])
-            ->middleware('can:' . User::PERMISSION_DASHBOARD_VIEW)
+            ->middleware('can:'.User::PERMISSION_DASHBOARD_VIEW)
             ->name('notifications.index');
         Route::post('/notifications/read', [NotificationController::class, 'markRead'])
-            ->middleware('can:' . User::PERMISSION_DASHBOARD_VIEW)
+            ->middleware('can:'.User::PERMISSION_DASHBOARD_VIEW)
             ->name('notifications.read');
         Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])
-            ->middleware('can:' . User::PERMISSION_DASHBOARD_VIEW)
+            ->middleware('can:'.User::PERMISSION_DASHBOARD_VIEW)
             ->name('notifications.read-all');
 
         // Low stock
         Route::get('/low-stock/count', [LowStockController::class, 'count'])
-            ->middleware('can:' . User::PERMISSION_DASHBOARD_VIEW)
+            ->middleware('can:'.User::PERMISSION_DASHBOARD_VIEW)
             ->name('low-stock.count');
 
         // Activity logs
         Route::get('/activity-logs', [AdminActivityLogController::class, 'index'])
-            ->middleware('can:' . User::PERMISSION_ACTIVITY_LOGS_VIEW)
+            ->middleware('can:'.User::PERMISSION_ACTIVITY_LOGS_VIEW)
             ->name('activity-logs.index');
         Route::get('/activity-logs/export-excel', [AdminActivityLogController::class, 'exportExcel'])
-            ->middleware('can:' . User::PERMISSION_ACTIVITY_LOGS_VIEW)
+            ->middleware('can:'.User::PERMISSION_ACTIVITY_LOGS_VIEW)
             ->name('activity-logs.export-excel');
     });
 
@@ -582,4 +582,4 @@ Route::post('/csp-report', [CspReportController::class, 'store'])
     ->middleware('throttle:30,1')
     ->name('csp.report');
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

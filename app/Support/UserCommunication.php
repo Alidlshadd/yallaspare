@@ -26,7 +26,7 @@ class UserCommunication
                 'order_id' => $order->id,
                 'order_number' => $order->order_number,
                 'status' => ucfirst((string) $order->status),
-                'total' => number_format((float) $order->total_amount, (int) Setting::getValue('currency_decimals', 0)) . ' ' . (string) Setting::getValue('currency_code', 'IQD'),
+                'total' => number_format((float) $order->total_amount, (int) Setting::getValue('currency_decimals', 0)).' '.(string) Setting::getValue('currency_code', 'IQD'),
                 'customer_name' => $user->name,
             ];
 
@@ -125,6 +125,7 @@ class UserCommunication
 
         try {
             app()->setLocale($target);
+
             return $callback();
         } finally {
             app()->setLocale($previous);
@@ -201,7 +202,7 @@ class UserCommunication
         $url = trim((string) Setting::getValue($settingKey, ''));
 
         if ($url === '') {
-            Log::info(Str::before($settingKey, '_provider') . ' notification queued', $context + [
+            Log::info(Str::before($settingKey, '_provider').' notification queued', $context + [
                 'recipient_hash' => self::recipientHash($recipient),
                 'transport' => 'log',
             ]);
@@ -254,8 +255,8 @@ class UserCommunication
         $body = trim($body) !== '' ? $body : $fallbackBody;
 
         foreach ($context as $key => $value) {
-            $subject = str_replace('{{' . $key . '}}', (string) $value, $subject);
-            $body = str_replace('{{' . $key . '}}', (string) $value, $body);
+            $subject = str_replace('{{'.$key.'}}', (string) $value, $subject);
+            $body = str_replace('{{'.$key.'}}', (string) $value, $body);
         }
 
         return [$subject, $body];

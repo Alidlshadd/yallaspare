@@ -27,6 +27,7 @@ class SocialAuthController extends Controller
      * stored (hashed) in the cache for a short window.
      */
     private const APPLE_STATE_CACHE_PREFIX = 'social:apple:state:';
+
     private const APPLE_STATE_TTL_MINUTES = 10;
 
     public function redirectToGoogle(): RedirectResponse
@@ -234,7 +235,7 @@ class SocialAuthController extends Controller
 
             // New accounts always get the default customer role via the
             // User::creating hook; nothing from the provider can raise it.
-            $user = new User();
+            $user = new User;
             $user->name = $this->nameForUser($socialUser, $email);
             $user->email = $email;
             $user->{$providerColumn} = $providerId;

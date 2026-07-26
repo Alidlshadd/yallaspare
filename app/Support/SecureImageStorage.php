@@ -32,7 +32,7 @@ class SecureImageStorage
             default => 'jpg',
         };
 
-        $filename = trim($directory, '/') . '/' . (string) Str::uuid() . '.' . $extension;
+        $filename = trim($directory, '/').'/'.(string) Str::uuid().'.'.$extension;
         $encoded = self::encode($file, $mime, $extension);
 
         if ($encoded === null) {

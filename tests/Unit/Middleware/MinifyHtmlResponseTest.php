@@ -11,7 +11,7 @@ class MinifyHtmlResponseTest extends TestCase
 {
     private function process(string $html, string $contentType = 'text/html; charset=UTF-8'): string
     {
-        $middleware = new MinifyHtmlResponse();
+        $middleware = new MinifyHtmlResponse;
         $request = Request::create('/', 'GET');
 
         $response = $middleware->handle($request, function () use ($html, $contentType) {
@@ -37,7 +37,7 @@ class MinifyHtmlResponseTest extends TestCase
 
         // The JS body — including its newlines and // comment — must survive,
         // otherwise ASI could merge statements and break behaviour.
-        $this->assertStringContainsString("const x = 1; // keep this comment", $out);
+        $this->assertStringContainsString('const x = 1; // keep this comment', $out);
         $this->assertStringContainsString("\n", $out); // newline inside script kept
     }
 

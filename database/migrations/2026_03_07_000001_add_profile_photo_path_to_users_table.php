@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table): void {
-            if (!Schema::hasColumn('users', 'profile_photo_path')) {
+            if (! Schema::hasColumn('users', 'profile_photo_path')) {
                 $table->string('profile_photo_path')->nullable()->after('date_of_birth');
             }
         });

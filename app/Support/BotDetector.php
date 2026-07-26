@@ -22,6 +22,7 @@ class BotDetector
                 return true;
             }
         }
+
         return false;
     }
 }

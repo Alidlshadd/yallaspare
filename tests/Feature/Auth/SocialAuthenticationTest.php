@@ -19,6 +19,7 @@ class SocialAuthenticationTest extends TestCase
     use RefreshDatabase;
 
     private const APPLE_CLIENT_ID = 'com.yallaspare.signin';
+
     private const APPLE_STATE_CACHE_PREFIX = 'social:apple:state:';
 
     public function test_social_login_buttons_reflect_provider_configuration(): void

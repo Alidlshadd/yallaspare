@@ -11,19 +11,19 @@ return new class extends Migration
     {
         if (Schema::hasTable('users')) {
             Schema::table('users', function (Blueprint $table) {
-                if (!Schema::hasColumn('users', 'account_status')) {
+                if (! Schema::hasColumn('users', 'account_status')) {
                     $table->enum('account_status', ['active', 'inactive', 'locked'])->default('active')->after('role');
                 }
-                if (!Schema::hasColumn('users', 'last_login_at')) {
+                if (! Schema::hasColumn('users', 'last_login_at')) {
                     $table->timestamp('last_login_at')->nullable()->after('remember_token');
                 }
-                if (!Schema::hasColumn('users', 'failed_login_attempts')) {
+                if (! Schema::hasColumn('users', 'failed_login_attempts')) {
                     $table->unsignedSmallInteger('failed_login_attempts')->default(0)->after('last_login_at');
                 }
-                if (!Schema::hasColumn('users', 'locked_until')) {
+                if (! Schema::hasColumn('users', 'locked_until')) {
                     $table->timestamp('locked_until')->nullable()->after('failed_login_attempts');
                 }
-                if (!Schema::hasColumn('users', 'deleted_at')) {
+                if (! Schema::hasColumn('users', 'deleted_at')) {
                     $table->softDeletes();
                 }
             });
@@ -35,16 +35,16 @@ return new class extends Migration
 
         if (Schema::hasTable('categories')) {
             Schema::table('categories', function (Blueprint $table) {
-                if (!Schema::hasColumn('categories', 'parent_id')) {
+                if (! Schema::hasColumn('categories', 'parent_id')) {
                     $table->foreignId('parent_id')->nullable()->constrained('categories')->nullOnDelete();
                 }
-                if (!Schema::hasColumn('categories', 'sort_order')) {
+                if (! Schema::hasColumn('categories', 'sort_order')) {
                     $table->unsignedInteger('sort_order')->default(0);
                 }
-                if (!Schema::hasColumn('categories', 'is_active')) {
+                if (! Schema::hasColumn('categories', 'is_active')) {
                     $table->boolean('is_active')->default(true);
                 }
-                if (!Schema::hasColumn('categories', 'deleted_at')) {
+                if (! Schema::hasColumn('categories', 'deleted_at')) {
                     $table->softDeletes();
                 }
             });
@@ -55,28 +55,28 @@ return new class extends Migration
 
         if (Schema::hasTable('products')) {
             Schema::table('products', function (Blueprint $table) {
-                if (!Schema::hasColumn('products', 'product_brand_id')) {
+                if (! Schema::hasColumn('products', 'product_brand_id')) {
                     $table->foreignId('product_brand_id')->nullable()->constrained('product_brands')->nullOnDelete()->after('category_id');
                 }
-                if (!Schema::hasColumn('products', 'supplier_id')) {
+                if (! Schema::hasColumn('products', 'supplier_id')) {
                     $table->foreignId('supplier_id')->nullable()->constrained('suppliers')->nullOnDelete()->after('product_brand_id');
                 }
-                if (!Schema::hasColumn('products', 'tax_class_id')) {
+                if (! Schema::hasColumn('products', 'tax_class_id')) {
                     $table->foreignId('tax_class_id')->nullable()->constrained('tax_classes')->nullOnDelete()->after('supplier_id');
                 }
-                if (!Schema::hasColumn('products', 'cost_price')) {
+                if (! Schema::hasColumn('products', 'cost_price')) {
                     $table->decimal('cost_price', 12, 2)->nullable()->after('dealer_price');
                 }
-                if (!Schema::hasColumn('products', 'weight_grams')) {
+                if (! Schema::hasColumn('products', 'weight_grams')) {
                     $table->unsignedInteger('weight_grams')->nullable()->after('cost_price');
                 }
-                if (!Schema::hasColumn('products', 'barcode')) {
+                if (! Schema::hasColumn('products', 'barcode')) {
                     $table->string('barcode', 100)->nullable()->after('sku');
                 }
-                if (!Schema::hasColumn('products', 'product_type')) {
+                if (! Schema::hasColumn('products', 'product_type')) {
                     $table->enum('product_type', ['simple', 'variable'])->default('simple')->after('barcode');
                 }
-                if (!Schema::hasColumn('products', 'deleted_at')) {
+                if (! Schema::hasColumn('products', 'deleted_at')) {
                     $table->softDeletes();
                 }
             });
@@ -102,40 +102,40 @@ return new class extends Migration
 
         if (Schema::hasTable('orders')) {
             Schema::table('orders', function (Blueprint $table) {
-                if (!Schema::hasColumn('orders', 'warehouse_id')) {
+                if (! Schema::hasColumn('orders', 'warehouse_id')) {
                     $table->foreignId('warehouse_id')->nullable()->constrained('warehouses')->nullOnDelete()->after('user_id');
                 }
-                if (!Schema::hasColumn('orders', 'coupon_id')) {
+                if (! Schema::hasColumn('orders', 'coupon_id')) {
                     $table->foreignId('coupon_id')->nullable()->constrained('coupons')->nullOnDelete()->after('warehouse_id');
                 }
-                if (!Schema::hasColumn('orders', 'subtotal_amount')) {
+                if (! Schema::hasColumn('orders', 'subtotal_amount')) {
                     $table->decimal('subtotal_amount', 12, 2)->nullable()->after('total_amount');
                 }
-                if (!Schema::hasColumn('orders', 'discount_amount')) {
+                if (! Schema::hasColumn('orders', 'discount_amount')) {
                     $table->decimal('discount_amount', 12, 2)->default(0)->after('subtotal_amount');
                 }
-                if (!Schema::hasColumn('orders', 'tax_amount')) {
+                if (! Schema::hasColumn('orders', 'tax_amount')) {
                     $table->decimal('tax_amount', 12, 2)->default(0)->after('discount_amount');
                 }
-                if (!Schema::hasColumn('orders', 'shipping_amount')) {
+                if (! Schema::hasColumn('orders', 'shipping_amount')) {
                     $table->decimal('shipping_amount', 12, 2)->default(0)->after('tax_amount');
                 }
-                if (!Schema::hasColumn('orders', 'currency_code')) {
+                if (! Schema::hasColumn('orders', 'currency_code')) {
                     $table->string('currency_code', 3)->default('IQD')->after('shipping_amount');
                 }
-                if (!Schema::hasColumn('orders', 'payment_status')) {
+                if (! Schema::hasColumn('orders', 'payment_status')) {
                     $table->enum('payment_status', ['pending', 'pending_payment', 'paid', 'partially_paid', 'failed', 'refunded'])->default('pending')->after('payment_method');
                 }
-                if (!Schema::hasColumn('orders', 'paid_at')) {
+                if (! Schema::hasColumn('orders', 'paid_at')) {
                     $table->timestamp('paid_at')->nullable()->after('payment_status');
                 }
-                if (!Schema::hasColumn('orders', 'cancelled_at')) {
+                if (! Schema::hasColumn('orders', 'cancelled_at')) {
                     $table->timestamp('cancelled_at')->nullable()->after('paid_at');
                 }
-                if (!Schema::hasColumn('orders', 'cancelled_by')) {
+                if (! Schema::hasColumn('orders', 'cancelled_by')) {
                     $table->foreignId('cancelled_by')->nullable()->constrained('users')->nullOnDelete()->after('cancelled_at');
                 }
-                if (!Schema::hasColumn('orders', 'deleted_at')) {
+                if (! Schema::hasColumn('orders', 'deleted_at')) {
                     $table->softDeletes();
                 }
             });
@@ -148,13 +148,13 @@ return new class extends Migration
 
         if (Schema::hasTable('order_items')) {
             Schema::table('order_items', function (Blueprint $table) {
-                if (!Schema::hasColumn('order_items', 'warehouse_id')) {
+                if (! Schema::hasColumn('order_items', 'warehouse_id')) {
                     $table->foreignId('warehouse_id')->nullable()->constrained('warehouses')->nullOnDelete()->after('product_id');
                 }
-                if (!Schema::hasColumn('order_items', 'tax_amount')) {
+                if (! Schema::hasColumn('order_items', 'tax_amount')) {
                     $table->decimal('tax_amount', 12, 2)->default(0)->after('subtotal');
                 }
-                if (!Schema::hasColumn('order_items', 'discount_amount')) {
+                if (! Schema::hasColumn('order_items', 'discount_amount')) {
                     $table->decimal('discount_amount', 12, 2)->default(0)->after('tax_amount');
                 }
             });
@@ -165,10 +165,10 @@ return new class extends Migration
 
         if (Schema::hasTable('inventory_movements')) {
             Schema::table('inventory_movements', function (Blueprint $table) {
-                if (!Schema::hasColumn('inventory_movements', 'warehouse_id')) {
+                if (! Schema::hasColumn('inventory_movements', 'warehouse_id')) {
                     $table->foreignId('warehouse_id')->nullable()->constrained('warehouses')->nullOnDelete()->after('product_id');
                 }
-                if (!Schema::hasColumn('inventory_movements', 'performed_at')) {
+                if (! Schema::hasColumn('inventory_movements', 'performed_at')) {
                     $table->timestamp('performed_at')->nullable()->after('note');
                 }
             });
@@ -178,10 +178,10 @@ return new class extends Migration
 
         if (Schema::hasTable('order_status_histories')) {
             Schema::table('order_status_histories', function (Blueprint $table) {
-                if (!Schema::hasColumn('order_status_histories', 'ip_address')) {
+                if (! Schema::hasColumn('order_status_histories', 'ip_address')) {
                     $table->string('ip_address', 45)->nullable()->after('note');
                 }
-                if (!Schema::hasColumn('order_status_histories', 'user_agent')) {
+                if (! Schema::hasColumn('order_status_histories', 'user_agent')) {
                     $table->text('user_agent')->nullable()->after('ip_address');
                 }
             });
@@ -191,13 +191,13 @@ return new class extends Migration
 
         if (Schema::hasTable('admin_activity_logs')) {
             Schema::table('admin_activity_logs', function (Blueprint $table) {
-                if (!Schema::hasColumn('admin_activity_logs', 'ip_address')) {
+                if (! Schema::hasColumn('admin_activity_logs', 'ip_address')) {
                     $table->string('ip_address', 45)->nullable()->after('subject_id');
                 }
-                if (!Schema::hasColumn('admin_activity_logs', 'user_agent')) {
+                if (! Schema::hasColumn('admin_activity_logs', 'user_agent')) {
                     $table->text('user_agent')->nullable()->after('ip_address');
                 }
-                if (!Schema::hasColumn('admin_activity_logs', 'risk_score')) {
+                if (! Schema::hasColumn('admin_activity_logs', 'risk_score')) {
                     $table->unsignedTinyInteger('risk_score')->default(0)->after('user_agent');
                 }
             });
@@ -230,7 +230,7 @@ return new class extends Migration
 
     private function dropIndexIfExists(string $table, string $indexName): void
     {
-        if (!$this->indexExists($table, $indexName)) {
+        if (! $this->indexExists($table, $indexName)) {
             return;
         }
 

@@ -68,7 +68,7 @@ final class InvoiceRenderer
         try {
             return Pdf::loadView('admin.orders.invoice', [
                 'order' => $order,
-                'invoiceNumber' => 'INV-' . $year . '-' . str_pad((string) $order->id, 5, '0', STR_PAD_LEFT),
+                'invoiceNumber' => 'INV-'.$year.'-'.str_pad((string) $order->id, 5, '0', STR_PAD_LEFT),
                 'currency' => 'IQD',
                 'logoPath' => Branding::invoiceLogoPath(),
                 'subtotal' => $subtotal,

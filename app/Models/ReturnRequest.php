@@ -10,10 +10,15 @@ class ReturnRequest extends Model
     use HasFactory;
 
     public const STATUS_REQUESTED = 'requested';
+
     public const STATUS_APPROVED = 'approved';
+
     public const STATUS_REJECTED = 'rejected';
+
     public const STATUS_RECEIVED = 'received';
+
     public const STATUS_REFUNDED = 'refunded';
+
     public const STATUS_CLOSED = 'closed';
 
     protected $fillable = [

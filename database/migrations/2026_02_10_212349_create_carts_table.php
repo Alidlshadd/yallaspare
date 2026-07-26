@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-      Schema::create('carts', function (Blueprint $table) {
-    $table->id();
-    $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
-    $table->timestamps();
-});
+        Schema::create('carts', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->nullable()->constrained()->cascadeOnDelete();
+            $table->timestamps();
+        });
     }
 
     /**

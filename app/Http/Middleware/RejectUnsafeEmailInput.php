@@ -38,9 +38,10 @@ class RejectUnsafeEmailInput
     {
         $flat = [];
         foreach ($input as $key => $value) {
-            $path = $prefix === '' ? (string) $key : $prefix . '.' . $key;
+            $path = $prefix === '' ? (string) $key : $prefix.'.'.$key;
             if (is_array($value)) {
                 $flat += $this->flatten($value, $path);
+
                 continue;
             }
             $flat[$path] = $value;

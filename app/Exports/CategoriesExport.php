@@ -17,7 +17,7 @@ use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
-class CategoriesExport implements FromCollection, WithHeadings, ShouldAutoSize, WithStyles, WithEvents, WithDrawings
+class CategoriesExport implements FromCollection, ShouldAutoSize, WithDrawings, WithEvents, WithHeadings, WithStyles
 {
     private ?Collection $categoriesCache = null;
 
@@ -91,16 +91,16 @@ class CategoriesExport implements FromCollection, WithHeadings, ShouldAutoSize, 
                 continue;
             }
 
-            $fullPath = storage_path('app/public/' . ltrim($imagePath, '/'));
+            $fullPath = storage_path('app/public/'.ltrim($imagePath, '/'));
             if (! is_file($fullPath)) {
                 continue;
             }
 
-            $drawing = new Drawing();
+            $drawing = new Drawing;
             $drawing->setName((string) ($category->name_en ?? 'Category image'));
             $drawing->setDescription('Category image');
             $drawing->setPath($fullPath);
-            $drawing->setCoordinates('A' . ($index + 2));
+            $drawing->setCoordinates('A'.($index + 2));
             $drawing->setHeight(44);
             $drawing->setOffsetX(8);
             $drawing->setOffsetY(4);

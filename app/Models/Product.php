@@ -2,25 +2,26 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use App\Support\DbSchema;
 use App\Support\LocalizedText;
 use App\Support\VehicleFilterCache;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class Product extends Model {
+class Product extends Model
+{
     use HasFactory, LogsActivity;
 
     protected $fillable = [
-        'category_id','name_en','name_ar','name_ku',
-        'description_en','description_ar','description_ku',
-        'price','dealer_price','stock_quantity','sku','oem_number','part_number','warranty','brand',
-        'compatible_models','image','is_active','low_stock_threshold','slug'
+        'category_id', 'name_en', 'name_ar', 'name_ku',
+        'description_en', 'description_ar', 'description_ku',
+        'price', 'dealer_price', 'stock_quantity', 'sku', 'oem_number', 'part_number', 'warranty', 'brand',
+        'compatible_models', 'image', 'is_active', 'low_stock_threshold', 'slug',
     ];
 
     protected $casts = [
@@ -71,7 +72,8 @@ class Product extends Model {
             ->dontSubmitEmptyLogs();
     }
 
-    public function category() {
+    public function category()
+    {
         return $this->belongsTo(Category::class);
     }
 
@@ -174,7 +176,7 @@ class Product extends Model {
         return $query
             ->where('is_active', true)
             ->whereRaw(
-                'stock_quantity <= COALESCE(low_stock_threshold, (' . $globalThresholdSubquery->toSql() . '), 0)',
+                'stock_quantity <= COALESCE(low_stock_threshold, ('.$globalThresholdSubquery->toSql().'), 0)',
                 $globalThresholdSubquery->getBindings()
             );
     }
@@ -244,7 +246,7 @@ class Product extends Model {
      */
     private function resolveDiscountedPrice(float $basePrice): array
     {
-        if ($basePrice <= 0 || !DbSchema::hasTable('discounts')) {
+        if ($basePrice <= 0 || ! DbSchema::hasTable('discounts')) {
             return [
                 'price' => round(max(0, $basePrice), 2),
                 'discount_ids' => [],
@@ -296,7 +298,7 @@ class Product extends Model {
                 ->when($ignoreId, fn ($query) => $query->whereKeyNot($ignoreId))
                 ->exists()
         ) {
-            $slug = $baseSlug . '-' . $suffix;
+            $slug = $baseSlug.'-'.$suffix;
             $suffix++;
         }
 

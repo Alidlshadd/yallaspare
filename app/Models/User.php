@@ -7,8 +7,8 @@ use App\Notifications\ImmediateVerifyEmail;
 use App\Support\EmailVerificationCode;
 use App\Support\IraqiPhoneNumber;
 use App\Support\PhoneVerificationCode;
-use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Translation\HasLocalePreference;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -17,32 +17,54 @@ use Laravel\Sanctum\HasApiTokens;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
-class User extends Authenticatable implements MustVerifyEmail, HasLocalePreference
+class User extends Authenticatable implements HasLocalePreference, MustVerifyEmail
 {
     use HasApiTokens, HasFactory, LogsActivity, Notifiable;
 
     public const ROLE_SUPER_ADMIN = 'super_admin';
+
     public const ROLE_ADMIN = 'admin';
+
     public const ROLE_PRODUCT_MANAGER = 'product_manager';
+
     public const ROLE_ORDER_MANAGER = 'order_manager';
+
     public const ROLE_FINANCE_MANAGER = 'finance_manager';
+
     public const ROLE_INVENTORY_MANAGER = 'inventory_manager';
+
     public const ROLE_SETTINGS_MANAGER = 'settings_manager';
+
     public const ROLE_USER = 'user';
+
     public const ROLE_DEALER = 'dealer';
+
     public const PERMISSION_DASHBOARD_VIEW = 'dashboard.view';
+
     public const PERMISSION_PRODUCTS_MANAGE = 'products.manage';
+
     public const PERMISSION_ORDERS_MANAGE = 'orders.manage';
+
     public const PERMISSION_FINANCE_VIEW = 'finance.view';
+
     public const PERMISSION_FINANCE_MANAGE = 'finance.manage';
+
     public const PERMISSION_SETTINGS_MANAGE = 'settings.manage';
+
     public const PERMISSION_STOCK_MANAGE = 'stock.manage';
+
     public const PERMISSION_USERS_VIEW = 'users.view';
+
     public const PERMISSION_USERS_MANAGE = 'users.manage';
+
     public const PERMISSION_DEALERS_MANAGE = 'dealers.manage';
+
     public const PERMISSION_ACTIVITY_LOGS_VIEW = 'activity_logs.view';
+
     public const DEALER_STATUS_ACTIVE = 'active';
+
     public const DEALER_STATUS_INACTIVE = 'inactive';
+
     public const DEALER_STATUS_SUSPENDED = 'suspended';
 
     /**
@@ -298,7 +320,7 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
             ->values()
             ->all();
 
-        if ($normalized !== [] && !in_array(self::PERMISSION_DASHBOARD_VIEW, $normalized, true)) {
+        if ($normalized !== [] && ! in_array(self::PERMISSION_DASHBOARD_VIEW, $normalized, true)) {
             array_unshift($normalized, self::PERMISSION_DASHBOARD_VIEW);
         }
 
@@ -503,10 +525,11 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
 
         if ($isAdmin) {
             $currentRole = $this->attributes['role'] ?? null;
-            if ($currentRole === null || !in_array(self::normalizeRole($currentRole), [self::ROLE_SUPER_ADMIN, self::ROLE_ADMIN], true)) {
+            if ($currentRole === null || ! in_array(self::normalizeRole($currentRole), [self::ROLE_SUPER_ADMIN, self::ROLE_ADMIN], true)) {
                 $this->attributes['role'] = self::ROLE_ADMIN;
             }
             unset($this->attributes['is_admin']);
+
             return;
         }
 
@@ -597,5 +620,4 @@ class User extends Authenticatable implements MustVerifyEmail, HasLocalePreferen
     {
         return $this->hasMany(ProductView::class);
     }
-
 }

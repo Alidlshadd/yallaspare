@@ -21,7 +21,7 @@ class LanguageSwitchRedirectTest extends TestCase
     {
         // url('/') has no trailing slash, so a naive prefix check would accept
         // http://localhost.evil.com as "same origin".
-        $malicious = url('/') . '.evil.com/phish';
+        $malicious = url('/').'.evil.com/phish';
 
         $response = $this->post(route('language.switch', ['locale' => 'ar']), [
             'redirect_to' => $malicious,
@@ -33,7 +33,7 @@ class LanguageSwitchRedirectTest extends TestCase
 
     public function test_language_switch_rejects_lookalike_external_port_in_redirect_to(): void
     {
-        $malicious = url('/') . ':8080/phish';
+        $malicious = url('/').':8080/phish';
 
         $response = $this->post(route('language.switch', ['locale' => 'ar']), [
             'redirect_to' => $malicious,
@@ -45,7 +45,7 @@ class LanguageSwitchRedirectTest extends TestCase
 
     public function test_language_switch_allows_base_url_with_query_string(): void
     {
-        $target = url('/') . '?page=2';
+        $target = url('/').'?page=2';
 
         $response = $this->post(route('language.switch', ['locale' => 'ar']), [
             'redirect_to' => $target,

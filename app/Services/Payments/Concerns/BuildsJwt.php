@@ -26,7 +26,7 @@ trait BuildsJwt
         }
 
         [$header, $payload, $signature] = $parts;
-        $expected = $this->base64UrlEncode(hash_hmac('sha256', $header . '.' . $payload, $secret, true));
+        $expected = $this->base64UrlEncode(hash_hmac('sha256', $header.'.'.$payload, $secret, true));
 
         if (! hash_equals($expected, $signature)) {
             return null;

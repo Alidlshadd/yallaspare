@@ -2,7 +2,45 @@
 
 namespace App\Http;
 
+use App\Http\Middleware\ApplyUserPreferences;
+use App\Http\Middleware\Authenticate;
+use App\Http\Middleware\EncryptCookies;
+use App\Http\Middleware\EnsureAccountIsVerified;
+use App\Http\Middleware\EnsureAdminTwoFactorVerified;
+use App\Http\Middleware\EnsureCustomerAreaUser;
+use App\Http\Middleware\EnsureCustomerHasPhone;
+use App\Http\Middleware\EnsureCustomerPhoneIsVerified;
+use App\Http\Middleware\EnsureUserTwoFactorVerified;
+use App\Http\Middleware\IntrusionPrevention;
+use App\Http\Middleware\IsAdmin;
+use App\Http\Middleware\MinifyHtmlResponse;
+use App\Http\Middleware\PreventRequestsDuringMaintenance;
+use App\Http\Middleware\RecordAnalyticsEvent;
+use App\Http\Middleware\RedirectIfAuthenticated;
+use App\Http\Middleware\RejectUnsafeEmailInput;
+use App\Http\Middleware\SecurityHeaders;
+use App\Http\Middleware\SetLocale;
+use App\Http\Middleware\SetLocaleFromHeader;
+use App\Http\Middleware\TrimStrings;
+use App\Http\Middleware\TrustHosts;
+use App\Http\Middleware\TrustProxies;
+use App\Http\Middleware\ValidateSignature;
+use App\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
+use Illuminate\Auth\Middleware\Authorize;
+use Illuminate\Auth\Middleware\RequirePassword;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
+use Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests;
+use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
+use Illuminate\Http\Middleware\HandleCors;
+use Illuminate\Http\Middleware\SetCacheHeaders;
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\Routing\Middleware\ThrottleRequests;
+use Illuminate\Session\Middleware\AuthenticateSession;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 class Kernel extends HttpKernel
 {
@@ -14,16 +52,16 @@ class Kernel extends HttpKernel
      * @var array<int, class-string|string>
      */
     protected $middleware = [
-        \App\Http\Middleware\TrustHosts::class,
-        \App\Http\Middleware\TrustProxies::class,
-        \Illuminate\Http\Middleware\HandleCors::class,
-        \App\Http\Middleware\SecurityHeaders::class,
-        \App\Http\Middleware\IntrusionPrevention::class,
-        \App\Http\Middleware\RejectUnsafeEmailInput::class,
-        \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
-        \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
-        \App\Http\Middleware\TrimStrings::class,
-        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+        TrustHosts::class,
+        TrustProxies::class,
+        HandleCors::class,
+        SecurityHeaders::class,
+        IntrusionPrevention::class,
+        RejectUnsafeEmailInput::class,
+        PreventRequestsDuringMaintenance::class,
+        ValidatePostSize::class,
+        TrimStrings::class,
+        ConvertEmptyStringsToNull::class,
     ];
 
     /**
@@ -33,25 +71,25 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
-            \App\Http\Middleware\EncryptCookies::class,
-            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-            \Illuminate\Session\Middleware\StartSession::class,
-            \Illuminate\Session\Middleware\AuthenticateSession::class,
-            \App\Http\Middleware\SetLocale::class,
-            \App\Http\Middleware\ApplyUserPreferences::class,
-            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \App\Http\Middleware\VerifyCsrfToken::class,
-            \Illuminate\Routing\Middleware\ThrottleRequests::class.':web',
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \App\Http\Middleware\RecordAnalyticsEvent::class,
-            \App\Http\Middleware\MinifyHtmlResponse::class,
+            EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            AuthenticateSession::class,
+            SetLocale::class,
+            ApplyUserPreferences::class,
+            ShareErrorsFromSession::class,
+            VerifyCsrfToken::class,
+            ThrottleRequests::class.':web',
+            SubstituteBindings::class,
+            RecordAnalyticsEvent::class,
+            MinifyHtmlResponse::class,
         ],
 
         'api' => [
             // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
-            \App\Http\Middleware\SetLocaleFromHeader::class,
-            \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            SetLocaleFromHeader::class,
+            ThrottleRequests::class.':api',
+            SubstituteBindings::class,
         ],
     ];
 
@@ -63,22 +101,22 @@ class Kernel extends HttpKernel
      * @var array<string, class-string|string>
      */
     protected $middlewareAliases = [
-        'auth' => \App\Http\Middleware\Authenticate::class,
-        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'auth.session' => \Illuminate\Session\Middleware\AuthenticateSession::class,
-        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
-        'can' => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
-        'password.confirm' => \Illuminate\Auth\Middleware\RequirePassword::class,
-        'precognitive' => \Illuminate\Foundation\Http\Middleware\HandlePrecognitiveRequests::class,
-        'signed' => \App\Http\Middleware\ValidateSignature::class,
-        'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'verified' => \App\Http\Middleware\EnsureAccountIsVerified::class,
-        'admin' => \App\Http\Middleware\IsAdmin::class,
-        'admin.2fa' => \App\Http\Middleware\EnsureAdminTwoFactorVerified::class,
-        'user.2fa' => \App\Http\Middleware\EnsureUserTwoFactorVerified::class,
-        'customer.area' => \App\Http\Middleware\EnsureCustomerAreaUser::class,
-        'customer.phone' => \App\Http\Middleware\EnsureCustomerHasPhone::class,
-        'customer.phone.verified' => \App\Http\Middleware\EnsureCustomerPhoneIsVerified::class,
+        'auth' => Authenticate::class,
+        'auth.basic' => AuthenticateWithBasicAuth::class,
+        'auth.session' => AuthenticateSession::class,
+        'cache.headers' => SetCacheHeaders::class,
+        'can' => Authorize::class,
+        'guest' => RedirectIfAuthenticated::class,
+        'password.confirm' => RequirePassword::class,
+        'precognitive' => HandlePrecognitiveRequests::class,
+        'signed' => ValidateSignature::class,
+        'throttle' => ThrottleRequests::class,
+        'verified' => EnsureAccountIsVerified::class,
+        'admin' => IsAdmin::class,
+        'admin.2fa' => EnsureAdminTwoFactorVerified::class,
+        'user.2fa' => EnsureUserTwoFactorVerified::class,
+        'customer.area' => EnsureCustomerAreaUser::class,
+        'customer.phone' => EnsureCustomerHasPhone::class,
+        'customer.phone.verified' => EnsureCustomerPhoneIsVerified::class,
     ];
 }

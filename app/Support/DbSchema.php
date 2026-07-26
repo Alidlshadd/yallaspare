@@ -43,7 +43,7 @@ final class DbSchema
         $app = app();
 
         if (! $app->bound(self::class)) {
-            $app->instance(self::class, new self());
+            $app->instance(self::class, new self);
         }
 
         return $app->make(self::class);
@@ -55,7 +55,7 @@ final class DbSchema
             return $this->tables[$table];
         }
 
-        $key = 'db_schema.table.' . $table;
+        $key = 'db_schema.table.'.$table;
         $exists = Cache::get($key) === true;
 
         if (! $exists) {
@@ -71,13 +71,13 @@ final class DbSchema
 
     private function columnExists(string $table, string $column): bool
     {
-        $memoKey = $table . '.' . $column;
+        $memoKey = $table.'.'.$column;
 
         if (isset($this->columns[$memoKey])) {
             return $this->columns[$memoKey];
         }
 
-        $key = 'db_schema.column.' . $memoKey;
+        $key = 'db_schema.column.'.$memoKey;
         $exists = Cache::get($key) === true;
 
         if (! $exists) {

@@ -23,7 +23,7 @@ class PhoneValidationTest extends TestCase
     {
         return Validator::make(
             ['phone' => $value],
-            ['phone' => ['nullable', new PhoneNumber()]],
+            ['phone' => ['nullable', new PhoneNumber]],
         );
     }
 
@@ -100,7 +100,7 @@ class PhoneValidationTest extends TestCase
 
         $validator = Validator::make(
             ['phone' => '9647501234567'],
-            ['phone' => ['nullable', new PhoneNumber(), User::uniquePhoneRule()]],
+            ['phone' => ['nullable', new PhoneNumber, User::uniquePhoneRule()]],
         );
 
         $this->assertTrue($validator->fails());
@@ -108,7 +108,7 @@ class PhoneValidationTest extends TestCase
 
         $ignoredValidator = Validator::make(
             ['phone' => '9647501234567'],
-            ['phone' => ['nullable', new PhoneNumber(), User::uniquePhoneRule($existing->id)]],
+            ['phone' => ['nullable', new PhoneNumber, User::uniquePhoneRule($existing->id)]],
         );
 
         $this->assertTrue($ignoredValidator->passes());
@@ -122,7 +122,7 @@ class PhoneValidationTest extends TestCase
         foreach (User::phoneSharingRoles() as $index => $role) {
             $validator = Validator::make(
                 ['phone' => $phone],
-                ['phone' => ['nullable', new PhoneNumber(), User::uniquePhoneRule(null, $role)]],
+                ['phone' => ['nullable', new PhoneNumber, User::uniquePhoneRule(null, $role)]],
             );
 
             $this->assertTrue($validator->passes(), "The {$role} role should be allowed to share a phone.");
@@ -143,7 +143,7 @@ class PhoneValidationTest extends TestCase
 
         $validator = Validator::make(
             ['phone' => '0750 123 4567'],
-            ['phone' => ['nullable', new PhoneNumber(), User::uniquePhoneRule(null, User::ROLE_DEALER)]],
+            ['phone' => ['nullable', new PhoneNumber, User::uniquePhoneRule(null, User::ROLE_DEALER)]],
         );
 
         $this->assertTrue($validator->fails());
