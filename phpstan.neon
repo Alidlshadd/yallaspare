@@ -52,3 +52,20 @@ parameters:
         -
             message: "#Called 'count' on Laravel collection, but could have been retrieved as a query#"
             path: app/Http/Controllers/Admin/OperationsInsightController.php
+
+        # products.created_by is genuinely optional — no migration creates it —
+        # and the dealer ownership check reads it only behind
+        # Schema::hasColumn('products', 'created_by'), which short-circuits
+        # before the property is touched. Declaring @property-read on Product
+        # would be the wrong fix: it would claim a column the schema does not
+        # guarantee and mask real typos everywhere else.
+        # count: 1 keeps this scoped to the guarded read; a second, unguarded
+        # one elsewhere in the file would still be reported.
+        # reportUnmatched: false because the rule that raises this only runs
+        # from level 2, while CI currently enforces level 1 — without it the
+        # entry itself is reported as unmatched and fails the build.
+        -
+            message: '#Access to an undefined property App\\Models\\Product::\$created_by#'
+            path: app/Http/Controllers/Api/MobileController.php
+            count: 1
+            reportUnmatched: false
