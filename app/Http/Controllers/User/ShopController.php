@@ -372,7 +372,10 @@ class ShopController extends Controller
                     ->orWhere('slug', $normalized);
 
                 if (ctype_digit($value)) {
-                    $query->orWhereKey((int) $value);
+                    // Eloquent has whereKey but no orWhereKey, so match the
+                    // primary key by name rather than calling a method that
+                    // does not exist.
+                    $query->orWhere($query->getModel()->getKeyName(), (int) $value);
                 }
             })
             ->first();
