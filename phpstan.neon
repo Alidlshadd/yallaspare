@@ -2,12 +2,18 @@ includes:
     - vendor/larastan/larastan/extension.neon
 
 parameters:
-    # Starting point, not a destination. Level 0 already catches unknown
-    # classes, unknown methods and Larastan's Laravel-specific rules, which is
-    # where the real findings were. Raise once the level 0 set stays at zero:
-    # measured counts on this codebase were 0/1 -> 105, 2 -> 199, 3 -> 207,
-    # 4 -> 296, 5 -> 313.
-    level: 0
+    # Level 1 costs nothing to enforce: typing the Eloquent relations cleared
+    # both levels at once, so this went from 105 errors to zero without a
+    # dedicated pass.
+    #
+    # Level 2 is the next step and sits at 111. Nearly all of it (88) is the
+    # relation types missing their generic parameters — BelongsTo<Product,
+    # $this> rather than a bare BelongsTo — which drops the concrete model back
+    # to the base class. Measured, not guessed: adding generics to one model
+    # took the count to 109. The rest is 9 no-op after() calls in already-run
+    # migrations, 7 query aliases PHPStan cannot see, 4 framework false
+    # positives and 2 undeclared accessors.
+    level: 1
 
     paths:
         - app
