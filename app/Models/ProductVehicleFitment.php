@@ -22,16 +22,19 @@ class ProductVehicleFitment extends Model
         'notes',
     ];
 
+    /** @return BelongsTo<Product, $this> */
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
     }
 
+    /** @return BelongsTo<VehicleBrand, $this> */
     public function brand(): BelongsTo
     {
         return $this->belongsTo(VehicleBrand::class, 'vehicle_brand_id');
     }
 
+    /** @return BelongsTo<VehicleModel, $this> */
     public function model(): BelongsTo
     {
         return $this->belongsTo(VehicleModel::class, 'vehicle_model_id');

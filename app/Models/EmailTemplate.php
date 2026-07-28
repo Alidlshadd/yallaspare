@@ -37,6 +37,7 @@ class EmailTemplate extends Model
         'updated_by',
     ];
 
+    /** @return BelongsTo<User, $this> */
     public function editor(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');

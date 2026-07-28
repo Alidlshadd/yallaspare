@@ -597,26 +597,31 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
         return $this->role === self::ROLE_DEALER;
     }
 
+    /** @return HasMany<Order, $this> */
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
     }
 
+    /** @return HasMany<UserAddress, $this> */
     public function addresses(): HasMany
     {
         return $this->hasMany(UserAddress::class);
     }
 
+    /** @return HasMany<InventoryMovement, $this> */
     public function inventoryMovements(): HasMany
     {
         return $this->hasMany(InventoryMovement::class);
     }
 
+    /** @return HasMany<ProductReview, $this> */
     public function productReviews(): HasMany
     {
         return $this->hasMany(ProductReview::class);
     }
 
+    /** @return HasMany<ProductView, $this> */
     public function productViews(): HasMany
     {
         return $this->hasMany(ProductView::class);

@@ -17,6 +17,7 @@ class VehicleBrand extends Model
         'slug',
     ];
 
+    /** @return HasMany<VehicleModel, $this> */
     public function models(): HasMany
     {
         return $this->hasMany(VehicleModel::class);

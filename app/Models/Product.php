@@ -75,6 +75,7 @@ class Product extends Model
             ->dontSubmitEmptyLogs();
     }
 
+    /** @return BelongsTo<Category, $this> */
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
@@ -124,46 +125,55 @@ class Product extends Model
         return 'slug';
     }
 
+    /** @return HasMany<InventoryMovement, $this> */
     public function inventoryMovements(): HasMany
     {
         return $this->hasMany(InventoryMovement::class);
     }
 
+    /** @return HasMany<OrderItem, $this> */
     public function orderItems(): HasMany
     {
         return $this->hasMany(OrderItem::class);
     }
 
+    /** @return HasMany<Wishlist, $this> */
     public function wishlists(): HasMany
     {
         return $this->hasMany(Wishlist::class);
     }
 
+    /** @return HasMany<ProductReview, $this> */
     public function reviews(): HasMany
     {
         return $this->hasMany(ProductReview::class);
     }
 
+    /** @return HasMany<ProductView, $this> */
     public function views(): HasMany
     {
         return $this->hasMany(ProductView::class);
     }
 
+    /** @return HasOne<ProductAnalytic, $this> */
     public function analytics(): HasOne
     {
         return $this->hasOne(ProductAnalytic::class);
     }
 
+    /** @return HasMany<ProductVehicleFitment, $this> */
     public function vehicleFitments(): HasMany
     {
         return $this->hasMany(ProductVehicleFitment::class);
     }
 
+    /** @return HasMany<ProductImage, $this> */
     public function images(): HasMany
     {
         return $this->hasMany(ProductImage::class)->orderBy('sort_order')->orderBy('id');
     }
 
+    /** @return HasOne<ProductImage, $this> */
     public function primaryImage(): HasOne
     {
         return $this->hasOne(ProductImage::class)->where('is_primary', true)->oldest('sort_order')->oldest('id');

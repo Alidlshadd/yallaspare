@@ -208,41 +208,49 @@ class Order extends Model
         };
     }
 
+    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /** @return HasMany<OrderItem, $this> */
     public function items(): HasMany
     {
         return $this->hasMany(OrderItem::class);
     }
 
+    /** @return HasMany<OrderStatusHistory, $this> */
     public function statusHistory(): HasMany
     {
         return $this->hasMany(OrderStatusHistory::class)->latest('id');
     }
 
+    /** @return BelongsTo<Coupon, $this> */
     public function coupon(): BelongsTo
     {
         return $this->belongsTo(Coupon::class);
     }
 
+    /** @return HasMany<OrderAdminNote, $this> */
     public function adminNotes(): HasMany
     {
         return $this->hasMany(OrderAdminNote::class)->latest('id');
     }
 
+    /** @return HasMany<ReturnRequest, $this> */
     public function returnRequests(): HasMany
     {
         return $this->hasMany(ReturnRequest::class)->latest('id');
     }
 
+    /** @return HasMany<Payment, $this> */
     public function payments(): HasMany
     {
         return $this->hasMany(Payment::class)->latest('id');
     }
 
+    /** @return HasOne<Payment, $this> */
     public function latestPayment(): HasOne
     {
         return $this->hasOne(Payment::class)->latestOfMany();

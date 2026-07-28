@@ -119,6 +119,7 @@ class AdminActivityLog extends Model
         return $encoded !== false ? $encoded : '{}';
     }
 
+    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

@@ -52,11 +52,13 @@ class EmailBroadcast extends Model
         'completed_at' => 'datetime',
     ];
 
+    /** @return BelongsTo<User, $this> */
     public function admin(): BelongsTo
     {
         return $this->belongsTo(User::class, 'admin_id');
     }
 
+    /** @return BelongsTo<User, $this> */
     public function targetUser(): BelongsTo
     {
         return $this->belongsTo(User::class, 'target_user_id');
