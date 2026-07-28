@@ -69,3 +69,27 @@ parameters:
             path: app/Http/Controllers/Api/MobileController.php
             count: 1
             reportUnmatched: false
+
+        # The three below share one shape: the method is real but declared on
+        # the concrete class rather than the interface the call site sees.
+        # Verified in vendor, not assumed. All are level 2 rules while CI
+        # enforces level 1, so each needs reportUnmatched: false — without it
+        # the entry is reported as unmatched and fails the build.
+
+        # stateless() lives on Laravel\Socialite\Two\AbstractProvider, not on
+        # the Provider contract that Socialite::driver() is typed to return.
+        # The Apple provider extends that class, so the call resolves.
+        -
+            message: '#Call to an undefined method Laravel\\Socialite\\Contracts\\Provider::stateless\(\)#'
+            path: app/Http/Controllers/Auth/SocialAuthController.php
+            count: 2
+            reportUnmatched: false
+
+        # getQueryGrammar() is on Illuminate\Database\Connection, not on the
+        # ConnectionInterface that getConnection() advertises. Every connection
+        # Laravel builds extends that class.
+        -
+            message: '#Call to an undefined method Illuminate\\Database\\ConnectionInterface::getQueryGrammar\(\)#'
+            path: app/Support/SqlSafe.php
+            count: 1
+            reportUnmatched: false
