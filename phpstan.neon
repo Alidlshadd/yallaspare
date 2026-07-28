@@ -2,18 +2,20 @@ includes:
     - vendor/larastan/larastan/extension.neon
 
 parameters:
-    # Level 2 went from 110 errors to zero, and 101 of those were closed by
-    # changing code rather than by ignoring anything: generic parameters on all
-    # 70 Eloquent relations, the model type on two query builders, one accessor
-    # declaration, a Monolog handler guard, and nine after() calls on foreign
-    # key chains that never reached the generated SQL. The ten entries under
-    # ignoreErrors are each pinned to a file with an exact count.
+    # Level 3 cost one ignore entry: six of its seven findings were PHPDoc that
+    # misdescribed the values underneath it, so the annotations were corrected
+    # rather than suppressed. Level 2 before it went 110 -> 0 with 101 closed
+    # in code. The eleven entries under ignoreErrors are each pinned to a file
+    # with an exact count.
     #
-    # Level 3 is the next step and sits at 7 — small enough to take on
-    # directly. Do not add reportUnmatched: false to new entries without
-    # checking first: it is only needed when a rule fires above the enforced
-    # level, and a stale one hides an ignore that has stopped matching.
-    level: 2
+    # Level 4 sits at 90 and is a different kind of work — it reports
+    # unreachable branches and always-true conditions, so each finding needs
+    # reading rather than a mechanical fix.
+    #
+    # Do not add reportUnmatched: false to new entries without checking first:
+    # it is only needed when a rule fires above the enforced level, and a stale
+    # one hides an ignore that has stopped matching.
+    level: 3
 
     paths:
         - app
@@ -77,6 +79,16 @@ parameters:
             message: '#Call to an undefined method Laravel\\Socialite\\Contracts\\Provider::stateless\(\)#'
             path: app/Http/Controllers/Auth/SocialAuthController.php
             count: 2
+
+        # Same contract, same gap: Provider::redirect() is documented as
+        # returning Symfony's RedirectResponse or Illuminate's, so PHPStan
+        # takes the union. Every provider actually in use extends
+        # Two\AbstractProvider, whose redirect() constructs Illuminate's, so
+        # the declared return type on this method holds at runtime.
+        -
+            message: '#redirectToGoogle\(\) should return Illuminate\\Http\\RedirectResponse but returns Symfony\\Component\\HttpFoundation\\RedirectResponse#'
+            path: app/Http/Controllers/Auth/SocialAuthController.php
+            count: 1
 
         # getQueryGrammar() is on Illuminate\Database\Connection, not on the
         # ConnectionInterface that getConnection() advertises. Every connection
