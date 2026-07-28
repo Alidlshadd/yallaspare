@@ -93,3 +93,36 @@ parameters:
             path: app/Support/SqlSafe.php
             count: 1
             reportUnmatched: false
+
+        # The three below read aggregate columns that exist only on the rows a
+        # specific query returns — selectRaw aliases and joined subquery
+        # columns. Each was traced to the select that produces it, and each
+        # read is cast, so a missing alias would surface as 0 rather than an
+        # error. @property-read on the model would be wrong: the column exists
+        # for one query, not for the model, and declaring it would hide typos
+        # in every other read.
+        # Counts pin each entry to its known reads. The proper fix is a result
+        # object per query rather than reading aggregates off the model, which
+        # is a refactor rather than an annotation.
+
+        # DashboardController: DB::raw('... as month') and 'COUNT(*) as total'.
+        -
+            message: '#Access to an undefined property App\\Models\\Order::\$(month|total)#'
+            path: app/Http/Controllers/Admin/DashboardController.php
+            count: 2
+            reportUnmatched: false
+
+        # OperationsInsightController: sales.sold_quantity and
+        # waiting.waiting_count, both joined in as subquery aggregates.
+        -
+            message: '#Access to an undefined property App\\Models\\Product::\$(sold_quantity|waiting_count)#'
+            path: app/Http/Controllers/Admin/OperationsInsightController.php
+            count: 3
+            reportUnmatched: false
+
+        # AdminActivityLogController: selectRaw('count(*) as aggregate').
+        -
+            message: '#Access to an undefined property Spatie\\Activitylog\\Models\\Activity::\$aggregate#'
+            path: app/Http/Controllers/Admin/AdminActivityLogController.php
+            count: 1
+            reportUnmatched: false
