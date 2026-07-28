@@ -15,7 +15,10 @@ class EventServiceProvider extends ServiceProvider
     /**
      * The event to listener mappings for the application.
      *
-     * @var array<class-string, array<int, class-string>>
+     * Listener entries are class-strings or Class@method strings, so the inner
+     * type is a plain string rather than class-string.
+     *
+     * @var array<class-string, array<int, string>>
      */
     protected $listen = [
         // The verification code email is sent explicitly by the registration

@@ -127,7 +127,7 @@ class AnalyticsQueryService
     }
 
     /**
-     * @return Collection<int, array<string, mixed>>
+     * @return Collection<int, array{id: int, name: string, sku: string, count: int}>
      */
     private function topProducts(string $eventType, Carbon $start, Carbon $end, int $limit = 7): Collection
     {
@@ -160,7 +160,7 @@ class AnalyticsQueryService
     }
 
     /**
-     * @return Collection<int, array<string, mixed>>
+     * @return Collection<int, array{keyword: string, count: int, last_searched_at: Carbon}>
      */
     private function topSearchKeywords(Carbon $start, Carbon $end, int $limit = 10): Collection
     {
@@ -182,7 +182,7 @@ class AnalyticsQueryService
     }
 
     /**
-     * @return Collection<int, array<string, mixed>>
+     * @return Collection<int, array{keyword: string, count: int, last_searched_at: Carbon}>
      */
     private function recentSearches(int $limit = 12): Collection
     {
