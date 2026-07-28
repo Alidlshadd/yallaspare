@@ -56,13 +56,13 @@ return new class extends Migration
         if (Schema::hasTable('products')) {
             Schema::table('products', function (Blueprint $table) {
                 if (! Schema::hasColumn('products', 'product_brand_id')) {
-                    $table->foreignId('product_brand_id')->nullable()->constrained('product_brands')->nullOnDelete()->after('category_id');
+                    $table->foreignId('product_brand_id')->nullable()->constrained('product_brands')->nullOnDelete();
                 }
                 if (! Schema::hasColumn('products', 'supplier_id')) {
-                    $table->foreignId('supplier_id')->nullable()->constrained('suppliers')->nullOnDelete()->after('product_brand_id');
+                    $table->foreignId('supplier_id')->nullable()->constrained('suppliers')->nullOnDelete();
                 }
                 if (! Schema::hasColumn('products', 'tax_class_id')) {
-                    $table->foreignId('tax_class_id')->nullable()->constrained('tax_classes')->nullOnDelete()->after('supplier_id');
+                    $table->foreignId('tax_class_id')->nullable()->constrained('tax_classes')->nullOnDelete();
                 }
                 if (! Schema::hasColumn('products', 'cost_price')) {
                     $table->decimal('cost_price', 12, 2)->nullable()->after('dealer_price');
@@ -103,10 +103,10 @@ return new class extends Migration
         if (Schema::hasTable('orders')) {
             Schema::table('orders', function (Blueprint $table) {
                 if (! Schema::hasColumn('orders', 'warehouse_id')) {
-                    $table->foreignId('warehouse_id')->nullable()->constrained('warehouses')->nullOnDelete()->after('user_id');
+                    $table->foreignId('warehouse_id')->nullable()->constrained('warehouses')->nullOnDelete();
                 }
                 if (! Schema::hasColumn('orders', 'coupon_id')) {
-                    $table->foreignId('coupon_id')->nullable()->constrained('coupons')->nullOnDelete()->after('warehouse_id');
+                    $table->foreignId('coupon_id')->nullable()->constrained('coupons')->nullOnDelete();
                 }
                 if (! Schema::hasColumn('orders', 'subtotal_amount')) {
                     $table->decimal('subtotal_amount', 12, 2)->nullable()->after('total_amount');
@@ -133,7 +133,7 @@ return new class extends Migration
                     $table->timestamp('cancelled_at')->nullable()->after('paid_at');
                 }
                 if (! Schema::hasColumn('orders', 'cancelled_by')) {
-                    $table->foreignId('cancelled_by')->nullable()->constrained('users')->nullOnDelete()->after('cancelled_at');
+                    $table->foreignId('cancelled_by')->nullable()->constrained('users')->nullOnDelete();
                 }
                 if (! Schema::hasColumn('orders', 'deleted_at')) {
                     $table->softDeletes();
@@ -149,7 +149,7 @@ return new class extends Migration
         if (Schema::hasTable('order_items')) {
             Schema::table('order_items', function (Blueprint $table) {
                 if (! Schema::hasColumn('order_items', 'warehouse_id')) {
-                    $table->foreignId('warehouse_id')->nullable()->constrained('warehouses')->nullOnDelete()->after('product_id');
+                    $table->foreignId('warehouse_id')->nullable()->constrained('warehouses')->nullOnDelete();
                 }
                 if (! Schema::hasColumn('order_items', 'tax_amount')) {
                     $table->decimal('tax_amount', 12, 2)->default(0)->after('subtotal');
@@ -166,7 +166,7 @@ return new class extends Migration
         if (Schema::hasTable('inventory_movements')) {
             Schema::table('inventory_movements', function (Blueprint $table) {
                 if (! Schema::hasColumn('inventory_movements', 'warehouse_id')) {
-                    $table->foreignId('warehouse_id')->nullable()->constrained('warehouses')->nullOnDelete()->after('product_id');
+                    $table->foreignId('warehouse_id')->nullable()->constrained('warehouses')->nullOnDelete();
                 }
                 if (! Schema::hasColumn('inventory_movements', 'performed_at')) {
                     $table->timestamp('performed_at')->nullable()->after('note');

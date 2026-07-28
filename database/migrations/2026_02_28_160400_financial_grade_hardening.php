@@ -226,7 +226,7 @@ return new class extends Migration
                     $table->timestamp('reviewed_at')->nullable()->after('anomaly_score');
                 }
                 if (! Schema::hasColumn('admin_activity_logs', 'reviewed_by')) {
-                    $table->foreignId('reviewed_by')->nullable()->constrained('users')->nullOnDelete()->after('reviewed_at');
+                    $table->foreignId('reviewed_by')->nullable()->constrained('users')->nullOnDelete();
                 }
             });
 
