@@ -103,6 +103,9 @@ class SendEmailBroadcastJob implements ShouldQueue
         ])->save();
     }
 
+    /**
+     * @return Builder<User>
+     */
     private function recipientQuery(EmailBroadcast $broadcast): Builder
     {
         $query = User::query()

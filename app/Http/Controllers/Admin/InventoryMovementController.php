@@ -23,7 +23,7 @@ class InventoryMovementController extends Controller
     /**
      * Apply request filters shared by index and export.
      *
-     * @return array{0: Builder, 1: string, 2: bool, 3: bool}
+     * @return array{0: Builder<InventoryMovement>, 1: string, 2: bool, 3: bool}
      */
     private function buildFilteredQuery(Request $request): array
     {
