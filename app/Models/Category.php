@@ -9,6 +9,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
+/**
+ * @property-read string $localized_description Backed by getLocalizedDescriptionAttribute()
+ */
 class Category extends Model
 {
     use HasFactory, LogsActivity;
