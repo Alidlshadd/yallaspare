@@ -2,18 +2,18 @@ includes:
     - vendor/larastan/larastan/extension.neon
 
 parameters:
-    # Level 1 costs nothing to enforce: typing the Eloquent relations cleared
-    # both levels at once, so this went from 105 errors to zero without a
-    # dedicated pass.
+    # Level 2 went from 110 errors to zero, and 101 of those were closed by
+    # changing code rather than by ignoring anything: generic parameters on all
+    # 70 Eloquent relations, the model type on two query builders, one accessor
+    # declaration, a Monolog handler guard, and nine after() calls on foreign
+    # key chains that never reached the generated SQL. The ten entries under
+    # ignoreErrors are each pinned to a file with an exact count.
     #
-    # Level 2 is the next step and sits at 111. Nearly all of it (88) is the
-    # relation types missing their generic parameters — BelongsTo<Product,
-    # $this> rather than a bare BelongsTo — which drops the concrete model back
-    # to the base class. Measured, not guessed: adding generics to one model
-    # took the count to 109. The rest is 9 no-op after() calls in already-run
-    # migrations, 7 query aliases PHPStan cannot see, 4 framework false
-    # positives and 2 undeclared accessors.
-    level: 1
+    # Level 3 is the next step and sits at 7 — small enough to take on
+    # directly. Do not add reportUnmatched: false to new entries without
+    # checking first: it is only needed when a rule fires above the enforced
+    # level, and a stale one hides an ignore that has stopped matching.
+    level: 2
 
     paths:
         - app
@@ -61,20 +61,14 @@ parameters:
         # guarantee and mask real typos everywhere else.
         # count: 1 keeps this scoped to the guarded read; a second, unguarded
         # one elsewhere in the file would still be reported.
-        # reportUnmatched: false because the rule that raises this only runs
-        # from level 2, while CI currently enforces level 1 — without it the
-        # entry itself is reported as unmatched and fails the build.
         -
             message: '#Access to an undefined property App\\Models\\Product::\$created_by#'
             path: app/Http/Controllers/Api/MobileController.php
             count: 1
-            reportUnmatched: false
 
-        # The three below share one shape: the method is real but declared on
-        # the concrete class rather than the interface the call site sees.
-        # Verified in vendor, not assumed. All are level 2 rules while CI
-        # enforces level 1, so each needs reportUnmatched: false — without it
-        # the entry is reported as unmatched and fails the build.
+        # The two below share one shape: the method is real but declared on the
+        # concrete class rather than the interface the call site sees. Verified
+        # in vendor, not assumed.
 
         # stateless() lives on Laravel\Socialite\Two\AbstractProvider, not on
         # the Provider contract that Socialite::driver() is typed to return.
@@ -83,7 +77,6 @@ parameters:
             message: '#Call to an undefined method Laravel\\Socialite\\Contracts\\Provider::stateless\(\)#'
             path: app/Http/Controllers/Auth/SocialAuthController.php
             count: 2
-            reportUnmatched: false
 
         # getQueryGrammar() is on Illuminate\Database\Connection, not on the
         # ConnectionInterface that getConnection() advertises. Every connection
@@ -92,7 +85,6 @@ parameters:
             message: '#Call to an undefined method Illuminate\\Database\\ConnectionInterface::getQueryGrammar\(\)#'
             path: app/Support/SqlSafe.php
             count: 1
-            reportUnmatched: false
 
         # The three below read aggregate columns that exist only on the rows a
         # specific query returns — selectRaw aliases and joined subquery
@@ -110,7 +102,6 @@ parameters:
             message: '#Access to an undefined property App\\Models\\Order::\$(month|total)#'
             path: app/Http/Controllers/Admin/DashboardController.php
             count: 2
-            reportUnmatched: false
 
         # OperationsInsightController: sales.sold_quantity and
         # waiting.waiting_count, both joined in as subquery aggregates.
@@ -118,11 +109,9 @@ parameters:
             message: '#Access to an undefined property App\\Models\\Product::\$(sold_quantity|waiting_count)#'
             path: app/Http/Controllers/Admin/OperationsInsightController.php
             count: 3
-            reportUnmatched: false
 
         # AdminActivityLogController: selectRaw('count(*) as aggregate').
         -
             message: '#Access to an undefined property Spatie\\Activitylog\\Models\\Activity::\$aggregate#'
             path: app/Http/Controllers/Admin/AdminActivityLogController.php
             count: 1
-            reportUnmatched: false
