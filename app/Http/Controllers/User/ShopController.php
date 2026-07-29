@@ -385,17 +385,6 @@ class ShopController extends Controller
         return $category;
     }
 
-    private function categoryImageUrl(Category $category): ?string
-    {
-        if (! DbSchema::hasColumn('categories', 'image')) {
-            return null;
-        }
-
-        $imagePath = trim((string) $category->image);
-
-        return $imagePath !== '' ? asset('storage/'.ltrim($imagePath, '/')) : null;
-    }
-
     private function vehicleFilterOptions(): array
     {
         return VehicleFilterCache::remember(fn (): array => $this->buildVehicleFilterOptions());

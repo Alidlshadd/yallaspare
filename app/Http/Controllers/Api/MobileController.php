@@ -2134,12 +2134,6 @@ class MobileController extends Controller
         return $data;
     }
 
-    private function requireAdmin(Request $request): void
-    {
-        $user = $request->user();
-        abort_unless($user && $user->isAdminPanelUser(), 403);
-    }
-
     private function requirePermission(Request $request, string $permission): User
     {
         $user = $request->user();

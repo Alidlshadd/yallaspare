@@ -228,17 +228,6 @@ return new class extends Migration
         });
     }
 
-    private function dropIndexIfExists(string $table, string $indexName): void
-    {
-        if (! $this->indexExists($table, $indexName)) {
-            return;
-        }
-
-        Schema::table($table, function (Blueprint $blueprint) use ($indexName) {
-            $blueprint->dropIndex($indexName);
-        });
-    }
-
     private function indexExists(string $table, string $index): bool
     {
         $connection = Schema::getConnection();
