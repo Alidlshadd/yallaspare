@@ -39,5 +39,6 @@ class AuthServiceProvider extends ServiceProvider
 
         Gate::define('manage-users', [UserPolicy::class, 'manageUsers']);
         Gate::define('manage-dealers', [UserPolicy::class, 'manageDealers']);
+        Gate::define('manage-whatsapp-webhooks', fn (User $user): bool => $user->isAdmin());
     }
 }

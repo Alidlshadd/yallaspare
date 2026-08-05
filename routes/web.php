@@ -16,6 +16,7 @@ use App\Http\Controllers\Admin\MessagingController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\OperationsInsightController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\OtpiqWhatsAppController;
 use App\Http\Controllers\Admin\PopupController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductReviewController as AdminProductReviewController;
@@ -519,6 +520,30 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::post('/messaging/test', [MessagingController::class, 'sendTest'])
             ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'throttle:phone-verification-send'])
             ->name('messaging.test');
+        Route::get('/whatsapp', [OtpiqWhatsAppController::class, 'index'])
+            ->middleware('can:manage-whatsapp-webhooks')
+            ->name('whatsapp.index');
+        Route::get('/whatsapp/events', [OtpiqWhatsAppController::class, 'events'])
+            ->middleware('can:manage-whatsapp-webhooks')
+            ->name('whatsapp.events.index');
+        Route::get('/whatsapp/events/{event}', [OtpiqWhatsAppController::class, 'show'])
+            ->middleware('can:manage-whatsapp-webhooks')
+            ->name('whatsapp.events.show');
+        Route::patch('/whatsapp/events/{event}/read', [OtpiqWhatsAppController::class, 'markRead'])
+            ->middleware(['can:manage-whatsapp-webhooks', 'throttle:admin-write'])
+            ->name('whatsapp.events.read');
+        Route::patch('/whatsapp/events/{event}/unread', [OtpiqWhatsAppController::class, 'markUnread'])
+            ->middleware(['can:manage-whatsapp-webhooks', 'throttle:admin-write'])
+            ->name('whatsapp.events.unread');
+        Route::patch('/whatsapp/events/{event}/archive', [OtpiqWhatsAppController::class, 'archive'])
+            ->middleware(['can:manage-whatsapp-webhooks', 'throttle:admin-write'])
+            ->name('whatsapp.events.archive');
+        Route::post('/whatsapp/events/{event}/retry', [OtpiqWhatsAppController::class, 'retry'])
+            ->middleware(['can:manage-whatsapp-webhooks', 'throttle:admin-write'])
+            ->name('whatsapp.events.retry');
+        Route::patch('/whatsapp/processing', [OtpiqWhatsAppController::class, 'updateProcessing'])
+            ->middleware(['can:manage-whatsapp-webhooks', 'throttle:admin-write'])
+            ->name('whatsapp.processing.update');
         Route::get('/email/outbox', [EmailController::class, 'outbox'])
             ->middleware('can:'.User::PERMISSION_SETTINGS_MANAGE)
             ->name('email.outbox');
