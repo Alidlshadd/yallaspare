@@ -342,6 +342,7 @@
                     'admin.email.*'                => __('Email Center'),
                     'admin.popups.*'               => __('Popups'),
                     'admin.messaging.*'            => __('SMS & WhatsApp Center'),
+                    'admin.whatsapp.*'             => __('Inbound WhatsApp'),
                     'admin.settings.*'             => __('Settings'),
                     'admin.activity-logs.*'        => __('Activity Logs'),
                     'admin.profile.*'              => __('Profile'),
@@ -433,10 +434,11 @@
                         $canDealers    = $adminUserForNav?->can('manage-dealers');
                         $canFinanceMgr = $adminUserForNav?->can(\App\Models\User::PERMISSION_FINANCE_MANAGE);
                         $canSettings   = $adminUserForNav?->can(\App\Models\User::PERMISSION_SETTINGS_MANAGE);
+                        $canWhatsapp   = $adminUserForNav?->can('manage-whatsapp-webhooks');
                         $canUsersView  = $adminUserForNav?->can('viewAny', \App\Models\User::class);
                         $canActLogs    = $adminUserForNav?->can(\App\Models\User::PERMISSION_ACTIVITY_LOGS_VIEW);
                         $hasAnalytics  = $canDashboard || $canFinance || $canStock;
-                        $hasMarketing  = $canFinanceMgr || $canSettings;
+                        $hasMarketing  = $canFinanceMgr || $canSettings || $canWhatsapp;
                         $hasAdminGrp   = $canUsersView || $canSettings || $canActLogs;
                     @endphp
                     <nav class="admin-nav space-y-1.5" aria-label="{{ __('Admin sections') }}">
@@ -655,6 +657,17 @@
                                 >
                                     <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-bullhorn"></i></span>
                                     <span class="admin-nav-label">{{ __('Popups') }}</span>
+                                </a>
+                            @endcan
+                            @can('manage-whatsapp-webhooks')
+                                <a
+                                    href="{{ route('admin.whatsapp.index') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.whatsapp.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Inbound WhatsApp') }}"
+                                    @if(request()->routeIs('admin.whatsapp.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fab fa-whatsapp"></i></span>
+                                    <span class="admin-nav-label">{{ __('Inbound WhatsApp') }}</span>
                                 </a>
                             @endcan
                         @endif

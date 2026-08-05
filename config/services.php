@@ -76,6 +76,9 @@ return [
     'otpiq' => [
         'api_key' => env('OTPIQ_API_KEY'),
         'base_url' => env('OTPIQ_BASE_URL', 'https://api.otpiq.com/api'),
+        'webhook_secret' => env('OTPIQ_WEBHOOK_SECRET'),
+        'whatsapp_enabled' => env('OTPIQ_WHATSAPP_ENABLED', false),
+        'webhook_max_body_bytes' => (int) env('OTPIQ_WEBHOOK_MAX_BODY_BYTES', 1048576),
         'provider' => env('OTPIQ_PROVIDER', 'sms'),
         'default_country_code' => env('OTPIQ_DEFAULT_COUNTRY_CODE', '964'),
         'verification_ttl' => (int) env('OTPIQ_VERIFICATION_TTL', 5),

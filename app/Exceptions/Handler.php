@@ -27,6 +27,15 @@ class Handler extends ExceptionHandler
         'password_confirmation',
     ];
 
+    protected function shouldReturnJson($request, Throwable $e): bool
+    {
+        if ($request instanceof Request && $request->is('api/webhooks/otpiq')) {
+            return true;
+        }
+
+        return parent::shouldReturnJson($request, $e);
+    }
+
     /**
      * Register the exception handling callbacks for the application.
      */

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\MobileController;
 use App\Http\Controllers\PaymentWebhookController;
+use App\Http\Controllers\Webhooks\OtpiqWhatsAppWebhookController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,9 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/user', function (Request 
 Route::post('/payments/{provider}/webhook', PaymentWebhookController::class)
     ->middleware('throttle:60,1')
     ->name('payments.webhook');
+
+Route::post('/webhooks/otpiq', OtpiqWhatsAppWebhookController::class)
+    ->name('webhooks.otpiq');
 
 Route::prefix('mobile')->group(function () {
     Route::post('/login', [MobileController::class, 'login'])->middleware('throttle:mobile-login');
