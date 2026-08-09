@@ -91,6 +91,11 @@ class MobileController extends Controller
             return response()->json(['message' => __('Email or password is incorrect.')], 422);
         }
 
+        // Only after the password is proven, so the ban state cannot be probed.
+        if ($user->isBanned()) {
+            return response()->json(['message' => $user->banMessage()], 403);
+        }
+
         // One verified contact channel (email OR phone) activates the account.
         if (! $user->hasVerifiedEmail() && $user->phone_verified_at === null) {
             return response()->json([

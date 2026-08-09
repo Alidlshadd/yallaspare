@@ -59,6 +59,18 @@ class LoginRequest extends FormRequest
         }
 
         RateLimiter::clear($this->throttleKey());
+
+        // Checked after the attempt, never before: revealing that an account is
+        // banned to someone who has not proven the password would turn the ban
+        // state into an enumeration oracle. Auth::attempt has already opened a
+        // session by this point, so tear it back down.
+        if ($user->isBanned()) {
+            Auth::guard('web')->logout();
+
+            throw ValidationException::withMessages([
+                'email' => $user->banMessage(),
+            ]);
+        }
     }
 
     /**

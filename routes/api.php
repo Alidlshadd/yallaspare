@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/user', function (Request $request) {
+Route::middleware(['auth:sanctum', 'verified', 'not.banned'])->get('/user', function (Request $request) {
     return $request->user();
 });
 
@@ -46,7 +46,7 @@ Route::prefix('mobile')->group(function () {
     Route::get('/products/{idOrSlug}', [MobileController::class, 'product']);
     Route::post('/coupons/preview', [MobileController::class, 'couponPreview'])->middleware('throttle:mobile-lookup');
 
-    Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::middleware(['auth:sanctum', 'verified', 'not.banned'])->group(function () {
         Route::get('/me', [MobileController::class, 'me']);
         Route::post('/token/refresh', [MobileController::class, 'refreshToken']);
         Route::post('/logout', [MobileController::class, 'logout']);

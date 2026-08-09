@@ -19,9 +19,12 @@ class EnsureUserNotBanned
             return $next($request);
         }
 
-        $message = $this->banMessage($user);
+        $message = $user->banMessage();
 
-        if ($request->expectsJson()) {
+        // Token requests reach this middleware through the api stack, which has
+        // no session to invalidate — answer them as JSON even when the client
+        // forgot to send an Accept header.
+        if ($request->expectsJson() || ! $request->hasSession()) {
             return response()->json(['message' => $message], 403);
         }
 
@@ -30,21 +33,5 @@ class EnsureUserNotBanned
         $request->session()->regenerateToken();
 
         return redirect()->route('login')->withErrors(['email' => $message]);
-    }
-
-    private function banMessage(User $user): string
-    {
-        $message = $user->isPermanentlyBanned()
-            ? __('Your account has been permanently suspended.')
-            : __('Your account is suspended until :date.', [
-                'date' => $user->banned_until?->format('d M Y H:i'),
-            ]);
-
-        $reason = trim((string) $user->ban_reason);
-        if ($reason !== '') {
-            $message .= ' '.__('Reason: :reason', ['reason' => $reason]);
-        }
-
-        return $message;
     }
 }
