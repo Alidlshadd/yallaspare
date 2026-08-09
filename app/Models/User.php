@@ -173,6 +173,27 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
         return $this->banned_at !== null && $this->banned_until === null;
     }
 
+    /**
+     * Human-readable reason a banned account is locked out. Shared by the
+     * login paths and EnsureUserNotBanned so the wording cannot drift.
+     * Only ever shown once the caller has proven the credentials.
+     */
+    public function banMessage(): string
+    {
+        $message = $this->isPermanentlyBanned()
+            ? __('Your account has been permanently suspended.')
+            : __('Your account is suspended until :date.', [
+                'date' => $this->banned_until?->format('d M Y H:i'),
+            ]);
+
+        $reason = trim((string) $this->ban_reason);
+        if ($reason !== '') {
+            $message .= ' '.__('Reason: :reason', ['reason' => $reason]);
+        }
+
+        return $message;
+    }
+
     protected function themePreference(): Attribute
     {
         return Attribute::make(

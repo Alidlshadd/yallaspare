@@ -10,6 +10,7 @@ use App\Http\Middleware\EnsureAdminTwoFactorVerified;
 use App\Http\Middleware\EnsureCustomerAreaUser;
 use App\Http\Middleware\EnsureCustomerHasPhone;
 use App\Http\Middleware\EnsureCustomerPhoneIsVerified;
+use App\Http\Middleware\EnsureUserNotBanned;
 use App\Http\Middleware\EnsureUserTwoFactorVerified;
 use App\Http\Middleware\IntrusionPrevention;
 use App\Http\Middleware\IsAdmin;
@@ -75,6 +76,7 @@ class Kernel extends HttpKernel
             AddQueuedCookiesToResponse::class,
             StartSession::class,
             AuthenticateSession::class,
+            EnsureUserNotBanned::class,
             SetLocale::class,
             ApplyUserPreferences::class,
             ShareErrorsFromSession::class,
@@ -118,5 +120,6 @@ class Kernel extends HttpKernel
         'customer.area' => EnsureCustomerAreaUser::class,
         'customer.phone' => EnsureCustomerHasPhone::class,
         'customer.phone.verified' => EnsureCustomerPhoneIsVerified::class,
+        'not.banned' => EnsureUserNotBanned::class,
     ];
 }

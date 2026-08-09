@@ -149,7 +149,7 @@ class SocialAuthController extends Controller
         }
 
         if ($user->isBanned()) {
-            return $this->redirectToLoginWithAuthError(__('Your account has been suspended. Please contact support.'));
+            return $this->redirectToLoginWithAuthError($user->banMessage());
         }
 
         Auth::guard('web')->login($user);
