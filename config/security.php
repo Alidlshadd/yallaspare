@@ -75,4 +75,24 @@ return [
     'phone_verification' => [
         'max_attempts' => (int) env('PHONE_VERIFICATION_MAX_ATTEMPTS', 5),
     ],
+
+    'hibp' => [
+        // Have I Been Pwned range lookup behind Password::defaults()->uncompromised().
+        // The policy is fail-open: a breach lookup that cannot complete must never
+        // block a registration or a password reset. Every failure is logged to the
+        // security channel instead, so the gap is measurable rather than invisible.
+        'enabled' => filter_var(env('HIBP_ENABLED', true), FILTER_VALIDATE_BOOLEAN),
+
+        // Laravel's own verifier waits 30s, long enough for a slow HIBP to pin every
+        // php-fpm worker and take the whole site down. Two seconds is generous against
+        // a p99 that normally sits under 200ms.
+        'timeout' => (int) env('HIBP_TIMEOUT', 2),
+        'connect_timeout' => (int) env('HIBP_CONNECT_TIMEOUT', 1),
+
+        // After this many consecutive failures the circuit opens and lookups are
+        // skipped entirely for the duration below, so an outage costs one slow
+        // request rather than one per sign-up.
+        'circuit_threshold' => (int) env('HIBP_CIRCUIT_THRESHOLD', 5),
+        'circuit_minutes' => (int) env('HIBP_CIRCUIT_MINUTES', 5),
+    ],
 ];

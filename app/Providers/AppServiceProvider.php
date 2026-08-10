@@ -16,7 +16,11 @@ use App\Observers\CategoryCacheObserver;
 use App\Observers\OrderAnalyticsObserver;
 use App\Observers\ProductStockObserver;
 use App\Observers\WishlistCacheObserver;
+use App\Security\HibpCircuitBreaker;
+use App\Security\ObservableUncompromisedVerifier;
 use App\Support\Branding;
+use Illuminate\Contracts\Validation\UncompromisedVerifier;
+use Illuminate\Http\Client\Factory as HttpFactory;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Lang;
 use Illuminate\Support\Facades\Log;
@@ -33,7 +37,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->singleton(HibpCircuitBreaker::class, function ($app): HibpCircuitBreaker {
+            return new HibpCircuitBreaker($app->make('cache.store'));
+        });
     }
 
     /**
@@ -41,6 +47,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        $this->overrideUncompromisedVerifier();
+
         Paginator::useTailwind();
 
         Lang::handleMissingKeysUsing(function (string $key, array $replace, string $locale, bool $fallback): string {
@@ -95,6 +103,32 @@ class AppServiceProvider extends ServiceProvider
      * provider boots. Long-running workers and admin save redirects can
      * otherwise keep a stale empty logo URL while /brand/logo serves correctly.
      *
+     * Point Password::defaults()->uncompromised() at our verifier instead of
+     * Laravel's NotPwnedVerifier. Rules\Password resolves this contract from the
+     * container on every check, so all seven password flows are covered without
+     * editing a call site.
+     *
+     * ValidationServiceProvider is deferred and also binds this contract, so a
+     * plain singleton() in register() gets overwritten the first time anything
+     * resolves 'validator'. Forcing that provider to load first marks it as
+     * loaded, after which it never registers again and our binding is the last
+     * word.
+     */
+    private function overrideUncompromisedVerifier(): void
+    {
+        if ($this->app->isDeferredService(UncompromisedVerifier::class)) {
+            $this->app->loadDeferredProvider(UncompromisedVerifier::class);
+        }
+
+        $this->app->singleton(UncompromisedVerifier::class, function ($app): UncompromisedVerifier {
+            return new ObservableUncompromisedVerifier(
+                $app->make(HttpFactory::class),
+                $app->make(HibpCircuitBreaker::class),
+            );
+        });
+    }
+
+    /**
      * @return array<string, mixed>
      */
     private function systemSettings(): array
