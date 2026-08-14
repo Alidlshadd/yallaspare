@@ -71,6 +71,30 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(10)->by($request->user()?->id ?: $request->ip());
         });
 
+        // Web counterparts of the mobile-* limiters below. They are deliberately
+        // looser: carrier-grade NAT is common in this market, so a whole
+        // neighbourhood can share one address, and a browser form re-POSTs on
+        // every validation failure where the API client would not.
+        RateLimiter::for('auth-register', function (Request $request) {
+            return Limit::perMinute(10)->by($request->ip());
+        });
+
+        // Two limits: tight per address so one mailbox cannot be flooded, looser
+        // per IP so someone spraying many addresses still gets stopped.
+        RateLimiter::for('auth-password-email', function (Request $request) {
+            return [
+                Limit::perMinute(3)->by(strtolower((string) $request->input('email')).'|'.$request->ip()),
+                Limit::perMinute(10)->by($request->ip()),
+            ];
+        });
+
+        // Submitting the new password sends no mail and needs a valid token, so
+        // the only job here is to bound automation. Kept generous because the
+        // password rules reject often enough that retries are normal.
+        RateLimiter::for('auth-password-reset', function (Request $request) {
+            return Limit::perMinute(10)->by($request->ip());
+        });
+
         RateLimiter::for('mobile-lookup', function (Request $request) {
             return Limit::perMinute(20)->by($request->user()?->id ?: $request->ip());
         });
