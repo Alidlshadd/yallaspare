@@ -116,11 +116,18 @@ Alpine.data('passwordField', (metLabel, unmetLabel, useLabel) => ({
 
     suggestionLabel(password) { return `${this._useLabel}: ${password}`; },
 
-    ruleClass(met) { return met ? 'text-emerald-400' : 'text-slate-400'; },
+    // These supply the colour outright rather than layering over a static one.
+    // Both states would otherwise sit in the class list at once and the
+    // stylesheet order, not the binding, would decide which of them wins.
+    ruleClass(met) {
+        return met
+            ? 'text-emerald-600 dark:text-emerald-400'
+            : 'text-slate-500 dark:text-slate-400';
+    },
     markClass(met) {
         return met
-            ? 'border-emerald-500 bg-emerald-500 text-white'
-            : 'border-slate-500 text-transparent';
+            ? 'border-emerald-600 bg-emerald-600 text-white dark:border-emerald-500 dark:bg-emerald-500'
+            : 'border-slate-400 text-transparent dark:border-slate-500';
     },
     ruleState(met) { return met ? this._metLabel : this._unmetLabel; },
 }));
