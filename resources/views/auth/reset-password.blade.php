@@ -35,36 +35,10 @@
             <x-input-error :messages="$errors->get('email')" class="mt-2 text-sm text-red-400" />
         </div>
 
-        <div>
-            <x-input-label for="password" :value="__('Password')" class="text-sm font-medium text-slate-300" />
-            <x-password-input
-                id="password"
-                container-class="mt-2"
-                class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition duration-200 focus:border-red-500 focus:ring-red-500 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100 dark:placeholder:text-slate-500"
-                name="password"
-                required
-                autocomplete="new-password"
-                placeholder="{{ __('Enter a new password') }}"
-            />
-            <p class="mt-2 text-xs leading-5 text-slate-400" id="password-rule-help">
-                {{ __('Use at least 8 characters, including letters and a number.') }}
-            </p>
-            <x-input-error :messages="$errors->get('password')" class="mt-2 text-sm text-red-400" />
-        </div>
-
-        <div>
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" class="text-sm font-medium text-slate-300" />
-            <x-password-input
-                id="password_confirmation"
-                container-class="mt-2"
-                class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition duration-200 focus:border-red-500 focus:ring-red-500 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100 dark:placeholder:text-slate-500"
-                name="password_confirmation"
-                required
-                autocomplete="new-password"
-                placeholder="{{ __('Repeat the new password') }}"
-            />
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2 text-sm text-red-400" />
-        </div>
+        <x-password-create-field
+            :placeholder="__('Enter a new password')"
+            :confirm-placeholder="__('Repeat the new password')"
+        />
 
         <button
             type="submit"

@@ -37,7 +37,7 @@ return [
     'current_password' => 'وشەی نهێنی ئێستا',
     'new_password' => 'وشەی نهێنی نوێ',
     'confirm_password' => 'دووپاتکردنەوەی وشەی نهێنی',
-    'password_rules' => 'لانیکەم 8 پیت.',
+    'password_rules' => 'لانیکەم 8 پیت، کە پیت و ژمارەی تێدابێت.',
     'update_password' => 'نوێکردنەوەی وشەی نهێنی',
     'profile_updated' => 'پرۆفایل بە سەرکەوتوویی نوێکرایەوە.',
     'password_updated' => 'وشەی نهێنی بە سەرکەوتوویی نوێکرایەوە.',

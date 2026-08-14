@@ -8,6 +8,7 @@
 <span
     class="{{ trim('relative block ' . $containerClass) }}"
     x-data="passwordInput(@js($showLabel), @js($hideLabel))"
+    @password-applied.window="reveal"
 >
     <input
         {{ $disabled ? 'disabled' : '' }}
