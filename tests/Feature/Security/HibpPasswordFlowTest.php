@@ -42,7 +42,7 @@ class HibpPasswordFlowTest extends TestCase
         // The suite runs as 'testing', where Password::defaults() deliberately
         // drops uncompromised(). Re-apply the production shape so these flows
         // exercise the verifier the way production does.
-        Password::defaults(fn () => Password::min(10)->letters()->numbers()->uncompromised());
+        Password::defaults(fn () => Password::min(8)->letters()->numbers()->uncompromised());
 
         $this->logged = [];
         Event::listen(MessageLogged::class, function (MessageLogged $event): void {

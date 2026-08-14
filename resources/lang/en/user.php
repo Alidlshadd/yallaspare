@@ -37,7 +37,7 @@ return [
     'current_password' => 'Current password',
     'new_password' => 'New password',
     'confirm_password' => 'Confirm password',
-    'password_rules' => 'Minimum 8 characters.',
+    'password_rules' => 'Minimum 8 characters, including letters and a number.',
     'update_password' => 'Update Password',
     'profile_updated' => 'Profile updated successfully.',
     'password_updated' => 'Password updated successfully.',

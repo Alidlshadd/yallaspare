@@ -22,8 +22,107 @@ Alpine.data('passwordInput', (showLabel, hideLabel) => ({
     _showLabel: showLabel,
     _hideLabel: hideLabel,
     toggle() { this.show = !this.show; },
+    reveal() { this.show = true; },
     get inputType() { return this.show ? 'text' : 'password'; },
     get toggleLabel() { return this.show ? this._hideLabel : this._showLabel; },
+}));
+
+// Password creation field: live rule checklist plus generated suggestions.
+// Must stay in sync with Password::min(8)->letters()->numbers() in AppServiceProvider.
+const PASSWORD_MIN_LENGTH = 8;
+
+// Confusable glyphs (I, l, O, o, 0, 1) are left out. A suggested password only
+// works if it survives being read off the screen and typed back in.
+const PASSWORD_UPPER = 'ABCDEFGHJKMNPQRSTUVWXYZ';
+const PASSWORD_LOWER = 'abcdefghijkmnpqrstuvwxyz';
+const PASSWORD_DIGITS = '23456789';
+
+function randomIndex(bound) {
+    // Rejection sampling: discard the tail that would make low indexes more
+    // likely than high ones. The bias is small at these bounds but free to avoid.
+    const limit = Math.floor(0x100000000 / bound) * bound;
+    const buffer = new Uint32Array(1);
+    let drawn;
+
+    do {
+        crypto.getRandomValues(buffer);
+        drawn = buffer[0];
+    } while (drawn >= limit);
+
+    return drawn % bound;
+}
+
+function randomChar(set) {
+    return set.charAt(randomIndex(set.length));
+}
+
+function generatePassword() {
+    // Seed one character of each class so every suggestion clears the rules,
+    // fill the rest from the full alphabet, then shuffle. The first character
+    // stays an uppercase letter — it keeps the shape familiar and readable.
+    const all = PASSWORD_UPPER + PASSWORD_LOWER + PASSWORD_DIGITS;
+    const tail = [randomChar(PASSWORD_LOWER), randomChar(PASSWORD_DIGITS), randomChar(PASSWORD_DIGITS)];
+
+    while (tail.length < PASSWORD_MIN_LENGTH - 1) {
+        tail.push(randomChar(all));
+    }
+
+    for (let i = tail.length - 1; i > 0; i--) {
+        const j = randomIndex(i + 1);
+        [tail[i], tail[j]] = [tail[j], tail[i]];
+    }
+
+    return randomChar(PASSWORD_UPPER) + tail.join('');
+}
+
+Alpine.data('passwordField', (metLabel, unmetLabel, useLabel) => ({
+    value: '',
+    confirmation: '',
+    suggestions: [],
+    _metLabel: metLabel,
+    _unmetLabel: unmetLabel,
+    _useLabel: useLabel,
+
+    init() { this.refreshSuggestions(); },
+
+    refreshSuggestions() {
+        this.suggestions = [generatePassword(), generatePassword(), generatePassword()];
+    },
+
+    applySuggestion(password) {
+        // Fill the confirmation too: making someone retype a string they did not
+        // choose is the fastest way to get them to abandon the suggestion.
+        this.value = password;
+        this.confirmation = password;
+        this.$dispatch('password-applied');
+    },
+
+    get hasSuggestions() { return this.suggestions.length > 0; },
+    get hasLength() { return this.value.length >= PASSWORD_MIN_LENGTH; },
+    get hasLetter() { return /[a-z]/i.test(this.value); },
+    get hasDigit() { return /[0-9]/.test(this.value); },
+
+    get lengthRuleClass() { return this.ruleClass(this.hasLength); },
+    get letterRuleClass() { return this.ruleClass(this.hasLetter); },
+    get digitRuleClass() { return this.ruleClass(this.hasDigit); },
+
+    get lengthMarkClass() { return this.markClass(this.hasLength); },
+    get letterMarkClass() { return this.markClass(this.hasLetter); },
+    get digitMarkClass() { return this.markClass(this.hasDigit); },
+
+    get lengthRuleState() { return this.ruleState(this.hasLength); },
+    get letterRuleState() { return this.ruleState(this.hasLetter); },
+    get digitRuleState() { return this.ruleState(this.hasDigit); },
+
+    suggestionLabel(password) { return `${this._useLabel}: ${password}`; },
+
+    ruleClass(met) { return met ? 'text-emerald-400' : 'text-slate-400'; },
+    markClass(met) {
+        return met
+            ? 'border-emerald-500 bg-emerald-500 text-white'
+            : 'border-slate-500 text-transparent';
+    },
+    ruleState(met) { return met ? this._metLabel : this._unmetLabel; },
 }));
 
 Alpine.data('mobileNav', () => ({
