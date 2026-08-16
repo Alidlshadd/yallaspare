@@ -30,7 +30,7 @@
                     fallback-class="inline-flex h-full w-full items-center justify-center"
                     fallback-text-class="text-[11px] font-semibold tracking-[0.18em] text-white"
                 />
-                <span class="app-logo-text">{{ $brand }}</span>
+                <x-brand-wordmark :brand="$brand" class="app-logo-text" />
             </a>
 
             <div class="justify-self-end">
