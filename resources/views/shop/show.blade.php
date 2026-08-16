@@ -17,6 +17,30 @@
         ->map(fn ($item) => is_array($item) ? ($item['name'] ?? reset($item)) : $item)
         ->filter()
         ->values();
+    $vehicleFitments = $product->relationLoaded('vehicleFitments')
+        ? $product->vehicleFitments
+            ->map(function ($fitment) {
+                $yearFrom = $fitment->year_from ? (int) $fitment->year_from : null;
+                $yearTo = $fitment->year_to ? (int) $fitment->year_to : null;
+                $yearLabel = match (true) {
+                    $yearFrom !== null && $yearTo !== null && $yearFrom === $yearTo => (string) $yearFrom,
+                    $yearFrom !== null && $yearTo !== null => $yearFrom.'–'.$yearTo,
+                    $yearFrom !== null => $yearFrom.'+',
+                    $yearTo !== null => '≤ '.$yearTo,
+                    default => __('Any year'),
+                };
+
+                return [
+                    'brand' => (string) ($fitment->brand?->name ?: __('Any brand')),
+                    'model' => (string) ($fitment->model?->name ?: __('Any model')),
+                    'years' => $yearLabel,
+                    'engine' => (string) ($fitment->engine ?: __('Any engine')),
+                    'notes' => trim((string) $fitment->notes),
+                ];
+            })
+            ->unique(fn (array $fitment) => implode('|', $fitment))
+            ->values()
+        : collect();
 
     $pricing = $product->pricingFor(auth()->user());
     $currentPrice = (float) $pricing['price'];
@@ -177,9 +201,30 @@
                         </div>
                     </div>
 
-                    <section class="rounded-2xl border border-slate-200/80 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
+                    <section data-product-compatibility class="rounded-2xl border border-slate-200/80 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
                         <p class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{{ __('Compatibility') }}</p>
-                        @if ($compatibleModels->isNotEmpty())
+                        @if ($vehicleFitments->isNotEmpty())
+                            <div class="mt-3 grid gap-2 sm:grid-cols-2">
+                                @foreach ($vehicleFitments as $fitment)
+                                    <article data-product-fitment class="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-950">
+                                        <p class="text-sm font-semibold text-slate-900 dark:text-white">
+                                            {{ $fitment['brand'] }} / {{ $fitment['model'] }}
+                                        </p>
+                                        <div class="mt-2 flex flex-wrap gap-1.5">
+                                            <span class="inline-flex rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[11px] font-semibold text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300">
+                                                {{ $fitment['years'] }}
+                                            </span>
+                                            <span class="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-800 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-300">
+                                                {{ $fitment['engine'] }}
+                                            </span>
+                                        </div>
+                                        @if ($fitment['notes'] !== '')
+                                            <p class="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">{{ $fitment['notes'] }}</p>
+                                        @endif
+                                    </article>
+                                @endforeach
+                            </div>
+                        @elseif ($compatibleModels->isNotEmpty())
                             <div class="mt-3 flex flex-wrap gap-2">
                                 @foreach ($compatibleModels->take(8) as $model)
                                     <span class="inline-flex rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">{{ $model }}</span>

@@ -38,6 +38,20 @@ class ShopController extends Controller
                 ->latest('id')
                 ->take(8);
         }
+        if (DbSchema::hasTable('product_vehicle_fitments')) {
+            $productRelations['vehicleFitments'] = fn ($query) => $query
+                ->with(['brand:id,name', 'model:id,name,vehicle_brand_id'])
+                ->orderBy('vehicle_brand_id')
+                ->orderBy('vehicle_model_id')
+                ->orderBy('year_from');
+        }
+        if (DbSchema::hasTable('product_vehicle_fitments')) {
+            $productRelations['vehicleFitments'] = fn ($query) => $query
+                ->with(['brand:id,name', 'model:id,name,vehicle_brand_id'])
+                ->orderBy('vehicle_brand_id')
+                ->orderBy('vehicle_model_id')
+                ->orderBy('year_from');
+        }
 
         $product->load($productRelations);
         $productViews->record($request, $product);
