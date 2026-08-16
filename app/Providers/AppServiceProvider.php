@@ -156,12 +156,11 @@ class AppServiceProvider extends ServiceProvider
         $settings['currency_label'] = $settings['currency_code'] !== '' ? $settings['currency_code'] : $settings['currency_symbol'];
         $settings['currency_decimals'] = strtoupper($settings['currency_code']) === 'IQD' ? 0 : 2;
         $settings['site_name'] = (string) ($settings['site_name'] ?? config('app.name', 'Laravel'));
-        $settings['site_logo_url'] = Branding::logoUrlFromValue((string) ($settings['site_logo'] ?? ''));
         $settings['site_logo_version'] = (string) ($settings['site_logo_version'] ?? '');
-        if ($settings['site_logo_url'] !== null && $settings['site_logo_version'] !== '') {
-            $separator = str_contains($settings['site_logo_url'], '?') ? '&' : '?';
-            $settings['site_logo_url'] .= $separator.'sv='.urlencode($settings['site_logo_version']);
-        }
+        $settings['site_logo_url'] = Branding::versionedLogoUrl(
+            (string) ($settings['site_logo'] ?? ''),
+            $settings['site_logo_version']
+        );
 
         return $settings;
     }

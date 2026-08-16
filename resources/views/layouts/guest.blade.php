@@ -25,7 +25,14 @@
         <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
             <div>
                 <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
+                    <x-brand-mark
+                        :logo-url="$systemSettings['site_logo_url'] ?? null"
+                        :brand="$systemSettings['site_name'] ?? 'YallaSpare'"
+                        wrapper-class="app-logo-mark"
+                        img-class="h-20 w-auto object-contain"
+                        fallback-class="inline-flex h-20 w-20 items-center justify-center rounded-lg bg-slate-800"
+                        fallback-text-class="text-lg font-semibold text-white"
+                    />
                 </a>
             </div>
 

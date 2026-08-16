@@ -14,17 +14,26 @@
             ? $siteLogoUrl
             : url($siteLogoUrl))
         : null;
-    $socialImageUrl = asset('icons/yallaspare-og-preview.png') . '?v=' . $iconVersion;
+    // A square logo is not a 1200x630 banner, so when the admin has set one the
+    // card drops to the small format rather than declaring dimensions it hasn't.
+    $socialImageUrl = $siteLogoIconUrl ?: asset('icons/yallaspare-og-preview.png') . '?v=' . $iconVersion;
+    $socialCardType = $siteLogoIconUrl ? 'summary' : 'summary_large_image';
 @endphp
-<link rel="icon" href="{{ asset('favicon.ico') }}?v={{ $iconVersion }}" sizes="any">
-<link rel="icon" type="image/png" href="{{ asset('favicon.png') }}?v={{ $iconVersion }}">
-<link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}?v={{ $iconVersion }}">
-<link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}?v={{ $iconVersion }}">
 @if($siteLogoIconUrl)
-    <link rel="icon" type="image/png" href="{{ $siteLogoIconUrl }}">
+    {{-- One source for every icon slot. The packaged favicons are skipped
+         entirely: left in place they declare explicit sizes, and a browser
+         picks those over a sizeless link, which is why the tab kept the old
+         mark after an upload. --}}
+    <link rel="icon" href="{{ $siteLogoIconUrl }}" sizes="any">
+    <link rel="apple-touch-icon" href="{{ $siteLogoIconUrl }}">
+@else
+    <link rel="icon" href="{{ asset('favicon.ico') }}?v={{ $iconVersion }}" sizes="any">
+    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}?v={{ $iconVersion }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}?v={{ $iconVersion }}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}?v={{ $iconVersion }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}?v={{ $iconVersion }}">
 @endif
-<link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}?v={{ $iconVersion }}">
-<link rel="manifest" href="{{ asset('site.webmanifest') }}?v={{ $iconVersion }}">
+<link rel="manifest" href="{{ route('brand.manifest') }}">
 <meta name="theme-color" content="#0f172a">
 <meta property="og:site_name" content="{{ $siteName }}">
 <meta property="og:type" content="website">
@@ -32,10 +41,12 @@
 <meta property="og:description" content="{{ $description }}">
 <meta property="og:url" content="{{ url()->current() }}">
 <meta property="og:image" content="{{ $socialImageUrl }}">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
+@unless($siteLogoIconUrl)
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+@endunless
 <meta property="og:image:alt" content="{{ $siteName }} logo">
-<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:card" content="{{ $socialCardType }}">
 <meta name="twitter:title" content="{{ $metaTitle }}">
 <meta name="twitter:description" content="{{ $description }}">
 <meta name="twitter:image" content="{{ $socialImageUrl }}">
