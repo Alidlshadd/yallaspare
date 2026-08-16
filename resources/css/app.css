@@ -413,11 +413,13 @@
             min-width: 0;
         }
 
+        /* The phone header has no room for the wordmark: it gets 44px against
+           the 72px it wants, so it truncated to "Yal…" and the orange half of
+           the brand never appeared. The mark alone reads better than a clipped
+           name, and the link keeps its accessible name from the logo's alt
+           text. Matches the top navigation, which already hides it below sm. */
         .user-shell .app-logo-text {
-            max-width: min(42vw, 11rem);
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            display: none;
         }
     }
 
