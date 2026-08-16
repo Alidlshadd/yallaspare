@@ -46,6 +46,26 @@ class Branding
         return null;
     }
 
+    /**
+     * The logo URL with the admin's version stamp appended, so a re-upload
+     * busts every cache that holds the old file — browser tabs and installed
+     * home-screen icons included.
+     */
+    public static function versionedLogoUrl(?string $rawValue, ?string $version): ?string
+    {
+        $url = self::logoUrlFromValue($rawValue);
+        if ($url === null) {
+            return null;
+        }
+
+        $version = trim((string) $version);
+        if ($version === '') {
+            return $url;
+        }
+
+        return $url.(str_contains($url, '?') ? '&' : '?').'sv='.urlencode($version);
+    }
+
     public static function isSafeLogoPath(?string $path): bool
     {
         if ($path === null || $path === '') {

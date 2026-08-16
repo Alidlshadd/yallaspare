@@ -142,7 +142,7 @@
                             <x-brand-mark
                                 :logo-url="$brandLogoUrl"
                                 :brand="$brand"
-                                wrapper-class="app-logo-mark logo-remove-white-bg"
+                                wrapper-class="app-logo-mark"
                                 img-class="h-full w-auto object-contain"
                                 fallback-class="inline-flex h-full w-full items-center justify-center"
                                 fallback-text-class="text-[11px] font-semibold tracking-[0.18em] text-white"
@@ -225,7 +225,7 @@
                                 <x-brand-mark
                                     :logo-url="$brandLogoUrl"
                                     :brand="$brand"
-                                    wrapper-class="app-logo-mark logo-remove-white-bg"
+                                    wrapper-class="app-logo-mark"
                                     img-class="h-full w-auto object-contain"
                                     fallback-class="inline-flex h-full w-full items-center justify-center"
                                     fallback-text-class="text-[11px] font-semibold tracking-[0.18em] text-white"

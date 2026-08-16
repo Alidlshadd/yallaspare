@@ -127,10 +127,11 @@
         background: transparent;
     }
 
-    .app-logo-dark .logo-remove-white-bg img {
-        mix-blend-mode: multiply;
-        filter: brightness(1.16) contrast(1.08);
-    }
+    /* No blend mode here on purpose. Knocking out a white box with
+       mix-blend-mode: multiply only works over a light backdrop — multiply
+       always darkens, so over the dark header it erased the logo itself.
+       SettingController::storeLogoWithTransparentBackground() already strips a
+       white background at upload time, which is where it belongs. */
 
     .app-logo-text {
         font-size: 18px;

@@ -129,6 +129,47 @@ Route::get('/brand/logo', function () {
     );
 })->name('brand.logo');
 
+// The packaged site.webmanifest points at fixed icon files, so an admin logo
+// change never reached an installed home-screen shortcut. This serves the same
+// document with the current logo instead.
+Route::get('/brand/manifest.webmanifest', function () {
+    $settings = Setting::allWithDefaults();
+    $name = trim((string) ($settings['site_name'] ?? '')) ?: (string) config('app.name', 'Yalla Spare');
+
+    $logoUrl = Branding::versionedLogoUrl(
+        (string) ($settings['site_logo'] ?? ''),
+        (string) ($settings['site_logo_version'] ?? '')
+    );
+
+    if ($logoUrl !== null) {
+        $mimeType = Branding::safeLogoMimeType(
+            Branding::storagePathFromValue((string) ($settings['site_logo'] ?? ''))
+        );
+
+        // 'any' rather than a pixel size: the upload is whatever the admin gave
+        // us, and claiming 192x192 for a file that isn't would be a lie.
+        $icons = [[
+            'src' => url($logoUrl),
+            'sizes' => 'any',
+            'type' => $mimeType ?? 'image/png',
+        ]];
+    } else {
+        $icons = [
+            ['src' => url('/android-chrome-192x192.png'), 'sizes' => '192x192', 'type' => 'image/png'],
+            ['src' => url('/android-chrome-512x512.png'), 'sizes' => '512x512', 'type' => 'image/png'],
+        ];
+    }
+
+    return response()->json([
+        'name' => $name,
+        'short_name' => $name,
+        'icons' => $icons,
+        'theme_color' => '#0f172a',
+        'background_color' => '#0f172a',
+        'display' => 'standalone',
+    ], 200, ['Content-Type' => 'application/manifest+json']);
+})->name('brand.manifest');
+
 Route::post('/cart/{product}', [CartController::class, 'add'])->middleware('throttle:commerce-write')->name('cart.add');
 
 Route::middleware(['auth', 'verified', 'customer.area', 'customer.phone', 'customer.phone.verified', 'user.2fa'])->group(function () {
