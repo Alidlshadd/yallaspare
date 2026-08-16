@@ -205,7 +205,8 @@ const initVehicleFinder = () => {
     document.querySelectorAll('[data-vehicle-finder]').forEach((form) => {
         const brandSelect = form.querySelector('[data-vehicle-brand]');
         const modelSelect = form.querySelector('[data-vehicle-model]');
-        const vehicleSelect = form.querySelector('[data-vehicle-option]');
+        const engineSelect = form.querySelector('[data-vehicle-engine]');
+        const yearSelect = form.querySelector('[data-vehicle-year]');
 
         if (!brandSelect || !modelSelect) {
             return;
@@ -214,28 +215,29 @@ const initVehicleFinder = () => {
         const modelMap = JSON.parse(form.dataset.modelMap || '{}');
         const vehicleOptionMap = JSON.parse(form.dataset.vehicleOptionMap || '{}');
         const selectedModel = modelSelect.value;
-        let selectedVehicle = vehicleSelect?.value || '';
+        let selectedEngine = engineSelect?.value || '';
+        let selectedYear = yearSelect?.value || '';
         const modelPlaceholder = form.dataset.modelPlaceholder || 'Model';
         const allModelsPlaceholder = form.dataset.allModelsPlaceholder || 'Select brand first';
         const noModelsPlaceholder = form.dataset.noModelsPlaceholder || 'No models for this brand yet';
-        const vehiclePlaceholder = form.dataset.vehiclePlaceholder || 'Engine / Year';
+        const enginePlaceholder = form.dataset.enginePlaceholder || 'Any engine';
+        const yearPlaceholder = form.dataset.yearPlaceholder || 'Any year';
         const selectModelPlaceholder = form.dataset.selectModelPlaceholder || 'Select model first';
-        const noVehicleOptionsPlaceholder = form.dataset.noVehicleOptionsPlaceholder || 'No engines or years for this model yet';
-        const engineGroupLabel = form.dataset.engineGroupLabel || 'Engines';
-        const yearGroupLabel = form.dataset.yearGroupLabel || 'Years';
+        const noEnginesPlaceholder = form.dataset.noEnginesPlaceholder || 'No engines for this model yet';
+        const noYearsPlaceholder = form.dataset.noYearsPlaceholder || 'No years for this model yet';
         const hasStructuredModels = Object.keys(modelMap).length > 0;
         const hasStructuredVehicleOptions = Object.keys(vehicleOptionMap).length > 0;
 
-        const appendVehicleOption = (container, value, label) => {
+        const appendOption = (container, value, selectedValue) => {
             const option = document.createElement('option');
             option.value = value;
-            option.textContent = label;
-            option.selected = value === selectedVehicle || label === selectedVehicle;
+            option.textContent = value;
+            option.selected = String(value) === String(selectedValue);
             container.appendChild(option);
         };
 
         const setVehicleOptions = () => {
-            if (!vehicleSelect || !hasStructuredVehicleOptions) {
+            if ((!engineSelect && !yearSelect) || !hasStructuredVehicleOptions) {
                 return;
             }
 
@@ -247,31 +249,33 @@ const initVehicleFinder = () => {
             const yearTo = Number(metadata.year_to || 0);
             const hasYears = yearFrom >= 1900 && yearTo >= yearFrom;
 
-            vehicleSelect.innerHTML = '';
-            const placeholder = document.createElement('option');
-            placeholder.value = '';
-            placeholder.textContent = !model
-                ? selectModelPlaceholder
-                : (engines.length > 0 || hasYears ? vehiclePlaceholder : noVehicleOptionsPlaceholder);
-            vehicleSelect.appendChild(placeholder);
-
-            if (engines.length > 0) {
-                const engineGroup = document.createElement('optgroup');
-                engineGroup.label = engineGroupLabel;
-                engines.forEach((engine) => appendVehicleOption(engineGroup, `engine:${engine}`, engine));
-                vehicleSelect.appendChild(engineGroup);
+            if (engineSelect) {
+                engineSelect.innerHTML = '';
+                const enginePlaceholderOption = document.createElement('option');
+                enginePlaceholderOption.value = '';
+                enginePlaceholderOption.textContent = !model
+                    ? selectModelPlaceholder
+                    : (engines.length > 0 ? enginePlaceholder : noEnginesPlaceholder);
+                engineSelect.appendChild(enginePlaceholderOption);
+                engines.forEach((engine) => appendOption(engineSelect, engine, selectedEngine));
+                engineSelect.disabled = !model || engines.length === 0;
             }
 
-            if (hasYears) {
-                const yearGroup = document.createElement('optgroup');
-                yearGroup.label = yearGroupLabel;
-                for (let year = yearTo; year >= yearFrom; year -= 1) {
-                    appendVehicleOption(yearGroup, `year:${year}`, String(year));
+            if (yearSelect) {
+                yearSelect.innerHTML = '';
+                const yearPlaceholderOption = document.createElement('option');
+                yearPlaceholderOption.value = '';
+                yearPlaceholderOption.textContent = !model
+                    ? selectModelPlaceholder
+                    : (hasYears ? yearPlaceholder : noYearsPlaceholder);
+                yearSelect.appendChild(yearPlaceholderOption);
+                if (hasYears) {
+                    for (let year = yearTo; year >= yearFrom; year -= 1) {
+                        appendOption(yearSelect, String(year), selectedYear);
+                    }
                 }
-                vehicleSelect.appendChild(yearGroup);
+                yearSelect.disabled = !model || !hasYears;
             }
-
-            vehicleSelect.disabled = !model || (engines.length === 0 && !hasYears);
         };
 
         const setOptions = () => {
@@ -306,14 +310,18 @@ const initVehicleFinder = () => {
 
         brandSelect.addEventListener('change', () => {
             modelSelect.value = '';
-            selectedVehicle = '';
-            if (vehicleSelect) vehicleSelect.value = '';
+            selectedEngine = '';
+            selectedYear = '';
+            if (engineSelect) engineSelect.value = '';
+            if (yearSelect) yearSelect.value = '';
             setOptions();
         });
 
         modelSelect.addEventListener('change', () => {
-            selectedVehicle = '';
-            if (vehicleSelect) vehicleSelect.value = '';
+            selectedEngine = '';
+            selectedYear = '';
+            if (engineSelect) engineSelect.value = '';
+            if (yearSelect) yearSelect.value = '';
             setVehicleOptions();
         });
 

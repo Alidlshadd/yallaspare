@@ -32,6 +32,8 @@ class ShopVehicleFilterTest extends TestCase
         $this->vehicle('KGM', 'Rexton', 2013, 2017, ['3.2'], $brand);
 
         $response = $this->get(route('shop.index'))->assertOk();
+        $response->assertSee('name="engine"', false);
+        $response->assertSee('name="year"', false);
 
         preg_match("/data-vehicle-option-map='([^']+)'/", $response->getContent(), $matches);
         $this->assertArrayHasKey(1, $matches);
@@ -59,7 +61,7 @@ class ShopVehicleFilterTest extends TestCase
         $this->get(route('shop.index', [
             'brand' => 'KGM',
             'model' => 'Actyon',
-            'vehicle' => 'engine:2.3',
+            'engine' => '2.3',
         ]))
             ->assertOk()
             ->assertSee('Correct Actyon Part')
@@ -78,7 +80,7 @@ class ShopVehicleFilterTest extends TestCase
         $this->get(route('shop.index', [
             'brand' => 'KGM',
             'model' => 'Actyon',
-            'vehicle' => 'year:2009',
+            'year' => '2009',
         ]))
             ->assertOk()
             ->assertSee('Actyon 2009 Part')

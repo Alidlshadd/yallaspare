@@ -95,11 +95,11 @@
                     data-model-placeholder="{{ __('Model') }}"
                     data-all-models-placeholder="{{ __('Select brand first') }}"
                     data-no-models-placeholder="{{ __('No models for this brand yet') }}"
-                    data-vehicle-placeholder="{{ __('Engine / Year') }}"
+                    data-engine-placeholder="{{ __('Any engine') }}"
+                    data-year-placeholder="{{ __('Any year') }}"
                     data-select-model-placeholder="{{ __('Select model first') }}"
-                    data-no-vehicle-options-placeholder="{{ __('No engines or years for this model yet') }}"
-                    data-engine-group-label="{{ __('Engines') }}"
-                    data-year-group-label="{{ __('Years') }}"
+                    data-no-engines-placeholder="{{ __('No engines for this model yet') }}"
+                    data-no-years-placeholder="{{ __('No years for this model yet') }}"
                 >
                     <p class="text-sm font-semibold text-white">{{ __('Find parts for your vehicle') }}</p>
 
@@ -126,17 +126,26 @@
                     </select>
 
                     <select
-                        name="vehicle"
-                        data-vehicle-option
+                        name="engine"
+                        data-vehicle-engine
                         @disabled($vehicleOptionsByModel !== [])
                         class="w-full rounded-xl border-0 bg-white/95 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:ring-4 focus:ring-white/30 disabled:cursor-not-allowed disabled:opacity-60"
                     >
-                        <option value="">{{ __('Engine / Year') }}</option>
+                        <option value="">{{ __('Any engine') }}</option>
                         @if($vehicleOptionsByModel === [])
                             @foreach ($engineOptions as $option)
                                 <option value="{{ $option }}">{{ $option }}</option>
                             @endforeach
                         @endif
+                    </select>
+
+                    <select
+                        name="year"
+                        data-vehicle-year
+                        disabled
+                        class="w-full rounded-xl border-0 bg-white/95 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:ring-4 focus:ring-white/30 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                        <option value="">{{ __('Any year') }}</option>
                     </select>
 
                     <button

@@ -216,10 +216,13 @@ class ShopController extends Controller
 
         $brand = trim((string) $request->input('brand', ''));
         $model = trim((string) $request->input('model', ''));
-        $vehicle = trim((string) $request->input('vehicle', ''));
-        if (($brand !== '' || $model !== '' || $vehicle !== '') && DbSchema::hasTable('product_vehicle_fitments')) {
-            $year = $this->extractVehicleYear($vehicle);
-            $engine = $this->extractVehicleEngine($vehicle);
+        $legacyVehicle = trim((string) $request->input('vehicle', ''));
+        $engine = trim((string) $request->input('engine', ''));
+        $yearInput = trim((string) $request->input('year', ''));
+        $engine = $engine !== '' ? $engine : $this->extractVehicleEngine($legacyVehicle);
+        $year = $this->extractVehicleYear($yearInput !== '' ? $yearInput : $legacyVehicle);
+
+        if (($brand !== '' || $model !== '' || $engine !== '' || $year !== null) && DbSchema::hasTable('product_vehicle_fitments')) {
 
             // Keep every selected vehicle constraint on the same fitment row.
             // A product may fit several cars, so separate whereHas clauses could
@@ -248,18 +251,21 @@ class ShopController extends Controller
                     });
                 }
             });
-        } elseif ($brand !== '' || $model !== '' || $vehicle !== '') {
+        } elseif ($brand !== '' || $model !== '' || $engine !== '' || $year !== null) {
             // Legacy fallback for installations that have not created the
             // structured fitment table yet.
-            $productsQuery->where(function ($query) use ($brand, $model, $vehicle): void {
+            $productsQuery->where(function ($query) use ($brand, $model, $engine, $year): void {
                 if ($brand !== '') {
                     SqlSafe::whereLike($query, 'brand', $brand);
                 }
                 if ($model !== '') {
                     SqlSafe::whereLike($query, 'compatible_models', $model);
                 }
-                if ($vehicle !== '') {
-                    SqlSafe::whereLike($query, 'compatible_models', $vehicle);
+                if ($engine !== '') {
+                    SqlSafe::whereLike($query, 'compatible_models', $engine);
+                }
+                if ($year !== null) {
+                    SqlSafe::whereLike($query, 'compatible_models', (string) $year);
                 }
             });
         }
@@ -305,7 +311,8 @@ class ShopController extends Controller
             'sort' => $sort,
             'brand' => $brand,
             'model' => $model,
-            'vehicle' => $vehicle,
+            'engine' => $engine,
+            'year' => $year,
             'brandOptions' => $vehicleFilters['brandOptions'],
             'modelOptions' => $vehicleFilters['modelOptions'],
             'engineOptions' => $vehicleFilters['engineOptions'],
