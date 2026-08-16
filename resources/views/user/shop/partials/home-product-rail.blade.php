@@ -10,10 +10,16 @@
         'popular' => '⭐',
         default => '🔥',
     };
-    $railRibbonClass = match ($badge) {
-        'new' => 'hpr-ribbon-new',
-        'popular' => 'hpr-ribbon-popular',
+    $railBadgeClass = match ($badge) {
+        'new' => 'hpr-badge-new',
+        'popular' => 'hpr-badge-popular',
         default => '',
+    };
+    // Star for new arrivals, bars for popular, flame for best sellers.
+    $railBadgeIcon = match ($badge) {
+        'new' => 'M8 1.5l1.7 4.2 4.5.3-3.5 2.9 1.1 4.4L8 10.9l-3.8 2.4 1.1-4.4L1.8 6l4.5-.3z',
+        'popular' => 'M2 13h3V7H2zM6.5 13h3V3h-3zM11 13h3V9h-3z',
+        default => 'M8 1.8c1.6 2.3 1 3.6.2 4.7-.7 1-1.3 1.9-.6 3.3.3-1 1-1.6 1.6-2 .3 1.4 1.4 2 2.1 3 .7 1 .6 2.6-.6 3.6 3-.6 4.4-3 4-5.3-.3-1.9-1.7-3-2.4-4.4C11.4 3 11.5 1.6 8 1.8',
     };
 @endphp
 
@@ -66,7 +72,10 @@
                         @endphp
                         <article class="hpr-card group">
                             <div class="relative h-40 overflow-hidden bg-slate-100 p-4 dark:bg-slate-800/80">
-                                <span class="hpr-ribbon {{ $railRibbonClass }}">
+                                <span class="hpr-badge {{ $railBadgeClass }}">
+                                    <svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true">
+                                        <path d="{{ $railBadgeIcon }}" />
+                                    </svg>
                                     {{ $railBadgeLabel }}
                                 </span>
 
