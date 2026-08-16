@@ -11,6 +11,8 @@ use App\Support\SqlSafe;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
@@ -22,7 +24,7 @@ class VehicleFitmentController extends Controller
         $search = trim((string) $request->query('search', ''));
         $brandFilter = (int) $request->query('brand', 0);
         $brands = VehicleBrand::query()
-            ->with('models:id,vehicle_brand_id,name')
+            ->with('models.engineTypes:id,vehicle_model_id,name')
             ->orderBy('name')
             ->get();
 
@@ -75,6 +77,7 @@ class VehicleFitmentController extends Controller
             'stats' => [
                 'brands' => $brands->count(),
                 'models' => $brands->sum(fn ($brand) => $brand->models->count()),
+                'engine_types' => $brands->sum(fn ($brand) => $brand->models->sum(fn ($model) => $model->engineTypes->count())),
                 'fitments' => ProductVehicleFitment::query()->count(),
                 'covered_products' => ProductVehicleFitment::query()->distinct('product_id')->count('product_id'),
                 'total_products' => Product::query()->where('is_active', true)->count(),
@@ -142,15 +145,32 @@ class VehicleFitmentController extends Controller
                 'max:120',
                 Rule::unique('vehicle_models', 'name')->where(fn ($query) => $query->where('vehicle_brand_id', $request->input('vehicle_brand_id'))),
             ],
+            'engine_types' => ['nullable', 'array'],
+            'engine_types.*' => ['nullable', 'string', 'max:500'],
+            'engine_types_text' => ['nullable', 'string', 'max:2000'],
+            'production_start_year' => ['nullable', 'integer', 'min:1900', 'max:2100'],
+            'production_end_year' => ['nullable', 'integer', 'min:1900', 'max:2100', 'gte:production_start_year'],
         ]);
 
-        VehicleModel::query()->create([
-            'vehicle_brand_id' => (int) $data['vehicle_brand_id'],
-            'name' => trim((string) $data['name']),
-            'slug' => $this->uniqueModelSlug((int) $data['vehicle_brand_id'], (string) $data['name']),
-        ]);
+        $engineTypes = $this->validatedEngineTypes($data);
 
-        return back()->with('success', __('Vehicle model created.'));
+        DB::transaction(function () use ($data, $engineTypes): void {
+            $model = VehicleModel::query()->create([
+                'vehicle_brand_id' => (int) $data['vehicle_brand_id'],
+                'name' => trim((string) $data['name']),
+                'slug' => $this->uniqueModelSlug((int) $data['vehicle_brand_id'], (string) $data['name']),
+                'production_start_year' => $data['production_start_year'] ?? null,
+                'production_end_year' => $data['production_end_year'] ?? null,
+            ]);
+
+            $model->engineTypes()->createMany(
+                array_map(fn (string $name) => ['name' => $name], $engineTypes)
+            );
+        });
+
+        return back()->with('success', $engineTypes === []
+            ? __('Vehicle model created.')
+            : __('Vehicle model and engine types created.'));
     }
 
     public function updateBrand(Request $request, VehicleBrand $brand): RedirectResponse
@@ -179,13 +199,32 @@ class VehicleFitmentController extends Controller
                     ->where(fn ($query) => $query->where('vehicle_brand_id', $model->vehicle_brand_id))
                     ->ignore($model->id),
             ],
+            'engine_types' => ['nullable', 'array'],
+            'engine_types.*' => ['nullable', 'string', 'max:500'],
+            'engine_types_text' => ['nullable', 'string', 'max:2000'],
+            'production_start_year' => ['nullable', 'integer', 'min:1900', 'max:2100'],
+            'production_end_year' => ['nullable', 'integer', 'min:1900', 'max:2100', 'gte:production_start_year'],
         ]);
 
         $name = trim((string) $data['name']);
-        $model->update([
-            'name' => $name,
-            'slug' => $this->uniqueModelSlug((int) $model->vehicle_brand_id, $name, $model->id),
-        ]);
+        $shouldSyncEngineTypes = $request->exists('engine_types') || $request->exists('engine_types_text');
+        $engineTypes = $shouldSyncEngineTypes ? $this->validatedEngineTypes($data) : [];
+
+        DB::transaction(function () use ($data, $model, $name, $shouldSyncEngineTypes, $engineTypes): void {
+            $model->update([
+                'name' => $name,
+                'slug' => $this->uniqueModelSlug((int) $model->vehicle_brand_id, $name, $model->id),
+                'production_start_year' => $data['production_start_year'] ?? null,
+                'production_end_year' => $data['production_end_year'] ?? null,
+            ]);
+
+            if ($shouldSyncEngineTypes) {
+                $model->engineTypes()->delete();
+                $model->engineTypes()->createMany(
+                    array_map(fn (string $engineName) => ['name' => $engineName], $engineTypes)
+                );
+            }
+        });
 
         return back()->with('success', __('Vehicle model updated.'));
     }
@@ -273,5 +312,39 @@ class VehicleFitmentController extends Controller
         }
 
         return $slug;
+    }
+
+    /**
+     * Accept tag inputs as well as comma, semicolon, or newline-separated text.
+     *
+     * @param  array<string, mixed>  $data
+     * @return array<int, string>
+     */
+    private function validatedEngineTypes(array $data): array
+    {
+        $rawValues = array_merge(
+            is_array($data['engine_types'] ?? null) ? $data['engine_types'] : [],
+            isset($data['engine_types_text']) ? [(string) $data['engine_types_text']] : [],
+        );
+
+        $engineTypes = collect($rawValues)
+            ->flatMap(fn ($value) => preg_split('/[,;\r\n]+/u', (string) $value) ?: [])
+            ->map(fn ($value) => trim((string) $value))
+            ->filter()
+            ->unique(fn (string $value) => mb_strtolower($value))
+            ->values()
+            ->all();
+
+        Validator::make(
+            ['engine_types' => $engineTypes],
+            [
+                'engine_types' => ['array', 'max:20'],
+                'engine_types.*' => ['string', 'max:80'],
+            ],
+            [],
+            ['engine_types' => __('Engine Types')],
+        )->validate();
+
+        return $engineTypes;
     }
 }

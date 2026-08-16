@@ -31,11 +31,23 @@
         $brandModelMap = $brands
             ->mapWithKeys(fn ($brand) => [
                 (string) $brand->id => $brand->models
-                    ->map(fn ($model) => ['id' => (int) $model->id, 'name' => (string) $model->name])
+                    ->map(fn ($model) => [
+                        'id' => (int) $model->id,
+                        'name' => (string) $model->name,
+                        'engines' => $model->engineTypes->pluck('name')->values()->all(),
+                        'year_from' => $model->production_start_year ? (int) $model->production_start_year : null,
+                        'year_to' => $model->production_end_year ? (int) $model->production_end_year : null,
+                    ])
                     ->values()
                     ->all(),
             ])
             ->all();
+
+        $allEngineTypes = $brands
+            ->flatMap(fn ($brand) => $brand->models->flatMap(fn ($model) => $model->engineTypes->pluck('name')))
+            ->unique(fn ($engine) => mb_strtolower((string) $engine))
+            ->sort()
+            ->values();
 
         $openFitmentPanel = $errors->any() || old('product_id') !== null;
     @endphp
@@ -129,6 +141,22 @@
         .vf-model .edit:hover { color: #f59e0b; }
         .vf-edit-inline { display: inline-flex; align-items: center; gap: 4px; }
         .vf-edit-inline .vf-inp { height: 30px; font-size: 11.5px; padding: 0 9px; width: 140px; }
+        .vf-edit-inline .vf-engine-edit { width: 230px; }
+        .vf-edit-inline .vf-year-edit { width: 88px; }
+        .vf-model-stack { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 4px; }
+        .vf-engine-list { display: flex; flex-wrap: wrap; gap: 4px; padding-inline: 4px; }
+        .vf-engine-chip {
+            display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 999px;
+            background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412;
+            font-size: 9.5px; font-weight: 800; line-height: 1.25;
+        }
+        .dark .vf-engine-chip { background: rgba(245,158,11,.10); border-color: rgba(251,191,36,.28); color: #fbbf24; }
+        .vf-year-chip {
+            display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 999px;
+            background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8;
+            font-size: 9.5px; font-weight: 800; line-height: 1.25;
+        }
+        .dark .vf-year-chip { background: rgba(59,130,246,.10); border-color: rgba(96,165,250,.28); color: #93c5fd; }
 
         /* Buttons */
         .vf-btn {
@@ -167,6 +195,25 @@
         }
         .dark .vf-inp, .dark .vf-sel { background: #1e293b; border-color: #334155; color: #f1f5f9; }
         .dark .vf-inp:focus, .dark .vf-sel:focus { background: #0f172a; }
+        .vf-tagbox {
+            display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-height: 42px; padding: 6px 9px;
+            border: 1px solid #e2e8f0; border-radius: 10px; background: #f8fafc; cursor: text;
+        }
+        .vf-tagbox:focus-within { border-color: #fbbf24; background: #fff; box-shadow: 0 0 0 3px rgba(251,191,36,.25); }
+        .vf-tagbox input[data-engine-tag-input] {
+            flex: 1 1 130px; min-width: 110px; height: 26px; padding: 0 3px; border: 0; outline: none;
+            background: transparent; color: #0f172a; font-size: 12px; box-shadow: none;
+        }
+        .vf-tag {
+            display: inline-flex; align-items: center; gap: 5px; padding: 4px 7px 4px 9px; border-radius: 999px;
+            background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; font-size: 10.5px; font-weight: 800;
+        }
+        .vf-tag button { color: #c2410c; font-size: 14px; line-height: 1; }
+        .dark .vf-tagbox { background: #1e293b; border-color: #334155; }
+        .dark .vf-tagbox:focus-within { background: #0f172a; }
+        .dark .vf-tagbox input[data-engine-tag-input] { color: #f1f5f9; }
+        .dark .vf-tag { background: rgba(245,158,11,.10); border-color: rgba(251,191,36,.28); color: #fbbf24; }
+        .dark .vf-tag button { color: #fcd34d; }
         .vf-lbl {
             display: block; font-size: 10px; font-weight: 800; text-transform: uppercase;
             letter-spacing: .12em; color: #64748b; margin-bottom: 5px;
@@ -349,10 +396,10 @@
                     <h2 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Vehicle Data') }}</h2>
                     <p class="text-[11.5px] text-slate-500 dark:text-slate-400 mt-0.5">{{ __('Manage the brands and models used in fitment rules.') }}</p>
                 </div>
-                <span class="vf-pill good">{{ number_format((int) $stats['brands']) }} {{ __('brands') }} · {{ number_format((int) $stats['models']) }} {{ __('models') }}</span>
+                <span class="vf-pill good">{{ number_format((int) $stats['brands']) }} {{ __('brands') }} · {{ number_format((int) $stats['models']) }} {{ __('models') }} · {{ number_format((int) $stats['engine_types']) }} {{ __('engine types') }}</span>
             </div>
 
-            <div class="grid gap-5 p-5 lg:grid-cols-[280px_minmax(0,1fr)]">
+            <div class="grid gap-5 p-5 lg:grid-cols-[330px_minmax(0,1fr)]">
                 {{-- Add forms --}}
                 <div class="space-y-4">
                     <form method="POST" action="{{ route('admin.vehicle-fitments.brands.store') }}" class="space-y-2">
@@ -370,10 +417,38 @@
                         <select id="vf-model-brand" name="vehicle_brand_id" required class="vf-sel">
                             <option value="">{{ __('Select brand') }}</option>
                             @foreach($brands as $brand)
-                                <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                <option value="{{ $brand->id }}" @selected(old('vehicle_brand_id') == $brand->id)>{{ $brand->name }}</option>
                             @endforeach
                         </select>
-                        <input name="name" required maxlength="120" placeholder="{{ __('Corolla') }}" class="vf-inp" aria-label="{{ __('Model Name') }}">
+                        <input name="name" value="{{ old('vehicle_brand_id') ? old('name') : '' }}" required maxlength="120" placeholder="{{ __('Corolla') }}" class="vf-inp" aria-label="{{ __('Model Name') }}">
+                        <div>
+                            <label class="vf-lbl">{{ __('Model Years') }} <span class="normal-case tracking-normal font-semibold">({{ __('Optional') }})</span></label>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input name="production_start_year" type="number" min="1900" max="2100" value="{{ old('production_start_year') }}"
+                                       placeholder="{{ __('Year From') }}" class="vf-inp" aria-label="{{ __('Year From') }}">
+                                <input name="production_end_year" type="number" min="1900" max="2100" value="{{ old('production_end_year') }}"
+                                       placeholder="{{ __('Year To') }}" class="vf-inp" aria-label="{{ __('Year To') }}">
+                            </div>
+                        </div>
+                        <div>
+                            <label class="vf-lbl" for="vf-model-engine-types">{{ __('Engine Types') }} <span class="normal-case tracking-normal font-semibold">({{ __('Optional') }})</span></label>
+                            <div class="vf-tagbox" data-engine-tags data-max-tags="20" data-max-message="{{ __('You can add up to 20 engine types.') }}">
+                                <span class="contents" data-engine-tag-list>
+                                    @foreach((array) old('engine_types', []) as $oldEngineType)
+                                        @if(trim((string) $oldEngineType) !== '')
+                                            <span class="vf-tag" data-engine-tag="{{ mb_strtolower(trim((string) $oldEngineType)) }}">
+                                                <span>{{ trim((string) $oldEngineType) }}</span>
+                                                <button type="button" data-engine-tag-remove aria-label="{{ __('Remove :name', ['name' => trim((string) $oldEngineType)]) }}">&times;</button>
+                                                <input type="hidden" name="engine_types[]" value="{{ trim((string) $oldEngineType) }}">
+                                            </span>
+                                        @endif
+                                    @endforeach
+                                </span>
+                                <input id="vf-model-engine-types" name="engine_types_text" maxlength="2000" value="{{ old('engine_types_text') }}"
+                                       placeholder="{{ __('e.g. 1.5 Petrol, 2.0 Diesel, Hybrid') }}" autocomplete="off" data-engine-tag-input>
+                            </div>
+                            <p class="mt-1 text-[10.5px] leading-4 text-slate-500 dark:text-slate-400">{{ __('Separate multiple engine types with Enter or a comma.') }}</p>
+                        </div>
                         <button class="vf-btn primary w-full">{{ __('Create Model') }}</button>
                     </form>
                 </div>
@@ -420,7 +495,7 @@
                             @if($brand->models->isNotEmpty())
                                 <div class="flex flex-wrap gap-1.5 p-3">
                                     @foreach($brand->models as $model)
-                                        <span data-vf-editable class="inline-flex">
+                                        <span data-vf-editable class="vf-model-stack">
                                             <form method="POST" action="{{ route('admin.vehicle-fitments.models.destroy', $model) }}" class="vf-model"
                                                   data-vf-edit-view
                                                   data-danger-confirm
@@ -429,17 +504,47 @@
                                                 @csrf
                                                 @method('DELETE')
                                                 <span>{{ $model->name }}</span>
+                                                @if($model->engineTypes->isNotEmpty())
+                                                    <span class="vf-mono-chip !px-1.5 !py-0.5" title="{{ __(':count engine types', ['count' => $model->engineTypes->count()]) }}">{{ $model->engineTypes->count() }}</span>
+                                                @endif
                                                 <button type="button" class="edit" data-vf-edit-toggle aria-label="{{ __('Edit :name', ['name' => $model->name]) }}">
                                                     <i class="fas fa-pen text-[9px]"></i>
                                                 </button>
                                                 <button type="submit" aria-label="{{ __('Delete :name', ['name' => $model->name]) }}">&times;</button>
                                             </form>
+                                            @if($model->engineTypes->isNotEmpty())
+                                                <span class="vf-engine-list">
+                                                    @if($model->production_start_year || $model->production_end_year)
+                                                        <span class="vf-year-chip">
+                                                            <i class="fas fa-calendar text-[8px]"></i>
+                                                            {{ $model->production_start_year ?: '…' }}–{{ $model->production_end_year ?: __('Present') }}
+                                                        </span>
+                                                    @endif
+                                                    @foreach($model->engineTypes as $engineType)
+                                                        <span class="vf-engine-chip"><i class="fas fa-gauge-high text-[8px]"></i>{{ $engineType->name }}</span>
+                                                    @endforeach
+                                                </span>
+                                            @elseif($model->production_start_year || $model->production_end_year)
+                                                <span class="vf-engine-list">
+                                                    <span class="vf-year-chip">
+                                                        <i class="fas fa-calendar text-[8px]"></i>
+                                                        {{ $model->production_start_year ?: '…' }}–{{ $model->production_end_year ?: __('Present') }}
+                                                    </span>
+                                                </span>
+                                            @endif
                                             <form method="POST" action="{{ route('admin.vehicle-fitments.models.update', $model) }}"
                                                   class="vf-edit-inline" data-vf-edit-panel hidden>
                                                 @csrf
                                                 @method('PATCH')
                                                 <input name="name" value="{{ $model->name }}" required maxlength="120" class="vf-inp"
                                                        aria-label="{{ __('Model Name') }}">
+                                                <input name="production_start_year" type="number" min="1900" max="2100" value="{{ $model->production_start_year }}"
+                                                       placeholder="{{ __('From') }}" class="vf-inp vf-year-edit" aria-label="{{ __('Year From') }}">
+                                                <input name="production_end_year" type="number" min="1900" max="2100" value="{{ $model->production_end_year }}"
+                                                       placeholder="{{ __('To') }}" class="vf-inp vf-year-edit" aria-label="{{ __('Year To') }}">
+                                                <input name="engine_types_text" value="{{ $model->engineTypes->pluck('name')->implode(', ') }}" maxlength="2000"
+                                                       placeholder="{{ __('Engine types, comma separated') }}" class="vf-inp vf-engine-edit"
+                                                       aria-label="{{ __('Engine Types') }}">
                                                 <button type="submit" class="vf-btn primary sm" title="{{ __('Save') }}">
                                                     <i class="fas fa-check text-[10px]"></i>
                                                 </button>
@@ -493,6 +598,7 @@
                 class="grid gap-5 p-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.65fr)]"
                 data-admin-vehicle-fitment
                 data-model-map='@json($brandModelMap)'
+                data-engine-types='@json($allEngineTypes)'
                 data-any-model-label="{{ __('Any model') }}"
                 data-no-model-label="{{ __('No models for this brand yet') }}"
                 data-any-engine-label="{{ __('Any engine') }}"
@@ -537,7 +643,10 @@
                                 <option value="">{{ __('Any model') }}</option>
                                 @foreach($brands as $brand)
                                     @foreach($brand->models as $model)
-                                        <option value="{{ $model->id }}">{{ $brand->name }} / {{ $model->name }}</option>
+                                        <option value="{{ $model->id }}" @selected(old('vehicle_model_id') == $model->id)
+                                                data-year-from="{{ $model->production_start_year }}" data-year-to="{{ $model->production_end_year }}">
+                                            {{ $brand->name }} / {{ $model->name }}
+                                        </option>
                                     @endforeach
                                 @endforeach
                             </select>
@@ -553,7 +662,12 @@
                         </div>
                         <div>
                             <label class="vf-lbl">{{ __('Engine') }}</label>
-                            <input name="engine" maxlength="120" value="{{ old('engine') }}" placeholder="{{ __('e.g. 1.8L, Hybrid, Diesel') }}" class="vf-inp" data-admin-engine>
+                            <input name="engine" list="vf-engine-types-list" maxlength="120" value="{{ old('engine') }}" placeholder="{{ __('e.g. 1.8L, Hybrid, Diesel') }}" class="vf-inp" data-admin-engine>
+                            <datalist id="vf-engine-types-list" data-admin-engine-options>
+                                @foreach($allEngineTypes as $engineType)
+                                    <option value="{{ $engineType }}"></option>
+                                @endforeach
+                            </datalist>
                         </div>
                         <div>
                             <label class="vf-lbl">{{ __('Notes') }}</label>
@@ -729,6 +843,89 @@
     </div>
 
     <script nonce="{{ $cspNonce }}">
+        // ── Multi-value engine input for model creation ──
+        document.querySelectorAll('[data-engine-tags]').forEach((box) => {
+            const input = box.querySelector('[data-engine-tag-input]');
+            const list = box.querySelector('[data-engine-tag-list]');
+            const form = box.closest('form');
+            const maxTags = Number(box.dataset.maxTags || 20);
+            const maxMessage = box.dataset.maxMessage || `You can add up to ${maxTags} engine types.`;
+
+            if (!input || !list || !form) return;
+
+            const tags = () => Array.from(list.querySelectorAll('[data-engine-tag]'));
+            const normalized = (value) => value.trim().toLocaleLowerCase();
+
+            const bindRemove = (tag) => {
+                tag.querySelector('[data-engine-tag-remove]')?.addEventListener('click', () => {
+                    tag.remove();
+                    input.setCustomValidity('');
+                    input.focus();
+                });
+            };
+
+            const addTag = (value) => {
+                const label = value.trim();
+                if (!label) return true;
+
+                if (tags().some((tag) => tag.dataset.engineTag === normalized(label))) return true;
+                if (tags().length >= maxTags) {
+                    input.setCustomValidity(maxMessage);
+                    input.reportValidity();
+                    return false;
+                }
+
+                input.setCustomValidity('');
+                const tag = document.createElement('span');
+                tag.className = 'vf-tag';
+                tag.dataset.engineTag = normalized(label);
+
+                const text = document.createElement('span');
+                text.textContent = label;
+                const remove = document.createElement('button');
+                remove.type = 'button';
+                remove.dataset.engineTagRemove = '';
+                remove.setAttribute('aria-label', `Remove ${label}`);
+                remove.textContent = '×';
+                const hidden = document.createElement('input');
+                hidden.type = 'hidden';
+                hidden.name = 'engine_types[]';
+                hidden.value = label;
+
+                tag.append(text, remove, hidden);
+                list.appendChild(tag);
+                bindRemove(tag);
+                return true;
+            };
+
+            const commitInput = () => {
+                const values = input.value.split(/[,;\n]+/).map((value) => value.trim()).filter(Boolean);
+                let accepted = true;
+                values.forEach((value) => { if (!addTag(value)) accepted = false; });
+                if (accepted) input.value = '';
+                return accepted;
+            };
+
+            tags().forEach(bindRemove);
+            box.addEventListener('click', (event) => {
+                if (event.target === box) input.focus();
+            });
+            input.addEventListener('keydown', (event) => {
+                if (['Enter', ',', ';'].includes(event.key)) {
+                    event.preventDefault();
+                    commitInput();
+                }
+            });
+            input.addEventListener('input', () => {
+                input.setCustomValidity('');
+                if (/[,;\n]/.test(input.value)) commitInput();
+            });
+            input.addEventListener('blur', commitInput);
+            form.addEventListener('submit', (event) => {
+                if (!commitInput()) event.preventDefault();
+            });
+        });
+
         // ── Add-fitment panel toggle ──
         (() => {
             const panel = document.getElementById('vf-fitment-panel');
@@ -784,6 +981,7 @@
             const yearFrom = form.querySelector('[data-admin-year-from]');
             const yearTo = form.querySelector('[data-admin-year-to]');
             const engineInput = form.querySelector('[data-admin-engine]');
+            const engineOptions = form.querySelector('[data-admin-engine-options]');
             const previewProduct = form.querySelector('[data-admin-preview-product]');
             const previewVehicle = form.querySelector('[data-admin-preview-vehicle]');
             const previewYears = form.querySelector('[data-admin-preview-years]');
@@ -794,6 +992,7 @@
             }
 
             const modelMap = JSON.parse(form.dataset.modelMap || '{}');
+            const allEngineTypes = JSON.parse(form.dataset.engineTypes || '[]');
             const anyModelLabel = form.dataset.anyModelLabel || 'Any model';
             const noModelLabel = form.dataset.noModelLabel || 'No models for this brand yet';
             const anyEngineLabel = form.dataset.anyEngineLabel || 'Any engine';
@@ -909,6 +1108,7 @@
             const setModelOptions = () => {
                 const brandId = brandSelect.value;
                 const models = brandId ? (modelMap[brandId] || []) : [];
+                const previousValue = modelSelect.value;
                 modelSelect.innerHTML = '';
 
                 const placeholder = document.createElement('option');
@@ -920,17 +1120,51 @@
                     const option = document.createElement('option');
                     option.value = model.id;
                     option.textContent = model.name;
+                    option.dataset.engines = JSON.stringify(model.engines || []);
+                    option.dataset.yearFrom = model.year_from || '';
+                    option.dataset.yearTo = model.year_to || '';
                     modelSelect.appendChild(option);
                 });
 
+                if (models.some((model) => String(model.id) === String(previousValue))) {
+                    modelSelect.value = previousValue;
+                }
+
                 modelSelect.disabled = brandId !== '' && models.length === 0;
+                updateEngineOptions();
+                updateModelYearHints();
                 updatePreview();
+            };
+
+            const updateEngineOptions = () => {
+                if (!engineOptions) return;
+                const selected = modelSelect.selectedOptions?.[0];
+                const modelEngines = selected?.dataset.engines ? JSON.parse(selected.dataset.engines) : [];
+                const choices = modelEngines.length > 0 ? modelEngines : allEngineTypes;
+                engineOptions.innerHTML = '';
+                choices.forEach((engine) => {
+                    const option = document.createElement('option');
+                    option.value = engine;
+                    engineOptions.appendChild(option);
+                });
+            };
+
+            const updateModelYearHints = () => {
+                const selected = modelSelect.selectedOptions?.[0];
+                const modelYearFrom = selected?.dataset.yearFrom || '';
+                const modelYearTo = selected?.dataset.yearTo || '';
+                if (yearFrom) yearFrom.placeholder = modelYearFrom || @json(__('Any'));
+                if (yearTo) yearTo.placeholder = modelYearTo || @json(__('Any'));
             };
 
             productFilter?.addEventListener('input', filterProducts);
             productSelect?.addEventListener('change', updatePreview);
             brandSelect.addEventListener('change', setModelOptions);
-            modelSelect.addEventListener('change', updatePreview);
+            modelSelect.addEventListener('change', () => {
+                updateEngineOptions();
+                updateModelYearHints();
+                updatePreview();
+            });
             yearFrom?.addEventListener('input', updatePreview);
             yearTo?.addEventListener('input', updatePreview);
             engineInput?.addEventListener('input', updatePreview);
