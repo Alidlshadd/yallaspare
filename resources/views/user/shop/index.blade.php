@@ -31,10 +31,18 @@
                 ->count();
             $clearFilterUrl = fn (array $filters) => route('shop.index', request()->except([...$filters, 'page']));
             $categoryUrl = fn ($value) => route('shop.index', array_merge(request()->except(['category', 'page']), array_filter(['category' => $value])));
+            $vehicleDisplayValue = preg_replace('/^(engine|year):/', '', $vehicle);
+            $selectedVehicleMetadata = $vehicleOptionsByModel[$brand][$model] ?? [];
+            $selectedVehicleEngines = $selectedVehicleMetadata['engines'] ?? [];
+            $selectedYearFrom = (int) ($selectedVehicleMetadata['year_from'] ?? 0);
+            $selectedYearTo = (int) ($selectedVehicleMetadata['year_to'] ?? 0);
+            $selectedVehicleYears = $selectedYearFrom >= 1900 && $selectedYearTo >= $selectedYearFrom
+                ? range($selectedYearTo, $selectedYearFrom)
+                : [];
             $vehicleActiveFilters = [
                 ['key' => 'brand', 'label' => __('Brand'), 'value' => $brand],
                 ['key' => 'model', 'label' => __('Model'), 'value' => $model],
-                ['key' => 'vehicle', 'label' => __('Engine / Year'), 'value' => $vehicle],
+                ['key' => 'vehicle', 'label' => __('Engine / Year'), 'value' => $vehicleDisplayValue],
             ];
             $sortLabels = [
                 'latest' => __('Latest'),
@@ -54,9 +62,15 @@
                 method="GET"
                 data-vehicle-finder
                 data-model-map='@json($modelOptionsByBrand)'
+                data-vehicle-option-map='@json($vehicleOptionsByModel)'
                 data-model-placeholder="{{ __('All models') }}"
                 data-all-models-placeholder="{{ __('Select brand first') }}"
                 data-no-models-placeholder="{{ __('No models for this brand yet') }}"
+                data-vehicle-placeholder="{{ __('Any engine / year') }}"
+                data-select-model-placeholder="{{ __('Select model first') }}"
+                data-no-vehicle-options-placeholder="{{ __('No engines or years for this model yet') }}"
+                data-engine-group-label="{{ __('Engines') }}"
+                data-year-group-label="{{ __('Years') }}"
             >
                 @if ($activeCategory)
                     <input type="hidden" name="category" value="{{ $activeCategoryModel?->slug ?: $activeCategory }}">
@@ -113,11 +127,30 @@
 
                     <div>
                         <label for="vehicle" class="sr-only">{{ __('Engine / Year') }}</label>
-                        <select id="vehicle" name="vehicle" class="{{ $selectClasses }}">
+                        <select id="vehicle" name="vehicle" data-vehicle-option
+                                @disabled($vehicleOptionsByModel !== [] && ($model === '' || ($selectedVehicleEngines === [] && $selectedVehicleYears === [])))
+                                class="{{ $selectClasses }} disabled:cursor-not-allowed disabled:opacity-60">
                             <option value="">{{ __('Any engine / year') }}</option>
-                            @foreach ($engineOptions as $option)
-                                <option value="{{ $option }}" @selected(($vehicle ?? '') === (string) $option)>{{ $option }}</option>
-                            @endforeach
+                            @if($vehicleOptionsByModel !== [])
+                                @if($selectedVehicleEngines !== [])
+                                    <optgroup label="{{ __('Engines') }}">
+                                        @foreach ($selectedVehicleEngines as $option)
+                                            <option value="engine:{{ $option }}" @selected($vehicle === 'engine:'.$option || $vehicle === (string) $option)>{{ $option }}</option>
+                                        @endforeach
+                                    </optgroup>
+                                @endif
+                                @if($selectedVehicleYears !== [])
+                                    <optgroup label="{{ __('Years') }}">
+                                        @foreach ($selectedVehicleYears as $option)
+                                            <option value="year:{{ $option }}" @selected($vehicle === 'year:'.$option || $vehicle === (string) $option)>{{ $option }}</option>
+                                        @endforeach
+                                    </optgroup>
+                                @endif
+                            @else
+                                @foreach ($engineOptions as $option)
+                                    <option value="{{ $option }}" @selected($vehicle === (string) $option)>{{ $option }}</option>
+                                @endforeach
+                            @endif
                         </select>
                     </div>
 

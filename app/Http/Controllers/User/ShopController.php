@@ -145,6 +145,7 @@ class ShopController extends Controller
             'modelOptions' => $modelOptions,
             'engineOptions' => $engineOptions,
             'modelOptionsByBrand' => $vehicleFilters['modelOptionsByBrand'],
+            'vehicleOptionsByModel' => $vehicleFilters['vehicleOptionsByModel'],
             'hasStructuredVehicleData' => $vehicleFilters['hasStructuredVehicleData'],
             'hasFitmentData' => $vehicleFilters['hasFitmentData'],
             'vehicleDataMessage' => $vehicleFilters['vehicleDataMessage'],
@@ -214,61 +215,51 @@ class ShopController extends Controller
         }
 
         $brand = trim((string) $request->input('brand', ''));
-        if ($brand !== '') {
-            $productsQuery->where(function ($query) use ($brand): void {
-                SqlSafe::whereLike($query, 'brand', $brand);
-
-                if (DbSchema::hasTable('product_vehicle_fitments') && DbSchema::hasTable('vehicle_brands')) {
-                    $query->orWhereHas('vehicleFitments.brand', function ($fitmentQuery) use ($brand): void {
-                        SqlSafe::whereLike($fitmentQuery, 'name', $brand);
-                    });
-                }
-            });
-        }
-
         $model = trim((string) $request->input('model', ''));
-        if ($model !== '') {
-            $productsQuery->where(function ($query) use ($model): void {
-                SqlSafe::whereLike($query, 'compatible_models', $model);
+        $vehicle = trim((string) $request->input('vehicle', ''));
+        if (($brand !== '' || $model !== '' || $vehicle !== '') && DbSchema::hasTable('product_vehicle_fitments')) {
+            $year = $this->extractVehicleYear($vehicle);
+            $engine = $this->extractVehicleEngine($vehicle);
 
-                if (DbSchema::hasTable('product_vehicle_fitments') && DbSchema::hasTable('vehicle_models')) {
-                    $query->orWhereHas('vehicleFitments.model', function ($fitmentQuery) use ($model): void {
-                        SqlSafe::whereLike($fitmentQuery, 'name', $model);
+            // Keep every selected vehicle constraint on the same fitment row.
+            // A product may fit several cars, so separate whereHas clauses could
+            // otherwise combine the model from one car with another car's engine.
+            $productsQuery->whereHas('vehicleFitments', function ($fitmentQuery) use ($brand, $model, $year, $engine): void {
+                if ($brand !== '' && DbSchema::hasTable('vehicle_brands')) {
+                    $fitmentQuery->whereHas('brand', fn ($brandQuery) => $brandQuery->where('name', $brand));
+                }
+
+                if ($model !== '' && DbSchema::hasTable('vehicle_models')) {
+                    $fitmentQuery->whereHas('model', fn ($modelQuery) => $modelQuery->where('name', $model));
+                }
+
+                if ($year !== null) {
+                    $fitmentQuery->where(function ($yearQuery) use ($year): void {
+                        $yearQuery->whereNull('year_from')->orWhere('year_from', '<=', $year);
+                    })->where(function ($yearQuery) use ($year): void {
+                        $yearQuery->whereNull('year_to')->orWhere('year_to', '>=', $year);
+                    });
+                }
+
+                if ($engine !== '') {
+                    $fitmentQuery->where(function ($engineQuery) use ($engine): void {
+                        $engineQuery->whereNull('engine')->orWhere('engine', '');
+                        SqlSafe::orWhereLike($engineQuery, 'engine', $engine);
                     });
                 }
             });
-        }
-
-        $vehicle = trim((string) $request->input('vehicle', ''));
-        if ($vehicle !== '') {
-            $productsQuery->where(function ($query) use ($vehicle): void {
-                SqlSafe::whereLike($query, 'compatible_models', $vehicle);
-
-                if (DbSchema::hasTable('product_vehicle_fitments')) {
-                    $year = $this->extractVehicleYear($vehicle);
-                    $engine = $this->extractVehicleEngine($vehicle);
-
-                    $query->orWhereHas('vehicleFitments', function ($fitmentQuery) use ($year, $engine, $vehicle): void {
-                        $fitmentQuery->where(function ($nested) use ($year, $engine, $vehicle): void {
-                            if ($year !== null) {
-                                $nested->where(function ($yearQuery) use ($year): void {
-                                    $yearQuery
-                                        ->whereNull('year_from')
-                                        ->orWhere('year_from', '<=', $year);
-                                })->where(function ($yearQuery) use ($year): void {
-                                    $yearQuery
-                                        ->whereNull('year_to')
-                                        ->orWhere('year_to', '>=', $year);
-                                });
-                            }
-
-                            if ($engine !== '') {
-                                SqlSafe::orWhereLike($nested, 'engine', $engine);
-                            }
-
-                            SqlSafe::orWhereLike($nested, 'notes', $vehicle);
-                        });
-                    });
+        } elseif ($brand !== '' || $model !== '' || $vehicle !== '') {
+            // Legacy fallback for installations that have not created the
+            // structured fitment table yet.
+            $productsQuery->where(function ($query) use ($brand, $model, $vehicle): void {
+                if ($brand !== '') {
+                    SqlSafe::whereLike($query, 'brand', $brand);
+                }
+                if ($model !== '') {
+                    SqlSafe::whereLike($query, 'compatible_models', $model);
+                }
+                if ($vehicle !== '') {
+                    SqlSafe::whereLike($query, 'compatible_models', $vehicle);
                 }
             });
         }
@@ -319,6 +310,7 @@ class ShopController extends Controller
             'modelOptions' => $vehicleFilters['modelOptions'],
             'engineOptions' => $vehicleFilters['engineOptions'],
             'modelOptionsByBrand' => $vehicleFilters['modelOptionsByBrand'],
+            'vehicleOptionsByModel' => $vehicleFilters['vehicleOptionsByModel'],
             'hasStructuredVehicleData' => $vehicleFilters['hasStructuredVehicleData'],
             'hasFitmentData' => $vehicleFilters['hasFitmentData'],
             'vehicleDataMessage' => $vehicleFilters['vehicleDataMessage'],
@@ -396,11 +388,12 @@ class ShopController extends Controller
         $modelOptions = collect();
         $engineOptions = collect();
         $modelOptionsByBrand = [];
+        $vehicleOptionsByModel = [];
         $hasStructuredVehicleData = false;
         $hasFitmentData = false;
 
         if (! DbSchema::hasTable('products')) {
-            return $this->vehicleFilterPayload($brandOptions, $modelOptions, $engineOptions, $modelOptionsByBrand, false, false);
+            return $this->vehicleFilterPayload($brandOptions, $modelOptions, $engineOptions, $modelOptionsByBrand, $vehicleOptionsByModel, false, false);
         }
 
         $brands = Product::query()
@@ -414,7 +407,9 @@ class ShopController extends Controller
 
         if (DbSchema::hasTable('vehicle_brands')) {
             $vehicleBrandRows = VehicleBrand::query()
-                ->with(['models:id,vehicle_brand_id,name'])
+                ->with(['models' => fn ($query) => $query
+                    ->select(['id', 'vehicle_brand_id', 'name', 'production_start_year', 'production_end_year'])
+                    ->with('engineTypes:id,vehicle_model_id,name')])
                 ->orderBy('name')
                 ->get();
 
@@ -427,6 +422,20 @@ class ShopController extends Controller
                             ->pluck('name')
                             ->filter()
                             ->values()
+                            ->all(),
+                    ])
+                    ->all();
+                $vehicleOptionsByModel = $vehicleBrandRows
+                    ->mapWithKeys(fn (VehicleBrand $brand) => [
+                        (string) $brand->name => $brand->models
+                            ->mapWithKeys(fn (VehicleModel $model) => [
+                                (string) $model->name => [
+                                    'model_id' => (int) $model->id,
+                                    'engines' => $model->engineTypes->pluck('name')->filter()->unique()->values()->all(),
+                                    'year_from' => $model->production_start_year ? (int) $model->production_start_year : null,
+                                    'year_to' => $model->production_end_year ? (int) $model->production_end_year : null,
+                                ],
+                            ])
                             ->all(),
                     ])
                     ->all();
@@ -460,7 +469,43 @@ class ShopController extends Controller
             if ($fitmentEngines->isNotEmpty()) {
                 $engineOptions = $fitmentEngines;
             }
+
+            $fitmentsByModel = ProductVehicleFitment::query()
+                ->whereNotNull('vehicle_model_id')
+                ->get(['vehicle_model_id', 'engine', 'year_from', 'year_to'])
+                ->groupBy('vehicle_model_id');
+
+            foreach ($vehicleOptionsByModel as &$brandModels) {
+                foreach ($brandModels as &$modelMetadata) {
+                    $modelFitments = $fitmentsByModel->get($modelMetadata['model_id'], collect());
+                    $fitmentModelEngines = $modelFitments
+                        ->pluck('engine')
+                        ->map(fn ($engine) => trim((string) $engine))
+                        ->filter()
+                        ->unique()
+                        ->values()
+                        ->all();
+
+                    $modelMetadata['engines'] = collect($modelMetadata['engines'])
+                        ->merge($fitmentModelEngines)
+                        ->unique()
+                        ->values()
+                        ->all();
+                    $modelMetadata['year_from'] ??= $modelFitments->pluck('year_from')->filter()->min();
+                    $modelMetadata['year_to'] ??= $modelFitments->pluck('year_to')->filter()->max();
+                }
+                unset($modelMetadata);
+            }
+            unset($brandModels);
         }
+
+        foreach ($vehicleOptionsByModel as &$brandModels) {
+            foreach ($brandModels as &$modelMetadata) {
+                unset($modelMetadata['model_id']);
+            }
+            unset($modelMetadata);
+        }
+        unset($brandModels);
 
         $compatibleValues = Product::query()
             ->whereNotNull('compatible_models')
@@ -502,7 +547,7 @@ class ShopController extends Controller
             }
         }
 
-        return $this->vehicleFilterPayload($brandOptions, $modelOptions, $engineOptions, $modelOptionsByBrand, $hasStructuredVehicleData, $hasFitmentData);
+        return $this->vehicleFilterPayload($brandOptions, $modelOptions, $engineOptions, $modelOptionsByBrand, $vehicleOptionsByModel, $hasStructuredVehicleData, $hasFitmentData);
     }
 
     private function vehicleFilterPayload(
@@ -510,6 +555,7 @@ class ShopController extends Controller
         Collection $modelOptions,
         Collection $engineOptions,
         array $modelOptionsByBrand,
+        array $vehicleOptionsByModel,
         bool $hasStructuredVehicleData,
         bool $hasFitmentData
     ): array {
@@ -522,6 +568,7 @@ class ShopController extends Controller
             'modelOptions' => $modelOptions->unique()->take(30)->values(),
             'engineOptions' => $engineOptions->unique()->take(30)->values(),
             'modelOptionsByBrand' => $modelOptionsByBrand,
+            'vehicleOptionsByModel' => $vehicleOptionsByModel,
             'hasStructuredVehicleData' => $hasStructuredVehicleData,
             'hasFitmentData' => $hasFitmentData,
             'vehicleDataMessage' => $vehicleDataMessage,
@@ -530,6 +577,10 @@ class ShopController extends Controller
 
     private function extractVehicleYear(string $vehicle): ?int
     {
+        if (preg_match('/^year:(19|20)\d{2}$/', $vehicle) === 1) {
+            return (int) substr($vehicle, 5);
+        }
+
         if (preg_match('/\b(19|20)\d{2}\b/', $vehicle, $matches) !== 1) {
             return null;
         }
@@ -539,8 +590,16 @@ class ShopController extends Controller
 
     private function extractVehicleEngine(string $vehicle): string
     {
-        if (preg_match('/\b\d(?:\.\d)?\s*l\b/i', $vehicle, $matches) !== 1) {
+        if (str_starts_with($vehicle, 'engine:')) {
+            return trim(substr($vehicle, 7));
+        }
+
+        if ($vehicle === '' || $this->extractVehicleYear($vehicle) !== null) {
             return '';
+        }
+
+        if (preg_match('/\b\d(?:\.\d)?\s*l\b/i', $vehicle, $matches) !== 1) {
+            return $vehicle;
         }
 
         return strtoupper(str_replace(' ', '', $matches[0]));

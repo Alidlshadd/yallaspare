@@ -231,33 +231,87 @@ class VehicleFitmentController extends Controller
 
     public function storeFitment(Request $request): RedirectResponse
     {
-        $data = $request->validate([
+        $fitmentRows = $request->input('fitments');
+
+        // Keep the endpoint compatible with older clients that still submit
+        // one flat fitment instead of the batch-shaped fitments array.
+        if (! is_array($fitmentRows) || $fitmentRows === []) {
+            $fitmentRows = [[
+                'vehicle_brand_id' => $request->input('vehicle_brand_id'),
+                'vehicle_model_id' => $request->input('vehicle_model_id'),
+                'year_from' => $request->input('year_from'),
+                'year_to' => $request->input('year_to'),
+                'engine' => $request->input('engine'),
+                'notes' => $request->input('notes'),
+            ]];
+        }
+
+        $payload = [
+            'product_id' => $request->input('product_id'),
+            'fitments' => array_values($fitmentRows),
+        ];
+
+        $validator = Validator::make($payload, [
             'product_id' => [
                 'required',
                 Rule::exists('products', 'id')->where(fn ($query) => $query->where('is_active', true)),
             ],
-            'vehicle_brand_id' => ['required', 'exists:vehicle_brands,id'],
-            'vehicle_model_id' => [
-                'nullable',
-                Rule::exists('vehicle_models', 'id')->where(fn ($query) => $query->where('vehicle_brand_id', $request->input('vehicle_brand_id'))),
-            ],
-            'year_from' => ['nullable', 'integer', 'min:1900', 'max:2100'],
-            'year_to' => ['nullable', 'integer', 'min:1900', 'max:2100', 'gte:year_from'],
-            'engine' => ['nullable', 'string', 'max:120'],
-            'notes' => ['nullable', 'string', 'max:255'],
+            'fitments' => ['required', 'array', 'min:1', 'max:50'],
+            'fitments.*.vehicle_brand_id' => ['required', 'integer', 'exists:vehicle_brands,id'],
+            'fitments.*.vehicle_model_id' => ['nullable', 'integer', 'exists:vehicle_models,id'],
+            'fitments.*.year_from' => ['nullable', 'integer', 'min:1900', 'max:2100'],
+            'fitments.*.year_to' => ['nullable', 'integer', 'min:1900', 'max:2100'],
+            'fitments.*.engine' => ['nullable', 'string', 'max:120'],
+            'fitments.*.notes' => ['nullable', 'string', 'max:255'],
         ]);
 
-        ProductVehicleFitment::query()->create([
-            'product_id' => (int) $data['product_id'],
-            'vehicle_brand_id' => (int) $data['vehicle_brand_id'],
-            'vehicle_model_id' => isset($data['vehicle_model_id']) ? (int) $data['vehicle_model_id'] : null,
-            'year_from' => $data['year_from'] ?? null,
-            'year_to' => $data['year_to'] ?? null,
-            'engine' => trim((string) ($data['engine'] ?? '')) ?: null,
-            'notes' => trim((string) ($data['notes'] ?? '')) ?: null,
-        ]);
+        $validator->after(function ($validator) use ($payload): void {
+            foreach ($payload['fitments'] as $index => $row) {
+                $brandId = (int) ($row['vehicle_brand_id'] ?? 0);
+                $modelId = (int) ($row['vehicle_model_id'] ?? 0);
 
-        return back()->with('success', __('Product fitment created.'));
+                if ($brandId > 0 && $modelId > 0 && ! VehicleModel::query()
+                    ->whereKey($modelId)
+                    ->where('vehicle_brand_id', $brandId)
+                    ->exists()) {
+                    $validator->errors()->add(
+                        "fitments.{$index}.vehicle_model_id",
+                        __('The selected model does not belong to this vehicle brand.'),
+                    );
+                }
+
+                $yearFrom = isset($row['year_from']) && $row['year_from'] !== '' ? (int) $row['year_from'] : null;
+                $yearTo = isset($row['year_to']) && $row['year_to'] !== '' ? (int) $row['year_to'] : null;
+                if ($yearFrom !== null && $yearTo !== null && $yearTo < $yearFrom) {
+                    $validator->errors()->add(
+                        "fitments.{$index}.year_to",
+                        __('The ending year must be greater than or equal to the starting year.'),
+                    );
+                }
+            }
+        });
+
+        $data = $validator->validate();
+
+        DB::transaction(function () use ($data): void {
+            foreach ($data['fitments'] as $row) {
+                ProductVehicleFitment::query()->create([
+                    'product_id' => (int) $data['product_id'],
+                    'vehicle_brand_id' => (int) $row['vehicle_brand_id'],
+                    'vehicle_model_id' => isset($row['vehicle_model_id']) ? (int) $row['vehicle_model_id'] : null,
+                    'year_from' => $row['year_from'] ?? null,
+                    'year_to' => $row['year_to'] ?? null,
+                    'engine' => trim((string) ($row['engine'] ?? '')) ?: null,
+                    'notes' => trim((string) ($row['notes'] ?? '')) ?: null,
+                ]);
+            }
+        });
+
+        $count = count($data['fitments']);
+
+        return back()->with('success', $count === 1
+            ? __('Product fitment created.')
+            : __(':count product fitments created.', ['count' => $count]));
     }
 
     public function destroyFitment(ProductVehicleFitment $fitment): RedirectResponse

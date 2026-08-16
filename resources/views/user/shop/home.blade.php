@@ -91,9 +91,15 @@
                     class="flex flex-col gap-2.5 rounded-2xl border border-white/25 bg-white/10 p-4 backdrop-blur-xl sm:p-5"
                     data-vehicle-finder
                     data-model-map='@json($modelOptionsByBrand)'
+                    data-vehicle-option-map='@json($vehicleOptionsByModel)'
                     data-model-placeholder="{{ __('Model') }}"
                     data-all-models-placeholder="{{ __('Select brand first') }}"
                     data-no-models-placeholder="{{ __('No models for this brand yet') }}"
+                    data-vehicle-placeholder="{{ __('Engine / Year') }}"
+                    data-select-model-placeholder="{{ __('Select model first') }}"
+                    data-no-vehicle-options-placeholder="{{ __('No engines or years for this model yet') }}"
+                    data-engine-group-label="{{ __('Engines') }}"
+                    data-year-group-label="{{ __('Years') }}"
                 >
                     <p class="text-sm font-semibold text-white">{{ __('Find parts for your vehicle') }}</p>
 
@@ -121,12 +127,16 @@
 
                     <select
                         name="vehicle"
-                        class="w-full rounded-xl border-0 bg-white/95 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:ring-4 focus:ring-white/30"
+                        data-vehicle-option
+                        @disabled($vehicleOptionsByModel !== [])
+                        class="w-full rounded-xl border-0 bg-white/95 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:ring-4 focus:ring-white/30 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                         <option value="">{{ __('Engine / Year') }}</option>
-                        @foreach ($engineOptions as $option)
-                            <option value="{{ $option }}">{{ $option }}</option>
-                        @endforeach
+                        @if($vehicleOptionsByModel === [])
+                            @foreach ($engineOptions as $option)
+                                <option value="{{ $option }}">{{ $option }}</option>
+                            @endforeach
+                        @endif
                     </select>
 
                     <button

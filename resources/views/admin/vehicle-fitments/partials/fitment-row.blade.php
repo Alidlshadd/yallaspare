@@ -1,0 +1,70 @@
+@php
+    $row = is_array($fitmentRow ?? null) ? $fitmentRow : [];
+    $rowIndex = (string) ($fitmentIndex ?? 0);
+    $selectedBrandId = (string) ($row['vehicle_brand_id'] ?? '');
+    $selectedModelId = (string) ($row['vehicle_model_id'] ?? '');
+    $engineListId = 'vf-engine-types-list-'.$rowIndex;
+@endphp
+
+<section class="vf-fitment-card" data-fitment-row data-fitment-index="{{ $rowIndex }}">
+    <div class="vf-fitment-card-head">
+        <span class="inline-flex items-center gap-2">
+            <span class="vf-fitment-number" data-fitment-row-number>{{ is_numeric($rowIndex) ? ((int) $rowIndex + 1) : 1 }}</span>
+            <span class="text-[11px] font-extrabold uppercase tracking-[.12em] text-slate-600 dark:text-slate-300">{{ __('Vehicle Fitment') }}</span>
+        </span>
+        <button type="button" class="vf-btn danger sm" data-remove-fitment-row>
+            <i class="fas fa-trash text-[9px]"></i> {{ __('Remove') }}
+        </button>
+    </div>
+
+    <div class="grid gap-3 md:grid-cols-2">
+        <div>
+            <label class="vf-lbl">{{ __('Vehicle Brand') }}</label>
+            <select name="fitments[{{ $rowIndex }}][vehicle_brand_id]" required data-admin-vehicle-brand class="vf-sel">
+                <option value="">{{ __('Select brand') }}</option>
+                @foreach($brands as $brand)
+                    <option value="{{ $brand->id }}" @selected($selectedBrandId === (string) $brand->id)>{{ $brand->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div>
+            <label class="vf-lbl">{{ __('Vehicle Model') }}</label>
+            <select name="fitments[{{ $rowIndex }}][vehicle_model_id]" data-admin-vehicle-model class="vf-sel">
+                <option value="">{{ __('Any model') }}</option>
+                @foreach($brands as $brand)
+                    @foreach($brand->models as $model)
+                        <option value="{{ $model->id }}" @selected($selectedModelId === (string) $model->id)
+                                data-year-from="{{ $model->production_start_year }}" data-year-to="{{ $model->production_end_year }}">
+                            {{ $brand->name }} / {{ $model->name }}
+                        </option>
+                    @endforeach
+                @endforeach
+            </select>
+        </div>
+        <div>
+            <label class="vf-lbl">{{ __('Year From') }}</label>
+            <input name="fitments[{{ $rowIndex }}][year_from]" type="number" min="1900" max="2100"
+                   value="{{ $row['year_from'] ?? '' }}" placeholder="{{ __('Any') }}" class="vf-inp" data-admin-year-from>
+        </div>
+        <div>
+            <label class="vf-lbl">{{ __('Year To') }}</label>
+            <input name="fitments[{{ $rowIndex }}][year_to]" type="number" min="1900" max="2100"
+                   value="{{ $row['year_to'] ?? '' }}" placeholder="{{ __('Any') }}" class="vf-inp" data-admin-year-to>
+        </div>
+        <div>
+            <label class="vf-lbl">{{ __('Engine') }}</label>
+            <input name="fitments[{{ $rowIndex }}][engine]" list="{{ $engineListId }}" maxlength="120"
+                   value="{{ $row['engine'] ?? '' }}" placeholder="{{ __('e.g. 1.8L, Hybrid, Diesel') }}" class="vf-inp" data-admin-engine>
+            <datalist id="{{ $engineListId }}" data-admin-engine-options>
+                @foreach($allEngineTypes as $engineType)
+                    <option value="{{ $engineType }}"></option>
+                @endforeach
+            </datalist>
+        </div>
+        <div>
+            <label class="vf-lbl">{{ __('Notes') }}</label>
+            <input name="fitments[{{ $rowIndex }}][notes]" maxlength="255" value="{{ $row['notes'] ?? '' }}"
+                   placeholder="{{ __('Optional fitment notes') }}" class="vf-inp">
+        </div>
+    </div>
+</section>

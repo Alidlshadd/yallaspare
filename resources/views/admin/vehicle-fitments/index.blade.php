@@ -49,7 +49,19 @@
             ->sort()
             ->values();
 
-        $openFitmentPanel = $errors->any() || old('product_id') !== null;
+        $fitmentRows = old('fitments');
+        if (!is_array($fitmentRows) || $fitmentRows === []) {
+            $fitmentRows = [[
+                'vehicle_brand_id' => old('vehicle_brand_id'),
+                'vehicle_model_id' => old('vehicle_model_id'),
+                'year_from' => old('year_from'),
+                'year_to' => old('year_to'),
+                'engine' => old('engine'),
+                'notes' => old('notes'),
+            ]];
+        }
+
+        $openFitmentPanel = $errors->any() || old('product_id') !== null || old('fitments') !== null;
     @endphp
 
     <style>
@@ -214,6 +226,22 @@
         .dark .vf-tagbox input[data-engine-tag-input] { color: #f1f5f9; }
         .dark .vf-tag { background: rgba(245,158,11,.10); border-color: rgba(251,191,36,.28); color: #fbbf24; }
         .dark .vf-tag button { color: #fcd34d; }
+        .vf-fitment-card {
+            padding: 14px; border: 1px solid #e2e8f0; border-radius: 14px;
+            background: linear-gradient(180deg, #fff, #fbfcfe);
+        }
+        .vf-fitment-card + .vf-fitment-card { margin-top: 12px; }
+        .vf-fitment-card-head {
+            display: flex; align-items: center; justify-content: space-between; gap: 10px;
+            margin-bottom: 12px; padding-bottom: 10px; border-bottom: 1px dashed #e2e8f0;
+        }
+        .vf-fitment-number {
+            display: grid; place-items: center; width: 24px; height: 24px; border-radius: 8px;
+            background: #04042a; color: #fcd34d; font: 800 11px/1 ui-monospace, monospace;
+        }
+        .dark .vf-fitment-card { background: linear-gradient(180deg, #0f172a, #111c2e); border-color: #334155; }
+        .dark .vf-fitment-card-head { border-color: #334155; }
+        .dark .vf-fitment-number { background: #fbbf24; color: #04042a; }
         .vf-lbl {
             display: block; font-size: 10px; font-weight: 800; text-transform: uppercase;
             letter-spacing: .12em; color: #64748b; margin-bottom: 5px;
@@ -578,7 +606,7 @@
                     </span>
                     <div>
                         <h2 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Add Product Fitment') }}</h2>
-                        <p class="text-[11.5px] text-slate-500 dark:text-slate-400 mt-0.5">{{ __('Connect one product to a vehicle brand, model, year range, and engine.') }}</p>
+                        <p class="text-[11.5px] text-slate-500 dark:text-slate-400 mt-0.5">{{ __('Connect one product to multiple vehicles and save every fitment at once.') }}</p>
                     </div>
                 </div>
                 <button type="button" data-vf-close-fitment class="vf-btn sm" aria-label="{{ __('Close') }}">
@@ -603,81 +631,60 @@
                 data-no-model-label="{{ __('No models for this brand yet') }}"
                 data-any-engine-label="{{ __('Any engine') }}"
                 data-any-year-label="{{ __('Any year') }}"
+                data-vehicle-label="{{ __('vehicle') }}"
+                data-vehicles-label="{{ __('vehicles') }}"
+                data-max-fitments="50"
                 data-product-search-url="{{ route('admin.vehicle-fitments.products.search') }}"
             >
                 @csrf
                 <div class="space-y-5">
-                    <div class="grid gap-4 md:grid-cols-2">
-                        <div class="md:col-span-2">
-                            <label class="vf-lbl">{{ __('Product') }}</label>
-                            <div class="grid gap-2 sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
-                                <input
-                                    type="search"
-                                    placeholder="{{ __('Filter by product name, SKU, or brand') }}"
-                                    class="vf-inp"
-                                    data-admin-product-filter
-                                >
-                                <select name="product_id" required class="vf-sel" data-admin-product-select>
-                                    <option value="">{{ __('Select product') }}</option>
-                                    @foreach($products as $product)
-                                        <option value="{{ $product->id }}" @selected(old('product_id') == $product->id) data-search="{{ Str::lower(trim($product->name . ' ' . $product->sku . ' ' . $product->brand)) }}">
-                                            {{ $product->name }} @if($product->sku) ({{ $product->sku }}) @endif @if($product->brand) - {{ $product->brand }} @endif
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="vf-lbl">{{ __('Vehicle Brand') }}</label>
-                            <select name="vehicle_brand_id" required data-admin-vehicle-brand class="vf-sel">
-                                <option value="">{{ __('Select brand') }}</option>
-                                @foreach($brands as $brand)
-                                    <option value="{{ $brand->id }}" @selected(old('vehicle_brand_id') == $brand->id)>{{ $brand->name }}</option>
+                    <div>
+                        <label class="vf-lbl">{{ __('Product') }}</label>
+                        <div class="grid gap-2 sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
+                            <input
+                                type="search"
+                                placeholder="{{ __('Filter by product name, SKU, or brand') }}"
+                                class="vf-inp"
+                                data-admin-product-filter
+                            >
+                            <select name="product_id" required class="vf-sel" data-admin-product-select>
+                                <option value="">{{ __('Select product') }}</option>
+                                @foreach($products as $product)
+                                    <option value="{{ $product->id }}" @selected(old('product_id') == $product->id) data-search="{{ Str::lower(trim($product->name . ' ' . $product->sku . ' ' . $product->brand)) }}">
+                                        {{ $product->name }} @if($product->sku) ({{ $product->sku }}) @endif @if($product->brand) - {{ $product->brand }} @endif
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
-                        <div>
-                            <label class="vf-lbl">{{ __('Vehicle Model') }}</label>
-                            <select name="vehicle_model_id" data-admin-vehicle-model class="vf-sel">
-                                <option value="">{{ __('Any model') }}</option>
-                                @foreach($brands as $brand)
-                                    @foreach($brand->models as $model)
-                                        <option value="{{ $model->id }}" @selected(old('vehicle_model_id') == $model->id)
-                                                data-year-from="{{ $model->production_start_year }}" data-year-to="{{ $model->production_end_year }}">
-                                            {{ $brand->name }} / {{ $model->name }}
-                                        </option>
-                                    @endforeach
-                                @endforeach
-                            </select>
-                        </div>
+                    </div>
 
-                        <div>
-                            <label class="vf-lbl">{{ __('Year From') }}</label>
-                            <input name="year_from" type="number" min="1900" max="2100" value="{{ old('year_from') }}" placeholder="{{ __('Any') }}" class="vf-inp" data-admin-year-from>
-                        </div>
-                        <div>
-                            <label class="vf-lbl">{{ __('Year To') }}</label>
-                            <input name="year_to" type="number" min="1900" max="2100" value="{{ old('year_to') }}" placeholder="{{ __('Any') }}" class="vf-inp" data-admin-year-to>
-                        </div>
-                        <div>
-                            <label class="vf-lbl">{{ __('Engine') }}</label>
-                            <input name="engine" list="vf-engine-types-list" maxlength="120" value="{{ old('engine') }}" placeholder="{{ __('e.g. 1.8L, Hybrid, Diesel') }}" class="vf-inp" data-admin-engine>
-                            <datalist id="vf-engine-types-list" data-admin-engine-options>
-                                @foreach($allEngineTypes as $engineType)
-                                    <option value="{{ $engineType }}"></option>
-                                @endforeach
-                            </datalist>
-                        </div>
-                        <div>
-                            <label class="vf-lbl">{{ __('Notes') }}</label>
-                            <input name="notes" maxlength="255" value="{{ old('notes') }}" placeholder="{{ __('Optional fitment notes') }}" class="vf-inp">
-                        </div>
+                    <div data-fitment-rows>
+                        @foreach($fitmentRows as $fitmentIndex => $fitmentRow)
+                            @include('admin.vehicle-fitments.partials.fitment-row', [
+                                'fitmentIndex' => $fitmentIndex,
+                                'fitmentRow' => $fitmentRow,
+                            ])
+                        @endforeach
+                    </div>
+
+                    <template data-fitment-row-template>
+                        @include('admin.vehicle-fitments.partials.fitment-row', [
+                            'fitmentIndex' => '__INDEX__',
+                            'fitmentRow' => [],
+                        ])
+                    </template>
+
+                    <div class="flex flex-wrap items-center gap-2.5">
+                        <button type="button" class="vf-btn" data-add-fitment-row>
+                            <i class="fas fa-plus text-[10px]"></i>
+                            {{ __('Add Another Vehicle') }}
+                        </button>
+                        <span class="vf-mono-chip" data-fitment-count>{{ count($fitmentRows) }} {{ __('vehicles') }}</span>
                     </div>
 
                     <button class="vf-btn gold w-full sm:w-auto px-6">
                         <i class="fas fa-link text-[10px]"></i>
-                        {{ __('Save Fitment') }}
+                        {{ __('Save All Fitments') }}
                     </button>
                 </div>
 
@@ -685,7 +692,7 @@
                 <aside class="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 lg:sticky lg:top-24 lg:self-start bento-shadow">
                     <div class="flex items-center justify-between px-4 py-3 text-white" style="background: linear-gradient(135deg, #04042a, #0a0d3f);">
                         <span class="font-mono text-[10px] font-extrabold uppercase tracking-[0.22em] text-amber-300">{{ __('Fitment Preview') }}</span>
-                        <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse" aria-hidden="true"></span>
+                        <span class="text-[10px] font-extrabold text-emerald-300" data-admin-preview-count>{{ count($fitmentRows) }} {{ __('vehicles') }}</span>
                     </div>
                     <div class="p-4 space-y-3 bg-white dark:bg-slate-900">
                         <div class="flex gap-3">
@@ -972,8 +979,8 @@
             });
         })();
 
-        // ── Fitment form: hybrid product search + dependent selects + live preview ──
-        document.querySelectorAll('[data-admin-vehicle-fitment]').forEach((form) => {
+        // Legacy single-row initializer retained for markup compatibility.
+        document.querySelectorAll('[data-admin-vehicle-fitment-legacy]').forEach((form) => {
             const productFilter = form.querySelector('[data-admin-product-filter]');
             const productSelect = form.querySelector('[data-admin-product-select]');
             const brandSelect = form.querySelector('[data-admin-vehicle-brand]');
@@ -1170,6 +1177,252 @@
             engineInput?.addEventListener('input', updatePreview);
             filterProducts();
             setModelOptions();
+            updatePreview();
+        });
+
+        // ── Batch fitment form: one product + multiple independent vehicle rows ──
+        document.querySelectorAll('[data-admin-vehicle-fitment]').forEach((form) => {
+            const productFilter = form.querySelector('[data-admin-product-filter]');
+            const productSelect = form.querySelector('[data-admin-product-select]');
+            const rowsContainer = form.querySelector('[data-fitment-rows]');
+            const rowTemplate = form.querySelector('[data-fitment-row-template]');
+            const addRowButton = form.querySelector('[data-add-fitment-row]');
+            const countLabels = form.querySelectorAll('[data-fitment-count], [data-admin-preview-count]');
+            const previewProduct = form.querySelector('[data-admin-preview-product]');
+            const previewVehicle = form.querySelector('[data-admin-preview-vehicle]');
+            const previewYears = form.querySelector('[data-admin-preview-years]');
+            const previewEngine = form.querySelector('[data-admin-preview-engine]');
+
+            if (!productSelect || !rowsContainer || !rowTemplate) return;
+
+            const modelMap = JSON.parse(form.dataset.modelMap || '{}');
+            const allEngineTypes = JSON.parse(form.dataset.engineTypes || '[]');
+            const anyModelLabel = form.dataset.anyModelLabel || 'Any model';
+            const noModelLabel = form.dataset.noModelLabel || 'No models for this brand yet';
+            const anyEngineLabel = form.dataset.anyEngineLabel || 'Any engine';
+            const anyYearLabel = form.dataset.anyYearLabel || 'Any year';
+            const vehicleLabel = form.dataset.vehicleLabel || 'vehicle';
+            const vehiclesLabel = form.dataset.vehiclesLabel || 'vehicles';
+            const maxFitments = Number(form.dataset.maxFitments || 50);
+            let activeRow = null;
+            let nextRowIndex = Math.max(
+                0,
+                ...Array.from(rowsContainer.querySelectorAll('[data-fitment-row]'))
+                    .map((row) => Number(row.dataset.fitmentIndex))
+                    .filter(Number.isFinite)
+            ) + 1;
+
+            const rows = () => Array.from(rowsContainer.querySelectorAll('[data-fitment-row]'));
+            const selectedOptionLabel = (select, fallback) => {
+                const option = select?.selectedOptions?.[0];
+                return !option || option.value === '' ? fallback : option.textContent.trim();
+            };
+
+            const refreshRowState = () => {
+                const currentRows = rows();
+                const count = currentRows.length;
+                const countText = `${count} ${count === 1 ? vehicleLabel : vehiclesLabel}`;
+                countLabels.forEach((label) => { label.textContent = countText; });
+                currentRows.forEach((row, index) => {
+                    const number = row.querySelector('[data-fitment-row-number]');
+                    const remove = row.querySelector('[data-remove-fitment-row]');
+                    if (number) number.textContent = String(index + 1);
+                    if (remove) remove.hidden = count === 1;
+                });
+                if (addRowButton) addRowButton.disabled = count >= maxFitments;
+            };
+
+            const updatePreview = (row = activeRow || rows()[0]) => {
+                if (!row) return;
+                activeRow = row;
+                const brandSelect = row.querySelector('[data-admin-vehicle-brand]');
+                const modelSelect = row.querySelector('[data-admin-vehicle-model]');
+                const yearFrom = row.querySelector('[data-admin-year-from]');
+                const yearTo = row.querySelector('[data-admin-year-to]');
+                const engineInput = row.querySelector('[data-admin-engine]');
+                const productFallback = productSelect.querySelector('option[value=""]')?.textContent.trim() || 'Select product';
+                const brandFallback = brandSelect?.querySelector('option[value=""]')?.textContent.trim() || 'Select brand';
+                const productLabel = selectedOptionLabel(productSelect, productFallback);
+                const brandLabel = selectedOptionLabel(brandSelect, brandFallback);
+                const modelLabel = selectedOptionLabel(modelSelect, anyModelLabel);
+                const from = yearFrom?.value?.trim() || '';
+                const to = yearTo?.value?.trim() || '';
+                const engine = engineInput?.value?.trim() || '';
+
+                if (previewProduct) previewProduct.textContent = productLabel;
+                if (previewVehicle) previewVehicle.textContent = `${brandLabel} / ${modelLabel}`;
+                if (previewYears) previewYears.textContent = from || to ? `${from || '*'} - ${to || '*'}` : anyYearLabel;
+                if (previewEngine) previewEngine.textContent = engine || anyEngineLabel;
+            };
+
+            const configureRow = (row) => {
+                if (row.dataset.fitmentReady === 'true') return;
+                row.dataset.fitmentReady = 'true';
+
+                const brandSelect = row.querySelector('[data-admin-vehicle-brand]');
+                const modelSelect = row.querySelector('[data-admin-vehicle-model]');
+                const yearFrom = row.querySelector('[data-admin-year-from]');
+                const yearTo = row.querySelector('[data-admin-year-to]');
+                const engineInput = row.querySelector('[data-admin-engine]');
+                const engineOptions = row.querySelector('[data-admin-engine-options]');
+                const removeButton = row.querySelector('[data-remove-fitment-row]');
+                if (!brandSelect || !modelSelect) return;
+
+                const updateEngineOptions = () => {
+                    if (!engineOptions) return;
+                    const selected = modelSelect.selectedOptions?.[0];
+                    const modelEngines = selected?.dataset.engines ? JSON.parse(selected.dataset.engines) : [];
+                    const choices = modelEngines.length > 0 ? modelEngines : allEngineTypes;
+                    engineOptions.innerHTML = '';
+                    choices.forEach((engine) => {
+                        const option = document.createElement('option');
+                        option.value = engine;
+                        engineOptions.appendChild(option);
+                    });
+                };
+
+                const updateModelYearHints = () => {
+                    const selected = modelSelect.selectedOptions?.[0];
+                    if (yearFrom) yearFrom.placeholder = selected?.dataset.yearFrom || @json(__('Any'));
+                    if (yearTo) yearTo.placeholder = selected?.dataset.yearTo || @json(__('Any'));
+                };
+
+                const setModelOptions = () => {
+                    const brandId = brandSelect.value;
+                    const models = brandId ? (modelMap[brandId] || []) : [];
+                    const previousValue = modelSelect.value;
+                    modelSelect.innerHTML = '';
+                    const placeholder = document.createElement('option');
+                    placeholder.value = '';
+                    placeholder.textContent = models.length > 0 || brandId === '' ? anyModelLabel : noModelLabel;
+                    modelSelect.appendChild(placeholder);
+
+                    models.forEach((model) => {
+                        const option = document.createElement('option');
+                        option.value = model.id;
+                        option.textContent = model.name;
+                        option.dataset.engines = JSON.stringify(model.engines || []);
+                        option.dataset.yearFrom = model.year_from || '';
+                        option.dataset.yearTo = model.year_to || '';
+                        modelSelect.appendChild(option);
+                    });
+
+                    if (models.some((model) => String(model.id) === String(previousValue))) {
+                        modelSelect.value = previousValue;
+                    }
+                    modelSelect.disabled = brandId !== '' && models.length === 0;
+                    updateEngineOptions();
+                    updateModelYearHints();
+                    updatePreview(row);
+                };
+
+                const activate = () => updatePreview(row);
+                brandSelect.addEventListener('change', setModelOptions);
+                modelSelect.addEventListener('change', () => {
+                    updateEngineOptions();
+                    updateModelYearHints();
+                    activate();
+                });
+                yearFrom?.addEventListener('input', activate);
+                yearTo?.addEventListener('input', activate);
+                engineInput?.addEventListener('input', activate);
+                row.addEventListener('focusin', activate);
+                removeButton?.addEventListener('click', () => {
+                    if (rows().length <= 1) return;
+                    const wasActive = activeRow === row;
+                    row.remove();
+                    if (wasActive) activeRow = rows()[0] || null;
+                    refreshRowState();
+                    updatePreview();
+                });
+
+                setModelOptions();
+            };
+
+            addRowButton?.addEventListener('click', () => {
+                if (rows().length >= maxFitments) return;
+                const rowIndex = nextRowIndex++;
+                rowsContainer.insertAdjacentHTML(
+                    'beforeend',
+                    rowTemplate.innerHTML.replaceAll('__INDEX__', String(rowIndex))
+                );
+                const newRow = rowsContainer.querySelector(`[data-fitment-index="${rowIndex}"]`);
+                if (!newRow) return;
+                configureRow(newRow);
+                activeRow = newRow;
+                refreshRowState();
+                updatePreview(newRow);
+                newRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                newRow.querySelector('[data-admin-vehicle-brand]')?.focus({ preventScroll: true });
+            });
+
+            // Product search remains shared because the product is selected once
+            // and applied to every vehicle row in this batch.
+            const productSearchUrl = form.dataset.productSearchUrl || '';
+            let productSearchTimer = null;
+            let productSearchAbort = null;
+
+            const filterRenderedOptions = (needle) => {
+                Array.from(productSelect.options).forEach((option) => {
+                    if (option.value === '') {
+                        option.hidden = false;
+                        return;
+                    }
+                    option.hidden = needle !== ''
+                        && !(option.dataset.search || option.textContent).toLowerCase().includes(needle);
+                });
+            };
+
+            const mergeAjaxResults = (results) => {
+                if (!Array.isArray(results)) return;
+                const previousValue = productSelect.value;
+                const existingIds = new Set(Array.from(productSelect.options).map((option) => option.value));
+                results.forEach((item) => {
+                    if (existingIds.has(String(item.id))) return;
+                    const labelParts = [item.name];
+                    if (item.sku) labelParts.push(`(${item.sku})`);
+                    if (item.brand) labelParts.push(`- ${item.brand}`);
+                    const option = document.createElement('option');
+                    option.value = String(item.id);
+                    option.dataset.search = `${item.name} ${item.sku} ${item.brand}`.toLowerCase();
+                    option.textContent = labelParts.join(' ');
+                    productSelect.appendChild(option);
+                });
+                if (previousValue) productSelect.value = previousValue;
+            };
+
+            const filterProducts = () => {
+                if (!productFilter) return;
+                const needle = productFilter.value.trim().toLowerCase();
+                filterRenderedOptions(needle);
+                if (!productSearchUrl) return;
+                if (productSearchTimer) clearTimeout(productSearchTimer);
+                if (productSearchAbort) productSearchAbort.abort();
+
+                productSearchTimer = setTimeout(() => {
+                    const query = productFilter.value.trim();
+                    if (query === '') return;
+                    productSearchAbort = new AbortController();
+                    fetch(`${productSearchUrl}?q=${encodeURIComponent(query)}&per_page=30`, {
+                        headers: { 'Accept': 'application/json' },
+                        credentials: 'same-origin',
+                        signal: productSearchAbort.signal,
+                    })
+                        .then((response) => response.ok ? response.json() : null)
+                        .then((data) => {
+                            if (!data) return;
+                            mergeAjaxResults(data.results || []);
+                            filterRenderedOptions(needle);
+                        })
+                        .catch(() => { /* aborted or network unavailable */ });
+                }, 250);
+            };
+
+            productFilter?.addEventListener('input', filterProducts);
+            productSelect.addEventListener('change', () => updatePreview());
+            rows().forEach(configureRow);
+            refreshRowState();
+            filterProducts();
             updatePreview();
         });
     </script>
