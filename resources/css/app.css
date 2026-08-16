@@ -141,6 +141,20 @@
         white-space: nowrap;
     }
 
+    /* Second half of the wordmark, sampled from the logo artwork. Deliberately
+       not the #f97316 used for UI accents elsewhere: this belongs to the mark,
+       so it tracks the logo rather than the interface palette. */
+    .brand-wordmark-accent {
+        color: #ff6a00;
+    }
+
+    /* The logo orange reads at 6.8:1 on the dark headers but only 2.87:1 on
+       white — under the 3:1 that large text needs. Light surfaces get a
+       darkened version of the same hue, which clears 4:1. */
+    .app-logo-light .brand-wordmark-accent {
+        color: #d94f00;
+    }
+
     .app-logo-dark .app-logo-text {
         color: #ffffff;
     }

@@ -389,7 +389,7 @@
                                 fallback-text-class="text-sm font-semibold text-white"
                             />
                             <span class="admin-sidebar-brand-block">
-                                <span class="admin-sidebar-brand-copy app-logo-text truncate" data-admin-sidebar-logo-text>{{ $systemSettings['site_name'] ?? 'YallaSpare' }}</span>
+                                <x-brand-wordmark :brand="$systemSettings['site_name'] ?? 'YallaSpare'" class="admin-sidebar-brand-copy app-logo-text truncate" data-admin-sidebar-logo-text />
                                 <span class="admin-sidebar-meta text-[10px] uppercase tracking-widest" data-admin-sidebar-meta>{{ __('Admin · Live') }}</span>
                             </span>
                         </a>

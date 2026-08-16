@@ -18,9 +18,10 @@
                             fallback-class="inline-flex h-full w-full items-center justify-center rounded-lg bg-primary"
                             fallback-text-class="text-[11px] font-semibold tracking-[0.18em] text-white"
                         />
-                        <span class="app-logo-text hidden sm:inline-flex">
-                            {{ $systemSettings['site_name'] ?? 'YallaSpare' }}
-                        </span>
+                        <x-brand-wordmark
+                            :brand="$systemSettings['site_name'] ?? 'YallaSpare'"
+                            class="app-logo-text hidden sm:inline-flex"
+                        />
                     </a>
                     </div>
                 </div>
