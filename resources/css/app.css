@@ -26,14 +26,22 @@
     .user-theme-dark {
         --bg: #020617;
         --surface-1: #0f172a;
-        --surface-2: #111827;
+        /* Was #111827 — Tailwind gray, a neutral, while every other surface on
+           the page is slate and carries a blue cast. Side by side the two read
+           as a mismatch. It also sat at the same lightness as surface-1, so it
+           gave no sense of elevation; slate-800 keeps the family and steps up
+           from the ground the way white does over grey in light mode. */
+        --surface-2: #1e293b;
         --border: #334155;
         --text: #e2e8f0;
         --muted: #94a3b8;
         --primary: #e2e8f0;
         --primary-hover: #cbd5e1;
-        --primary-solid: #4f46e5;
-        --primary-solid-hover: #4338ca;
+        /* Was Tailwind indigo, which belonged to no part of the brand and read
+           as violet next to the navy chrome. This is the brand navy lifted far
+           enough to carry a primary button on a dark ground, same hue. */
+        --primary-solid: #2626a8;
+        --primary-solid-hover: #2f2fc4;
         --focus: rgba(148, 163, 184, 0.32);
         --danger: #f87171;
         --success: #4ade80;
@@ -1790,7 +1798,10 @@
         background-color: #1a1a5e;
     }
 
-    /* Ensure user-facing pages stay readable in dark mode even on legacy utility usage */
+    /* Ensure user-facing pages stay readable in dark mode even on legacy utility
+       usage. Note these carry more specificity than a dark: variant, so an
+       element written as `bg-slate-50 dark:bg-slate-950` still lands here — use
+       a token class such as bg-app on anything that needs its own dark value. */
     .dark .user-shell .bg-white {
         background-color: var(--surface-2);
     }
@@ -3689,8 +3700,11 @@
     -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
     mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
 }
+/* Navy in light mode is a brand accent against a pale page. In dark mode it
+   was the last navy island sitting among the slate rails, so it takes the
+   card surface and reads as part of the same set. */
 .dark .hpr-marquee {
-    background: #0b0d2e;
+    background: var(--surface-2);
     box-shadow: inset 0 1px 0 rgb(251 191 36 / 0.12), inset 0 -1px 0 rgb(251 191 36 / 0.12);
 }
 .hpr-marquee-track {
@@ -3741,7 +3755,10 @@
     box-shadow: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px rgb(15 23 42 / 0.06);
     transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
-.dark .hpr-card { border-color: #1e293b; background: #0f172a; box-shadow: 0 1px 2px rgb(0 0 0 / 0.2), 0 8px 24px rgb(0 0 0 / 0.25); }
+/* Takes the card surface token rather than its own fill: the category cards
+   above the rails already use it, and hardcoding a darker value here left the
+   home page showing two different card colours. */
+.dark .hpr-card { border-color: #334155; background: var(--surface-2); box-shadow: 0 1px 2px rgb(0 0 0 / 0.2), 0 8px 24px rgb(0 0 0 / 0.25); }
 .hpr-card:hover { transform: translateY(-4px); border-color: rgb(7 7 64 / 0.2); box-shadow: 0 14px 30px rgb(15 23 42 / 0.12); }
 .dark .hpr-card:hover { border-color: rgb(251 191 36 / 0.3); box-shadow: 0 14px 30px rgb(0 0 0 / 0.35); }
 
