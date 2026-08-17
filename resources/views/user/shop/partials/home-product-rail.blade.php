@@ -65,7 +65,10 @@
                             $discountPercent = (int) data_get($product, 'discount_percent', 0);
                         @endphp
                         <article class="hpr-card group">
-                            <div class="relative h-40 overflow-hidden bg-slate-100 p-4 dark:bg-slate-800/80">
+                            {{-- bg-surface-1, not `bg-slate-100 dark:bg-slate-900`: the legacy
+                                 rescue for .bg-slate-100 outranks a dark: variant and would
+                                 paint this the same as the card, erasing the well. --}}
+                            <div class="relative h-40 overflow-hidden bg-surface-1 p-4">
                                 <span class="hpr-badge {{ $railBadgeClass }}">
                                     {{ $railBadgeLabel }}
                                 </span>

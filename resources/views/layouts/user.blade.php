@@ -41,7 +41,11 @@
     $bodyClasses = trim('user-shell min-h-full text-slate-900 antialiased dark:text-slate-100'
         . ($highContrastMode ? ' user-high-contrast' : '')
     );
-    $shellClasses = trim('min-h-screen bg-slate-50 dark:bg-slate-950');
+    // bg-app, not `bg-slate-50 dark:bg-slate-950`: the legacy dark-mode rescue
+    // for .bg-slate-50 outranks a dark: variant, so the wrapper was painted
+    // slate-900 — the same fill as a product card, leaving cards with nothing
+    // to sit against. The token resolves per theme and sidesteps that rule.
+    $shellClasses = trim('min-h-screen bg-app');
     // The vision page is a full-bleed showcase: sections manage their own
     // width and padding, so the main wrapper must not constrain them.
     $mainClasses = $isVisionRoute
@@ -99,7 +103,10 @@
         </script>
         @vite(['resources/css/app.css', 'resources/js/app.js', 'resources/js/storefront.js'])
         <style>
-            html, body { margin: 0; padding: 0; background: #070740; }
+            {{-- The page ground follows the theme. It used to be pinned to the
+                 brand navy in both modes, so in dark mode every slate surface on
+                 the page sat on a navy field it did not belong to. --}}
+            html, body { margin: 0; padding: 0; background: var(--bg); }
             html.user-font-large { font-size: 17px; }
             html.user-font-xl { font-size: 18px; }
             html.user-reduced-motion *, html.user-reduced-motion *::before, html.user-reduced-motion *::after {
