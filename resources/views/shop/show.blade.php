@@ -195,7 +195,10 @@
                         </div>
                         <div class="rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-950">
                             <p class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{{ __('Stock Status') }}</p>
-                            <p class="mt-1 text-sm font-semibold {{ $inStock ? 'text-emerald-700' : 'text-rose-700' }}">
+                            {{-- The 700 shades are pitched for a light card; on the dark one they
+                                 fell to 3.3:1 in stock and 2.3:1 out. The 300s match what the
+                                 badges and buttons further down this page already use. --}}
+                            <p class="mt-1 text-sm font-semibold {{ $inStock ? 'text-emerald-700 dark:text-emerald-300' : 'text-rose-700 dark:text-rose-300' }}">
                                 {{ $inStock ? __('In stock') : __('Out of stock') }}
                             </p>
                         </div>
