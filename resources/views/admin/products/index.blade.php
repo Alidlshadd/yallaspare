@@ -29,7 +29,7 @@
             'out_of_stock' => ['hex' => '#dc2626', 'dot' => 'bg-rose-500'],
         ];
 
-        $hasActiveFilters = request()->hasAny(['search', 'category_id', 'brand']);
+        $hasActiveFilters = request()->hasAny(['search', 'category_id', 'brand', 'product_brand_id']);
     @endphp
 
     <style>
@@ -554,12 +554,12 @@
 
                 <div>
                     <label for="filter-brand" class="block text-[10.5px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Brand') }}</label>
-                    <select id="filter-brand" name="brand"
+                    <select id="filter-brand" name="product_brand_id"
                             class="y-select h-11 w-full px-3 rounded-xl border border-slate-200 bg-slate-50 text-sm font-semibold text-slate-900 transition focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-900">
                         <option value="">{{ __('All Brands') }}</option>
                         @foreach($brands as $brand)
-                            <option value="{{ $brand }}" @selected((string) request('brand') === (string) $brand)>
-                                {{ $brand }}
+                            <option value="{{ $brand->id }}" @selected((string) request('product_brand_id') === (string) $brand->id || (string) request('brand') === (string) $brand->name)>
+                                {{ $brand->name }}
                             </option>
                         @endforeach
                     </select>
@@ -667,6 +667,9 @@
                         <div class="sku">{{ $product->sku ?? '—' }}</div>
                         <div class="pname mt-1">{{ $product->name }}</div>
                         <div class="brand-row">
+                            @if($product->productBrand?->logo_path)
+                                <img src="{{ asset('storage/' . ltrim((string) $product->productBrand->logo_path, '/')) }}" alt="" class="me-1 inline-block h-4 w-4 rounded object-contain align-middle">
+                            @endif
                             {{ $product->brand ?? '—' }}<span class="pid">· #{{ $product->id }}</span>
                         </div>
                         <div class="mt-2 flex items-center justify-between gap-2 rounded-lg border border-slate-100 bg-slate-50 px-2.5 py-2 text-[11px] font-semibold text-slate-500 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400">

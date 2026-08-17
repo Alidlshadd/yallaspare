@@ -21,7 +21,7 @@ class Product extends Model
     use HasFactory, LogsActivity;
 
     protected $fillable = [
-        'category_id', 'name_en', 'name_ar', 'name_ku',
+        'category_id', 'product_brand_id', 'name_en', 'name_ar', 'name_ku',
         'description_en', 'description_ar', 'description_ku',
         'price', 'dealer_price', 'stock_quantity', 'sku', 'oem_number', 'part_number', 'warranty', 'brand',
         'compatible_models', 'image', 'is_active', 'low_stock_threshold', 'slug',
@@ -79,6 +79,12 @@ class Product extends Model
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
+    }
+
+    /** @return BelongsTo<ProductBrand, $this> */
+    public function productBrand(): BelongsTo
+    {
+        return $this->belongsTo(ProductBrand::class);
     }
 
     public function localizedName(?string $locale = null): string

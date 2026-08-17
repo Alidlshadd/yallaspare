@@ -8,6 +8,7 @@ use App\Http\Requests\Admin\StoreProductRequest;
 use App\Http\Requests\Admin\UpdateProductRequest;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductBrand;
 use App\Models\ProductImage;
 use App\Models\Setting;
 use App\Support\SecureImageStorage;
@@ -42,6 +43,7 @@ class ProductController extends Controller
                 'id',
                 'slug',
                 'category_id',
+                'product_brand_id',
                 'name_en',
                 'image',
                 'sku',
@@ -55,6 +57,7 @@ class ProductController extends Controller
             ->with([
                 'analytics:id,product_id,views_count,last_viewed_at',
                 'category:id,name_en,name_ar,name_ku,slug',
+                'productBrand:id,name,logo_path',
             ]);
 
         if ($request->filled('search')) {
@@ -77,6 +80,10 @@ class ProductController extends Controller
         $brand = trim((string) $request->query('brand', ''));
         if ($brand !== '') {
             $query->where('brand', $brand);
+        }
+
+        if ($request->filled('product_brand_id')) {
+            $query->where('product_brand_id', (int) $request->query('product_brand_id'));
         }
 
         match ($status) {
@@ -120,14 +127,10 @@ class ProductController extends Controller
         $categories = Cache::remember('admin:products:categories:v1', now()->addSeconds($metaCacheTtl), function () {
             return Category::query()->select(['id', 'name_en', 'name_ar', 'name_ku', 'slug'])->orderBy('name_en')->get();
         });
-        $brands = Cache::remember('admin:products:brands:v1', now()->addSeconds($metaCacheTtl), function () {
-            return Product::query()
-                ->whereNotNull('brand')
-                ->where('brand', '<>', '')
-                ->distinct()
-                ->orderBy('brand')
-                ->pluck('brand');
-        });
+        $brands = ProductBrand::query()
+            ->select(['id', 'name', 'logo_path'])
+            ->orderBy('name')
+            ->get();
         $lowStockCount = Cache::remember(
             "admin:products:low-stock-count:v2:threshold:{$lowStockThreshold}",
             now()->addSeconds(min($metaCacheTtl, 120)),
@@ -184,6 +187,7 @@ class ProductController extends Controller
     public function create(Request $request)
     {
         $categories = Category::orderBy('name_en')->get();
+        $brands = ProductBrand::query()->orderBy('name')->get(['id', 'name', 'logo_path']);
 
         $currencySymbol = (string) Setting::getValue('currency_symbol', 'IQD');
         $currencyCode = (string) Setting::getValue('currency_code', 'IQD');
@@ -192,11 +196,12 @@ class ProductController extends Controller
         $lowStockThreshold = max((int) Setting::getValue('low_stock_threshold', config('inventory.low_stock_threshold', 5)), 0);
         $returnTo = $this->productsIndexReturnUrl($request);
 
-        return view('admin.products.create', compact('categories', 'currencySymbol', 'currencyCode', 'currencyLabel', 'currencyDecimals', 'lowStockThreshold', 'returnTo'));
+        return view('admin.products.create', compact('categories', 'brands', 'currencySymbol', 'currencyCode', 'currencyLabel', 'currencyDecimals', 'lowStockThreshold', 'returnTo'));
     }
 
     public function store(StoreProductRequest $request)
     {
+        $selectedBrand = $this->resolveRequestedBrand($request);
         $imagePath = null;
         if ($request->hasFile('image')) {
             $imagePath = SecureImageStorage::store($request->file('image'), 'products');
@@ -228,7 +233,8 @@ class ProductController extends Controller
             'oem_number' => $request->filled('oem_number') ? $request->oem_number : null,
             'part_number' => $request->filled('part_number') ? $request->part_number : null,
             'warranty' => $request->filled('warranty') ? $request->warranty : null,
-            'brand' => $request->brand,
+            'product_brand_id' => $selectedBrand?->id,
+            'brand' => $selectedBrand?->name,
             'compatible_models' => $compatibleModels,
             'image' => $imagePath,
             'is_active' => $request->boolean('is_active'),
@@ -259,6 +265,7 @@ class ProductController extends Controller
     public function edit(Request $request, Product $product)
     {
         $categories = Category::orderBy('name_en')->get();
+        $brands = ProductBrand::query()->orderBy('name')->get(['id', 'name', 'logo_path']);
 
         $currencySymbol = (string) Setting::getValue('currency_symbol', 'IQD');
         $currencyCode = (string) Setting::getValue('currency_code', 'IQD');
@@ -269,7 +276,7 @@ class ProductController extends Controller
         $product->load('analytics', 'images');
         $returnTo = $this->productsIndexReturnUrl($request);
 
-        return view('admin.products.edit', compact('product', 'categories', 'currencySymbol', 'currencyCode', 'currencyLabel', 'currencyDecimals', 'lowStockThreshold', 'returnTo'));
+        return view('admin.products.edit', compact('product', 'categories', 'brands', 'currencySymbol', 'currencyCode', 'currencyLabel', 'currencyDecimals', 'lowStockThreshold', 'returnTo'));
     }
 
     public function editByIdentifier(string $productIdentifier): RedirectResponse
@@ -284,6 +291,8 @@ class ProductController extends Controller
 
     public function update(UpdateProductRequest $request, Product $product)
     {
+        $brandWasSubmitted = $request->has('product_brand_id') || $request->has('brand');
+        $selectedBrand = $brandWasSubmitted ? $this->resolveRequestedBrand($request) : null;
         $oldImagePath = $product->image;
         $imagePath = $product->image;
         if ($request->boolean('remove_image')) {
@@ -321,7 +330,8 @@ class ProductController extends Controller
             'oem_number' => $request->filled('oem_number') ? $request->oem_number : null,
             'part_number' => $request->filled('part_number') ? $request->part_number : null,
             'warranty' => $request->filled('warranty') ? $request->warranty : null,
-            'brand' => $request->brand,
+            'product_brand_id' => $brandWasSubmitted ? $selectedBrand?->id : $product->product_brand_id,
+            'brand' => $brandWasSubmitted ? $selectedBrand?->name : $product->brand,
             'compatible_models' => $compatibleModels,
             'image' => $imagePath,
             'is_active' => $request->boolean('is_active'),
@@ -550,6 +560,10 @@ class ProductController extends Controller
                 $skuKey = $preparedRow['sku_key'];
                 $existingProductId = $preparedRow['existing_product_id'];
                 $payload = $preparedRow['payload'];
+
+                $importBrand = $this->resolveProductBrandByName($payload['brand'] ?? null);
+                $payload['product_brand_id'] = $importBrand?->id;
+                $payload['brand'] = $importBrand?->name;
 
                 try {
                     if ($existingProductId !== null) {
@@ -919,6 +933,50 @@ class ProductController extends Controller
         }
 
         return null;
+    }
+
+    private function resolveRequestedBrand(Request $request): ?ProductBrand
+    {
+        if ($request->has('product_brand_id')) {
+            return $request->filled('product_brand_id')
+                ? ProductBrand::query()->findOrFail((int) $request->input('product_brand_id'))
+                : null;
+        }
+
+        return $this->resolveProductBrandByName($request->input('brand'));
+    }
+
+    private function resolveProductBrandByName(mixed $rawName): ?ProductBrand
+    {
+        $name = trim((string) $rawName);
+        if ($name === '') {
+            return null;
+        }
+
+        $brand = ProductBrand::withTrashed()
+            ->whereRaw('LOWER(name) = ?', [mb_strtolower($name)])
+            ->first();
+
+        if ($brand) {
+            if ($brand->trashed()) {
+                $brand->restore();
+            }
+
+            return $brand;
+        }
+
+        $baseSlug = Str::slug($name) ?: 'brand';
+        $slug = $baseSlug;
+        $suffix = 2;
+
+        while (ProductBrand::withTrashed()->where('slug', $slug)->exists()) {
+            $slug = $baseSlug.'-'.$suffix++;
+        }
+
+        return ProductBrand::query()->create([
+            'name' => $name,
+            'slug' => $slug,
+        ]);
     }
 
     private function productsIndexReturnUrl(Request $request): string

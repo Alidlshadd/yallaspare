@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OtpiqWhatsAppController;
 use App\Http\Controllers\Admin\PopupController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductBrandController;
 use App\Http\Controllers\Admin\ProductReviewController as AdminProductReviewController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
 use App\Http\Controllers\Admin\ReturnRequestController;
@@ -396,6 +397,20 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::get('/products/{productIdentifier}', [ProductController::class, 'editByIdentifier'])
             ->middleware('can:'.User::PERMISSION_PRODUCTS_MANAGE)
             ->name('products.edit-by-identifier');
+
+        // Product brands
+        Route::get('/product-brands', [ProductBrandController::class, 'index'])
+            ->middleware('can:'.User::PERMISSION_PRODUCTS_MANAGE)
+            ->name('product-brands.index');
+        Route::post('/product-brands', [ProductBrandController::class, 'store'])
+            ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
+            ->name('product-brands.store');
+        Route::put('/product-brands/{productBrand}', [ProductBrandController::class, 'update'])
+            ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
+            ->name('product-brands.update');
+        Route::delete('/product-brands/{productBrand}', [ProductBrandController::class, 'destroy'])
+            ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
+            ->name('product-brands.destroy');
 
         // Categories
         Route::resource('categories', CategoryController::class)

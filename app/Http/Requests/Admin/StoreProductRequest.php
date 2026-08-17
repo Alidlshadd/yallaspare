@@ -47,6 +47,7 @@ class StoreProductRequest extends FormRequest
             'part_number' => ['nullable', 'string', 'max:120'],
             'warranty' => ['nullable', 'string', 'max:160'],
             'brand' => ['nullable', 'string', 'max:100'],
+            'product_brand_id' => ['nullable', 'integer', 'exists:product_brands,id'],
             'compatible_models' => ['nullable', 'string'],
             'image' => ['nullable', 'image', 'max:2048'],
             'gallery_images' => ['nullable', 'array'],

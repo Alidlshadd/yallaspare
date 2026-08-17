@@ -101,8 +101,16 @@
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Brand') }}</label>
-                                    <input type="text" name="brand" value="{{ old('brand', $product->brand) }}" class="{{ $inputBase }} @error('brand') {{ $inputError }} @enderror" placeholder="{{ __('e.g., Bosch, Denso') }}" @error('brand') aria-invalid="true" @enderror>
-                                    @error('brand')
+                                    <select name="product_brand_id" class="{{ $inputBase }} @error('product_brand_id') {{ $inputError }} @enderror" @error('product_brand_id') aria-invalid="true" @enderror>
+                                        <option value="">{{ __('No brand') }}</option>
+                                        @foreach($brands as $brand)
+                                            <option value="{{ $brand->id }}" @selected((string) old('product_brand_id', $product->product_brand_id) === (string) $brand->id)>{{ $brand->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <a href="{{ route('admin.product-brands.index') }}" class="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300">
+                                        <i class="fas fa-tags"></i> {{ __('Manage product brands') }}
+                                    </a>
+                                    @error('product_brand_id')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>

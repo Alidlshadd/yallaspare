@@ -325,6 +325,7 @@
                     'admin.analytics.*'            => __('Site Analytics'),
                     'admin.search-insights.*'      => __('Search Insights'),
                     'admin.products.*'             => __('Products'),
+                    'admin.product-brands.*'       => __('Product Brands'),
                     'admin.categories.*'           => __('Categories'),
                     'admin.vehicle-fitments.*'     => __('Vehicle Finder'),
                     'admin.reviews.*'              => __('Customer Reviews'),
@@ -494,6 +495,15 @@
                             >
                                 <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-layer-group"></i></span>
                                 <span class="admin-nav-label">{{ __('Categories') }}</span>
+                            </a>
+                            <a
+                                href="{{ route('admin.product-brands.index') }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.product-brands.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Product Brands') }}"
+                                @if(request()->routeIs('admin.product-brands.*')) aria-current="page" @endif
+                            >
+                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-tags"></i></span>
+                                <span class="admin-nav-label">{{ __('Product Brands') }}</span>
                             </a>
                             <a
                                 href="{{ route('admin.vehicle-fitments.index') }}"
