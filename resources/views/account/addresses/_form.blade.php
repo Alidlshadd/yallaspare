@@ -36,7 +36,7 @@
                 <label for="label" class="block text-sm font-medium text-slate-700">{{ __('Label') }}</label>
                 <input id="label" name="label" type="text" value="{{ old('label', $address->label) }}" placeholder="{{ __('Home, Work, Shop') }}" class="mt-2 block w-full rounded-xl border bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-primary {{ $errors->has('label') ? 'border-rose-300' : 'border-slate-200' }}">
                 @error('label')
-                    <p class="mt-2 text-sm text-rose-600">{{ $message }}</p>
+                    <p class="mt-2 text-sm text-rose-600 dark:text-rose-300">{{ $message }}</p>
                 @enderror
             </div>
 
@@ -45,7 +45,7 @@
                 <input id="phone" name="phone" type="text" value="{{ old('phone', $address->phone) }}" placeholder="+964..." class="mt-2 block w-full rounded-xl border bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-primary {{ $errors->has('phone') ? 'border-rose-300' : 'border-slate-200' }}">
                 <p class="mt-2 text-xs text-slate-500">{{ __('Optional. Include country code if needed.') }}</p>
                 @error('phone')
-                    <p class="mt-2 text-sm text-rose-600">{{ $message }}</p>
+                    <p class="mt-2 text-sm text-rose-600 dark:text-rose-300">{{ $message }}</p>
                 @enderror
             </div>
         </div>
@@ -55,7 +55,7 @@
                 <label for="country" class="block text-sm font-medium text-slate-700">{{ __('Country') }}</label>
                 <input id="country" name="country" type="text" value="{{ old('country', $address->country) }}" placeholder="{{ __('Iraq') }}" class="mt-2 block w-full rounded-xl border bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-primary {{ $errors->has('country') ? 'border-rose-300' : 'border-slate-200' }}" required>
                 @error('country')
-                    <p class="mt-2 text-sm text-rose-600">{{ $message }}</p>
+                    <p class="mt-2 text-sm text-rose-600 dark:text-rose-300">{{ $message }}</p>
                 @enderror
             </div>
 
@@ -63,7 +63,7 @@
                 <label for="city" class="block text-sm font-medium text-slate-700">{{ __('City') }}</label>
                 <input id="city" name="city" type="text" value="{{ old('city', $address->city) }}" placeholder="{{ __('Baghdad') }}" class="mt-2 block w-full rounded-xl border bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-primary {{ $errors->has('city') ? 'border-rose-300' : 'border-slate-200' }}" required>
                 @error('city')
-                    <p class="mt-2 text-sm text-rose-600">{{ $message }}</p>
+                    <p class="mt-2 text-sm text-rose-600 dark:text-rose-300">{{ $message }}</p>
                 @enderror
             </div>
         </div>
@@ -72,7 +72,7 @@
             <label for="address_line1" class="block text-sm font-medium text-slate-700">{{ __('Address Line 1') }}</label>
             <input id="address_line1" name="address_line1" type="text" value="{{ old('address_line1', $address->address_line1) }}" placeholder="{{ __('Street, district, building') }}" class="mt-2 block w-full rounded-xl border bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-primary {{ $errors->has('address_line1') ? 'border-rose-300' : 'border-slate-200' }}" required>
             @error('address_line1')
-                <p class="mt-2 text-sm text-rose-600">{{ $message }}</p>
+                <p class="mt-2 text-sm text-rose-600 dark:text-rose-300">{{ $message }}</p>
             @enderror
         </div>
 
@@ -80,7 +80,7 @@
             <label for="address_line2" class="block text-sm font-medium text-slate-700">{{ __('Address Line 2') }}</label>
             <input id="address_line2" name="address_line2" type="text" value="{{ old('address_line2', $address->address_line2) }}" placeholder="{{ __('Apartment, floor, landmark') }}" class="mt-2 block w-full rounded-xl border bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-primary {{ $errors->has('address_line2') ? 'border-rose-300' : 'border-slate-200' }}">
             @error('address_line2')
-                <p class="mt-2 text-sm text-rose-600">{{ $message }}</p>
+                <p class="mt-2 text-sm text-rose-600 dark:text-rose-300">{{ $message }}</p>
             @enderror
         </div>
 
@@ -88,7 +88,7 @@
             <label for="notes" class="block text-sm font-medium text-slate-700">{{ __('Notes') }}</label>
             <textarea id="notes" name="notes" rows="5" class="mt-2 block min-h-32 w-full rounded-xl border bg-white px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 focus:border-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-primary {{ $errors->has('notes') ? 'border-rose-300' : 'border-slate-200' }}">{{ old('notes', $address->notes) }}</textarea>
             @error('notes')
-                <p class="mt-2 text-sm text-rose-600">{{ $message }}</p>
+                <p class="mt-2 text-sm text-rose-600 dark:text-rose-300">{{ $message }}</p>
             @enderror
         </div>
 

@@ -77,7 +77,9 @@
                             </div>
 
                             @error('address_id')
-                                <p class="mt-2 text-xs font-medium text-rose-600">{{ $message }}</p>
+                                {{-- rose-600 falls to 3.1:1 on the dark card, so the one message
+                                     explaining why checkout failed was the hardest to read. --}}
+                                <p class="mt-2 text-xs font-medium text-rose-600 dark:text-rose-300">{{ $message }}</p>
                             @enderror
 
                             <div class="mt-4 flex flex-wrap items-center gap-2">

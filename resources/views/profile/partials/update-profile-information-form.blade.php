@@ -39,7 +39,9 @@
                     </p>
 
                     @if (session('status') === 'verification-code-sent')
-                        <p class="mt-2 font-medium text-sm text-green-600">
+                        {{-- The admin shell rescues text-gray-* for dark mode but not the
+                             colours, so this one needs its own variant. --}}
+                        <p class="mt-2 font-medium text-sm text-green-600 dark:text-green-400">
                             {{ __('A new verification code has been sent to your email address.') }}
                         </p>
                     @endif
