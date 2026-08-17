@@ -273,7 +273,7 @@ class MobileController extends Controller
             'currency_preference' => ['required', Rule::in(['USD', 'IQD'])],
             'timezone_preference' => ['required', Rule::in(['Asia/Baghdad', 'UTC'])],
             'date_format_preference' => ['required', Rule::in(['dmy', 'mdy', 'ymd'])],
-            'default_contact_method' => ['required', Rule::in(['phone', 'email', 'whatsapp'])],
+            'default_contact_method' => ['required', Rule::in(['phone', 'email', 'sms'])],
             'default_delivery_note' => ['nullable', 'string', 'max:255'],
             'express_checkout' => ['nullable', 'boolean'],
             'font_size_preference' => ['required', Rule::in(['default', 'large', 'xl'])],
@@ -292,7 +292,7 @@ class MobileController extends Controller
             'session_timeout' => $data['session_timeout'],
             'email_notifications' => $request->boolean('email_notifications'),
             'sms_notifications' => $request->boolean('sms_notifications'),
-            'whatsapp_notifications' => $request->boolean('whatsapp_notifications'),
+            'whatsapp_notifications' => false,
             'marketing_consent' => $request->boolean('marketing_consent'),
             'currency_preference' => $data['currency_preference'],
             'timezone_preference' => $data['timezone_preference'],
@@ -375,7 +375,7 @@ class MobileController extends Controller
         $request->user()->forceFill([
             'email_notifications' => $request->boolean('email_notifications'),
             'sms_notifications' => $request->boolean('sms_notifications'),
-            'whatsapp_notifications' => $request->boolean('whatsapp_notifications'),
+            'whatsapp_notifications' => false,
             'marketing_consent' => $request->boolean('marketing_consent'),
         ])->save();
 
@@ -385,7 +385,7 @@ class MobileController extends Controller
     public function updateSettingsCheckout(Request $request)
     {
         $data = $request->validate([
-            'default_contact_method' => ['required', Rule::in(['phone', 'email', 'whatsapp'])],
+            'default_contact_method' => ['required', Rule::in(['phone', 'email', 'sms'])],
             'default_delivery_note' => ['nullable', 'string', 'max:255'],
             'express_checkout' => ['sometimes', 'boolean'],
         ]);
@@ -501,11 +501,13 @@ class MobileController extends Controller
             'communication' => [
                 'email_notifications' => (bool) ($user->email_notifications ?? true),
                 'sms_notifications' => (bool) ($user->sms_notifications ?? false),
-                'whatsapp_notifications' => (bool) ($user->whatsapp_notifications ?? false),
+                'whatsapp_notifications' => false,
                 'marketing_consent' => (bool) ($user->marketing_consent ?? false),
             ],
             'checkout' => [
-                'default_contact_method' => (string) ($user->default_contact_method ?? 'phone'),
+                'default_contact_method' => in_array((string) $user->default_contact_method, ['phone', 'email', 'sms'], true)
+                    ? (string) $user->default_contact_method
+                    : 'sms',
                 'default_delivery_note' => $user->default_delivery_note,
                 'express_checkout' => (bool) ($user->express_checkout ?? false),
             ],

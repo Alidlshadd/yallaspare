@@ -19,9 +19,7 @@ class VerificationChannels
     {
         $hasPhone = filled($user->phone_normalized);
         $smsAvailable = $hasPhone && $sms->smsAvailable();
-        $whatsappAvailable = $hasPhone && $sms->whatsappAvailable();
-
-        return [
+        $options = [
             'email' => [
                 'label' => __('Email'),
                 'description' => __('Receive the code in your email inbox.'),
@@ -40,17 +38,22 @@ class VerificationChannels
                     : __('Add a phone number to use SMS verification.'),
                 'action_url' => $hasPhone ? null : route('user.phone.setup'),
             ],
-            'whatsapp' => [
+        ];
+
+        if ((bool) config('services.otpiq.whatsapp.visible', false)) {
+            $options['whatsapp'] = [
                 'label' => __('WhatsApp'),
                 'description' => __('Receive the code in WhatsApp.'),
                 'destination' => self::maskedPhone((string) $user->phone_normalized),
-                'available' => $whatsappAvailable,
+                'available' => $hasPhone && $sms->whatsappAvailable(),
                 'unavailable_message' => $hasPhone
                     ? __('WhatsApp verification is currently unavailable.')
                     : __('Add a phone number to use WhatsApp verification.'),
                 'action_url' => $hasPhone ? null : route('user.phone.setup'),
-            ],
-        ];
+            ];
+        }
+
+        return $options;
     }
 
     public static function maskedEmail(string $email): string

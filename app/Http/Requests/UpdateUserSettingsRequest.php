@@ -39,7 +39,7 @@ class UpdateUserSettingsRequest extends FormRequest
             'currency_preference' => [$isFullUpdate ? 'required' : 'nullable', Rule::in(['USD', 'IQD'])],
             'timezone_preference' => [$isFullUpdate ? 'required' : 'nullable', Rule::in(['Asia/Baghdad', 'UTC'])],
             'date_format_preference' => [$isFullUpdate ? 'required' : 'nullable', Rule::in(['dmy', 'mdy', 'ymd'])],
-            'default_contact_method' => [($isFullUpdate || $isCheckout) ? 'required' : 'nullable', Rule::in(['phone', 'email', 'whatsapp'])],
+            'default_contact_method' => [($isFullUpdate || $isCheckout) ? 'required' : 'nullable', Rule::in(['phone', 'email', 'sms'])],
             'default_delivery_note' => [($isFullUpdate || $isCheckout) ? 'nullable' : 'sometimes', 'string', 'max:255'],
             'express_checkout' => [($isFullUpdate || $isCheckout) ? 'nullable' : 'sometimes', 'boolean'],
             'font_size_preference' => [($isFullUpdate || $isAccessibility) ? 'required' : 'nullable', Rule::in(['default', 'large', 'xl'])],

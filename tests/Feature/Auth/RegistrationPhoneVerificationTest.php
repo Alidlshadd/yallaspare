@@ -107,6 +107,7 @@ class RegistrationPhoneVerificationTest extends TestCase
     public function test_switching_the_channel_to_whatsapp_sends_the_code_via_otpiq(): void
     {
         config([
+            'services.otpiq.whatsapp.visible' => true,
             'services.otpiq.whatsapp.enabled' => true,
             'services.otpiq.whatsapp.account_id' => 'wa-account',
             'services.otpiq.whatsapp.phone_id' => 'wa-phone',

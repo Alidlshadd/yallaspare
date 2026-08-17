@@ -42,7 +42,7 @@
                         ['title' => __('Language'), 'description' => __('Choose the interface language used across your account.'), 'route' => 'user.settings.language'],
                         ['title' => __('Notifications'), 'description' => __('Control which updates and alerts should reach you.'), 'route' => 'user.settings.notifications'],
                         ['title' => __('Security'), 'description' => __('Manage login protection, two-step preferences, and session timeout rules.'), 'route' => 'user.settings.security'],
-                        ['title' => __('Communication'), 'description' => __('Choose how email, SMS, and WhatsApp updates should reach you.'), 'route' => 'user.settings.communication'],
+                        ['title' => __('Communication'), 'description' => __('Choose how email and SMS updates should reach you.'), 'route' => 'user.settings.communication'],
                         ['title' => __('Checkout'), 'description' => __('Define your default contact method and quick checkout behavior.'), 'route' => 'user.settings.checkout'],
                         ['title' => __('Accessibility'), 'description' => __('Adjust font size, motion, and contrast for a more comfortable interface.'), 'route' => 'user.settings.accessibility'],
                     ] as $section)

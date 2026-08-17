@@ -64,7 +64,7 @@
                         <span class="ct-signal-label">
                             <span class="ct-eq" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
                             <span>
-                                <b>{{ __('Phone / WhatsApp') }}</b>
+                                <b>{{ __('Phone') }}</b>
                                 <small dir="ltr">+964 770 448 8315</small>
                             </span>
                         </span>
@@ -97,7 +97,7 @@
                     </svg>
                 </span>
                 <span class="min-w-0">
-                    <small>{{ __('Phone / WhatsApp') }}</small>
+                    <small>{{ __('Phone') }}</small>
                     <b dir="ltr">+964 770 448 8315</b>
                 </span>
                 <span class="ct-eq ct-eq-key" aria-hidden="true"><i></i><i></i><i></i></span>

@@ -39,7 +39,7 @@ class EmailVerificationTest extends TestCase
         $response->assertSee('data-channel-panel', false);
     }
 
-    public function test_verification_screen_lists_email_sms_and_whatsapp_options(): void
+    public function test_verification_screen_lists_email_and_sms_but_hides_whatsapp(): void
     {
         config([
             'services.otpiq.api_key' => 'sk_dev_test_key',
@@ -52,7 +52,8 @@ class EmailVerificationTest extends TestCase
 
         $response->assertStatus(200);
         $response->assertSee('Choose how to receive your code');
-        $response->assertSee('WhatsApp');
+        $response->assertSee('SMS');
+        $response->assertDontSee('WhatsApp');
         $response->assertSee('data-channel-form', false);
         $response->assertSee(route('verification.channel'), false);
     }

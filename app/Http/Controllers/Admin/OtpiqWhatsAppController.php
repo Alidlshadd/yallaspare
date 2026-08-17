@@ -19,6 +19,8 @@ class OtpiqWhatsAppController extends Controller
 {
     public function index(Request $request, OtpiqInboundSettings $inboundSettings): View
     {
+        $this->ensureVisible();
+
         $filters = $request->validate([
             'phone' => ['nullable', 'string', 'max:120'],
             'event_type' => ['nullable', 'string', 'max:255'],
@@ -92,11 +94,15 @@ class OtpiqWhatsAppController extends Controller
 
     public function show(OtpiqWebhookEvent $event): View
     {
+        $this->ensureVisible();
+
         return view('admin.whatsapp.show', compact('event'));
     }
 
     public function markRead(OtpiqWebhookEvent $event): RedirectResponse
     {
+        $this->ensureVisible();
+
         $event->forceFill(['read_at' => now()])->save();
         AdminLogger::log('otpiq_webhook.marked_read', $event, ['event_id' => $event->event_id]);
 
@@ -105,6 +111,8 @@ class OtpiqWhatsAppController extends Controller
 
     public function markUnread(OtpiqWebhookEvent $event): RedirectResponse
     {
+        $this->ensureVisible();
+
         $event->forceFill(['read_at' => null])->save();
         AdminLogger::log('otpiq_webhook.marked_unread', $event, ['event_id' => $event->event_id]);
 
@@ -113,6 +121,8 @@ class OtpiqWhatsAppController extends Controller
 
     public function archive(OtpiqWebhookEvent $event): RedirectResponse
     {
+        $this->ensureVisible();
+
         $event->forceFill(['archived_at' => now()])->save();
         AdminLogger::log('otpiq_webhook.archived', $event, ['event_id' => $event->event_id]);
 
@@ -121,6 +131,8 @@ class OtpiqWhatsAppController extends Controller
 
     public function retry(OtpiqWebhookEvent $event): RedirectResponse
     {
+        $this->ensureVisible();
+
         $reset = OtpiqWebhookEvent::query()
             ->whereKey($event->id)
             ->where('processing_status', OtpiqWebhookEvent::STATUS_FAILED)
@@ -153,6 +165,8 @@ class OtpiqWhatsAppController extends Controller
 
     public function updateProcessing(Request $request, OtpiqInboundSettings $inboundSettings): RedirectResponse
     {
+        $this->ensureVisible();
+
         $validated = $request->validate([
             'enabled' => ['required', 'boolean'],
         ]);
@@ -190,5 +204,10 @@ class OtpiqWhatsAppController extends Controller
             'pending' => $pending,
             'failed' => $failed,
         ];
+    }
+
+    private function ensureVisible(): void
+    {
+        abort_unless((bool) config('services.otpiq.whatsapp.visible', false), 404);
     }
 }

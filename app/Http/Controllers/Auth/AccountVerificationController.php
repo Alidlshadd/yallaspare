@@ -129,12 +129,12 @@ class AccountVerificationController extends Controller
             return $this->destination($user);
         }
 
+        $options = $this->channelOptions($user);
         $validated = $request->validate([
-            'channel' => ['required', Rule::in(['email', 'sms', 'whatsapp'])],
+            'channel' => ['required', Rule::in(array_keys($options))],
         ]);
 
         $channel = (string) $validated['channel'];
-        $options = $this->channelOptions($user);
 
         if (! ($options[$channel]['available'] ?? false)) {
             throw ValidationException::withMessages([
@@ -213,8 +213,10 @@ class AccountVerificationController extends Controller
         // satisfy the admin verification gate.
         if ($user->isAdminPanelUser()) {
             foreach (['sms', 'whatsapp'] as $channel) {
-                $options[$channel]['available'] = false;
-                $options[$channel]['action_url'] = null;
+                if (isset($options[$channel])) {
+                    $options[$channel]['available'] = false;
+                    $options[$channel]['action_url'] = null;
+                }
             }
         }
 
@@ -228,7 +230,7 @@ class AccountVerificationController extends Controller
     {
         $channel = (string) $request->session()->get(self::CHANNEL_SESSION_KEY, 'email');
 
-        if (! in_array($channel, ['email', 'sms', 'whatsapp'], true) || ! ($options[$channel]['available'] ?? false)) {
+        if (! isset($options[$channel]) || ! ($options[$channel]['available'] ?? false)) {
             return 'email';
         }
 

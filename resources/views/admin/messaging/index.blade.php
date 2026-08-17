@@ -7,7 +7,7 @@
                     <span class="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600"></span>
                     <span>OTPIQ</span>
                 </div>
-                <h2 class="mt-1 text-2xl font-black text-slate-900 dark:text-white">{{ __('SMS & WhatsApp Center') }}</h2>
+                <h2 class="mt-1 text-2xl font-black text-slate-900 dark:text-white">{{ __('SMS Center') }}</h2>
                 <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('Monitor verification delivery, provider readiness and phone coverage') }}</p>
             </div>
             <a href="{{ route('admin.email.index') }}" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:border-primary/30 hover:text-primary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-indigo-400/40 dark:hover:text-white">
@@ -31,14 +31,20 @@
                 </div>
             @endif
 
-            <section class="grid gap-3 sm:grid-cols-2 xl:grid-cols-5" aria-label="{{ __('Messaging audience summary') }}">
-                @foreach ([
+            @php
+                $summaryCards = [
                     ['label' => __('Phone profiles'), 'value' => $stats['with_phone'], 'icon' => 'fas fa-address-book', 'tone' => 'indigo'],
                     ['label' => __('Verified phones'), 'value' => $stats['verified'], 'icon' => 'fas fa-shield-check', 'tone' => 'emerald'],
                     ['label' => __('Awaiting verification'), 'value' => $stats['unverified'], 'icon' => 'fas fa-clock', 'tone' => 'amber'],
                     ['label' => __('SMS opt-ins'), 'value' => $stats['sms_opt_in'], 'icon' => 'fas fa-comment-sms', 'tone' => 'sky'],
-                    ['label' => __('WhatsApp opt-ins'), 'value' => $stats['whatsapp_opt_in'], 'icon' => 'fab fa-whatsapp', 'tone' => 'green'],
-                ] as $card)
+                ];
+
+                if ($whatsappVisible) {
+                    $summaryCards[] = ['label' => __('WhatsApp opt-ins'), 'value' => $stats['whatsapp_opt_in'], 'icon' => 'fab fa-whatsapp', 'tone' => 'green'];
+                }
+            @endphp
+            <section class="grid gap-3 sm:grid-cols-2 {{ $whatsappVisible ? 'xl:grid-cols-5' : 'xl:grid-cols-4' }}" aria-label="{{ __('Messaging audience summary') }}">
+                @foreach ($summaryCards as $card)
                     @php
                         $tone = match ($card['tone']) {
                             'emerald' => 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-300',
@@ -67,7 +73,7 @@
                             <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">{{ __('Delivery channels') }}</p>
                             <h3 class="mt-1 text-lg font-black text-slate-900 dark:text-white">{{ __('Provider health') }}</h3>
                         </div>
-                        <div class="grid gap-4 p-5 md:grid-cols-2">
+                        <div class="grid gap-4 p-5 {{ $whatsappVisible ? 'md:grid-cols-2' : '' }}">
                             @foreach ($channels as $key => $channel)
                                 @php
                                     $state = $channel['state'];
@@ -132,15 +138,23 @@
                             <h3 class="mt-1 text-lg font-black text-slate-900 dark:text-white">{{ __('Readiness checks') }}</h3>
                         </div>
                         <div class="grid gap-x-6 p-5 sm:grid-cols-2">
-                            @foreach ([
+                            @php
+                                $configurationChecks = [
                                 __('OTPIQ API key') => $configuration['api_key'],
                                 __('OTPIQ base URL') => $configuration['base_url'],
-                                __('WhatsApp channel enabled') => $configuration['whatsapp_enabled'],
-                                __('WhatsApp account ID') => $configuration['whatsapp_account'],
-                                __('WhatsApp phone ID') => $configuration['whatsapp_phone'],
-                                __('Approved template name') => $configuration['whatsapp_template'],
-                                __('Template language') => $configuration['whatsapp_language'],
-                            ] as $label => $ready)
+                                ];
+
+                                if ($whatsappVisible) {
+                                    $configurationChecks += [
+                                        __('WhatsApp channel enabled') => $configuration['whatsapp_enabled'],
+                                        __('WhatsApp account ID') => $configuration['whatsapp_account'],
+                                        __('WhatsApp phone ID') => $configuration['whatsapp_phone'],
+                                        __('Approved template name') => $configuration['whatsapp_template'],
+                                        __('Template language') => $configuration['whatsapp_language'],
+                                    ];
+                                }
+                            @endphp
+                            @foreach ($configurationChecks as $label => $ready)
                                 <div class="flex items-center gap-3 border-b border-slate-100 py-3 last:border-0 dark:border-slate-800">
                                     <span class="inline-flex h-7 w-7 items-center justify-center rounded-full {{ $ready ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-300' : 'bg-slate-100 text-slate-400 dark:bg-white/5 dark:text-slate-500' }}">
                                         <i class="fas {{ $ready ? 'fa-check' : 'fa-minus' }} text-[10px]" aria-hidden="true"></i>
@@ -152,28 +166,30 @@
                                 </div>
                             @endforeach
 
-                            @php
-                                $templateStatus = $configuration['template_status'];
-                                $templateCheckState = match (true) {
-                                    ! $templateStatus['checked'] => 'unverified',
-                                    $templateStatus['template_approved'] === true => 'ready',
-                                    default => 'missing',
-                                };
-                            @endphp
-                            <div class="flex items-center gap-3 border-b border-slate-100 py-3 last:border-0 dark:border-slate-800 sm:col-span-2">
-                                <span class="inline-flex h-7 w-7 items-center justify-center rounded-full {{ $templateCheckState === 'ready' ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-300' : ($templateCheckState === 'missing' ? 'bg-amber-100 text-amber-600 dark:bg-amber-500/10 dark:text-amber-300' : 'bg-slate-100 text-slate-400 dark:bg-white/5 dark:text-slate-500') }}">
-                                    <i class="fas {{ $templateCheckState === 'ready' ? 'fa-check' : ($templateCheckState === 'missing' ? 'fa-triangle-exclamation' : 'fa-question') }} text-[10px]" aria-hidden="true"></i>
-                                </span>
-                                <span class="text-sm font-semibold text-slate-700 dark:text-slate-200">
-                                    {{ __('Template approved on OTPiQ') }}
-                                    @if ($templateCheckState === 'ready' && $templateStatus['language_matches'] === false)
-                                        <span class="text-xs font-medium text-amber-600 dark:text-amber-300">— {{ __('template language differs from the configured value') }}</span>
-                                    @endif
-                                </span>
-                                <span class="ml-auto text-[10px] font-bold uppercase tracking-wider {{ $templateCheckState === 'ready' ? 'text-emerald-600 dark:text-emerald-300' : ($templateCheckState === 'missing' ? 'text-amber-600 dark:text-amber-300' : 'text-slate-400') }}">
-                                    {{ $templateCheckState === 'ready' ? __('Ready') : ($templateCheckState === 'missing' ? __('Missing') : __('Not verified')) }}
-                                </span>
-                            </div>
+                            @if ($whatsappVisible)
+                                @php
+                                    $templateStatus = $configuration['template_status'];
+                                    $templateCheckState = match (true) {
+                                        ! $templateStatus['checked'] => 'unverified',
+                                        $templateStatus['template_approved'] === true => 'ready',
+                                        default => 'missing',
+                                    };
+                                @endphp
+                                <div class="flex items-center gap-3 border-b border-slate-100 py-3 last:border-0 dark:border-slate-800 sm:col-span-2">
+                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full {{ $templateCheckState === 'ready' ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-300' : ($templateCheckState === 'missing' ? 'bg-amber-100 text-amber-600 dark:bg-amber-500/10 dark:text-amber-300' : 'bg-slate-100 text-slate-400 dark:bg-white/5 dark:text-slate-500') }}">
+                                        <i class="fas {{ $templateCheckState === 'ready' ? 'fa-check' : ($templateCheckState === 'missing' ? 'fa-triangle-exclamation' : 'fa-question') }} text-[10px]" aria-hidden="true"></i>
+                                    </span>
+                                    <span class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                                        {{ __('Template approved on OTPiQ') }}
+                                        @if ($templateCheckState === 'ready' && $templateStatus['language_matches'] === false)
+                                            <span class="text-xs font-medium text-amber-600 dark:text-amber-300">— {{ __('template language differs from the configured value') }}</span>
+                                        @endif
+                                    </span>
+                                    <span class="ml-auto text-[10px] font-bold uppercase tracking-wider {{ $templateCheckState === 'ready' ? 'text-emerald-600 dark:text-emerald-300' : ($templateCheckState === 'missing' ? 'text-amber-600 dark:text-amber-300' : 'text-slate-400') }}">
+                                        {{ $templateCheckState === 'ready' ? __('Ready') : ($templateCheckState === 'missing' ? __('Missing') : __('Not verified')) }}
+                                    </span>
+                                </div>
+                            @endif
                         </div>
                     </section>
                 </div>
@@ -196,9 +212,11 @@
                             <label for="channel" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ __('Channel') }}</label>
                             <select id="channel" name="channel" class="w-full rounded-xl border-slate-300 bg-white text-sm font-semibold text-slate-900 focus:border-primary focus:ring-primary dark:border-slate-700 dark:bg-slate-950 dark:text-white">
                                 <option value="sms" @selected(old('channel', 'sms') === 'sms') @disabled(! $channels['sms']['available'])>SMS · {{ $channels['sms']['status'] }}</option>
-                                <option value="whatsapp" @selected(old('channel') === 'whatsapp' && $channels['whatsapp']['available']) @disabled(! $channels['whatsapp']['available'])>WhatsApp · {{ $channels['whatsapp']['status'] }}</option>
+                                @if ($whatsappVisible)
+                                    <option value="whatsapp" @selected(old('channel') === 'whatsapp' && $channels['whatsapp']['available']) @disabled(! $channels['whatsapp']['available'])>WhatsApp · {{ $channels['whatsapp']['status'] }}</option>
+                                @endif
                             </select>
-                            @if (! $channels['whatsapp']['available'] && $channels['whatsapp']['missing'] !== [])
+                            @if ($whatsappVisible && ! $channels['whatsapp']['available'] && $channels['whatsapp']['missing'] !== [])
                                 <p class="mt-1.5 text-xs leading-5 text-slate-400">
                                     {{ __('WhatsApp needs') }}: {{ implode(' · ', $channels['whatsapp']['missing']) }}
                                 </p>

@@ -226,9 +226,9 @@ class CheckoutService
 
     private function contactDestination(User $user, UserAddress $address): string
     {
-        $contactMethod = in_array($user->default_contact_method, ['phone', 'email', 'whatsapp'], true)
+        $contactMethod = in_array($user->default_contact_method, ['phone', 'email', 'sms'], true)
             ? $user->default_contact_method
-            : 'phone';
+            : 'sms';
 
         return match ($contactMethod) {
             'email' => (string) ($user->email ?? $address->phone),
@@ -238,9 +238,9 @@ class CheckoutService
 
     private function checkoutNotes(User $user, ?string $notesInput): string
     {
-        $contactMethod = in_array($user->default_contact_method, ['phone', 'email', 'whatsapp'], true)
+        $contactMethod = in_array($user->default_contact_method, ['phone', 'email', 'sms'], true)
             ? $user->default_contact_method
-            : 'phone';
+            : 'sms';
         $baseNotes = trim((string) ($notesInput ?? $user->default_delivery_note ?? ''));
 
         return trim(collect([

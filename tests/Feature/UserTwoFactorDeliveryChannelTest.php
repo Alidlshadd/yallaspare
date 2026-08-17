@@ -22,6 +22,7 @@ class UserTwoFactorDeliveryChannelTest extends TestCase
         config([
             'services.otpiq.api_key' => 'sk_dev_test_key',
             'services.otpiq.base_url' => 'https://api.otpiq.test/api',
+            'services.otpiq.whatsapp.visible' => false,
             'services.otpiq.whatsapp.enabled' => false,
         ]);
     }
@@ -35,7 +36,8 @@ class UserTwoFactorDeliveryChannelTest extends TestCase
             ->assertOk()
             ->assertSee(__('Enter your verification code'))
             ->assertSee(__('Use another verification method'))
-            ->assertSeeInOrder([__('Email'), __('SMS'), __('WhatsApp')])
+            ->assertSeeInOrder([__('Email'), __('SMS')])
+            ->assertDontSee(__('WhatsApp'))
             ->assertDontSee(__('Delivery Method'))
             ->assertDontSee(__('Verify phone first'));
 
@@ -75,13 +77,13 @@ class UserTwoFactorDeliveryChannelTest extends TestCase
         $this->assertNull(session('user_2fa.challenge'));
     }
 
-    public function test_whatsapp_is_available_only_when_template_configuration_is_complete(): void
+    public function test_whatsapp_is_hidden_until_the_feature_and_template_are_enabled(): void
     {
         Notification::fake();
         $user = $this->twoFactorUser(['phone_verified_at' => null]);
 
         $this->loginAndOpenChallenge($user)
-            ->assertSee(__('WhatsApp verification is currently unavailable.'));
+            ->assertDontSee(__('WhatsApp'));
 
         $this->post(route('user.two-factor.channel'), ['channel' => 'whatsapp'])
             ->assertSessionHasErrors('channel');
@@ -90,6 +92,7 @@ class UserTwoFactorDeliveryChannelTest extends TestCase
         Http::assertNothingSent();
 
         config([
+            'services.otpiq.whatsapp.visible' => true,
             'services.otpiq.whatsapp.enabled' => true,
             'services.otpiq.whatsapp.account_id' => 'wa-account',
             'services.otpiq.whatsapp.phone_id' => 'wa-phone',
@@ -114,6 +117,7 @@ class UserTwoFactorDeliveryChannelTest extends TestCase
     {
         Notification::fake();
         config([
+            'services.otpiq.whatsapp.visible' => true,
             'services.otpiq.whatsapp.enabled' => true,
             'services.otpiq.whatsapp.account_id' => 'wa-account',
             'services.otpiq.whatsapp.phone_id' => 'wa-phone',

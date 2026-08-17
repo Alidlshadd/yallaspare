@@ -26,9 +26,21 @@ class OtpiqWhatsAppWebhookTest extends TestCase
         parent::setUp();
 
         config()->set('services.otpiq.webhook_secret', self::SECRET);
+        config()->set('services.otpiq.whatsapp.visible', true);
         config()->set('services.otpiq.whatsapp_enabled', true);
         config()->set('services.otpiq.webhook_max_body_bytes', 1048576);
         Http::preventStrayRequests();
+    }
+
+    public function test_hidden_whatsapp_webhook_returns_not_found_without_storing_or_dispatching(): void
+    {
+        config()->set('services.otpiq.whatsapp.visible', false);
+        Queue::fake();
+
+        $this->sendWebhook([], 'event-hidden-whatsapp')->assertNotFound();
+
+        $this->assertDatabaseMissing('otpiq_webhook_events', ['event_id' => 'event-hidden-whatsapp']);
+        Queue::assertNothingPushed();
     }
 
     public function test_valid_hmac_webhook_returns_200(): void

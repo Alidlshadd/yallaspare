@@ -177,7 +177,7 @@
                         $contactMethodLabels = [
                             'phone' => __('Phone'),
                             'email' => __('Email'),
-                            'whatsapp' => __('WhatsApp'),
+                            'sms' => __('SMS'),
                         ];
                         $contactMethodLabel = $contactMethodLabels[$defaultContactMethod] ?? __(ucfirst((string) $defaultContactMethod));
                     @endphp

@@ -342,7 +342,7 @@
                     'admin.discounts.rules'        => __('Discount Rules'),
                     'admin.email.*'                => __('Email Center'),
                     'admin.popups.*'               => __('Popups'),
-                    'admin.messaging.*'            => __('SMS & WhatsApp Center'),
+                    'admin.messaging.*'            => __('SMS Center'),
                     'admin.whatsapp.*'             => __('Inbound WhatsApp'),
                     'admin.settings.*'             => __('Settings'),
                     'admin.activity-logs.*'        => __('Activity Logs'),
@@ -653,11 +653,11 @@
                                 <a
                                     href="{{ route('admin.messaging.index') }}"
                                     class="admin-nav-link {{ $navItem(request()->routeIs('admin.messaging.*')) }}"
-                                    data-admin-sidebar-tooltip="{{ __('SMS & WhatsApp Center') }}"
+                                    data-admin-sidebar-tooltip="{{ __('SMS Center') }}"
                                     @if(request()->routeIs('admin.messaging.*')) aria-current="page" @endif
                                 >
                                     <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-comments"></i></span>
-                                    <span class="admin-nav-label">{{ __('SMS & WhatsApp Center') }}</span>
+                                    <span class="admin-nav-label">{{ __('SMS Center') }}</span>
                                 </a>
                                 <a
                                     href="{{ route('admin.popups.index') }}"
@@ -669,7 +669,7 @@
                                     <span class="admin-nav-label">{{ __('Popups') }}</span>
                                 </a>
                             @endcan
-                            @can('manage-whatsapp-webhooks')
+                            @if(config('services.otpiq.whatsapp.visible', false) && $canWhatsapp)
                                 <a
                                     href="{{ route('admin.whatsapp.index') }}"
                                     class="admin-nav-link {{ $navItem(request()->routeIs('admin.whatsapp.*')) }}"
@@ -679,7 +679,7 @@
                                     <span class="admin-nav-icon" aria-hidden="true"><i class="fab fa-whatsapp"></i></span>
                                     <span class="admin-nav-label">{{ __('Inbound WhatsApp') }}</span>
                                 </a>
-                            @endcan
+                            @endif
                         @endif
 
                         {{-- ── ADMIN ── --}}

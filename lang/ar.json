@@ -3794,5 +3794,8 @@
     "Brand created successfully.": "تم إنشاء العلامة التجارية بنجاح.",
     "Brand updated successfully.": "تم تحديث العلامة التجارية بنجاح.",
     "Brand deleted successfully.": "تم حذف العلامة التجارية بنجاح.",
-    "Cannot delete a brand with assigned products.": "لا يمكن حذف علامة تجارية مرتبطة بمنتجات."
+    "Cannot delete a brand with assigned products.": "لا يمكن حذف علامة تجارية مرتبطة بمنتجات.",
+    "SMS Center": "مركز الرسائل القصيرة",
+    "Add an Iraqi mobile number before continuing. You can then receive verification codes by email or SMS.": "أضف رقم هاتف عراقي قبل المتابعة. بعدها يمكنك استلام رموز التحقق عبر البريد الإلكتروني أو الرسائل القصيرة.",
+    "Choose how email and SMS updates should reach you.": "اختر كيفية وصول تحديثات البريد الإلكتروني والرسائل القصيرة إليك."
 }

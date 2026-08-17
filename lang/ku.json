@@ -3794,5 +3794,8 @@
     "Brand created successfully.": "براند بە سەرکەوتوویی دروست کرا.",
     "Brand updated successfully.": "براند بە سەرکەوتوویی نوێ کرایەوە.",
     "Brand deleted successfully.": "براند بە سەرکەوتوویی سڕایەوە.",
-    "Cannot delete a brand with assigned products.": "ناتوانرێت براندێک بسڕدرێتەوە کە بەرهەمی پێوە بەستراوە."
+    "Cannot delete a brand with assigned products.": "ناتوانرێت براندێک بسڕدرێتەوە کە بەرهەمی پێوە بەستراوە.",
+    "SMS Center": "ناوەندی SMS",
+    "Add an Iraqi mobile number before continuing. You can then receive verification codes by email or SMS.": "پێش بەردەوامبوون ژمارەیەکی مۆبایلی عێراقی زیاد بکە. دواتر دەتوانیت کۆدی پشتڕاستکردنەوە بە ئیمەیڵ یان SMS وەربگریت.",
+    "Choose how email and SMS updates should reach you.": "هەڵبژێرە نوێکارییەکانی ئیمەیڵ و SMS چۆن پێت بگەن."
 }

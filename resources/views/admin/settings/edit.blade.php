@@ -28,7 +28,7 @@
         'hero' => ['storefront_hero_video'],
         'currency' => ['currency_code', 'currency_symbol'],
         'operations' => ['shipping_fee', 'low_stock_threshold'],
-        'providers' => ['sms_provider_webhook_url', 'whatsapp_provider_webhook_url'],
+        'providers' => ['sms_provider_webhook_url'],
         'templates-en' => [
             'notification_order_placed_en_subject', 'notification_order_placed_en_body',
             'notification_order_status_updated_en_subject', 'notification_order_status_updated_en_body',
@@ -191,7 +191,7 @@
                             <p class="text-lg font-bold text-gray-800 dark:text-slate-100">{{ __('Currency') }}</p>
                             <p class="mt-1 mb-5 text-xs text-gray-500 dark:text-slate-400">{{ __('Set the currency format shown to customers.') }}</p>
 
-                            <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div class="grid grid-cols-1 gap-4">
                                 <div>
                                     <label class="{{ $labelClasses }}">{{ __('Currency Code') }}</label>
                                     <input type="text" name="currency_code" value="{{ old('currency_code', $settings['currency_code'] ?? 'IQD') }}" class="{{ $inputClasses }}" required>
@@ -233,10 +233,6 @@
                                 <div>
                                     <label class="{{ $labelClasses }}">{{ __('SMS Webhook URL') }}</label>
                                     <input type="url" name="sms_provider_webhook_url" value="{{ old('sms_provider_webhook_url', $settings['sms_provider_webhook_url'] ?? '') }}" class="{{ $inputClasses }}">
-                                </div>
-                                <div>
-                                    <label class="{{ $labelClasses }}">{{ __('WhatsApp Webhook URL') }}</label>
-                                    <input type="url" name="whatsapp_provider_webhook_url" value="{{ old('whatsapp_provider_webhook_url', $settings['whatsapp_provider_webhook_url'] ?? '') }}" class="{{ $inputClasses }}">
                                 </div>
                             </div>
                         </div>

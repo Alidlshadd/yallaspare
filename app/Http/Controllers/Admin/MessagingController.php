@@ -23,53 +23,56 @@ class MessagingController extends Controller
         $withPhone = User::query()->whereNotNull('phone_normalized');
         $admin = $request->user();
 
+        $whatsappVisible = (bool) config('services.otpiq.whatsapp.visible', false);
         $whatsappEnabled = (bool) config('services.otpiq.whatsapp.enabled', false);
-        $whatsappConfigured = $this->otpiq->whatsappAvailable();
-        $templateStatus = $this->otpiq->whatsappTemplateStatus();
-        $whatsappReady = $this->otpiq->whatsappReady();
-        $whatsappMissing = $this->whatsappMissing($whatsappEnabled, $templateStatus);
-
-        $whatsappState = match (true) {
-            ! $whatsappEnabled => 'disabled',
-            $whatsappReady => 'ready',
-            default => 'attention',
-        };
-
-        return view('admin.messaging.index', [
-            'channels' => [
-                'sms' => [
-                    'label' => 'SMS',
-                    'available' => $this->otpiq->smsAvailable(),
-                    'state' => $this->otpiq->smsAvailable() ? 'ready' : 'attention',
-                    'status' => $this->otpiq->smsAvailable() ? __('Ready') : __('Configuration required'),
-                    'missing' => $this->otpiq->smsAvailable() ? [] : [__('OTPIQ API key')],
-                ],
-                'whatsapp' => [
-                    'label' => 'WhatsApp',
-                    'available' => $whatsappReady,
-                    'state' => $whatsappState,
-                    'status' => match ($whatsappState) {
-                        'ready' => __('Ready'),
-                        'disabled' => __('Disabled'),
-                        default => __('Configuration required'),
-                    },
-                    'missing' => $whatsappMissing,
-                    'template_alert' => $whatsappEnabled
-                        && $whatsappConfigured
-                        && $templateStatus['checked']
-                        && $templateStatus['template_approved'] !== true,
-                ],
+        $channels = [
+            'sms' => [
+                'label' => 'SMS',
+                'available' => $this->otpiq->smsAvailable(),
+                'state' => $this->otpiq->smsAvailable() ? 'ready' : 'attention',
+                'status' => $this->otpiq->smsAvailable() ? __('Ready') : __('Configuration required'),
+                'missing' => $this->otpiq->smsAvailable() ? [] : [__('OTPIQ API key')],
             ],
-            'stats' => [
-                'with_phone' => (clone $withPhone)->count(),
-                'verified' => (clone $withPhone)->whereNotNull('phone_verified_at')->count(),
-                'unverified' => (clone $withPhone)->whereNull('phone_verified_at')->count(),
-                'sms_opt_in' => (clone $withPhone)->where('sms_notifications', true)->count(),
-                'whatsapp_opt_in' => (clone $withPhone)->where('whatsapp_notifications', true)->count(),
-            ],
-            'configuration' => [
-                'api_key' => $this->otpiq->smsAvailable(),
-                'base_url' => filled(config('services.otpiq.base_url')),
+        ];
+        $stats = [
+            'with_phone' => (clone $withPhone)->count(),
+            'verified' => (clone $withPhone)->whereNotNull('phone_verified_at')->count(),
+            'unverified' => (clone $withPhone)->whereNull('phone_verified_at')->count(),
+            'sms_opt_in' => (clone $withPhone)->where('sms_notifications', true)->count(),
+        ];
+        $configuration = [
+            'api_key' => $this->otpiq->smsAvailable(),
+            'base_url' => filled(config('services.otpiq.base_url')),
+        ];
+
+        if ($whatsappVisible) {
+            $whatsappConfigured = $this->otpiq->whatsappAvailable();
+            $templateStatus = $this->otpiq->whatsappTemplateStatus();
+            $whatsappReady = $this->otpiq->whatsappReady();
+            $whatsappMissing = $this->whatsappMissing($whatsappEnabled, $templateStatus);
+            $whatsappState = match (true) {
+                ! $whatsappEnabled => 'disabled',
+                $whatsappReady => 'ready',
+                default => 'attention',
+            };
+
+            $channels['whatsapp'] = [
+                'label' => 'WhatsApp',
+                'available' => $whatsappReady,
+                'state' => $whatsappState,
+                'status' => match ($whatsappState) {
+                    'ready' => __('Ready'),
+                    'disabled' => __('Disabled'),
+                    default => __('Configuration required'),
+                },
+                'missing' => $whatsappMissing,
+                'template_alert' => $whatsappEnabled
+                    && $whatsappConfigured
+                    && $templateStatus['checked']
+                    && $templateStatus['template_approved'] !== true,
+            ];
+            $stats['whatsapp_opt_in'] = (clone $withPhone)->where('whatsapp_notifications', true)->count();
+            $configuration += [
                 'whatsapp_enabled' => $whatsappEnabled,
                 'whatsapp_account' => filled(config('services.otpiq.whatsapp.account_id')),
                 'whatsapp_phone' => filled(config('services.otpiq.whatsapp.phone_id')),
@@ -78,7 +81,14 @@ class MessagingController extends Controller
                 'template_name' => trim((string) config('services.otpiq.whatsapp.template_name')),
                 'template_language' => trim((string) config('services.otpiq.whatsapp.template_language', 'en')),
                 'template_status' => $templateStatus,
-            ],
+            ];
+        }
+
+        return view('admin.messaging.index', [
+            'channels' => $channels,
+            'stats' => $stats,
+            'configuration' => $configuration,
+            'whatsappVisible' => $whatsappVisible,
             'testPhone' => VerificationChannels::maskedPhone((string) $admin?->phone_normalized),
             'testPhoneAvailable' => filled($admin?->phone_normalized),
         ]);
@@ -86,8 +96,9 @@ class MessagingController extends Controller
 
     public function sendTest(Request $request): RedirectResponse
     {
+        $whatsappVisible = (bool) config('services.otpiq.whatsapp.visible', false);
         $validated = $request->validate([
-            'channel' => ['required', Rule::in(['sms', 'whatsapp'])],
+            'channel' => ['required', Rule::in($whatsappVisible ? ['sms', 'whatsapp'] : ['sms'])],
         ]);
 
         $channel = (string) $validated['channel'];

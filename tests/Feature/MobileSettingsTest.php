@@ -46,8 +46,8 @@ class MobileSettingsTest extends TestCase
         $this->assertTrue($data['notifications']['notify_order_updates']);
         $this->assertFalse($data['notifications']['notify_promotions']);
         $this->assertSame('60', $data['security']['session_timeout']);
-        $this->assertTrue($data['communication']['whatsapp_notifications']);
-        $this->assertSame('whatsapp', $data['checkout']['default_contact_method']);
+        $this->assertFalse($data['communication']['whatsapp_notifications']);
+        $this->assertSame('sms', $data['checkout']['default_contact_method']);
         $this->assertSame('Leave at door', $data['checkout']['default_delivery_note']);
         $this->assertSame('IQD', $data['general']['currency_preference']);
         $this->assertSame('Asia/Baghdad', $data['general']['timezone_preference']);
@@ -137,7 +137,7 @@ class MobileSettingsTest extends TestCase
         $this->assertSame('30', (string) $user->fresh()->session_timeout);
     }
 
-    public function test_patch_settings_communication_updates_four_flags(): void
+    public function test_patch_settings_communication_keeps_whatsapp_disabled(): void
     {
         $user = User::factory()->create([
             'email_notifications' => false,
@@ -158,7 +158,7 @@ class MobileSettingsTest extends TestCase
         $fresh = $user->fresh();
         $this->assertTrue((bool) $fresh->email_notifications);
         $this->assertTrue((bool) $fresh->sms_notifications);
-        $this->assertTrue((bool) $fresh->whatsapp_notifications);
+        $this->assertFalse((bool) $fresh->whatsapp_notifications);
         $this->assertTrue((bool) $fresh->marketing_consent);
     }
 
@@ -172,14 +172,14 @@ class MobileSettingsTest extends TestCase
 
         $this->actingAs($user, 'sanctum')
             ->patchJson('/api/mobile/settings/checkout', [
-                'default_contact_method' => 'whatsapp',
+                'default_contact_method' => 'sms',
                 'default_delivery_note' => 'Ring twice',
                 'express_checkout' => true,
             ])
             ->assertOk();
 
         $fresh = $user->fresh();
-        $this->assertSame('whatsapp', $fresh->default_contact_method);
+        $this->assertSame('sms', $fresh->default_contact_method);
         $this->assertSame('Ring twice', $fresh->default_delivery_note);
         $this->assertTrue((bool) $fresh->express_checkout);
     }
@@ -243,6 +243,7 @@ class MobileSettingsTest extends TestCase
         $this->assertSame('UTC', $fresh->timezone_preference);
         $this->assertSame('ymd', $fresh->date_format_preference);
         $this->assertSame('Back gate', $fresh->default_delivery_note);
+        $this->assertFalse((bool) $fresh->whatsapp_notifications);
     }
 
     public function test_patch_settings_full_rejects_invalid_currency(): void

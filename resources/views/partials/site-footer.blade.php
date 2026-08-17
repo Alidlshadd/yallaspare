@@ -124,11 +124,13 @@
                                 <circle cx="17.5" cy="6.5" r="1" fill="currentColor"/>
                             </svg>
                         </a>
+                        @if(config('services.otpiq.whatsapp.visible', false))
                         <a href="https://wa.me/9647704488315" target="_blank" rel="noopener noreferrer" aria-label="{{ __('WhatsApp') }}" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white">
                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                                 <path d="M12 3.2A8.8 8.8 0 0 0 4.5 16l-1.2 4.8 5-1.2A8.8 8.8 0 1 0 12 3.2Zm0 15.8a7 7 0 0 1-3.5-.9l-.3-.2-2.9.7.7-2.8-.2-.3A7 7 0 1 1 12 19Zm3.9-5.2c-.2-.1-1.2-.6-1.4-.7-.2-.1-.3-.1-.5.1l-.4.5c-.1.2-.3.2-.4.1a5.8 5.8 0 0 1-1.7-1.1 6.6 6.6 0 0 1-1.2-1.5c-.1-.2 0-.3.1-.4l.3-.4.2-.3c.1-.1 0-.3 0-.4l-.6-1.4c-.2-.4-.3-.4-.5-.4h-.4a.8.8 0 0 0-.6.3c-.2.2-.8.8-.8 1.9s.8 2.3.9 2.4c.1.2 1.5 2.3 3.6 3.1.5.2 1 .4 1.3.5.5.2 1 .1 1.4.1.4-.1 1.2-.5 1.4-.9.2-.4.2-.8.1-.9 0-.1-.2-.2-.4-.3Z"/>
                             </svg>
                         </a>
+                        @endif
                         <a href="https://youtube.com/@yallaspare" target="_blank" rel="noopener noreferrer" aria-label="{{ __('YouTube') }}" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:bg-slate-100 hover:text-slate-900 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white">
                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                                 <path d="M21.6 7.2a2.9 2.9 0 0 0-2-2C17.9 4.7 12 4.7 12 4.7s-5.9 0-7.6.5a2.9 2.9 0 0 0-2 2A30.7 30.7 0 0 0 2 12a30.7 30.7 0 0 0 .4 4.8 2.9 2.9 0 0 0 2 2c1.7.5 7.6.5 7.6.5s5.9 0 7.6-.5a2.9 2.9 0 0 0 2-2A30.7 30.7 0 0 0 22 12a30.7 30.7 0 0 0-.4-4.8zM10 15.4V8.6L15.2 12 10 15.4z"/>

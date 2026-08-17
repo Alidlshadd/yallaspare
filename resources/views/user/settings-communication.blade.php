@@ -41,7 +41,6 @@
                     @foreach ([
                         ['name' => 'email_notifications', 'title' => __('Email Notifications'), 'description' => __('Receive order and account messages by email.')],
                         ['name' => 'sms_notifications', 'title' => __('SMS Notifications'), 'description' => __('Receive short delivery and order alerts by text message.')],
-                        ['name' => 'whatsapp_notifications', 'title' => __('WhatsApp Notifications'), 'description' => __('Allow WhatsApp updates for delivery coordination and status changes.')],
                         ['name' => 'marketing_consent', 'title' => __('Marketing Consent'), 'description' => __('Allow promotional offers and campaign announcements.')],
                     ] as $item)
                         <label class="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-4 transition duration-200 hover:border-primary/20 hover:bg-white dark:border-slate-800 dark:bg-slate-950 dark:hover:border-primary/30 dark:hover:bg-slate-900">

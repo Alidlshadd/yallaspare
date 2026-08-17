@@ -139,12 +139,12 @@ class UserTwoFactorController extends Controller
             return redirect()->intended(route('user.shop.home'));
         }
 
+        $options = $this->channelOptions($request->user());
         $validated = $request->validate([
-            'channel' => ['required', Rule::in(['email', 'sms', 'whatsapp'])],
+            'channel' => ['required', Rule::in(array_keys($options))],
         ]);
 
         $channel = (string) $validated['channel'];
-        $options = $this->channelOptions($request->user());
 
         if (! ($options[$channel]['available'] ?? false)) {
             throw ValidationException::withMessages([
@@ -251,7 +251,7 @@ class UserTwoFactorController extends Controller
         $challenge = $request->session()->get('user_2fa.challenge');
         $channel = is_array($challenge) ? (string) ($challenge['channel'] ?? 'email') : 'email';
 
-        return in_array($channel, ['email', 'sms', 'whatsapp'], true) ? $channel : 'email';
+        return isset($this->channelOptions($request->user())[$channel]) ? $channel : 'email';
     }
 
     /**

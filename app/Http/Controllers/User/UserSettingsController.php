@@ -86,7 +86,7 @@ class UserSettingsController extends Controller
             'session_timeout' => $data['session_timeout'],
             'email_notifications' => $request->boolean('email_notifications'),
             'sms_notifications' => $request->boolean('sms_notifications'),
-            'whatsapp_notifications' => $request->boolean('whatsapp_notifications'),
+            'whatsapp_notifications' => false,
             'marketing_consent' => $request->boolean('marketing_consent'),
             'currency_preference' => $data['currency_preference'],
             'timezone_preference' => $data['timezone_preference'],
@@ -211,7 +211,7 @@ class UserSettingsController extends Controller
         $user->forceFill([
             'email_notifications' => $request->boolean('email_notifications'),
             'sms_notifications' => $request->boolean('sms_notifications'),
-            'whatsapp_notifications' => $request->boolean('whatsapp_notifications'),
+            'whatsapp_notifications' => false,
             'marketing_consent' => $request->boolean('marketing_consent'),
         ])->save();
 

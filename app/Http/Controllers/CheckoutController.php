@@ -173,7 +173,9 @@ class CheckoutController extends Controller
             'addresses' => $addresses,
             'defaultAddress' => $defaultAddress,
             'defaultDeliveryNote' => (string) ($user->default_delivery_note ?? ''),
-            'defaultContactMethod' => (string) ($user->default_contact_method ?? 'phone'),
+            'defaultContactMethod' => in_array((string) $user->default_contact_method, ['phone', 'email', 'sms'], true)
+                ? (string) $user->default_contact_method
+                : 'sms',
             'expressCheckout' => (bool) ($user->express_checkout ?? false),
         ]);
     }

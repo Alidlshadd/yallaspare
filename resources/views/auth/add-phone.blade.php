@@ -3,7 +3,7 @@
     form-position="right"
     enter-direction="right"
     :panel-title="__('Secure your account')"
-    :panel-subtitle="__('Add an Iraqi mobile number before continuing. You can then receive verification codes by email, SMS, or WhatsApp when available.')"
+    :panel-subtitle="__('Add an Iraqi mobile number before continuing. You can then receive verification codes by email or SMS.')"
     :panel-tag="__('Phone required')"
     panel-theme="login"
     panel-button-action="none"

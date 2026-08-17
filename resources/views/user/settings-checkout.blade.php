@@ -43,7 +43,7 @@
                         <select id="default_contact_method" name="default_contact_method" class="mt-2 block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white">
                             <option value="phone" @selected(old('default_contact_method', $user->default_contact_method ?? 'phone') === 'phone')>{{ __('Phone') }}</option>
                             <option value="email" @selected(old('default_contact_method', $user->default_contact_method ?? 'phone') === 'email')>{{ __('Email') }}</option>
-                            <option value="whatsapp" @selected(old('default_contact_method', $user->default_contact_method ?? 'phone') === 'whatsapp')>{{ __('WhatsApp') }}</option>
+                            <option value="sms" @selected(in_array(old('default_contact_method', $user->default_contact_method ?? 'phone'), ['sms', 'whatsapp'], true))>{{ __('SMS') }}</option>
                         </select>
                     </div>
 
