@@ -599,12 +599,15 @@
             @if (! request()->routeIs('cart.*') && (session('success') || session('error')))
                 <div class="mx-auto mt-4 w-full max-w-7xl px-4 sm:px-6 lg:px-8">
                     @if (session('success'))
-                        <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
+                        {{-- The 50-level fills stay bright in dark mode, so these appeared as
+                             light panels on a dark page. Tinted dark variants keep them
+                             recognisably green and red without the glare. --}}
+                        <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 dark:border-emerald-900/40 dark:bg-emerald-900/20 dark:text-emerald-300">
                             {{ session('success') }}
                         </div>
                     @endif
                     @if (session('error'))
-                        <div class="@if (session('success')) mt-2 @endif rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
+                        <div class="@if (session('success')) mt-2 @endif rounded-2xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/30 dark:text-rose-300">
                             {{ session('error') }}
                         </div>
                     @endif

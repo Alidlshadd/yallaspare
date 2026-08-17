@@ -58,7 +58,7 @@
                     @endforeach
                 </div>
                 @error('address_id')
-                    <p class="mt-2 text-xs font-medium text-rose-600">{{ $message }}</p>
+                    <p class="mt-2 text-xs font-medium text-rose-600 dark:text-rose-300">{{ $message }}</p>
                 @enderror
             </section>
 
