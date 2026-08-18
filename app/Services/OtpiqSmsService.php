@@ -127,7 +127,6 @@ class OtpiqSmsService
     public function whatsappAvailable(): bool
     {
         return $this->smsAvailable()
-            && (bool) config('services.otpiq.whatsapp.visible', false)
             && (bool) config('services.otpiq.whatsapp.enabled', false)
             && filled(config('services.otpiq.whatsapp.account_id'))
             && filled(config('services.otpiq.whatsapp.phone_id'))

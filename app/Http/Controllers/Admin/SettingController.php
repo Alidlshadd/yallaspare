@@ -227,7 +227,7 @@ class SettingController extends Controller
             'storefront_hero_image' => $heroImage,
             'storefront_hero_video' => $heroVideo,
             'sms_provider_webhook_url' => (string) ($data['sms_provider_webhook_url'] ?? ''),
-            'whatsapp_provider_webhook_url' => (bool) config('services.otpiq.whatsapp.visible', false)
+            'whatsapp_provider_webhook_url' => (bool) config('services.otpiq.whatsapp.admin_visible', true)
                 ? (string) ($data['whatsapp_provider_webhook_url'] ?? '')
                 : (string) Setting::getValue('whatsapp_provider_webhook_url', ''),
             'notification_order_placed_en_subject' => (string) ($data['notification_order_placed_en_subject'] ?? ''),

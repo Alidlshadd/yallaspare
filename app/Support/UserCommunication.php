@@ -156,7 +156,7 @@ class UserCommunication
             }
         }
 
-        if ((bool) config('services.otpiq.whatsapp.visible', false) && $user->whatsapp_notifications && $user->phone) {
+        if ((bool) config('services.otpiq.whatsapp.user_visible', false) && $user->whatsapp_notifications && $user->phone) {
             if (self::sendWebhook('whatsapp_provider_webhook_url', $user->phone, $message, $context + ['type' => $type])) {
                 $sentVia[] = 'whatsapp';
             }

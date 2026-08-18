@@ -19,13 +19,13 @@ class AdminMessagingCenterTest extends TestCase
         config([
             'services.otpiq.api_key' => 'test-api-key',
             'services.otpiq.base_url' => 'https://api.otpiq.test/api',
-            'services.otpiq.whatsapp.visible' => false,
+            'services.otpiq.whatsapp.admin_visible' => true,
             'services.otpiq.whatsapp.enabled' => false,
             'security.admin_two_factor.enabled' => false,
         ]);
     }
 
-    public function test_settings_manager_can_open_sms_center_without_whatsapp_controls(): void
+    public function test_settings_manager_can_open_sms_center_with_whatsapp_controls(): void
     {
         $admin = $this->settingsManager();
         User::factory()->create([
@@ -38,11 +38,11 @@ class AdminMessagingCenterTest extends TestCase
         $this->actingAs($admin)
             ->get(route('admin.messaging.index'))
             ->assertOk()
-            ->assertSee('SMS Center')
+            ->assertSee('SMS &amp; WhatsApp Center', false)
             ->assertSee('Provider health')
             ->assertSee('Send test OTP')
             ->assertSee('Verified phones')
-            ->assertDontSee('WhatsApp')
+            ->assertSee('WhatsApp')
             ->assertDontSee('test-api-key');
     }
 
@@ -58,6 +58,7 @@ class AdminMessagingCenterTest extends TestCase
     public function test_whatsapp_card_is_hidden_and_no_api_call_is_made_when_channel_is_hidden(): void
     {
         Http::fake();
+        config(['services.otpiq.whatsapp.admin_visible' => false]);
         $admin = $this->settingsManager();
 
         $this->actingAs($admin)
@@ -72,7 +73,7 @@ class AdminMessagingCenterTest extends TestCase
     {
         Http::fake();
         config([
-            'services.otpiq.whatsapp.visible' => true,
+            'services.otpiq.whatsapp.admin_visible' => true,
             'services.otpiq.whatsapp.enabled' => true,
         ]);
         $admin = $this->settingsManager();
@@ -235,7 +236,7 @@ class AdminMessagingCenterTest extends TestCase
     private function configureWhatsapp(): void
     {
         config([
-            'services.otpiq.whatsapp.visible' => true,
+            'services.otpiq.whatsapp.admin_visible' => true,
             'services.otpiq.whatsapp.enabled' => true,
             'services.otpiq.whatsapp.account_id' => 'wa-account',
             'services.otpiq.whatsapp.phone_id' => 'wa-phone',

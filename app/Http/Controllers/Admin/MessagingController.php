@@ -23,7 +23,7 @@ class MessagingController extends Controller
         $withPhone = User::query()->whereNotNull('phone_normalized');
         $admin = $request->user();
 
-        $whatsappVisible = (bool) config('services.otpiq.whatsapp.visible', false);
+        $whatsappVisible = (bool) config('services.otpiq.whatsapp.admin_visible', true);
         $whatsappEnabled = (bool) config('services.otpiq.whatsapp.enabled', false);
         $channels = [
             'sms' => [
@@ -96,7 +96,7 @@ class MessagingController extends Controller
 
     public function sendTest(Request $request): RedirectResponse
     {
-        $whatsappVisible = (bool) config('services.otpiq.whatsapp.visible', false);
+        $whatsappVisible = (bool) config('services.otpiq.whatsapp.admin_visible', true);
         $validated = $request->validate([
             'channel' => ['required', Rule::in($whatsappVisible ? ['sms', 'whatsapp'] : ['sms'])],
         ]);

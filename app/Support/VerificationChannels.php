@@ -40,7 +40,7 @@ class VerificationChannels
             ],
         ];
 
-        if ((bool) config('services.otpiq.whatsapp.visible', false)) {
+        if ((bool) config('services.otpiq.whatsapp.user_visible', false)) {
             $options['whatsapp'] = [
                 'label' => __('WhatsApp'),
                 'description' => __('Receive the code in WhatsApp.'),
