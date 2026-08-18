@@ -3832,5 +3832,11 @@
     "Choose how email and SMS updates should reach you.": "اختر كيفية وصول تحديثات البريد الإلكتروني والرسائل القصيرة إليك.",
     "Vehicle saved to your garage.": "تم حفظ السيارة في مرآبك.",
     "Save to My Garage": "احفظ في مرآبي",
-    "Also fits :count other models": "تناسب أيضًا :count موديلات أخرى"
+    "Also fits :count other models": "تناسب أيضًا :count موديلات أخرى",
+    "Verified fitment": "توافق موثّق",
+    "Fits these vehicles": "تناسب هذه المركبات",
+    "all": "الكل",
+    "Not sure? Send us your chassis number and we will confirm.": "غير متأكد؟ أرسل لنا رقم الشاسيه وسنؤكد لك.",
+    ":count configuration|:count configurations": "تركيبة واحدة|:count تركيبات",
+    ":count engine|:count engines": "محرك واحد|:count محركات"
 }
