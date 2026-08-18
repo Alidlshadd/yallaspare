@@ -222,6 +222,10 @@ class ShopController extends Controller
         $engine = $engine !== '' ? $engine : $this->extractVehicleEngine($legacyVehicle);
         $year = $this->extractVehicleYear($yearInput !== '' ? $yearInput : $legacyVehicle);
 
+        if ($engine !== '' && preg_match('/\bdiesel\b/i', $engine)) {
+            $productsQuery->whereRaw('1 = 0');
+        }
+
         if (($brand !== '' || $model !== '' || $engine !== '' || $year !== null) && DbSchema::hasTable('product_vehicle_fitments')) {
 
             // Keep every selected vehicle constraint on the same fitment row.
@@ -415,8 +419,8 @@ class ShopController extends Controller
         if (DbSchema::hasTable('vehicle_brands')) {
             $vehicleBrandRows = VehicleBrand::query()
                 ->with(['models' => fn ($query) => $query
-                    ->select(['id', 'vehicle_brand_id', 'name', 'production_start_year', 'production_end_year'])
-                    ->with('engineTypes:id,vehicle_model_id,name')])
+                    ->select(['id', 'vehicle_brand_id', 'vehicle_model_family_id', 'name', 'production_start_year', 'production_end_year'])
+                    ->with(['family:id,name', 'engineTypes:id,vehicle_model_id,name'])])
                 ->orderBy('name')
                 ->get();
 
@@ -438,7 +442,8 @@ class ShopController extends Controller
                             ->mapWithKeys(fn (VehicleModel $model) => [
                                 (string) $model->name => [
                                     'model_id' => (int) $model->id,
-                                    'engines' => $model->engineTypes->pluck('name')->filter()->unique()->values()->all(),
+                                    'family' => $model->family?->name,
+                                    'engines' => $model->engineTypes->pluck('name')->filter()->reject(fn ($engine) => preg_match('/\bdiesel\b/i', (string) $engine))->unique()->values()->all(),
                                     'year_from' => $model->production_start_year ? (int) $model->production_start_year : null,
                                     'year_to' => $model->production_end_year ? (int) $model->production_end_year : null,
                                 ],
@@ -470,6 +475,7 @@ class ShopController extends Controller
                 ->pluck('engine')
                 ->map(fn ($engine) => trim((string) $engine))
                 ->filter()
+                ->reject(fn ($engine) => preg_match('/\bdiesel\b/i', $engine))
                 ->unique()
                 ->values();
 
@@ -489,6 +495,7 @@ class ShopController extends Controller
                         ->pluck('engine')
                         ->map(fn ($engine) => trim((string) $engine))
                         ->filter()
+                        ->reject(fn ($engine) => preg_match('/\bdiesel\b/i', $engine))
                         ->unique()
                         ->values()
                         ->all();

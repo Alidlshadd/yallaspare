@@ -2,8 +2,8 @@
     $row = is_array($fitmentRow ?? null) ? $fitmentRow : [];
     $rowIndex = (string) ($fitmentIndex ?? 0);
     $selectedBrandId = (string) ($row['vehicle_brand_id'] ?? '');
+    $selectedFamilyId = (string) ($row['vehicle_model_family_id'] ?? '');
     $selectedModelId = (string) ($row['vehicle_model_id'] ?? '');
-    $engineListId = 'vf-engine-types-list-'.$rowIndex;
 @endphp
 
 <section class="vf-fitment-card" data-fitment-row data-fitment-index="{{ $rowIndex }}">
@@ -28,17 +28,38 @@
             </select>
         </div>
         <div>
-            <label class="vf-lbl">{{ __('Vehicle Model') }}</label>
-            <select name="fitments[{{ $rowIndex }}][vehicle_model_id]" data-admin-vehicle-model class="vf-sel">
-                <option value="">{{ __('Any model') }}</option>
+            <label class="vf-lbl">{{ __('Model Family') }}</label>
+            <select name="fitments[{{ $rowIndex }}][vehicle_model_family_id]" required data-admin-vehicle-family class="vf-sel">
+                <option value="">{{ __('Select family') }}</option>
+                @foreach($brands as $brand)
+                    @foreach($brand->modelFamilies as $family)
+                        <option value="{{ $family->id }}" @selected($selectedFamilyId === (string) $family->id)>{{ $family->name }}</option>
+                    @endforeach
+                @endforeach
+            </select>
+        </div>
+        <div>
+            <label class="vf-lbl">{{ __('Vehicle Variant') }}</label>
+            <select name="fitments[{{ $rowIndex }}][vehicle_model_id]" required data-admin-vehicle-model class="vf-sel">
+                <option value="">{{ __('Select variant') }}</option>
                 @foreach($brands as $brand)
                     @foreach($brand->models as $model)
                         <option value="{{ $model->id }}" @selected($selectedModelId === (string) $model->id)
+                                data-family-id="{{ $model->vehicle_model_family_id }}" data-engines='@json($model->engineTypes->pluck('name')->values())'
                                 data-year-from="{{ $model->production_start_year }}" data-year-to="{{ $model->production_end_year }}">
-                            {{ $brand->name }} / {{ $model->name }}
+                            {{ $model->name }}
                         </option>
                     @endforeach
                 @endforeach
+            </select>
+        </div>
+        <div>
+            <label class="vf-lbl">{{ __('Engine') }}</label>
+            <select name="fitments[{{ $rowIndex }}][engine]" class="vf-sel" data-admin-engine>
+                <option value="">{{ __('Any configured petrol engine') }}</option>
+                @if(trim((string) ($row['engine'] ?? '')) !== '')
+                    <option value="{{ $row['engine'] }}" selected>{{ $row['engine'] }}</option>
+                @endif
             </select>
         </div>
         <div>
@@ -50,16 +71,6 @@
             <label class="vf-lbl">{{ __('Year To') }}</label>
             <input name="fitments[{{ $rowIndex }}][year_to]" type="number" min="1900" max="2100"
                    value="{{ $row['year_to'] ?? '' }}" placeholder="{{ __('Any') }}" class="vf-inp" data-admin-year-to>
-        </div>
-        <div>
-            <label class="vf-lbl">{{ __('Engine') }}</label>
-            <input name="fitments[{{ $rowIndex }}][engine]" list="{{ $engineListId }}" maxlength="120"
-                   value="{{ $row['engine'] ?? '' }}" placeholder="{{ __('e.g. 1.8L, Hybrid, Diesel') }}" class="vf-inp" data-admin-engine>
-            <datalist id="{{ $engineListId }}" data-admin-engine-options>
-                @foreach($allEngineTypes as $engineType)
-                    <option value="{{ $engineType }}"></option>
-                @endforeach
-            </datalist>
         </div>
         <div>
             <label class="vf-lbl">{{ __('Notes') }}</label>

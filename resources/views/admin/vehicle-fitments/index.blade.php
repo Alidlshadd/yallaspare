@@ -34,9 +34,23 @@
                     ->map(fn ($model) => [
                         'id' => (int) $model->id,
                         'name' => (string) $model->name,
+                        'family_id' => (int) $model->vehicle_model_family_id,
+                        'family_name' => (string) ($model->family?->name ?? ''),
                         'engines' => $model->engineTypes->pluck('name')->values()->all(),
                         'year_from' => $model->production_start_year ? (int) $model->production_start_year : null,
                         'year_to' => $model->production_end_year ? (int) $model->production_end_year : null,
+                    ])
+                    ->values()
+                    ->all(),
+            ])
+            ->all();
+
+        $brandFamilyMap = $brands
+            ->mapWithKeys(fn ($brand) => [
+                (string) $brand->id => $brand->modelFamilies
+                    ->map(fn ($family) => [
+                        'id' => (int) $family->id,
+                        'name' => (string) $family->name,
                     ])
                     ->values()
                     ->all(),
@@ -53,6 +67,7 @@
         if (!is_array($fitmentRows) || $fitmentRows === []) {
             $fitmentRows = [[
                 'vehicle_brand_id' => old('vehicle_brand_id'),
+                'vehicle_model_family_id' => old('vehicle_model_family_id'),
                 'vehicle_model_id' => old('vehicle_model_id'),
                 'year_from' => old('year_from'),
                 'year_to' => old('year_to'),
@@ -417,180 +432,144 @@
             </div>
         </div>
 
-        {{-- ═════════════ Vehicle data (brands + models) ═════════════ --}}
-        <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl bento-shadow overflow-hidden">
-            <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-slate-100 dark:border-slate-800">
+        {{-- ═════════════ Vehicle data (brand → family → variant) ═════════════ --}}
+        <div class="overflow-hidden rounded-2xl border border-slate-200/70 bg-white bento-shadow dark:border-slate-800 dark:bg-slate-900">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-5 py-4 dark:border-slate-800">
                 <div>
                     <h2 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Vehicle Data') }}</h2>
-                    <p class="text-[11.5px] text-slate-500 dark:text-slate-400 mt-0.5">{{ __('Manage the brands and models used in fitment rules.') }}</p>
+                    <p class="mt-0.5 text-[11.5px] text-slate-500 dark:text-slate-400">{{ __('Organize compatibility as brand, model family, and variant.') }}</p>
                 </div>
-                <span class="vf-pill good">{{ number_format((int) $stats['brands']) }} {{ __('brands') }} · {{ number_format((int) $stats['models']) }} {{ __('models') }} · {{ number_format((int) $stats['engine_types']) }} {{ __('engine types') }}</span>
+                <span class="vf-pill good">{{ number_format((int) $stats['brands']) }} {{ __('brands') }} · {{ number_format((int) $stats['families']) }} {{ __('families') }} · {{ number_format((int) $stats['models']) }} {{ __('variants') }}</span>
             </div>
 
-            <div class="grid gap-5 p-5 lg:grid-cols-[330px_minmax(0,1fr)]">
-                {{-- Add forms --}}
+            <div class="grid gap-5 p-5 xl:grid-cols-[350px_minmax(0,1fr)]">
                 <div class="space-y-4">
-                    <form method="POST" action="{{ route('admin.vehicle-fitments.brands.store') }}" class="space-y-2">
+                    <form method="POST" action="{{ route('admin.vehicle-fitments.brands.store') }}" class="space-y-2 rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-950/60">
                         @csrf
                         <label class="vf-lbl" for="vf-new-brand">{{ __('Add Vehicle Brand') }}</label>
-                        <input id="vf-new-brand" name="name" required maxlength="120" placeholder="{{ __('Toyota') }}" class="vf-inp">
+                        <input id="vf-new-brand" name="name" required maxlength="120" placeholder="{{ __('SSANGYONG / KGM') }}" class="vf-inp">
                         <button class="vf-btn primary w-full">{{ __('Create Brand') }}</button>
                     </form>
 
-                    <div class="border-t border-dashed border-slate-200 dark:border-slate-700"></div>
-
-                    <form method="POST" action="{{ route('admin.vehicle-fitments.models.store') }}" class="space-y-2">
+                    <form method="POST" action="{{ route('admin.vehicle-fitments.models.store') }}" enctype="multipart/form-data" class="space-y-3 rounded-2xl border border-amber-200/70 bg-amber-50/40 p-4 dark:border-amber-500/20 dark:bg-amber-500/5" data-variant-create data-family-map='@json($brandFamilyMap)'>
                         @csrf
-                        <label class="vf-lbl" for="vf-model-brand">{{ __('Add Vehicle Model') }}</label>
-                        <select id="vf-model-brand" name="vehicle_brand_id" required class="vf-sel">
+                        <div>
+                            <p class="vf-lbl">{{ __('Add Vehicle Variant') }}</p>
+                            <p class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('An image, years, and petrol engine types are optional.') }}</p>
+                        </div>
+                        <select id="vf-model-brand" name="vehicle_brand_id" required class="vf-sel" data-family-brand>
                             <option value="">{{ __('Select brand') }}</option>
                             @foreach($brands as $brand)
                                 <option value="{{ $brand->id }}" @selected(old('vehicle_brand_id') == $brand->id)>{{ $brand->name }}</option>
                             @endforeach
                         </select>
-                        <input name="name" value="{{ old('vehicle_brand_id') ? old('name') : '' }}" required maxlength="120" placeholder="{{ __('Corolla') }}" class="vf-inp" aria-label="{{ __('Model Name') }}">
-                        <div>
-                            <label class="vf-lbl">{{ __('Model Years') }} <span class="normal-case tracking-normal font-semibold">({{ __('Optional') }})</span></label>
-                            <div class="grid grid-cols-2 gap-2">
-                                <input name="production_start_year" type="number" min="1900" max="2100" value="{{ old('production_start_year') }}"
-                                       placeholder="{{ __('Year From') }}" class="vf-inp" aria-label="{{ __('Year From') }}">
-                                <input name="production_end_year" type="number" min="1900" max="2100" value="{{ old('production_end_year') }}"
-                                       placeholder="{{ __('Year To') }}" class="vf-inp" aria-label="{{ __('Year To') }}">
-                            </div>
+                        <select name="vehicle_model_family_id" class="vf-sel" data-family-select>
+                            <option value="">{{ __('Select existing family') }}</option>
+                        </select>
+                        <div class="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-widest text-slate-400"><span class="h-px flex-1 bg-slate-200 dark:bg-slate-700"></span>{{ __('or') }}<span class="h-px flex-1 bg-slate-200 dark:bg-slate-700"></span></div>
+                        <input name="new_family_name" value="{{ old('new_family_name') }}" maxlength="120" placeholder="{{ __('Create new model family') }}" class="vf-inp" data-new-family>
+                        <input name="name" value="{{ old('name') }}" required maxlength="120" placeholder="{{ __('Variant, e.g. Rexton W') }}" class="vf-inp" aria-label="{{ __('Variant') }}">
+                        <div class="grid grid-cols-2 gap-2">
+                            <input name="production_start_year" type="number" min="1900" max="2100" value="{{ old('production_start_year') }}" placeholder="{{ __('Year From') }}" class="vf-inp">
+                            <input name="production_end_year" type="number" min="1900" max="2100" value="{{ old('production_end_year') }}" placeholder="{{ __('Year To') }}" class="vf-inp">
+                        </div>
+                        <div class="vf-tagbox" data-engine-tags data-max-tags="20" data-max-message="{{ __('You can add up to 20 engine types.') }}">
+                            <span class="contents" data-engine-tag-list></span>
+                            <input id="vf-model-engine-types" name="engine_types_text" maxlength="2000" value="{{ old('engine_types_text') }}" placeholder="{{ __('Petrol engines, separated by comma') }}" autocomplete="off" data-engine-tag-input>
                         </div>
                         <div>
-                            <label class="vf-lbl" for="vf-model-engine-types">{{ __('Engine Types') }} <span class="normal-case tracking-normal font-semibold">({{ __('Optional') }})</span></label>
-                            <div class="vf-tagbox" data-engine-tags data-max-tags="20" data-max-message="{{ __('You can add up to 20 engine types.') }}">
-                                <span class="contents" data-engine-tag-list>
-                                    @foreach((array) old('engine_types', []) as $oldEngineType)
-                                        @if(trim((string) $oldEngineType) !== '')
-                                            <span class="vf-tag" data-engine-tag="{{ mb_strtolower(trim((string) $oldEngineType)) }}">
-                                                <span>{{ trim((string) $oldEngineType) }}</span>
-                                                <button type="button" data-engine-tag-remove aria-label="{{ __('Remove :name', ['name' => trim((string) $oldEngineType)]) }}">&times;</button>
-                                                <input type="hidden" name="engine_types[]" value="{{ trim((string) $oldEngineType) }}">
-                                            </span>
-                                        @endif
-                                    @endforeach
-                                </span>
-                                <input id="vf-model-engine-types" name="engine_types_text" maxlength="2000" value="{{ old('engine_types_text') }}"
-                                       placeholder="{{ __('e.g. 1.5 Petrol, 2.0 Diesel, Hybrid') }}" autocomplete="off" data-engine-tag-input>
-                            </div>
-                            <p class="mt-1 text-[10.5px] leading-4 text-slate-500 dark:text-slate-400">{{ __('Separate multiple engine types with Enter or a comma.') }}</p>
+                            <label class="vf-lbl" for="vf-variant-image">{{ __('Vehicle Image') }} <span class="normal-case tracking-normal">({{ __('Optional') }})</span></label>
+                            <input id="vf-variant-image" name="image" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" class="block w-full text-xs text-slate-500 file:me-3 file:rounded-lg file:border-0 file:bg-[#04042a] file:px-3 file:py-2 file:font-bold file:text-amber-300 dark:text-slate-400">
                         </div>
-                        <button class="vf-btn primary w-full">{{ __('Create Model') }}</button>
+                        <button class="vf-btn gold w-full">{{ __('Create Variant') }}</button>
                     </form>
                 </div>
 
-                {{-- Brand / model tree --}}
-                <div class="max-h-80 overflow-y-auto pe-1 space-y-2.5">
+                <div class="max-h-[760px] space-y-4 overflow-y-auto pe-1">
                     @forelse($brands as $brand)
-                        <div class="vf-brand" data-vf-editable>
-                            <div class="bh" data-vf-edit-view>
-                                <span class="flex items-center gap-2.5 text-[12.5px] font-extrabold text-slate-900 dark:text-slate-100">
-                                    <span class="w-7 h-7 rounded-lg bg-[#04042a] text-amber-300 grid place-items-center shrink-0 dark:bg-amber-400 dark:text-[#04042a]">
-                                        <i class="fas fa-car-side text-[11px]"></i>
-                                    </span>
-                                    {{ $brand->name }}
-                                </span>
-                                <span class="flex items-center gap-2">
-                                    <span class="vf-mono-chip">{{ $brand->models->count() }}</span>
-                                    <button type="button" class="vf-btn sm" data-vf-edit-toggle title="{{ __('Edit :name', ['name' => $brand->name]) }}">
-                                        <i class="fas fa-pen text-[10px]"></i>
-                                    </button>
-                                    <form method="POST" action="{{ route('admin.vehicle-fitments.brands.destroy', $brand) }}"
-                                          data-danger-confirm
-                                          data-danger-title="{{ __('Delete Vehicle Brand') }}"
-                                          data-danger-description="{{ __('This brand and all models under it will be removed from Vehicle Finder.') }}">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="vf-btn danger sm" title="{{ __('Delete :name', ['name' => $brand->name]) }}">
-                                            <i class="fas fa-trash text-[10px]"></i>
-                                        </button>
-                                    </form>
-                                </span>
+                        <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-950/40">
+                            <div class="flex items-center justify-between gap-3 bg-[#04042a] px-4 py-3 text-white dark:bg-slate-950">
+                                <span class="flex items-center gap-2.5 text-sm font-black tracking-wide"><i class="fas fa-car-side text-amber-300"></i>{{ $brand->name }}</span>
+                                <span class="font-mono text-[10px] text-slate-300">{{ $brand->modelFamilies->count() }} {{ __('families') }}</span>
                             </div>
-                            <form method="POST" action="{{ route('admin.vehicle-fitments.brands.update', $brand) }}"
-                                  class="bh gap-2" data-vf-edit-panel hidden>
-                                @csrf
-                                @method('PATCH')
-                                <input name="name" value="{{ $brand->name }}" required maxlength="120" class="vf-inp !h-8 flex-1"
-                                       aria-label="{{ __('Brand Name') }}">
-                                <span class="flex items-center gap-1.5 shrink-0">
-                                    <button type="submit" class="vf-btn primary sm">{{ __('Save') }}</button>
-                                    <button type="button" class="vf-btn sm" data-vf-edit-cancel>{{ __('Cancel') }}</button>
-                                </span>
-                            </form>
-                            @if($brand->models->isNotEmpty())
-                                <div class="flex flex-wrap gap-1.5 p-3">
-                                    @foreach($brand->models as $model)
-                                        <span data-vf-editable class="vf-model-stack">
-                                            <form method="POST" action="{{ route('admin.vehicle-fitments.models.destroy', $model) }}" class="vf-model"
-                                                  data-vf-edit-view
-                                                  data-danger-confirm
-                                                  data-danger-title="{{ __('Delete Vehicle Model') }}"
-                                                  data-danger-description="{{ __('This model will be removed from Vehicle Finder.') }}">
-                                                @csrf
-                                                @method('DELETE')
-                                                <span>{{ $model->name }}</span>
-                                                @if($model->engineTypes->isNotEmpty())
-                                                    <span class="vf-mono-chip !px-1.5 !py-0.5" title="{{ __(':count engine types', ['count' => $model->engineTypes->count()]) }}">{{ $model->engineTypes->count() }}</span>
-                                                @endif
-                                                <button type="button" class="edit" data-vf-edit-toggle aria-label="{{ __('Edit :name', ['name' => $model->name]) }}">
-                                                    <i class="fas fa-pen text-[9px]"></i>
-                                                </button>
-                                                <button type="submit" aria-label="{{ __('Delete :name', ['name' => $model->name]) }}">&times;</button>
-                                            </form>
-                                            @if($model->engineTypes->isNotEmpty())
-                                                <span class="vf-engine-list">
-                                                    @if($model->production_start_year || $model->production_end_year)
-                                                        <span class="vf-year-chip">
-                                                            <i class="fas fa-calendar text-[8px]"></i>
-                                                            {{ $model->production_start_year ?: '…' }}–{{ $model->production_end_year ?: __('Present') }}
-                                                        </span>
-                                                    @endif
-                                                    @foreach($model->engineTypes as $engineType)
-                                                        <span class="vf-engine-chip"><i class="fas fa-gauge-high text-[8px]"></i>{{ $engineType->name }}</span>
-                                                    @endforeach
-                                                </span>
-                                            @elseif($model->production_start_year || $model->production_end_year)
-                                                <span class="vf-engine-list">
-                                                    <span class="vf-year-chip">
-                                                        <i class="fas fa-calendar text-[8px]"></i>
-                                                        {{ $model->production_start_year ?: '…' }}–{{ $model->production_end_year ?: __('Present') }}
-                                                    </span>
-                                                </span>
-                                            @endif
-                                            <form method="POST" action="{{ route('admin.vehicle-fitments.models.update', $model) }}"
-                                                  class="vf-edit-inline" data-vf-edit-panel hidden>
-                                                @csrf
-                                                @method('PATCH')
-                                                <input name="name" value="{{ $model->name }}" required maxlength="120" class="vf-inp"
-                                                       aria-label="{{ __('Model Name') }}">
-                                                <input name="production_start_year" type="number" min="1900" max="2100" value="{{ $model->production_start_year }}"
-                                                       placeholder="{{ __('From') }}" class="vf-inp vf-year-edit" aria-label="{{ __('Year From') }}">
-                                                <input name="production_end_year" type="number" min="1900" max="2100" value="{{ $model->production_end_year }}"
-                                                       placeholder="{{ __('To') }}" class="vf-inp vf-year-edit" aria-label="{{ __('Year To') }}">
-                                                <input name="engine_types_text" value="{{ $model->engineTypes->pluck('name')->implode(', ') }}" maxlength="2000"
-                                                       placeholder="{{ __('Engine types, comma separated') }}" class="vf-inp vf-engine-edit"
-                                                       aria-label="{{ __('Engine Types') }}">
-                                                <button type="submit" class="vf-btn primary sm" title="{{ __('Save') }}">
-                                                    <i class="fas fa-check text-[10px]"></i>
-                                                </button>
-                                                <button type="button" class="vf-btn sm" data-vf-edit-cancel title="{{ __('Cancel') }}">
-                                                    <i class="fas fa-times text-[10px]"></i>
-                                                </button>
-                                            </form>
-                                        </span>
-                                    @endforeach
-                                </div>
-                            @else
-                                <p class="px-3 py-2.5 text-[11.5px] text-slate-400 dark:text-slate-500">{{ __('No models yet') }}</p>
-                            @endif
-                        </div>
+                            <div class="space-y-2.5 p-3">
+                                @forelse($brand->modelFamilies as $family)
+                                    @php
+                                        $familyFitments = $family->variants->sum('fitments_count');
+                                    @endphp
+                                    <details class="group overflow-hidden rounded-xl border border-slate-200 bg-slate-50 open:bg-white dark:border-slate-700 dark:bg-slate-900/70 dark:open:bg-slate-900" @if($loop->first) open @endif>
+                                        <summary class="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 transition hover:bg-white dark:hover:bg-slate-800/70">
+                                            <span>
+                                                <span class="block text-[12px] font-black uppercase tracking-[.12em] text-slate-900 dark:text-white">{{ $family->name }}</span>
+                                                <span class="mt-1 block font-mono text-[10px] text-slate-500 dark:text-slate-400">{{ $family->variants->count() }} {{ __('variants') }} · {{ $familyFitments }} {{ __('fitment rules') }}</span>
+                                            </span>
+                                            <i class="fas fa-chevron-down text-[10px] text-amber-500 transition duration-200 group-open:rotate-180"></i>
+                                        </summary>
+                                        <div class="grid gap-3 border-t border-slate-200 p-3 dark:border-slate-700 md:grid-cols-2 2xl:grid-cols-3">
+                                            @forelse($family->variants as $model)
+                                                <article class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-950" data-vf-editable>
+                                                    <div data-vf-edit-view>
+                                                        <div class="flex gap-3">
+                                                            @if($model->image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($model->image_path))
+                                                                <img src="{{ asset('storage/'.ltrim($model->image_path, '/')) }}" alt="{{ $model->name }}" class="h-16 w-20 rounded-lg border border-slate-200 bg-slate-50 object-cover dark:border-slate-700 dark:bg-slate-900">
+                                                            @else
+                                                                <span class="grid h-16 w-20 shrink-0 place-items-center rounded-lg border border-dashed border-slate-300 bg-slate-50 text-slate-400 dark:border-slate-700 dark:bg-slate-900"><i class="fas fa-car-side text-xl"></i></span>
+                                                            @endif
+                                                            <div class="min-w-0 flex-1">
+                                                                <h4 class="truncate text-sm font-extrabold text-slate-900 dark:text-white">{{ $model->name }}</h4>
+                                                                <p class="mt-1 font-mono text-[10px] text-slate-500">{{ $model->production_start_year || $model->production_end_year ? (($model->production_start_year ?: '…').'–'.($model->production_end_year ?: __('Present'))) : __('Years not specified') }}</p>
+                                                                <div class="mt-2 flex flex-wrap gap-1">
+                                                                    @forelse($model->engineTypes as $engineType)
+                                                                        <span class="vf-engine-chip">{{ $engineType->name }}</span>
+                                                                    @empty
+                                                                        <span class="text-[10px] text-slate-400">{{ __('Engine not specified') }}</span>
+                                                                    @endforelse
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="mt-3 flex justify-end gap-1.5 border-t border-slate-100 pt-2.5 dark:border-slate-800">
+                                                            <button type="button" class="vf-btn sm" data-vf-edit-toggle><i class="fas fa-pen text-[9px]"></i> {{ __('Edit') }}</button>
+                                                            <form method="POST" action="{{ route('admin.vehicle-fitments.models.destroy', $model) }}" data-danger-confirm data-danger-title="{{ __('Delete Vehicle Variant') }}" data-danger-description="{{ __('Variants used by product fitments cannot be deleted.') }}">
+                                                                @csrf @method('DELETE')
+                                                                <button class="vf-btn danger sm"><i class="fas fa-trash text-[9px]"></i></button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                    <form method="POST" action="{{ route('admin.vehicle-fitments.models.update', $model) }}" enctype="multipart/form-data" class="space-y-2" data-vf-edit-panel hidden>
+                                                        @csrf @method('PATCH')
+                                                        <select name="vehicle_model_family_id" required class="vf-sel">
+                                                            @foreach($brand->modelFamilies as $availableFamily)
+                                                                <option value="{{ $availableFamily->id }}" @selected($availableFamily->id === $family->id)>{{ $availableFamily->name }}</option>
+                                                            @endforeach
+                                                        </select>
+                                                        <input name="name" value="{{ $model->name }}" required maxlength="120" class="vf-inp">
+                                                        <div class="grid grid-cols-2 gap-2">
+                                                            <input name="production_start_year" type="number" min="1900" max="2100" value="{{ $model->production_start_year }}" placeholder="{{ __('From') }}" class="vf-inp">
+                                                            <input name="production_end_year" type="number" min="1900" max="2100" value="{{ $model->production_end_year }}" placeholder="{{ __('To') }}" class="vf-inp">
+                                                        </div>
+                                                        <input name="engine_types_text" value="{{ $model->engineTypes->pluck('name')->implode(', ') }}" maxlength="2000" placeholder="{{ __('Petrol engines, comma separated') }}" class="vf-inp">
+                                                        <input name="image" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" class="block w-full text-[10px] text-slate-500">
+                                                            @if($model->image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($model->image_path))
+                                                            <label class="flex items-center gap-2 text-[11px] font-semibold text-rose-600"><input type="checkbox" name="remove_image" value="1" class="rounded border-slate-300">{{ __('Remove current image') }}</label>
+                                                        @endif
+                                                        <div class="flex justify-end gap-1.5">
+                                                            <button class="vf-btn primary sm">{{ __('Save') }}</button>
+                                                            <button type="button" class="vf-btn sm" data-vf-edit-cancel>{{ __('Cancel') }}</button>
+                                                        </div>
+                                                    </form>
+                                                </article>
+                                            @empty
+                                                <p class="col-span-full rounded-lg border border-dashed border-slate-300 px-3 py-5 text-center text-xs text-slate-500">{{ __('No variants in this family.') }}</p>
+                                            @endforelse
+                                        </div>
+                                    </details>
+                                @empty
+                                    <p class="rounded-xl border border-dashed border-slate-300 px-4 py-6 text-center text-xs text-slate-500 dark:border-slate-700">{{ __('No model families yet.') }}</p>
+                                @endforelse
+                            </div>
+                        </section>
                     @empty
-                        <div class="rounded-xl border border-dashed border-slate-200 dark:border-slate-700 px-4 py-8 text-center text-sm text-slate-500 dark:text-slate-400">
-                            {{ __('No vehicle brands yet.') }} {{ __('Add your first one on the left.') }}
-                        </div>
+                        <div class="rounded-xl border border-dashed border-slate-200 px-4 py-8 text-center text-sm text-slate-500 dark:border-slate-700">{{ __('No vehicle brands yet.') }}</div>
                     @endforelse
                 </div>
             </div>
@@ -626,6 +605,7 @@
                 class="grid gap-5 p-5 lg:grid-cols-[minmax(0,1.35fr)_minmax(280px,0.65fr)]"
                 data-admin-vehicle-fitment
                 data-model-map='@json($brandModelMap)'
+                data-family-map='@json($brandFamilyMap)'
                 data-engine-types='@json($allEngineTypes)'
                 data-any-model-label="{{ __('Any model') }}"
                 data-no-model-label="{{ __('No models for this brand yet') }}"
@@ -930,7 +910,43 @@
             input.addEventListener('blur', commitInput);
             form.addEventListener('submit', (event) => {
                 if (!commitInput()) event.preventDefault();
+                if (tags().some((tag) => /\bdiesel\b/i.test(tag.textContent || ''))) {
+                    event.preventDefault();
+                    input.setCustomValidity(@json(__('Diesel engines are not supported.')));
+                    input.reportValidity();
+                }
             });
+        });
+
+        document.querySelectorAll('[data-variant-create]').forEach((form) => {
+            const brand = form.querySelector('[data-family-brand]');
+            const family = form.querySelector('[data-family-select]');
+            const newFamily = form.querySelector('[data-new-family]');
+            const familyMap = JSON.parse(form.dataset.familyMap || '{}');
+            if (!brand || !family || !newFamily) return;
+
+            const renderFamilies = () => {
+                const previous = family.value;
+                const choices = familyMap[brand.value] || [];
+                family.innerHTML = `<option value="">${@json(__('Select existing family'))}</option>`;
+                choices.forEach((item) => {
+                    const option = document.createElement('option');
+                    option.value = item.id;
+                    option.textContent = item.name;
+                    family.appendChild(option);
+                });
+                if (choices.some((item) => String(item.id) === String(previous))) family.value = previous;
+                family.disabled = !brand.value || choices.length === 0;
+            };
+
+            family.addEventListener('change', () => {
+                if (family.value) newFamily.value = '';
+            });
+            newFamily.addEventListener('input', () => {
+                if (newFamily.value.trim()) family.value = '';
+            });
+            brand.addEventListener('change', renderFamilies);
+            renderFamilies();
         });
 
         // ── Add-fitment panel toggle ──
@@ -999,7 +1015,7 @@
             }
 
             const modelMap = JSON.parse(form.dataset.modelMap || '{}');
-            const allEngineTypes = JSON.parse(form.dataset.engineTypes || '[]');
+            const familyMap = JSON.parse(form.dataset.familyMap || '{}');
             const anyModelLabel = form.dataset.anyModelLabel || 'Any model';
             const noModelLabel = form.dataset.noModelLabel || 'No models for this brand yet';
             const anyEngineLabel = form.dataset.anyEngineLabel || 'Any engine';
@@ -1236,6 +1252,7 @@
                 if (!row) return;
                 activeRow = row;
                 const brandSelect = row.querySelector('[data-admin-vehicle-brand]');
+                const familySelect = row.querySelector('[data-admin-vehicle-family]');
                 const modelSelect = row.querySelector('[data-admin-vehicle-model]');
                 const yearFrom = row.querySelector('[data-admin-year-from]');
                 const yearTo = row.querySelector('[data-admin-year-to]');
@@ -1250,7 +1267,8 @@
                 const engine = engineInput?.value?.trim() || '';
 
                 if (previewProduct) previewProduct.textContent = productLabel;
-                if (previewVehicle) previewVehicle.textContent = `${brandLabel} / ${modelLabel}`;
+                const familyLabel = selectedOptionLabel(familySelect, '');
+                if (previewVehicle) previewVehicle.textContent = [brandLabel, familyLabel, modelLabel].filter(Boolean).join(' / ');
                 if (previewYears) previewYears.textContent = from || to ? `${from || '*'} - ${to || '*'}` : anyYearLabel;
                 if (previewEngine) previewEngine.textContent = engine || anyEngineLabel;
             };
@@ -1260,25 +1278,32 @@
                 row.dataset.fitmentReady = 'true';
 
                 const brandSelect = row.querySelector('[data-admin-vehicle-brand]');
+                const familySelect = row.querySelector('[data-admin-vehicle-family]');
                 const modelSelect = row.querySelector('[data-admin-vehicle-model]');
                 const yearFrom = row.querySelector('[data-admin-year-from]');
                 const yearTo = row.querySelector('[data-admin-year-to]');
                 const engineInput = row.querySelector('[data-admin-engine]');
-                const engineOptions = row.querySelector('[data-admin-engine-options]');
                 const removeButton = row.querySelector('[data-remove-fitment-row]');
-                if (!brandSelect || !modelSelect) return;
+                if (!brandSelect || !familySelect || !modelSelect) return;
 
                 const updateEngineOptions = () => {
-                    if (!engineOptions) return;
+                    if (!engineInput) return;
                     const selected = modelSelect.selectedOptions?.[0];
                     const modelEngines = selected?.dataset.engines ? JSON.parse(selected.dataset.engines) : [];
-                    const choices = modelEngines.length > 0 ? modelEngines : allEngineTypes;
-                    engineOptions.innerHTML = '';
-                    choices.forEach((engine) => {
+                    const previousValue = engineInput.value;
+                    engineInput.innerHTML = '';
+                    const placeholder = document.createElement('option');
+                    placeholder.value = '';
+                    placeholder.textContent = @json(__('Any configured petrol engine'));
+                    engineInput.appendChild(placeholder);
+                    modelEngines.forEach((engine) => {
                         const option = document.createElement('option');
                         option.value = engine;
-                        engineOptions.appendChild(option);
+                        option.textContent = engine;
+                        engineInput.appendChild(option);
                     });
+                    if (modelEngines.includes(previousValue)) engineInput.value = previousValue;
+                    engineInput.disabled = !modelSelect.value;
                 };
 
                 const updateModelYearHints = () => {
@@ -1289,12 +1314,15 @@
 
                 const setModelOptions = () => {
                     const brandId = brandSelect.value;
-                    const models = brandId ? (modelMap[brandId] || []) : [];
+                    const familyId = familySelect.value;
+                    const models = brandId && familyId
+                        ? (modelMap[brandId] || []).filter((model) => String(model.family_id) === String(familyId))
+                        : [];
                     const previousValue = modelSelect.value;
                     modelSelect.innerHTML = '';
                     const placeholder = document.createElement('option');
                     placeholder.value = '';
-                    placeholder.textContent = models.length > 0 || brandId === '' ? anyModelLabel : noModelLabel;
+                    placeholder.textContent = models.length > 0 ? @json(__('Select variant')) : noModelLabel;
                     modelSelect.appendChild(placeholder);
 
                     models.forEach((model) => {
@@ -1316,8 +1344,31 @@
                     updatePreview(row);
                 };
 
+                const setFamilyOptions = () => {
+                    const brandId = brandSelect.value;
+                    const families = brandId ? (familyMap[brandId] || []) : [];
+                    const previousValue = familySelect.value;
+                    familySelect.innerHTML = '';
+                    const placeholder = document.createElement('option');
+                    placeholder.value = '';
+                    placeholder.textContent = @json(__('Select family'));
+                    familySelect.appendChild(placeholder);
+                    families.forEach((family) => {
+                        const option = document.createElement('option');
+                        option.value = family.id;
+                        option.textContent = family.name;
+                        familySelect.appendChild(option);
+                    });
+                    if (families.some((family) => String(family.id) === String(previousValue))) {
+                        familySelect.value = previousValue;
+                    }
+                    familySelect.disabled = !brandId || families.length === 0;
+                    setModelOptions();
+                };
+
                 const activate = () => updatePreview(row);
-                brandSelect.addEventListener('change', setModelOptions);
+                brandSelect.addEventListener('change', setFamilyOptions);
+                familySelect.addEventListener('change', setModelOptions);
                 modelSelect.addEventListener('change', () => {
                     updateEngineOptions();
                     updateModelYearHints();
@@ -1336,7 +1387,7 @@
                     updatePreview();
                 });
 
-                setModelOptions();
+                setFamilyOptions();
             };
 
             addRowButton?.addEventListener('click', () => {

@@ -8,6 +8,7 @@ use App\Models\ProductVehicleFitment;
 use App\Models\User;
 use App\Models\VehicleBrand;
 use App\Models\VehicleModel;
+use App\Models\VehicleModelFamily;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -33,6 +34,8 @@ class ProductFitmentBatchTest extends TestCase
         [$toyota, $corolla] = $this->vehicle('Toyota', 'Corolla');
         [$honda, $civic] = $this->vehicle('Honda', 'Civic');
         [$ford, $focus] = $this->vehicle('Ford', 'Focus');
+        $corolla->engineTypes()->create(['name' => '1.8 Petrol']);
+        $civic->engineTypes()->create(['name' => '1.5 Turbo Petrol']);
 
         $this->actingAs($admin)
             ->post(route('admin.vehicle-fitments.store'), [
@@ -50,7 +53,7 @@ class ProductFitmentBatchTest extends TestCase
                         'vehicle_model_id' => $civic->id,
                         'year_from' => 2019,
                         'year_to' => 2024,
-                        'engine' => '1.5 Turbo',
+                        'engine' => '1.5 Turbo Petrol',
                     ],
                     [
                         'vehicle_brand_id' => $ford->id,
@@ -135,6 +138,7 @@ class ProductFitmentBatchTest extends TestCase
         $admin = $this->admin();
         $product = Product::factory()->create(['is_active' => true]);
         [$brand, $model] = $this->vehicle('KGM', 'Actyon');
+        $model->engineTypes()->create(['name' => '2.3 Petrol']);
 
         $this->actingAs($admin)
             ->post(route('admin.vehicle-fitments.store'), [
@@ -143,7 +147,7 @@ class ProductFitmentBatchTest extends TestCase
                 'vehicle_model_id' => $model->id,
                 'year_from' => 2007,
                 'year_to' => 2011,
-                'engine' => '2.0 Diesel',
+                'engine' => '2.3 Petrol',
             ])
             ->assertRedirect()
             ->assertSessionHasNoErrors();
@@ -154,8 +158,25 @@ class ProductFitmentBatchTest extends TestCase
             'vehicle_model_id' => $model->id,
             'year_from' => 2007,
             'year_to' => 2011,
-            'engine' => '2.0 Diesel',
+            'engine' => '2.3 Petrol',
         ]);
+    }
+
+    public function test_diesel_fitment_is_rejected(): void
+    {
+        $product = Product::factory()->create(['is_active' => true]);
+        [$brand, $model] = $this->vehicle('KGM', 'Actyon');
+
+        $this->actingAs($this->admin())
+            ->post(route('admin.vehicle-fitments.store'), [
+                'product_id' => $product->id,
+                'vehicle_brand_id' => $brand->id,
+                'vehicle_model_id' => $model->id,
+                'engine' => '2.0 Diesel',
+            ])
+            ->assertSessionHasErrors('fitments.0.engine');
+
+        $this->assertDatabaseCount('product_vehicle_fitments', 0);
     }
 
     private function admin(): User
@@ -173,8 +194,14 @@ class ProductFitmentBatchTest extends TestCase
             'name' => $brandName,
             'slug' => str($brandName)->slug(),
         ]);
+        $family = VehicleModelFamily::query()->create([
+            'vehicle_brand_id' => $brand->id,
+            'name' => $modelName,
+            'slug' => str($modelName)->slug(),
+        ]);
         $model = VehicleModel::query()->create([
             'vehicle_brand_id' => $brand->id,
+            'vehicle_model_family_id' => $family->id,
             'name' => $modelName,
             'slug' => str($modelName)->slug(),
         ]);

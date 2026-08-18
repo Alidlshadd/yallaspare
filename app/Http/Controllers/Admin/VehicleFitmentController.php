@@ -7,11 +7,14 @@ use App\Models\Product;
 use App\Models\ProductVehicleFitment;
 use App\Models\VehicleBrand;
 use App\Models\VehicleModel;
+use App\Models\VehicleModelFamily;
+use App\Support\SecureImageStorage;
 use App\Support\SqlSafe;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -24,7 +27,14 @@ class VehicleFitmentController extends Controller
         $search = trim((string) $request->query('search', ''));
         $brandFilter = (int) $request->query('brand', 0);
         $brands = VehicleBrand::query()
-            ->with('models.engineTypes:id,vehicle_model_id,name')
+            ->with([
+                'models.engineTypes:id,vehicle_model_id,name',
+                'models.family:id,name',
+                'modelFamilies.variants' => fn ($query) => $query
+                    ->with(['engineTypes:id,vehicle_model_id,name'])
+                    ->withCount('fitments')
+                    ->orderBy('name'),
+            ])
             ->orderBy('name')
             ->get();
 
@@ -42,7 +52,8 @@ class VehicleFitmentController extends Controller
             ->with([
                 'product:id,name_en,name_ar,name_ku,sku,brand,image',
                 'brand:id,name',
-                'model:id,name,vehicle_brand_id',
+                'model:id,name,vehicle_brand_id,vehicle_model_family_id',
+                'model.family:id,name',
             ])
             ->when($brandFilter > 0, fn ($query) => $query->where('vehicle_brand_id', $brandFilter))
             ->when($search !== '', function ($query) use ($search): void {
@@ -77,6 +88,7 @@ class VehicleFitmentController extends Controller
             'stats' => [
                 'brands' => $brands->count(),
                 'models' => $brands->sum(fn ($brand) => $brand->models->count()),
+                'families' => $brands->sum(fn ($brand) => $brand->modelFamilies->count()),
                 'engine_types' => $brands->sum(fn ($brand) => $brand->models->sum(fn ($model) => $model->engineTypes->count())),
                 'fitments' => ProductVehicleFitment::query()->count(),
                 'covered_products' => ProductVehicleFitment::query()->distinct('product_id')->count('product_id'),
@@ -137,8 +149,15 @@ class VehicleFitmentController extends Controller
 
     public function storeModel(Request $request): RedirectResponse
     {
-        $data = $request->validate([
+        $validator = Validator::make($request->all(), [
             'vehicle_brand_id' => ['required', 'exists:vehicle_brands,id'],
+            'vehicle_model_family_id' => ['nullable', 'integer', 'exists:vehicle_model_families,id'],
+            'new_family_name' => [
+                'nullable',
+                'string',
+                'max:120',
+                Rule::unique('vehicle_model_families', 'name')->where(fn ($query) => $query->where('vehicle_brand_id', $request->input('vehicle_brand_id'))),
+            ],
             'name' => [
                 'required',
                 'string',
@@ -150,23 +169,57 @@ class VehicleFitmentController extends Controller
             'engine_types_text' => ['nullable', 'string', 'max:2000'],
             'production_start_year' => ['nullable', 'integer', 'min:1900', 'max:2100'],
             'production_end_year' => ['nullable', 'integer', 'min:1900', 'max:2100', 'gte:production_start_year'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048', 'dimensions:max_width=4000,max_height=4000'],
         ]);
 
-        $engineTypes = $this->validatedEngineTypes($data);
-
-        DB::transaction(function () use ($data, $engineTypes): void {
-            $model = VehicleModel::query()->create([
-                'vehicle_brand_id' => (int) $data['vehicle_brand_id'],
-                'name' => trim((string) $data['name']),
-                'slug' => $this->uniqueModelSlug((int) $data['vehicle_brand_id'], (string) $data['name']),
-                'production_start_year' => $data['production_start_year'] ?? null,
-                'production_end_year' => $data['production_end_year'] ?? null,
-            ]);
-
-            $model->engineTypes()->createMany(
-                array_map(fn (string $name) => ['name' => $name], $engineTypes)
-            );
+        $validator->after(function ($validator) use ($request): void {
+            $familyId = (int) $request->input('vehicle_model_family_id');
+            $brandId = (int) $request->input('vehicle_brand_id');
+            if ($familyId > 0 && ! VehicleModelFamily::query()->whereKey($familyId)->where('vehicle_brand_id', $brandId)->exists()) {
+                $validator->errors()->add('vehicle_model_family_id', __('The selected family does not belong to this vehicle brand.'));
+            }
         });
+
+        $data = $validator->validate();
+
+        $engineTypes = $this->validatedEngineTypes($data);
+        $imagePath = $request->hasFile('image')
+            ? SecureImageStorage::store($request->file('image'), 'vehicle-variants')
+            : null;
+
+        try {
+            DB::transaction(function () use ($data, $engineTypes, $imagePath): void {
+                $brandId = (int) $data['vehicle_brand_id'];
+                $family = ! empty($data['vehicle_model_family_id'])
+                    ? VehicleModelFamily::query()->findOrFail((int) $data['vehicle_model_family_id'])
+                    : VehicleModelFamily::query()->firstOrCreate(
+                        [
+                            'vehicle_brand_id' => $brandId,
+                            'name' => trim((string) ($data['new_family_name'] ?? $data['name'])),
+                        ],
+                        ['slug' => $this->uniqueFamilySlug($brandId, (string) ($data['new_family_name'] ?? $data['name']))],
+                    );
+
+                $model = VehicleModel::query()->create([
+                    'vehicle_brand_id' => $brandId,
+                    'vehicle_model_family_id' => $family->id,
+                    'name' => trim((string) $data['name']),
+                    'slug' => $this->uniqueModelSlug($brandId, (string) $data['name']),
+                    'production_start_year' => $data['production_start_year'] ?? null,
+                    'production_end_year' => $data['production_end_year'] ?? null,
+                    'image_path' => $imagePath,
+                ]);
+
+                $model->engineTypes()->createMany(
+                    array_map(fn (string $name) => ['name' => $name], $engineTypes)
+                );
+            });
+        } catch (\Throwable $exception) {
+            if ($imagePath) {
+                Storage::disk('public')->delete($imagePath);
+            }
+            throw $exception;
+        }
 
         return back()->with('success', $engineTypes === []
             ? __('Vehicle model created.')
@@ -191,6 +244,7 @@ class VehicleFitmentController extends Controller
     public function updateModel(Request $request, VehicleModel $model): RedirectResponse
     {
         $data = $request->validate([
+            'vehicle_model_family_id' => ['nullable', 'integer', Rule::exists('vehicle_model_families', 'id')->where(fn ($query) => $query->where('vehicle_brand_id', $model->vehicle_brand_id))],
             'name' => [
                 'required',
                 'string',
@@ -204,27 +258,48 @@ class VehicleFitmentController extends Controller
             'engine_types_text' => ['nullable', 'string', 'max:2000'],
             'production_start_year' => ['nullable', 'integer', 'min:1900', 'max:2100'],
             'production_end_year' => ['nullable', 'integer', 'min:1900', 'max:2100', 'gte:production_start_year'],
+            'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048', 'dimensions:max_width=4000,max_height=4000'],
+            'remove_image' => ['sometimes', 'boolean'],
         ]);
 
         $name = trim((string) $data['name']);
         $shouldSyncEngineTypes = $request->exists('engine_types') || $request->exists('engine_types_text');
         $engineTypes = $shouldSyncEngineTypes ? $this->validatedEngineTypes($data) : [];
 
-        DB::transaction(function () use ($data, $model, $name, $shouldSyncEngineTypes, $engineTypes): void {
-            $model->update([
-                'name' => $name,
-                'slug' => $this->uniqueModelSlug((int) $model->vehicle_brand_id, $name, $model->id),
-                'production_start_year' => $data['production_start_year'] ?? null,
-                'production_end_year' => $data['production_end_year'] ?? null,
-            ]);
+        $oldImagePath = $model->image_path;
+        $newImagePath = $request->hasFile('image')
+            ? SecureImageStorage::store($request->file('image'), 'vehicle-variants')
+            : null;
+        $imagePath = $newImagePath ?: ($request->boolean('remove_image') ? null : $oldImagePath);
 
-            if ($shouldSyncEngineTypes) {
-                $model->engineTypes()->delete();
-                $model->engineTypes()->createMany(
-                    array_map(fn (string $engineName) => ['name' => $engineName], $engineTypes)
-                );
+        try {
+            DB::transaction(function () use ($data, $model, $name, $shouldSyncEngineTypes, $engineTypes, $imagePath): void {
+                $model->update([
+                    'vehicle_model_family_id' => $data['vehicle_model_family_id'] ?? $model->vehicle_model_family_id,
+                    'name' => $name,
+                    'slug' => $this->uniqueModelSlug((int) $model->vehicle_brand_id, $name, $model->id),
+                    'production_start_year' => $data['production_start_year'] ?? null,
+                    'production_end_year' => $data['production_end_year'] ?? null,
+                    'image_path' => $imagePath,
+                ]);
+
+                if ($shouldSyncEngineTypes) {
+                    $model->engineTypes()->delete();
+                    $model->engineTypes()->createMany(
+                        array_map(fn (string $engineName) => ['name' => $engineName], $engineTypes)
+                    );
+                }
+            });
+        } catch (\Throwable $exception) {
+            if ($newImagePath) {
+                Storage::disk('public')->delete($newImagePath);
             }
-        });
+            throw $exception;
+        }
+
+        if ($oldImagePath && $oldImagePath !== $imagePath) {
+            $this->deleteVariantImageIfUnused($oldImagePath);
+        }
 
         return back()->with('success', __('Vehicle model updated.'));
     }
@@ -238,6 +313,7 @@ class VehicleFitmentController extends Controller
         if (! is_array($fitmentRows) || $fitmentRows === []) {
             $fitmentRows = [[
                 'vehicle_brand_id' => $request->input('vehicle_brand_id'),
+                'vehicle_model_family_id' => $request->input('vehicle_model_family_id'),
                 'vehicle_model_id' => $request->input('vehicle_model_id'),
                 'year_from' => $request->input('year_from'),
                 'year_to' => $request->input('year_to'),
@@ -258,7 +334,8 @@ class VehicleFitmentController extends Controller
             ],
             'fitments' => ['required', 'array', 'min:1', 'max:50'],
             'fitments.*.vehicle_brand_id' => ['required', 'integer', 'exists:vehicle_brands,id'],
-            'fitments.*.vehicle_model_id' => ['nullable', 'integer', 'exists:vehicle_models,id'],
+            'fitments.*.vehicle_model_family_id' => ['nullable', 'integer', 'exists:vehicle_model_families,id'],
+            'fitments.*.vehicle_model_id' => ['required', 'integer', 'exists:vehicle_models,id'],
             'fitments.*.year_from' => ['nullable', 'integer', 'min:1900', 'max:2100'],
             'fitments.*.year_to' => ['nullable', 'integer', 'min:1900', 'max:2100'],
             'fitments.*.engine' => ['nullable', 'string', 'max:120'],
@@ -269,15 +346,30 @@ class VehicleFitmentController extends Controller
             foreach ($payload['fitments'] as $index => $row) {
                 $brandId = (int) ($row['vehicle_brand_id'] ?? 0);
                 $modelId = (int) ($row['vehicle_model_id'] ?? 0);
+                $familyId = (int) ($row['vehicle_model_family_id'] ?? 0);
 
-                if ($brandId > 0 && $modelId > 0 && ! VehicleModel::query()
+                $model = VehicleModel::query()
                     ->whereKey($modelId)
                     ->where('vehicle_brand_id', $brandId)
-                    ->exists()) {
+                    ->with('engineTypes:id,vehicle_model_id,name')
+                    ->first();
+
+                if ($model && $familyId > 0 && (int) $model->vehicle_model_family_id !== $familyId) {
+                    $model = null;
+                }
+
+                if ($brandId > 0 && $modelId > 0 && ! $model) {
                     $validator->errors()->add(
                         "fitments.{$index}.vehicle_model_id",
-                        __('The selected model does not belong to this vehicle brand.'),
+                        __('The selected variant does not belong to this brand and model family.') ?: 'The selected variant does not belong to this brand and model family.',
                     );
+                }
+
+                $engine = trim((string) ($row['engine'] ?? ''));
+                if ($engine !== '' && preg_match('/\bdiesel\b/i', $engine)) {
+                    $validator->errors()->add("fitments.{$index}.engine", __('Diesel engines are not supported.') ?: 'Diesel engines are not supported.');
+                } elseif ($engine !== '' && $model && ! $model->engineTypes->contains('name', $engine)) {
+                    $validator->errors()->add("fitments.{$index}.engine", __('The selected engine is not configured for this variant.') ?: 'The selected engine is not configured for this variant.');
                 }
 
                 $yearFrom = isset($row['year_from']) && $row['year_from'] !== '' ? (int) $row['year_from'] : null;
@@ -323,6 +415,10 @@ class VehicleFitmentController extends Controller
 
     public function destroyBrand(VehicleBrand $brand): RedirectResponse
     {
+        if ($brand->models()->exists()) {
+            return back()->with('error', __('Cannot delete a brand that still contains variants.'));
+        }
+
         $brand->delete();
 
         return back()->with('success', __('Vehicle brand and its models removed.'));
@@ -330,9 +426,49 @@ class VehicleFitmentController extends Controller
 
     public function destroyModel(VehicleModel $model): RedirectResponse
     {
-        $model->delete();
+        if ($model->fitments()->exists()) {
+            return back()->with('error', __('Cannot delete a variant used by product fitments.'));
+        }
 
-        return back()->with('success', __('Vehicle model removed.'));
+        $imagePath = $model->image_path;
+        $model->delete();
+        if ($imagePath) {
+            $this->deleteVariantImageIfUnused($imagePath);
+        }
+
+        return back()->with('success', __('Vehicle variant removed.'));
+    }
+
+    public function updateFamily(Request $request, VehicleModelFamily $family): RedirectResponse
+    {
+        $data = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:120',
+                Rule::unique('vehicle_model_families', 'name')
+                    ->where(fn ($query) => $query->where('vehicle_brand_id', $family->vehicle_brand_id))
+                    ->ignore($family->id),
+            ],
+        ]);
+        $name = trim((string) $data['name']);
+        $family->update([
+            'name' => $name,
+            'slug' => $this->uniqueFamilySlug((int) $family->vehicle_brand_id, $name, $family->id),
+        ]);
+
+        return back()->with('success', __('Model family updated.'));
+    }
+
+    public function destroyFamily(VehicleModelFamily $family): RedirectResponse
+    {
+        if ($family->variants()->exists()) {
+            return back()->with('error', __('Move or delete every variant before deleting this family.'));
+        }
+
+        $family->delete();
+
+        return back()->with('success', __('Model family removed.'));
     }
 
     private function uniqueSlug(string $modelClass, string $value, ?int $ignoreId = null): string
@@ -368,6 +504,30 @@ class VehicleFitmentController extends Controller
         return $slug;
     }
 
+    private function uniqueFamilySlug(int $brandId, string $value, ?int $ignoreId = null): string
+    {
+        $base = Str::slug($value) ?: 'family';
+        $slug = $base;
+        $suffix = 2;
+
+        while (VehicleModelFamily::query()
+            ->where('vehicle_brand_id', $brandId)
+            ->where('slug', $slug)
+            ->when($ignoreId !== null, fn ($query) => $query->whereKeyNot($ignoreId))
+            ->exists()) {
+            $slug = $base.'-'.$suffix++;
+        }
+
+        return $slug;
+    }
+
+    private function deleteVariantImageIfUnused(string $path): void
+    {
+        if (! VehicleModel::query()->where('image_path', $path)->exists()) {
+            Storage::disk('public')->delete($path);
+        }
+    }
+
     /**
      * Accept tag inputs as well as comma, semicolon, or newline-separated text.
      *
@@ -398,6 +558,13 @@ class VehicleFitmentController extends Controller
             [],
             ['engine_types' => __('Engine Types')],
         )->validate();
+
+        if (collect($engineTypes)->contains(fn (string $engine) => preg_match('/\bdiesel\b/i', $engine) === 1)) {
+            Validator::make(
+                ['engine_types' => 'diesel'],
+                ['engine_types' => [fn ($attribute, $value, $fail) => $fail(__('Diesel engines are not supported.') ?: 'Diesel engines are not supported.')]],
+            )->validate();
+        }
 
         return $engineTypes;
     }

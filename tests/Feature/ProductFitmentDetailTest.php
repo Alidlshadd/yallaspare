@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\ProductVehicleFitment;
 use App\Models\VehicleBrand;
 use App\Models\VehicleModel;
+use App\Models\VehicleModelFamily;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -25,81 +26,55 @@ class ProductFitmentDetailTest extends TestCase
         ]);
     }
 
-    public function test_every_compatible_model_is_listed_with_its_years(): void
+    public function test_compatibility_is_grouped_by_family_and_lists_every_variant(): void
     {
         $product = $this->hubWithFourFitments();
 
         $this->get(route('shop.show', $product))
             ->assertOk()
             ->assertSeeText('Fits these vehicles')
-            ->assertSeeText('Rexton')
-            ->assertSeeText('Actyon')
-            ->assertSeeText('Korando Sport')
-            ->assertSeeText('Actyon Sport')
+            ->assertSeeText('2 Families')
+            ->assertSeeText('4 Variants')
+            ->assertSeeText('Rexton II')
+            ->assertSeeText('Actyon Sports')
             ->assertSeeText('2007–2017')
             ->assertDontSeeText('Compatibility details are available on request.');
     }
 
-    /**
-     * The brand is stored as "SSANGYONG / KGM". Repeating it on every row and
-     * joining it to the model with another slash is what made the old section
-     * read as three levels of hierarchy.
-     */
-    public function test_the_brand_is_named_once_and_never_joined_to_the_model(): void
+    public function test_brand_is_named_once_and_never_joined_to_variant(): void
     {
-        $product = $this->hubWithFourFitments();
+        $response = $this->get(route('shop.show', $this->hubWithFourFitments()))->assertOk();
+        $section = $this->fitmentSection($response->getContent());
 
-        $response = $this->get(route('shop.show', $product))->assertOk();
-
-        $response->assertSeeText('SSANGYONG / KGM');
         $response->assertDontSeeText('SSANGYONG / KGM / Rexton');
-        $this->assertSame(1, substr_count($this->fitmentSection($response->getContent()), 'SSANGYONG / KGM'));
+        $this->assertSame(1, substr_count($section, 'SSANGYONG / KGM'));
     }
 
-    /**
-     * A row with no year bounds covers the whole model. Saying "any year"
-     * describes a gap in our data; "all years" describes the coverage.
-     */
-    public function test_an_unbounded_model_states_coverage_rather_than_a_missing_value(): void
+    public function test_unverified_year_bounds_are_not_invented(): void
     {
-        $product = $this->hubWithFourFitments();
-
-        $this->get(route('shop.show', $product))
+        $this->get(route('shop.show', $this->hubWithFourFitments()))
             ->assertOk()
-            ->assertSeeText('all years')
-            ->assertDontSeeText('Any year')
+            ->assertSeeText('Any year')
             ->assertDontSeeText('Any engine');
     }
 
-    public function test_the_model_count_is_shown(): void
-    {
-        $product = $this->hubWithFourFitments();
-
-        $this->get(route('shop.show', $product))
-            ->assertOk()
-            ->assertSeeText('4 models');
-    }
-
-    /**
-     * The same model appearing once per engine is one vehicle, not several, so
-     * the rows collapse and the engines are counted instead.
-     */
-    public function test_rows_sharing_a_model_collapse_into_one_line(): void
+    public function test_rows_for_one_variant_collapse_and_keep_petrol_engines(): void
     {
         $product = Product::factory()->create(['compatible_models' => null]);
         $brand = VehicleBrand::query()->create(['name' => 'SSANGYONG / KGM', 'slug' => 'ssangyong-kgm']);
-
-        $rexton = VehicleModel::query()->create([
+        $family = VehicleModelFamily::query()->create(['vehicle_brand_id' => $brand->id, 'name' => 'Rexton', 'slug' => 'rexton']);
+        $variant = VehicleModel::query()->create([
             'vehicle_brand_id' => $brand->id,
-            'name' => 'Rexton',
-            'slug' => 'rexton',
+            'vehicle_model_family_id' => $family->id,
+            'name' => 'Rexton W',
+            'slug' => 'rexton-w',
         ]);
 
-        foreach ([['3.2 Petrol', 2007, 2017], ['2.7 Diesel', 2009, 2015]] as [$engine, $from, $to]) {
+        foreach ([['3.2 Petrol', 2012, 2017], ['2.0 Turbo Petrol', 2014, 2016]] as [$engine, $from, $to]) {
             ProductVehicleFitment::query()->create([
                 'product_id' => $product->id,
                 'vehicle_brand_id' => $brand->id,
-                'vehicle_model_id' => $rexton->id,
+                'vehicle_model_id' => $variant->id,
                 'year_from' => $from,
                 'year_to' => $to,
                 'engine' => $engine,
@@ -109,19 +84,14 @@ class ProductFitmentDetailTest extends TestCase
         $response = $this->get(route('shop.show', $product))->assertOk();
         $section = $this->fitmentSection($response->getContent());
 
-        $this->assertSame(1, substr_count($section, 'Rexton'));
-        // Widest span across both rows, and the engines counted rather than listed.
-        $response->assertSeeText('2007–2017');
-        $response->assertSeeText('1 model');
-        $response->assertSeeText('2 configurations');
-        $response->assertSeeText('2 engines');
+        $this->assertSame(1, substr_count($section, 'Rexton W'));
+        $response->assertSeeText('2012–2017');
+        $response->assertSeeText('3.2 Petrol · 2.0 Turbo Petrol');
     }
 
     public function test_legacy_compatible_models_remain_visible_without_structured_fitments(): void
     {
-        $product = Product::factory()->create([
-            'compatible_models' => ['Legacy Model A', 'Legacy Model B'],
-        ]);
+        $product = Product::factory()->create(['compatible_models' => ['Legacy Model A', 'Legacy Model B']]);
 
         $this->get(route('shop.show', $product))
             ->assertOk()
@@ -129,7 +99,7 @@ class ProductFitmentDetailTest extends TestCase
             ->assertSeeText('Legacy Model B');
     }
 
-    public function test_a_product_without_any_fitment_data_says_so(): void
+    public function test_product_without_fitment_data_says_so(): void
     {
         $product = Product::factory()->create(['compatible_models' => null]);
 
@@ -144,51 +114,48 @@ class ProductFitmentDetailTest extends TestCase
             'name_en' => 'SsangYong Front Wheel Hub Assembly',
             'compatible_models' => null,
         ]);
-
         $brand = VehicleBrand::query()->create(['name' => 'SSANGYONG / KGM', 'slug' => 'ssangyong-kgm']);
 
-        $this->fitment($product, $brand, 'Rexton', 2007, 2017, '3.2 Petrol');
-        $this->fitment($product, $brand, 'Korando Sport');
-        $this->fitment($product, $brand, 'Actyon Sport');
-        $this->fitment($product, $brand, 'Actyon');
+        $this->fitment($product, $brand, 'Rexton', 'Rexton', 2007, 2017, '3.2 Petrol');
+        $this->fitment($product, $brand, 'Rexton', 'Rexton II');
+        $this->fitment($product, $brand, 'Actyon', 'Actyon Sports');
+        $this->fitment($product, $brand, 'Actyon', 'Actyon');
 
         return $product;
     }
 
-    /**
-     * The compatibility section only, so counting an occurrence cannot be
-     * confused by the product title or breadcrumbs.
-     */
     private function fitmentSection(string $html): string
     {
         $start = strpos($html, 'data-product-compatibility');
-        if ($start === false) {
-            return '';
-        }
+        $end = $start === false ? false : strpos($html, '</section>', $start);
 
-        $end = strpos($html, '</section>', $start);
-
-        return substr($html, $start, $end === false ? null : $end - $start);
+        return $start === false ? '' : substr($html, $start, $end === false ? null : $end - $start);
     }
 
     private function fitment(
         Product $product,
         VehicleBrand $brand,
-        string $modelName,
+        string $familyName,
+        string $variantName,
         ?int $yearFrom = null,
         ?int $yearTo = null,
         ?string $engine = null,
     ): void {
-        $model = VehicleModel::query()->create([
+        $family = VehicleModelFamily::query()->firstOrCreate(
+            ['vehicle_brand_id' => $brand->id, 'name' => $familyName],
+            ['slug' => str($familyName)->slug()],
+        );
+        $variant = VehicleModel::query()->create([
             'vehicle_brand_id' => $brand->id,
-            'name' => $modelName,
-            'slug' => str($modelName)->slug(),
+            'vehicle_model_family_id' => $family->id,
+            'name' => $variantName,
+            'slug' => str($variantName)->slug(),
         ]);
 
         ProductVehicleFitment::query()->create([
             'product_id' => $product->id,
             'vehicle_brand_id' => $brand->id,
-            'vehicle_model_id' => $model->id,
+            'vehicle_model_id' => $variant->id,
             'year_from' => $yearFrom,
             'year_to' => $yearTo,
             'engine' => $engine,

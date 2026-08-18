@@ -32,7 +32,11 @@
 
                 return [
                     'brand' => (string) ($fitment->brand?->name ?: __('Any brand')),
+                    'family' => (string) ($fitment->model?->family?->name ?: $fitment->model?->name ?: __('Other')),
                     'model' => (string) ($fitment->model?->name ?: __('Any model')),
+                    'image' => $fitment->model?->image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($fitment->model->image_path)
+                        ? asset('storage/'.ltrim($fitment->model->image_path, '/'))
+                        : null,
                     'years' => $yearLabel,
                     'engine' => (string) ($fitment->engine ?: __('Any engine')),
                     'notes' => trim((string) $fitment->notes),
@@ -209,10 +213,7 @@
                         </div>
                     </div>
 
-                    {{-- Compatibility now answers against the customer's saved vehicle
-                         instead of listing rows for them to match by eye. With nothing
-                         saved it asks, then remembers, so later products open with the
-                         answer already given. --}}
+                    {{-- Read-only product compatibility. No saved vehicle or garage state. --}}
                     @if ($vehicleFitments->isNotEmpty())
                         <x-shop.fitment :fitments="$vehicleFitments" />
                     @else

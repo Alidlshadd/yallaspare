@@ -494,6 +494,12 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::patch('/vehicle-fitments/models/{model}', [VehicleFitmentController::class, 'updateModel'])
             ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('vehicle-fitments.models.update');
+        Route::patch('/vehicle-fitments/families/{family}', [VehicleFitmentController::class, 'updateFamily'])
+            ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
+            ->name('vehicle-fitments.families.update');
+        Route::delete('/vehicle-fitments/families/{family}', [VehicleFitmentController::class, 'destroyFamily'])
+            ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
+            ->name('vehicle-fitments.families.destroy');
         Route::delete('/vehicle-fitments/brands/{brand}', [VehicleFitmentController::class, 'destroyBrand'])
             ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('vehicle-fitments.brands.destroy');

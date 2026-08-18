@@ -1,104 +1,87 @@
 @props(['fitments'])
 
 @php
-    $rows = collect($fitments)->filter(fn ($f) => ($f['model'] ?? '') !== '')->values();
-
+    $rows = collect($fitments)->filter(fn ($fitment) => ($fitment['model'] ?? '') !== '')->values();
     $brandName = (string) ($rows->first()['brand'] ?? '');
-
-    // One row per model, engines collected: the same model can appear several
-    // times when a part covers more than one engine option.
-    $models = $rows
-        ->groupBy('model')
-        ->map(function ($group, $model) {
-            $bounded = $group->filter(fn ($f) => $f['from'] !== null && $f['to'] !== null);
-
+    $families = $rows
+        ->groupBy(fn ($fitment) => (string) ($fitment['family'] ?? $fitment['model']))
+        ->map(function ($familyRows, $familyName) {
             return [
-                'name' => (string) $model,
-                // Widest span across this model's rows; null when any row is unbounded,
-                // because one open row already covers every year.
-                'from' => $group->contains(fn ($f) => $f['from'] === null) ? null : $bounded->min('from'),
-                'to' => $group->contains(fn ($f) => $f['to'] === null) ? null : $bounded->max('to'),
-                'engines' => $group->pluck('engineRaw')->filter()->unique()->values(),
+                'name' => (string) $familyName,
+                'variants' => $familyRows
+                    ->groupBy('model')
+                    ->map(function ($variantRows, $variantName) {
+                        $boundedFrom = $variantRows->pluck('from')->filter(fn ($year) => $year !== null);
+                        $boundedTo = $variantRows->pluck('to')->filter(fn ($year) => $year !== null);
+
+                        return [
+                            'name' => (string) $variantName,
+                            'from' => $variantRows->contains(fn ($row) => $row['from'] === null) ? null : $boundedFrom->min(),
+                            'to' => $variantRows->contains(fn ($row) => $row['to'] === null) ? null : $boundedTo->max(),
+                            'engines' => $variantRows->pluck('engineRaw')->filter()->unique()->values(),
+                            'image' => $variantRows->pluck('image')->filter()->first(),
+                        ];
+                    })
+                    ->sortBy('name')
+                    ->values(),
             ];
         })
         ->sortBy('name')
         ->values();
-
-    // "Configurations" counts the underlying rows, which is what a fitment
-    // catalogue means by it — a model with three engines is three of them.
-    $configurations = $rows->count();
+    $variantCount = $families->sum(fn ($family) => $family['variants']->count());
 @endphp
 
 <section data-product-compatibility class="rounded-2xl border border-app bg-surface-2 p-5">
     <div class="flex items-start justify-between gap-3">
-        <div class="min-w-0">
-            <div class="flex items-center gap-2">
-                <svg class="h-3.5 w-3.5 shrink-0 text-amber-500" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
-                    <path d="M3 7h14M3 13h14" stroke-linecap="round" />
-                    <circle cx="7" cy="7" r="1.6" />
-                    <circle cx="13" cy="13" r="1.6" />
-                </svg>
-                <p class="text-[10.5px] font-semibold uppercase tracking-[0.17em] text-muted">{{ __('Verified fitment') }}</p>
-            </div>
-
+        <div>
+            <p class="text-[10.5px] font-semibold uppercase tracking-[0.17em] text-amber-600 dark:text-amber-400">{{ __('Verified fitment') }}</p>
             <h2 class="mt-1.5 text-[17px] font-semibold tracking-[-0.022em] text-app">{{ __('Fits these vehicles') }}</h2>
-
-            <p class="mt-0.5 font-mono text-[11.5px] tracking-[0.03em] text-muted">
-                <span class="text-app">{{ trans_choice(':count model|:count models', $models->count(), ['count' => $models->count()]) }}</span>
-                @if ($configurations > $models->count())
-                    · <span class="text-app">{{ trans_choice(':count configuration|:count configurations', $configurations, ['count' => $configurations]) }}</span>
-                @endif
-                @if ($brandName !== '')
-                    · {{ $brandName }}
-                @endif
-            </p>
+            <p class="mt-1 font-mono text-[11px] text-muted">{{ $families->count() }} {{ __('families') }} · {{ $variantCount }} {{ __('variants') }}@if($brandName !== '') · {{ $brandName }}@endif</p>
         </div>
+        <span class="grid h-9 w-9 place-items-center rounded-xl bg-[#04042a] text-amber-300 dark:bg-amber-400 dark:text-[#04042a]"><i class="fas fa-car-side text-xs"></i></span>
     </div>
 
-    {{-- A fitment chart, not an HTML table dropped on the page: three aligned
-         columns, tabular figures so the year ranges line up down the column. --}}
-    <div class="mt-4 overflow-hidden rounded-xl border border-app">
-        <div class="grid grid-cols-[1fr_88px] gap-3 border-b border-app bg-surface-1 px-3.5 py-2 font-mono text-[9.5px] uppercase tracking-[0.16em] text-muted sm:grid-cols-[1fr_96px_86px]">
-            <span>{{ __('Model') }}</span>
-            <span class="text-end">{{ __('Years') }}</span>
-            <span class="hidden text-end sm:block">{{ __('Engine') }}</span>
-        </div>
-
-        @foreach ($models as $model)
-            <div class="group relative grid grid-cols-[1fr_88px] items-center gap-3 border-t border-app px-3.5 py-3 transition duration-200 first:border-t-0 hover:bg-surface-1 sm:grid-cols-[1fr_96px_86px]">
-                {{-- Index mark: lights on hover, the one moving part in the section. --}}
-                <span class="pointer-events-none absolute inset-y-2.5 start-0 w-0.5 rounded bg-transparent transition duration-200 group-hover:bg-amber-400" aria-hidden="true"></span>
-
-                <span class="min-w-0 truncate text-[14.5px] font-medium tracking-[-0.014em] text-app">{{ $model['name'] }}</span>
-
-                <span class="text-end font-mono text-[12.5px] tabular-nums {{ $model['from'] !== null ? 'text-app' : 'text-muted' }}">
-                    {{ $model['from'] !== null ? $model['from'].'–'.$model['to'] : __('all years') }}
-                </span>
-
-                {{-- Engines share the model's line on desktop; below sm they drop
-                     under the name so the column does not squeeze the year. --}}
-                <span class="hidden text-end font-mono text-[11.5px] text-muted sm:block">
-                    @if ($model['engines']->isEmpty())
-                        {{ __('all') }}
-                    @elseif ($model['engines']->count() === 1)
-                        {{ $model['engines']->first() }}
-                    @else
-                        {{ trans_choice(':count engine|:count engines', $model['engines']->count(), ['count' => $model['engines']->count()]) }}
-                    @endif
-                </span>
-
-                @if ($model['engines']->isNotEmpty())
-                    <span class="col-span-2 -mt-1 flex flex-wrap gap-1 sm:hidden">
-                        @foreach ($model['engines'] as $engine)
-                            <span class="rounded border border-app bg-surface-1 px-1.5 py-0.5 font-mono text-[10px] text-muted">{{ $engine }}</span>
-                        @endforeach
-                    </span>
-                @endif
-            </div>
+    <div class="mt-4 space-y-3">
+        @foreach($families as $family)
+            <article class="overflow-hidden rounded-xl border border-app bg-surface-1">
+                <div class="flex items-center justify-between border-b border-app px-3.5 py-2.5">
+                    <h3 class="text-[12px] font-black uppercase tracking-[.12em] text-app">{{ $family['name'] }}</h3>
+                    <span class="font-mono text-[10px] text-muted">{{ $family['variants']->count() }} {{ __('variants') }}</span>
+                </div>
+                <div class="divide-y divide-slate-200/70 dark:divide-slate-700/70">
+                    @foreach($family['variants'] as $variant)
+                        <div class="flex items-center gap-3 px-3.5 py-3">
+                            @if($variant['image'])
+                                <img src="{{ $variant['image'] }}" alt="{{ $variant['name'] }}" class="h-11 w-14 shrink-0 rounded-lg border border-app bg-white object-cover dark:bg-slate-950">
+                            @else
+                                <span class="grid h-11 w-14 shrink-0 place-items-center rounded-lg border border-dashed border-app text-muted"><i class="fas fa-car-side text-sm"></i></span>
+                            @endif
+                            <div class="min-w-0 flex-1">
+                                <h4 class="truncate text-[14px] font-semibold text-app">{{ $variant['name'] }}</h4>
+                                <div class="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1 font-mono text-[11px] text-muted">
+                                    <span>
+                                        @if($variant['from'] !== null && $variant['to'] !== null)
+                                            {{ $variant['from'] === $variant['to'] ? $variant['from'] : $variant['from'].'–'.$variant['to'] }}
+                                        @elseif($variant['from'] !== null)
+                                            {{ $variant['from'].'+' }}
+                                        @elseif($variant['to'] !== null)
+                                            {{ '≤ '.$variant['to'] }}
+                                        @else
+                                            {{ __('Any year') }}
+                                        @endif
+                                    </span>
+                                    @if($variant['engines']->isNotEmpty())
+                                        <span aria-hidden="true">·</span>
+                                        <span>{{ $variant['engines']->join(' · ') }}</span>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </article>
         @endforeach
-
-        <p class="border-t border-app bg-surface-1 px-3.5 py-2.5 text-[12.5px] text-muted">
-            {{ __('Not sure? Send us your chassis number and we will confirm.') }}
-        </p>
     </div>
+
+    <p class="mt-3 rounded-xl border border-dashed border-app bg-surface-1 px-3.5 py-2.5 text-[12px] text-muted">{{ __('Not sure? Send us your chassis number and we will confirm.') }}</p>
 </section>

@@ -22,4 +22,10 @@ class VehicleBrand extends Model
     {
         return $this->hasMany(VehicleModel::class);
     }
+
+    /** @return HasMany<VehicleModelFamily, $this> */
+    public function modelFamilies(): HasMany
+    {
+        return $this->hasMany(VehicleModelFamily::class)->orderBy('name');
+    }
 }

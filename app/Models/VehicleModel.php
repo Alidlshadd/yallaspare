@@ -15,10 +15,12 @@ class VehicleModel extends Model
 
     protected $fillable = [
         'vehicle_brand_id',
+        'vehicle_model_family_id',
         'name',
         'slug',
         'production_start_year',
         'production_end_year',
+        'image_path',
     ];
 
     /** @return BelongsTo<VehicleBrand, $this> */
@@ -27,9 +29,21 @@ class VehicleModel extends Model
         return $this->belongsTo(VehicleBrand::class, 'vehicle_brand_id');
     }
 
+    /** @return BelongsTo<VehicleModelFamily, $this> */
+    public function family(): BelongsTo
+    {
+        return $this->belongsTo(VehicleModelFamily::class, 'vehicle_model_family_id');
+    }
+
     /** @return HasMany<VehicleModelEngineType, $this> */
     public function engineTypes(): HasMany
     {
         return $this->hasMany(VehicleModelEngineType::class)->orderBy('name');
+    }
+
+    /** @return HasMany<ProductVehicleFitment, $this> */
+    public function fitments(): HasMany
+    {
+        return $this->hasMany(ProductVehicleFitment::class, 'vehicle_model_id');
     }
 }

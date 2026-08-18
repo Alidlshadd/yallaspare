@@ -40,14 +40,11 @@ class ShopController extends Controller
         }
         if (DbSchema::hasTable('product_vehicle_fitments')) {
             $productRelations['vehicleFitments'] = fn ($query) => $query
-                ->with(['brand:id,name', 'model:id,name,vehicle_brand_id'])
-                ->orderBy('vehicle_brand_id')
-                ->orderBy('vehicle_model_id')
-                ->orderBy('year_from');
-        }
-        if (DbSchema::hasTable('product_vehicle_fitments')) {
-            $productRelations['vehicleFitments'] = fn ($query) => $query
-                ->with(['brand:id,name', 'model:id,name,vehicle_brand_id'])
+                ->with([
+                    'brand:id,name',
+                    'model:id,name,vehicle_brand_id,vehicle_model_family_id,image_path',
+                    'model.family:id,name',
+                ])
                 ->orderBy('vehicle_brand_id')
                 ->orderBy('vehicle_model_id')
                 ->orderBy('year_from');

@@ -47,6 +47,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Support\Facades\View;
 use Illuminate\Validation\Rule;
@@ -591,14 +592,18 @@ class MobileController extends Controller
             $query->where('price', '<=', (float) $request->query('max_price'));
         }
 
-        if ($request->filled('vehicle_brand') || $request->filled('vehicle_model') || $request->filled('year') || $request->filled('engine')) {
+        if ($request->filled('vehicle_brand') || $request->filled('vehicle_family') || $request->filled('vehicle_model') || $request->filled('year') || $request->filled('engine')) {
             $vehicleBrand = trim((string) $request->query('vehicle_brand'));
+            $vehicleFamily = trim((string) $request->query('vehicle_family'));
             $vehicleModel = trim((string) $request->query('vehicle_model'));
             $year = (int) $request->query('year');
             $engine = trim((string) $request->query('engine'));
-            $query->whereHas('vehicleFitments', function ($fitment) use ($vehicleBrand, $vehicleModel, $year, $engine): void {
+            $query->whereHas('vehicleFitments', function ($fitment) use ($vehicleBrand, $vehicleFamily, $vehicleModel, $year, $engine): void {
                 if ($vehicleBrand !== '') {
                     $fitment->whereHas('brand', fn ($brand) => $brand->where('name', $vehicleBrand)->orWhere('slug', $vehicleBrand));
+                }
+                if ($vehicleFamily !== '') {
+                    $fitment->whereHas('model.family', fn ($family) => $family->where('name', $vehicleFamily)->orWhere('slug', $vehicleFamily));
                 }
                 if ($vehicleModel !== '') {
                     $fitment->whereHas('model', fn ($model) => $model->where('name', $vehicleModel)->orWhere('slug', $vehicleModel));
@@ -739,17 +744,33 @@ class MobileController extends Controller
     {
         return response()->json([
             'data' => VehicleBrand::query()
-                ->with('models')
+                ->with(['models.family', 'models.engineTypes', 'modelFamilies.variants.engineTypes'])
                 ->orderBy('name')
                 ->get()
                 ->map(fn (VehicleBrand $brand) => [
                     'id' => $brand->id,
                     'name' => $brand->name,
                     'slug' => $brand->slug,
+                    'families' => $brand->modelFamilies->map(fn ($family) => [
+                        'id' => $family->id,
+                        'name' => $family->name,
+                        'slug' => $family->slug,
+                        'variants' => $family->variants->map(fn ($variant) => [
+                            'id' => $variant->id,
+                            'name' => $variant->name,
+                            'slug' => $variant->slug,
+                            'year_from' => $variant->production_start_year,
+                            'year_to' => $variant->production_end_year,
+                            'engines' => $variant->engineTypes->pluck('name')->values()->all(),
+                            'image_url' => $variant->image_path && Storage::disk('public')->exists($variant->image_path) ? asset('storage/'.ltrim($variant->image_path, '/')) : null,
+                        ])->values()->all(),
+                    ])->values()->all(),
+                    // Kept for older mobile clients. New clients should use families[].variants.
                     'models' => $brand->models->map(fn ($model) => [
                         'id' => $model->id,
                         'name' => $model->name,
                         'slug' => $model->slug,
+                        'family_id' => $model->vehicle_model_family_id,
                     ])->values()->all(),
                 ]),
         ]);
@@ -1993,6 +2014,13 @@ class MobileController extends Controller
 
     private function productPayload(Product $product, ?User $user): array
     {
+        $product->loadMissing([
+            'vehicleFitments.brand',
+            'vehicleFitments.model.family',
+            'category',
+            'images',
+            'reviews',
+        ]);
         $pricing = $product->pricingFor($user);
         $images = $product->images->map(fn ($image) => asset('storage/'.$image->path))->values()->all();
         if ($images === [] && $product->image) {
@@ -2017,6 +2045,15 @@ class MobileController extends Controller
             'low_stock_threshold' => (int) ($product->low_stock_threshold ?? 5),
             'compatible_models' => $product->vehicleFitments->map(fn ($fitment) => trim(($fitment->brand?->name ?? '').' '.($fitment->model?->name ?? '').' '.($fitment->year_from ?? '').'-'.($fitment->year_to ?? '')))->filter()->values()->all()
                 ?: ($product->compatible_models ?? []),
+            'vehicle_fitments' => $product->vehicleFitments->map(fn ($fitment) => [
+                'brand' => $fitment->brand?->name,
+                'family' => $fitment->model?->family?->name,
+                'variant' => $fitment->model?->name,
+                'year_from' => $fitment->year_from,
+                'year_to' => $fitment->year_to,
+                'engine' => $fitment->engine,
+                'image_url' => $fitment->model?->image_path && Storage::disk('public')->exists($fitment->model->image_path) ? asset('storage/'.ltrim($fitment->model->image_path, '/')) : null,
+            ])->values()->all(),
             'images' => $images,
             'rating' => round((float) $product->reviews->avg('rating'), 1),
             'review_count' => $product->reviews->count(),

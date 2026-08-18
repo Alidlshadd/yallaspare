@@ -5,6 +5,7 @@ namespace Tests\Feature\Admin;
 use App\Models\User;
 use App\Models\VehicleBrand;
 use App\Models\VehicleModel;
+use App\Models\VehicleModelFamily;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -24,8 +25,9 @@ class VehicleModelEngineTypesTest extends TestCase
             ->post(route('admin.vehicle-fitments.models.store'), [
                 'vehicle_brand_id' => $brand->id,
                 'name' => 'Corolla',
-                'engine_types' => ['1.5 Petrol', 'Hybrid'],
-                'engine_types_text' => "2.0 Diesel, hybrid\n1.8 Petrol",
+                'new_family_name' => 'Corolla',
+                'engine_types' => ['1.5 Petrol', '2.0 Petrol'],
+                'engine_types_text' => "2.0 Petrol\n1.8 Petrol",
                 'production_start_year' => 2018,
                 'production_end_year' => 2024,
             ])
@@ -38,7 +40,7 @@ class VehicleModelEngineTypesTest extends TestCase
         $this->assertSame(2024, $model->production_end_year);
 
         $this->assertSame(
-            ['1.5 Petrol', '1.8 Petrol', '2.0 Diesel', 'Hybrid'],
+            ['1.5 Petrol', '1.8 Petrol', '2.0 Petrol'],
             $model->engineTypes()->pluck('name')->all(),
         );
     }
@@ -57,23 +59,23 @@ class VehicleModelEngineTypesTest extends TestCase
         ]);
         $model->engineTypes()->createMany([
             ['name' => '1.5 Petrol'],
-            ['name' => 'Diesel'],
+            ['name' => '2.0 Petrol'],
         ]);
 
         $this->actingAs($admin)
             ->patch(route('admin.vehicle-fitments.models.update', $model), [
-                'name' => 'Torres EVX',
-                'engine_types_text' => 'Electric; Hybrid',
+                'name' => 'Torres',
+                'engine_types_text' => '1.5 Petrol; 2.0 Turbo Petrol',
                 'production_start_year' => 2023,
                 'production_end_year' => 2026,
             ])
             ->assertRedirect()
             ->assertSessionHasNoErrors();
 
-        $this->assertSame('Torres EVX', $model->fresh()->name);
+        $this->assertSame('Torres', $model->fresh()->name);
         $this->assertSame(2023, $model->fresh()->production_start_year);
         $this->assertSame(2026, $model->fresh()->production_end_year);
-        $this->assertSame(['Electric', 'Hybrid'], $model->engineTypes()->pluck('name')->all());
+        $this->assertSame(['1.5 Petrol', '2.0 Turbo Petrol'], $model->engineTypes()->pluck('name')->all());
     }
 
     public function test_no_more_than_twenty_engine_types_can_be_saved(): void
@@ -104,8 +106,14 @@ class VehicleModelEngineTypesTest extends TestCase
             'email_verified_at' => now(),
         ]);
         $brand = VehicleBrand::query()->create(['name' => 'Nissan', 'slug' => 'nissan']);
+        $family = VehicleModelFamily::query()->create([
+            'vehicle_brand_id' => $brand->id,
+            'name' => 'X-Trail',
+            'slug' => 'x-trail',
+        ]);
         $model = VehicleModel::query()->create([
             'vehicle_brand_id' => $brand->id,
+            'vehicle_model_family_id' => $family->id,
             'name' => 'X-Trail',
             'slug' => 'x-trail',
             'production_start_year' => 2021,
@@ -120,7 +128,7 @@ class VehicleModelEngineTypesTest extends TestCase
             ->assertSee('e-POWER')
             ->assertSee('2021–2025')
             ->assertSee('data-engine-tags', false)
-            ->assertSee('vf-engine-types-list', false);
+            ->assertDontSee('vf-engine-types-list', false);
     }
 
     public function test_model_end_year_cannot_be_before_start_year(): void
@@ -143,5 +151,24 @@ class VehicleModelEngineTypesTest extends TestCase
             ->assertSessionHasErrors('production_end_year');
 
         $this->assertDatabaseMissing('vehicle_models', ['name' => 'CX-5']);
+    }
+
+    public function test_diesel_engine_type_is_rejected(): void
+    {
+        $admin = User::factory()->create([
+            'role' => User::ROLE_SUPER_ADMIN,
+            'email_verified_at' => now(),
+        ]);
+        $brand = VehicleBrand::query()->create(['name' => 'KGM', 'slug' => 'kgm']);
+
+        $this->actingAs($admin)
+            ->post(route('admin.vehicle-fitments.models.store'), [
+                'vehicle_brand_id' => $brand->id,
+                'name' => 'Kyron',
+                'engine_types_text' => '2.0 Diesel',
+            ])
+            ->assertSessionHasErrors('engine_types');
+
+        $this->assertDatabaseMissing('vehicle_models', ['name' => 'Kyron']);
     }
 }
