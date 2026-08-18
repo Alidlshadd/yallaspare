@@ -36,6 +36,13 @@
                     'years' => $yearLabel,
                     'engine' => (string) ($fitment->engine ?: __('Any engine')),
                     'notes' => trim((string) $fitment->notes),
+                    // Numeric bounds and the model id, so the saved garage vehicle
+                    // can be matched against this product. Null bounds mean the
+                    // whole model is covered rather than that data is missing.
+                    'model_id' => $fitment->vehicle_model_id ? (int) $fitment->vehicle_model_id : null,
+                    'from' => $yearFrom,
+                    'to' => $yearTo,
+                    'engineRaw' => trim((string) $fitment->engine),
                 ];
             })
             ->unique(fn (array $fitment) => implode('|', $fitment))
@@ -204,41 +211,28 @@
                         </div>
                     </div>
 
-                    <section data-product-compatibility class="rounded-2xl border border-slate-200/80 bg-white p-4 dark:border-slate-800 dark:bg-slate-900">
-                        <p class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{{ __('Compatibility') }}</p>
-                        @if ($vehicleFitments->isNotEmpty())
-                            <div class="mt-3 grid gap-2 sm:grid-cols-2">
-                                @foreach ($vehicleFitments as $fitment)
-                                    <article data-product-fitment class="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-950">
-                                        <p class="text-sm font-semibold text-slate-900 dark:text-white">
-                                            {{ $fitment['brand'] }} / {{ $fitment['model'] }}
-                                        </p>
-                                        <div class="mt-2 flex flex-wrap gap-1.5">
-                                            <span class="inline-flex rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 text-[11px] font-semibold text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/40 dark:text-amber-300">
-                                                {{ $fitment['years'] }}
-                                            </span>
-                                            <span class="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[11px] font-semibold text-emerald-800 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-300">
-                                                {{ $fitment['engine'] }}
-                                            </span>
-                                        </div>
-                                        @if ($fitment['notes'] !== '')
-                                            <p class="mt-2 text-xs leading-5 text-slate-500 dark:text-slate-400">{{ $fitment['notes'] }}</p>
-                                        @endif
-                                    </article>
-                                @endforeach
-                            </div>
-                        @elseif ($compatibleModels->isNotEmpty())
+                    {{-- Compatibility now answers against the customer's saved vehicle
+                         instead of listing rows for them to match by eye. With nothing
+                         saved it asks, then remembers, so later products open with the
+                         answer already given. --}}
+                    @if ($vehicleFitments->isNotEmpty())
+                        <x-shop.fitment :fitments="$vehicleFitments" />
+                    @else
+                    <section data-product-compatibility class="rounded-2xl border border-app bg-surface-2 p-5">
+                        <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">{{ __('Compatibility') }}</p>
+                        @if ($compatibleModels->isNotEmpty())
                             <div class="mt-3 flex flex-wrap gap-2">
                                 @foreach ($compatibleModels->take(8) as $model)
                                     <span class="inline-flex rounded-full border border-slate-200 bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">{{ $model }}</span>
                                 @endforeach
                             </div>
                         @else
-                            <p class="mt-3 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-3 py-2 text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-400">
+                            <p class="mt-3 rounded-xl border border-dashed border-app bg-surface-1 px-3 py-2 text-sm text-muted">
                                 {{ __('Compatibility details are available on request.') }}
                             </p>
                         @endif
                     </section>
+                    @endif
 
                     <section class="overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10">
                         @if ($hasDiscount)
