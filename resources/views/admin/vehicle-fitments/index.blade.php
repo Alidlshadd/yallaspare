@@ -176,75 +176,7 @@
         .vf-edit-inline .vf-year-edit { width: 88px; }
         .vf-model-stack { display: inline-flex; flex-direction: column; align-items: flex-start; gap: 4px; }
         .vf-engine-list { display: flex; flex-wrap: wrap; gap: 4px; padding-inline: 4px; }
-        .vf-engine-chip {
-            display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 999px;
-            background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412;
-            font-size: 9.5px; font-weight: 800; line-height: 1.25;
-        }
-        .dark .vf-engine-chip { background: rgba(245,158,11,.10); border-color: rgba(251,191,36,.28); color: #fbbf24; }
-        .vf-year-chip {
-            display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 999px;
-            background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8;
-            font-size: 9.5px; font-weight: 800; line-height: 1.25;
-        }
-        .dark .vf-year-chip { background: rgba(59,130,246,.10); border-color: rgba(96,165,250,.28); color: #93c5fd; }
-
-        /* Buttons */
-        .vf-btn {
-            display: inline-flex; align-items: center; justify-content: center; gap: 7px;
-            height: 38px; padding: 0 16px; border-radius: 10px; border: 1px solid #e2e8f0;
-            background: #fff; color: #475569; font-size: 12px; font-weight: 800; cursor: pointer;
-            text-decoration: none; transition: all .15s ease;
-        }
-        .vf-btn:hover { transform: translateY(-1px); }
-        .vf-btn.primary { background: #04042a; color: #fcd34d; border-color: #04042a; }
-        .vf-btn.primary:hover { background: #07073a; }
-        .vf-btn.gold {
-            background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #04042a; border-color: transparent;
-            box-shadow: 0 6px 16px -6px rgba(245,158,11,0.5);
-        }
-        .vf-btn.gold:hover { filter: brightness(1.05); }
-        .vf-btn.danger { background: #fef2f2; color: #b91c1c; border-color: #fca5a5; }
-        .vf-btn.danger:hover { background: #fee2e2; }
-        .vf-btn.sm { height: 30px; padding: 0 11px; font-size: 11px; border-radius: 8px; }
-        .dark .vf-btn { background: #1e293b; border-color: #334155; color: #cbd5e1; }
-        .dark .vf-btn:hover { background: #334155; }
-        .dark .vf-btn.primary { background: #fbbf24; color: #04042a; border-color: #fbbf24; }
-        .dark .vf-btn.primary:hover { background: #f59e0b; }
-        .dark .vf-btn.gold { background: linear-gradient(180deg, #fbbf24, #f59e0b); color: #04042a; }
-        .dark .vf-btn.danger { background: rgba(239,68,68,0.10); color: #fca5a5; border-color: rgba(239,68,68,0.30); }
-
-        /* Inputs */
-        .vf-inp, .vf-sel {
-            width: 100%; height: 38px; padding: 0 12px; font-size: 13px;
-            border: 1px solid #e2e8f0; border-radius: 10px;
-            background: #f8fafc; color: #0f172a;
-        }
-        .vf-inp:focus, .vf-sel:focus {
-            outline: none; border-color: #fbbf24; background: #fff;
-            box-shadow: 0 0 0 3px rgba(251,191,36,0.25);
-        }
-        .dark .vf-inp, .dark .vf-sel { background: #1e293b; border-color: #334155; color: #f1f5f9; }
-        .dark .vf-inp:focus, .dark .vf-sel:focus { background: #0f172a; }
-        .vf-tagbox {
-            display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-height: 42px; padding: 6px 9px;
-            border: 1px solid #e2e8f0; border-radius: 10px; background: #f8fafc; cursor: text;
-        }
-        .vf-tagbox:focus-within { border-color: #fbbf24; background: #fff; box-shadow: 0 0 0 3px rgba(251,191,36,.25); }
-        .vf-tagbox input[data-engine-tag-input] {
-            flex: 1 1 130px; min-width: 110px; height: 26px; padding: 0 3px; border: 0; outline: none;
-            background: transparent; color: #0f172a; font-size: 12px; box-shadow: none;
-        }
-        .vf-tag {
-            display: inline-flex; align-items: center; gap: 5px; padding: 4px 7px 4px 9px; border-radius: 999px;
-            background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; font-size: 10.5px; font-weight: 800;
-        }
-        .vf-tag button { color: #c2410c; font-size: 14px; line-height: 1; }
-        .dark .vf-tagbox { background: #1e293b; border-color: #334155; }
-        .dark .vf-tagbox:focus-within { background: #0f172a; }
-        .dark .vf-tagbox input[data-engine-tag-input] { color: #f1f5f9; }
-        .dark .vf-tag { background: rgba(245,158,11,.10); border-color: rgba(251,191,36,.28); color: #fbbf24; }
-        .dark .vf-tag button { color: #fcd34d; }
+        @include('admin.vehicle-fitments.partials.controls-css')
         .vf-fitment-card {
             padding: 14px; border: 1px solid #e2e8f0; border-radius: 14px;
             background: linear-gradient(180deg, #fff, #fbfcfe);
@@ -261,12 +193,6 @@
         .dark .vf-fitment-card { background: linear-gradient(180deg, #0f172a, #111c2e); border-color: #334155; }
         .dark .vf-fitment-card-head { border-color: #334155; }
         .dark .vf-fitment-number { background: #fbbf24; color: #04042a; }
-        .vf-lbl {
-            display: block; font-size: 10px; font-weight: 800; text-transform: uppercase;
-            letter-spacing: .12em; color: #64748b; margin-bottom: 5px;
-        }
-        .dark .vf-lbl { color: #94a3b8; }
-
         /* Fitment rule row */
         .vf-row {
             display: grid; grid-template-columns: minmax(210px, 1.2fr) minmax(150px, .8fr) minmax(220px, 1.2fr) auto;
@@ -455,50 +381,15 @@
                         <button class="vf-btn primary w-full">{{ __('Create Brand') }}</button>
                     </form>
 
-                    <form method="POST" action="{{ route('admin.vehicle-fitments.models.store') }}" enctype="multipart/form-data" class="space-y-3 rounded-2xl border border-amber-200/70 bg-amber-50/40 p-4 dark:border-amber-500/20 dark:bg-amber-500/5" data-variant-create data-family-map='@json($brandFamilyMap)'>
-                        @csrf
+                    <div class="space-y-3 rounded-2xl border border-amber-200/70 bg-amber-50/40 p-4 dark:border-amber-500/20 dark:bg-amber-500/5">
                         <div>
                             <p class="vf-lbl">{{ __('Add Vehicle Variant') }}</p>
-                            <p class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('An image, years, and petrol engine types are optional.') }}</p>
+                            <p class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('Names, production years, engines and an image are set on the variant page.') }}</p>
                         </div>
-                        <select id="vf-model-brand" name="vehicle_brand_id" required class="vf-sel" data-family-brand>
-                            <option value="">{{ __('Select brand') }}</option>
-                            @foreach($brands as $brand)
-                                <option value="{{ $brand->id }}" @selected(old('vehicle_brand_id') == $brand->id)>{{ $brand->name }}</option>
-                            @endforeach
-                        </select>
-                        <select name="vehicle_model_family_id" class="vf-sel" data-family-select>
-                            <option value="">{{ __('Select existing family') }}</option>
-                        </select>
-                        <div class="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-widest text-slate-400"><span class="h-px flex-1 bg-slate-200 dark:bg-slate-700"></span>{{ __('or') }}<span class="h-px flex-1 bg-slate-200 dark:bg-slate-700"></span></div>
-                        <div class="grid gap-2">
-                            <input name="new_family_name_en" value="{{ old('new_family_name_en', old('new_family_name')) }}" maxlength="120" placeholder="{{ __('Family Name — English') }}" class="vf-inp" data-new-family>
-                            <div class="grid grid-cols-2 gap-2">
-                                <input name="new_family_name_ar" value="{{ old('new_family_name_ar') }}" maxlength="120" dir="rtl" placeholder="{{ __('Family Name — Arabic') }}" class="vf-inp">
-                                <input name="new_family_name_ku" value="{{ old('new_family_name_ku') }}" maxlength="120" dir="rtl" placeholder="{{ __('Family Name — Kurdish') }}" class="vf-inp">
-                            </div>
-                        </div>
-                        <div class="grid gap-2">
-                            <input name="name_en" value="{{ old('name_en', old('name')) }}" required maxlength="120" placeholder="{{ __('Variant Name — English') }}" class="vf-inp" aria-label="{{ __('Variant Name — English') }}">
-                            <div class="grid grid-cols-2 gap-2">
-                                <input name="name_ar" value="{{ old('name_ar') }}" maxlength="120" dir="rtl" placeholder="{{ __('Variant Name — Arabic') }}" class="vf-inp">
-                                <input name="name_ku" value="{{ old('name_ku') }}" maxlength="120" dir="rtl" placeholder="{{ __('Variant Name — Kurdish') }}" class="vf-inp">
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-2">
-                            <input name="production_start_year" type="number" min="1900" max="2100" value="{{ old('production_start_year') }}" placeholder="{{ __('Year From') }}" class="vf-inp">
-                            <input name="production_end_year" type="number" min="1900" max="2100" value="{{ old('production_end_year') }}" placeholder="{{ __('Year To') }}" class="vf-inp">
-                        </div>
-                        <div class="vf-tagbox" data-engine-tags data-max-tags="20" data-max-message="{{ __('You can add up to 20 engine types.') }}">
-                            <span class="contents" data-engine-tag-list></span>
-                            <input id="vf-model-engine-types" name="engine_types_text" maxlength="2000" value="{{ old('engine_types_text') }}" placeholder="{{ __('Petrol engines, separated by comma') }}" autocomplete="off" data-engine-tag-input>
-                        </div>
-                        <div>
-                            <label class="vf-lbl" for="vf-variant-image">{{ __('Vehicle Image') }} <span class="normal-case tracking-normal">({{ __('Optional') }})</span></label>
-                            <input id="vf-variant-image" name="image" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" class="block w-full text-xs text-slate-500 file:me-3 file:rounded-lg file:border-0 file:bg-[#04042a] file:px-3 file:py-2 file:font-bold file:text-amber-300 dark:text-slate-400">
-                        </div>
-                        <button class="vf-btn gold w-full">{{ __('Create Variant') }}</button>
-                    </form>
+                        <a href="{{ route('admin.vehicle-fitments.models.create') }}" class="vf-btn gold w-full">
+                            <i class="fas fa-plus text-[10px]"></i> {{ __('Create Variant') }}
+                        </a>
+                    </div>
                 </div>
 
                 <div class="max-h-[760px] space-y-4 overflow-y-auto pe-1">
@@ -530,8 +421,8 @@
                                                 <button class="vf-btn primary sm">{{ __('Save Family') }}</button>
                                             </form>
                                             @forelse($family->variants as $model)
-                                                <article class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-950" data-vf-editable>
-                                                    <div data-vf-edit-view>
+                                                <article class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-950">
+                                                    <div>
                                                         <div class="flex gap-3">
                                                             @if($model->image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($model->image_path))
                                                                 <img src="{{ asset('storage/'.ltrim($model->image_path, '/')) }}" alt="{{ $model->localizedName() }}" class="h-16 w-20 rounded-lg border border-slate-200 bg-slate-50 object-cover dark:border-slate-700 dark:bg-slate-900">
@@ -551,39 +442,13 @@
                                                             </div>
                                                         </div>
                                                         <div class="mt-3 flex justify-end gap-1.5 border-t border-slate-100 pt-2.5 dark:border-slate-800">
-                                                            <button type="button" class="vf-btn sm" data-vf-edit-toggle><i class="fas fa-pen text-[9px]"></i> {{ __('Edit') }}</button>
+                                                            <a href="{{ route('admin.vehicle-fitments.models.edit', $model) }}" class="vf-btn sm"><i class="fas fa-pen text-[9px]"></i> {{ __('Edit') }}</a>
                                                             <form method="POST" action="{{ route('admin.vehicle-fitments.models.destroy', $model) }}" data-danger-confirm data-danger-title="{{ __('Delete Vehicle Variant') }}" data-danger-description="{{ __('Variants used by product fitments cannot be deleted.') }}">
                                                                 @csrf @method('DELETE')
                                                                 <button class="vf-btn danger sm"><i class="fas fa-trash text-[9px]"></i></button>
                                                             </form>
                                                         </div>
                                                     </div>
-                                                    <form method="POST" action="{{ route('admin.vehicle-fitments.models.update', $model) }}" enctype="multipart/form-data" class="space-y-2" data-vf-edit-panel hidden>
-                                                        @csrf @method('PATCH')
-                                                        <select name="vehicle_model_family_id" required class="vf-sel">
-                                                            @foreach($brand->modelFamilies as $availableFamily)
-                                                                <option value="{{ $availableFamily->id }}" @selected($availableFamily->id === $family->id)>{{ $availableFamily->localizedName() }}</option>
-                                                            @endforeach
-                                                        </select>
-                                                        <label class="block"><span class="vf-lbl">{{ __('Variant Name — English') }}</span><input name="name_en" value="{{ $model->name_en ?: $model->name }}" required maxlength="120" class="vf-inp"></label>
-                                                        <div class="grid grid-cols-2 gap-2">
-                                                            <label class="block"><span class="vf-lbl">{{ __('Variant Name — Arabic') }}</span><input name="name_ar" value="{{ $model->name_ar }}" maxlength="120" dir="rtl" class="vf-inp"></label>
-                                                            <label class="block"><span class="vf-lbl">{{ __('Variant Name — Kurdish') }}</span><input name="name_ku" value="{{ $model->name_ku }}" maxlength="120" dir="rtl" class="vf-inp"></label>
-                                                        </div>
-                                                        <div class="grid grid-cols-2 gap-2">
-                                                            <input name="production_start_year" type="number" min="1900" max="2100" value="{{ $model->production_start_year }}" placeholder="{{ __('From') }}" class="vf-inp">
-                                                            <input name="production_end_year" type="number" min="1900" max="2100" value="{{ $model->production_end_year }}" placeholder="{{ __('To') }}" class="vf-inp">
-                                                        </div>
-                                                        <input name="engine_types_text" value="{{ $model->engineTypes->pluck('name')->implode(', ') }}" maxlength="2000" placeholder="{{ __('Petrol engines, comma separated') }}" class="vf-inp">
-                                                        <input name="image" type="file" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" class="block w-full text-[10px] text-slate-500">
-                                                            @if($model->image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($model->image_path))
-                                                            <label class="flex items-center gap-2 text-[11px] font-semibold text-rose-600"><input type="checkbox" name="remove_image" value="1" class="rounded border-slate-300">{{ __('Remove current image') }}</label>
-                                                        @endif
-                                                        <div class="flex justify-end gap-1.5">
-                                                            <button class="vf-btn primary sm">{{ __('Save') }}</button>
-                                                            <button type="button" class="vf-btn sm" data-vf-edit-cancel>{{ __('Cancel') }}</button>
-                                                        </div>
-                                                    </form>
                                                 </article>
                                             @empty
                                                 <p class="col-span-full rounded-lg border border-dashed border-slate-300 px-3 py-5 text-center text-xs text-slate-500">{{ __('No variants in this family.') }}</p>
@@ -857,120 +722,6 @@
     </div>
 
     <script nonce="{{ $cspNonce }}">
-        // ── Multi-value engine input for model creation ──
-        document.querySelectorAll('[data-engine-tags]').forEach((box) => {
-            const input = box.querySelector('[data-engine-tag-input]');
-            const list = box.querySelector('[data-engine-tag-list]');
-            const form = box.closest('form');
-            const maxTags = Number(box.dataset.maxTags || 20);
-            const maxMessage = box.dataset.maxMessage || `You can add up to ${maxTags} engine types.`;
-
-            if (!input || !list || !form) return;
-
-            const tags = () => Array.from(list.querySelectorAll('[data-engine-tag]'));
-            const normalized = (value) => value.trim().toLocaleLowerCase();
-
-            const bindRemove = (tag) => {
-                tag.querySelector('[data-engine-tag-remove]')?.addEventListener('click', () => {
-                    tag.remove();
-                    input.setCustomValidity('');
-                    input.focus();
-                });
-            };
-
-            const addTag = (value) => {
-                const label = value.trim();
-                if (!label) return true;
-
-                if (tags().some((tag) => tag.dataset.engineTag === normalized(label))) return true;
-                if (tags().length >= maxTags) {
-                    input.setCustomValidity(maxMessage);
-                    input.reportValidity();
-                    return false;
-                }
-
-                input.setCustomValidity('');
-                const tag = document.createElement('span');
-                tag.className = 'vf-tag';
-                tag.dataset.engineTag = normalized(label);
-
-                const text = document.createElement('span');
-                text.textContent = label;
-                const remove = document.createElement('button');
-                remove.type = 'button';
-                remove.dataset.engineTagRemove = '';
-                remove.setAttribute('aria-label', `Remove ${label}`);
-                remove.textContent = '×';
-                const hidden = document.createElement('input');
-                hidden.type = 'hidden';
-                hidden.name = 'engine_types[]';
-                hidden.value = label;
-
-                tag.append(text, remove, hidden);
-                list.appendChild(tag);
-                bindRemove(tag);
-                return true;
-            };
-
-            const commitInput = () => {
-                const values = input.value.split(/[,;\n]+/).map((value) => value.trim()).filter(Boolean);
-                let accepted = true;
-                values.forEach((value) => { if (!addTag(value)) accepted = false; });
-                if (accepted) input.value = '';
-                return accepted;
-            };
-
-            tags().forEach(bindRemove);
-            box.addEventListener('click', (event) => {
-                if (event.target === box) input.focus();
-            });
-            input.addEventListener('keydown', (event) => {
-                if (['Enter', ',', ';'].includes(event.key)) {
-                    event.preventDefault();
-                    commitInput();
-                }
-            });
-            input.addEventListener('input', () => {
-                input.setCustomValidity('');
-                if (/[,;\n]/.test(input.value)) commitInput();
-            });
-            input.addEventListener('blur', commitInput);
-            form.addEventListener('submit', (event) => {
-                if (!commitInput()) event.preventDefault();
-            });
-        });
-
-        document.querySelectorAll('[data-variant-create]').forEach((form) => {
-            const brand = form.querySelector('[data-family-brand]');
-            const family = form.querySelector('[data-family-select]');
-            const newFamily = form.querySelector('[data-new-family]');
-            const familyMap = JSON.parse(form.dataset.familyMap || '{}');
-            if (!brand || !family || !newFamily) return;
-
-            const renderFamilies = () => {
-                const previous = family.value;
-                const choices = familyMap[brand.value] || [];
-                family.innerHTML = `<option value="">${@json(__('Select existing family'))}</option>`;
-                choices.forEach((item) => {
-                    const option = document.createElement('option');
-                    option.value = item.id;
-                    option.textContent = item.name;
-                    family.appendChild(option);
-                });
-                if (choices.some((item) => String(item.id) === String(previous))) family.value = previous;
-                family.disabled = !brand.value || choices.length === 0;
-            };
-
-            family.addEventListener('change', () => {
-                if (family.value) newFamily.value = '';
-            });
-            newFamily.addEventListener('input', () => {
-                if (newFamily.value.trim()) family.value = '';
-            });
-            brand.addEventListener('change', renderFamilies);
-            renderFamilies();
-        });
-
         // ── Add-fitment panel toggle ──
         (() => {
             const panel = document.getElementById('vf-fitment-panel');
@@ -984,36 +735,6 @@
             });
             document.querySelectorAll('[data-vf-close-fitment]').forEach((btn) => {
                 btn.addEventListener('click', () => { panel.hidden = true; });
-            });
-        })();
-
-        // ── Inline rename for brands and models ──
-        (() => {
-            document.querySelectorAll('[data-vf-edit-toggle]').forEach((btn) => {
-                btn.addEventListener('click', () => {
-                    const wrap = btn.closest('[data-vf-editable]');
-                    const panel = wrap?.querySelector('[data-vf-edit-panel]');
-                    const view = wrap?.querySelector('[data-vf-edit-view]');
-                    if (!panel) return;
-                    panel.hidden = false;
-                    if (view) view.hidden = true;
-                    const input = panel.querySelector('input[name="name"]');
-                    input?.focus();
-                    input?.select();
-                });
-            });
-            document.querySelectorAll('[data-vf-edit-cancel]').forEach((btn) => {
-                btn.addEventListener('click', () => {
-                    const wrap = btn.closest('[data-vf-editable]');
-                    const panel = wrap?.querySelector('[data-vf-edit-panel]');
-                    const view = wrap?.querySelector('[data-vf-edit-view]');
-                    if (panel) {
-                        panel.hidden = true;
-                        const input = panel.querySelector('input[name="name"]');
-                        if (input) input.value = input.defaultValue;
-                    }
-                    if (view) view.hidden = false;
-                });
             });
         })();
 

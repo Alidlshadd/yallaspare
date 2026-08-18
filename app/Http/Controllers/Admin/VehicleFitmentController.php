@@ -11,6 +11,7 @@ use App\Models\VehicleModelFamily;
 use App\Support\SecureImageStorage;
 use App\Support\SqlSafe;
 use App\Support\VehicleFuelType;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -29,10 +30,10 @@ class VehicleFitmentController extends Controller
         $brandFilter = (int) $request->query('brand', 0);
         $brands = VehicleBrand::query()
             ->with([
-                'models.engineTypes:id,vehicle_model_id,name',
+                'models.engineTypes:id,vehicle_model_id,name,fuel_type,engine_size,aspiration',
                 'models.family:id,name,name_en,name_ar,name_ku',
                 'modelFamilies.variants' => fn ($query) => $query
-                    ->with(['engineTypes:id,vehicle_model_id,name'])
+                    ->with(['engineTypes:id,vehicle_model_id,name,fuel_type,engine_size,aspiration'])
                     ->withCount('fitments')
                     ->orderBy('name'),
             ])
@@ -100,6 +101,56 @@ class VehicleFitmentController extends Controller
                 'total_products' => Product::query()->where('is_active', true)->count(),
             ],
         ]);
+    }
+
+    /**
+     * The variant form used to sit in a 350px column beside the hierarchy, which
+     * left no room for per-engine fields. It gets its own page instead.
+     */
+    public function createModel(): View
+    {
+        return view('admin.vehicle-fitments.models.create', [
+            'brands' => $this->brandsWithFamilies(),
+            'fuelTypes' => $this->fuelTypeOptions(),
+        ]);
+    }
+
+    public function editModel(VehicleModel $model): View
+    {
+        $model->load(['engineTypes', 'family:id,name,name_en,name_ar,name_ku', 'brand:id,name']);
+
+        return view('admin.vehicle-fitments.models.edit', [
+            'model' => $model,
+            'families' => VehicleModelFamily::query()
+                ->where('vehicle_brand_id', $model->vehicle_brand_id)
+                ->orderBy('name')
+                ->get(),
+            'fuelTypes' => $this->fuelTypeOptions(),
+            'fitmentCount' => $model->fitments()->count(),
+        ]);
+    }
+
+    /** @return Collection<int, VehicleBrand> */
+    private function brandsWithFamilies(): Collection
+    {
+        return VehicleBrand::query()
+            ->with(['modelFamilies' => fn ($query) => $query->orderBy('name')])
+            ->orderBy('name')
+            ->get();
+    }
+
+    /**
+     * Value stays canonical; only the label follows the operator's language.
+     *
+     * @return array<int, array{value: string, label: string, has_displacement: bool}>
+     */
+    private function fuelTypeOptions(): array
+    {
+        return array_map(fn (string $fuelType) => [
+            'value' => $fuelType,
+            'label' => VehicleFuelType::label($fuelType),
+            'has_displacement' => VehicleFuelType::hasDisplacement($fuelType),
+        ], VehicleFuelType::all());
     }
 
     public function searchProducts(Request $request): JsonResponse
@@ -248,9 +299,11 @@ class VehicleFitmentController extends Controller
             throw $exception;
         }
 
-        return back()->with('success', $engineTypes === []
-            ? __('Vehicle model created.')
-            : __('Vehicle model and engine types created.'));
+        return redirect()
+            ->route('admin.vehicle-fitments.index')
+            ->with('success', $engineTypes === []
+                ? __('Vehicle model created.')
+                : __('Vehicle model and engine types created.'));
     }
 
     public function updateBrand(Request $request, VehicleBrand $brand): RedirectResponse
@@ -338,7 +391,9 @@ class VehicleFitmentController extends Controller
             $this->deleteVariantImageIfUnused($oldImagePath);
         }
 
-        return back()->with('success', __('Vehicle model updated.'));
+        return redirect()
+            ->route('admin.vehicle-fitments.index')
+            ->with('success', __('Vehicle model updated.'));
     }
 
     public function storeFitment(Request $request): RedirectResponse
@@ -388,7 +443,7 @@ class VehicleFitmentController extends Controller
                 $model = VehicleModel::query()
                     ->whereKey($modelId)
                     ->where('vehicle_brand_id', $brandId)
-                    ->with('engineTypes:id,vehicle_model_id,name')
+                    ->with('engineTypes:id,vehicle_model_id,name,fuel_type,engine_size,aspiration')
                     ->first();
 
                 if ($model && $familyId > 0 && (int) $model->vehicle_model_family_id !== $familyId) {

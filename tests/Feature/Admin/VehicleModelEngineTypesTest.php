@@ -127,7 +127,7 @@ class VehicleModelEngineTypesTest extends TestCase
             ->assertSee('X-Trail')
             ->assertSee('e-POWER')
             ->assertSee('2021–2025')
-            ->assertSee('data-engine-tags', false)
+            ->assertSee(route('admin.vehicle-fitments.models.create'), false)
             ->assertDontSee('vf-engine-types-list', false);
     }
 

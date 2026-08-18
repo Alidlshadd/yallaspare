@@ -485,6 +485,12 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::post('/vehicle-fitments/brands', [VehicleFitmentController::class, 'storeBrand'])
             ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('vehicle-fitments.brands.store');
+        Route::get('/vehicle-fitments/models/create', [VehicleFitmentController::class, 'createModel'])
+            ->middleware('can:'.User::PERMISSION_PRODUCTS_MANAGE)
+            ->name('vehicle-fitments.models.create');
+        Route::get('/vehicle-fitments/models/{model}/edit', [VehicleFitmentController::class, 'editModel'])
+            ->middleware('can:'.User::PERMISSION_PRODUCTS_MANAGE)
+            ->name('vehicle-fitments.models.edit');
         Route::post('/vehicle-fitments/models', [VehicleFitmentController::class, 'storeModel'])
             ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('vehicle-fitments.models.store');
