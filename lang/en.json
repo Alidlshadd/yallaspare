@@ -3838,5 +3838,13 @@
     "all": "all",
     "Not sure? Send us your chassis number and we will confirm.": "Not sure? Send us your chassis number and we will confirm.",
     ":count configuration|:count configurations": ":count configuration|:count configurations",
-    ":count engine|:count engines": ":count engine|:count engines"
+    ":count engine|:count engines": ":count engine|:count engines",
+    "Family Name — English": "Family Name — English",
+    "Family Name — Arabic": "Family Name — Arabic",
+    "Family Name — Kurdish": "Family Name — Kurdish",
+    "Variant Name — English": "Variant Name — English",
+    "Variant Name — Arabic": "Variant Name — Arabic",
+    "Variant Name — Kurdish": "Variant Name — Kurdish",
+    "Save Family": "Save Family",
+    "Present": "Present"
 }

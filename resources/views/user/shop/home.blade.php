@@ -121,7 +121,7 @@
                     >
                         <option value="">{{ __('Model') }}</option>
                         @foreach ($modelOptions as $option)
-                            <option value="{{ $option }}">{{ $option }}</option>
+                            <option value="{{ is_array($option) ? $option['value'] : $option }}">{{ is_array($option) ? $option['label'] : $option }}</option>
                         @endforeach
                     </select>
 
@@ -134,7 +134,7 @@
                         <option value="">{{ __('Any engine') }}</option>
                         @if($vehicleOptionsByModel === [])
                             @foreach ($engineOptions as $option)
-                                <option value="{{ $option }}">{{ $option }}</option>
+                                <option value="{{ is_array($option) ? $option['value'] : $option }}">{{ is_array($option) ? $option['label'] : $option }}</option>
                             @endforeach
                         @endif
                     </select>

@@ -28,13 +28,20 @@ class SsangYongVehicleHierarchySeeder extends Seeder
                 'slug' => $this->uniqueBrandSlug($brandName),
             ]);
 
-            foreach ((array) ($catalog['families'] ?? []) as $familyName => $variantNames) {
+            foreach ((array) ($catalog['families'] ?? []) as $familySlug => $familyData) {
+                $familyName = (string) ($familyData['name_en'] ?? $familySlug);
                 $family = VehicleModelFamily::query()->firstOrCreate(
                     ['vehicle_brand_id' => $brand->id, 'name' => $familyName],
-                    ['slug' => $this->uniqueFamilySlug($brand->id, (string) $familyName)],
+                    ['slug' => $this->uniqueFamilySlug($brand->id, $familyName)],
                 );
+                $family->forceFill([
+                    'name_en' => $familyName,
+                    'name_ar' => $familyData['name_ar'] ?? null,
+                    'name_ku' => $familyData['name_ku'] ?? null,
+                ])->save();
 
-                foreach ((array) $variantNames as $variantName) {
+                foreach ((array) ($familyData['variants'] ?? []) as $variantSlug => $variantData) {
+                    $variantName = (string) ($variantData['name_en'] ?? $variantSlug);
                     $variant = VehicleModel::query()->firstOrCreate(
                         ['vehicle_brand_id' => $brand->id, 'name' => $variantName],
                         [
@@ -42,6 +49,12 @@ class SsangYongVehicleHierarchySeeder extends Seeder
                             'slug' => $this->uniqueVariantSlug($brand->id, (string) $variantName),
                         ],
                     );
+
+                    $variant->forceFill([
+                        'name_en' => $variantName,
+                        'name_ar' => $variantData['name_ar'] ?? null,
+                        'name_ku' => $variantData['name_ku'] ?? null,
+                    ])->save();
 
                     if ((int) $variant->vehicle_model_family_id !== (int) $family->id) {
                         $oldFamilyId = $variant->vehicle_model_family_id;

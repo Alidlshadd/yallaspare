@@ -29,7 +29,7 @@ class VehicleFitmentController extends Controller
         $brands = VehicleBrand::query()
             ->with([
                 'models.engineTypes:id,vehicle_model_id,name',
-                'models.family:id,name',
+                'models.family:id,name,name_en,name_ar,name_ku',
                 'modelFamilies.variants' => fn ($query) => $query
                     ->with(['engineTypes:id,vehicle_model_id,name'])
                     ->withCount('fitments')
@@ -52,8 +52,8 @@ class VehicleFitmentController extends Controller
             ->with([
                 'product:id,name_en,name_ar,name_ku,sku,brand,image',
                 'brand:id,name',
-                'model:id,name,vehicle_brand_id,vehicle_model_family_id',
-                'model.family:id,name',
+                'model:id,name,name_en,name_ar,name_ku,vehicle_brand_id,vehicle_model_family_id',
+                'model.family:id,name,name_en,name_ar,name_ku',
             ])
             ->when($brandFilter > 0, fn ($query) => $query->where('vehicle_brand_id', $brandFilter))
             ->when($search !== '', function ($query) use ($search): void {
@@ -66,7 +66,11 @@ class VehicleFitmentController extends Controller
                         SqlSafe::orWhereLike($productQuery, 'brand', $search);
                     });
                     $searchQuery->orWhereHas('brand', fn ($brandQuery) => SqlSafe::whereLike($brandQuery, 'name', $search));
-                    $searchQuery->orWhereHas('model', fn ($modelQuery) => SqlSafe::whereLike($modelQuery, 'name', $search));
+                    $searchQuery->orWhereHas('model', function ($modelQuery) use ($search): void {
+                        SqlSafe::whereLike($modelQuery, 'name', $search);
+                        SqlSafe::orWhereLike($modelQuery, 'name_ar', $search);
+                        SqlSafe::orWhereLike($modelQuery, 'name_ku', $search);
+                    });
                 });
             })
             ->latest('id')
@@ -149,21 +153,30 @@ class VehicleFitmentController extends Controller
 
     public function storeModel(Request $request): RedirectResponse
     {
+        $request->merge([
+            'name_en' => trim((string) ($request->input('name_en') ?: $request->input('name'))),
+            'new_family_name_en' => trim((string) ($request->input('new_family_name_en') ?: $request->input('new_family_name'))),
+        ]);
+
         $validator = Validator::make($request->all(), [
             'vehicle_brand_id' => ['required', 'exists:vehicle_brands,id'],
             'vehicle_model_family_id' => ['nullable', 'integer', 'exists:vehicle_model_families,id'],
-            'new_family_name' => [
+            'new_family_name_en' => [
                 'nullable',
                 'string',
                 'max:120',
                 Rule::unique('vehicle_model_families', 'name')->where(fn ($query) => $query->where('vehicle_brand_id', $request->input('vehicle_brand_id'))),
             ],
-            'name' => [
+            'new_family_name_ar' => ['nullable', 'string', 'max:120'],
+            'new_family_name_ku' => ['nullable', 'string', 'max:120'],
+            'name_en' => [
                 'required',
                 'string',
                 'max:120',
                 Rule::unique('vehicle_models', 'name')->where(fn ($query) => $query->where('vehicle_brand_id', $request->input('vehicle_brand_id'))),
             ],
+            'name_ar' => ['nullable', 'string', 'max:120'],
+            'name_ku' => ['nullable', 'string', 'max:120'],
             'engine_types' => ['nullable', 'array'],
             'engine_types.*' => ['nullable', 'string', 'max:500'],
             'engine_types_text' => ['nullable', 'string', 'max:2000'],
@@ -190,21 +203,32 @@ class VehicleFitmentController extends Controller
         try {
             DB::transaction(function () use ($data, $engineTypes, $imagePath): void {
                 $brandId = (int) $data['vehicle_brand_id'];
-                $family = ! empty($data['vehicle_model_family_id'])
-                    ? VehicleModelFamily::query()->findOrFail((int) $data['vehicle_model_family_id'])
-                    : VehicleModelFamily::query()->firstOrCreate(
+                if (! empty($data['vehicle_model_family_id'])) {
+                    $family = VehicleModelFamily::query()->findOrFail((int) $data['vehicle_model_family_id']);
+                } else {
+                    $familyName = trim((string) ($data['new_family_name_en'] ?: $data['name_en']));
+                    $family = VehicleModelFamily::query()->firstOrCreate(
                         [
                             'vehicle_brand_id' => $brandId,
-                            'name' => trim((string) ($data['new_family_name'] ?? $data['name'])),
+                            'name' => $familyName,
                         ],
-                        ['slug' => $this->uniqueFamilySlug($brandId, (string) ($data['new_family_name'] ?? $data['name']))],
+                        ['slug' => $this->uniqueFamilySlug($brandId, $familyName)],
                     );
+                    $family->fill([
+                        'name_en' => $familyName,
+                        'name_ar' => $this->nullableText($data['new_family_name_ar'] ?? null),
+                        'name_ku' => $this->nullableText($data['new_family_name_ku'] ?? null),
+                    ])->save();
+                }
 
                 $model = VehicleModel::query()->create([
                     'vehicle_brand_id' => $brandId,
                     'vehicle_model_family_id' => $family->id,
-                    'name' => trim((string) $data['name']),
-                    'slug' => $this->uniqueModelSlug($brandId, (string) $data['name']),
+                    'name' => trim((string) $data['name_en']),
+                    'name_en' => trim((string) $data['name_en']),
+                    'name_ar' => $this->nullableText($data['name_ar'] ?? null),
+                    'name_ku' => $this->nullableText($data['name_ku'] ?? null),
+                    'slug' => $this->uniqueModelSlug($brandId, (string) $data['name_en']),
                     'production_start_year' => $data['production_start_year'] ?? null,
                     'production_end_year' => $data['production_end_year'] ?? null,
                     'image_path' => $imagePath,
@@ -243,9 +267,13 @@ class VehicleFitmentController extends Controller
 
     public function updateModel(Request $request, VehicleModel $model): RedirectResponse
     {
+        $request->merge([
+            'name_en' => trim((string) ($request->input('name_en') ?: $request->input('name'))),
+        ]);
+
         $data = $request->validate([
             'vehicle_model_family_id' => ['nullable', 'integer', Rule::exists('vehicle_model_families', 'id')->where(fn ($query) => $query->where('vehicle_brand_id', $model->vehicle_brand_id))],
-            'name' => [
+            'name_en' => [
                 'required',
                 'string',
                 'max:120',
@@ -253,6 +281,8 @@ class VehicleFitmentController extends Controller
                     ->where(fn ($query) => $query->where('vehicle_brand_id', $model->vehicle_brand_id))
                     ->ignore($model->id),
             ],
+            'name_ar' => ['nullable', 'string', 'max:120'],
+            'name_ku' => ['nullable', 'string', 'max:120'],
             'engine_types' => ['nullable', 'array'],
             'engine_types.*' => ['nullable', 'string', 'max:500'],
             'engine_types_text' => ['nullable', 'string', 'max:2000'],
@@ -262,7 +292,7 @@ class VehicleFitmentController extends Controller
             'remove_image' => ['sometimes', 'boolean'],
         ]);
 
-        $name = trim((string) $data['name']);
+        $name = trim((string) $data['name_en']);
         $shouldSyncEngineTypes = $request->exists('engine_types') || $request->exists('engine_types_text');
         $engineTypes = $shouldSyncEngineTypes ? $this->validatedEngineTypes($data) : [];
 
@@ -277,7 +307,9 @@ class VehicleFitmentController extends Controller
                 $model->update([
                     'vehicle_model_family_id' => $data['vehicle_model_family_id'] ?? $model->vehicle_model_family_id,
                     'name' => $name,
-                    'slug' => $this->uniqueModelSlug((int) $model->vehicle_brand_id, $name, $model->id),
+                    'name_en' => $name,
+                    'name_ar' => $this->nullableText($data['name_ar'] ?? null),
+                    'name_ku' => $this->nullableText($data['name_ku'] ?? null),
                     'production_start_year' => $data['production_start_year'] ?? null,
                     'production_end_year' => $data['production_end_year'] ?? null,
                     'image_path' => $imagePath,
@@ -441,8 +473,12 @@ class VehicleFitmentController extends Controller
 
     public function updateFamily(Request $request, VehicleModelFamily $family): RedirectResponse
     {
+        $request->merge([
+            'name_en' => trim((string) ($request->input('name_en') ?: $request->input('name'))),
+        ]);
+
         $data = $request->validate([
-            'name' => [
+            'name_en' => [
                 'required',
                 'string',
                 'max:120',
@@ -450,14 +486,25 @@ class VehicleFitmentController extends Controller
                     ->where(fn ($query) => $query->where('vehicle_brand_id', $family->vehicle_brand_id))
                     ->ignore($family->id),
             ],
+            'name_ar' => ['nullable', 'string', 'max:120'],
+            'name_ku' => ['nullable', 'string', 'max:120'],
         ]);
-        $name = trim((string) $data['name']);
+        $name = trim((string) $data['name_en']);
         $family->update([
             'name' => $name,
-            'slug' => $this->uniqueFamilySlug((int) $family->vehicle_brand_id, $name, $family->id),
+            'name_en' => $name,
+            'name_ar' => $this->nullableText($data['name_ar'] ?? null),
+            'name_ku' => $this->nullableText($data['name_ku'] ?? null),
         ]);
 
         return back()->with('success', __('Model family updated.'));
+    }
+
+    private function nullableText(mixed $value): ?string
+    {
+        $value = trim((string) $value);
+
+        return $value !== '' ? $value : null;
     }
 
     public function destroyFamily(VehicleModelFamily $family): RedirectResponse

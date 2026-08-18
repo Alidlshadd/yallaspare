@@ -33,10 +33,13 @@
                 (string) $brand->id => $brand->models
                     ->map(fn ($model) => [
                         'id' => (int) $model->id,
-                        'name' => (string) $model->name,
+                        'name' => $model->localizedName(),
                         'family_id' => (int) $model->vehicle_model_family_id,
-                        'family_name' => (string) ($model->family?->name ?? ''),
-                        'engines' => $model->engineTypes->pluck('name')->values()->all(),
+                        'family_name' => (string) ($model->family?->localizedName() ?? ''),
+                        'engines' => $model->engineTypes
+                            ->map(fn ($engine) => ['value' => (string) $engine->name, 'label' => $engine->localizedName()])
+                            ->values()
+                            ->all(),
                         'year_from' => $model->production_start_year ? (int) $model->production_start_year : null,
                         'year_to' => $model->production_end_year ? (int) $model->production_end_year : null,
                     ])
@@ -50,7 +53,7 @@
                 (string) $brand->id => $brand->modelFamilies
                     ->map(fn ($family) => [
                         'id' => (int) $family->id,
-                        'name' => (string) $family->name,
+                        'name' => $family->localizedName(),
                     ])
                     ->values()
                     ->all(),
@@ -58,9 +61,10 @@
             ->all();
 
         $allEngineTypes = $brands
-            ->flatMap(fn ($brand) => $brand->models->flatMap(fn ($model) => $model->engineTypes->pluck('name')))
-            ->unique(fn ($engine) => mb_strtolower((string) $engine))
-            ->sort()
+            ->flatMap(fn ($brand) => $brand->models->flatMap(fn ($model) => $model->engineTypes))
+            ->unique(fn ($engine) => mb_strtolower((string) $engine->name))
+            ->sortBy('name')
+            ->map(fn ($engine) => ['value' => (string) $engine->name, 'label' => $engine->localizedName()])
             ->values();
 
         $fitmentRows = old('fitments');
@@ -467,8 +471,20 @@
                             <option value="">{{ __('Select existing family') }}</option>
                         </select>
                         <div class="flex items-center gap-2 text-[10px] font-extrabold uppercase tracking-widest text-slate-400"><span class="h-px flex-1 bg-slate-200 dark:bg-slate-700"></span>{{ __('or') }}<span class="h-px flex-1 bg-slate-200 dark:bg-slate-700"></span></div>
-                        <input name="new_family_name" value="{{ old('new_family_name') }}" maxlength="120" placeholder="{{ __('Create new model family') }}" class="vf-inp" data-new-family>
-                        <input name="name" value="{{ old('name') }}" required maxlength="120" placeholder="{{ __('Variant, e.g. Rexton W') }}" class="vf-inp" aria-label="{{ __('Variant') }}">
+                        <div class="grid gap-2">
+                            <input name="new_family_name_en" value="{{ old('new_family_name_en', old('new_family_name')) }}" maxlength="120" placeholder="{{ __('Family Name — English') }}" class="vf-inp" data-new-family>
+                            <div class="grid grid-cols-2 gap-2">
+                                <input name="new_family_name_ar" value="{{ old('new_family_name_ar') }}" maxlength="120" dir="rtl" placeholder="{{ __('Family Name — Arabic') }}" class="vf-inp">
+                                <input name="new_family_name_ku" value="{{ old('new_family_name_ku') }}" maxlength="120" dir="rtl" placeholder="{{ __('Family Name — Kurdish') }}" class="vf-inp">
+                            </div>
+                        </div>
+                        <div class="grid gap-2">
+                            <input name="name_en" value="{{ old('name_en', old('name')) }}" required maxlength="120" placeholder="{{ __('Variant Name — English') }}" class="vf-inp" aria-label="{{ __('Variant Name — English') }}">
+                            <div class="grid grid-cols-2 gap-2">
+                                <input name="name_ar" value="{{ old('name_ar') }}" maxlength="120" dir="rtl" placeholder="{{ __('Variant Name — Arabic') }}" class="vf-inp">
+                                <input name="name_ku" value="{{ old('name_ku') }}" maxlength="120" dir="rtl" placeholder="{{ __('Variant Name — Kurdish') }}" class="vf-inp">
+                            </div>
+                        </div>
                         <div class="grid grid-cols-2 gap-2">
                             <input name="production_start_year" type="number" min="1900" max="2100" value="{{ old('production_start_year') }}" placeholder="{{ __('Year From') }}" class="vf-inp">
                             <input name="production_end_year" type="number" min="1900" max="2100" value="{{ old('production_end_year') }}" placeholder="{{ __('Year To') }}" class="vf-inp">
@@ -500,27 +516,34 @@
                                     <details class="group overflow-hidden rounded-xl border border-slate-200 bg-slate-50 open:bg-white dark:border-slate-700 dark:bg-slate-900/70 dark:open:bg-slate-900" @if($loop->first) open @endif>
                                         <summary class="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 transition hover:bg-white dark:hover:bg-slate-800/70">
                                             <span>
-                                                <span class="block text-[12px] font-black uppercase tracking-[.12em] text-slate-900 dark:text-white">{{ $family->name }}</span>
+                                                <span class="block text-[12px] font-black uppercase tracking-[.12em] text-slate-900 dark:text-white">{{ $family->localizedName() }}</span>
                                                 <span class="mt-1 block font-mono text-[10px] text-slate-500 dark:text-slate-400">{{ $family->variants->count() }} {{ __('variants') }} · {{ $familyFitments }} {{ __('fitment rules') }}</span>
                                             </span>
                                             <i class="fas fa-chevron-down text-[10px] text-amber-500 transition duration-200 group-open:rotate-180"></i>
                                         </summary>
                                         <div class="grid gap-3 border-t border-slate-200 p-3 dark:border-slate-700 md:grid-cols-2 2xl:grid-cols-3">
+                                            <form method="POST" action="{{ route('admin.vehicle-fitments.families.update', $family) }}" class="grid gap-2 rounded-xl border border-dashed border-amber-300 bg-amber-50/60 p-3 dark:border-amber-500/30 dark:bg-amber-500/5 md:col-span-2 2xl:col-span-3 sm:grid-cols-[1fr_1fr_1fr_auto] sm:items-end">
+                                                @csrf @method('PATCH')
+                                                <label class="block"><span class="vf-lbl">{{ __('Family Name — English') }}</span><input name="name_en" value="{{ $family->name_en ?: $family->name }}" required maxlength="120" class="vf-inp"></label>
+                                                <label class="block"><span class="vf-lbl">{{ __('Family Name — Arabic') }}</span><input name="name_ar" value="{{ $family->name_ar }}" maxlength="120" dir="rtl" class="vf-inp"></label>
+                                                <label class="block"><span class="vf-lbl">{{ __('Family Name — Kurdish') }}</span><input name="name_ku" value="{{ $family->name_ku }}" maxlength="120" dir="rtl" class="vf-inp"></label>
+                                                <button class="vf-btn primary sm">{{ __('Save Family') }}</button>
+                                            </form>
                                             @forelse($family->variants as $model)
                                                 <article class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-950" data-vf-editable>
                                                     <div data-vf-edit-view>
                                                         <div class="flex gap-3">
                                                             @if($model->image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($model->image_path))
-                                                                <img src="{{ asset('storage/'.ltrim($model->image_path, '/')) }}" alt="{{ $model->name }}" class="h-16 w-20 rounded-lg border border-slate-200 bg-slate-50 object-cover dark:border-slate-700 dark:bg-slate-900">
+                                                                <img src="{{ asset('storage/'.ltrim($model->image_path, '/')) }}" alt="{{ $model->localizedName() }}" class="h-16 w-20 rounded-lg border border-slate-200 bg-slate-50 object-cover dark:border-slate-700 dark:bg-slate-900">
                                                             @else
                                                                 <span class="grid h-16 w-20 shrink-0 place-items-center rounded-lg border border-dashed border-slate-300 bg-slate-50 text-slate-400 dark:border-slate-700 dark:bg-slate-900"><i class="fas fa-car-side text-xl"></i></span>
                                                             @endif
                                                             <div class="min-w-0 flex-1">
-                                                                <h4 class="truncate text-sm font-extrabold text-slate-900 dark:text-white">{{ $model->name }}</h4>
+                                                                <h4 class="truncate text-sm font-extrabold text-slate-900 dark:text-white">{{ $model->localizedName() }}</h4>
                                                                 <p class="mt-1 font-mono text-[10px] text-slate-500">{{ $model->production_start_year || $model->production_end_year ? (($model->production_start_year ?: '…').'–'.($model->production_end_year ?: __('Present'))) : __('Years not specified') }}</p>
                                                                 <div class="mt-2 flex flex-wrap gap-1">
                                                                     @forelse($model->engineTypes as $engineType)
-                                                                        <span class="vf-engine-chip">{{ $engineType->name }}</span>
+                                                                        <span class="vf-engine-chip">{{ $engineType->localizedName() }}</span>
                                                                     @empty
                                                                         <span class="text-[10px] text-slate-400">{{ __('Engine not specified') }}</span>
                                                                     @endforelse
@@ -539,10 +562,14 @@
                                                         @csrf @method('PATCH')
                                                         <select name="vehicle_model_family_id" required class="vf-sel">
                                                             @foreach($brand->modelFamilies as $availableFamily)
-                                                                <option value="{{ $availableFamily->id }}" @selected($availableFamily->id === $family->id)>{{ $availableFamily->name }}</option>
+                                                                <option value="{{ $availableFamily->id }}" @selected($availableFamily->id === $family->id)>{{ $availableFamily->localizedName() }}</option>
                                                             @endforeach
                                                         </select>
-                                                        <input name="name" value="{{ $model->name }}" required maxlength="120" class="vf-inp">
+                                                        <label class="block"><span class="vf-lbl">{{ __('Variant Name — English') }}</span><input name="name_en" value="{{ $model->name_en ?: $model->name }}" required maxlength="120" class="vf-inp"></label>
+                                                        <div class="grid grid-cols-2 gap-2">
+                                                            <label class="block"><span class="vf-lbl">{{ __('Variant Name — Arabic') }}</span><input name="name_ar" value="{{ $model->name_ar }}" maxlength="120" dir="rtl" class="vf-inp"></label>
+                                                            <label class="block"><span class="vf-lbl">{{ __('Variant Name — Kurdish') }}</span><input name="name_ku" value="{{ $model->name_ku }}" maxlength="120" dir="rtl" class="vf-inp"></label>
+                                                        </div>
                                                         <div class="grid grid-cols-2 gap-2">
                                                             <input name="production_start_year" type="number" min="1900" max="2100" value="{{ $model->production_start_year }}" placeholder="{{ __('From') }}" class="vf-inp">
                                                             <input name="production_end_year" type="number" min="1900" max="2100" value="{{ $model->production_end_year }}" placeholder="{{ __('To') }}" class="vf-inp">
@@ -758,7 +785,7 @@
                     <div class="flex flex-wrap gap-1.5">
                         <span class="vf-pill good">{{ $fitment->brand?->name ?? __('Any brand') }}</span>
                         @if($fitment->model)
-                            <span class="vf-pill good">{{ $fitment->model->name }}</span>
+                            <span class="vf-pill good">{{ $fitment->model->localizedName() }}</span>
                         @else
                             <span class="vf-pill warn">{{ __('Any model') }}</span>
                         @endif
@@ -768,7 +795,7 @@
                         <div class="years">
                             <span>{{ $trackStart }}</span>
                             <span class="mid {{ $isAllYears ? 'full' : '' }}">
-                                {{ $yearLabel }} · {{ $fitment->engine ?: __('Any engine') }}
+                                {{ $yearLabel }} · {{ $fitment->engine ? \App\Support\VehicleLocalization::engine($fitment->engine) : __('Any engine') }}
                             </span>
                             <span>{{ $trackEnd }}</span>
                         </div>
@@ -1167,7 +1194,8 @@
                 engineOptions.innerHTML = '';
                 choices.forEach((engine) => {
                     const option = document.createElement('option');
-                    option.value = engine;
+                    option.value = typeof engine === 'object' ? engine.value : engine;
+                    option.label = typeof engine === 'object' ? engine.label : engine;
                     engineOptions.appendChild(option);
                 });
             };
@@ -1264,7 +1292,7 @@
                 const modelLabel = selectedOptionLabel(modelSelect, anyModelLabel);
                 const from = yearFrom?.value?.trim() || '';
                 const to = yearTo?.value?.trim() || '';
-                const engine = engineInput?.value?.trim() || '';
+                const engine = selectedOptionLabel(engineInput, anyEngineLabel);
 
                 if (previewProduct) previewProduct.textContent = productLabel;
                 const familyLabel = selectedOptionLabel(familySelect, '');
@@ -1298,11 +1326,13 @@
                     engineInput.appendChild(placeholder);
                     modelEngines.forEach((engine) => {
                         const option = document.createElement('option');
-                        option.value = engine;
-                        option.textContent = engine;
+                        option.value = typeof engine === 'object' ? engine.value : engine;
+                        option.textContent = typeof engine === 'object' ? engine.label : engine;
                         engineInput.appendChild(option);
                     });
-                    if (modelEngines.includes(previousValue)) engineInput.value = previousValue;
+                    if (modelEngines.some((engine) => String(typeof engine === 'object' ? engine.value : engine) === String(previousValue))) {
+                        engineInput.value = previousValue;
+                    }
                     engineInput.disabled = !modelSelect.value;
                 };
 

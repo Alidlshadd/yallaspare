@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Concerns\FlushesVehicleFilterCache;
+use App\Support\VehicleLocalization;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,6 +18,9 @@ class VehicleModel extends Model
         'vehicle_brand_id',
         'vehicle_model_family_id',
         'name',
+        'name_en',
+        'name_ar',
+        'name_ku',
         'slug',
         'production_start_year',
         'production_end_year',
@@ -45,5 +49,15 @@ class VehicleModel extends Model
     public function fitments(): HasMany
     {
         return $this->hasMany(ProductVehicleFitment::class, 'vehicle_model_id');
+    }
+
+    public function localizedName(?string $locale = null): string
+    {
+        return VehicleLocalization::name($this, $locale);
+    }
+
+    public function getLocalizedNameAttribute(): string
+    {
+        return $this->localizedName();
     }
 }

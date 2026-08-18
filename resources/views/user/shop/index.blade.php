@@ -33,6 +33,8 @@
             $categoryUrl = fn ($value) => route('shop.index', array_merge(request()->except(['category', 'page']), array_filter(['category' => $value])));
             $selectedVehicleMetadata = $vehicleOptionsByModel[$brand][$model] ?? [];
             $selectedVehicleEngines = $selectedVehicleMetadata['engines'] ?? [];
+            $selectedModelLabel = $selectedVehicleMetadata['label'] ?? $model;
+            $selectedEngineLabel = collect($selectedVehicleEngines)->firstWhere('value', $engine)['label'] ?? $engine;
             $selectedYearFrom = (int) ($selectedVehicleMetadata['year_from'] ?? 0);
             $selectedYearTo = (int) ($selectedVehicleMetadata['year_to'] ?? 0);
             $selectedVehicleYears = $selectedYearFrom >= 1900 && $selectedYearTo >= $selectedYearFrom
@@ -40,8 +42,8 @@
                 : [];
             $vehicleActiveFilters = [
                 ['key' => 'brand', 'label' => __('Brand'), 'value' => $brand],
-                ['key' => 'model', 'label' => __('Model'), 'value' => $model],
-                ['key' => 'engine', 'label' => __('Engine'), 'value' => $engine],
+                ['key' => 'model', 'label' => __('Model'), 'value' => $selectedModelLabel],
+                ['key' => 'engine', 'label' => __('Engine'), 'value' => $selectedEngineLabel],
                 ['key' => 'year', 'label' => __('Year'), 'value' => $year],
             ];
             $sortLabels = [
@@ -120,7 +122,8 @@
                         <select id="model" name="model" data-vehicle-model class="{{ $selectClasses }} disabled:cursor-not-allowed disabled:opacity-60">
                             <option value="">{{ __('All models') }}</option>
                             @foreach ($modelOptions as $option)
-                                <option value="{{ $option }}" @selected(($model ?? '') === (string) $option)>{{ $option }}</option>
+                                @php($optionValue = is_array($option) ? $option['value'] : $option)
+                                <option value="{{ $optionValue }}" @selected(($model ?? '') === (string) $optionValue)>{{ is_array($option) ? $option['label'] : $option }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -133,11 +136,13 @@
                             <option value="">{{ __('Any engine') }}</option>
                             @if($vehicleOptionsByModel !== [])
                                 @foreach ($selectedVehicleEngines as $option)
-                                    <option value="{{ $option }}" @selected($engine === (string) $option)>{{ $option }}</option>
+                                    @php($optionValue = is_array($option) ? $option['value'] : $option)
+                                    <option value="{{ $optionValue }}" @selected($engine === (string) $optionValue)>{{ is_array($option) ? $option['label'] : $option }}</option>
                                 @endforeach
                             @else
                                 @foreach ($engineOptions as $option)
-                                    <option value="{{ $option }}" @selected($engine === (string) $option)>{{ $option }}</option>
+                                    @php($optionValue = is_array($option) ? $option['value'] : $option)
+                                    <option value="{{ $optionValue }}" @selected($engine === (string) $optionValue)>{{ is_array($option) ? $option['label'] : $option }}</option>
                                 @endforeach
                             @endif
                         </select>

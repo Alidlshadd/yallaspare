@@ -42,8 +42,8 @@ class ShopController extends Controller
             $productRelations['vehicleFitments'] = fn ($query) => $query
                 ->with([
                     'brand:id,name',
-                    'model:id,name,vehicle_brand_id,vehicle_model_family_id,image_path',
-                    'model.family:id,name',
+                    'model:id,name,name_en,name_ar,name_ku,vehicle_brand_id,vehicle_model_family_id,image_path',
+                    'model.family:id,name,name_en,name_ar,name_ku',
                 ])
                 ->orderBy('vehicle_brand_id')
                 ->orderBy('vehicle_model_id')

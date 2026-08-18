@@ -21,11 +21,21 @@ final class VehicleFilterCache
 
     public static function remember(Closure $callback): array
     {
-        return Cache::remember(self::KEY, self::TTL_SECONDS, $callback);
+        return Cache::remember(self::keyForLocale(), self::TTL_SECONDS, $callback);
     }
 
     public static function flush(): void
     {
-        Cache::forget(self::KEY);
+        foreach (['en', 'ar', 'ku'] as $locale) {
+            Cache::forget(self::keyForLocale($locale));
+        }
+    }
+
+    public static function keyForLocale(?string $locale = null): string
+    {
+        $locale = strtolower($locale ?: app()->getLocale());
+        $locale = str_starts_with($locale, 'ar') ? 'ar' : (str_starts_with($locale, 'ku') || str_starts_with($locale, 'ckb') ? 'ku' : 'en');
+
+        return $locale === 'en' ? self::KEY : self::KEY.'.'.$locale;
     }
 }

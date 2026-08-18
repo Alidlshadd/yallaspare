@@ -37,6 +37,7 @@ use App\Services\Reviews\ProductReviewEligibilityService;
 use App\Services\Security\UserPrivilegeService;
 use App\Support\IraqiPhoneNumber;
 use App\Support\SqlSafe;
+use App\Support\VehicleLocalization;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -753,22 +754,26 @@ class MobileController extends Controller
                     'slug' => $brand->slug,
                     'families' => $brand->modelFamilies->map(fn ($family) => [
                         'id' => $family->id,
-                        'name' => $family->name,
+                        'name' => $family->localizedName(),
+                        ...VehicleLocalization::names($family),
                         'slug' => $family->slug,
                         'variants' => $family->variants->map(fn ($variant) => [
                             'id' => $variant->id,
-                            'name' => $variant->name,
+                            'name' => $variant->localizedName(),
+                            ...VehicleLocalization::names($variant),
                             'slug' => $variant->slug,
                             'year_from' => $variant->production_start_year,
                             'year_to' => $variant->production_end_year,
-                            'engines' => $variant->engineTypes->pluck('name')->values()->all(),
+                            'engines' => $variant->engineTypes->map(fn ($engine) => $engine->localizedName())->values()->all(),
+                            'engine_values' => $variant->engineTypes->pluck('name')->values()->all(),
                             'image_url' => $variant->image_path && Storage::disk('public')->exists($variant->image_path) ? asset('storage/'.ltrim($variant->image_path, '/')) : null,
                         ])->values()->all(),
                     ])->values()->all(),
                     // Kept for older mobile clients. New clients should use families[].variants.
                     'models' => $brand->models->map(fn ($model) => [
                         'id' => $model->id,
-                        'name' => $model->name,
+                        'name' => $model->localizedName(),
+                        ...VehicleLocalization::names($model),
                         'slug' => $model->slug,
                         'family_id' => $model->vehicle_model_family_id,
                     ])->values()->all(),
@@ -2043,15 +2048,26 @@ class MobileController extends Controller
             'discount_percent' => $pricing['discount_percent'],
             'stock_quantity' => (int) $product->stock_quantity,
             'low_stock_threshold' => (int) ($product->low_stock_threshold ?? 5),
-            'compatible_models' => $product->vehicleFitments->map(fn ($fitment) => trim(($fitment->brand?->name ?? '').' '.($fitment->model?->name ?? '').' '.($fitment->year_from ?? '').'-'.($fitment->year_to ?? '')))->filter()->values()->all()
+            'compatible_models' => $product->vehicleFitments->map(fn ($fitment) => trim(($fitment->brand?->name ?? '').' '.($fitment->model?->localizedName() ?? '').' '.($fitment->year_from ?? '').'-'.($fitment->year_to ?? '')))->filter()->values()->all()
                 ?: ($product->compatible_models ?? []),
             'vehicle_fitments' => $product->vehicleFitments->map(fn ($fitment) => [
                 'brand' => $fitment->brand?->name,
-                'family' => $fitment->model?->family?->name,
-                'variant' => $fitment->model?->name,
+                'family' => $fitment->model?->family?->localizedName(),
+                'family_id' => $fitment->model?->vehicle_model_family_id,
+                'family_slug' => $fitment->model?->family?->slug,
+                'family_name_en' => $fitment->model?->family ? VehicleLocalization::names($fitment->model->family)['name_en'] : null,
+                'family_name_ar' => $fitment->model?->family ? VehicleLocalization::names($fitment->model->family)['name_ar'] : null,
+                'family_name_ku' => $fitment->model?->family ? VehicleLocalization::names($fitment->model->family)['name_ku'] : null,
+                'variant' => $fitment->model?->localizedName(),
+                'variant_id' => $fitment->vehicle_model_id,
+                'variant_slug' => $fitment->model?->slug,
+                'variant_name_en' => $fitment->model ? VehicleLocalization::names($fitment->model)['name_en'] : null,
+                'variant_name_ar' => $fitment->model ? VehicleLocalization::names($fitment->model)['name_ar'] : null,
+                'variant_name_ku' => $fitment->model ? VehicleLocalization::names($fitment->model)['name_ku'] : null,
                 'year_from' => $fitment->year_from,
                 'year_to' => $fitment->year_to,
                 'engine' => $fitment->engine,
+                'engine_label' => VehicleLocalization::engine($fitment->engine),
                 'image_url' => $fitment->model?->image_path && Storage::disk('public')->exists($fitment->model->image_path) ? asset('storage/'.ltrim($fitment->model->image_path, '/')) : null,
             ])->values()->all(),
             'images' => $images,

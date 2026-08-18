@@ -3838,5 +3838,13 @@
     "all": "الكل",
     "Not sure? Send us your chassis number and we will confirm.": "غير متأكد؟ أرسل لنا رقم الشاسيه وسنؤكد لك.",
     ":count configuration|:count configurations": "تركيبة واحدة|:count تركيبات",
-    ":count engine|:count engines": "محرك واحد|:count محركات"
+    ":count engine|:count engines": "محرك واحد|:count محركات",
+    "Family Name — English": "اسم العائلة — الإنجليزية",
+    "Family Name — Arabic": "اسم العائلة — العربية",
+    "Family Name — Kurdish": "اسم العائلة — الكردية",
+    "Variant Name — English": "اسم الفئة — الإنجليزية",
+    "Variant Name — Arabic": "اسم الفئة — العربية",
+    "Variant Name — Kurdish": "اسم الفئة — الكردية",
+    "Save Family": "حفظ العائلة",
+    "Present": "حتى الآن"
 }

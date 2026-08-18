@@ -40,11 +40,11 @@ class ShopVehicleFilterTest extends TestCase
 
         $optionMap = json_decode(html_entity_decode($matches[1], ENT_QUOTES), true, 512, JSON_THROW_ON_ERROR);
 
-        $this->assertSame(['2.0 T', '2.3'], $optionMap['KGM']['Actyon']['engines']);
+        $this->assertSame(['2.0 T', '2.3'], array_column($optionMap['KGM']['Actyon']['engines'], 'value'));
         $this->assertSame(2007, $optionMap['KGM']['Actyon']['year_from']);
         $this->assertSame(2011, $optionMap['KGM']['Actyon']['year_to']);
-        $this->assertNotContains('3.2', $optionMap['KGM']['Actyon']['engines']);
-        $this->assertSame(['3.2'], $optionMap['KGM']['Rexton']['engines']);
+        $this->assertNotContains('3.2', array_column($optionMap['KGM']['Actyon']['engines'], 'value'));
+        $this->assertSame(['3.2'], array_column($optionMap['KGM']['Rexton']['engines'], 'value'));
     }
 
     public function test_model_and_engine_must_match_the_same_product_fitment(): void

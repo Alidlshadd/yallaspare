@@ -228,10 +228,12 @@ const initVehicleFinder = () => {
         const hasStructuredModels = Object.keys(modelMap).length > 0;
         const hasStructuredVehicleOptions = Object.keys(vehicleOptionMap).length > 0;
 
-        const appendOption = (container, value, selectedValue) => {
+        const appendOption = (container, item, selectedValue) => {
+            const value = typeof item === 'object' ? item.value : item;
+            const label = typeof item === 'object' ? item.label : item;
             const option = document.createElement('option');
             option.value = value;
-            option.textContent = value;
+            option.textContent = label;
             option.selected = String(value) === String(selectedValue);
             container.appendChild(option);
         };
@@ -293,10 +295,12 @@ const initVehicleFinder = () => {
             modelSelect.appendChild(placeholder);
 
             models.forEach((model) => {
+                const value = typeof model === 'object' ? model.value : model;
+                const label = typeof model === 'object' ? model.label : model;
                 const option = document.createElement('option');
-                option.value = model;
-                option.textContent = model;
-                option.selected = model === selectedModel;
+                option.value = value;
+                option.textContent = label;
+                option.selected = value === selectedModel;
                 modelSelect.appendChild(option);
             });
 

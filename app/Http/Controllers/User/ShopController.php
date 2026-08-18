@@ -17,6 +17,7 @@ use App\Support\DbSchema;
 use App\Support\LocalizedText;
 use App\Support\SqlSafe;
 use App\Support\VehicleFilterCache;
+use App\Support\VehicleLocalization;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -419,8 +420,8 @@ class ShopController extends Controller
         if (DbSchema::hasTable('vehicle_brands')) {
             $vehicleBrandRows = VehicleBrand::query()
                 ->with(['models' => fn ($query) => $query
-                    ->select(['id', 'vehicle_brand_id', 'vehicle_model_family_id', 'name', 'production_start_year', 'production_end_year'])
-                    ->with(['family:id,name', 'engineTypes:id,vehicle_model_id,name'])])
+                    ->select(['id', 'vehicle_brand_id', 'vehicle_model_family_id', 'name', 'name_en', 'name_ar', 'name_ku', 'production_start_year', 'production_end_year'])
+                    ->with(['family:id,name,name_en,name_ar,name_ku', 'engineTypes:id,vehicle_model_id,name'])])
                 ->orderBy('name')
                 ->get();
 
@@ -430,8 +431,7 @@ class ShopController extends Controller
                 $modelOptionsByBrand = $vehicleBrandRows
                     ->mapWithKeys(fn (VehicleBrand $brand) => [
                         (string) $brand->name => $brand->models
-                            ->pluck('name')
-                            ->filter()
+                            ->map(fn (VehicleModel $model) => ['value' => (string) $model->name, 'label' => $model->localizedName()])
                             ->values()
                             ->all(),
                     ])
@@ -442,7 +442,8 @@ class ShopController extends Controller
                             ->mapWithKeys(fn (VehicleModel $model) => [
                                 (string) $model->name => [
                                     'model_id' => (int) $model->id,
-                                    'family' => $model->family?->name,
+                                    'label' => $model->localizedName(),
+                                    'family' => $model->family?->localizedName(),
                                     'engines' => $model->engineTypes->pluck('name')->filter()->reject(fn ($engine) => preg_match('/\bdiesel\b/i', (string) $engine))->unique()->values()->all(),
                                     'year_from' => $model->production_start_year ? (int) $model->production_start_year : null,
                                     'year_to' => $model->production_end_year ? (int) $model->production_end_year : null,
@@ -457,8 +458,8 @@ class ShopController extends Controller
         if (DbSchema::hasTable('vehicle_models')) {
             $vehicleModels = VehicleModel::query()
                 ->orderBy('name')
-                ->pluck('name')
-                ->filter()
+                ->get(['id', 'name', 'name_en', 'name_ar', 'name_ku'])
+                ->map(fn (VehicleModel $model) => ['value' => (string) $model->name, 'label' => $model->localizedName()])
                 ->values();
 
             if ($vehicleModels->isNotEmpty()) {
@@ -480,7 +481,10 @@ class ShopController extends Controller
                 ->values();
 
             if ($fitmentEngines->isNotEmpty()) {
-                $engineOptions = $fitmentEngines;
+                $engineOptions = $fitmentEngines->map(fn (string $engine) => [
+                    'value' => $engine,
+                    'label' => VehicleLocalization::engine($engine),
+                ]);
             }
 
             $fitmentsByModel = ProductVehicleFitment::query()
@@ -515,6 +519,10 @@ class ShopController extends Controller
 
         foreach ($vehicleOptionsByModel as &$brandModels) {
             foreach ($brandModels as &$modelMetadata) {
+                $modelMetadata['engines'] = collect($modelMetadata['engines'])
+                    ->map(fn (string $engine) => ['value' => $engine, 'label' => VehicleLocalization::engine($engine)])
+                    ->values()
+                    ->all();
                 unset($modelMetadata['model_id']);
             }
             unset($modelMetadata);
@@ -579,8 +587,8 @@ class ShopController extends Controller
 
         return [
             'brandOptions' => $brandOptions->unique()->take(30)->values(),
-            'modelOptions' => $modelOptions->unique()->take(30)->values(),
-            'engineOptions' => $engineOptions->unique()->take(30)->values(),
+            'modelOptions' => $modelOptions->unique(fn ($option) => is_array($option) ? $option['value'] : $option)->take(30)->values(),
+            'engineOptions' => $engineOptions->unique(fn ($option) => is_array($option) ? $option['value'] : $option)->take(30)->values(),
             'modelOptionsByBrand' => $modelOptionsByBrand,
             'vehicleOptionsByModel' => $vehicleOptionsByModel,
             'hasStructuredVehicleData' => $hasStructuredVehicleData,

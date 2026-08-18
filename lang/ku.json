@@ -3838,5 +3838,13 @@
     "all": "هەموو",
     "Not sure? Send us your chassis number and we will confirm.": "دڵنیا نیت؟ ژمارەی شاسی بۆمان بنێرە و پشتڕاستی دەکەینەوە.",
     ":count configuration|:count configurations": "یەک پێکهاتە|:count پێکهاتە",
-    ":count engine|:count engines": "یەک بزوێنەر|:count بزوێنەر"
+    ":count engine|:count engines": "یەک بزوێنەر|:count بزوێنەر",
+    "Family Name — English": "ناوی خێزان — ئینگلیزی",
+    "Family Name — Arabic": "ناوی خێزان — عەرەبی",
+    "Family Name — Kurdish": "ناوی خێزان — کوردی",
+    "Variant Name — English": "ناوی جۆر — ئینگلیزی",
+    "Variant Name — Arabic": "ناوی جۆر — عەرەبی",
+    "Variant Name — Kurdish": "ناوی جۆر — کوردی",
+    "Save Family": "پاشەکەوتکردنی خێزان",
+    "Present": "تا ئێستا"
 }

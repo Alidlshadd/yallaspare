@@ -32,19 +32,19 @@
 
                 return [
                     'brand' => (string) ($fitment->brand?->name ?: __('Any brand')),
-                    'family' => (string) ($fitment->model?->family?->name ?: $fitment->model?->name ?: __('Other')),
-                    'model' => (string) ($fitment->model?->name ?: __('Any model')),
+                    'family' => (string) ($fitment->model?->family?->localizedName() ?: $fitment->model?->localizedName() ?: __('Other')),
+                    'model' => (string) ($fitment->model?->localizedName() ?: __('Any model')),
                     'image' => $fitment->model?->image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($fitment->model->image_path)
                         ? asset('storage/'.ltrim($fitment->model->image_path, '/'))
                         : null,
                     'years' => $yearLabel,
-                    'engine' => (string) ($fitment->engine ?: __('Any engine')),
+                    'engine' => (string) ($fitment->engine ? \App\Support\VehicleLocalization::engine($fitment->engine) : __('Any engine')),
                     'notes' => trim((string) $fitment->notes),
                     // Numeric bounds for the fitment board: null on both means the
                     // whole model is covered rather than that data is missing.
                     'from' => $yearFrom,
                     'to' => $yearTo,
-                    'engineRaw' => trim((string) $fitment->engine),
+                    'engineRaw' => \App\Support\VehicleLocalization::engine($fitment->engine),
                 ];
             })
             ->unique(fn (array $fitment) => implode('|', $fitment))
