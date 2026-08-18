@@ -36,10 +36,8 @@
                     'years' => $yearLabel,
                     'engine' => (string) ($fitment->engine ?: __('Any engine')),
                     'notes' => trim((string) $fitment->notes),
-                    // Numeric bounds and the model id, so the saved garage vehicle
-                    // can be matched against this product. Null bounds mean the
+                    // Numeric bounds for the fitment board: null on both means the
                     // whole model is covered rather than that data is missing.
-                    'model_id' => $fitment->vehicle_model_id ? (int) $fitment->vehicle_model_id : null,
                     'from' => $yearFrom,
                     'to' => $yearTo,
                     'engineRaw' => trim((string) $fitment->engine),

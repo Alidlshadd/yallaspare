@@ -3832,5 +3832,11 @@
     "Choose how email and SMS updates should reach you.": "هەڵبژێرە نوێکارییەکانی ئیمەیڵ و SMS چۆن پێت بگەن.",
     "Vehicle saved to your garage.": "ئۆتۆمبێلەکە لە گەراجەکەت پاشەکەوتکرا.",
     "Save to My Garage": "پاشەکەوت بکە لە گەراجەکەم",
-    "Also fits :count other models": "هەروەها بۆ :count مۆدێلی تر دەگونجێت"
+    "Also fits :count other models": "هەروەها بۆ :count مۆدێلی تر دەگونجێت",
+    "Verified fitment": "گونجانی پشتڕاستکراو",
+    "Fits these vehicles": "بۆ ئەم ئۆتۆمبێلانە دەگونجێت",
+    "all": "هەموو",
+    "Not sure? Send us your chassis number and we will confirm.": "دڵنیا نیت؟ ژمارەی شاسی بۆمان بنێرە و پشتڕاستی دەکەینەوە.",
+    ":count configuration|:count configurations": "یەک پێکهاتە|:count پێکهاتە",
+    ":count engine|:count engines": "یەک بزوێنەر|:count بزوێنەر"
 }

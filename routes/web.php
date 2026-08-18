@@ -30,7 +30,6 @@ use App\Http\Controllers\Admin\VehicleFitmentController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CspReportController;
-use App\Http\Controllers\GarageController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\PaymentReturnController;
 use App\Http\Controllers\ProductReviewController;
@@ -92,15 +91,6 @@ Route::get('/shop/autocomplete', [CatalogShopController::class, 'autocomplete'])
 Route::get('/categories', [UserShopController::class, 'categories'])->name('categories.index');
 Route::get('/categories/{category}', [UserShopController::class, 'category'])->name('categories.show');
 Route::get('/shop/products/{product}', [CatalogShopController::class, 'show'])->name('shop.show');
-
-// My Garage — the vehicle a customer saves once and every product page answers
-// against. Session-backed, so guests get it too.
-Route::post('/garage', [GarageController::class, 'store'])
-    ->middleware('throttle:public-write')
-    ->name('garage.store');
-Route::delete('/garage', [GarageController::class, 'destroy'])
-    ->middleware('throttle:public-write')
-    ->name('garage.destroy');
 
 Route::get('/privacy-policy', [LegalController::class, 'privacy'])->name('legal.privacy');
 Route::get('/terms', [LegalController::class, 'terms'])->name('legal.terms');
