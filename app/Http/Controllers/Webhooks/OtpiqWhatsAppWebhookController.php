@@ -24,7 +24,7 @@ class OtpiqWhatsAppWebhookController extends Controller
         OtpiqWebhookPayloadMapper $payloadMapper,
         OtpiqInboundSettings $inboundSettings,
     ): JsonResponse {
-        abort_unless((bool) config('services.otpiq.whatsapp.visible', false), 404);
+        abort_unless((bool) config('services.otpiq.whatsapp.admin_visible', true), 404);
 
         if (! $signatureVerifier->isConfigured()) {
             return response()->json([

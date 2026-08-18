@@ -83,9 +83,13 @@ return [
         'default_country_code' => env('OTPIQ_DEFAULT_COUNTRY_CODE', '964'),
         'verification_ttl' => (int) env('OTPIQ_VERIFICATION_TTL', 5),
         'whatsapp' => [
-            // Keep the integration code/configuration available for later, but
-            // do not expose or dispatch through WhatsApp until explicitly enabled.
-            'visible' => (bool) env('OTPIQ_WHATSAPP_VISIBLE', false),
+            // Admins can keep configuring and monitoring WhatsApp while the
+            // customer-facing delivery option remains hidden.
+            'admin_visible' => (bool) env('OTPIQ_WHATSAPP_ADMIN_VISIBLE', true),
+            'user_visible' => (bool) env(
+                'OTPIQ_WHATSAPP_USER_VISIBLE',
+                env('OTPIQ_WHATSAPP_VISIBLE', false),
+            ),
             'enabled' => (bool) env('OTPIQ_WHATSAPP_ENABLED', false),
             'account_id' => env('OTPIQ_WHATSAPP_ACCOUNT_ID'),
             'phone_id' => env('OTPIQ_WHATSAPP_PHONE_ID'),

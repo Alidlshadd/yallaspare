@@ -7,7 +7,7 @@
                     <span class="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600"></span>
                     <span>OTPIQ</span>
                 </div>
-                <h2 class="mt-1 text-2xl font-black text-slate-900 dark:text-white">{{ __('SMS Center') }}</h2>
+                <h2 class="mt-1 text-2xl font-black text-slate-900 dark:text-white">{{ $whatsappVisible ? __('SMS & WhatsApp Center') : __('SMS Center') }}</h2>
                 <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('Monitor verification delivery, provider readiness and phone coverage') }}</p>
             </div>
             <a href="{{ route('admin.email.index') }}" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:border-primary/30 hover:text-primary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-indigo-400/40 dark:hover:text-white">

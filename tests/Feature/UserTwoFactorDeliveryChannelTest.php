@@ -22,7 +22,7 @@ class UserTwoFactorDeliveryChannelTest extends TestCase
         config([
             'services.otpiq.api_key' => 'sk_dev_test_key',
             'services.otpiq.base_url' => 'https://api.otpiq.test/api',
-            'services.otpiq.whatsapp.visible' => false,
+            'services.otpiq.whatsapp.user_visible' => false,
             'services.otpiq.whatsapp.enabled' => false,
         ]);
     }
@@ -92,7 +92,7 @@ class UserTwoFactorDeliveryChannelTest extends TestCase
         Http::assertNothingSent();
 
         config([
-            'services.otpiq.whatsapp.visible' => true,
+            'services.otpiq.whatsapp.user_visible' => true,
             'services.otpiq.whatsapp.enabled' => true,
             'services.otpiq.whatsapp.account_id' => 'wa-account',
             'services.otpiq.whatsapp.phone_id' => 'wa-phone',
@@ -117,7 +117,7 @@ class UserTwoFactorDeliveryChannelTest extends TestCase
     {
         Notification::fake();
         config([
-            'services.otpiq.whatsapp.visible' => true,
+            'services.otpiq.whatsapp.user_visible' => true,
             'services.otpiq.whatsapp.enabled' => true,
             'services.otpiq.whatsapp.account_id' => 'wa-account',
             'services.otpiq.whatsapp.phone_id' => 'wa-phone',

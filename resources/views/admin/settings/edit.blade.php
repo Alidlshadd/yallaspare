@@ -12,6 +12,7 @@
     $inputClasses = 'w-full rounded-lg border-gray-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100';
     $labelClasses = 'mb-1.5 block text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-slate-400';
     $hintClasses = 'mt-1 text-xs text-gray-500 dark:text-slate-400';
+    $whatsappAdminVisible = (bool) config('services.otpiq.whatsapp.admin_visible', true);
 
     $sections = [
         'branding' => __('Branding'),
@@ -28,7 +29,9 @@
         'hero' => ['storefront_hero_video'],
         'currency' => ['currency_code', 'currency_symbol'],
         'operations' => ['shipping_fee', 'low_stock_threshold'],
-        'providers' => ['sms_provider_webhook_url'],
+        'providers' => $whatsappAdminVisible
+            ? ['sms_provider_webhook_url', 'whatsapp_provider_webhook_url']
+            : ['sms_provider_webhook_url'],
         'templates-en' => [
             'notification_order_placed_en_subject', 'notification_order_placed_en_body',
             'notification_order_status_updated_en_subject', 'notification_order_status_updated_en_body',
@@ -234,6 +237,12 @@
                                     <label class="{{ $labelClasses }}">{{ __('SMS Webhook URL') }}</label>
                                     <input type="url" name="sms_provider_webhook_url" value="{{ old('sms_provider_webhook_url', $settings['sms_provider_webhook_url'] ?? '') }}" class="{{ $inputClasses }}">
                                 </div>
+                                @if ($whatsappAdminVisible)
+                                    <div>
+                                        <label class="{{ $labelClasses }}">{{ __('WhatsApp Webhook URL') }}</label>
+                                        <input type="url" name="whatsapp_provider_webhook_url" value="{{ old('whatsapp_provider_webhook_url', $settings['whatsapp_provider_webhook_url'] ?? '') }}" class="{{ $inputClasses }}">
+                                    </div>
+                                @endif
                             </div>
                         </div>
 
