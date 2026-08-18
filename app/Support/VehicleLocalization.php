@@ -42,14 +42,19 @@ class VehicleLocalization
             return '';
         }
 
-        $terms = match (self::locale($locale)) {
-            'ar' => ['Turbo' => 'تيربو', 'Petrol' => 'بنزين'],
-            'ku' => ['Turbo' => 'تۆربۆ', 'Petrol' => 'بەنزین'],
-            default => ['Turbo' => 'Turbo', 'Petrol' => 'Petrol'],
-        };
+        // Free-text engines are still translated word by word. The fuel words
+        // come from VehicleFuelType so a label is never defined in two places.
+        $fuelLabels = VehicleFuelType::labels($locale);
+        $terms = [
+            'Turbo' => self::aspiration('turbo', $locale),
+            'Petrol' => $fuelLabels[VehicleFuelType::PETROL],
+            'Diesel' => $fuelLabels[VehicleFuelType::DIESEL],
+            'Hybrid' => $fuelLabels[VehicleFuelType::HYBRID],
+            'Electric' => $fuelLabels[VehicleFuelType::ELECTRIC],
+        ];
 
         return (string) preg_replace_callback(
-            '/\b(Turbo|Petrol)\b/iu',
+            '/\b(Turbo|Petrol|Diesel|Hybrid|Electric)\b/iu',
             fn (array $match): string => $terms[ucfirst(mb_strtolower($match[1]))] ?? $match[0],
             $label,
         );

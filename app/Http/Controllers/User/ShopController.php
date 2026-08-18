@@ -399,6 +399,9 @@ class ShopController extends Controller
         $vehicleOptionsByModel = [];
         $hasStructuredVehicleData = false;
         $hasFitmentData = false;
+        // Display text per canonical engine value, filled in once the variants
+        // are loaded. Stays empty when there is no vehicle table to read.
+        $engineLabels = collect();
 
         if (! DbSchema::hasTable('products')) {
             return $this->vehicleFilterPayload($brandOptions, $modelOptions, $engineOptions, $modelOptionsByBrand, $vehicleOptionsByModel, false, false);
@@ -417,12 +420,17 @@ class ShopController extends Controller
             $vehicleBrandRows = VehicleBrand::query()
                 ->with(['models' => fn ($query) => $query
                     ->select(['id', 'vehicle_brand_id', 'vehicle_model_family_id', 'name', 'name_en', 'name_ar', 'name_ku', 'production_start_year', 'production_end_year'])
-                    ->with(['family:id,name,name_en,name_ar,name_ku', 'engineTypes:id,vehicle_model_id,name'])])
+                    ->with(['family:id,name,name_en,name_ar,name_ku', 'engineTypes:id,vehicle_model_id,name,fuel_type,engine_size,aspiration'])])
                 ->orderBy('name')
                 ->get();
 
             if ($vehicleBrandRows->isNotEmpty()) {
                 $hasStructuredVehicleData = true;
+                // Engines configured on a variant carry a fuel type, so their
+                // label is built from those parts rather than from the string.
+                $engineLabels = $vehicleBrandRows
+                    ->flatMap(fn (VehicleBrand $brand) => $brand->models->pluck('engineTypes')->flatten())
+                    ->mapWithKeys(fn ($engine) => [(string) $engine->name => $engine->localizedName()]);
                 $brandOptions = $vehicleBrandRows->pluck('name')->filter()->values();
                 $modelOptionsByBrand = $vehicleBrandRows
                     ->mapWithKeys(fn (VehicleBrand $brand) => [
@@ -478,7 +486,7 @@ class ShopController extends Controller
             if ($fitmentEngines->isNotEmpty()) {
                 $engineOptions = $fitmentEngines->map(fn (string $engine) => [
                     'value' => $engine,
-                    'label' => VehicleLocalization::engine($engine),
+                    'label' => $engineLabels[$engine] ?? VehicleLocalization::engine($engine),
                 ]);
             }
 
@@ -514,7 +522,10 @@ class ShopController extends Controller
         foreach ($vehicleOptionsByModel as &$brandModels) {
             foreach ($brandModels as &$modelMetadata) {
                 $modelMetadata['engines'] = collect($modelMetadata['engines'])
-                    ->map(fn (string $engine) => ['value' => $engine, 'label' => VehicleLocalization::engine($engine)])
+                    ->map(fn (string $engine) => [
+                        'value' => $engine,
+                        'label' => $engineLabels[$engine] ?? VehicleLocalization::engine($engine),
+                    ])
                     ->values()
                     ->all();
                 unset($modelMetadata['model_id']);

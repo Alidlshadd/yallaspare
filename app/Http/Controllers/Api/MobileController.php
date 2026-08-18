@@ -766,6 +766,18 @@ class MobileController extends Controller
                             'year_to' => $variant->production_end_year,
                             'engines' => $variant->engineTypes->map(fn ($engine) => $engine->localizedName())->values()->all(),
                             'engine_values' => $variant->engineTypes->pluck('name')->values()->all(),
+                            // `engines` and `engine_values` keep their existing
+                            // shape for shipped clients; the structured fields
+                            // live here. Values stay canonical, labels follow
+                            // the request locale.
+                            'engine_details' => $variant->engineTypes->map(fn ($engine) => [
+                                'value' => $engine->name,
+                                'label' => $engine->localizedName(),
+                                'fuel_type' => $engine->fuel_type,
+                                'fuel_label' => $engine->localizedFuelLabel(),
+                                'engine_size' => $engine->engine_size === null ? null : (float) $engine->engine_size,
+                                'aspiration' => $engine->aspiration,
+                            ])->values()->all(),
                             'image_url' => $variant->image_path && Storage::disk('public')->exists($variant->image_path) ? asset('storage/'.ltrim($variant->image_path, '/')) : null,
                         ])->values()->all(),
                     ])->values()->all(),
