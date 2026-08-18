@@ -223,10 +223,6 @@ class ShopController extends Controller
         $engine = $engine !== '' ? $engine : $this->extractVehicleEngine($legacyVehicle);
         $year = $this->extractVehicleYear($yearInput !== '' ? $yearInput : $legacyVehicle);
 
-        if ($engine !== '' && preg_match('/\bdiesel\b/i', $engine)) {
-            $productsQuery->whereRaw('1 = 0');
-        }
-
         if (($brand !== '' || $model !== '' || $engine !== '' || $year !== null) && DbSchema::hasTable('product_vehicle_fitments')) {
 
             // Keep every selected vehicle constraint on the same fitment row.
@@ -444,7 +440,7 @@ class ShopController extends Controller
                                     'model_id' => (int) $model->id,
                                     'label' => $model->localizedName(),
                                     'family' => $model->family?->localizedName(),
-                                    'engines' => $model->engineTypes->pluck('name')->filter()->reject(fn ($engine) => preg_match('/\bdiesel\b/i', (string) $engine))->unique()->values()->all(),
+                                    'engines' => $model->engineTypes->pluck('name')->filter()->unique()->values()->all(),
                                     'year_from' => $model->production_start_year ? (int) $model->production_start_year : null,
                                     'year_to' => $model->production_end_year ? (int) $model->production_end_year : null,
                                 ],
@@ -476,7 +472,6 @@ class ShopController extends Controller
                 ->pluck('engine')
                 ->map(fn ($engine) => trim((string) $engine))
                 ->filter()
-                ->reject(fn ($engine) => preg_match('/\bdiesel\b/i', $engine))
                 ->unique()
                 ->values();
 
@@ -499,7 +494,6 @@ class ShopController extends Controller
                         ->pluck('engine')
                         ->map(fn ($engine) => trim((string) $engine))
                         ->filter()
-                        ->reject(fn ($engine) => preg_match('/\bdiesel\b/i', $engine))
                         ->unique()
                         ->values()
                         ->all();

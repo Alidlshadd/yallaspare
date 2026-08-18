@@ -10,6 +10,7 @@ use App\Models\VehicleModel;
 use App\Models\VehicleModelFamily;
 use App\Support\SecureImageStorage;
 use App\Support\SqlSafe;
+use App\Support\VehicleFuelType;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -178,8 +179,12 @@ class VehicleFitmentController extends Controller
             'name_ar' => ['nullable', 'string', 'max:120'],
             'name_ku' => ['nullable', 'string', 'max:120'],
             'engine_types' => ['nullable', 'array'],
-            'engine_types.*' => ['nullable', 'string', 'max:500'],
+            'engine_types.*' => ['nullable', 'string', 'max:80'],
             'engine_types_text' => ['nullable', 'string', 'max:2000'],
+            'engines' => ['nullable', 'array', 'max:20'],
+            'engines.*.fuel_type' => ['nullable', Rule::in(VehicleFuelType::all())],
+            'engines.*.engine_size' => ['nullable', 'numeric', 'min:0.1', 'max:99.9'],
+            'engines.*.aspiration' => ['nullable', 'string', 'max:16'],
             'production_start_year' => ['nullable', 'integer', 'min:1900', 'max:2100'],
             'production_end_year' => ['nullable', 'integer', 'min:1900', 'max:2100', 'gte:production_start_year'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048', 'dimensions:max_width=4000,max_height=4000'],
@@ -234,9 +239,7 @@ class VehicleFitmentController extends Controller
                     'image_path' => $imagePath,
                 ]);
 
-                $model->engineTypes()->createMany(
-                    array_map(fn (string $name) => ['name' => $name], $engineTypes)
-                );
+                $model->engineTypes()->createMany($engineTypes);
             });
         } catch (\Throwable $exception) {
             if ($imagePath) {
@@ -284,8 +287,12 @@ class VehicleFitmentController extends Controller
             'name_ar' => ['nullable', 'string', 'max:120'],
             'name_ku' => ['nullable', 'string', 'max:120'],
             'engine_types' => ['nullable', 'array'],
-            'engine_types.*' => ['nullable', 'string', 'max:500'],
+            'engine_types.*' => ['nullable', 'string', 'max:80'],
             'engine_types_text' => ['nullable', 'string', 'max:2000'],
+            'engines' => ['nullable', 'array', 'max:20'],
+            'engines.*.fuel_type' => ['nullable', Rule::in(VehicleFuelType::all())],
+            'engines.*.engine_size' => ['nullable', 'numeric', 'min:0.1', 'max:99.9'],
+            'engines.*.aspiration' => ['nullable', 'string', 'max:16'],
             'production_start_year' => ['nullable', 'integer', 'min:1900', 'max:2100'],
             'production_end_year' => ['nullable', 'integer', 'min:1900', 'max:2100', 'gte:production_start_year'],
             'image' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:2048', 'dimensions:max_width=4000,max_height=4000'],
@@ -293,7 +300,7 @@ class VehicleFitmentController extends Controller
         ]);
 
         $name = trim((string) $data['name_en']);
-        $shouldSyncEngineTypes = $request->exists('engine_types') || $request->exists('engine_types_text');
+        $shouldSyncEngineTypes = $request->exists('engine_types') || $request->exists('engine_types_text') || $request->exists('engines');
         $engineTypes = $shouldSyncEngineTypes ? $this->validatedEngineTypes($data) : [];
 
         $oldImagePath = $model->image_path;
@@ -317,9 +324,7 @@ class VehicleFitmentController extends Controller
 
                 if ($shouldSyncEngineTypes) {
                     $model->engineTypes()->delete();
-                    $model->engineTypes()->createMany(
-                        array_map(fn (string $engineName) => ['name' => $engineName], $engineTypes)
-                    );
+                    $model->engineTypes()->createMany($engineTypes);
                 }
             });
         } catch (\Throwable $exception) {
@@ -398,9 +403,7 @@ class VehicleFitmentController extends Controller
                 }
 
                 $engine = trim((string) ($row['engine'] ?? ''));
-                if ($engine !== '' && preg_match('/\bdiesel\b/i', $engine)) {
-                    $validator->errors()->add("fitments.{$index}.engine", __('Diesel engines are not supported.') ?: 'Diesel engines are not supported.');
-                } elseif ($engine !== '' && $model && ! $model->engineTypes->contains('name', $engine)) {
+                if ($engine !== '' && $model && ! $model->engineTypes->contains('name', $engine)) {
                     $validator->errors()->add("fitments.{$index}.engine", __('The selected engine is not configured for this variant.') ?: 'The selected engine is not configured for this variant.');
                 }
 
@@ -576,23 +579,58 @@ class VehicleFitmentController extends Controller
     }
 
     /**
-     * Accept tag inputs as well as comma, semicolon, or newline-separated text.
+     * Build the engine rows to store, from either the structured repeater or the
+     * older free-text field (tags, or comma/semicolon/newline separated text).
+     *
+     * Both paths end up as the same structured row so the storefront can filter
+     * and translate an engine no matter which form created it.
      *
      * @param  array<string, mixed>  $data
-     * @return array<int, string>
+     * @return array<int, array{name: string, fuel_type: string|null, engine_size: float|null, aspiration: string|null}>
      */
     private function validatedEngineTypes(array $data): array
     {
+        $structured = collect(is_array($data['engines'] ?? null) ? $data['engines'] : [])
+            ->map(function ($row): ?array {
+                if (! is_array($row)) {
+                    return null;
+                }
+
+                $fuelType = is_string($row['fuel_type'] ?? null) ? $row['fuel_type'] : null;
+                if (! VehicleFuelType::isValid($fuelType)) {
+                    return null;
+                }
+
+                // An electric drivetrain has no displacement, so never store one.
+                $hasDisplacement = VehicleFuelType::hasDisplacement($fuelType);
+                $engineSize = $hasDisplacement && ($row['engine_size'] ?? '') !== '' ? (float) $row['engine_size'] : null;
+                $aspiration = $hasDisplacement && ($row['aspiration'] ?? '') !== '' ? (string) $row['aspiration'] : null;
+
+                return [
+                    // Stored in English so the display text stays stable; the
+                    // localized string is built at render time from the parts.
+                    'name' => VehicleFuelType::displayName($fuelType, $engineSize, $aspiration, 'en'),
+                    'fuel_type' => $fuelType,
+                    'engine_size' => $engineSize,
+                    'aspiration' => $aspiration,
+                ];
+            })
+            ->filter();
+
         $rawValues = array_merge(
             is_array($data['engine_types'] ?? null) ? $data['engine_types'] : [],
             isset($data['engine_types_text']) ? [(string) $data['engine_types_text']] : [],
         );
 
-        $engineTypes = collect($rawValues)
+        $freeText = collect($rawValues)
             ->flatMap(fn ($value) => preg_split('/[,;\r\n]+/u', (string) $value) ?: [])
             ->map(fn ($value) => trim((string) $value))
             ->filter()
-            ->unique(fn (string $value) => mb_strtolower($value))
+            ->map(fn (string $name) => ['name' => $name] + VehicleFuelType::parse($name));
+
+        $engineTypes = $structured
+            ->concat($freeText)
+            ->unique(fn (array $engine) => mb_strtolower($engine['name']))
             ->values()
             ->all();
 
@@ -600,18 +638,13 @@ class VehicleFitmentController extends Controller
             ['engine_types' => $engineTypes],
             [
                 'engine_types' => ['array', 'max:20'],
-                'engine_types.*' => ['string', 'max:80'],
+                'engine_types.*.name' => ['string', 'max:80'],
+                'engine_types.*.fuel_type' => ['nullable', Rule::in(VehicleFuelType::all())],
+                'engine_types.*.engine_size' => ['nullable', 'numeric', 'min:0.1', 'max:99.9'],
             ],
             [],
             ['engine_types' => __('Engine Types')],
         )->validate();
-
-        if (collect($engineTypes)->contains(fn (string $engine) => preg_match('/\bdiesel\b/i', $engine) === 1)) {
-            Validator::make(
-                ['engine_types' => 'diesel'],
-                ['engine_types' => [fn ($attribute, $value, $fail) => $fail(__('Diesel engines are not supported.') ?: 'Diesel engines are not supported.')]],
-            )->validate();
-        }
 
         return $engineTypes;
     }

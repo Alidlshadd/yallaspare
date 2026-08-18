@@ -153,7 +153,7 @@ class VehicleModelEngineTypesTest extends TestCase
         $this->assertDatabaseMissing('vehicle_models', ['name' => 'CX-5']);
     }
 
-    public function test_diesel_engine_type_is_rejected(): void
+    public function test_diesel_engine_type_is_stored_with_its_parsed_fuel_details(): void
     {
         $admin = User::factory()->create([
             'role' => User::ROLE_SUPER_ADMIN,
@@ -164,10 +164,85 @@ class VehicleModelEngineTypesTest extends TestCase
         $this->actingAs($admin)
             ->post(route('admin.vehicle-fitments.models.store'), [
                 'vehicle_brand_id' => $brand->id,
-                'name' => 'Kyron',
+                'name_en' => 'Kyron',
                 'engine_types_text' => '2.0 Diesel',
             ])
-            ->assertSessionHasErrors('engine_types');
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('vehicle_model_engine_types', [
+            'name' => '2.0 Diesel',
+            'fuel_type' => 'diesel',
+            'engine_size' => '2.0',
+        ]);
+    }
+
+    public function test_structured_engines_are_stored_for_each_canonical_fuel_type(): void
+    {
+        $admin = User::factory()->create([
+            'role' => User::ROLE_SUPER_ADMIN,
+            'email_verified_at' => now(),
+        ]);
+        $brand = VehicleBrand::query()->create(['name' => 'KGM', 'slug' => 'kgm']);
+
+        $this->actingAs($admin)
+            ->post(route('admin.vehicle-fitments.models.store'), [
+                'vehicle_brand_id' => $brand->id,
+                'name_en' => 'Torres',
+                'engines' => [
+                    ['fuel_type' => 'petrol', 'engine_size' => '1.5', 'aspiration' => 'turbo'],
+                    ['fuel_type' => 'diesel', 'engine_size' => '2.2'],
+                    ['fuel_type' => 'hybrid', 'engine_size' => '1.6'],
+                    ['fuel_type' => 'electric'],
+                ],
+            ])
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('vehicle_model_engine_types', ['name' => '1.5 Turbo Petrol', 'fuel_type' => 'petrol']);
+        $this->assertDatabaseHas('vehicle_model_engine_types', ['name' => '2.2 Diesel', 'fuel_type' => 'diesel']);
+        $this->assertDatabaseHas('vehicle_model_engine_types', ['name' => '1.6 Hybrid', 'fuel_type' => 'hybrid']);
+        $this->assertDatabaseHas('vehicle_model_engine_types', ['name' => 'Electric', 'fuel_type' => 'electric']);
+    }
+
+    public function test_electric_engine_never_stores_a_displacement(): void
+    {
+        $admin = User::factory()->create([
+            'role' => User::ROLE_SUPER_ADMIN,
+            'email_verified_at' => now(),
+        ]);
+        $brand = VehicleBrand::query()->create(['name' => 'KGM', 'slug' => 'kgm']);
+
+        $this->actingAs($admin)
+            ->post(route('admin.vehicle-fitments.models.store'), [
+                'vehicle_brand_id' => $brand->id,
+                'name_en' => 'Torres EVX',
+                // A stale value left in the form must not be saved as a fake size.
+                'engines' => [['fuel_type' => 'electric', 'engine_size' => '2.0', 'aspiration' => 'turbo']],
+            ])
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('vehicle_model_engine_types', [
+            'name' => 'Electric',
+            'fuel_type' => 'electric',
+            'engine_size' => null,
+            'aspiration' => null,
+        ]);
+    }
+
+    public function test_unknown_fuel_type_is_rejected(): void
+    {
+        $admin = User::factory()->create([
+            'role' => User::ROLE_SUPER_ADMIN,
+            'email_verified_at' => now(),
+        ]);
+        $brand = VehicleBrand::query()->create(['name' => 'KGM', 'slug' => 'kgm']);
+
+        $this->actingAs($admin)
+            ->post(route('admin.vehicle-fitments.models.store'), [
+                'vehicle_brand_id' => $brand->id,
+                'name_en' => 'Kyron',
+                'engines' => [['fuel_type' => 'hydrogen', 'engine_size' => '2.0']],
+            ])
+            ->assertSessionHasErrors('engines.0.fuel_type');
 
         $this->assertDatabaseMissing('vehicle_models', ['name' => 'Kyron']);
     }

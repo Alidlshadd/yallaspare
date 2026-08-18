@@ -937,11 +937,6 @@
             input.addEventListener('blur', commitInput);
             form.addEventListener('submit', (event) => {
                 if (!commitInput()) event.preventDefault();
-                if (tags().some((tag) => /\bdiesel\b/i.test(tag.textContent || ''))) {
-                    event.preventDefault();
-                    input.setCustomValidity(@json(__('Diesel engines are not supported.')));
-                    input.reportValidity();
-                }
             });
         });
 

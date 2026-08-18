@@ -55,6 +55,34 @@ class VehicleLocalization
         );
     }
 
+    /**
+     * How a forced-induction engine is written in each language. Kept beside the
+     * other vehicle wording so a translation lives in one place.
+     */
+    public static function aspiration(?string $aspiration, ?string $locale = null): string
+    {
+        $value = strtolower(trim((string) $aspiration));
+
+        if ($value === '' || $value === 'na' || $value === 'naturally_aspirated') {
+            return '';
+        }
+
+        return match (self::normalizedLocale($locale)) {
+            'ar' => 'تيربو',
+            'ku' => 'تۆربۆ',
+            default => 'Turbo',
+        };
+    }
+
+    /**
+     * Public so sibling support classes resolve the locale exactly the same way
+     * rather than each rolling its own fallback chain.
+     */
+    public static function normalizedLocale(?string $locale = null): string
+    {
+        return self::locale($locale);
+    }
+
     private static function locale(?string $locale): string
     {
         $locale = strtolower($locale ?: app()->getLocale());

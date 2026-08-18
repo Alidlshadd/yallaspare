@@ -162,7 +162,29 @@ class ProductFitmentBatchTest extends TestCase
         ]);
     }
 
-    public function test_diesel_fitment_is_rejected(): void
+    public function test_diesel_fitment_is_accepted_when_the_variant_offers_that_engine(): void
+    {
+        $product = Product::factory()->create(['is_active' => true]);
+        [$brand, $model] = $this->vehicle('KGM', 'Actyon');
+        $model->engineTypes()->create(['name' => '2.0 Diesel', 'fuel_type' => 'diesel', 'engine_size' => 2.0]);
+
+        $this->actingAs($this->admin())
+            ->post(route('admin.vehicle-fitments.store'), [
+                'product_id' => $product->id,
+                'vehicle_brand_id' => $brand->id,
+                'vehicle_model_id' => $model->id,
+                'engine' => '2.0 Diesel',
+            ])
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('product_vehicle_fitments', [
+            'product_id' => $product->id,
+            'vehicle_model_id' => $model->id,
+            'engine' => '2.0 Diesel',
+        ]);
+    }
+
+    public function test_engine_not_configured_for_the_variant_is_still_rejected(): void
     {
         $product = Product::factory()->create(['is_active' => true]);
         [$brand, $model] = $this->vehicle('KGM', 'Actyon');
