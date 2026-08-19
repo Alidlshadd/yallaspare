@@ -1,8 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <h2 class="font-bold text-2xl text-gray-800 dark:text-slate-100">{{ __('Users Management') }}</h2>
-            <div class="text-sm text-gray-500 dark:text-slate-400">
+            <h2 class="font-bold text-2xl text-slate-800 dark:text-slate-100">{{ __('Users Management') }}</h2>
+            <div class="text-sm text-slate-500 dark:text-slate-400">
                 {{ __('Showing') }} <span class="font-semibold">{{ $users->count() }}</span> {{ __('of') }}
                 <span class="font-semibold">{{ $users->total() }}</span>
             </div>
@@ -113,9 +113,9 @@
                 'label' => __('Total Users'),
                 'count' => $totalUsers,
                 'caption' => __('All accounts'),
-                'card' => 'border-gray-200 dark:border-slate-700/60',
-                'accent' => 'text-gray-500 dark:text-slate-400',
-                'number' => 'text-gray-900 dark:text-white',
+                'card' => 'border-slate-200 dark:border-slate-700/60',
+                'accent' => 'text-slate-500 dark:text-slate-400',
+                'number' => 'text-slate-900 dark:text-white',
             ],
             'super_admin' => [
                 'label' => __('Super Admins'),
@@ -195,15 +195,15 @@
                     >
                         <p class="text-[11px] font-bold uppercase tracking-widest {{ $card['accent'] }}">{{ $card['label'] }}</p>
                         <p class="mt-2 text-2xl font-bold tabular-nums {{ $card['number'] }}">{{ number_format($card['count']) }}</p>
-                        <p class="mt-1 text-[11px] text-gray-400 dark:text-slate-500">{{ $card['caption'] }}</p>
+                        <p class="mt-1 text-[11px] text-slate-400 dark:text-slate-500">{{ $card['caption'] }}</p>
                     </a>
                 @endforeach
             </div>
 
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <p class="text-sm text-gray-500 dark:text-slate-400">
-                    {{ __('Showing') }} <span class="font-semibold text-gray-800 dark:text-slate-100">{{ $users->count() }}</span>
-                    {{ __('of') }} <span class="font-semibold text-gray-800 dark:text-slate-100">{{ number_format($users->total()) }}</span>
+                <p class="text-sm text-slate-500 dark:text-slate-400">
+                    {{ __('Showing') }} <span class="font-semibold text-slate-800 dark:text-slate-100">{{ $users->count() }}</span>
+                    {{ __('of') }} <span class="font-semibold text-slate-800 dark:text-slate-100">{{ number_format($users->total()) }}</span>
                     @if($activeFilterLabel)
                         · <span class="font-semibold text-accent dark:text-accent">{{ $activeFilterLabel }}</span>
                     @endif
@@ -225,14 +225,14 @@
 
             <div class="grid gap-4 lg:grid-cols-[240px_minmax(0,1fr)] items-start">
                 {{-- Filter rail --}}
-                <aside class="rounded-xl border border-gray-200 bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-slate-900 lg:sticky lg:top-4">
+                <aside class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-slate-900 lg:sticky lg:top-4">
                     <form method="GET" action="{{ route('admin.users.index') }}" class="mb-3">
                         @if($filter !== 'all')
                             <input type="hidden" name="filter" value="{{ $filter }}">
                         @endif
                         <label for="users-search" class="sr-only">{{ __('Search') }}</label>
                         <div class="relative">
-                            <svg class="pointer-events-none absolute inset-y-0 my-auto ms-3 h-4 w-4 text-gray-400 dark:text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <svg class="pointer-events-none absolute inset-y-0 my-auto ms-3 h-4 w-4 text-slate-400 dark:text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <circle cx="11" cy="11" r="7" />
                                 <path stroke-linecap="round" d="m20 20-3.5-3.5" />
                             </svg>
@@ -242,7 +242,7 @@
                                 name="search"
                                 value="{{ $search }}"
                                 placeholder="{{ __('Search by name, email, phone, id, or role...') }}"
-                                class="w-full rounded-lg border-gray-300 bg-white ps-9 text-sm text-slate-900 placeholder:text-gray-400 focus:border-accent focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500"
+                                class="w-full rounded-lg border-slate-300 bg-white ps-9 text-sm text-slate-900 placeholder:text-slate-400 focus:border-accent focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500"
                             >
                         </div>
                         @if($search !== '')
@@ -258,20 +258,20 @@
                                 href="{{ $filterUrl($key) }}"
                                 @class([
                                     'flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition',
-                                    'border-s-2 border-amber-400 bg-amber-50 text-gray-900 dark:bg-amber-400/10 dark:text-white' => $filter === $key,
-                                    'text-gray-600 hover:bg-gray-50 dark:text-slate-300 dark:hover:bg-slate-800/60' => $filter !== $key,
+                                    'border-s-2 border-amber-400 bg-amber-50 text-slate-900 dark:bg-amber-400/10 dark:text-white' => $filter === $key,
+                                    'text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800/60' => $filter !== $key,
                                 ])
                             >
                                 <span class="flex items-center gap-2.5 min-w-0">
                                     <span class="h-2 w-2 shrink-0 rounded-full {{ $item['swatch'] }}"></span>
                                     <span class="truncate">{{ $item['label'] }}</span>
                                 </span>
-                                <span class="text-xs tabular-nums text-gray-400 dark:text-slate-500">{{ number_format($item['count']) }}</span>
+                                <span class="text-xs tabular-nums text-slate-400 dark:text-slate-500">{{ number_format($item['count']) }}</span>
                             </a>
                         @endforeach
                     </nav>
 
-                    <hr class="my-3 border-gray-200 dark:border-slate-800">
+                    <hr class="my-3 border-slate-200 dark:border-slate-800">
 
                     <nav class="space-y-0.5" aria-label="{{ __('Email') }}">
                         @foreach($verifyFilters as $key => $item)
@@ -279,26 +279,26 @@
                                 href="{{ $filterUrl($key) }}"
                                 @class([
                                     'flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition',
-                                    'border-s-2 border-amber-400 bg-amber-50 text-gray-900 dark:bg-amber-400/10 dark:text-white' => $filter === $key,
-                                    'text-gray-600 hover:bg-gray-50 dark:text-slate-300 dark:hover:bg-slate-800/60' => $filter !== $key,
+                                    'border-s-2 border-amber-400 bg-amber-50 text-slate-900 dark:bg-amber-400/10 dark:text-white' => $filter === $key,
+                                    'text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800/60' => $filter !== $key,
                                 ])
                             >
                                 <span class="flex items-center gap-2.5 min-w-0">
                                     @if($key === 'verified')
                                         <svg class="h-3.5 w-3.5 shrink-0 text-emerald-500 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" /></svg>
                                     @else
-                                        <svg class="h-3.5 w-3.5 shrink-0 text-gray-400 dark:text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path stroke-linecap="round" d="M12 7.5V12l2.5 2.5" /></svg>
+                                        <svg class="h-3.5 w-3.5 shrink-0 text-slate-400 dark:text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path stroke-linecap="round" d="M12 7.5V12l2.5 2.5" /></svg>
                                     @endif
                                     <span class="truncate">{{ $item['label'] }}</span>
                                 </span>
-                                <span class="text-xs tabular-nums text-gray-400 dark:text-slate-500">{{ number_format($item['count']) }}</span>
+                                <span class="text-xs tabular-nums text-slate-400 dark:text-slate-500">{{ number_format($item['count']) }}</span>
                             </a>
                         @endforeach
                     </nav>
 
-                    <hr class="my-3 border-gray-200 dark:border-slate-800">
+                    <hr class="my-3 border-slate-200 dark:border-slate-800">
 
-                    <div class="mb-1.5 px-3 text-[10px] font-bold uppercase tracking-[0.16em] text-gray-400 dark:text-slate-500">
+                    <div class="mb-1.5 px-3 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">
                         {{ __('Access Status') }}
                     </div>
                     <nav class="space-y-0.5" aria-label="{{ __('Access Status') }}">
@@ -308,14 +308,14 @@
                                 @class([
                                     'flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition',
                                     $item['selected'] => $filter === $key,
-                                    'text-gray-600 hover:bg-gray-50 dark:text-slate-300 dark:hover:bg-slate-800/60' => $filter !== $key,
+                                    'text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800/60' => $filter !== $key,
                                 ])
                             >
                                 <span class="flex min-w-0 items-center gap-2.5">
                                     <span class="h-2 w-2 shrink-0 rounded-full {{ $item['swatch'] }}"></span>
                                     <span class="truncate">{{ $item['label'] }}</span>
                                 </span>
-                                <span class="text-xs tabular-nums text-gray-400 dark:text-slate-500">{{ number_format($item['count']) }}</span>
+                                <span class="text-xs tabular-nums text-slate-400 dark:text-slate-500">{{ number_format($item['count']) }}</span>
                             </a>
                         @endforeach
                     </nav>
@@ -330,7 +330,7 @@
                             $isSelf = $currentUserId === (int) $user->id;
                             $isLastSuperAdmin = $role === \App\Models\User::ROLE_SUPER_ADMIN && $superAdminUsers <= 1;
                         @endphp
-                        <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:border-gray-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700">
+                        <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700">
                             <div class="flex flex-wrap items-center gap-3">
                                 <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold {{ $meta['avatar'] }}">
                                     {{ strtoupper(substr($user->name, 0, 1)) }}
@@ -338,8 +338,8 @@
 
                                 <div class="min-w-0 flex-1">
                                     <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-                                        <span class="font-semibold text-gray-800 dark:text-slate-100">{{ $user->name }}</span>
-                                        <span class="text-xs tabular-nums text-gray-400 dark:text-slate-500">#{{ $user->id }}</span>
+                                        <span class="font-semibold text-slate-800 dark:text-slate-100">{{ $user->name }}</span>
+                                        <span class="text-xs tabular-nums text-slate-400 dark:text-slate-500">#{{ $user->id }}</span>
                                         <span class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-bold {{ $meta['chip'] }}">
                                             <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
                                             {{ $meta['label'] }}
@@ -356,7 +356,7 @@
                                             </span>
                                         @endif
                                     </div>
-                                    <div class="mt-1 flex flex-wrap gap-x-4 gap-y-0.5 text-xs text-gray-500 dark:text-slate-400">
+                                    <div class="mt-1 flex flex-wrap gap-x-4 gap-y-0.5 text-xs text-slate-500 dark:text-slate-400">
                                         <span class="truncate">{{ $user->email }}</span>
                                         @if($user->phone)
                                             <span dir="ltr">{{ $user->phone }}</span>
@@ -372,7 +372,7 @@
                                             @method('PATCH')
                                             <select
                                                 name="role"
-                                                class="rounded-lg border-gray-300 bg-white py-1.5 text-xs text-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                                                class="rounded-lg border-slate-300 bg-white py-1.5 text-xs text-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                                                 @disabled($isSelf)
                                             >
                                                 @foreach($roleOptions as $option)
@@ -392,13 +392,13 @@
 
                                         <a
                                             href="{{ route('admin.users.show', $user) }}"
-                                            class="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+                                            class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
                                         >
                                             {{ __('View Details') }}
                                         </a>
 
                                         @if($isSelf || $isLastSuperAdmin)
-                                            <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-gray-400 dark:text-slate-500" title="{{ $isSelf ? __('Self-protection enabled.') : __('Last super admin is protected.') }}">
+                                            <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-400 dark:text-slate-500" title="{{ $isSelf ? __('Self-protection enabled.') : __('Last super admin is protected.') }}">
                                                 <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M8 11V8a4 4 0 0 1 8 0v3" />
                                                     <rect x="5" y="11" width="14" height="9" rx="2" />
@@ -421,7 +421,7 @@
                                 @else
                                     <a
                                         href="{{ route('admin.users.show', $user) }}"
-                                        class="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+                                        class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
                                     >
                                         {{ __('View Details') }}
                                     </a>
@@ -429,16 +429,16 @@
                             </div>
                         </div>
                     @empty
-                        <div class="rounded-xl border border-gray-200 bg-white p-12 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                            <p class="text-lg font-semibold text-gray-700 dark:text-slate-200">{{ __('No users found') }}</p>
+                        <div class="rounded-xl border border-slate-200 bg-white p-12 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                            <p class="text-lg font-semibold text-slate-700 dark:text-slate-200">{{ __('No users found') }}</p>
                             @if($search !== '')
-                                <p class="mt-1 text-sm text-gray-500 dark:text-slate-400">{{ __('No results for ":search".', ['search' => $search]) }}</p>
+                                <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('No results for ":search".', ['search' => $search]) }}</p>
                             @endif
                         </div>
                     @endforelse
 
                     @if($users->hasPages())
-                        <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                        <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                             {{ $users->links() }}
                         </div>
                     @endif

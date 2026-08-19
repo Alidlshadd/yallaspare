@@ -9,9 +9,9 @@
     $checksPassed = collect($checks)->where('ok', true)->count();
     $checksAction = count($checks) - $checksPassed;
 
-    $inputClasses = 'w-full rounded-lg border-gray-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100';
-    $labelClasses = 'mb-1.5 block text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-slate-400';
-    $hintClasses = 'mt-1 text-xs text-gray-500 dark:text-slate-400';
+    $inputClasses = 'w-full rounded-lg border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100';
+    $labelClasses = 'mb-1.5 block text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400';
+    $hintClasses = 'mt-1 text-xs text-slate-500 dark:text-slate-400';
     $whatsappAdminVisible = (bool) config('services.otpiq.whatsapp.admin_visible', true);
 
     $sections = [
@@ -57,8 +57,8 @@
     <x-slot name="header">
         <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
-                <h2 class="text-2xl font-bold text-gray-800 dark:text-slate-100">{{ __('System Settings') }}</h2>
-                <p class="text-sm text-gray-500 mt-1 dark:text-slate-400">{{ __('Configure branding, currency, and inventory defaults.') }}</p>
+                <h2 class="text-2xl font-bold text-slate-800 dark:text-slate-100">{{ __('System Settings') }}</h2>
+                <p class="text-sm text-slate-500 mt-1 dark:text-slate-400">{{ __('Configure branding, currency, and inventory defaults.') }}</p>
             </div>
             <span class="inline-flex items-center gap-2 rounded-full border border-emerald-300 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-300">
                 <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
@@ -84,36 +84,36 @@
             <div
                 x-data="settingsConsole"
                 data-initial-section="{{ $activeSection }}"
-                class="rounded-xl border border-gray-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900"
+                class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900"
             >
                 {{-- Header row: title + compact stat pills --}}
-                <div class="flex flex-col gap-4 border-b border-gray-200 px-5 py-4 dark:border-slate-800 lg:flex-row lg:items-start lg:justify-between">
+                <div class="flex flex-col gap-4 border-b border-slate-200 px-5 py-4 dark:border-slate-800 lg:flex-row lg:items-start lg:justify-between">
                     <div>
-                        <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-slate-400">{{ __('System Settings') }}</p>
-                        <p class="mt-1 max-w-lg text-xs text-gray-500 dark:text-slate-400">{{ __('Configure branding, currency, and inventory defaults.') }}</p>
+                        <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ __('System Settings') }}</p>
+                        <p class="mt-1 max-w-lg text-xs text-slate-500 dark:text-slate-400">{{ __('Configure branding, currency, and inventory defaults.') }}</p>
                     </div>
                     <div class="flex flex-wrap gap-2">
-                        <div class="min-w-[92px] rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 dark:border-slate-700 dark:bg-slate-800/60">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-slate-500">{{ __('Checks passed') }}</p>
-                            <p class="mt-0.5 text-base font-bold tabular-nums text-emerald-600 dark:text-emerald-300">{{ $checksPassed }}<span class="text-xs font-bold text-gray-400 dark:text-slate-500"> / {{ count($checks) }}</span></p>
+                        <div class="min-w-[92px] rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 dark:border-slate-700 dark:bg-slate-800/60">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('Checks passed') }}</p>
+                            <p class="mt-0.5 text-base font-bold tabular-nums text-emerald-600 dark:text-emerald-300">{{ $checksPassed }}<span class="text-xs font-bold text-slate-400 dark:text-slate-500"> / {{ count($checks) }}</span></p>
                         </div>
-                        <div class="min-w-[92px] rounded-lg border {{ $checksAction > 0 ? 'border-rose-300/70 dark:border-rose-400/35' : 'border-gray-200 dark:border-slate-700' }} bg-gray-50 px-3 py-1.5 dark:bg-slate-800/60">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-slate-500">{{ __('Action needed') }}</p>
-                            <p class="mt-0.5 text-base font-bold tabular-nums {{ $checksAction > 0 ? 'text-rose-600 dark:text-rose-300' : 'text-gray-900 dark:text-white' }}">{{ $checksAction }}</p>
+                        <div class="min-w-[92px] rounded-lg border {{ $checksAction > 0 ? 'border-rose-300/70 dark:border-rose-400/35' : 'border-slate-200 dark:border-slate-700' }} bg-slate-50 px-3 py-1.5 dark:bg-slate-800/60">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('Action needed') }}</p>
+                            <p class="mt-0.5 text-base font-bold tabular-nums {{ $checksAction > 0 ? 'text-rose-600 dark:text-rose-300' : 'text-slate-900 dark:text-white' }}">{{ $checksAction }}</p>
                         </div>
-                        <div class="min-w-[92px] rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 dark:border-slate-700 dark:bg-slate-800/60">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-slate-500">{{ __('Currency') }}</p>
-                            <p class="mt-0.5 text-base font-bold text-gray-900 dark:text-white">{{ $settings['currency_symbol'] ?? 'IQD' }}</p>
+                        <div class="min-w-[92px] rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 dark:border-slate-700 dark:bg-slate-800/60">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('Currency') }}</p>
+                            <p class="mt-0.5 text-base font-bold text-slate-900 dark:text-white">{{ $settings['currency_symbol'] ?? 'IQD' }}</p>
                         </div>
-                        <div class="min-w-[92px] rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 dark:border-slate-700 dark:bg-slate-800/60">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-slate-500">{{ __('Shipping Fee') }}</p>
-                            <p class="mt-0.5 text-base font-bold tabular-nums text-gray-900 dark:text-white">{{ number_format((float) ($settings['shipping_fee'] ?? 5000), 0) }}</p>
+                        <div class="min-w-[92px] rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 dark:border-slate-700 dark:bg-slate-800/60">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('Shipping Fee') }}</p>
+                            <p class="mt-0.5 text-base font-bold tabular-nums text-slate-900 dark:text-white">{{ number_format((float) ($settings['shipping_fee'] ?? 5000), 0) }}</p>
                         </div>
                     </div>
                 </div>
 
                 {{-- Section tabs --}}
-                <div class="flex gap-1 overflow-x-auto border-b border-gray-200 px-5 dark:border-slate-800" role="tablist">
+                <div class="flex gap-1 overflow-x-auto border-b border-slate-200 px-5 dark:border-slate-800" role="tablist">
                     @foreach($sections as $key => $label)
                         <button
                             type="button"
@@ -142,8 +142,8 @@
                         @method('PUT')
 
                         <div class="max-w-2xl" x-show="isActive('branding')" x-cloak>
-                            <p class="text-lg font-bold text-gray-800 dark:text-slate-100">{{ __('Branding') }}</p>
-                            <p class="mt-1 mb-5 text-xs text-gray-500 dark:text-slate-400">{{ __('Manage site identity and visuals that appear across the storefront.') }}</p>
+                            <p class="text-lg font-bold text-slate-800 dark:text-slate-100">{{ __('Branding') }}</p>
+                            <p class="mt-1 mb-5 text-xs text-slate-500 dark:text-slate-400">{{ __('Manage site identity and visuals that appear across the storefront.') }}</p>
 
                             <div class="grid grid-cols-1 gap-4">
                                 <div>
@@ -159,8 +159,8 @@
                                         <p class="mt-1 text-xs font-semibold text-rose-600 dark:text-rose-300">{{ $message }}</p>
                                     @enderror
                                     @if(!empty($settings['site_logo']))
-                                        <label class="mt-2 inline-flex items-center gap-2 text-xs text-gray-600 dark:text-slate-400">
-                                            <input type="checkbox" name="remove_logo" value="1" class="rounded border-gray-300 text-gray-400 focus:ring-accent dark:border-slate-700 dark:text-slate-500">
+                                        <label class="mt-2 inline-flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
+                                            <input type="checkbox" name="remove_logo" value="1" class="rounded border-slate-300 text-slate-400 focus:ring-accent dark:border-slate-700 dark:text-slate-500">
                                             {{ __('Remove current logo') }}
                                         </label>
                                     @endif
@@ -169,8 +169,8 @@
                         </div>
 
                         <div class="max-w-2xl" x-show="isActive('hero')" x-cloak>
-                            <p class="text-lg font-bold text-gray-800 dark:text-slate-100">{{ __('Storefront Hero') }}</p>
-                            <p class="mt-1 mb-5 text-xs text-gray-500 dark:text-slate-400">{{ __('Upload the video shown on the customer home page hero.') }}</p>
+                            <p class="text-lg font-bold text-slate-800 dark:text-slate-100">{{ __('Storefront Hero') }}</p>
+                            <p class="mt-1 mb-5 text-xs text-slate-500 dark:text-slate-400">{{ __('Upload the video shown on the customer home page hero.') }}</p>
 
                             <label class="{{ $labelClasses }}">{{ __('Hero Video') }}</label>
                             <input type="file" name="storefront_hero_video" accept=".mp4,video/mp4" class="{{ $inputClasses }}" data-hero-video-input>
@@ -180,8 +180,8 @@
                                 <video class="mt-3 h-32 w-full rounded-lg object-cover" muted controls>
                                     <source src="{{ $storefrontHeroVideoUrl }}" type="video/mp4">
                                 </video>
-                                <label class="mt-2 inline-flex items-center gap-2 text-xs text-gray-600 dark:text-slate-400">
-                                    <input type="checkbox" name="remove_storefront_hero_video" value="1" class="rounded border-gray-300 text-gray-400 focus:ring-accent dark:border-slate-700 dark:text-slate-500">
+                                <label class="mt-2 inline-flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
+                                    <input type="checkbox" name="remove_storefront_hero_video" value="1" class="rounded border-slate-300 text-slate-400 focus:ring-accent dark:border-slate-700 dark:text-slate-500">
                                     {{ __('Remove current hero video') }}
                                 </label>
                             @endif
@@ -191,8 +191,8 @@
                         </div>
 
                         <div class="max-w-2xl" x-show="isActive('currency')" x-cloak>
-                            <p class="text-lg font-bold text-gray-800 dark:text-slate-100">{{ __('Currency') }}</p>
-                            <p class="mt-1 mb-5 text-xs text-gray-500 dark:text-slate-400">{{ __('Set the currency format shown to customers.') }}</p>
+                            <p class="text-lg font-bold text-slate-800 dark:text-slate-100">{{ __('Currency') }}</p>
+                            <p class="mt-1 mb-5 text-xs text-slate-500 dark:text-slate-400">{{ __('Set the currency format shown to customers.') }}</p>
 
                             <div class="grid grid-cols-1 gap-4">
                                 <div>
@@ -210,8 +210,8 @@
                         </div>
 
                         <div class="max-w-2xl" x-show="isActive('operations')" x-cloak>
-                            <p class="text-lg font-bold text-gray-800 dark:text-slate-100">{{ __('Operations Defaults') }}</p>
-                            <p class="mt-1 mb-5 text-xs text-gray-500 dark:text-slate-400">{{ __('Configure shipping and inventory defaults used across checkout, invoices, and dashboard.') }}</p>
+                            <p class="text-lg font-bold text-slate-800 dark:text-slate-100">{{ __('Operations Defaults') }}</p>
+                            <p class="mt-1 mb-5 text-xs text-slate-500 dark:text-slate-400">{{ __('Configure shipping and inventory defaults used across checkout, invoices, and dashboard.') }}</p>
 
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 <div>
@@ -229,8 +229,8 @@
                         </div>
 
                         <div class="max-w-2xl" x-show="isActive('providers')" x-cloak>
-                            <p class="text-lg font-bold text-gray-800 dark:text-slate-100">{{ __('Notification Providers') }}</p>
-                            <p class="mt-1 mb-5 text-xs text-gray-500 dark:text-slate-400">{{ __('Webhook URLs receive recipient, message, and context JSON. Leave empty to keep log transport.') }}</p>
+                            <p class="text-lg font-bold text-slate-800 dark:text-slate-100">{{ __('Notification Providers') }}</p>
+                            <p class="mt-1 mb-5 text-xs text-slate-500 dark:text-slate-400">{{ __('Webhook URLs receive recipient, message, and context JSON. Leave empty to keep log transport.') }}</p>
 
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 <div>
@@ -247,8 +247,8 @@
                         </div>
 
                         <div class="max-w-2xl" x-show="isActive('templates-en')" x-cloak>
-                            <p class="text-lg font-bold text-gray-800 dark:text-slate-100">{{ __('English Notification Templates') }}</p>
-                            <p class="mt-1 mb-5 text-xs text-gray-500 dark:text-slate-400">
+                            <p class="text-lg font-bold text-slate-800 dark:text-slate-100">{{ __('English Notification Templates') }}</p>
+                            <p class="mt-1 mb-5 text-xs text-slate-500 dark:text-slate-400">
                                 {{ __('Available placeholders:') }}
                                 <code>@{{order_number}}</code>,
                                 <code>@{{status}}</code>,
@@ -267,13 +267,13 @@
                         </div>
 
                         <div class="max-w-2xl" x-show="isActive('templates-locale')" x-cloak>
-                            <p class="text-lg font-bold text-gray-800 dark:text-slate-100">{{ __('Arabic & Kurdish Notification Templates') }}</p>
-                            <p class="mt-1 mb-5 text-xs text-gray-500 dark:text-slate-400">{{ __('These override the English fallback for users whose locale preference is Arabic or Kurdish.') }}</p>
+                            <p class="text-lg font-bold text-slate-800 dark:text-slate-100">{{ __('Arabic & Kurdish Notification Templates') }}</p>
+                            <p class="mt-1 mb-5 text-xs text-slate-500 dark:text-slate-400">{{ __('These override the English fallback for users whose locale preference is Arabic or Kurdish.') }}</p>
 
                             <div class="grid grid-cols-1 gap-4">
                                 @foreach(['ar' => 'Arabic', 'ku' => 'Kurdish'] as $localeCode => $localeLabel)
-                                    <div class="rounded-lg border border-gray-200 bg-gray-50 p-4 dark:border-slate-700 dark:bg-slate-800/60">
-                                        <p class="mb-3 text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-slate-400">{{ __($localeLabel) }}</p>
+                                    <div class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/60">
+                                        <p class="mb-3 text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ __($localeLabel) }}</p>
                                         <div class="grid gap-3">
                                             <input type="text" name="notification_order_placed_{{ $localeCode }}_subject" value="{{ old('notification_order_placed_' . $localeCode . '_subject', $settings['notification_order_placed_' . $localeCode . '_subject'] ?? '') }}" class="{{ $inputClasses }}" placeholder="{{ __('Order placed subject') }}">
                                             <textarea name="notification_order_placed_{{ $localeCode }}_body" rows="2" class="{{ $inputClasses }}" placeholder="{{ __('Order placed body') }}">{{ old('notification_order_placed_' . $localeCode . '_body', $settings['notification_order_placed_' . $localeCode . '_body'] ?? '') }}</textarea>
@@ -285,7 +285,7 @@
                             </div>
                         </div>
 
-                        <div class="mt-8 flex items-center justify-end gap-3 border-t border-gray-200 pt-5 dark:border-slate-800">
+                        <div class="mt-8 flex items-center justify-end gap-3 border-t border-slate-200 pt-5 dark:border-slate-800">
                             <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-accent px-5 py-2.5 text-sm font-bold text-slate-900 shadow-sm transition hover:bg-accent disabled:cursor-not-allowed disabled:opacity-70" data-settings-submit>
                                 <span data-settings-submit-label>{{ __('Save Settings') }}</span>
                                 <span class="hidden" data-settings-submit-loading>{{ __('Uploading...') }}</span>
@@ -294,25 +294,25 @@
                     </form>
 
                     {{-- Readiness dock --}}
-                    <div class="hidden w-14 shrink-0 flex-col items-center gap-3 border-s border-gray-200 py-5 dark:border-slate-800 lg:flex">
+                    <div class="hidden w-14 shrink-0 flex-col items-center gap-3 border-s border-slate-200 py-5 dark:border-slate-800 lg:flex">
                         @foreach($checks as $check)
                             <div class="group relative">
                                 <span class="block h-2.5 w-2.5 rounded-full {{ $check['ok'] ? 'bg-emerald-500' : 'bg-rose-500' }}"></span>
-                                <div class="pointer-events-none absolute end-full top-1/2 z-20 me-2 w-56 -translate-y-1/2 rounded-lg border border-gray-200 bg-white p-3 text-start text-xs opacity-0 shadow-xl transition group-hover:opacity-100 dark:border-slate-700 dark:bg-slate-900">
-                                    <p class="font-bold text-gray-800 dark:text-slate-100">{{ $check['label'] }}</p>
-                                    <p class="mt-1 text-gray-500 dark:text-slate-400">{{ __('Current:') }} {{ $check['value'] ?: '-' }} &middot; {{ __('Expected:') }} {{ $check['expected'] }}</p>
+                                <div class="pointer-events-none absolute end-full top-1/2 z-20 me-2 w-56 -translate-y-1/2 rounded-lg border border-slate-200 bg-white p-3 text-start text-xs opacity-0 shadow-xl transition group-hover:opacity-100 dark:border-slate-700 dark:bg-slate-900">
+                                    <p class="font-bold text-slate-800 dark:text-slate-100">{{ $check['label'] }}</p>
+                                    <p class="mt-1 text-slate-500 dark:text-slate-400">{{ __('Current:') }} {{ $check['value'] ?: '-' }} &middot; {{ __('Expected:') }} {{ $check['expected'] }}</p>
                                 </div>
                             </div>
                         @endforeach
 
-                        <div class="my-1 h-px w-6 bg-gray-200 dark:bg-slate-700"></div>
+                        <div class="my-1 h-px w-6 bg-slate-200 dark:bg-slate-700"></div>
 
                         <div x-data="toggle" class="relative">
                             <button
                                 type="button"
                                 @click="toggle"
                                 :aria-expanded="ariaExpanded"
-                                class="flex h-8 w-8 items-center justify-center rounded-lg border border-gray-200 text-gray-500 transition hover:bg-gray-50 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"
+                                class="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-800"
                                 title="{{ __('Live Preview') }}"
                             >
                                 <i class="fas fa-eye text-xs"></i>
@@ -321,10 +321,10 @@
                                 x-show="open"
                                 x-cloak
                                 x-transition.opacity.duration.150ms
-                                class="absolute end-full top-0 z-20 me-3 w-64 rounded-xl border border-gray-200 bg-white p-4 shadow-xl dark:border-slate-700 dark:bg-slate-900"
+                                class="absolute end-full top-0 z-20 me-3 w-64 rounded-xl border border-slate-200 bg-white p-4 shadow-xl dark:border-slate-700 dark:bg-slate-900"
                             >
-                                <h3 class="mb-2 text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-slate-400">{{ __('Live Preview') }}</h3>
-                                <div class="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 p-2.5 dark:border-slate-700 dark:bg-slate-800/60">
+                                <h3 class="mb-2 text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ __('Live Preview') }}</h3>
+                                <div class="flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 p-2.5 dark:border-slate-700 dark:bg-slate-800/60">
                                     <x-brand-mark
                                         :logo-url="$settingsLogoUrl"
                                         :brand="$settings['site_name'] ?? 'YallaSpare'"
@@ -334,16 +334,16 @@
                                         fallback-text-class="font-semibold text-slate-600 dark:text-slate-200 text-xs"
                                     />
                                     <div class="min-w-0">
-                                        <p class="text-[10px] text-gray-500 dark:text-slate-400">{{ __('Site Name') }}</p>
-                                        <p class="truncate text-sm font-semibold text-gray-800 dark:text-slate-100">{{ $settings['site_name'] ?? 'YallaSpare' }}</p>
+                                        <p class="text-[10px] text-slate-500 dark:text-slate-400">{{ __('Site Name') }}</p>
+                                        <p class="truncate text-sm font-semibold text-slate-800 dark:text-slate-100">{{ $settings['site_name'] ?? 'YallaSpare' }}</p>
                                     </div>
                                 </div>
-                                <p class="mt-2 text-xs text-gray-500 dark:text-slate-400">{{ $settings['currency_symbol'] ?? 'IQD' }} ({{ $settings['currency_code'] ?? 'IQD' }}) &middot; {{ number_format((float) ($settings['shipping_fee'] ?? 5000), 0) }} {{ $settings['currency_code'] ?? 'IQD' }}</p>
+                                <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">{{ $settings['currency_symbol'] ?? 'IQD' }} ({{ $settings['currency_code'] ?? 'IQD' }}) &middot; {{ number_format((float) ($settings['shipping_fee'] ?? 5000), 0) }} {{ $settings['currency_code'] ?? 'IQD' }}</p>
 
-                                <h3 class="mb-2 mt-4 text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-slate-400">{{ __('Tips') }}</h3>
-                                <ul class="space-y-1.5 text-xs text-gray-600 dark:text-slate-300">
-                                    <li class="flex gap-2"><span class="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-gray-400 dark:bg-slate-500"></span>{{ __('Keep logos square for best results in the sidebar.') }}</li>
-                                    <li class="flex gap-2"><span class="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-gray-400 dark:bg-slate-500"></span>{{ __('Use official ISO currency codes for clean formatting.') }}</li>
+                                <h3 class="mb-2 mt-4 text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ __('Tips') }}</h3>
+                                <ul class="space-y-1.5 text-xs text-slate-600 dark:text-slate-300">
+                                    <li class="flex gap-2"><span class="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-slate-400 dark:bg-slate-500"></span>{{ __('Keep logos square for best results in the sidebar.') }}</li>
+                                    <li class="flex gap-2"><span class="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-slate-400 dark:bg-slate-500"></span>{{ __('Use official ISO currency codes for clean formatting.') }}</li>
                                 </ul>
                             </div>
                         </div>

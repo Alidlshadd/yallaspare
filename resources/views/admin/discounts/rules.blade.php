@@ -465,7 +465,7 @@
                             </div>
 
                             <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
-                                <p class="text-xs text-slate-400">{{ __('Page') }} <span x-text="meta.currentPage"></span> / <span x-text="meta.lastPage"></span></p>
+                                <p class="text-xs text-muted">{{ __('Page') }} <span x-text="meta.currentPage"></span> / <span x-text="meta.lastPage"></span></p>
                                 <div class="flex gap-2">
                                     <button type="button" x-show="meta.hasMore" x-cloak @click="loadMoreProducts" class="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Load More Products') }}</button>
                                     <button type="button" @click="clearSelectedProducts" :disabled="selectionEmpty" class="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Clear All') }}</button>
@@ -520,14 +520,14 @@
                 <aside class="min-w-0 xl:sticky xl:top-4 xl:self-start">
                     <div class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700">
                         <div class="flex items-center justify-between bg-slate-50 px-4 py-2.5 dark:bg-slate-950/40">
-                            <span class="text-[10px] font-bold uppercase tracking-[0.13em] text-slate-400">{{ __('Live Summary') }}</span>
+                            <span class="text-[10px] font-bold uppercase tracking-[0.13em] text-muted">{{ __('Live Summary') }}</span>
                             <span class="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide {{ $discountsEnabled ? 'dr-st-live' : 'dr-st-draft' }}">{{ $discountsEnabled ? __('Live') : __('Draft') }}</span>
                         </div>
                         <div class="p-4">
                             <p class="dr-num text-3xl font-bold text-accent dark:text-accent" x-text="summaryValueLabel"></p>
                             <p class="mt-1 text-sm font-bold text-slate-700 dark:text-slate-200" x-text="summaryLabelText"></p>
-                            <p class="mt-0.5 text-xs text-slate-400" x-text="scopeUtilizationLabel"></p>
-                            <p class="dr-num mt-0.5 text-xs text-slate-400" x-text="summaryWindowLabel"></p>
+                            <p class="mt-0.5 text-xs text-muted" x-text="scopeUtilizationLabel"></p>
+                            <p class="dr-num mt-0.5 text-xs text-muted" x-text="summaryWindowLabel"></p>
 
                             <div class="mt-4 border-t border-dashed border-slate-200 pt-3 dark:border-slate-700">
                                 <label class="text-[10px] font-bold uppercase tracking-[0.13em] text-slate-400">{{ __('Price Simulator') }}</label>

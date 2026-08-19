@@ -825,7 +825,7 @@
                                                 >
                                                     {{ __('Mark all read') }}
                                                 </button>
-                                                <span id="adminNotificationsUpdatedAt" class="text-[11px] text-slate-400 dark:text-slate-500">--</span>
+                                                <span id="adminNotificationsUpdatedAt" class="text-[11px] text-muted dark:text-slate-500">--</span>
                                             </div>
                                         </div>
 

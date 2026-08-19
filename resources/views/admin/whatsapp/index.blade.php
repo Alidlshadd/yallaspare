@@ -152,13 +152,13 @@
                                 };
                             @endphp
                             <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/30">
-                                <td class="px-4 py-3"><div class="font-mono font-bold text-slate-800 dark:text-slate-100" dir="ltr">{{ $event->sender_phone ?? '—' }}</div><div class="max-w-40 truncate text-xs text-slate-400">{{ $event->sender_name ?? '—' }}</div></td>
-                                <td class="max-w-xs px-4 py-3"><div class="truncate text-slate-700 dark:text-slate-200" title="{{ $event->message_text }}">{{ \Illuminate\Support\Str::limit($event->message_text ?? __('No text payload'), 80) }}</div><div class="font-mono text-[10px] text-slate-400">{{ $event->external_message_id }}</div></td>
+                                <td class="px-4 py-3"><div class="font-mono font-bold text-slate-800 dark:text-slate-100" dir="ltr">{{ $event->sender_phone ?? '—' }}</div><div class="max-w-40 truncate text-xs text-muted">{{ $event->sender_name ?? '—' }}</div></td>
+                                <td class="max-w-xs px-4 py-3"><div class="truncate text-slate-700 dark:text-slate-200" title="{{ $event->message_text }}">{{ \Illuminate\Support\Str::limit($event->message_text ?? __('No text payload'), 80) }}</div><div class="font-mono text-[10px] text-muted">{{ $event->external_message_id }}</div></td>
                                 <td class="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-300">{{ $event->message_type ?? '—' }}</td>
                                 <td class="px-4 py-3 font-mono text-xs text-slate-600 dark:text-slate-300">{{ $event->event_type ?? '—' }}</td>
                                 <td class="px-4 py-3 text-center font-mono text-slate-600 dark:text-slate-300">{{ $event->attempt_number ?? '—' }}</td>
                                 <td class="px-4 py-3"><span class="inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold {{ $statusClass }}">{{ __(ucfirst($event->processing_status)) }}</span></td>
-                                <td class="px-4 py-3"><span class="text-xs font-semibold {{ $event->read_at ? 'text-slate-400' : 'text-accent dark:text-accent' }}">{{ $event->read_at ? __('Read') : __('Unread') }}</span></td>
+                                <td class="px-4 py-3"><span class="text-xs font-semibold {{ $event->read_at ? 'text-muted' : 'text-accent dark:text-accent' }}">{{ $event->read_at ? __('Read') : __('Unread') }}</span></td>
                                 <td class="whitespace-nowrap px-4 py-3 text-xs text-slate-500 dark:text-slate-400">{{ $event->received_at?->timezone(config('app.timezone'))->format('Y-m-d H:i') ?? '—' }}</td>
                                 <td class="px-4 py-3 text-right"><a href="{{ route('admin.whatsapp.events.show', $event) }}" class="inline-flex h-9 items-center gap-2 rounded-lg border border-slate-200 px-3 text-xs font-bold text-slate-700 hover:border-green-300 hover:text-green-700 dark:border-slate-700 dark:text-slate-200 dark:hover:border-green-500/50 dark:hover:text-green-300"><i class="fas fa-eye" aria-hidden="true"></i>{{ __('Details') }}</a></td>
                             </tr>

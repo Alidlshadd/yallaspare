@@ -117,21 +117,21 @@
             <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                 <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-start justify-between gap-3">
-                        <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500">{{ __('Out of Stock') }}</p>
+                        <p class="text-xs font-bold uppercase tracking-[0.14em] text-muted dark:text-slate-500">{{ __('Out of Stock') }}</p>
                         <i class="fas fa-circle-exclamation text-rose-500"></i>
                     </div>
                     <p class="pp-num mt-3 text-2xl font-bold text-rose-600 dark:text-rose-400">{{ number_format($summary['out_of_stock']) }}</p>
                 </article>
                 <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-start justify-between gap-3">
-                        <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500">{{ __('Low Stock') }}</p>
+                        <p class="text-xs font-bold uppercase tracking-[0.14em] text-muted dark:text-slate-500">{{ __('Low Stock') }}</p>
                         <i class="fas fa-arrow-trend-down text-accent"></i>
                     </div>
                     <p class="pp-num mt-3 text-2xl font-bold text-slate-900 dark:text-slate-100">{{ number_format($summary['low_stock']) }}</p>
                 </article>
                 <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-start justify-between gap-3">
-                        <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500">{{ __('Waiting Customers') }}</p>
+                        <p class="text-xs font-bold uppercase tracking-[0.14em] text-muted dark:text-slate-500">{{ __('Waiting Customers') }}</p>
                         <i class="fas fa-bell text-info"></i>
                     </div>
                     <p class="pp-num mt-3 text-2xl font-bold text-info dark:text-info">{{ number_format($summary['waiting_customers']) }}</p>
@@ -247,7 +247,7 @@
                                         <h4 class="truncate text-sm font-bold text-slate-800 dark:text-slate-100" x-text="entry.name"></h4>
                                         <span class="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide" :class="entry.statusClass" x-text="entry.statusLabel"></span>
                                     </div>
-                                    <p class="mt-1 text-xs text-slate-400" x-text="entry.meta"></p>
+                                    <p class="mt-1 text-xs text-muted" x-text="entry.meta"></p>
                                     <p class="pp-num mt-2 text-sm font-bold text-accent dark:text-accent" x-text="entry.totalLabel"></p>
                                     <button type="button" class="mt-2 w-full rounded-lg border border-slate-200 bg-white py-1.5 text-sm font-bold text-slate-600 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300" @click="openView(entry)">
                                         {{ __('View items') }}
@@ -371,10 +371,10 @@
                         {{-- grand total --}}
                         <div class="border-t-2 border-accent bg-slate-50 px-4 py-2.5 dark:bg-slate-950/40">
                             <div class="flex items-baseline justify-between">
-                                <span class="text-[10.5px] font-bold uppercase tracking-[0.12em] text-slate-400">{{ __('Grand Total') }}</span>
+                                <span class="text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted">{{ __('Grand Total') }}</span>
                                 <span class="pp-num text-lg font-bold text-accent dark:text-accent" x-text="grandTotalLabel"></span>
                             </div>
-                            <p class="mt-0.5 text-right text-[11px] font-semibold text-slate-400" x-show="hasBudget" x-text="budgetRemainingLabel"></p>
+                            <p class="mt-0.5 text-right text-[11px] font-semibold text-muted" x-show="hasBudget" x-text="budgetRemainingLabel"></p>
                         </div>
 
                         <p class="px-4 pt-2 text-xs font-bold text-emerald-600 dark:text-emerald-400" x-show="hasFlash" x-cloak x-text="flashMessage"></p>

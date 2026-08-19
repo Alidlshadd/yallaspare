@@ -593,7 +593,7 @@
                                 </td>
                                 <td class="px-3 py-4 align-middle">
                                     <div class="font-mono font-bold text-slate-900 dark:text-white text-[11.5px] leading-tight break-all">{{ $order->order_number }}</div>
-                                    <div class="font-mono text-[10px] text-slate-400 dark:text-slate-500 mt-1">#{{ $order->id }} · {{ $order->items_count }} {{ __('items') }}</div>
+                                    <div class="font-mono text-[10px] text-muted dark:text-slate-500 mt-1">#{{ $order->id }} · {{ $order->items_count }} {{ __('items') }}</div>
                                     @if($order->cancellation_requested_at && $order->status !== \App\Models\Order::STATUS_CANCELLED)
                                         <div class="inline-flex items-center gap-1 mt-2 px-2 py-0.5 rounded text-[9.5px] font-bold uppercase tracking-wide bg-rose-100 text-rose-700 border border-rose-200 dark:bg-rose-500/10 dark:text-rose-300 dark:border-rose-500/30">
                                             <span aria-hidden="true">!</span>{{ __('Cancellation Requested') }}
@@ -626,7 +626,7 @@
                                 </td>
                                 <td class="px-3 py-4 align-middle text-end whitespace-nowrap">
                                     <span class="font-bold text-slate-900 dark:text-white tabular-nums text-[12.5px]">{{ number_format((float) $order->total_amount, $currencyDecimals) }}</span>
-                                    <span class="text-[9.5px] text-slate-400 dark:text-slate-500 ms-1">{{ $currencyLabel }}</span>
+                                    <span class="text-[9.5px] text-muted dark:text-slate-500 ms-1">{{ $currencyLabel }}</span>
                                 </td>
                                 <td class="px-3 py-4 align-middle">
                                     <span class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full text-[10px] font-bold leading-none border whitespace-nowrap {{ $pillClass($order->payment_status) }}">
@@ -634,7 +634,7 @@
                                         <span class="truncate">{{ $paymentMeta['label'] }}</span>
                                     </span>
                                     @if($order->payment_method)
-                                        <div class="text-[9px] font-mono text-slate-400 dark:text-slate-500 mt-1 truncate">{{ $order->payment_method }}</div>
+                                        <div class="text-[9px] font-mono text-muted dark:text-slate-500 mt-1 truncate">{{ $order->payment_method }}</div>
                                     @endif
                                 </td>
                                 <td class="px-3 py-4 align-middle">
@@ -645,7 +645,7 @@
                                 </td>
                                 <td class="px-3 py-4 align-middle hidden md:table-cell whitespace-nowrap">
                                     <div class="text-[11.5px] text-slate-700 dark:text-slate-200 tabular-nums">{{ $order->created_at?->format('d M') }}</div>
-                                    <div class="text-[10px] text-slate-400 dark:text-slate-500 tabular-nums">{{ $order->created_at?->format('H:i') }}</div>
+                                    <div class="text-[10px] text-muted dark:text-slate-500 tabular-nums">{{ $order->created_at?->format('H:i') }}</div>
                                 </td>
                                 <td class="px-3 py-4 align-middle text-end whitespace-nowrap">
                                     <div class="flex items-center gap-1 justify-end rtl:justify-start flex-nowrap">
@@ -748,7 +748,7 @@
                             <tr>
                                 <td colspan="9">
                                     <div class="py-14 px-4 text-center">
-                                        <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-slate-50 border border-slate-200 grid place-items-center text-slate-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500">
+                                        <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-slate-50 border border-slate-200 grid place-items-center text-muted dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500">
                                             <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0l-2.293 5.16a1 1 0 01-.914.59H7.207a1 1 0 01-.914-.59L4 13m16 0h-5.114a1 1 0 00-.894.553l-.829 1.658a1 1 0 01-.894.553h-2.538a1 1 0 01-.894-.553l-.829-1.658A1 1 0 008.114 13H4"/>
                                             </svg>

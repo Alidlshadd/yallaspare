@@ -174,7 +174,7 @@
                                     </span>
                                     <span class="mt-0.5 block truncate text-xs text-slate-500 dark:text-slate-400">{{ $option['description'] }} · {{ $option['destination'] }}</span>
                                 </span>
-                                <span class="text-xs font-semibold {{ $isCurrent ? 'text-red-600 dark:text-red-300' : 'text-slate-400' }}" data-channel-action>
+                                <span class="text-xs font-semibold {{ $isCurrent ? 'text-red-600 dark:text-red-300' : 'text-muted' }}" data-channel-action>
                                     {{ $isCurrent ? __('Active') : __('Use') }}
                                 </span>
                             </button>

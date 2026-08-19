@@ -103,35 +103,35 @@
             <section class="grid gap-3 md:grid-cols-3 xl:grid-cols-6">
                 <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-start justify-between gap-2">
-                        <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 dark:text-slate-500">{{ __('Pending') }}</p>
+                        <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-muted dark:text-slate-500">{{ __('Pending') }}</p>
                         <i class="fas fa-hourglass-half text-accent"></i>
                     </div>
                     <p class="sr-num mt-2 text-2xl font-bold text-accent dark:text-accent">{{ number_format($summary['pending']) }}</p>
                 </article>
                 <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-start justify-between gap-2">
-                        <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 dark:text-slate-500">{{ __('Notified') }}</p>
+                        <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-muted dark:text-slate-500">{{ __('Notified') }}</p>
                         <i class="fas fa-bell text-emerald-500"></i>
                     </div>
                     <p class="sr-num mt-2 text-2xl font-bold text-emerald-600 dark:text-emerald-400">{{ number_format($summary['notified']) }}</p>
                 </article>
                 <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-start justify-between gap-2">
-                        <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 dark:text-slate-500">{{ __('Products') }}</p>
+                        <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-muted dark:text-slate-500">{{ __('Products') }}</p>
                         <i class="fas fa-box-open text-info"></i>
                     </div>
                     <p class="sr-num mt-2 text-2xl font-bold text-info dark:text-info">{{ number_format($summary['products']) }}</p>
                 </article>
                 <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-start justify-between gap-2">
-                        <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 dark:text-slate-500">{{ __('High Demand') }}</p>
+                        <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-muted dark:text-slate-500">{{ __('High Demand') }}</p>
                         <i class="fas fa-fire text-rose-500"></i>
                     </div>
                     <p class="sr-num mt-2 text-2xl font-bold text-rose-600 dark:text-rose-400">{{ number_format($summary['high_demand']) }}</p>
                 </article>
                 <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-start justify-between gap-2">
-                        <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 dark:text-slate-500">{{ __('Out of Stock') }}</p>
+                        <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-muted dark:text-slate-500">{{ __('Out of Stock') }}</p>
                         <i class="fas fa-circle-exclamation text-rose-500"></i>
                     </div>
                     <p class="sr-num mt-2 text-2xl font-bold text-rose-600 dark:text-rose-400">{{ number_format($summary['out_of_stock_requests']) }}</p>

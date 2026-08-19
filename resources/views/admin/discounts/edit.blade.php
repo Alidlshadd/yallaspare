@@ -159,7 +159,7 @@
                         <div class="{{ $index === count($trendPoints) - 1 ? 'hot' : '' }}" style="height: {{ max(4, (int) round(($point / $trendMax) * 100)) }}%" title="{{ $point }}"></div>
                     @endforeach
                 </div>
-                <div class="mt-2 flex justify-between text-[10px] font-bold text-slate-400">
+                <div class="mt-2 flex justify-between text-[10px] font-bold text-muted">
                     <span>{{ now()->subDays(11)->format('d M') }}</span>
                     <span>{{ __('today') }}</span>
                 </div>
@@ -204,7 +204,7 @@
                 <div class="px-4 py-14 text-center">
                     <i class="fas fa-ticket mb-3 block text-2xl text-slate-300 dark:text-slate-600"></i>
                     <p class="text-sm font-bold text-slate-600 dark:text-slate-300">{{ __('No coupons yet') }}</p>
-                    <p class="mt-1 text-xs text-slate-400">{{ __('Create your first coupon campaign to start tracking redemptions here.') }}</p>
+                    <p class="mt-1 text-xs text-muted">{{ __('Create your first coupon campaign to start tracking redemptions here.') }}</p>
                     <a href="{{ route('admin.discounts.coupons.create') }}" class="font-display mt-4 inline-flex rounded-xl bg-navy-deep px-4 py-2 text-sm font-bold text-white hover:bg-navy-raised">{{ __('Create Coupon') }}</a>
                 </div>
             @else
@@ -278,7 +278,7 @@
                                 </tr>
                             @endforeach
                             <tr x-show="filterEmpty" x-cloak>
-                                <td colspan="6" class="px-4 py-10 text-center text-sm text-slate-400">{{ __('No coupons matched the search or status filter.') }}</td>
+                                <td colspan="6" class="px-4 py-10 text-center text-sm text-muted">{{ __('No coupons matched the search or status filter.') }}</td>
                             </tr>
                         </tbody>
                     </table>

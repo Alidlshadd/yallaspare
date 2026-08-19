@@ -222,7 +222,7 @@
                             ])
                         >
                             {{ __('All parts') }}
-                            <span class="{{ ! $activeCategory ? 'text-white/70' : 'text-slate-400 dark:text-slate-500' }} text-[10px] font-bold">{{ number_format($categories->sum('products_count')) }}</span>
+                            <span class="{{ ! $activeCategory ? 'text-white/70' : 'text-muted dark:text-slate-500' }} text-[10px] font-bold">{{ number_format($categories->sum('products_count')) }}</span>
                         </a>
 
                         @foreach ($categories as $category)
@@ -235,7 +235,7 @@
                                 ])
                             >
                                 {{ $category->name }}
-                                <span class="{{ (int) $activeCategory === (int) $category->id ? 'text-white/70' : 'text-slate-400 dark:text-slate-500' }} text-[10px] font-bold">{{ number_format($category->products_count) }}</span>
+                                <span class="{{ (int) $activeCategory === (int) $category->id ? 'text-white/70' : 'text-muted dark:text-slate-500' }} text-[10px] font-bold">{{ number_format($category->products_count) }}</span>
                             </a>
                         @endforeach
                             </div>
@@ -295,7 +295,7 @@
                         · {{ $activeCategoryModel->name }}
                     @endif
                 </p>
-                <p class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-400 dark:text-slate-500">
+                <p class="text-xs font-semibold uppercase tracking-[0.12em] text-muted dark:text-slate-500">
                     {{ $sortLabels[$sort] ?? $sortLabels['latest'] }}
                 </p>
             </div>

@@ -59,12 +59,12 @@
                                         <button type="button" data-audience="role"
                                                 class="audience-tile rounded-xl border border-slate-200 px-3 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 text-center dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
                                             <i class="fas fa-user-group block mb-1 text-base"></i>{{ __('Role group') }}
-                                            <p class="font-mono text-[10px] text-slate-400 mt-1">{{ __('Customers / Dealers') }}</p>
+                                            <p class="font-mono text-[10px] text-muted mt-1">{{ __('Customers / Dealers') }}</p>
                                         </button>
                                         <button type="button" data-audience="user"
                                                 class="audience-tile rounded-xl border border-slate-200 px-3 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 text-center dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
                                             <i class="fas fa-user block mb-1 text-base"></i>{{ __('Single user') }}
-                                            <p class="font-mono text-[10px] text-slate-400 mt-1">{{ __('By email') }}</p>
+                                            <p class="font-mono text-[10px] text-muted mt-1">{{ __('By email') }}</p>
                                         </button>
                                     </div>
                                     <input type="hidden" name="audience_type" id="audience_type" value="{{ old('audience_type', 'all') }}">

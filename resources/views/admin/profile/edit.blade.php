@@ -191,7 +191,7 @@
                                     <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">{{ __('JPG, PNG, or WebP up to 2 MB') }}</p>
                                     @if ($profilePhotoUrl)
                                         <label class="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300">
-                                            <input type="checkbox" name="remove_profile_photo" value="1" class="rounded border-slate-300 text-slate-400 focus:ring-accent dark:border-slate-700 dark:bg-slate-950 dark:text-slate-500">
+                                            <input type="checkbox" name="remove_profile_photo" value="1" class="rounded border-slate-300 text-muted focus:ring-accent dark:border-slate-700 dark:bg-slate-950 dark:text-slate-500">
                                             <span>{{ __('Remove photo') }}</span>
                                         </label>
                                     @endif

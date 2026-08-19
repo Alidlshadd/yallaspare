@@ -608,7 +608,7 @@
         <div class="flex flex-wrap items-center justify-between gap-3 mb-4 px-2">
             <div class="text-[12.5px] text-slate-600 dark:text-slate-300">
                 {{ $statusTabs[$currentStatus]['label'] ?? __('All Products') }}
-                <span class="text-slate-400 dark:text-slate-500 ms-1">
+                <span class="text-muted dark:text-slate-500 ms-1">
                     ({{ __('showing :from–:to of :total', [
                         'from'  => $products->firstItem() ?? 0,
                         'to'    => $products->lastItem() ?? 0,
@@ -628,7 +628,7 @@
         {{-- ═════════════ Product card grid ═════════════ --}}
         @if($products->count() === 0)
             <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl py-14 px-4 text-center bento-shadow">
-                <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-slate-50 border border-slate-200 grid place-items-center text-slate-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500">
+                <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-slate-50 border border-slate-200 grid place-items-center text-muted dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500">
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                 </div>
                 <div class="text-base font-bold text-slate-900 dark:text-white">{{ $statusTabs[$currentStatus]['empty'] ?? __('No products found.') }}</div>

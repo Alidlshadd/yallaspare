@@ -312,7 +312,7 @@
                                         </form>
                                     @endif
                                 @else
-                                    <button type="button" disabled class="inline-flex w-full cursor-not-allowed items-center justify-center rounded-xl border border-slate-200 bg-slate-100 px-4 py-3 text-sm font-semibold text-slate-400">
+                                    <button type="button" disabled class="inline-flex w-full cursor-not-allowed items-center justify-center rounded-xl border border-slate-200 bg-slate-100 px-4 py-3 text-sm font-semibold text-muted">
                                         {{ __('Currently unavailable') }}
                                     </button>
                                     @if (!empty($isBackInStockSubscribed))

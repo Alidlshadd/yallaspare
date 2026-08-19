@@ -122,7 +122,7 @@
                                         <img src="{{ data_get($product, 'image') }}" alt="{{ data_get($product, 'name') }}" class="h-full w-full object-contain" loading="lazy">
                                     </a>
                                 @else
-                                    <div class="flex h-full w-full items-center justify-center text-slate-400 dark:text-slate-500">
+                                    <div class="flex h-full w-full items-center justify-center text-muted dark:text-slate-500">
                                         <svg class="h-9 w-9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 16 9 11l4 4 3-3 4 4" />
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 19h16" />
@@ -142,7 +142,7 @@
                                         {{ number_format((float) data_get($product, 'price', 0), 0) }} {{ $currencySymbol }}
                                     </p>
                                     @if ($hasDiscount)
-                                        <p class="text-xs font-semibold text-slate-400 line-through dark:text-slate-500">
+                                        <p class="text-xs font-semibold text-muted line-through dark:text-slate-500">
                                             {{ number_format((float) data_get($product, 'base_price', 0), 0) }}
                                         </p>
                                     @endif

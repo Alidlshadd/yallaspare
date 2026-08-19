@@ -41,7 +41,7 @@
                 <div class="kicker">{{ __('Time Range') }}</div>
                 <div class="mt-0.5 text-sm font-bold text-slate-900">
                     {{ __('Analytics period') }}
-                    <span class="ml-1 text-xs font-semibold text-slate-400">· {{ __('Last :n days', ['n' => $days]) }}</span>
+                    <span class="ml-1 text-xs font-semibold text-muted">· {{ __('Last :n days', ['n' => $days]) }}</span>
                 </div>
             </div>
         </div>
@@ -77,7 +77,7 @@
             <div class="flex items-start justify-between pl-2">
                 <div>
                     <p class="kicker">{{ __('Page Views') }}</p>
-                    <p class="mt-1 text-[11px] text-slate-400">{{ __('All trackable pages') }}</p>
+                    <p class="mt-1 text-[11px] text-muted">{{ __('All trackable pages') }}</p>
                 </div>
                 <div class="grid h-9 w-9 place-items-center rounded-lg bg-info text-info"><i class="far fa-eye"></i></div>
             </div>
@@ -96,7 +96,7 @@
             <div class="flex items-start justify-between pl-2">
                 <div>
                     <p class="kicker">{{ __('Unique Visitors') }}</p>
-                    <p class="mt-1 text-[11px] text-slate-400">{{ __('Distinct sessions') }}</p>
+                    <p class="mt-1 text-[11px] text-muted">{{ __('Distinct sessions') }}</p>
                 </div>
                 <div class="grid h-9 w-9 place-items-center rounded-lg bg-info text-info"><i class="fas fa-users-line"></i></div>
             </div>
@@ -115,7 +115,7 @@
             <div class="flex items-start justify-between pl-2">
                 <div>
                     <p class="kicker">{{ __('Add to Cart') }}</p>
-                    <p class="mt-1 text-[11px] text-slate-400">{{ __('Total clicks') }}</p>
+                    <p class="mt-1 text-[11px] text-muted">{{ __('Total clicks') }}</p>
                 </div>
                 <div class="grid h-9 w-9 place-items-center rounded-lg bg-rose-50 text-rose-600"><i class="fas fa-cart-plus"></i></div>
             </div>
@@ -142,7 +142,7 @@
             <div class="flex items-start justify-between pl-2">
                 <div>
                     <p class="kicker">{{ __('Wishlist Clicks') }}</p>
-                    <p class="mt-1 text-[11px] text-slate-400">{{ __('Saved to wishlist') }}</p>
+                    <p class="mt-1 text-[11px] text-muted">{{ __('Saved to wishlist') }}</p>
                 </div>
                 <div class="grid h-9 w-9 place-items-center rounded-lg bg-amber-50 text-amber-700"><i class="far fa-heart"></i></div>
             </div>
@@ -246,7 +246,7 @@
                     <span class="kicker">{{ __('Last :n days', ['n' => $days]) }}</span>
                 </div>
                 @if($table['rows']->isEmpty())
-                    <div class="px-5 py-8 text-center text-xs text-slate-400">{{ $table['empty'] }}</div>
+                    <div class="px-5 py-8 text-center text-xs text-muted">{{ $table['empty'] }}</div>
                 @else
                     <table class="w-full table-fixed text-sm">
                         <tbody>
@@ -280,7 +280,7 @@
                 <span class="kicker">{{ __('Last :n days', ['n' => $days]) }}</span>
             </div>
             @if($topSearches->isEmpty())
-                <div class="px-5 py-8 text-center text-xs text-slate-400">{{ __('No searches recorded in this period.') }}</div>
+                <div class="px-5 py-8 text-center text-xs text-muted">{{ __('No searches recorded in this period.') }}</div>
             @else
                 <table class="w-full text-sm">
                     <thead>
@@ -315,7 +315,7 @@
                 <span class="kicker">{{ __('All-time') }}</span>
             </div>
             @if($recentSearches->isEmpty())
-                <div class="px-5 py-8 text-center text-xs text-slate-400">{{ __('No recent searches.') }}</div>
+                <div class="px-5 py-8 text-center text-xs text-muted">{{ __('No recent searches.') }}</div>
             @else
                 <div class="flex flex-wrap gap-2 px-5 py-4">
                     @foreach($recentSearches as $row)
@@ -329,7 +329,7 @@
         </div>
     </div>
 
-    <p class="text-right text-[11px] text-slate-400">
+    <p class="text-right text-[11px] text-muted">
         {{ __('Last refreshed :time', ['time' => $generatedAt->diffForHumans()]) }}
     </p>
 </div>

@@ -156,13 +156,13 @@
                             @endphp
                             @foreach ($configurationChecks as $label => $ready)
                                 <div class="flex items-center gap-3 border-b border-slate-100 py-3 last:border-0 dark:border-slate-800">
-                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full {{ $ready ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-300' : 'bg-slate-100 text-slate-400 dark:bg-white/5 dark:text-slate-500' }}">
+                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full {{ $ready ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-300' : 'bg-slate-100 text-muted dark:bg-white/5 dark:text-slate-500' }}">
                                         <i class="fas {{ $ready ? 'fa-check' : 'fa-minus' }} text-[10px]" aria-hidden="true"></i>
                                     </span>
                                     <span class="text-sm font-semibold text-slate-700 dark:text-slate-200">
-                                        {{ $label }}@if ($label === __('Template language') && $ready) <span class="font-mono text-xs text-slate-400">({{ $configuration['template_language'] }})</span>@endif
+                                        {{ $label }}@if ($label === __('Template language') && $ready) <span class="font-mono text-xs text-muted">({{ $configuration['template_language'] }})</span>@endif
                                     </span>
-                                    <span class="ml-auto text-[10px] font-bold uppercase tracking-wider {{ $ready ? 'text-emerald-600 dark:text-emerald-300' : 'text-slate-400' }}">{{ $ready ? __('Ready') : __('Missing') }}</span>
+                                    <span class="ml-auto text-[10px] font-bold uppercase tracking-wider {{ $ready ? 'text-emerald-600 dark:text-emerald-300' : 'text-muted' }}">{{ $ready ? __('Ready') : __('Missing') }}</span>
                                 </div>
                             @endforeach
 
@@ -176,7 +176,7 @@
                                     };
                                 @endphp
                                 <div class="flex items-center gap-3 border-b border-slate-100 py-3 last:border-0 dark:border-slate-800 sm:col-span-2">
-                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full {{ $templateCheckState === 'ready' ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-300' : ($templateCheckState === 'missing' ? 'bg-amber-100 text-amber-600 dark:bg-amber-500/10 dark:text-amber-300' : 'bg-slate-100 text-slate-400 dark:bg-white/5 dark:text-slate-500') }}">
+                                    <span class="inline-flex h-7 w-7 items-center justify-center rounded-full {{ $templateCheckState === 'ready' ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-300' : ($templateCheckState === 'missing' ? 'bg-amber-100 text-amber-600 dark:bg-amber-500/10 dark:text-amber-300' : 'bg-slate-100 text-muted dark:bg-white/5 dark:text-slate-500') }}">
                                         <i class="fas {{ $templateCheckState === 'ready' ? 'fa-check' : ($templateCheckState === 'missing' ? 'fa-triangle-exclamation' : 'fa-question') }} text-[10px]" aria-hidden="true"></i>
                                     </span>
                                     <span class="text-sm font-semibold text-slate-700 dark:text-slate-200">
@@ -185,7 +185,7 @@
                                             <span class="text-xs font-medium text-accent dark:text-accent">— {{ __('template language differs from the configured value') }}</span>
                                         @endif
                                     </span>
-                                    <span class="ml-auto text-[10px] font-bold uppercase tracking-wider {{ $templateCheckState === 'ready' ? 'text-emerald-600 dark:text-emerald-300' : ($templateCheckState === 'missing' ? 'text-accent dark:text-accent' : 'text-slate-400') }}">
+                                    <span class="ml-auto text-[10px] font-bold uppercase tracking-wider {{ $templateCheckState === 'ready' ? 'text-emerald-600 dark:text-emerald-300' : ($templateCheckState === 'missing' ? 'text-accent dark:text-accent' : 'text-muted') }}">
                                         {{ $templateCheckState === 'ready' ? __('Ready') : ($templateCheckState === 'missing' ? __('Missing') : __('Not verified')) }}
                                     </span>
                                 </div>

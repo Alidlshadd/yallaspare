@@ -346,7 +346,7 @@
         {{-- ═════════════ Review cards ═════════════ --}}
         @if($reviews->count() === 0)
             <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl py-14 px-4 text-center bento-shadow">
-                <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-slate-50 border border-slate-200 grid place-items-center text-slate-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500">
+                <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-slate-50 border border-slate-200 grid place-items-center text-muted dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500">
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h8m-8 4h5m-9 4V7a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H9l-5 4z"/></svg>
                 </div>
                 <div class="text-base font-bold text-slate-900 dark:text-white">{{ __('No reviews found.') }}</div>
@@ -377,7 +377,7 @@
                                     </span>
                                 @endif
                             </span>
-                            <span class="font-mono text-[10.5px] text-slate-400 dark:text-slate-500">
+                            <span class="font-mono text-[10.5px] text-muted dark:text-slate-500">
                                 {{ optional($review->reviewed_at ?? $review->created_at)->format('d M Y') ?: '-' }}
                             </span>
                         </div>
@@ -413,7 +413,7 @@
                                     </div>
                                 </div>
                             @else
-                                <p class="text-[12px] text-slate-400 dark:text-slate-500">{{ __('Product unavailable') }}</p>
+                                <p class="text-[12px] text-muted dark:text-slate-500">{{ __('Product unavailable') }}</p>
                             @endif
 
                             <div class="flex items-center justify-between gap-2">

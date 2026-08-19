@@ -80,7 +80,7 @@
                                     <span class="text-xs text-slate-500 dark:text-slate-400">
                                         {{ number_format($unitPrice, 2) }} {{ $currencySymbol }}
                                         @if ($unitHasDiscount)
-                                            <s class="text-slate-400 dark:text-slate-600">{{ number_format($baseUnitPrice, 2) }}</s>
+                                            <s class="text-muted dark:text-slate-600">{{ number_format($baseUnitPrice, 2) }}</s>
                                         @endif
                                     </span>
                                     @if ($unitHasDiscount)
@@ -90,7 +90,7 @@
                                     @endif
                                 </div>
                                 @if ($product)
-                                    <p class="mt-1 text-[11px] text-slate-400 dark:text-slate-500">{{ __('Available') }}: {{ $maxQuantity }}</p>
+                                    <p class="mt-1 text-[11px] text-muted dark:text-slate-500">{{ __('Available') }}: {{ $maxQuantity }}</p>
                                 @endif
                             </div>
 
@@ -182,7 +182,7 @@
                         </div>
                     </dl>
 
-                    <p class="mt-4 border-t border-slate-100 pt-3 text-xs leading-5 text-slate-400 dark:border-slate-800 dark:text-slate-500">
+                    <p class="mt-4 border-t border-slate-100 pt-3 text-xs leading-5 text-muted dark:border-slate-800 dark:text-slate-500">
                         {{ __('Address, notes and coupon are on the next step.') }}
                     </p>
                 </section>

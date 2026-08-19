@@ -353,7 +353,7 @@
                                                 @if ($itemImage)
                                                     <img src="{{ $itemImage }}" alt="{{ $itemName }}" class="h-full w-full object-contain">
                                                 @else
-                                                    <div class="flex h-full w-full items-center justify-center text-slate-400 dark:text-slate-500">
+                                                    <div class="flex h-full w-full items-center justify-center text-muted dark:text-slate-500">
                                                         <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                                                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 16 9 11l4 4 3-3 4 4" />
                                                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 19h16" />
@@ -409,7 +409,7 @@
                                     @if ($itemImage)
                                         <img src="{{ $itemImage }}" alt="{{ $itemName }}" class="h-full w-full object-contain">
                                     @else
-                                        <div class="flex h-full w-full items-center justify-center text-slate-400 dark:text-slate-500">
+                                        <div class="flex h-full w-full items-center justify-center text-muted dark:text-slate-500">
                                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 16 9 11l4 4 3-3 4 4" />
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 19h16" />

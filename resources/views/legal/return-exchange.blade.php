@@ -22,7 +22,7 @@
         <div class="mt-10 md:grid md:grid-cols-[200px,1fr] md:gap-8 lg:grid-cols-[230px,1fr] lg:gap-10">
             <aside class="hidden md:block">
                 <nav class="sup-in sticky top-24 rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900" style="animation-delay: .12s">
-                    <p class="px-3 pb-2 pt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-slate-400 dark:text-slate-500">{{ __('On this page') }}</p>
+                    <p class="px-3 pb-2 pt-1 text-[10px] font-bold uppercase tracking-[0.18em] text-muted dark:text-slate-500">{{ __('On this page') }}</p>
                     <a href="#period" class="block rounded-lg px-3 py-2 text-sm text-slate-600 transition hover:bg-slate-100 hover:text-primary dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white">{{ __('Return Period') }}</a>
                     <a href="#conditions" class="block rounded-lg px-3 py-2 text-sm text-slate-600 transition hover:bg-slate-100 hover:text-primary dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white">{{ __('Return Conditions') }}</a>
                     <a href="#damaged" class="block rounded-lg px-3 py-2 text-sm text-slate-600 transition hover:bg-slate-100 hover:text-primary dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white">{{ __('Damaged or Incorrect Items') }}</a>

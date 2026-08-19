@@ -265,7 +265,7 @@
                         />
                         <span class="hidden min-[360px]:block">
                             <span class="block text-sm font-semibold leading-none">{{ $systemSettings['site_name'] ?? 'YallaSpare' }}</span>
-                            <span class="mt-1 block text-[11px] font-medium text-slate-400">{{ __('Admin access') }}</span>
+                            <span class="mt-1 block text-[11px] font-medium text-muted">{{ __('Admin access') }}</span>
                         </span>
                     </a>
 

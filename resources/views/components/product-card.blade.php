@@ -96,7 +96,7 @@
                     class="h-full w-full object-contain transition duration-300 group-hover:scale-[1.03]"
                 >
             @else
-                <div class="flex h-full w-full items-center justify-center rounded-xl bg-slate-100 text-slate-400 dark:bg-slate-900 dark:text-slate-600">
+                <div class="flex h-full w-full items-center justify-center rounded-xl bg-slate-100 text-muted dark:bg-slate-900 dark:text-slate-600">
                     <svg class="h-8 w-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 16 9 11l4 4 3-3 4 4" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 19h16" />
@@ -132,7 +132,7 @@
                 <span class="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted">{{ $currencySymbol }}</span>
             </p>
             @if ($hasDiscount)
-                <p class="text-xs font-semibold text-slate-400 line-through dark:text-slate-500">
+                <p class="text-xs font-semibold text-muted line-through dark:text-slate-500">
                     {{ number_format($basePrice, 2) }}
                 </p>
             @endif
@@ -236,7 +236,7 @@
                     class="h-full w-full object-contain transition duration-300 group-hover:scale-[1.03]"
                 >
             @else
-                <div class="flex h-full w-full items-center justify-center rounded-2xl bg-slate-100 text-slate-400 dark:bg-slate-900 dark:text-slate-600">
+                <div class="flex h-full w-full items-center justify-center rounded-2xl bg-slate-100 text-muted dark:bg-slate-900 dark:text-slate-600">
                     <svg class="h-9 w-9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 16 9 11l4 4 3-3 4 4" />
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4 19h16" />
@@ -283,7 +283,7 @@
                     <span class="text-xs font-semibold uppercase tracking-[0.12em] text-muted">{{ $currencySymbol }}</span>
                 </p>
                 @if ($hasDiscount)
-                    <p class="text-sm font-semibold text-slate-400 line-through dark:text-slate-500">
+                    <p class="text-sm font-semibold text-muted line-through dark:text-slate-500">
                         {{ number_format($basePrice, 2) }}
                     </p>
                 @endif

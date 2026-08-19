@@ -63,7 +63,7 @@
                                     <div class="mt-1 flex flex-wrap items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
                                         <span>{{ __('Qty:') }} {{ $item->quantity }}</span>
                                         @if($unitHasDiscount)
-                                            <span class="font-semibold text-slate-400 line-through dark:text-slate-500">{{ number_format($baseUnitPrice, 0) }}</span>
+                                            <span class="font-semibold text-muted line-through dark:text-slate-500">{{ number_format($baseUnitPrice, 0) }}</span>
                                             <span class="inline-flex rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300">-{{ $unitDiscountPercent }}%</span>
                                         @endif
                                     </div>

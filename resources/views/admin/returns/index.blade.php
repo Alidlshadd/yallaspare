@@ -471,7 +471,7 @@
                             </span>
                         </div>
                         <div class="font-mono text-[13px] font-bold text-slate-900 dark:text-white">#R-{{ $requestRow->id }}</div>
-                        <div class="font-mono text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">
+                        <div class="font-mono text-[11px] text-muted dark:text-slate-500 mt-0.5">
                             {{ $requestRow->requested_at?->format('M d, Y') ?? '-' }}
                             @if($requestRow->requested_at)
                                 <span class="text-slate-300 dark:text-slate-600">/</span>
@@ -604,7 +604,7 @@
                 </div>
             @empty
                 <div class="py-14 px-4 text-center">
-                    <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-slate-50 border border-slate-200 grid place-items-center text-slate-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500">
+                    <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-slate-50 border border-slate-200 grid place-items-center text-muted dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500">
                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
                     </div>
                     <div class="text-base font-bold text-slate-900 dark:text-white">{{ __('No return requests found.') }}</div>

@@ -187,7 +187,7 @@
                         </div>
                         <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-950/40">
                             <div class="flex items-baseline justify-between">
-                                <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">{{ __('Coverage Score') }}</p>
+                                <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-muted">{{ __('Coverage Score') }}</p>
                                 <p class="si-mono text-sm font-bold text-emerald-600 dark:text-emerald-400">{{ number_format($summary['coverage_on_page'], 1) }}%</p>
                             </div>
                             <div class="mt-2 h-2 overflow-hidden rounded-full bg-rose-100 dark:bg-rose-950/50">
@@ -214,7 +214,7 @@
                                              style="height: {{ $pulseHeight }}%"
                                              title="{{ $pulse['date'] }} &mdash; {{ number_format($pulse['count']) }} {{ __('keywords') }}"></div>
                                     </div>
-                                    <span class="text-[9px] font-bold uppercase tracking-[0.1em] {{ $isToday ? 'text-slate-800 dark:text-slate-100' : 'text-slate-400' }}">{{ $pulse['label'] }}</span>
+                                    <span class="text-[9px] font-bold uppercase tracking-[0.1em] {{ $isToday ? 'text-slate-800 dark:text-slate-100' : 'text-muted' }}">{{ $pulse['label'] }}</span>
                                 </div>
                             @endforeach
                         </div>

@@ -69,7 +69,7 @@
                     placeholder="0770 000 0000"
                 >
             </div>
-            <p class="mt-2 text-xs leading-5 text-slate-400">{{ __('Iraq mobile number. Accepted: 07700000000, 7700000000, or +9647700000000.') }}</p>
+            <p class="mt-2 text-xs leading-5 text-muted">{{ __('Iraq mobile number. Accepted: 07700000000, 7700000000, or +9647700000000.') }}</p>
             <x-input-error :messages="$errors->get('country_code')" class="mt-2 text-sm text-red-400" />
             <x-input-error :messages="$errors->get('phone')" class="mt-2 text-sm text-red-400" />
         </div>

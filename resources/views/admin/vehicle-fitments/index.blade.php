@@ -685,7 +685,7 @@
                 </div>
             @empty
                 <div class="px-6 py-14 text-center">
-                    <div class="mx-auto mb-4 w-14 h-14 rounded-2xl bg-slate-50 border border-slate-200 grid place-items-center text-slate-400 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500">
+                    <div class="mx-auto mb-4 w-14 h-14 rounded-2xl bg-slate-50 border border-slate-200 grid place-items-center text-muted dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500">
                         <i class="fas fa-link"></i>
                     </div>
                     <p class="text-base font-bold text-slate-900 dark:text-white">{{ __('No fitments found.') }}</p>

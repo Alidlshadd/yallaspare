@@ -79,7 +79,7 @@
                             <div class="flex-1 min-w-0">
                                 <div class="flex flex-wrap items-center gap-2">
                                     <p class="text-sm font-bold text-primary dark:text-slate-100">{{ $row['title'] }}</p>
-                                    <span class="font-mono text-[10px] uppercase tracking-widest text-slate-400">{{ $key }}</span>
+                                    <span class="font-mono text-[10px] uppercase tracking-widest text-muted">{{ $key }}</span>
                                 </div>
                                 <p class="text-xs text-slate-500 mt-0.5 dark:text-slate-400">{{ $row['description'] }}</p>
                                 <div class="mt-3 flex flex-wrap items-center gap-2">

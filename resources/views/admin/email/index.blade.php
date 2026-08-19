@@ -451,7 +451,7 @@
                                 <div class="group grid gap-3 px-5 py-3 hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition sm:grid-cols-[150px_1fr_auto] sm:items-center">
                                     <div>
                                         <p class="font-mono text-xs font-bold text-primary dark:text-slate-200">{{ optional($log->created_at)->format('M d, H:i') }}</p>
-                                        <p class="mt-0.5 text-[10px] text-slate-400 font-mono dark:text-slate-500">{{ optional($log->created_at)->diffForHumans() }}</p>
+                                        <p class="mt-0.5 text-[10px] text-muted font-mono dark:text-slate-500">{{ optional($log->created_at)->diffForHumans() }}</p>
                                     </div>
                                     <div class="min-w-0 flex items-center gap-2.5">
                                         <span class="h-7 w-7 shrink-0 rounded-lg bg-slate-100 text-slate-500 grid place-items-center dark:bg-slate-800 dark:text-slate-300">
@@ -527,7 +527,7 @@
                                             <i class="fas fa-user text-base"></i>
                                             <span>{{ __('Specific person') }}</span>
                                         </div>
-                                        <p class="font-mono text-[9px] text-slate-400 mt-1 truncate">{{ __('By email address') }}</p>
+                                        <p class="font-mono text-[9px] text-muted mt-1 truncate">{{ __('By email address') }}</p>
                                     </button>
                                 </div>
                                 <input type="hidden" name="audience_type" id="ic-audience-type" value="{{ old('audience_type', 'all') }}">

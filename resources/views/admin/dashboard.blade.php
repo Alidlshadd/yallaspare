@@ -239,7 +239,7 @@
             <div class="flex items-start justify-between">
                 <div>
                     <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold dark:text-slate-400">{{ __('Total Orders') }}</p>
-                    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">{{ __('All-time fulfilled') }}</p>
+                    <p class="mt-1 text-xs text-muted dark:text-slate-500">{{ __('All-time fulfilled') }}</p>
                 </div>
                 <div class="h-10 w-10 rounded-xl bg-info text-info grid place-items-center dark:bg-info/30 dark:text-info">
                     <i class="fas fa-bag-shopping"></i>
@@ -283,7 +283,7 @@
             <div class="flex items-start justify-between">
                 <div>
                     <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold dark:text-slate-400">{{ __('Total Products') }}</p>
-                    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">{{ __('Active catalog') }}</p>
+                    <p class="mt-1 text-xs text-muted dark:text-slate-500">{{ __('Active catalog') }}</p>
                 </div>
                 <div class="h-10 w-10 rounded-xl bg-info text-info grid place-items-center dark:bg-info/30 dark:text-info">
                     <i class="fas fa-screwdriver-wrench"></i>
@@ -309,7 +309,7 @@
                 $healthyPct = $totalProducts > 0 ? max(0, 100 - round((($lowStockCount + $outOfStockCount) / max($totalProducts, 1)) * 100)) : 0;
             @endphp
             <div class="mt-4">
-                <div class="flex items-center justify-between text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-1.5">
+                <div class="flex items-center justify-between text-[10px] uppercase tracking-widest text-muted font-bold mb-1.5">
                     <span>{{ __('Stock Health') }}</span>
                     <span class="text-info dark:text-info">{{ $healthyPct }}%</span>
                 </div>
@@ -325,14 +325,14 @@
             <div class="flex items-start justify-between">
                 <div>
                     <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold dark:text-slate-400">{{ __("Today's Sales") }}</p>
-                    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">{{ __('Since 00:00') }}</p>
+                    <p class="mt-1 text-xs text-muted dark:text-slate-500">{{ __('Since 00:00') }}</p>
                 </div>
                 <div class="h-10 w-10 rounded-xl bg-emerald-50 text-emerald-600 grid place-items-center dark:bg-emerald-900/30 dark:text-emerald-300">
                     <i class="fas fa-chart-line"></i>
                 </div>
             </div>
             <p class="mt-6 num-display text-3xl font-bold text-primary dark:text-slate-100">
-                <span class="text-base font-bold text-slate-400 dark:text-slate-500">{{ $currencyLabel }}</span>
+                <span class="text-base font-bold text-muted dark:text-slate-500">{{ $currencyLabel }}</span>
                 {{ number_format($todaySales, $currencyDecimals) }}
             </p>
             <div class="mt-3">
@@ -358,7 +358,7 @@
             <div class="flex items-start justify-between">
                 <div>
                     <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold dark:text-slate-400">{{ __('Pending Orders') }}</p>
-                    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">{{ __('Awaiting action') }}</p>
+                    <p class="mt-1 text-xs text-muted dark:text-slate-500">{{ __('Awaiting action') }}</p>
                 </div>
                 <div class="h-10 w-10 rounded-xl bg-amber-50 text-amber-600 grid place-items-center dark:bg-amber-900/30 dark:text-amber-300">
                     <i class="far fa-hourglass-half"></i>
@@ -455,13 +455,13 @@
                         <div class="absolute inset-2 rounded-full bg-white grid place-items-center dark:bg-slate-900">
                             <div class="text-center leading-tight">
                                 <p class="num-display text-2xl font-bold {{ $gaugeTone === 'rose' ? 'text-rose-700 dark:text-rose-300' : ($gaugeTone === 'amber' ? 'text-accent dark:text-accent' : 'text-emerald-700 dark:text-emerald-300') }}">{{ number_format($lowStockCount) }}</p>
-                                <p class="text-[8px] uppercase tracking-widest text-slate-400 font-bold dark:text-slate-500">{{ __('SKUs') }}</p>
+                                <p class="text-[8px] uppercase tracking-widest text-muted font-bold dark:text-slate-500">{{ __('SKUs') }}</p>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="min-w-0">
-                    <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold dark:text-slate-500">{{ __('Inventory health') }}</p>
+                    <p class="text-[10px] uppercase tracking-widest text-muted font-bold dark:text-slate-500">{{ __('Inventory health') }}</p>
                     <p class="mt-1 text-sm font-bold truncate {{ $gaugeTone === 'rose' ? 'text-rose-800 dark:text-rose-300' : ($gaugeTone === 'amber' ? 'text-accent dark:text-accent' : 'text-emerald-800 dark:text-emerald-300') }}">{{ __(':count parts below threshold', ['count' => $lowStockCount]) }}</p>
                     @if($outOfStockCount > 0)
                         <p class="mt-1 text-xs text-rose-600 font-bold dark:text-rose-400">+ {{ $outOfStockCount }} {{ __('out of stock') }}</p>
@@ -538,7 +538,7 @@
                     <i class="far fa-eye text-info"></i>
                 </div>
                 @if($siteAnalyticsTopViewed->isEmpty())
-                    <p class="px-4 py-6 text-center text-xs font-semibold text-slate-400">{{ __('No product views yet.') }}</p>
+                    <p class="px-4 py-6 text-center text-xs font-semibold text-muted">{{ __('No product views yet.') }}</p>
                 @else
                     <div class="divide-y divide-slate-200/70 dark:divide-slate-800">
                         @foreach($siteAnalyticsTopViewed->take(5) as $row)
@@ -562,7 +562,7 @@
                     <i class="fas fa-magnifying-glass text-info"></i>
                 </div>
                 @if($siteAnalyticsTopSearches->isEmpty())
-                    <p class="px-4 py-6 text-center text-xs font-semibold text-slate-400">{{ __('No searches recorded yet.') }}</p>
+                    <p class="px-4 py-6 text-center text-xs font-semibold text-muted">{{ __('No searches recorded yet.') }}</p>
                 @else
                     <div class="flex flex-wrap gap-2 px-4 py-4">
                         @foreach($siteAnalyticsTopSearches->take(10) as $row)
@@ -881,7 +881,7 @@
             <div class="flex items-start justify-between">
                 <div>
                     <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold dark:text-slate-400">{{ __('Return Rate (30d)') }}</p>
-                    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">{{ __('Quality indicator') }}</p>
+                    <p class="mt-1 text-xs text-muted dark:text-slate-500">{{ __('Quality indicator') }}</p>
                 </div>
                 <div class="h-10 w-10 rounded-xl bg-rose-50 text-rose-600 grid place-items-center dark:bg-rose-900/30 dark:text-rose-300">
                     <i class="fas fa-rotate-left"></i>
@@ -901,7 +901,7 @@
             <div class="flex items-start justify-between">
                 <div>
                     <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold dark:text-slate-400">{{ __('Avg Ship Time (30d)') }}</p>
-                    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">{{ __('Processing → Shipped') }}</p>
+                    <p class="mt-1 text-xs text-muted dark:text-slate-500">{{ __('Processing → Shipped') }}</p>
                 </div>
                 <div class="h-10 w-10 rounded-xl bg-info text-info grid place-items-center dark:bg-info/30 dark:text-info">
                     <i class="fas fa-truck-fast"></i>
@@ -924,7 +924,7 @@
             <div class="flex items-start justify-between">
                 <div>
                     <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold dark:text-slate-400">{{ __('Top Margin Products') }}</p>
-                    <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">{{ __('Highest profit') }}</p>
+                    <p class="mt-1 text-xs text-muted dark:text-slate-500">{{ __('Highest profit') }}</p>
                 </div>
                 <div class="h-10 w-10 rounded-xl bg-emerald-50 text-emerald-600 grid place-items-center dark:bg-emerald-900/30 dark:text-emerald-300">
                     <i class="fas fa-trophy"></i>
@@ -1026,7 +1026,7 @@
             @if(count($stockTrendLabels) > 0 && array_sum(array_map('abs', $stockTrendValues)) > 0)
                 <div class="mt-2" style="height: 260px"><canvas id="stockTrendChart"></canvas></div>
             @else
-                <div class="h-64 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
+                <div class="h-64 flex flex-col items-center justify-center text-muted dark:text-slate-500">
                     <div class="relative">
                         <i class="fas fa-chart-line text-5xl opacity-20"></i>
                         <span class="absolute inset-0 grid place-items-center"><span class="h-2 w-2 rounded-full bg-emerald-500/40"></span></span>
@@ -1068,7 +1068,7 @@
             @if(count($movementLabels) > 0 && (array_sum($movementInValues) > 0 || array_sum($movementOutValues) > 0))
                 <div class="mt-2" style="height: 230px"><canvas id="movementChart"></canvas></div>
             @else
-                <div class="h-56 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
+                <div class="h-56 flex flex-col items-center justify-center text-muted dark:text-slate-500">
                     <div class="relative">
                         <i class="fas fa-warehouse text-5xl opacity-20"></i>
                         <span class="absolute inset-0 grid place-items-center"><span class="h-2 w-2 rounded-full bg-info/40"></span></span>
@@ -1148,7 +1148,7 @@
                     @endforeach
                 </div>
             @else
-                <div class="h-24 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
+                <div class="h-24 flex flex-col items-center justify-center text-muted dark:text-slate-500">
                     <i class="fas fa-check-circle text-3xl mb-2 text-emerald-500"></i>
                     <p class="text-sm font-bold">{{ __('All products have healthy stock') }}</p>
                 </div>

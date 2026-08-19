@@ -103,7 +103,7 @@
                                                         @if($item->product?->image)
                                                             <img src="{{ asset('storage/' . $item->product->image) }}" alt="{{ $item->product?->name ?? __('Product') }}" class="h-full w-full object-cover">
                                                         @else
-                                                            <div class="flex h-full w-full items-center justify-center text-slate-400">
+                                                            <div class="flex h-full w-full items-center justify-center text-muted">
                                                                 <i class="fas fa-image"></i>
                                                             </div>
                                                         @endif
