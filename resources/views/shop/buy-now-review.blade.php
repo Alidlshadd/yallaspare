@@ -41,7 +41,7 @@
                                 name="address_id"
                                 value="{{ $address->id }}"
                                 @checked((int) old('address_id', $selectedAddressId ?? $defaultAddress?->id) === (int) $address->id)
-                                class="mt-1 h-4 w-4 border-slate-300 text-primary focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-900"
+                                class="mt-1 h-4 w-4 border-slate-300 text-primary focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-900"
                             >
                             <span class="min-w-0 flex-1">
                                 <span class="text-sm font-semibold text-slate-900 dark:text-white">{{ $address->label ?: __('Saved Address') }}</span>
@@ -68,7 +68,7 @@
                     id="notes"
                     name="notes"
                     rows="4"
-                    class="mt-3 block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                    class="mt-3 block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-accent/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
                 >{{ old('notes', $defaultDeliveryNote) }}</textarea>
             </section>
 
@@ -107,7 +107,7 @@
                                     value="{{ $method['key'] }}"
                                     @checked(old('payment_method', 'cash_on_delivery') === $method['key'])
                                     @disabled($isDisabled)
-                                    class="h-4 w-4 border-slate-300 text-primary focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-900"
+                                    class="h-4 w-4 border-slate-300 text-primary focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-900"
                                 >
                                 <span class="flex-1 font-medium text-slate-900 dark:text-white">{{ __($method['label']) }}</span>
                                 @if($method['coming_soon'] ?? false)
@@ -131,7 +131,7 @@
                             type="text"
                             name="coupon_code"
                             value="{{ old('coupon_code', data_get($couponSummary ?? [], 'code', '')) }}"
-                            class="min-w-0 flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm uppercase text-slate-900 outline-none focus:border-primary/20 focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                            class="min-w-0 flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm uppercase text-slate-900 outline-none focus:border-primary/20 focus:ring-4 focus:ring-accent/10 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
                             placeholder="{{ __('SAVE10') }}"
                         >
                         <button type="submit" name="coupon_action" value="apply" class="rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white dark:bg-white dark:text-slate-900">
@@ -153,7 +153,7 @@
                     <button
                         type="submit"
                         formaction="{{ route('checkout.buy-now.place', $product) }}"
-                        class="inline-flex items-center justify-center rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                        class="inline-flex items-center justify-center rounded-2xl bg-primary px-5 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                     >
                         {{ __('Confirm & Place Order') }}
                     </button>

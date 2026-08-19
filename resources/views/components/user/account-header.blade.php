@@ -21,7 +21,7 @@
         <div class="mx-auto grid h-16 max-w-6xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 sm:px-6 lg:px-8">
             <div></div>
 
-            <a href="{{ route('user.shop.home') }}" class="app-logo app-logo-dark app-logo-user focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25">
+            <a href="{{ route('user.shop.home') }}" class="app-logo app-logo-dark app-logo-user focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25">
                 <x-brand-mark
                     :logo-url="$brandLogoUrl"
                     :brand="$brand"
@@ -40,7 +40,7 @@
                 <div class="relative">
                     <button
                         type="button"
-                        class="inline-flex h-10 items-center gap-3 rounded-xl border border-white/10 bg-white/10 px-3 text-sm font-medium text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
+                        class="inline-flex h-10 items-center gap-3 rounded-xl border border-white/10 bg-white/10 px-3 text-sm font-medium text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25"
                         @click="toggleAccount()"
                         :aria-expanded="accountAriaExpanded"
                         aria-haspopup="menu"
@@ -71,15 +71,15 @@
                             <p class="truncate text-xs text-slate-500 dark:text-slate-400">{{ auth()->user()->email ?? '' }}</p>
                         </div>
                         <div class="mt-2 space-y-1">
-                            <a href="{{ route('user.account.edit') }}" class="flex rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-primary/30" role="menuitem">
+                            <a href="{{ route('user.account.edit') }}" class="flex rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-accent/30" role="menuitem">
                                 {{ __('Profile') }}
                             </a>
-                            <a href="{{ route('user.settings.edit') }}" class="flex rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-primary/30" role="menuitem">
+                            <a href="{{ route('user.settings.edit') }}" class="flex rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-accent/30" role="menuitem">
                                 {{ __('Settings') }}
                             </a>
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
-                                <button type="submit" class="flex w-full rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-primary/30" role="menuitem">
+                                <button type="submit" class="flex w-full rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-accent/30" role="menuitem">
                                     {{ __('Logout') }}
                                 </button>
                             </form>

@@ -52,7 +52,7 @@
                 'price_desc' => __('Price: High to Low'),
                 'stock_desc' => __('Most in stock'),
             ];
-            $selectClasses = 'block w-full rounded-xl border border-slate-200/80 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/30 focus:bg-white focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:bg-slate-900';
+            $selectClasses = 'block w-full rounded-xl border border-slate-200/80 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/30 focus:bg-white focus:ring-4 focus:ring-accent/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:bg-slate-900';
         @endphp
 
         <section
@@ -172,7 +172,7 @@
                     <div class="mt-1 grid grid-cols-2 gap-2 sm:col-span-2 lg:col-span-1 lg:mt-0 lg:flex">
                         <button
                             type="submit"
-                            class="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition duration-200 hover:bg-navy-raised focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
+                            class="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition duration-200 hover:bg-navy-raised focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-accent/20"
                         >
                             {{ __('Apply filters') }}
                         </button>

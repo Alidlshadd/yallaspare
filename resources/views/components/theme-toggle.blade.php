@@ -13,7 +13,7 @@
 
 <button
     type="button"
-    {{ $attributes->merge(['class' => 'theme-switch inline-flex shrink-0 items-center justify-center border border-white/10 bg-white/10 text-white/80 transition duration-200 hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25 ' . $shellClasses]) }}
+    {{ $attributes->merge(['class' => 'theme-switch inline-flex shrink-0 items-center justify-center border border-white/10 bg-white/10 text-white/80 transition duration-200 hover:bg-white/15 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25 ' . $shellClasses]) }}
     aria-label="{{ __('Toggle dark mode') }}"
     aria-pressed="false"
     title="{{ __('Dark mode') }}"

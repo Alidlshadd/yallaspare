@@ -14,7 +14,7 @@
     $placeholder ??= __('Create password');
     $confirmPlaceholder ??= __('Confirm password');
 
-    $inputClass = 'block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition duration-200 focus:border-red-500 focus:ring-red-500 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100 dark:placeholder:text-slate-500';
+    $inputClass = 'block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition duration-200 focus:border-red-500 focus:ring-accent dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100 dark:placeholder:text-slate-500';
     $mutedClass = 'text-slate-500 dark:text-slate-400';
 
     // No colour of its own: lengthRuleClass and friends set the state colour
@@ -82,7 +82,7 @@
             <button
                 type="button"
                 @click="refreshSuggestions"
-                class="rounded px-1 py-0.5 text-sm transition duration-200 hover:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 dark:hover:text-red-400 {{ $mutedClass }}"
+                class="rounded px-1 py-0.5 text-sm transition duration-200 hover:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:hover:text-red-400 {{ $mutedClass }}"
             >
                 {{ __('New suggestions') }}
             </button>
@@ -93,7 +93,7 @@
                 <button
                     type="button"
                     @click="applySuggestion(suggestion)"
-                    class="rounded-md border border-slate-300 bg-slate-100 px-2.5 py-1.5 font-mono text-sm tracking-wide text-slate-700 transition duration-200 hover:border-red-400 hover:bg-red-50 hover:text-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 dark:border-slate-600 dark:bg-slate-500/15 dark:text-slate-200 dark:hover:border-red-400/60 dark:hover:bg-red-500/15 dark:hover:text-red-200"
+                    class="rounded-md border border-slate-300 bg-slate-100 px-2.5 py-1.5 font-mono text-sm tracking-wide text-slate-700 transition duration-200 hover:border-red-400 hover:bg-red-50 hover:text-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:border-slate-600 dark:bg-slate-500/15 dark:text-slate-200 dark:hover:border-red-400/60 dark:hover:bg-red-500/15 dark:hover:text-red-200"
                     :aria-label="suggestionLabel(suggestion)"
                     x-text="suggestion"
                 ></button>

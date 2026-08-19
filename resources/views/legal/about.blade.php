@@ -128,7 +128,7 @@
                 <p class="relative mt-1.5 max-w-xl text-sm leading-relaxed text-slate-300">
                     {{ __('A mobile app, VIN matching, same-day delivery, and more are on the road ahead — see the full journey on Our Vision.') }}
                 </p>
-                <a href="{{ route('legal.vision') }}" class="font-display relative mt-5 inline-flex items-center gap-1.5 rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-primary transition hover:-translate-y-0.5 hover:bg-accent hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-white dark:text-navy">
+                <a href="{{ route('legal.vision') }}" class="font-display relative mt-5 inline-flex items-center gap-1.5 rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-primary transition hover:-translate-y-0.5 hover:bg-accent hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:text-navy">
                     {{ __('Our Vision') }} <span aria-hidden="true">&rarr;</span>
                 </a>
             </div>

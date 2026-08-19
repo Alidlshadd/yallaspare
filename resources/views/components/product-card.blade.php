@@ -44,7 +44,7 @@
     <a
         href="{{ route('shop.show', $product) }}"
         aria-label="{{ __('View details for :product', ['product' => $productName]) }}"
-        class="absolute inset-0 z-10 rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        class="absolute inset-0 z-10 rounded-2xl focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
     ></a>
 
     @if ($showWishlist && $customerUser)
@@ -55,7 +55,7 @@
                     @method('DELETE')
                     <button
                         type="submit"
-                        class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-rose-200 bg-white/95 text-rose-600 shadow-sm transition hover:bg-rose-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300 dark:border-rose-800 dark:bg-slate-900/95 dark:text-rose-300 dark:hover:bg-rose-950/30"
+                        class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-rose-200 bg-white/95 text-rose-600 shadow-sm transition hover:bg-rose-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:border-rose-800 dark:bg-slate-900/95 dark:text-rose-300 dark:hover:bg-rose-950/30"
                         aria-label="{{ __('Remove from wishlist') }}"
                     >
                         <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -68,7 +68,7 @@
                     @csrf
                     <button
                         type="submit"
-                        class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white/95 text-slate-500 shadow-sm transition hover:border-primary/30 hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:border-slate-700 dark:bg-slate-900/95 dark:text-slate-300 dark:hover:border-slate-500"
+                        class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white/95 text-slate-500 shadow-sm transition hover:border-primary/30 hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 dark:border-slate-700 dark:bg-slate-900/95 dark:text-slate-300 dark:hover:border-slate-500"
                         aria-label="{{ __('Add to wishlist') }}"
                     >
                         <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -145,7 +145,7 @@
                 @csrf
                 <button
                     type="submit"
-                    class="js-add-cart-button inline-flex w-full items-center justify-center rounded-xl bg-primary px-3 py-2.5 text-sm font-semibold uppercase tracking-[0.05em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-80"
+                    class="js-add-cart-button inline-flex w-full items-center justify-center rounded-xl bg-primary px-3 py-2.5 text-sm font-semibold uppercase tracking-[0.05em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-80"
                 >
                     {{ __('Add to Cart') }}
                 </button>
@@ -155,7 +155,7 @@
                 @csrf
                 <button
                     type="submit"
-                    class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-3 py-2.5 text-sm font-semibold uppercase tracking-[0.05em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                    class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-3 py-2.5 text-sm font-semibold uppercase tracking-[0.05em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                 >
                     <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M5 19h14" />
@@ -167,7 +167,7 @@
     @else
         <a
             href="{{ $inStock ? route('checkout.options', $product) : route('login') }}"
-            class="font-display relative z-20 mt-3 inline-flex w-full items-center justify-center rounded-xl bg-primary px-3 py-2.5 text-center text-sm font-semibold uppercase tracking-[0.05em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+            class="font-display relative z-20 mt-3 inline-flex w-full items-center justify-center rounded-xl bg-primary px-3 py-2.5 text-center text-sm font-semibold uppercase tracking-[0.05em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
         >
             {{ $inStock ? __('Order Now') : __('Send Request') }}
         </a>
@@ -181,7 +181,7 @@
     <a
         href="{{ route('shop.show', $product) }}"
         aria-label="{{ __('View details for :product', ['product' => $productName]) }}"
-        class="absolute inset-0 z-10 rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+        class="absolute inset-0 z-10 rounded-3xl focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
     ></a>
 
     @if ($showWishlist)
@@ -193,7 +193,7 @@
                         @method('DELETE')
                         <button
                             type="submit"
-                            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-rose-200 bg-white/95 text-rose-600 shadow-sm transition hover:bg-rose-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300 dark:border-rose-800 dark:bg-slate-900/95 dark:text-rose-300 dark:hover:bg-rose-950/30"
+                            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-rose-200 bg-white/95 text-rose-600 shadow-sm transition hover:bg-rose-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:border-rose-800 dark:bg-slate-900/95 dark:text-rose-300 dark:hover:bg-rose-950/30"
                             aria-label="{{ __('Remove from wishlist') }}"
                         >
                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -206,7 +206,7 @@
                         @csrf
                         <button
                             type="submit"
-                            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white/95 text-slate-500 shadow-sm transition hover:border-primary/30 hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:border-slate-700 dark:bg-slate-900/95 dark:text-slate-300 dark:hover:border-slate-500"
+                            class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white/95 text-slate-500 shadow-sm transition hover:border-primary/30 hover:text-primary focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 dark:border-slate-700 dark:bg-slate-900/95 dark:text-slate-300 dark:hover:border-slate-500"
                             aria-label="{{ __('Add to wishlist') }}"
                         >
                             <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -308,7 +308,7 @@
                 @csrf
                 <button
                     type="submit"
-                    class="js-add-cart-button inline-flex w-full items-center justify-center rounded-2xl bg-primary px-3 py-3 text-sm font-semibold uppercase tracking-[0.04em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-80 sm:px-4 sm:tracking-[0.1em]"
+                    class="js-add-cart-button inline-flex w-full items-center justify-center rounded-2xl bg-primary px-3 py-3 text-sm font-semibold uppercase tracking-[0.04em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-80 sm:px-4 sm:tracking-[0.1em]"
                 >
                     {{ __('Add to Cart') }}
                 </button>
@@ -318,7 +318,7 @@
                 @csrf
                 <button
                     type="submit"
-                    class="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-3 py-3 text-sm font-semibold uppercase tracking-[0.04em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:px-4 sm:tracking-[0.1em]"
+                    class="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-3 py-3 text-sm font-semibold uppercase tracking-[0.04em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 sm:px-4 sm:tracking-[0.1em]"
                 >
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M5 19h14" />
@@ -330,7 +330,7 @@
     @else
         <a
             href="{{ $inStock ? route('checkout.options', $product) : route('login') }}"
-            class="font-display relative z-20 mt-4 inline-flex w-full items-center justify-center rounded-2xl bg-primary px-3 py-3 text-center text-sm font-semibold uppercase tracking-[0.04em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 sm:px-4 sm:tracking-[0.1em]"
+            class="font-display relative z-20 mt-4 inline-flex w-full items-center justify-center rounded-2xl bg-primary px-3 py-3 text-center text-sm font-semibold uppercase tracking-[0.04em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 sm:px-4 sm:tracking-[0.1em]"
         >
             {{ $inStock ? __('Login or Register to Order') : __('Send Request') }}
         </a>

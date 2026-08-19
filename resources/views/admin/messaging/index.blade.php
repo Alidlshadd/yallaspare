@@ -210,7 +210,7 @@
                         @csrf
                         <div>
                             <label for="channel" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ __('Channel') }}</label>
-                            <select id="channel" name="channel" class="w-full rounded-xl border-slate-300 bg-white text-sm font-semibold text-slate-900 focus:border-primary focus:ring-primary dark:border-slate-700 dark:bg-slate-950 dark:text-white">
+                            <select id="channel" name="channel" class="w-full rounded-xl border-slate-300 bg-white text-sm font-semibold text-slate-900 focus:border-primary focus:ring-accent dark:border-slate-700 dark:bg-slate-950 dark:text-white">
                                 <option value="sms" @selected(old('channel', 'sms') === 'sms') @disabled(! $channels['sms']['available'])>SMS · {{ $channels['sms']['status'] }}</option>
                                 @if ($whatsappVisible)
                                     <option value="whatsapp" @selected(old('channel') === 'whatsapp' && $channels['whatsapp']['available']) @disabled(! $channels['whatsapp']['available'])>WhatsApp · {{ $channels['whatsapp']['status'] }}</option>

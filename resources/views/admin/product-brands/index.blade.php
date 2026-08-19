@@ -133,7 +133,7 @@
                                                 <input type="file" name="logo" accept="image/png,image/jpeg,image/webp" class="block w-full text-xs text-slate-500 file:me-2 file:rounded-md file:border-0 file:bg-slate-200 file:px-2 file:py-1.5 file:font-bold dark:file:bg-slate-700 dark:file:text-slate-100">
                                                 @if($brand->logo_path)
                                                     <label class="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
-                                                        <input type="checkbox" name="remove_logo" value="1" class="rounded border-slate-300 text-rose-600 focus:ring-rose-500"> {{ __('Remove current logo') }}
+                                                        <input type="checkbox" name="remove_logo" value="1" class="rounded border-slate-300 text-rose-600 focus:ring-accent"> {{ __('Remove current logo') }}
                                                     </label>
                                                 @endif
                                                 <button class="h-9 w-full rounded-lg bg-navy-deep text-sm font-bold text-accent dark:bg-accent dark:text-navy-deep">{{ __('Save Changes') }}</button>

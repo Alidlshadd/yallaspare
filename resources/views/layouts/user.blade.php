@@ -145,7 +145,7 @@
                 <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                     <div class="hidden h-14 items-center lg:grid lg:grid-cols-[1fr_auto_1fr] lg:gap-4">
                         <div></div>
-                        <a href="{{ $storeHomeUrl }}" class="app-logo app-logo-dark app-logo-user app-logo-compact justify-self-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25">
+                        <a href="{{ $storeHomeUrl }}" class="app-logo app-logo-dark app-logo-user app-logo-compact justify-self-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25">
                             <x-brand-mark
                                 :logo-url="$brandLogoUrl"
                                 :brand="$brand"
@@ -169,7 +169,7 @@
                                 <div class="relative" data-header-account>
                                     <button
                                         type="button"
-                                        class="inline-flex h-9 items-center gap-3 rounded-xl border border-white/10 bg-white/10 px-3 text-sm font-medium text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
+                                        class="inline-flex h-9 items-center gap-3 rounded-xl border border-white/10 bg-white/10 px-3 text-sm font-medium text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25"
                                         data-header-account-trigger
                                         aria-expanded="false"
                                         aria-haspopup="menu"
@@ -197,15 +197,15 @@
                                             <p class="truncate text-xs text-slate-500 dark:text-slate-400">{{ $customerUser->email ?? '' }}</p>
                                         </div>
                                         <div class="mt-2 space-y-1">
-                                            <a href="{{ route('user.account.edit') }}" class="flex rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-primary/30" role="menuitem">
+                                            <a href="{{ route('user.account.edit') }}" class="flex rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-accent/30" role="menuitem">
                                                 {{ __('Profile') }}
                                             </a>
-                                            <a href="{{ route('user.settings.edit') }}" class="flex rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-primary/30" role="menuitem">
+                                            <a href="{{ route('user.settings.edit') }}" class="flex rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-accent/30" role="menuitem">
                                                 {{ __('Settings') }}
                                             </a>
                                             <form method="POST" action="{{ route('logout') }}">
                                                 @csrf
-                                                <button type="submit" class="flex w-full rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-primary/30" role="menuitem">
+                                                <button type="submit" class="flex w-full rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-accent/30" role="menuitem">
                                                     {{ __('Logout') }}
                                                 </button>
                                             </form>
@@ -214,10 +214,10 @@
                                 </div>
                             @else
                                 <div class="flex items-center gap-2">
-                                    <a href="{{ route('login') }}" class="inline-flex h-9 items-center rounded-xl border border-white/10 bg-white/10 px-3 text-sm font-medium text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25">
+                                    <a href="{{ route('login') }}" class="inline-flex h-9 items-center rounded-xl border border-white/10 bg-white/10 px-3 text-sm font-medium text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25">
                                         {{ __('Login') }}
                                     </a>
-                                    <a href="{{ route('register') }}" class="font-display inline-flex h-9 items-center rounded-xl bg-accent px-3 text-sm font-semibold text-navy transition duration-200 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60">
+                                    <a href="{{ route('register') }}" class="font-display inline-flex h-9 items-center rounded-xl bg-accent px-3 text-sm font-semibold text-navy transition duration-200 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60">
                                         {{ __('Register') }}
                                     </a>
                                 </div>
@@ -228,7 +228,7 @@
 
                     <div class="space-y-2 py-2.5 lg:hidden">
                         <div class="flex items-center justify-between gap-2">
-                            <a href="{{ $storeHomeUrl }}" class="app-logo app-logo-dark app-logo-user app-logo-compact focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25">
+                            <a href="{{ $storeHomeUrl }}" class="app-logo app-logo-dark app-logo-user app-logo-compact focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25">
                                 <x-brand-mark
                                     :logo-url="$brandLogoUrl"
                                     :brand="$brand"
@@ -253,7 +253,7 @@
                             <div class="relative" data-header-account>
                                 <button
                                     type="button"
-                                    class="inline-flex h-8 items-center gap-1.5 rounded-lg border border-white/10 bg-white/10 px-2 text-sm font-medium text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25 sm:h-9 sm:rounded-xl sm:px-3"
+                                    class="inline-flex h-8 items-center gap-1.5 rounded-lg border border-white/10 bg-white/10 px-2 text-sm font-medium text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25 sm:h-9 sm:rounded-xl sm:px-3"
                                     data-header-account-trigger
                                     aria-expanded="false"
                                     aria-haspopup="menu"
@@ -281,15 +281,15 @@
                                         <p class="truncate text-xs text-slate-500 dark:text-slate-400">{{ $customerUser->email ?? '' }}</p>
                                     </div>
                                     <div class="mt-2 space-y-1">
-                                        <a href="{{ route('user.account.edit') }}" class="flex rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-primary/30" role="menuitem">
+                                        <a href="{{ route('user.account.edit') }}" class="flex rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-accent/30" role="menuitem">
                                             {{ __('Profile') }}
                                         </a>
-                                        <a href="{{ route('user.settings.edit') }}" class="flex rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-primary/30" role="menuitem">
+                                        <a href="{{ route('user.settings.edit') }}" class="flex rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-accent/30" role="menuitem">
                                             {{ __('Settings') }}
                                         </a>
                                         <form method="POST" action="{{ route('logout') }}">
                                             @csrf
-                                            <button type="submit" class="flex w-full rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-primary/30" role="menuitem">
+                                            <button type="submit" class="flex w-full rounded-2xl px-3 py-2.5 text-sm font-medium transition duration-200 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 dark:hover:bg-slate-900 dark:hover:text-white dark:focus-visible:ring-accent/30" role="menuitem">
                                                 {{ __('Logout') }}
                                             </button>
                                         </form>
@@ -297,13 +297,13 @@
                                 </div>
                             </div>
                             @else
-                                <a href="{{ route('login') }}" class="inline-flex h-8 items-center rounded-lg border border-white/10 bg-white/10 px-2.5 text-xs font-medium text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25 sm:h-9 sm:rounded-xl sm:px-3 sm:text-sm">
+                                <a href="{{ route('login') }}" class="inline-flex h-8 items-center rounded-lg border border-white/10 bg-white/10 px-2.5 text-xs font-medium text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25 sm:h-9 sm:rounded-xl sm:px-3 sm:text-sm">
                                     {{ __('Login') }}
                                 </a>
                             @endif
                                 <button
                                     type="button"
-                                    class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25 sm:h-9 sm:w-9 sm:rounded-xl"
+                                    class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25 sm:h-9 sm:w-9 sm:rounded-xl"
                                     @click="toggleMobileNav()"
                                     :aria-expanded="mobileNavAriaExpanded"
                                     aria-label="{{ __('Menu') }}"
@@ -334,11 +334,11 @@
                                     aria-label="{{ __('Search catalog') }}"
                                     autocomplete="off"
                                     data-search-autocomplete-input
-                                    class="block h-9 w-full rounded-full border border-white/10 bg-white/10 py-2 pl-10 pr-20 text-xs text-white outline-none transition duration-200 placeholder:text-white/65 focus:border-white/20 focus:bg-white/15 focus:ring-4 focus:ring-white/10 sm:h-10 sm:pr-24 sm:text-sm"
+                                    class="block h-9 w-full rounded-full border border-white/10 bg-white/10 py-2 pl-10 pr-20 text-xs text-white outline-none transition duration-200 placeholder:text-white/65 focus:border-white/20 focus:bg-white/15 focus:ring-4 focus:ring-accent/10 sm:h-10 sm:pr-24 sm:text-sm"
                                 />
                                 <button
                                     type="submit"
-                                    class="absolute {{ $isRtl ? 'left-1' : 'right-1' }} top-1 inline-flex h-7 items-center justify-center rounded-full bg-accent px-3 text-sm font-semibold text-navy transition duration-200 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:h-8 sm:px-4"
+                                    class="absolute {{ $isRtl ? 'left-1' : 'right-1' }} top-1 inline-flex h-7 items-center justify-center rounded-full bg-accent px-3 text-sm font-semibold text-navy transition duration-200 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 sm:h-8 sm:px-4"
                                 >
                                     {{ __('Search') }}
                                 </button>
@@ -350,7 +350,7 @@
                             @if ($isCustomerAuthenticated)
                                 <a
                                     href="{{ $cartUrl }}"
-                                    class="relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25 sm:h-10 sm:w-10 sm:rounded-xl"
+                                    class="relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25 sm:h-10 sm:w-10 sm:rounded-xl"
                                     aria-label="{{ __('Cart') }}"
                                 >
                                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -363,7 +363,7 @@
 
                                 <a
                                     href="{{ $wishlistUrl }}"
-                                    class="relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25 sm:h-10 sm:w-10 sm:rounded-xl"
+                                    class="relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25 sm:h-10 sm:w-10 sm:rounded-xl"
                                     aria-label="{{ __('Wishlist') }}"
                                 >
                                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -376,7 +376,7 @@
                             @else
                                 <a
                                     href="{{ route('register') }}"
-                                    class="font-display inline-flex h-9 items-center rounded-lg bg-accent px-3 text-sm font-semibold text-navy transition duration-200 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:h-10 sm:rounded-xl"
+                                    class="font-display inline-flex h-9 items-center rounded-lg bg-accent px-3 text-sm font-semibold text-navy transition duration-200 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 sm:h-10 sm:rounded-xl"
                                 >
                                     {{ __('Register') }}
                                 </a>
@@ -384,7 +384,7 @@
 
                             <a
                                 href="{{ url('/support') }}"
-                                class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25 sm:h-10 sm:w-10 sm:rounded-xl"
+                                class="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25 sm:h-10 sm:w-10 sm:rounded-xl"
                                 aria-label="{{ __('Support') }}"
                             >
                                 <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -400,7 +400,7 @@
                             @if ($isCustomerAuthenticated)
                                 <a
                                     href="{{ $cartUrl }}"
-                                    class="inline-flex min-w-[10rem] items-center gap-2.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
+                                    class="inline-flex min-w-[10rem] items-center gap-2.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25"
                                     aria-label="{{ __('Cart summary') }}"
                                 >
                                     <span class="relative inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/10 text-white">
@@ -444,11 +444,11 @@
                                     aria-label="{{ __('Search catalog') }}"
                                     autocomplete="off"
                                     data-search-autocomplete-input
-                                    class="block h-10 w-full rounded-full border border-white/10 bg-white/10 py-2 pl-12 pr-24 text-sm text-white outline-none transition duration-200 placeholder:text-white/65 focus:border-white/20 focus:bg-white/15 focus:ring-4 focus:ring-white/10"
+                                    class="block h-10 w-full rounded-full border border-white/10 bg-white/10 py-2 pl-12 pr-24 text-sm text-white outline-none transition duration-200 placeholder:text-white/65 focus:border-white/20 focus:bg-white/15 focus:ring-4 focus:ring-accent/10"
                                 />
                                 <button
                                     type="submit"
-                                    class="absolute {{ $isRtl ? 'left-1' : 'right-1' }} top-1 inline-flex h-8 items-center justify-center rounded-full bg-accent px-3.5 text-sm font-semibold text-navy transition duration-200 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                                    class="absolute {{ $isRtl ? 'left-1' : 'right-1' }} top-1 inline-flex h-8 items-center justify-center rounded-full bg-accent px-3.5 text-sm font-semibold text-navy transition duration-200 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
                                 >
                                     {{ __('Search') }}
                                 </button>
@@ -461,7 +461,7 @@
                                 @if ($isCustomerAuthenticated)
                                     <a
                                         href="{{ $wishlistUrl }}"
-                                        class="inline-flex h-9 items-center gap-2.5 rounded-full border border-white/10 bg-white/5 px-3 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
+                                        class="inline-flex h-9 items-center gap-2.5 rounded-full border border-white/10 bg-white/5 px-3 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25"
                                         aria-label="{{ __('Wishlist') }}"
                                     >
                                         <span class="relative inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/10 text-white">
@@ -480,7 +480,7 @@
 
                                 <a
                                     href="{{ url('/support') }}"
-                                    class="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25"
+                                    class="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25"
                                 aria-label="{{ __('Support') }}"
                                 >
                                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -565,7 +565,7 @@
                                     @forelse ($headerCategories as $categoryItem)
                                         <a
                                             href="{{ $categoryItem['url'] }}"
-                                            class="group flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:border-slate-700 dark:bg-slate-950"
+                                            class="group flex items-start gap-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm transition duration-200 hover:-translate-y-0.5 hover:border-primary/20 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 dark:border-slate-700 dark:bg-slate-950"
                                         >
                                             <div class="flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-slate-100 text-primary dark:bg-slate-800 dark:text-slate-200">
                                                 @if (!empty($categoryItem['image']))

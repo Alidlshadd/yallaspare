@@ -154,7 +154,7 @@
                         <form method="POST" action="{{ route('admin.orders.update-status', $order) }}" class="mt-4 space-y-3" data-loading-form data-loading-button-text="Saving...">
                             @csrf
                             @method('PATCH')
-                            <select name="status" class="w-full rounded-lg border-slate-300 text-sm focus:border-info focus:ring-info dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
+                            <select name="status" class="w-full rounded-lg border-slate-300 text-sm focus:border-info focus:ring-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
                                 @php
                                     $statusChoices = array_values(array_unique(array_merge([(string) $order->status], $nextStatuses ?? [])));
                                 @endphp
@@ -226,7 +226,7 @@
                         <form method="POST" action="{{ route('admin.orders.update-payment', $order) }}" class="mt-4 space-y-3">
                             @csrf
                             @method('PATCH')
-                            <select name="payment_status" class="w-full rounded-lg border-slate-300 text-sm focus:border-info focus:ring-info dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
+                            <select name="payment_status" class="w-full rounded-lg border-slate-300 text-sm focus:border-info focus:ring-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
                                 @foreach(\App\Models\Order::allowedPaymentStatuses() as $paymentStatus)
                                     <option value="{{ $paymentStatus }}" @selected(\App\Models\Order::normalizedPaymentStatus((string) ($order->payment_status ?? 'pending')) === $paymentStatus)>
                                         {{ \App\Models\Order::paymentStatusMeta((string) $paymentStatus)['label'] }}
@@ -238,7 +238,7 @@
                                 name="payment_reference"
                                 value="{{ old('payment_reference', $order->payment_reference) }}"
                                 placeholder="{{ __('Payment reference') }}"
-                                class="w-full rounded-lg border-slate-300 text-sm focus:border-info focus:ring-info dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                                class="w-full rounded-lg border-slate-300 text-sm focus:border-info focus:ring-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                             >
                             <button type="submit" class="w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100">
                                 {{ __('Update Payment') }}
@@ -256,7 +256,7 @@
                                 maxlength="3000"
                                 required
                                 placeholder="{{ __('Customer called, part checked, waiting for courier...') }}"
-                                class="w-full rounded-lg border-slate-300 text-sm focus:border-info focus:ring-info dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                                class="w-full rounded-lg border-slate-300 text-sm focus:border-info focus:ring-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                             >{{ old('note') }}</textarea>
                             @error('note')
                                 <p class="text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>

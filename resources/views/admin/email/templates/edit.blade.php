@@ -67,7 +67,7 @@
                     </div>
                     <div class="p-5">
                         <input type="text" name="subject" id="editor-subject" value="{{ $subject }}" required maxlength="255" placeholder="{{ $defaults['subject'] }}"
-                               class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold text-base focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                               class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold text-base focus:border-primary focus:bg-white focus:ring-2 focus:ring-accent/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                         @error('subject')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
                         <p class="mt-2 text-[10px] font-mono text-slate-400">{{ __('Default') }}: {{ $defaults['subject'] }}</p>
                     </div>
@@ -93,7 +93,7 @@
                     </div>
                     <div class="p-5">
                         <textarea name="body_html" id="editor-body" rows="16" required maxlength="65000"
-                                  class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-mono text-[13px] leading-relaxed focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 resize-y">{{ $body_html }}</textarea>
+                                  class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-mono text-[13px] leading-relaxed focus:border-primary focus:bg-white focus:ring-2 focus:ring-accent/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 resize-y">{{ $body_html }}</textarea>
                         @error('body_html')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
                         <p class="mt-2 text-[10px] font-mono text-slate-400">
                             {{ __('Allowed tags') }}: p, br, strong, b, em, i, u, s, a, ul, ol, li, h1-h4, blockquote, hr, span, div.

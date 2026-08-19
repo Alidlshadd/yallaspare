@@ -369,7 +369,7 @@
                                         value="permanent"
                                         data-danger-title="{{ __('Permanent Ban') }}"
                                         data-danger-description="{{ __('The account will remain locked until a super admin or admin removes the ban.') }}"
-                                        class="group inline-flex min-h-12 items-center justify-between gap-3 rounded-xl border border-black bg-slate-950 px-4 py-3 text-start text-white shadow-lg shadow-slate-950/20 transition hover:bg-black focus:outline-none focus:ring-4 focus:ring-slate-950/20 dark:bg-black"
+                                        class="group inline-flex min-h-12 items-center justify-between gap-3 rounded-xl border border-black bg-slate-950 px-4 py-3 text-start text-white shadow-lg shadow-slate-950/20 transition hover:bg-black focus:outline-none focus:ring-4 focus:ring-accent/20 dark:bg-black"
                                     >
                                         <span>
                                             <span class="block text-sm font-bold">{{ __('Apply Permanent Ban') }}</span>

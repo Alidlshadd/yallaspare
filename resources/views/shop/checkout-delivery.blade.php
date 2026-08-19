@@ -39,7 +39,7 @@
                                 <div class="mt-4 flex justify-end">
                                     <a
                                         href="{{ route('user.account.addresses') }}"
-                                        class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                                        class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
                                     >
                                         {{ __('Manage Addresses') }}
                                     </a>
@@ -54,7 +54,7 @@
                                             name="address_id"
                                             value="{{ $address->id }}"
                                             @checked((int) old('address_id', $defaultAddress?->id) === (int) $address->id)
-                                            class="mt-1 h-4 w-4 border-slate-300 text-primary transition focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-900"
+                                            class="mt-1 h-4 w-4 border-slate-300 text-primary transition focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-900"
                                         >
                                         <span class="min-w-0 flex-1">
                                             <span class="flex flex-wrap items-center gap-2">
@@ -85,7 +85,7 @@
                             <div class="mt-4 flex flex-wrap items-center gap-2">
                                 <a
                                     href="{{ route('account.addresses.create') }}"
-                                    class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:translate-y-0 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                                    class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 active:translate-y-0 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
                                 >
                                     <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14M5 12h14" />
@@ -94,7 +94,7 @@
                                 </a>
                                 <a
                                     href="{{ route('user.account.addresses') }}"
-                                    class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 active:translate-y-0 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                                    class="inline-flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:-translate-y-0.5 hover:bg-slate-50 hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 active:translate-y-0 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
                                 >
                                     {{ __('Manage Addresses') }}
                                 </a>
@@ -115,7 +115,7 @@
                             id="notes"
                             name="notes"
                             rows="3"
-                            class="mt-4 block w-full rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:bg-white focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:bg-slate-900"
+                            class="mt-4 block w-full rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:bg-white focus:ring-4 focus:ring-accent/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:bg-slate-900"
                         >{{ old('notes', $defaultDeliveryNote) }}</textarea>
                     </section>
 
@@ -134,7 +134,7 @@
                                 id="coupon_code"
                                 name="coupon_code"
                                 value="{{ old('coupon_code', session('checkout.coupon_code', '')) }}"
-                                class="min-w-0 flex-1 rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-3 text-sm uppercase text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:bg-white focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:bg-slate-900"
+                                class="min-w-0 flex-1 rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-3 text-sm uppercase text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:bg-white focus:ring-4 focus:ring-accent/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:bg-slate-900"
                                 placeholder="{{ __('SAVE10') }}"
                             >
                             <button
@@ -192,7 +192,7 @@
                 <div class="flex items-center gap-3">
                     <a
                         href="{{ route('cart.index') }}"
-                        class="group inline-flex items-center gap-1.5 rounded-xl border border-white/25 px-3.5 py-2 text-sm font-semibold text-white transition duration-200 hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                        class="group inline-flex items-center gap-1.5 rounded-xl border border-white/25 px-3.5 py-2 text-sm font-semibold text-white transition duration-200 hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
                     >
                         <svg class="h-4 w-4 transition-transform duration-200 group-hover:-translate-x-0.5 rtl:rotate-180 rtl:group-hover:translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M20 12H4m6-6-6 6 6 6" />
@@ -208,7 +208,7 @@
                     </p>
                     <button
                         type="submit"
-                        class="group inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-navy transition duration-200 hover:-translate-y-0.5 hover:bg-accent-hover hover:shadow-lg hover:shadow-black/20 active:translate-y-0 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                        class="group inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-navy transition duration-200 hover:-translate-y-0.5 hover:bg-accent-hover hover:shadow-lg hover:shadow-black/20 active:translate-y-0 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
                     >
                         {{ __('Continue to Review') }}
                         <svg class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">

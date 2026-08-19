@@ -73,7 +73,7 @@
                                 <div id="audience-role-wrap" style="display:none">
                                     <label for="audience_role" class="block text-xs font-bold text-slate-700 mb-1 dark:text-slate-300">{{ __('Role group') }}</label>
                                     <select id="audience_role" name="audience_role"
-                                            class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                            class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 focus:border-primary focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                         <option value="">{{ __('Choose role') }}</option>
                                         @foreach($audienceRoles as $role => $label)
                                             <option value="{{ $role }}" @selected(old('audience_role') === $role)>{{ $label }}</option>
@@ -84,7 +84,7 @@
                                 <div id="audience-user-wrap" style="display:none">
                                     <label for="recipient_email" class="block text-xs font-bold text-slate-700 mb-1 dark:text-slate-300">{{ __('Single user email') }}</label>
                                     <input id="recipient_email" type="email" name="recipient_email" value="{{ old('recipient_email') }}" placeholder="customer@example.com"
-                                           class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                           class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 focus:border-primary focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                 </div>
 
                                 <div>
@@ -110,7 +110,7 @@
                                 <div>
                                     <label for="broadcast_subject" class="block text-xs font-bold text-slate-700 mb-1 dark:text-slate-300">{{ __('Subject line') }}</label>
                                     <input id="broadcast_subject" type="text" name="subject" value="{{ old('subject') }}" placeholder="{{ __('Happy Newroz from YallaSpare') }}" required maxlength="160"
-                                           class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 font-semibold focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                           class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 font-semibold focus:border-primary focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                     <div class="mt-1 flex items-center justify-between text-[10px] font-mono text-slate-400">
                                         <span>{{ __('keep it short and clear') }}</span>
                                         <span><span id="subject-counter">0</span> / 160</span>
@@ -160,13 +160,13 @@
                                 <div>
                                     <label for="action_url" class="block text-xs font-bold text-slate-700 mb-1 dark:text-slate-300">{{ __('Button URL') }}</label>
                                     <input id="action_url" type="url" name="action_url" value="{{ old('action_url') }}" placeholder="{{ url('/') }}" maxlength="2048"
-                                           class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 font-mono focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                           class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 font-mono focus:border-primary focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                     <p class="mt-1 text-[10px] font-mono text-slate-400">{{ __('Must point to the YallaSpare website') }}</p>
                                 </div>
                                 <div>
                                     <label for="action_text" class="block text-xs font-bold text-slate-700 mb-1 dark:text-slate-300">{{ __('Button text') }}</label>
                                     <input id="action_text" type="text" name="action_text" value="{{ old('action_text') }}" placeholder="{{ __('Shop now') }}" maxlength="80"
-                                           class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 font-semibold focus:border-primary focus:ring-2 focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                           class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 font-semibold focus:border-primary focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                 </div>
                             </div>
                         </div>

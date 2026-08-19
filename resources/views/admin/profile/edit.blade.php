@@ -285,7 +285,7 @@
                                 <i class="fas fa-shield-halved text-emerald-500"></i>
                                 <span>{{ __('Strong password rules are enforced.') }}</span>
                             </div>
-                            <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-700 focus:outline-none focus:ring-4 focus:ring-slate-900/20 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-white">
+                            <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-700 focus:outline-none focus:ring-4 focus:ring-accent/20 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-white">
                                 <i class="fas fa-key"></i>
                                 {{ __('Update Password') }}
                             </button>

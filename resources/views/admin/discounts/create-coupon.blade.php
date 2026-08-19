@@ -66,7 +66,7 @@
 
                 <div class="rounded-2xl border border-slate-200 bg-slate-50/60 p-4 dark:border-slate-800 dark:bg-slate-950/60">
                     <label class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
-                        <input type="checkbox" name="coupon_enabled" value="1" class="h-4 w-4 rounded border-slate-300 text-info focus:ring-info dark:border-slate-600 dark:bg-slate-900" @checked($couponEnabled)>
+                        <input type="checkbox" name="coupon_enabled" value="1" class="h-4 w-4 rounded border-slate-300 text-info focus:ring-accent dark:border-slate-600 dark:bg-slate-900" @checked($couponEnabled)>
                         {{ __('Campaign Active') }}
                     </label>
                 </div>
@@ -75,7 +75,7 @@
                     <label class="block">
                         <span class="mb-1 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{{ __('Coupon Code') }}</span>
                         <div class="flex gap-2">
-                            <input type="text" name="coupon_code" id="coupon_code" value="{{ old('coupon_code', $couponCode) }}" placeholder="{{ __('SAVE10') }}" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm uppercase text-slate-700 outline-none transition focus:border-info focus:ring-2 focus:ring-info dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-info dark:focus:ring-info/40">
+                            <input type="text" name="coupon_code" id="coupon_code" value="{{ old('coupon_code', $couponCode) }}" placeholder="{{ __('SAVE10') }}" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm uppercase text-slate-700 outline-none transition focus:border-info focus:ring-2 focus:ring-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-info dark:focus:ring-accent/40">
                             <button type="button" id="coupon-generate-btn" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">{{ __('Generate') }}</button>
                         </div>
                         @error('coupon_code')
@@ -85,7 +85,7 @@
 
                     <label class="block">
                         <span class="mb-1 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{{ __('Type') }}</span>
-                        <select name="coupon_type" id="coupon_type" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none transition focus:border-info focus:ring-2 focus:ring-info dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-info dark:focus:ring-info/40">
+                        <select name="coupon_type" id="coupon_type" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none transition focus:border-info focus:ring-2 focus:ring-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-info dark:focus:ring-accent/40">
                             <option value="percent" @selected($couponType === 'percent')>{{ __('Percent (%)') }}</option>
                             <option value="fixed" @selected($couponType === 'fixed')>{{ __('Fixed Amount') }}</option>
                         </select>
@@ -93,7 +93,7 @@
 
                     <label class="block">
                         <span class="mb-1 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{{ __('Value') }}</span>
-                        <input type="number" step="0.01" min="0" name="coupon_value" id="coupon_value" value="{{ old('coupon_value', (string) data_get($settings, 'coupon_value', '0')) }}" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none transition focus:border-info focus:ring-2 focus:ring-info dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-info dark:focus:ring-info/40">
+                        <input type="number" step="0.01" min="0" name="coupon_value" id="coupon_value" value="{{ old('coupon_value', (string) data_get($settings, 'coupon_value', '0')) }}" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none transition focus:border-info focus:ring-2 focus:ring-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-info dark:focus:ring-accent/40">
                         <span id="coupon-value-help" class="mt-1 block text-xs text-slate-500 dark:text-slate-400">{{ __('Percent type supports max 100.') }}</span>
                         @error('coupon_value')
                             <span class="mt-1 block text-xs font-medium text-rose-600 dark:text-rose-300">{{ $message }}</span>
@@ -102,23 +102,23 @@
 
                     <label class="block">
                         <span class="mb-1 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{{ __('Minimum Order') }}</span>
-                        <input type="number" step="0.01" min="0" name="coupon_min_order" id="coupon_min_order" value="{{ old('coupon_min_order', (string) data_get($settings, 'coupon_min_order', '0')) }}" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none transition focus:border-info focus:ring-2 focus:ring-info dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-info dark:focus:ring-info/40">
+                        <input type="number" step="0.01" min="0" name="coupon_min_order" id="coupon_min_order" value="{{ old('coupon_min_order', (string) data_get($settings, 'coupon_min_order', '0')) }}" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none transition focus:border-info focus:ring-2 focus:ring-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-info dark:focus:ring-accent/40">
                     </label>
 
                     <label class="block">
                         <span class="mb-1 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{{ __('Usage Limit') }}</span>
-                        <input type="number" min="0" name="coupon_usage_limit" id="coupon_usage_limit" value="{{ old('coupon_usage_limit', (string) data_get($settings, 'coupon_usage_limit', '0')) }}" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none transition focus:border-info focus:ring-2 focus:ring-info dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-info dark:focus:ring-info/40">
+                        <input type="number" min="0" name="coupon_usage_limit" id="coupon_usage_limit" value="{{ old('coupon_usage_limit', (string) data_get($settings, 'coupon_usage_limit', '0')) }}" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none transition focus:border-info focus:ring-2 focus:ring-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-info dark:focus:ring-accent/40">
                     </label>
 
                     <label class="block">
                         <span class="mb-1 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{{ __('Starts At') }}</span>
-                        <input type="date" name="coupon_starts_at" id="coupon_starts_at" value="{{ $couponStartsAt }}" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none transition focus:border-info focus:ring-2 focus:ring-info dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-info dark:focus:ring-info/40">
+                        <input type="date" name="coupon_starts_at" id="coupon_starts_at" value="{{ $couponStartsAt }}" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none transition focus:border-info focus:ring-2 focus:ring-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-info dark:focus:ring-accent/40">
                     </label>
 
                     <label class="block lg:col-span-2">
                         <span class="mb-1 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{{ __('Ends At') }}</span>
                         <div class="flex gap-2">
-                            <input type="date" name="coupon_ends_at" id="coupon_ends_at" value="{{ $couponEndsAt }}" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none transition focus:border-info focus:ring-2 focus:ring-info dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-info dark:focus:ring-info/40">
+                            <input type="date" name="coupon_ends_at" id="coupon_ends_at" value="{{ $couponEndsAt }}" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none transition focus:border-info focus:ring-2 focus:ring-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-info dark:focus:ring-accent/40">
                             <button type="button" id="coupon-clear-dates" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">{{ __('Clear') }}</button>
                         </div>
                         @error('coupon_ends_at')

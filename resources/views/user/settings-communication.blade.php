@@ -5,7 +5,7 @@
 @section('actions')
     <a
         href="{{ route('user.settings.edit') }}"
-        class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+        class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
     >
         {{ __('Settings') }}
         <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -44,7 +44,7 @@
                         ['name' => 'marketing_consent', 'title' => __('Marketing Consent'), 'description' => __('Allow promotional offers and campaign announcements.')],
                     ] as $item)
                         <label class="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-4 transition duration-200 hover:border-primary/20 hover:bg-white dark:border-slate-800 dark:bg-slate-950 dark:hover:border-primary/30 dark:hover:bg-slate-900">
-                            <input type="checkbox" name="{{ $item['name'] }}" value="1" @checked(old($item['name'], $user->{$item['name']} ?? false)) class="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary/30">
+                            <input type="checkbox" name="{{ $item['name'] }}" value="1" @checked(old($item['name'], $user->{$item['name']} ?? false)) class="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary focus:ring-accent/30">
                             <span class="min-w-0">
                                 <span class="block text-sm font-medium text-slate-900 dark:text-white">{{ $item['title'] }}</span>
                                 <span class="mt-1 block text-sm leading-6 text-slate-500 dark:text-slate-400">{{ $item['description'] }}</span>
@@ -53,7 +53,7 @@
                     @endforeach
 
                     <div class="flex items-center justify-end">
-                        <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition duration-200 hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+                        <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition duration-200 hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
                             {{ __('Save Communication') }}
                         </button>
                     </div>

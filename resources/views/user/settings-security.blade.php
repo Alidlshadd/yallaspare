@@ -5,7 +5,7 @@
 @section('actions')
     <a
         href="{{ route('user.settings.edit') }}"
-        class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+        class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
     >
         {{ __('Settings') }}
         <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -49,7 +49,7 @@
                     <div class="grid gap-6 md:grid-cols-2">
                         <div>
                             <label for="two_factor_preference" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Two-Factor Authentication') }}</label>
-                            <select id="two_factor_preference" name="two_factor_preference" class="mt-2 block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white">
+                            <select id="two_factor_preference" name="two_factor_preference" class="mt-2 block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-accent/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white">
                                 <option value="off" @selected(old('two_factor_preference', $user->two_factor_preference ?? 'off') === 'off')>{{ __('Off') }}</option>
                                 <option value="email" @selected(old('two_factor_preference', $user->two_factor_preference ?? 'off') === 'email')>{{ __('Email verification code') }}</option>
                             </select>
@@ -61,7 +61,7 @@
 
                         <div>
                             <label for="session_timeout" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Session Timeout') }}</label>
-                            <select id="session_timeout" name="session_timeout" class="mt-2 block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white">
+                            <select id="session_timeout" name="session_timeout" class="mt-2 block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-accent/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white">
                                 <option value="15" @selected(old('session_timeout', $user->session_timeout ?? '30') === '15')>{{ __('15 minutes') }}</option>
                                 <option value="30" @selected(old('session_timeout', $user->session_timeout ?? '30') === '30')>{{ __('30 minutes') }}</option>
                                 <option value="60" @selected(old('session_timeout', $user->session_timeout ?? '30') === '60')>{{ __('1 hour') }}</option>
@@ -74,7 +74,7 @@
                     </div>
 
                     <label class="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-4 transition duration-200 hover:border-primary/20 hover:bg-white dark:border-slate-800 dark:bg-slate-950 dark:hover:border-primary/30 dark:hover:bg-slate-900">
-                        <input type="checkbox" name="login_alerts" value="1" @checked(old('login_alerts', $user->login_alerts ?? true)) class="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary/30">
+                        <input type="checkbox" name="login_alerts" value="1" @checked(old('login_alerts', $user->login_alerts ?? true)) class="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary focus:ring-accent/30">
                         <span class="min-w-0">
                             <span class="block text-sm font-medium text-slate-900 dark:text-white">{{ __('Login Alerts') }}</span>
                             <span class="mt-1 block text-sm leading-6 text-slate-500 dark:text-slate-400">{{ __('Notify me when a new sign-in or unusual session activity is detected.') }}</span>
@@ -82,7 +82,7 @@
                     </label>
 
                     <div class="flex items-center justify-end">
-                        <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition duration-200 hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2">
+                        <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition duration-200 hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2">
                             {{ __('Save Security') }}
                         </button>
                     </div>
@@ -106,13 +106,13 @@
                             name="current_password"
                             autocomplete="current-password"
                             placeholder="{{ __('Current password') }}"
-                            class="block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                            class="block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-accent/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
                         >
                         @error('current_password')
                             <p class="mt-2 text-sm text-rose-600 dark:text-rose-400">{{ $message }}</p>
                         @enderror
                     </div>
-                    <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-slate-950 px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-900 focus-visible:ring-offset-2 dark:bg-white dark:text-slate-950">
+                    <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-slate-950 px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:bg-white dark:text-slate-950">
                         {{ __('Sign out other devices') }}
                     </button>
                 </form>

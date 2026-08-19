@@ -60,13 +60,13 @@
                     name="remember"
                     value="1"
                     @checked(old('remember'))
-                    class="h-4 w-4 cursor-pointer rounded border-slate-300 bg-white text-red-600 focus:ring-2 focus:ring-red-500 focus:ring-offset-0 dark:border-slate-600 dark:bg-slate-800"
+                    class="h-4 w-4 cursor-pointer rounded border-slate-300 bg-white text-red-600 focus:ring-2 focus:ring-accent focus:ring-offset-0 dark:border-slate-600 dark:bg-slate-800"
                 >
                 <span>{{ __('Remember me') }}</span>
             </label>
 
             @if (Route::has('password.request'))
-                <a href="{{ route('password.request') }}" class="rounded-sm text-sm text-muted underline decoration-slate-600 underline-offset-4 transition hover:text-red-300 hover:decoration-red-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500">
+                <a href="{{ route('password.request') }}" class="rounded-sm text-sm text-muted underline decoration-slate-600 underline-offset-4 transition hover:text-red-300 hover:decoration-red-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent">
                     {{ __('Forgot password?') }}
                 </a>
             @endif

@@ -26,7 +26,7 @@
                     <div class="mt-6 flex items-center justify-center">
                         <a
                             href="{{ route('shop.index') }}"
-                            class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                            class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
                         >
                             {{ __('Browse Products') }}
                             <svg class="h-4 w-4 rtl:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -103,7 +103,7 @@
                                         type="button"
                                         data-quantity-step="down"
                                         data-quantity-target="quantity-{{ $item->id }}"
-                                        class="inline-flex w-9 items-center justify-center text-slate-500 transition duration-150 hover:bg-slate-50 hover:text-primary active:scale-90 focus:outline-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-primary dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
+                                        class="inline-flex w-9 items-center justify-center text-slate-500 transition duration-150 hover:bg-slate-50 hover:text-primary active:scale-90 focus:outline-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-accent dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
                                         aria-label="{{ __('Decrease quantity') }}"
                                     >
                                         &minus;
@@ -123,7 +123,7 @@
                                         data-quantity-step="up"
                                         data-quantity-target="quantity-{{ $item->id }}"
                                         @disabled($item->quantity >= $maxQuantity)
-                                        class="inline-flex w-9 items-center justify-center text-slate-500 transition duration-150 hover:bg-slate-50 hover:text-primary active:scale-90 focus:outline-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-primary disabled:cursor-not-allowed disabled:text-slate-300 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white dark:disabled:text-slate-600"
+                                        class="inline-flex w-9 items-center justify-center text-slate-500 transition duration-150 hover:bg-slate-50 hover:text-primary active:scale-90 focus:outline-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-accent disabled:cursor-not-allowed disabled:text-slate-300 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white dark:disabled:text-slate-600"
                                         aria-label="{{ __('Increase quantity') }}"
                                     >
                                         +
@@ -143,7 +143,7 @@
                                 @method('DELETE')
                                 <button
                                     type="submit"
-                                    class="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-rose-200 bg-rose-50 text-rose-600 transition duration-200 hover:-translate-y-0.5 hover:bg-rose-100 hover:shadow-md hover:shadow-rose-900/10 active:translate-y-0 active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-rose-300 dark:border-rose-900/40 dark:bg-rose-900/20 dark:text-rose-300"
+                                    class="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-rose-200 bg-rose-50 text-rose-600 transition duration-200 hover:-translate-y-0.5 hover:bg-rose-100 hover:shadow-md hover:shadow-rose-900/10 active:translate-y-0 active:scale-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:border-rose-900/40 dark:bg-rose-900/20 dark:text-rose-300"
                                     aria-label="{{ __('Remove') }}"
                                 >
                                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" aria-hidden="true">
@@ -199,7 +199,7 @@
                     </p>
                     <a
                         href="{{ route('checkout.delivery') }}"
-                        class="font-display group inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-navy transition duration-200 hover:-translate-y-0.5 hover:bg-accent-hover hover:shadow-lg hover:shadow-black/20 active:translate-y-0 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                        class="font-display group inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-navy transition duration-200 hover:-translate-y-0.5 hover:bg-accent-hover hover:shadow-lg hover:shadow-black/20 active:translate-y-0 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
                     >
                         {{ __('Continue to Delivery') }}
                         <svg class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">

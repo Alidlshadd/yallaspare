@@ -26,7 +26,7 @@
                         type="text"
                         data-category-search-input
                         placeholder="{{ __('Search categories…') }}"
-                        class="w-full bg-transparent text-sm text-white placeholder-white/50 outline-none"
+                        class="w-full bg-transparent text-sm text-white placeholder-white/50 outline-none focus-visible:ring-2 focus-visible:ring-accent"
                         aria-label="{{ __('Search categories') }}"
                     >
                 </div>
@@ -54,7 +54,7 @@
 
                     <a
                         href="{{ route('shop.index', ['category' => $category->slug ?: $category->id]) }}"
-                        class="group relative flex h-56 flex-col overflow-hidden rounded-3xl border border-slate-200/80 shadow-sm shadow-slate-900/5 transition duration-200 hover:shadow-lg hover:shadow-slate-900/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:ring-offset-2 dark:border-slate-800 dark:shadow-black/10"
+                        class="group relative flex h-56 flex-col overflow-hidden rounded-3xl border border-slate-200/80 shadow-sm shadow-slate-900/5 transition duration-200 hover:shadow-lg hover:shadow-slate-900/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2 dark:border-slate-800 dark:shadow-black/10"
                         data-category-card
                         data-category-name="{{ Str::lower($category->name) }}"
                         data-category-description="{{ Str::lower((string) $category->localized_description) }}"

@@ -5,7 +5,7 @@
 @section('actions')
     <a
         href="{{ route('user.settings.edit') }}"
-        class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+        class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
     >
         {{ __('Settings') }}
         <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -56,7 +56,7 @@
                             name="notify_order_updates"
                             value="1"
                             @checked(old('notify_order_updates', $user->notify_order_updates))
-                            class="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary/30"
+                            class="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary focus:ring-accent/30"
                         >
                         <span class="min-w-0">
                             <span class="block text-sm font-medium text-slate-900 dark:text-white">{{ __('Order Updates') }}</span>
@@ -70,7 +70,7 @@
                             name="notify_promotions"
                             value="1"
                             @checked(old('notify_promotions', $user->notify_promotions))
-                            class="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary/30"
+                            class="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary focus:ring-accent/30"
                         >
                         <span class="min-w-0">
                             <span class="block text-sm font-medium text-slate-900 dark:text-white">{{ __('Promotions') }}</span>
@@ -84,7 +84,7 @@
                             name="notify_stock_alerts"
                             value="1"
                             @checked(old('notify_stock_alerts', $user->notify_stock_alerts))
-                            class="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary focus:ring-primary/30"
+                            class="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary focus:ring-accent/30"
                         >
                         <span class="min-w-0">
                             <span class="block text-sm font-medium text-slate-900 dark:text-white">{{ __('Stock Alerts') }}</span>
@@ -95,7 +95,7 @@
                     <div class="flex items-center justify-end pt-2">
                         <button
                             type="submit"
-                            class="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition duration-200 hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                            class="inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-white transition duration-200 hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                         >
                             {{ __('Save Notifications') }}
                         </button>

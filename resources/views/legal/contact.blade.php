@@ -33,7 +33,7 @@
                         {{ __('We are here to help you with any questions about our products, orders, or delivery services. If you need assistance, feel free to contact our customer support team.') }}
                     </p>
                     <div class="sup-in mt-8 flex flex-wrap items-center gap-3" style="animation-delay: .3s">
-                        <a href="#contact-form" class="font-display inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-accent px-6 text-sm font-bold text-primary shadow-lg shadow-accent/20 transition hover:-translate-y-0.5 hover:bg-accent hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white">
+                        <a href="#contact-form" class="font-display inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-accent px-6 text-sm font-bold text-primary shadow-lg shadow-accent/20 transition hover:-translate-y-0.5 hover:bg-accent hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-accent">
                             {{ __('Send a Support Request') }}
                             <svg class="ct-arrow h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
@@ -90,7 +90,7 @@
         @endif
 
         <section class="ct-channels relative z-10 -mt-6 mx-4 grid gap-3 rounded-3xl border border-slate-200/80 bg-white/95 p-3 shadow-xl shadow-slate-900/10 backdrop-blur-xl sm:grid-cols-3 lg:mx-10 dark:border-slate-700 dark:bg-slate-900/95 dark:shadow-black/25">
-            <a href="tel:+9647704488315" class="ct-channel group flex items-center gap-4 rounded-2xl px-4 py-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+            <a href="tel:+9647704488315" class="ct-channel group flex items-center gap-4 rounded-2xl px-4 py-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent">
                 <span class="ct-channel-icon">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                         <path d="M5 4h3l2 5-2 1.5a16 16 0 0 0 5 5L14.5 13l5 2v3a2 2 0 0 1-2 2C10.6 20 4 13.4 4 6a2 2 0 0 1 1-2Z" stroke-linecap="round" stroke-linejoin="round" />
@@ -103,7 +103,7 @@
                 <span class="ct-eq ct-eq-key" aria-hidden="true"><i></i><i></i><i></i></span>
             </a>
 
-            <a href="mailto:support@yallaspare.com" class="ct-channel group flex items-center gap-4 rounded-2xl px-4 py-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+            <a href="mailto:support@yallaspare.com" class="ct-channel group flex items-center gap-4 rounded-2xl px-4 py-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent">
                 <span class="ct-channel-icon">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                         <rect x="3.5" y="5" width="17" height="14" rx="3" /><path d="m5 7 7 5 7-5" stroke-linecap="round" stroke-linejoin="round" />
@@ -116,7 +116,7 @@
                 <span class="ct-eq ct-eq-key" aria-hidden="true"><i></i><i></i><i></i></span>
             </a>
 
-            <a href="{{ url('/') }}" class="ct-channel group flex items-center gap-4 rounded-2xl px-4 py-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary">
+            <a href="{{ url('/') }}" class="ct-channel group flex items-center gap-4 rounded-2xl px-4 py-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent">
                 <span class="ct-channel-icon">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                         <circle cx="12" cy="12" r="8" /><path d="M4 12h16M12 4c2 2.2 3 4.9 3 8s-1 5.8-3 8c-2-2.2-3-4.9-3-8s1-5.8 3-8Z" stroke-linecap="round" />

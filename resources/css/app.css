@@ -462,7 +462,7 @@
     }
 
     .password-input-toggle:focus-visible {
-        box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.32);
+        box-shadow: 0 0 0 3px var(--focus);
     }
 
     .password-input-toggle:disabled {
@@ -1190,7 +1190,7 @@
     .admin-nav-link:focus-visible,
     .admin-profile-link:focus-visible,
     .admin-sidebar-logo:focus-visible {
-        box-shadow: 0 0 0 3px rgb(255 138 61 / 0.28);
+        box-shadow: 0 0 0 3px var(--focus);
     }
 
     .admin-profile-link,

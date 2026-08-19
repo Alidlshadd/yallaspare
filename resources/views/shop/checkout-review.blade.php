@@ -111,7 +111,7 @@
                                 type="text"
                                 name="coupon_code"
                                 value="{{ old('coupon_code', data_get($couponSummary ?? [], 'code', '')) }}"
-                                class="min-w-0 flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm uppercase text-slate-900 outline-none focus:border-primary/20 focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
+                                class="min-w-0 flex-1 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm uppercase text-slate-900 outline-none focus:border-primary/20 focus:ring-4 focus:ring-accent/10 dark:border-slate-800 dark:bg-slate-900 dark:text-white"
                                 placeholder="{{ __('SAVE10') }}"
                             >
                             <button type="submit" name="coupon_action" value="apply" class="rounded-xl bg-slate-900 px-3 py-2 text-sm font-semibold text-white dark:bg-white dark:text-slate-900">
@@ -153,7 +153,7 @@
                                             value="{{ $method['key'] }}"
                                             @checked(old('payment_method', 'cash_on_delivery') === $method['key'])
                                             @disabled($isDisabled)
-                                            class="h-4 w-4 border-slate-300 text-primary focus:ring-primary/30 dark:border-slate-700 dark:bg-slate-900"
+                                            class="h-4 w-4 border-slate-300 text-primary focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-900"
                                         >
                                         <span class="flex-1 font-medium text-slate-900 dark:text-white">{{ __($method['label']) }}</span>
                                         @if($method['coming_soon'] ?? false)
@@ -170,7 +170,7 @@
                         </div>
                         <button
                             type="submit"
-                            class="inline-flex w-full items-center justify-center rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2"
+                            class="inline-flex w-full items-center justify-center rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:bg-primary-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
                         >
                             {{ __('Confirm & Place Order') }}
                         </button>

@@ -349,7 +349,7 @@
                                        value="{{ $searchTerm }}"
                                        maxlength="100"
                                        placeholder="{{ __('Search subject...') }}"
-                                       class="w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-24 py-2 text-sm text-slate-900 focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                       class="w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-24 py-2 text-sm text-slate-900 focus:border-primary focus:bg-white focus:ring-2 focus:ring-accent/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                 @if($searchTerm !== '')
                                     <a href="{{ route('admin.email.index', array_filter(['status' => $activeStatus])) }}#broadcasts"
                                        class="absolute right-14 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-500 hover:text-rose-600">
@@ -538,7 +538,7 @@
                             <div id="ic-user-wrap" style="display:none">
                                 <label for="ic-recipient-email" class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5 dark:text-slate-400">{{ __('Recipient email') }}</label>
                                 <input id="ic-recipient-email" type="email" name="recipient_email" value="{{ old('recipient_email') }}" placeholder="customer@example.com" maxlength="255"
-                                       class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                       class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:border-primary focus:bg-white focus:ring-2 focus:ring-accent/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                 @error('recipient_email')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
                             </div>
 
@@ -559,7 +559,7 @@
                             <div>
                                 <label for="ic-subject" class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5 dark:text-slate-400">{{ __('Subject') }}</label>
                                 <input id="ic-subject" type="text" name="subject" value="{{ old('subject') }}" required maxlength="160" placeholder="{{ __('Happy Newroz from YallaSpare') }}"
-                                       class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                       class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold focus:border-primary focus:bg-white focus:ring-2 focus:ring-accent/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                 @error('subject')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
                             </div>
 
@@ -567,7 +567,7 @@
                             <div>
                                 <label for="ic-message" class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5 dark:text-slate-400">{{ __('Message') }}</label>
                                 <textarea id="ic-message" name="message" rows="5" required maxlength="5000" placeholder="{{ __('Write the email body. Plain text is safest and line breaks are preserved.') }}"
-                                          class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 leading-relaxed focus:border-primary focus:bg-white focus:ring-2 focus:ring-primary/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">{{ old('message') }}</textarea>
+                                          class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 leading-relaxed focus:border-primary focus:bg-white focus:ring-2 focus:ring-accent/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">{{ old('message') }}</textarea>
                                 @error('message')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
                             </div>
 

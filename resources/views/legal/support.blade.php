@@ -99,7 +99,7 @@
         <div class="mt-5 rounded-2xl border border-slate-200/80 bg-white px-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <div class="divide-y divide-slate-200/70 dark:divide-slate-800/70">
                 <details class="group py-5">
-                    <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-sm font-medium text-slate-700 transition-colors hover:text-primary focus:outline-none dark:text-slate-300 dark:hover:text-white">
+                    <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-sm font-medium text-slate-700 transition-colors hover:text-primary focus:outline-none dark:text-slate-300 dark:hover:text-white focus-visible:ring-2 focus-visible:ring-accent">
                         <span>{{ __('How do I reset my account password?') }}</span>
                         <svg class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180 group-open:text-accent" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                             <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
@@ -115,7 +115,7 @@
                 </details>
 
                 <details class="group py-5">
-                    <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-sm font-medium text-slate-700 transition-colors hover:text-primary focus:outline-none dark:text-slate-300 dark:hover:text-white">
+                    <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-sm font-medium text-slate-700 transition-colors hover:text-primary focus:outline-none dark:text-slate-300 dark:hover:text-white focus-visible:ring-2 focus-visible:ring-accent">
                         <span>{{ __('Can you help with billing and invoice questions?') }}</span>
                         <svg class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180 group-open:text-accent" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                             <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
@@ -131,7 +131,7 @@
                 </details>
 
                 <details class="group py-5">
-                    <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-sm font-medium text-slate-700 transition-colors hover:text-primary focus:outline-none dark:text-slate-300 dark:hover:text-white">
+                    <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-sm font-medium text-slate-700 transition-colors hover:text-primary focus:outline-none dark:text-slate-300 dark:hover:text-white focus-visible:ring-2 focus-visible:ring-accent">
                         <span>{{ __('Where can I report a technical issue?') }}</span>
                         <svg class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180 group-open:text-accent" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                             <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
@@ -147,7 +147,7 @@
                 </details>
 
                 <details class="group py-5">
-                    <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-sm font-medium text-slate-700 transition-colors hover:text-primary focus:outline-none dark:text-slate-300 dark:hover:text-white">
+                    <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-sm font-medium text-slate-700 transition-colors hover:text-primary focus:outline-none dark:text-slate-300 dark:hover:text-white focus-visible:ring-2 focus-visible:ring-accent">
                         <span>{{ __('What should I include in a support request?') }}</span>
                         <svg class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180 group-open:text-accent" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                             <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />

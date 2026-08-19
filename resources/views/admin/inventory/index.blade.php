@@ -105,7 +105,7 @@
                         <p class="inv-mono text-3xl font-bold {{ $netMovement >= 0 ? 'text-emerald-300' : 'text-rose-300' }}">{{ $netMovement >= 0 ? '+' : '' }}{{ number_format($netMovement) }}</p>
                         <p class="mt-1 text-[11px] text-white/60">{{ number_format($totalMovements) }} {{ __('movements') }} &middot; {{ number_format($todayMovements) }} {{ __('today') }}</p>
                     </div>
-                    <a href="{{ $gateUrl('out') }}" class="block rounded-xl border-2 px-4 py-3 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300 md:text-right {{ $type === 'out' ? 'border-rose-300 bg-rose-400/15' : 'border-rose-400/60 bg-white/5' }}">
+                    <a href="{{ $gateUrl('out') }}" class="block rounded-xl border-2 px-4 py-3 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent md:text-right {{ $type === 'out' ? 'border-rose-300 bg-rose-400/15' : 'border-rose-400/60 bg-white/5' }}">
                         <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">{{ __('Stock Out') }} &mdash; {{ __('Gate B') }}</p>
                         <p class="inv-mono mt-1 text-2xl font-bold text-rose-300"><span class="float-left">&#8594;</span> &minus;{{ number_format($totalStockOut) }}</p>
                         <p class="text-[11px] text-white/60">{{ __('Units removed') }} &middot; {{ $type === 'out' ? __('Filter active — click to clear') : __('Click to filter') }}</p>

@@ -377,7 +377,7 @@
                     aria-label="{{ __('Admin navigation') }}"
                 >
                     <div class="admin-sidebar-header" data-admin-sidebar-header>
-                        <a href="{{ route('admin.dashboard') }}" class="admin-sidebar-logo focus:outline-none" data-admin-sidebar-logo aria-label="{{ __('Go to admin dashboard') }}">
+                        <a href="{{ route('admin.dashboard') }}" class="admin-sidebar-logo focus:outline-none focus-visible:ring-2 focus-visible:ring-accent" data-admin-sidebar-logo aria-label="{{ __('Go to admin dashboard') }}">
                             <x-brand-mark
                                 :logo-url="$systemSettings['site_logo_url'] ?? null"
                                 :brand="$systemSettings['site_name'] ?? 'YallaSpare'"

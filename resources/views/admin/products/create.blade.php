@@ -13,8 +13,8 @@
     </x-slot>
 
     @php
-        $inputBase = 'w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder-slate-400 shadow-sm transition focus:border-info focus:ring-2 focus:ring-info/30 invalid:border-rose-500 invalid:ring-rose-500/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500';
-        $inputError = 'border-rose-500 focus:border-rose-500 focus:ring-rose-500/30';
+        $inputBase = 'w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder-slate-400 shadow-sm transition focus:border-info focus:ring-2 focus:ring-accent/30 invalid:border-rose-500 invalid:ring-rose-500/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500';
+        $inputError = 'border-rose-500 focus:border-rose-500 focus:ring-accent/30';
     @endphp
 
     <div class="py-8">
@@ -237,7 +237,7 @@
                             <div class="p-6">
                                 <label class="inline-flex items-center gap-4">
                                     <input type="checkbox" name="is_active" value="1" class="sr-only peer" {{ old('is_active', true) ? 'checked' : '' }}>
-                                    <span class="relative h-6 w-11 rounded-full bg-slate-200 transition peer-checked:bg-info peer-focus:ring-2 peer-focus:ring-info/40 dark:bg-slate-800">
+                                    <span class="relative h-6 w-11 rounded-full bg-slate-200 transition peer-checked:bg-info peer-focus:ring-2 peer-focus:ring-accent/40 dark:bg-slate-800">
                                         <span class="absolute left-1 top-1 h-4 w-4 rounded-full bg-white transition peer-checked:translate-x-5"></span>
                                     </span>
                                     <span class="text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Active') }}</span>

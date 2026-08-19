@@ -222,7 +222,7 @@
                     </p>
                     <form method="POST" action="{{ route('account.orders.cancellation-request', $order) }}" class="mt-4 space-y-3" data-direct-cancel-form>
                         @csrf
-                        <textarea name="reason" rows="3" maxlength="1000" placeholder="{{ __('Reason is optional') }}" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-primary/20 focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white">{{ old('reason') }}</textarea>
+                        <textarea name="reason" rows="3" maxlength="1000" placeholder="{{ __('Reason is optional') }}" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-primary/20 focus:ring-4 focus:ring-accent/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white">{{ old('reason') }}</textarea>
                         @error('reason')
                             <p class="text-sm font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>
                         @enderror
@@ -260,7 +260,7 @@
                 @else
                     <form method="POST" action="{{ route('account.orders.cancellation-request', $order) }}" class="mt-4 space-y-3">
                         @csrf
-                        <textarea name="reason" rows="3" required maxlength="1000" placeholder="{{ __('Tell us why you want to cancel this order') }}" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-primary/20 focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white">{{ old('reason') }}</textarea>
+                        <textarea name="reason" rows="3" required maxlength="1000" placeholder="{{ __('Tell us why you want to cancel this order') }}" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-primary/20 focus:ring-4 focus:ring-accent/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white">{{ old('reason') }}</textarea>
                         @error('reason')
                             <p class="text-sm font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>
                         @enderror
@@ -485,7 +485,7 @@
 
                                     <div>
                                         <label for="order_review_{{ $itemProduct->id }}_title" class="block text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Title') }}</label>
-                                        <input id="order_review_{{ $itemProduct->id }}_title" name="title" value="{{ $titleValue }}" maxlength="120" placeholder="{{ __('Short review title') }}" class="mt-2 block w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-primary/20 focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-900 dark:text-white">
+                                        <input id="order_review_{{ $itemProduct->id }}_title" name="title" value="{{ $titleValue }}" maxlength="120" placeholder="{{ __('Short review title') }}" class="mt-2 block w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-primary/20 focus:ring-4 focus:ring-accent/10 dark:border-slate-800 dark:bg-slate-900 dark:text-white">
                                         @if ($isReviewAttempt)
                                             @error('title')
                                                 <p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>
@@ -495,7 +495,7 @@
 
                                     <div>
                                         <label for="order_review_{{ $itemProduct->id }}_comment" class="block text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Comment') }}</label>
-                                        <textarea id="order_review_{{ $itemProduct->id }}_comment" name="comment" rows="3" maxlength="1500" placeholder="{{ __('Tell other customers about fit, quality, or delivery.') }}" class="mt-2 block w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-primary/20 focus:ring-4 focus:ring-primary/10 dark:border-slate-800 dark:bg-slate-900 dark:text-white">{{ $commentValue }}</textarea>
+                                        <textarea id="order_review_{{ $itemProduct->id }}_comment" name="comment" rows="3" maxlength="1500" placeholder="{{ __('Tell other customers about fit, quality, or delivery.') }}" class="mt-2 block w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-900 outline-none focus:border-primary/20 focus:ring-4 focus:ring-accent/10 dark:border-slate-800 dark:bg-slate-900 dark:text-white">{{ $commentValue }}</textarea>
                                         @if ($isReviewAttempt)
                                             @error('comment')
                                                 <p class="mt-1 text-xs text-rose-600 dark:text-rose-400">{{ $message }}</p>
