@@ -58,6 +58,27 @@ export default {
                     sunk: 'var(--surface-sunk)',
                 },
             },
+            // Nine radii collapsed onto three, at the scale rather than in
+            // the markup: rewriting ~2,000 class names to say the same thing
+            // is all risk and no gain, and the names people already reach for
+            // keep working. A card and the image inside it used to differ by
+            // 4px for no reason anyone could state.
+            //
+            //   sm/DEFAULT/md/lg -> 8px   inputs, chips, small controls
+            //   xl/2xl/3xl/app   -> 14px  cards, buttons, panels, modals
+            //   full             -> pill
+            borderRadius: {
+                none: '0px',
+                sm: 'var(--radius-sm)',
+                DEFAULT: 'var(--radius-sm)',
+                md: 'var(--radius-sm)',
+                lg: 'var(--radius-sm)',
+                xl: 'var(--radius-md)',
+                '2xl': 'var(--radius-md)',
+                '3xl': 'var(--radius-md)',
+                app: 'var(--radius-md)',
+                full: 'var(--radius-pill)',
+            },
             // Two roles, not one family. Sora earns its place on headings and
             // prices and loses it everywhere else — it widens long text and
             // has no tabular figures, which admin tables depend on.
