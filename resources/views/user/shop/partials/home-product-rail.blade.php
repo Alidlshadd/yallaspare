@@ -148,7 +148,7 @@
                                     @endif
                                 </div>
 
-                                <div class="mt-auto grid grid-cols-2 items-stretch gap-2">
+                                <div class="mt-auto grid grid-cols-[auto_minmax(0,1fr)] items-stretch gap-2">
                                     <a
                                         href="{{ data_get($product, 'detail_url') }}"
                                         class="inline-flex h-full items-center justify-center rounded-xl border border-slate-200/80 px-3 py-2.5 text-xs font-medium text-slate-700 transition duration-200 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-white dark:focus-visible:ring-primary/30"
