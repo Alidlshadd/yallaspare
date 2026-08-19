@@ -69,7 +69,7 @@
         .pp-tab-new { color: #b45309; }
         .dark .pp-tab-new { color: #ff8a3d; }
 
-        .pp-chip-draft { background: rgb(255 138 61 / 0.16); color: #b45309; }
+        .pp-chip-draft { background: rgb(var(--accent-rgb) / 0.16); color: var(--brand-orange-ink); }
         .dark .pp-chip-draft { color: #ff8a3d; }
         .pp-chip-saved { background: rgba(5,150,105,0.12); color: #059669; }
         .dark .pp-chip-saved { color: #34d399; }
@@ -105,7 +105,7 @@
             .pp-print, .pp-print * { visibility: visible; }
             .pp-print {
                 display: block !important; position: absolute; inset: 0 auto auto 0;
-                width: 100%; padding: 24px; background: #fff; color: var(--text);
+                width: 100%; padding: 24px; background: var(--surface); color: var(--text);
             }
         }
     </style>

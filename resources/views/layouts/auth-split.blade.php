@@ -74,13 +74,13 @@
         }
 
         html:not(.dark) #auth-panel :is(label, .text-slate-300) {
-            color: #334155 !important;
+            color: var(--text-secondary) !important;
         }
 
         html:not(.dark) #auth-panel :is(input:not([type='checkbox']):not([type='radio']), select, textarea) {
-            background-color: #ffffff !important;
-            border-color: #cbd5e1 !important;
-            color: #0f172a !important;
+            background-color: var(--surface) !important;
+            border-color: var(--border) !important;
+            color: var(--text) !important;
         }
 
         html:not(.dark) #auth-panel :is(input:not([type='checkbox']):not([type='radio']), select, textarea)::placeholder {
@@ -88,7 +88,7 @@
         }
 
         html:not(.dark) #auth-panel a {
-            color: #475569 !important;
+            color: var(--text-secondary) !important;
             text-decoration-color: var(--text-secondary) !important;
         }
 

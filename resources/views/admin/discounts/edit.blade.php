@@ -83,7 +83,7 @@
 
     .cp-chip-active { background: rgba(5,150,105,0.12); color: #059669; }
     .dark .cp-chip-active { color: #34d399; }
-    .cp-chip-scheduled { background: rgb(255 138 61 / 0.18); color: #b45309; }
+    .cp-chip-scheduled { background: rgb(var(--accent-rgb) / 0.18); color: var(--brand-orange-ink); }
     .dark .cp-chip-scheduled { color: #ff8a3d; }
     .cp-chip-expired { background: rgba(225,29,72,0.12); color: #e11d48; }
     .dark .cp-chip-expired { color: #fb7185; }
@@ -92,7 +92,7 @@
 
     .cp-spark { display: flex; align-items: flex-end; gap: 4px; height: 120px; }
     .cp-spark > div { flex: 1; border-radius: 4px 4px 0 0; background: linear-gradient(to top, #04041f, #12124a); min-height: 4px; }
-    .dark .cp-spark > div { background: linear-gradient(to top, #334155, #475569); }
+    .dark .cp-spark > div { background: linear-gradient(to top, var(--border), rgb(var(--text-muted-rgb) / 0.55)); }
     .cp-spark > div.hot { background: #ff8a3d; }
 </style>
 

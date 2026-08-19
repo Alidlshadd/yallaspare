@@ -10,17 +10,14 @@
 >
     <style>
         .otp-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .5rem; }
-        .otp-box { height: 3.5rem; border-radius: .875rem; border: 1px solid #cbd5e1; background: #fff; color: var(--text); text-align: center; font-size: 1.35rem; font-weight: 700; line-height: 1; outline: none; transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease, background-color 160ms ease; }
+        .otp-box { height: 3.5rem; border-radius: .875rem; border: 1px solid var(--border); background: var(--surface); color: var(--text); text-align: center; font-size: 1.35rem; font-weight: 700; line-height: 1; outline: none; transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease, background-color 160ms ease; }
         .otp-box:focus { border-color: var(--brand-orange); box-shadow: 0 0 0 4px var(--focus); transform: translateY(-1px); }
-        .otp-box:not(:placeholder-shown) { border-color: #94a3b8; background: var(--surface-sunk); }
-        .dark .otp-box { border-color: var(--border); background: rgba(30, 41, 59, .9); color: #f8fafc; }
-        .dark .otp-box:focus { border-color: #ef4444; box-shadow: 0 0 0 4px rgba(239, 68, 68, .2); }
-        .dark .otp-box:not(:placeholder-shown) { border-color: #475569; background: rgba(51, 65, 85, .95); }
-        .otp-countdown[data-state='warn'] { color: #b45309; }
-        .dark .otp-countdown[data-state='warn'] { color: #fbbf24; }
-        .otp-countdown[data-state='expired'] { color: #b42318; }
-        .dark .otp-countdown[data-state='expired'] { color: #f87171; }
-        .verification-method-dialog::backdrop { background: rgba(15, 23, 42, .66); backdrop-filter: blur(3px); }
+        .otp-box:not(:placeholder-shown) { border-color: var(--text-muted); background: var(--surface-sunk); }
+        .dark .otp-box { background: rgb(var(--surface-rgb) / 0.9); }
+        .dark .otp-box:not(:placeholder-shown) { background: rgb(var(--surface-sunk-rgb) / 0.95); }
+        .otp-countdown[data-state='warn'] { color: var(--warning); }
+        .otp-countdown[data-state='expired'] { color: var(--danger); }
+        .verification-method-dialog::backdrop { background: rgb(var(--brand-navy-rgb) / 0.66); backdrop-filter: blur(3px); }
         @media (max-width: 480px) {
             .otp-grid { gap: .35rem; }
             .otp-box { height: 3rem; border-radius: .75rem; font-size: 1.1rem; }

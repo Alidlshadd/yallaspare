@@ -37,7 +37,7 @@
             display: inline-flex; align-items: center; gap: 8px;
             padding: 6px 12px; border-radius: 999px;
             font-size: 11.5px; font-weight: 700; line-height: 1;
-            border: 1px solid #e2e8f0; background: #fff; color: var(--text-secondary);
+            border: 1px solid var(--border); background: var(--surface); color: var(--text-secondary);
             text-decoration: none;
             transition: all .15s ease;
         }
@@ -57,7 +57,7 @@
         .ychip.on .cnt { background: rgba(252,211,77,0.18); color: #ffb27a; }
         .dark .ychip { background: var(--surface-sunk); border-color: var(--border); color: var(--text-secondary); }
         .dark .ychip .cnt { background: rgba(255,255,255,0.06); color: var(--text-secondary); }
-        .dark .ychip:hover { background: #334155; color: #fff; }
+        .dark .ychip:hover { background: linear-gradient(var(--hover-tint), var(--hover-tint)), var(--surface-sunk); color: var(--text); }
         .dark .ychip.on { background: #ff8a3d; color: #04041f; border-color: #ff8a3d; }
         .dark .ychip.on .star { color: #04041f; }
         .dark .ychip.on .cnt { background: rgba(4,4,42,0.18); color: #04041f; }
@@ -65,8 +65,8 @@
         /* Buttons */
         .rv-btn {
             display: inline-flex; align-items: center; justify-content: center; gap: 7px;
-            height: 38px; padding: 0 16px; border-radius: 10px; border: 1px solid #e2e8f0;
-            background: #fff; color: var(--text-secondary); font-size: 12px; font-weight: 700; cursor: pointer;
+            height: 38px; padding: 0 16px; border-radius: 10px; border: 1px solid var(--border);
+            background: var(--surface); color: var(--text-secondary); font-size: 12px; font-weight: 700; cursor: pointer;
             text-decoration: none; transition: all .15s ease;
         }
         .rv-btn:hover { transform: translateY(-1px); }
@@ -76,7 +76,7 @@
         .rv-btn.danger:hover { background: #fee2e2; }
         .rv-btn.sm { height: 30px; padding: 0 11px; font-size: 11px; border-radius: 8px; }
         .dark .rv-btn { background: var(--surface-sunk); border-color: var(--border); color: var(--text-secondary); }
-        .dark .rv-btn:hover { background: #334155; }
+        .dark .rv-btn:hover { background: linear-gradient(var(--hover-tint), var(--hover-tint)), var(--surface-sunk); }
         .dark .rv-btn.primary { background: #ff8a3d; color: #04041f; border-color: #ff8a3d; }
         .dark .rv-btn.primary:hover { background: #e65c00; }
         .dark .rv-btn.danger { background: rgba(239,68,68,0.10); color: #fca5a5; border-color: rgba(239,68,68,0.30); }
@@ -84,11 +84,11 @@
         /* Inputs */
         .rv-inp {
             width: 100%; height: 38px; padding: 0 12px; font-size: 13px;
-            border: 1px solid #e2e8f0; border-radius: 10px;
+            border: 1px solid var(--border); border-radius: 10px;
             background: var(--surface-sunk); color: var(--text);
         }
         .rv-inp:focus {
-            outline: none; border-color: #ff8a3d; background: #fff;
+            outline: none; border-color: #ff8a3d; background: var(--surface);
             box-shadow: 0 0 0 3px rgb(255 138 61 / 0.25);
         }
         .dark .rv-inp { background: var(--surface-sunk); border-color: var(--border); color: var(--text); }
@@ -121,7 +121,7 @@
         /* Review cards */
         .rv-card {
             position: relative; overflow: hidden;
-            background: #fff; border: 1px solid #e3e9f1; border-radius: 18px;
+            background: var(--surface); border: 1px solid #e3e9f1; border-radius: 18px;
             padding: 16px;
             box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06);
             transition: all .2s ease;
@@ -136,8 +136,8 @@
         }
         .rv-stars { font-size: 14px; letter-spacing: 2px; line-height: 1; }
         .rv-stars .f { color: #e65c00; }
-        .rv-stars .e { color: #cbd5e1; }
-        .dark .rv-stars .e { color: #475569; }
+        .rv-stars .e { color: var(--border); }
+        .dark .rv-stars .e { color: var(--border); }
 
         /* Fractional average stars: amber overlay clipped to the exact average */
         .rv-avg-stars { position: relative; display: inline-block; font-size: 16px; letter-spacing: 2px; line-height: 1; }
@@ -162,12 +162,12 @@
         @media (prefers-reduced-motion: reduce) { .rv-card { animation: none; } }
         .rv-thumb {
             width: 40px; height: 40px; border-radius: 10px; flex-shrink: 0;
-            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            background: linear-gradient(135deg, var(--bg), var(--surface-sunk));
             border: 1px solid #e3e9f1; display: grid; place-items: center; color: var(--text-muted);
             overflow: hidden;
         }
         .rv-thumb img { width: 100%; height: 100%; object-fit: contain; }
-        .dark .rv-thumb { background: linear-gradient(135deg, #1e293b, #0f172a); border-color: var(--border); }
+        .dark .rv-thumb { background: linear-gradient(135deg, var(--surface-sunk), var(--surface)); border-color: var(--border); }
         .rv-avatar {
             width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
             background: #04041f; color: #ffb27a;
@@ -189,8 +189,8 @@
         .y-pagination span {
             display: inline-flex; align-items: center; justify-content: center;
             min-width: 34px; height: 34px; padding: 0 10px;
-            border-radius: 9px; background: #fff;
-            border: 1px solid #e2e8f0; color: var(--text-secondary);
+            border-radius: 9px; background: var(--surface);
+            border: 1px solid var(--border); color: var(--text-secondary);
             font-size: 12px; font-weight: 700; text-decoration: none;
             transition: all .15s ease;
         }
@@ -201,7 +201,7 @@
         .y-pagination span[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
         .dark .y-pagination a,
         .dark .y-pagination span { background: var(--surface); border-color: var(--border); color: var(--text-secondary); }
-        .dark .y-pagination a:hover { background: var(--surface-sunk); color: #fff; border-color: #475569; }
+        .dark .y-pagination a:hover { background: var(--surface-sunk); color: var(--text); border-color: rgb(var(--text-muted-rgb) / 0.55); }
         .dark .y-pagination .active span,
         .dark .y-pagination span[aria-current="page"] { background: #ff8a3d; color: #04041f; border-color: #ff8a3d; }
     </style>

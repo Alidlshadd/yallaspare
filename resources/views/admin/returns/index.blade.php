@@ -83,11 +83,11 @@
             display: inline-flex; align-items: center; gap: 8px;
             padding: 6px 12px; border-radius: 999px;
             font-size: 11.5px; font-weight: 700; line-height: 1;
-            border: 1px solid #e2e8f0; background: #fff; color: var(--text-secondary);
+            border: 1px solid var(--border); background: var(--surface); color: var(--text-secondary);
             text-decoration: none;
             transition: all .15s ease;
         }
-        .ret-chip:hover { background: var(--chip-hover-bg, #f8fafc); border-color: var(--chip-hover-bd, #cbd5e1); color: var(--chip-hover-fg, #04041f); }
+        .ret-chip:hover { background: var(--chip-hover-bg, var(--surface-sunk)); border-color: var(--chip-hover-bd, var(--border)); color: var(--chip-hover-fg, #04041f); }
         .ret-chip .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
         .ret-chip .cnt {
             background: rgba(15,23,42,0.06);
@@ -109,7 +109,7 @@
         .ret-chip.on .cnt { background: rgba(252,211,77,0.18); color: #ffb27a; }
         .dark .ret-chip { background: var(--surface-sunk); border-color: var(--border); color: var(--text-secondary); }
         .dark .ret-chip .cnt { background: rgba(255,255,255,0.06); color: var(--text-secondary); }
-        .dark .ret-chip:hover { background: #334155; color: #fff; }
+        .dark .ret-chip:hover { background: linear-gradient(var(--hover-tint), var(--hover-tint)), var(--surface-sunk); color: var(--text); }
         .dark .ret-chip.on { background: #ff8a3d; color: #04041f; border-color: #ff8a3d; }
         .dark .ret-chip.on .cnt { background: rgba(4,4,42,0.18); color: #04041f; }
 
@@ -132,8 +132,8 @@
         .ret-pagination span {
             display: inline-flex; align-items: center; justify-content: center;
             min-width: 34px; height: 34px; padding: 0 10px;
-            border-radius: 9px; background: #fff;
-            border: 1px solid #e2e8f0; color: var(--text-secondary);
+            border-radius: 9px; background: var(--surface);
+            border: 1px solid var(--border); color: var(--text-secondary);
             font-size: 12px; font-weight: 700; text-decoration: none;
             transition: all .15s ease;
         }
@@ -146,7 +146,7 @@
         .ret-pagination span[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
         .dark .ret-pagination a,
         .dark .ret-pagination span { background: var(--surface); border-color: var(--border); color: var(--text-secondary); }
-        .dark .ret-pagination a:hover { background: var(--surface-sunk); color: #fff; border-color: #475569; }
+        .dark .ret-pagination a:hover { background: var(--surface-sunk); color: var(--text); border-color: rgb(var(--text-muted-rgb) / 0.55); }
         .dark .ret-pagination .active span,
         .dark .ret-pagination span[aria-current="page"] {
             background: #ff8a3d; color: #04041f; border-color: #ff8a3d;

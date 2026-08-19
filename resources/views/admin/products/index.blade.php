@@ -46,7 +46,7 @@
         /* Stat tile — same dialect as Orders / Returns */
         .ptile {
             position: relative; overflow: hidden;
-            background: #fff; border: 1px solid #e3e9f1; border-radius: 24px;
+            background: var(--surface); border: 1px solid #e3e9f1; border-radius: 24px;
             padding: 18px;
             box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06);
             transition: transform .2s ease, box-shadow .2s ease;
@@ -63,7 +63,7 @@
         .ptile .foot { font-size: 11px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 6px; }
         .ptile .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; }
         .dark .ptile { background: var(--surface); border-color: var(--border); }
-        .dark .ptile .val { color: #f8fafc; }
+        .dark .ptile .val { color: var(--text); }
         .dark .ptile .lbl, .dark .ptile .foot { color: var(--text-muted); }
         /* Variants */
         .ptile.t-all      .strip { background: linear-gradient(180deg, #1e293b, #04041f); }
@@ -92,7 +92,7 @@
             display: inline-flex; align-items: center; gap: 8px;
             padding: 6px 12px; border-radius: 999px;
             font-size: 11.5px; font-weight: 700; line-height: 1;
-            border: 1px solid #e2e8f0; background: #fff; color: var(--text-secondary);
+            border: 1px solid var(--border); background: var(--surface); color: var(--text-secondary);
             text-decoration: none;
             transition: all .15s ease;
         }
@@ -111,7 +111,7 @@
         .ychip.on .cnt { background: rgba(252,211,77,0.18); color: #ffb27a; }
         .dark .ychip { background: var(--surface-sunk); border-color: var(--border); color: var(--text-secondary); }
         .dark .ychip .cnt { background: rgba(255,255,255,0.06); color: var(--text-secondary); }
-        .dark .ychip:hover { background: #334155; color: #fff; }
+        .dark .ychip:hover { background: linear-gradient(var(--hover-tint), var(--hover-tint)), var(--surface-sunk); color: var(--text); }
         .dark .ychip.on { background: #ff8a3d; color: #04041f; border-color: #ff8a3d; }
         .dark .ychip.on .cnt { background: rgba(4,4,42,0.18); color: #04041f; }
 
@@ -127,7 +127,7 @@
         /* Product card */
         .prod-card {
             position: relative; overflow: hidden;
-            background: #fff; border: 1px solid #e3e9f1; border-radius: 18px;
+            background: var(--surface); border: 1px solid #e3e9f1; border-radius: 18px;
             padding: 14px;
             box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06);
             transition: all .2s ease;
@@ -139,14 +139,14 @@
         .prod-card .img-wrap {
             position: relative;
             height: 160px; border-radius: 12px;
-            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            background: linear-gradient(135deg, var(--bg), var(--surface-sunk));
             border: 1px solid #e3e9f1;
             display: grid; place-items: center;
             margin-bottom: 12px;
             overflow: hidden;
             padding: 22px;
         }
-        .dark .prod-card .img-wrap { background: linear-gradient(135deg, #1e293b, #0f172a); border-color: var(--border); }
+        .dark .prod-card .img-wrap { background: linear-gradient(135deg, var(--surface-sunk), var(--surface)); border-color: var(--border); }
         .prod-card .img-wrap img {
             width: 100%; height: 100%;
             object-fit: contain;
@@ -163,7 +163,7 @@
             overflow: hidden;
             min-height: 35px;
         }
-        .dark .prod-card .pname { color: #f8fafc; }
+        .dark .prod-card .pname { color: var(--text); }
         .prod-card .sku { font-family: ui-monospace, monospace; font-size: 10.5px; color: var(--text-muted); }
         .prod-card .brand-row { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
         .prod-card .brand-row .pid {
@@ -190,7 +190,7 @@
         .prod-card .acts { display: flex; gap: 6px; margin-top: 10px; }
         .prod-card .acts .btn {
             flex: 1; height: 34px; border-radius: 9px;
-            background: #fff; border: 1px solid #e2e8f0; color: var(--text-secondary);
+            background: var(--surface); border: 1px solid var(--border); color: var(--text-secondary);
             font-size: 11.5px; font-weight: 700; cursor: pointer;
             display: inline-flex; align-items: center; justify-content: center; gap: 6px;
             text-decoration: none;
@@ -202,7 +202,7 @@
         .prod-card .acts .btn.danger { color: #b91c1c; border-color: #fca5a5; background: #fef2f2; }
         .prod-card .acts .btn.danger:hover { background: #fee2e2; }
         .dark .prod-card .acts .btn { background: var(--surface-sunk); border-color: var(--border); color: var(--text-secondary); }
-        .dark .prod-card .acts .btn:hover { background: #334155; }
+        .dark .prod-card .acts .btn:hover { background: linear-gradient(var(--hover-tint), var(--hover-tint)), var(--surface-sunk); }
         .dark .prod-card .acts .btn.primary { background: #ff8a3d; color: #04041f; border-color: #ff8a3d; }
         .dark .prod-card .acts .btn.primary:hover { background: #e65c00; }
         .dark .prod-card .acts .btn.danger { color: #fca5a5; border-color: rgba(239,68,68,0.30); background: rgba(239,68,68,0.10); }
@@ -254,8 +254,8 @@
         .y-pagination span {
             display: inline-flex; align-items: center; justify-content: center;
             min-width: 34px; height: 34px; padding: 0 10px;
-            border-radius: 9px; background: #fff;
-            border: 1px solid #e2e8f0; color: var(--text-secondary);
+            border-radius: 9px; background: var(--surface);
+            border: 1px solid var(--border); color: var(--text-secondary);
             font-size: 12px; font-weight: 700; text-decoration: none;
             transition: all .15s ease;
         }
@@ -268,7 +268,7 @@
         .y-pagination span[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
         .dark .y-pagination a,
         .dark .y-pagination span { background: var(--surface); border-color: var(--border); color: var(--text-secondary); }
-        .dark .y-pagination a:hover { background: var(--surface-sunk); color: #fff; border-color: #475569; }
+        .dark .y-pagination a:hover { background: var(--surface-sunk); color: var(--text); border-color: rgb(var(--text-muted-rgb) / 0.55); }
         .dark .y-pagination .active span,
         .dark .y-pagination span[aria-current="page"] {
             background: #ff8a3d; color: #04041f; border-color: #ff8a3d;

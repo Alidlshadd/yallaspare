@@ -187,9 +187,8 @@
         .rt-btn { display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:6px; color: var(--text-secondary); transition:background .12s, color .12s; }
         .rt-btn:hover { background: var(--surface-sunk); color:#070740; }
         .dark .rt-btn { color: var(--text-secondary); }
-        .dark .rt-btn:hover { background: var(--surface-sunk); color:#fff; }
-        .rt-sep { width:1px; height:16px; background:#e2e8f0; margin:0 4px; }
-        .dark .rt-sep { background:#334155; }
+        .dark .rt-btn:hover { background: var(--surface-sunk); color:var(--text); }
+        .rt-sep { width:1px; height:16px; background:var(--border); margin:0 4px; }
         #preview-body h1 { font-size:1.5rem; font-weight: 700; color:#070740; margin:0.5rem 0; }
         #preview-body h2 { font-size:1.25rem; font-weight:700; color:#070740; margin:0.5rem 0; }
         #preview-body h3 { font-size:1.1rem; font-weight:700; color:#070740; margin:0.5rem 0; }

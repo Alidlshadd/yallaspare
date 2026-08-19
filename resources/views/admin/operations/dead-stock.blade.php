@@ -45,7 +45,7 @@
             color: var(--text-muted);
         }
         .ds-stat {
-            background: #fff; border: 1px solid #e3e9f1; border-radius: 16px; padding: 14px 16px;
+            background: var(--surface); border: 1px solid #e3e9f1; border-radius: 16px; padding: 14px 16px;
             box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06);
         }
         .dark .ds-stat { background: var(--surface); border-color: var(--border); }
@@ -62,7 +62,7 @@
             display: inline-flex; align-items: center; gap: 8px;
             padding: 6px 12px; border-radius: 999px;
             font-size: 11.5px; font-weight: 700; line-height: 1;
-            border: 1px solid #e2e8f0; background: #fff; color: var(--text-secondary);
+            border: 1px solid var(--border); background: var(--surface); color: var(--text-secondary);
             text-decoration: none; transition: all .15s ease;
         }
         .ds-chip:hover { background: var(--surface-sunk); border-color: var(--border); color: #04041f; }
@@ -78,19 +78,19 @@
         .ds-chip.on .cnt { background: rgba(252,211,77,0.18); color: #ffb27a; }
         .dark .ds-chip { background: var(--surface-sunk); border-color: var(--border); color: var(--text-secondary); }
         .dark .ds-chip .cnt { background: rgba(255,255,255,0.06); color: var(--text-secondary); }
-        .dark .ds-chip:hover { background: #334155; color: #fff; }
+        .dark .ds-chip:hover { background: linear-gradient(var(--hover-tint), var(--hover-tint)), var(--surface-sunk); color: var(--text); }
         .dark .ds-chip.on { background: #ff8a3d; color: #04041f; border-color: #ff8a3d; }
         .dark .ds-chip.on .cnt { background: rgba(4,4,42,0.18); color: #04041f; }
         .ds-chip.rose.on { background: #f43f5e; color: #fff; border-color: #f43f5e; box-shadow: 0 6px 14px -8px rgba(244,63,94,0.45); }
-        .dark .ds-chip.rose.on { background: #f43f5e; color: #fff; border-color: #f43f5e; }
+        .dark .ds-chip.rose.on { background: #f43f5e; color: var(--text); border-color: #f43f5e; }
 
         .ds-inp {
             width: 100%; height: 38px; padding: 0 12px; font-size: 13px;
-            border: 1px solid #e2e8f0; border-radius: 10px;
+            border: 1px solid var(--border); border-radius: 10px;
             background: var(--surface-sunk); color: var(--text);
         }
         .ds-inp:focus {
-            outline: none; border-color: #ff8a3d; background: #fff;
+            outline: none; border-color: #ff8a3d; background: var(--surface);
             box-shadow: 0 0 0 3px rgb(255 138 61 / 0.25);
         }
         .dark .ds-inp { background: var(--surface-sunk); border-color: var(--border); color: var(--text); }
@@ -136,13 +136,13 @@
         .dark .ds-vbar b { color: var(--text); }
 
         .ds-edit {
-            display: inline-block; border: 1px solid #e2e8f0; border-radius: 8px; padding: 5px 12px;
+            display: inline-block; border: 1px solid var(--border); border-radius: 8px; padding: 5px 12px;
             font-size: 11px; font-weight: 700; color: var(--text-secondary); text-decoration: none;
             transition: all .15s ease;
         }
         .ds-edit:hover { background: var(--surface-sunk); border-color: var(--border); color: #04041f; }
         .dark .ds-edit { border-color: var(--border); color: var(--text-secondary); }
-        .dark .ds-edit:hover { background: #334155; color: #fff; }
+        .dark .ds-edit:hover { background: linear-gradient(var(--hover-tint), var(--hover-tint)), var(--surface-sunk); color: var(--text); }
     </style>
 
     <div class="py-8">

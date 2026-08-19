@@ -53,7 +53,7 @@
         .sr-icon-btn {
             width: 30px; height: 30px; border-radius: 8px;
             display: inline-flex; align-items: center; justify-content: center;
-            font-size: 12px; border: 1px solid #e2e8f0; color: var(--text-muted); background: #fff;
+            font-size: 12px; border: 1px solid var(--border); color: var(--text-muted); background: var(--surface);
             transition: transform .12s ease, background .15s ease, color .15s ease;
         }
         .sr-icon-btn:hover { transform: scale(1.06); color: #04041f; border-color: var(--border); }
@@ -70,11 +70,11 @@
         .sr-add .sr-ic-added { display: none; }
         .sr-add.sr-added { background: #059669; border-color: #059669; color: #fff; box-shadow: none; }
         .sr-add.sr-added:hover { color: #fff; }
-        .dark .sr-add.sr-added { background: #10b981; border-color: #10b981; color: #fff; }
+        .dark .sr-add.sr-added { background: #10b981; border-color: #10b981; color: var(--text); }
         .sr-add.sr-added .sr-ic-add { display: none; }
         .sr-add.sr-added .sr-ic-added { display: inline; }
 
-        .sr-chip-waiting { background: rgb(255 138 61 / 0.16); color: #b45309; }
+        .sr-chip-waiting { background: rgb(var(--accent-rgb) / 0.16); color: var(--brand-orange-ink); }
         .dark .sr-chip-waiting { color: #ff8a3d; }
         .sr-chip-notified { background: rgba(5,150,105,0.12); color: #059669; }
         .dark .sr-chip-notified { color: #34d399; }

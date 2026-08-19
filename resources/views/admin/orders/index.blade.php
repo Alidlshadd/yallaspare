@@ -72,8 +72,8 @@
         .op-menu {
             position: fixed;
             width: min(270px, calc(100vw - 16px));
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
+            background: var(--surface);
+            border: 1px solid var(--border);
             border-radius: 12px;
             box-shadow: 0 24px 48px -28px rgba(15,23,42,0.32), 0 1px 0 rgba(255,255,255,0.85) inset;
             padding: 8px;
@@ -84,7 +84,7 @@
         .dark .op-menu {
             background: var(--surface-sunk);
             border-color: var(--border);
-            color: #f8fafc;
+            color: var(--text);
             box-shadow: 0 24px 48px -28px rgba(0,0,0,0.75), 0 1px 0 rgba(255,255,255,0.04) inset;
         }
         .op-menu .head {
@@ -99,12 +99,12 @@
         .op-menu form { display: flex; align-items: center; gap: 8px; padding: 4px 6px 8px; }
         .op-menu select {
             flex: 1 1 auto; min-width: 0;
-            background: var(--surface-sunk); border: 1px solid #cbd5e1; color: var(--text);
+            background: var(--surface-sunk); border: 1px solid var(--border); color: var(--text);
             height: 38px; padding: 0 10px; border-radius: 8px; font-size: 12.5px;
             color-scheme: light;
         }
         .dark .op-menu select {
-            background: var(--surface); border-color: var(--border); color: #f8fafc; color-scheme: dark;
+            background: var(--surface); border-color: var(--border); color: var(--text); color-scheme: dark;
         }
         .op-menu button[type="submit"] {
             background: #04041f; color: #ffb27a;
@@ -113,7 +113,7 @@
             border: 1px solid #04041f; cursor: pointer;
         }
         .op-menu button[type="submit"]:hover { background: #070740; }
-        .op-menu hr { border: 0; border-top: 1px solid #e2e8f0; margin: 4px 0; }
+        .op-menu hr { border: 0; border-top: 1px solid var(--border); margin: 4px 0; }
         .dark .op-menu hr { border-top-color: var(--border); }
         .op-menu .danger {
             display: block; width: 100%;
@@ -135,7 +135,7 @@
             color: var(--text); font-size: 12.5px; font-weight: 700;
             text-decoration: none;
         }
-        .dark .op-invoice-menu .invoice-lang { color: #f8fafc; }
+        .dark .op-invoice-menu .invoice-lang { color: var(--text); }
         .op-invoice-menu .invoice-lang:hover { background: #fffbeb; color: #04041f; }
         .dark .op-invoice-menu .invoice-lang:hover { background: rgb(255 138 61 / 0.12); color: #ffb27a; }
         .op-invoice-menu .invoice-code {
@@ -802,8 +802,8 @@
         .orders-pagination span {
             display: inline-flex; align-items: center; justify-content: center;
             min-width: 34px; height: 34px; padding: 0 10px;
-            border-radius: 9px; background: #fff;
-            border: 1px solid #e2e8f0; color: var(--text-secondary);
+            border-radius: 9px; background: var(--surface);
+            border: 1px solid var(--border); color: var(--text-secondary);
             font-size: 12px; font-weight: 700; text-decoration: none;
             transition: all .15s ease;
         }
@@ -818,7 +818,7 @@
         .dark .orders-pagination span {
             background: var(--surface); border-color: var(--border); color: var(--text-secondary);
         }
-        .dark .orders-pagination a:hover { background: var(--surface-sunk); color: #fff; border-color: #475569; }
+        .dark .orders-pagination a:hover { background: var(--surface-sunk); color: var(--text); border-color: rgb(var(--text-muted-rgb) / 0.55); }
         .dark .orders-pagination .active span,
         .dark .orders-pagination span[aria-current="page"] {
             background: #ff8a3d; color: #04041f; border-color: #ff8a3d;
