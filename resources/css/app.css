@@ -1263,7 +1263,7 @@
         background-color: rgb(255 138 61 / 0.14);
     }
 
-    @media (min-width: 1024px) {
+    @media (min-width: 768px) {
         .admin-sidebar {
             width: var(--sidebar-width);
             z-index: 30;
@@ -1398,7 +1398,7 @@
         }
     }
 
-    @media (max-width: 1023px) {
+    @media (max-width: 767px) {
         .admin-sidebar {
             position: fixed;
             width: min(18rem, 88vw);

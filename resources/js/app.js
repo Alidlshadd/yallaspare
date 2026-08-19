@@ -214,6 +214,13 @@ Alpine.data('accountMenu', () => ({
 Alpine.data('userShell', () => ({
     accountOpen: false,
     mobileNavOpen: false,
+    init() {
+        // Leaving the drawer open across the breakpoint stacked it on top of
+        // the inline nav that replaces it.
+        const mq = window.matchMedia('(min-width: 768px)');
+        const sync = () => { if (mq.matches) this.mobileNavOpen = false; };
+        mq.addEventListener ? mq.addEventListener('change', sync) : mq.addListener(sync);
+    },
     toggleAccount() { this.accountOpen = !this.accountOpen; },
     closeAccount() { this.accountOpen = false; },
     toggleMobileNav() { this.mobileNavOpen = !this.mobileNavOpen; },
@@ -305,7 +312,24 @@ Alpine.data('settingsConsole', () => ({
 Alpine.data('storeNav', () => ({
     categoriesOpen: false,
     closeTimer: null,
-    isDesktop() { return window.innerWidth >= 1024; },
+    // 768, not 1024: a tablet has room for the inline navigation, and
+    // hiding it behind a hamburger wasted most of the header.
+    //
+    // Reactive, because the markup hides the hamburger with md:hidden while
+    // this decides whether the inline nav shows. Read once at init, the two
+    // disagreed after a rotation from portrait to landscape: CSS took the
+    // hamburger away and Alpine still believed it was on a phone, which left
+    // no way to reach the navigation at all.
+    desktop: window.matchMedia('(min-width: 768px)').matches,
+    init() {
+        const mq = window.matchMedia('(min-width: 768px)');
+        const sync = () => {
+            this.desktop = mq.matches;
+            if (this.desktop) this.categoriesOpen = false;
+        };
+        mq.addEventListener ? mq.addEventListener('change', sync) : mq.addListener(sync);
+    },
+    isDesktop() { return this.desktop; },
     openNow() {
         this.cancelClose();
         this.categoriesOpen = true;
@@ -1414,7 +1438,7 @@ Alpine.data('discountRules', () => ({
 }));
 
 const ADMIN_SIDEBAR_DEFAULT_STORAGE_KEY = 'admin-sidebar-collapsed';
-const ADMIN_DESKTOP_QUERY = '(min-width: 1024px)';
+const ADMIN_DESKTOP_QUERY = '(min-width: 768px)';
 
 const safeLocalStorageGet = (key) => {
     try {

@@ -303,7 +303,7 @@
                             @endif
                                 <button
                                     type="button"
-                                    class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25 sm:h-9 sm:w-9 sm:rounded-xl"
+                                    class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25 sm:h-9 sm:w-9 sm:rounded-xl md:hidden"
                                     @click="toggleMobileNav()"
                                     :aria-expanded="mobileNavAriaExpanded"
                                     aria-label="{{ __('Menu') }}"
@@ -505,7 +505,7 @@
                                 x-cloak
                                 x-show="mobileNavOpen || isDesktop()"
                                 x-transition
-                                class="grid grid-cols-2 gap-1.5 rounded-2xl border border-white/10 bg-white/5 p-2 lg:flex lg:items-center lg:justify-center lg:gap-1 lg:overflow-x-visible lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0"
+                                class="grid grid-cols-2 gap-1.5 rounded-2xl border border-white/10 bg-white/5 p-2 md:flex md:items-center md:justify-center md:gap-1 md:overflow-x-visible md:rounded-none md:border-0 md:bg-transparent md:p-0"
                             >
                                 <a
                                     href="{{ $storeHomeUrl }}"

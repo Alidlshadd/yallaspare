@@ -676,7 +676,7 @@ const initSearchAutocomplete = () => {
 };
 
 const initHeaderDropdowns = () => {
-    const desktopQuery = window.matchMedia('(min-width: 1024px)');
+    const desktopQuery = window.matchMedia('(min-width: 768px)');
     const languageDropdowns = Array.from(document.querySelectorAll('[data-header-dropdown]'));
     const accountDropdowns = Array.from(document.querySelectorAll('[data-header-account]'));
     const categoryTrigger = document.querySelector('[data-store-categories-trigger]');

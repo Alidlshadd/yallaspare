@@ -300,7 +300,7 @@
                 </p>
             </div>
 
-            <div class="grid gap-3 sm:grid-cols-2 sm:gap-4 lg:grid-cols-3 xl:grid-cols-4">
+            <div class="grid gap-3 sm:grid-cols-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4">
                 @foreach ($products as $product)
                     <x-product-card
                         :product="$product"
