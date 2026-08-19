@@ -47,7 +47,7 @@
             background: rgba(15,23,42,0.06);
             padding: 1px 7px; border-radius: 999px;
             font-size: 10.5px; font-family: ui-monospace, 'JetBrains Mono', monospace;
-            color: #475569; font-weight: 800;
+            color: #475569; font-weight: 700;
         }
         .ychip.on {
             background: #04041f; color: #ffb27a; border-color: #04041f;
@@ -66,7 +66,7 @@
         .rv-btn {
             display: inline-flex; align-items: center; justify-content: center; gap: 7px;
             height: 38px; padding: 0 16px; border-radius: 10px; border: 1px solid #e2e8f0;
-            background: #fff; color: #475569; font-size: 12px; font-weight: 800; cursor: pointer;
+            background: #fff; color: #475569; font-size: 12px; font-weight: 700; cursor: pointer;
             text-decoration: none; transition: all .15s ease;
         }
         .rv-btn:hover { transform: translateY(-1px); }
@@ -106,7 +106,7 @@
         .rv-dist.on { background: #fef3c7; }
         .dark .rv-dist.on { background: rgb(255 138 61 / 0.12); }
         .rv-dist .lab {
-            font-family: ui-monospace, monospace; font-size: 11px; font-weight: 800; color: #64748b;
+            font-family: ui-monospace, monospace; font-size: 11px; font-weight: 700; color: #64748b;
             display: flex; align-items: center; gap: 3px;
         }
         .rv-dist .lab .star { color: #e65c00; }
@@ -115,7 +115,7 @@
         .dark .rv-dist .track { background: #1e293b; border-color: #334155; }
         .rv-dist .fill { position: absolute; inset-block: 0; inset-inline-start: 0; border-radius: 999px; background: linear-gradient(90deg, #ff8a3d, #e65c00); }
         .rv-dist .fill.low { background: linear-gradient(90deg, #fb7185, #f43f5e); }
-        .rv-dist .cnt { font-family: ui-monospace, monospace; font-size: 11px; font-weight: 800; color: #475569; text-align: end; font-variant-numeric: tabular-nums; }
+        .rv-dist .cnt { font-family: ui-monospace, monospace; font-size: 11px; font-weight: 700; color: #475569; text-align: end; font-variant-numeric: tabular-nums; }
         .dark .rv-dist .cnt { color: #cbd5e1; }
 
         /* Review cards */
@@ -151,7 +151,7 @@
         .rv-comment.clamp { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
         .rv-more {
             background: none; border: none; padding: 0; cursor: pointer;
-            font-size: 11.5px; font-weight: 800; color: #b45309;
+            font-size: 11.5px; font-weight: 700; color: #b45309;
         }
         .rv-more:hover { text-decoration: underline; }
         .dark .rv-more { color: #ff8a3d; }
@@ -172,7 +172,7 @@
             width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
             background: #04041f; color: #ffb27a;
             display: grid; place-items: center;
-            font-size: 12px; font-weight: 800;
+            font-size: 12px; font-weight: 700;
         }
         .dark .rv-avatar { background: #ff8a3d; color: #04041f; }
         .rv-mono {
@@ -232,11 +232,11 @@
                 <div class="absolute top-0 bottom-0 start-0 w-[3px]" style="background: linear-gradient(180deg, #ff8a3d 0%, #e65c00 100%);"></div>
                 <div class="absolute -top-16 -end-16 h-52 w-52 rounded-full bg-accent/10 blur-[60px] pointer-events-none"></div>
 
-                <div class="relative font-mono text-[10px] font-extrabold uppercase tracking-[0.28em] text-accent">{{ __('Catalog · Feedback') }}</div>
-                <h1 class="relative text-2xl font-black leading-tight -mt-1">{{ __('Customer Reviews') }}</h1>
+                <div class="relative font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-accent">{{ __('Catalog · Feedback') }}</div>
+                <h1 class="relative text-2xl font-bold leading-tight -mt-1">{{ __('Customer Reviews') }}</h1>
 
                 <div class="relative flex items-end gap-3 mt-1">
-                    <span class="text-[44px] font-black leading-none">{{ number_format($averageRating, 1) }}</span>
+                    <span class="text-[44px] font-bold leading-none">{{ number_format($averageRating, 1) }}</span>
                     <div class="pb-1.5">
                         <span class="rv-avg-stars" role="img" aria-label="{{ __('Average rating: :avg out of 5', ['avg' => number_format($averageRating, 1)]) }}">
                             <span class="base" aria-hidden="true">★★★★★</span>
@@ -277,7 +277,7 @@
             {{-- Rating distribution --}}
             <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-5 bento-shadow flex flex-col justify-center gap-1">
                 <div class="flex items-center justify-between gap-3 mb-2">
-                    <div class="text-[10px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ __('Rating distribution') }}</div>
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ __('Rating distribution') }}</div>
                     @if((int) $rating > 0 || $lowOnly)
                         <a href="{{ $ratingUrl(0) }}" class="rv-btn sm">{{ __('Clear rating filter') }}</a>
                     @endif
@@ -371,7 +371,7 @@
                                     @endfor
                                 </span>
                                 @if($review->is_flagged)
-                                    <span class="inline-flex items-center gap-1 rounded-full border border-amber-300 bg-amber-50 px-2 py-0.5 text-[10px] font-extrabold text-amber-700 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-300"
+                                    <span class="inline-flex items-center gap-1 rounded-full border border-amber-300 bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-300"
                                           title="{{ __('Profanity was auto-masked in this review') }}">
                                         <i class="fas fa-eye-slash text-[9px]"></i> {{ __('Censored') }}
                                     </span>
@@ -383,7 +383,7 @@
                         </div>
 
                         <div>
-                            <p class="text-[13.5px] font-extrabold text-slate-900 dark:text-slate-100">{{ $review->title ?: __('Customer review') }}</p>
+                            <p class="text-[13.5px] font-bold text-slate-900 dark:text-slate-100">{{ $review->title ?: __('Customer review') }}</p>
                             @if($review->comment)
                                 <p class="rv-comment {{ $isLongComment ? 'clamp' : '' }} mt-1.5 text-[13px] leading-relaxed text-slate-600 dark:text-slate-300"
                                    @if($isLongComment) data-rv-comment @endif>{{ $review->comment }}</p>

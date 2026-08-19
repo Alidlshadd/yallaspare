@@ -46,28 +46,28 @@
                 </div>
                 <div class="flex gap-9 overflow-x-auto whitespace-nowrap px-5 py-4">
                     <div>
-                        <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/50">{{ __('Keywords') }}</p>
-                        <p class="si-mono text-xl font-black text-white">{{ number_format($summary['keywords']) }}</p>
+                        <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/50">{{ __('Keywords') }}</p>
+                        <p class="si-mono text-xl font-bold text-white">{{ number_format($summary['keywords']) }}</p>
                     </div>
                     <div>
-                        <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/50">{{ __('Total Searches') }}</p>
-                        <p class="si-mono text-xl font-black text-white">{{ number_format($summary['searches']) }}</p>
+                        <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/50">{{ __('Total Searches') }}</p>
+                        <p class="si-mono text-xl font-bold text-white">{{ number_format($summary['searches']) }}</p>
                     </div>
                     <div>
-                        <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/50">{{ __('Zero-Hit On Page') }}</p>
-                        <p class="si-mono text-xl font-black {{ $summary['zero_result_on_page'] > 0 ? 'text-rose-300' : 'text-emerald-300' }}">{{ number_format($summary['zero_result_on_page']) }}</p>
+                        <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/50">{{ __('Zero-Hit On Page') }}</p>
+                        <p class="si-mono text-xl font-bold {{ $summary['zero_result_on_page'] > 0 ? 'text-rose-300' : 'text-emerald-300' }}">{{ number_format($summary['zero_result_on_page']) }}</p>
                     </div>
                     <div>
-                        <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/50">{{ __('Missed Demand On Page') }}</p>
-                        <p class="si-mono text-xl font-black {{ $summary['missed_demand_on_page'] > 0 ? 'text-rose-300' : 'text-emerald-300' }}">{{ number_format($summary['missed_demand_on_page']) }}</p>
+                        <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/50">{{ __('Missed Demand On Page') }}</p>
+                        <p class="si-mono text-xl font-bold {{ $summary['missed_demand_on_page'] > 0 ? 'text-rose-300' : 'text-emerald-300' }}">{{ number_format($summary['missed_demand_on_page']) }}</p>
                     </div>
                     <div>
-                        <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/50">{{ __('Coverage On Page') }}</p>
-                        <p class="si-mono text-xl font-black text-emerald-300">{{ number_format($summary['coverage_on_page'], 1) }}%</p>
+                        <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/50">{{ __('Coverage On Page') }}</p>
+                        <p class="si-mono text-xl font-bold text-emerald-300">{{ number_format($summary['coverage_on_page'], 1) }}%</p>
                     </div>
                     <div class="min-w-0">
-                        <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/50">{{ __('Top Keyword') }}</p>
-                        <p class="max-w-[220px] truncate text-xl font-black text-accent">{{ $summary['top_keyword'] ?: __('N/A') }}</p>
+                        <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/50">{{ __('Top Keyword') }}</p>
+                        <p class="max-w-[220px] truncate text-xl font-bold text-accent">{{ $summary['top_keyword'] ?: __('N/A') }}</p>
                     </div>
                 </div>
             </section>
@@ -119,12 +119,12 @@
             <section class="grid gap-5 xl:grid-cols-[1.65fr_1fr]">
                 <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex flex-wrap items-baseline justify-between gap-2 px-5 pt-4 pb-2">
-                        <p class="text-[11px] font-extrabold uppercase tracking-[0.16em] text-slate-400">{{ __('Keyword Register') }} <span class="text-accent">&mdash; {{ __('by demand') }}</span></p>
+                        <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">{{ __('Keyword Register') }} <span class="text-accent">&mdash; {{ __('by demand') }}</span></p>
                         <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400">{{ number_format($keywords->total()) }} {{ __('records') }}</p>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="min-w-full text-sm">
-                            <thead class="bg-slate-50 text-[10px] font-extrabold uppercase tracking-[0.14em] text-slate-500 dark:bg-slate-950/40 dark:text-slate-400">
+                            <thead class="bg-slate-50 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 dark:bg-slate-950/40 dark:text-slate-400">
                                 <tr>
                                     <th class="w-12 px-5 py-3 text-left">#</th>
                                     <th class="px-5 py-3 text-left">{{ __('Keyword') }}</th>
@@ -147,7 +147,7 @@
                                         </td>
                                         <td class="si-mono px-5 py-3 text-right font-bold text-slate-800 dark:text-slate-200">{{ number_format((int) $keyword->search_count) }}</td>
                                         <td class="px-5 py-3 text-right">
-                                            <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-extrabold {{ $isZero ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-200' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-200' }}">
+                                            <span class="inline-flex rounded-full px-2.5 py-1 text-xs font-bold {{ $isZero ? 'bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-200' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-200' }}">
                                                 {{ $isZero ? __('0 HIT') : number_format((int) $keyword->matching_products_count) }}
                                             </span>
                                         </td>
@@ -166,17 +166,17 @@
                     {{-- Coverage gap register --}}
                     <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         <div class="flex items-baseline justify-between gap-3">
-                            <p class="text-[11px] font-extrabold uppercase tracking-[0.16em] text-slate-400">{{ __('Coverage Gap Register') }}</p>
-                            <p class="text-[11px] font-extrabold uppercase tracking-[0.12em] {{ $summary['zero_result_on_page'] > 0 ? 'text-rose-600' : 'text-emerald-600' }}">{{ number_format($summary['zero_result_on_page']) }} {{ __('on page') }}</p>
+                            <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">{{ __('Coverage Gap Register') }}</p>
+                            <p class="text-[11px] font-bold uppercase tracking-[0.12em] {{ $summary['zero_result_on_page'] > 0 ? 'text-rose-600' : 'text-emerald-600' }}">{{ number_format($summary['zero_result_on_page']) }} {{ __('on page') }}</p>
                         </div>
                         <div class="mt-3 space-y-2">
                             @forelse ($coverageGaps as $gap)
                                 <div class="flex items-center justify-between gap-3 rounded-xl border border-rose-100 bg-rose-50/70 px-3 py-2.5 dark:border-rose-900/50 dark:bg-rose-950/20">
                                     <span class="min-w-0 truncate text-sm font-bold text-slate-800 dark:text-slate-100">{{ $gap->keyword }}</span>
-                                    <span class="si-mono shrink-0 text-sm font-extrabold text-rose-600 dark:text-rose-300">{{ number_format((int) $gap->search_count) }}</span>
+                                    <span class="si-mono shrink-0 text-sm font-bold text-rose-600 dark:text-rose-300">{{ number_format((int) $gap->search_count) }}</span>
                                     @if ($canManageProducts)
                                         <a href="{{ route('admin.products.create', ['name' => $gap->keyword]) }}"
-                                           class="shrink-0 rounded-lg bg-navy-deep px-2.5 py-1.5 text-[11px] font-extrabold text-accent transition hover:bg-navy-raised">{{ __('Add Product') }}</a>
+                                           class="shrink-0 rounded-lg bg-navy-deep px-2.5 py-1.5 text-[11px] font-bold text-accent transition hover:bg-navy-raised">{{ __('Add Product') }}</a>
                                     @endif
                                 </div>
                             @empty
@@ -187,8 +187,8 @@
                         </div>
                         <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-950/40">
                             <div class="flex items-baseline justify-between">
-                                <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-slate-400">{{ __('Coverage Score') }}</p>
-                                <p class="si-mono text-sm font-black text-emerald-600 dark:text-emerald-400">{{ number_format($summary['coverage_on_page'], 1) }}%</p>
+                                <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">{{ __('Coverage Score') }}</p>
+                                <p class="si-mono text-sm font-bold text-emerald-600 dark:text-emerald-400">{{ number_format($summary['coverage_on_page'], 1) }}%</p>
                             </div>
                             <div class="mt-2 h-2 overflow-hidden rounded-full bg-rose-100 dark:bg-rose-950/50">
                                 <div class="h-full rounded-full bg-gradient-to-r from-emerald-600 to-emerald-400" style="width: {{ number_format($summary['coverage_on_page'], 1) }}%"></div>
@@ -199,7 +199,7 @@
                     {{-- Demand pulse --}}
                     <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         <div class="flex items-baseline justify-between gap-3">
-                            <p class="text-[11px] font-extrabold uppercase tracking-[0.16em] text-slate-400">{{ __('Demand Pulse') }} <span class="text-accent">&mdash; {{ __('7 days') }}</span></p>
+                            <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">{{ __('Demand Pulse') }} <span class="text-accent">&mdash; {{ __('7 days') }}</span></p>
                             <p class="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400">{{ __('Active keywords / day') }}</p>
                         </div>
                         <div class="mt-4 flex h-24 items-end gap-1.5">

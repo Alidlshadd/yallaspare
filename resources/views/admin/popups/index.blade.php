@@ -23,8 +23,8 @@
 
             <div class="relative flex flex-wrap items-center justify-between gap-4">
                 <div>
-                    <div class="font-mono text-[10px] font-extrabold uppercase tracking-[0.28em] text-accent">{{ __('Marketing · Announcements') }}</div>
-                    <h1 class="text-2xl font-black mt-2 leading-tight">{{ __('Popups') }}</h1>
+                    <div class="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-accent">{{ __('Marketing · Announcements') }}</div>
+                    <h1 class="text-2xl font-bold mt-2 leading-tight">{{ __('Popups') }}</h1>
                     <p class="text-sm text-white/65 mt-1.5">{{ __('Promotional and informational popups shown on the storefront.') }}</p>
                 </div>
                 <a href="{{ route('admin.popups.create') }}"
@@ -47,7 +47,7 @@
                 <div class="mx-auto h-12 w-12 rounded-2xl bg-navy-deep text-accent grid place-items-center mb-4">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
                 </div>
-                <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('No popups yet') }}</h3>
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('No popups yet') }}</h3>
                 <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5">{{ __('Create your first popup to announce campaigns on the storefront.') }}</p>
             </div>
         @else

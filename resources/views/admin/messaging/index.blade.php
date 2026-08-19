@@ -7,7 +7,7 @@
                     <span class="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600"></span>
                     <span>OTPIQ</span>
                 </div>
-                <h2 class="mt-1 text-2xl font-black text-slate-900 dark:text-white">{{ $whatsappVisible ? __('SMS & WhatsApp Center') : __('SMS Center') }}</h2>
+                <h2 class="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{{ $whatsappVisible ? __('SMS & WhatsApp Center') : __('SMS Center') }}</h2>
                 <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('Monitor verification delivery, provider readiness and phone coverage') }}</p>
             </div>
             <a href="{{ route('admin.email.index') }}" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:border-primary/30 hover:text-primary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-info/40 dark:hover:text-white">
@@ -59,7 +59,7 @@
                             <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl {{ $tone }}">
                                 <i class="{{ $card['icon'] }} text-sm" aria-hidden="true"></i>
                             </span>
-                            <span class="font-mono text-2xl font-black tabular-nums text-slate-900 dark:text-white">{{ number_format($card['value']) }}</span>
+                            <span class="font-mono text-2xl font-bold tabular-nums text-slate-900 dark:text-white">{{ number_format($card['value']) }}</span>
                         </div>
                         <p class="mt-3 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ $card['label'] }}</p>
                     </div>
@@ -71,7 +71,7 @@
                     <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         <div class="border-b border-slate-200 px-5 py-4 dark:border-slate-800">
                             <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">{{ __('Delivery channels') }}</p>
-                            <h3 class="mt-1 text-lg font-black text-slate-900 dark:text-white">{{ __('Provider health') }}</h3>
+                            <h3 class="mt-1 text-lg font-bold text-slate-900 dark:text-white">{{ __('Provider health') }}</h3>
                         </div>
                         <div class="grid gap-4 p-5 {{ $whatsappVisible ? 'md:grid-cols-2' : '' }}">
                             @foreach ($channels as $key => $channel)
@@ -103,7 +103,7 @@
                                             {{ $channel['status'] }}
                                         </span>
                                     </div>
-                                    <h4 class="mt-5 text-xl font-black text-slate-900 dark:text-white">{{ $channel['label'] }}</h4>
+                                    <h4 class="mt-5 text-xl font-bold text-slate-900 dark:text-white">{{ $channel['label'] }}</h4>
                                     <p class="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">
                                         {{ $key === 'whatsapp' ? __('Approved template verification through the configured WhatsApp Business account') : __('Transactional verification codes delivered through the OTPIQ SMS API') }}
                                     </p>
@@ -135,7 +135,7 @@
                     <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         <div class="border-b border-slate-200 px-5 py-4 dark:border-slate-800">
                             <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">{{ __('Configuration') }}</p>
-                            <h3 class="mt-1 text-lg font-black text-slate-900 dark:text-white">{{ __('Readiness checks') }}</h3>
+                            <h3 class="mt-1 text-lg font-bold text-slate-900 dark:text-white">{{ __('Readiness checks') }}</h3>
                         </div>
                         <div class="grid gap-x-6 p-5 sm:grid-cols-2">
                             @php
@@ -202,7 +202,7 @@
                             </span>
                             <div>
                                 <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">{{ __('Diagnostics') }}</p>
-                                <h3 class="text-lg font-black text-slate-900 dark:text-white">{{ __('Send test OTP') }}</h3>
+                                <h3 class="text-lg font-bold text-slate-900 dark:text-white">{{ __('Send test OTP') }}</h3>
                             </div>
                         </div>
                     </div>

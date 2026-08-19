@@ -167,7 +167,7 @@
             <div class="relative mt-8">
                 <div class="flex items-baseline gap-2 flex-wrap">
                     <span class="text-sm font-bold text-info/80">{{ $currencyLabel }}</span>
-                    <span class="num-display text-5xl md:text-6xl lg:text-7xl font-black leading-none">{{ number_format($totalRevenue, $currencyDecimals) }}</span>
+                    <span class="num-display text-5xl md:text-6xl lg:text-7xl font-bold leading-none">{{ number_format($totalRevenue, $currencyDecimals) }}</span>
                 </div>
                 <div class="mt-5 flex items-center gap-3 text-xs flex-wrap">
                     @if($revenueGrowth > 0)
@@ -245,7 +245,7 @@
                     <i class="fas fa-bag-shopping"></i>
                 </div>
             </div>
-            <p class="mt-6 num-display text-4xl font-black text-primary dark:text-slate-100">{{ number_format($totalOrders) }}</p>
+            <p class="mt-6 num-display text-4xl font-bold text-primary dark:text-slate-100">{{ number_format($totalOrders) }}</p>
             <div class="mt-2 flex items-center gap-2 text-xs">
                 @if($ordersGrowth > 0)
                     <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 px-2 py-0.5 font-bold border border-emerald-100">
@@ -289,7 +289,7 @@
                     <i class="fas fa-screwdriver-wrench"></i>
                 </div>
             </div>
-            <p class="mt-6 num-display text-4xl font-black text-primary dark:text-slate-100">{{ number_format($totalProducts) }}</p>
+            <p class="mt-6 num-display text-4xl font-bold text-primary dark:text-slate-100">{{ number_format($totalProducts) }}</p>
             <div class="mt-2 flex items-center gap-2 text-xs">
                 @if($productsTrendPercent > 0)
                     <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 px-2 py-0.5 font-bold border border-emerald-100">
@@ -331,7 +331,7 @@
                     <i class="fas fa-chart-line"></i>
                 </div>
             </div>
-            <p class="mt-6 num-display text-3xl font-black text-primary dark:text-slate-100">
+            <p class="mt-6 num-display text-3xl font-bold text-primary dark:text-slate-100">
                 <span class="text-base font-bold text-slate-400 dark:text-slate-500">{{ $currencyLabel }}</span>
                 {{ number_format($todaySales, $currencyDecimals) }}
             </p>
@@ -364,7 +364,7 @@
                     <i class="far fa-hourglass-half"></i>
                 </div>
             </div>
-            <p class="mt-6 num-display text-4xl font-black text-primary dark:text-slate-100">{{ number_format($pendingOrders) }}</p>
+            <p class="mt-6 num-display text-4xl font-bold text-primary dark:text-slate-100">{{ number_format($pendingOrders) }}</p>
             <div class="mt-3 flex items-center justify-between">
                 <p class="text-xs text-accent font-bold inline-flex items-center gap-1.5 dark:text-accent">
                     @if($pendingOrders > 0)
@@ -394,7 +394,7 @@
                     <i class="fas fa-users"></i>
                 </div>
             </div>
-            <p class="mt-3 num-display text-3xl font-black text-primary dark:text-slate-100">{{ number_format($totalUsers) }}</p>
+            <p class="mt-3 num-display text-3xl font-bold text-primary dark:text-slate-100">{{ number_format($totalUsers) }}</p>
             <div class="mt-2 flex items-center gap-2 text-xs">
                 @if($usersGrowth > 0)
                     <span class="text-emerald-600 font-bold dark:text-emerald-400"><i class="fas fa-arrow-up text-[10px]"></i> {{ number_format(abs($usersGrowth), 1) }}%</span>
@@ -414,7 +414,7 @@
                     <i class="far fa-credit-card"></i>
                 </div>
             </div>
-            <p class="mt-3 num-display text-3xl font-black text-primary dark:text-slate-100">{{ number_format($unpaidOrders) }}</p>
+            <p class="mt-3 num-display text-3xl font-bold text-primary dark:text-slate-100">{{ number_format($unpaidOrders) }}</p>
             <p class="mt-2 text-xs text-rose-600 font-bold dark:text-rose-400 inline-flex items-center gap-1.5">
                 @if($unpaidOrders > 0)
                     <span class="pulse-dot text-rose-500 inline-flex h-1.5 w-1.5 rounded-full bg-rose-500"></span>
@@ -432,7 +432,7 @@
                     <i class="fas fa-user-plus"></i>
                 </div>
             </div>
-            <p class="mt-3 num-display text-3xl font-black text-primary dark:text-slate-100">{{ number_format($newCustomers) }}</p>
+            <p class="mt-3 num-display text-3xl font-bold text-primary dark:text-slate-100">{{ number_format($newCustomers) }}</p>
             <p class="mt-2 text-xs text-info font-bold dark:text-info">{{ __('This month') }}</p>
         </div>
 
@@ -454,7 +454,7 @@
                          style="background: conic-gradient({{ $gaugeColor }} 0% {{ $lowStockPct }}%, #e5e7eb {{ $lowStockPct }}% 100%);">
                         <div class="absolute inset-2 rounded-full bg-white grid place-items-center dark:bg-slate-900">
                             <div class="text-center leading-tight">
-                                <p class="num-display text-2xl font-black {{ $gaugeTone === 'rose' ? 'text-rose-700 dark:text-rose-300' : ($gaugeTone === 'amber' ? 'text-accent dark:text-accent' : 'text-emerald-700 dark:text-emerald-300') }}">{{ number_format($lowStockCount) }}</p>
+                                <p class="num-display text-2xl font-bold {{ $gaugeTone === 'rose' ? 'text-rose-700 dark:text-rose-300' : ($gaugeTone === 'amber' ? 'text-accent dark:text-accent' : 'text-emerald-700 dark:text-emerald-300') }}">{{ number_format($lowStockCount) }}</p>
                                 <p class="text-[8px] uppercase tracking-widest text-slate-400 font-bold dark:text-slate-500">{{ __('SKUs') }}</p>
                             </div>
                         </div>
@@ -482,7 +482,7 @@
         <div class="mb-5 flex flex-wrap items-center justify-between gap-3">
             <div>
                 <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">{{ __('Site Analytics') }}</p>
-                <h3 class="mt-1 text-xl font-black text-primary dark:text-slate-100">{{ __('Visitor activity snapshot') }}</h3>
+                <h3 class="mt-1 text-xl font-bold text-primary dark:text-slate-100">{{ __('Visitor activity snapshot') }}</h3>
                 <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Last :n days', ['n' => $siteAnalyticsDays]) }}</p>
             </div>
             @if(Route::has('admin.analytics.index'))
@@ -526,7 +526,7 @@
                             <i class="{{ $card['icon'] }} text-xs"></i>
                         </span>
                     </div>
-                    <p class="num-display mt-4 pl-1 text-2xl font-black text-primary dark:text-slate-100">{{ number_format((int) $card['value']) }}</p>
+                    <p class="num-display mt-4 pl-1 text-2xl font-bold text-primary dark:text-slate-100">{{ number_format((int) $card['value']) }}</p>
                 </div>
             @endforeach
         </div>
@@ -534,7 +534,7 @@
         <div class="mt-5 grid gap-4 lg:grid-cols-2">
             <div class="rounded-2xl border border-slate-200/70 bg-slate-50 dark:border-slate-800 dark:bg-slate-950/40">
                 <div class="flex items-center justify-between border-b border-slate-200/70 px-4 py-3 dark:border-slate-800">
-                    <p class="text-xs font-black uppercase tracking-[0.16em] text-slate-600 dark:text-slate-300">{{ __('Most viewed products') }}</p>
+                    <p class="text-xs font-bold uppercase tracking-[0.16em] text-slate-600 dark:text-slate-300">{{ __('Most viewed products') }}</p>
                     <i class="far fa-eye text-info"></i>
                 </div>
                 @if($siteAnalyticsTopViewed->isEmpty())
@@ -549,7 +549,7 @@
                                         <p class="font-mono text-[10px] text-slate-400">{{ $row['sku'] }}</p>
                                     @endif
                                 </div>
-                                <span class="num-display shrink-0 text-sm font-black text-primary dark:text-slate-100">{{ number_format((int) $row['count']) }}</span>
+                                <span class="num-display shrink-0 text-sm font-bold text-primary dark:text-slate-100">{{ number_format((int) $row['count']) }}</span>
                             </div>
                         @endforeach
                     </div>
@@ -558,7 +558,7 @@
 
             <div class="rounded-2xl border border-slate-200/70 bg-slate-50 dark:border-slate-800 dark:bg-slate-950/40">
                 <div class="flex items-center justify-between border-b border-slate-200/70 px-4 py-3 dark:border-slate-800">
-                    <p class="text-xs font-black uppercase tracking-[0.16em] text-slate-600 dark:text-slate-300">{{ __('Search keywords') }}</p>
+                    <p class="text-xs font-bold uppercase tracking-[0.16em] text-slate-600 dark:text-slate-300">{{ __('Search keywords') }}</p>
                     <i class="fas fa-magnifying-glass text-info"></i>
                 </div>
                 @if($siteAnalyticsTopSearches->isEmpty())
@@ -568,7 +568,7 @@
                         @foreach($siteAnalyticsTopSearches->take(10) as $row)
                             <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
                                 <span class="font-mono">{{ $row['keyword'] }}</span>
-                                <span class="rounded bg-slate-50 px-1.5 py-0.5 text-[10px] font-black text-slate-500 dark:bg-slate-800 dark:text-slate-400">{{ number_format((int) $row['count']) }}</span>
+                                <span class="rounded bg-slate-50 px-1.5 py-0.5 text-[10px] font-bold text-slate-500 dark:bg-slate-800 dark:text-slate-400">{{ number_format((int) $row['count']) }}</span>
                             </span>
                         @endforeach
                     </div>
@@ -649,7 +649,7 @@
                         <div class="relative h-16 w-16 shrink-0 rounded-full grid place-items-center"
                              style="background: conic-gradient({{ $toneHex }} 0deg {{ $opPct * 3.6 }}deg, rgba(255,255,255,0.06) {{ $opPct * 3.6 }}deg 360deg);">
                             <div class="absolute inset-1.5 rounded-full grid place-items-center" style="background: linear-gradient(135deg, #04041f, #070740);">
-                                <span class="num-display text-2xl font-black {{ $hasItems ? '' : 'text-white/40' }}" style="{{ $hasItems ? 'color: ' . $toneHex . ';' : '' }}">{{ number_format($count) }}</span>
+                                <span class="num-display text-2xl font-bold {{ $hasItems ? '' : 'text-white/40' }}" style="{{ $hasItems ? 'color: ' . $toneHex . ';' : '' }}">{{ number_format($count) }}</span>
                             </div>
                         </div>
                         <div class="min-w-0 flex-1">
@@ -766,17 +766,17 @@
                     <div class="flex items-center gap-3 text-xs">
                         <div class="text-center">
                             <p class="text-[9px] uppercase tracking-widest text-white/45 font-bold leading-none">{{ __('Total') }}</p>
-                            <p class="num-display text-lg font-black text-white mt-0.5 leading-none">{{ number_format($monthSum) }}</p>
+                            <p class="num-display text-lg font-bold text-white mt-0.5 leading-none">{{ number_format($monthSum) }}</p>
                         </div>
                         <span class="h-8 w-px bg-white/10"></span>
                         <div class="text-center">
                             <p class="text-[9px] uppercase tracking-widest text-white/45 font-bold leading-none">{{ __('Peak') }}</p>
-                            <p class="text-lg font-black text-info mt-0.5 leading-none">{{ $monthPeakLabel }}</p>
+                            <p class="text-lg font-bold text-info mt-0.5 leading-none">{{ $monthPeakLabel }}</p>
                         </div>
                         <span class="h-8 w-px bg-white/10"></span>
                         <div class="text-center">
                             <p class="text-[9px] uppercase tracking-widest text-white/45 font-bold leading-none">{{ __('Avg') }}</p>
-                            <p class="num-display text-lg font-black text-info mt-0.5 leading-none">{{ number_format($monthAvg) }}</p>
+                            <p class="num-display text-lg font-bold text-info mt-0.5 leading-none">{{ number_format($monthAvg) }}</p>
                         </div>
                         @if($monthChange != 0)
                             <span class="h-8 w-px bg-white/10"></span>
@@ -831,7 +831,7 @@
                         <canvas id="categoryChart"></canvas>
                         <div class="absolute inset-0 grid place-items-center pointer-events-none">
                             <div class="text-center">
-                                <p class="num-display text-3xl font-black text-white leading-none">{{ number_format($catTotal) }}</p>
+                                <p class="num-display text-3xl font-bold text-white leading-none">{{ number_format($catTotal) }}</p>
                                 <p class="text-[9px] uppercase tracking-widest text-white/50 mt-1 font-bold">{{ __('Products') }}</p>
                             </div>
                         </div>
@@ -887,7 +887,7 @@
                     <i class="fas fa-rotate-left"></i>
                 </div>
             </div>
-            <p class="mt-4 num-display text-3xl font-black text-primary dark:text-slate-100">{{ number_format($returnRatePercent, 1) }}%</p>
+            <p class="mt-4 num-display text-3xl font-bold text-primary dark:text-slate-100">{{ number_format($returnRatePercent, 1) }}%</p>
             <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">
                 {{ __(':returns returns / :delivered delivered orders', [
                     'returns' => number_format($returnRequests30d),
@@ -907,7 +907,7 @@
                     <i class="fas fa-truck-fast"></i>
                 </div>
             </div>
-            <p class="mt-4 num-display text-3xl font-black text-primary dark:text-slate-100">
+            <p class="mt-4 num-display text-3xl font-bold text-primary dark:text-slate-100">
                 @if($avgShipHours === null)
                     <span class="text-slate-400">—</span>
                 @elseif($avgShipHours >= 24)
@@ -962,7 +962,7 @@
                 <p class="text-[10px] uppercase tracking-[0.22em] text-accent font-bold dark:text-accent">{{ __('Low Stock') }}</p>
                 <span class="inline-flex items-center px-2 py-1 text-[10px] rounded-full bg-amber-100 text-amber-700 font-bold dark:bg-amber-900/30 dark:text-amber-300">{{ __('Threshold :count', ['count' => $lowStockThreshold]) }}</span>
             </div>
-            <p class="mt-4 num-display text-3xl font-black text-accent dark:text-accent">{{ number_format($lowStockCount) }}</p>
+            <p class="mt-4 num-display text-3xl font-bold text-accent dark:text-accent">{{ number_format($lowStockCount) }}</p>
             <p class="mt-2 text-xs {{ $lowStockTrendPercent > 0 ? 'text-rose-600' : ($lowStockTrendPercent < 0 ? 'text-emerald-600' : 'text-slate-500') }} font-bold">
                 <i class="fas fa-arrow-{{ $lowStockTrendPercent > 0 ? 'up' : ($lowStockTrendPercent < 0 ? 'down' : 'right') }} mr-1"></i>
                 {{ __(':percent% vs previous month', ['percent' => number_format(abs($lowStockTrendPercent), 1)]) }}
@@ -975,7 +975,7 @@
                 <p class="text-[10px] uppercase tracking-[0.22em] text-rose-700 font-bold dark:text-rose-300">{{ __('Out Of Stock') }}</p>
                 <span class="inline-flex items-center px-2 py-1 text-[10px] rounded-full bg-rose-100 text-rose-700 font-bold dark:bg-rose-900/30 dark:text-rose-300">{{ __('Critical') }}</span>
             </div>
-            <p class="mt-4 num-display text-3xl font-black text-rose-800 dark:text-rose-300">{{ number_format($outOfStockCount) }}</p>
+            <p class="mt-4 num-display text-3xl font-bold text-rose-800 dark:text-rose-300">{{ number_format($outOfStockCount) }}</p>
             <p class="mt-2 text-xs {{ $outOfStockTrendPercent > 0 ? 'text-rose-600' : ($outOfStockTrendPercent < 0 ? 'text-emerald-600' : 'text-slate-500') }} font-bold">
                 <i class="fas fa-arrow-{{ $outOfStockTrendPercent > 0 ? 'up' : ($outOfStockTrendPercent < 0 ? 'down' : 'right') }} mr-1"></i>
                 {{ __(':percent% vs previous month', ['percent' => number_format(abs($outOfStockTrendPercent), 1)]) }}
@@ -988,7 +988,7 @@
                 <p class="text-[10px] uppercase tracking-[0.22em] text-emerald-700 font-bold dark:text-emerald-300">{{ __('Recent Products') }}</p>
                 <span class="inline-flex items-center px-2 py-1 text-[10px] rounded-full bg-emerald-100 text-emerald-700 font-bold dark:bg-emerald-900/30 dark:text-emerald-300">{{ __('This month') }}</span>
             </div>
-            <p class="mt-4 num-display text-3xl font-black text-emerald-800 dark:text-emerald-300">{{ number_format($recentProductsCount) }}</p>
+            <p class="mt-4 num-display text-3xl font-bold text-emerald-800 dark:text-emerald-300">{{ number_format($recentProductsCount) }}</p>
             <p class="mt-2 text-xs {{ $recentProductsTrendPercent > 0 ? 'text-emerald-600' : ($recentProductsTrendPercent < 0 ? 'text-rose-600' : 'text-slate-500') }} font-bold">
                 <i class="fas fa-arrow-{{ $recentProductsTrendPercent > 0 ? 'up' : ($recentProductsTrendPercent < 0 ? 'down' : 'right') }} mr-1"></i>
                 {{ __(':percent% vs previous month', ['percent' => number_format(abs($recentProductsTrendPercent), 1)]) }}
@@ -1020,7 +1020,7 @@
                 </div>
                 <div class="text-right">
                     <p class="text-[9px] uppercase tracking-widest text-slate-400 font-bold">{{ __('Net') }}</p>
-                    <p class="num-display text-xl font-black {{ $stockNet >= 0 ? 'text-emerald-600 dark:text-emerald-300' : 'text-rose-600 dark:text-rose-300' }}">{{ $stockNet >= 0 ? '+' : '' }}{{ number_format($stockNet) }}</p>
+                    <p class="num-display text-xl font-bold {{ $stockNet >= 0 ? 'text-emerald-600 dark:text-emerald-300' : 'text-rose-600 dark:text-rose-300' }}">{{ $stockNet >= 0 ? '+' : '' }}{{ number_format($stockNet) }}</p>
                 </div>
             </div>
             @if(count($stockTrendLabels) > 0 && array_sum(array_map('abs', $stockTrendValues)) > 0)
@@ -1057,11 +1057,11 @@
             <div class="grid grid-cols-2 gap-2 mb-3">
                 <div class="rounded-xl bg-emerald-50 dark:bg-emerald-900/15 border border-emerald-200/60 dark:border-emerald-800/40 px-3 py-2 flex items-center justify-between">
                     <span class="text-[10px] uppercase tracking-widest text-emerald-700 dark:text-emerald-300 font-bold"><i class="fas fa-arrow-down"></i> {{ __('Stock In') }}</span>
-                    <span class="num-display text-base font-black text-emerald-700 dark:text-emerald-300">{{ number_format($stockIn) }}</span>
+                    <span class="num-display text-base font-bold text-emerald-700 dark:text-emerald-300">{{ number_format($stockIn) }}</span>
                 </div>
                 <div class="rounded-xl bg-rose-50 dark:bg-rose-900/15 border border-rose-200/60 dark:border-rose-800/40 px-3 py-2 flex items-center justify-between">
                     <span class="text-[10px] uppercase tracking-widest text-rose-700 dark:text-rose-300 font-bold"><i class="fas fa-arrow-up"></i> {{ __('Stock Out') }}</span>
-                    <span class="num-display text-base font-black text-rose-700 dark:text-rose-300">{{ number_format($stockOut) }}</span>
+                    <span class="num-display text-base font-bold text-rose-700 dark:text-rose-300">{{ number_format($stockOut) }}</span>
                 </div>
             </div>
 
@@ -1133,7 +1133,7 @@
                                     <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">{{ __('SKU:') }} <span class="font-mono">{{ $product->sku }}</span></p>
                                 </div>
                                 <div class="text-right shrink-0">
-                                    <p class="num-display text-2xl font-black" style="color: {{ $sevColor }};">{{ $product->stock_quantity }}</p>
+                                    <p class="num-display text-2xl font-bold" style="color: {{ $sevColor }};">{{ $product->stock_quantity }}</p>
                                     <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">{{ __('left') }}</p>
                                 </div>
                             </div>
@@ -1310,7 +1310,7 @@
                                 </div>
 
                                 <div class="text-right shrink-0">
-                                    <p class="num-display text-sm font-black text-white leading-none">
+                                    <p class="num-display text-sm font-bold text-white leading-none">
                                         {{ number_format($order->total_amount, $currencyDecimals) }}
                                     </p>
                                     <p class="text-[9px] uppercase tracking-widest text-white/40 font-bold mt-0.5">{{ $currencyLabel }}</p>
@@ -1396,11 +1396,11 @@
                                 <div class="mt-3 grid grid-cols-2 gap-3">
                                     <div>
                                         <p class="text-[9px] uppercase tracking-widest text-white/45 font-bold">{{ __('Total Sales') }}</p>
-                                        <p class="mt-0.5 num-display text-2xl font-black text-accent leading-none">{{ number_format($champion->total_sold ?? 0) }}</p>
+                                        <p class="mt-0.5 num-display text-2xl font-bold text-accent leading-none">{{ number_format($champion->total_sold ?? 0) }}</p>
                                     </div>
                                     <div>
                                         <p class="text-[9px] uppercase tracking-widest text-white/45 font-bold">{{ __('Revenue') }}</p>
-                                        <p class="mt-0.5 num-display text-xl font-black text-white leading-none">
+                                        <p class="mt-0.5 num-display text-xl font-bold text-white leading-none">
                                             <span class="text-xs text-white/55">{{ $currencyLabel }}</span>
                                             {{ number_format($champion->total_revenue ?? 0, $currencyDecimals) }}
                                         </p>

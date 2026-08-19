@@ -170,7 +170,7 @@
                         @if ($totalSavings > 0)
                             <div class="flex items-center justify-between border-b border-dashed border-slate-200/80 py-2.5 dark:border-slate-800">
                                 <dt class="text-sm text-slate-600 dark:text-slate-300">{{ __('You save') }}</dt>
-                                <dd class="text-sm font-bold text-emerald-600 dark:text-emerald-300">-{{ number_format($totalSavings, 2) }} {{ $currencySymbol }}</dd>
+                                <dd class="text-sm font-bold text-accent-ink dark:text-accent">-{{ number_format($totalSavings, 2) }} {{ $currencySymbol }}</dd>
                             </div>
                         @endif
                         <div class="flex items-end justify-between pt-3">

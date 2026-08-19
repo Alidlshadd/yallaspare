@@ -194,7 +194,7 @@
                         ])
                     >
                         <p class="text-[11px] font-bold uppercase tracking-widest {{ $card['accent'] }}">{{ $card['label'] }}</p>
-                        <p class="mt-2 text-2xl font-extrabold tabular-nums {{ $card['number'] }}">{{ number_format($card['count']) }}</p>
+                        <p class="mt-2 text-2xl font-bold tabular-nums {{ $card['number'] }}">{{ number_format($card['count']) }}</p>
                         <p class="mt-1 text-[11px] text-gray-400 dark:text-slate-500">{{ $card['caption'] }}</p>
                     </a>
                 @endforeach
@@ -298,7 +298,7 @@
 
                     <hr class="my-3 border-gray-200 dark:border-slate-800">
 
-                    <div class="mb-1.5 px-3 text-[10px] font-black uppercase tracking-[0.16em] text-gray-400 dark:text-slate-500">
+                    <div class="mb-1.5 px-3 text-[10px] font-bold uppercase tracking-[0.16em] text-gray-400 dark:text-slate-500">
                         {{ __('Access Status') }}
                     </div>
                     <nav class="space-y-0.5" aria-label="{{ __('Access Status') }}">
@@ -332,7 +332,7 @@
                         @endphp
                         <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm transition hover:border-gray-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700">
                             <div class="flex flex-wrap items-center gap-3">
-                                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-extrabold {{ $meta['avatar'] }}">
+                                <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold {{ $meta['avatar'] }}">
                                     {{ strtoupper(substr($user->name, 0, 1)) }}
                                 </div>
 
@@ -345,7 +345,7 @@
                                             {{ $meta['label'] }}
                                         </span>
                                         @if($user->isBanned())
-                                            <span class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-black {{ $user->isPermanentlyBanned() ? 'border-slate-950 bg-slate-950 text-white dark:border-black dark:bg-black' : 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300' }}">
+                                            <span class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-bold {{ $user->isPermanentlyBanned() ? 'border-slate-950 bg-slate-950 text-white dark:border-black dark:bg-black' : 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300' }}">
                                                 <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
                                                 {{ $user->isPermanentlyBanned() ? __('Permanent Ban') : __('Temporarily Banned') }}
                                             </span>

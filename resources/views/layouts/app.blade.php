@@ -162,7 +162,7 @@
                 .admin-nav-section {
                     display: flex; align-items: center; gap: 8px;
                     padding: 16px 18px 8px;
-                    font-size: 9px; font-weight: 900; letter-spacing: 0.28em;
+                    font-size: 9px; font-weight: 700; letter-spacing: 0.28em;
                     text-transform: uppercase; color: #ffb27a;
                     font-family: ui-monospace, 'JetBrains Mono', monospace;
                     user-select: none;
@@ -257,7 +257,7 @@
                     padding: 4px 8px; border-radius: 999px;
                     background: rgba(16,185,129,0.10); color: #6ee7b7;
                     border: 1px solid rgba(16,185,129,0.25);
-                    font-size: 9px; font-weight: 900; letter-spacing: 0.18em; text-transform: uppercase;
+                    font-size: 9px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
                     white-space: nowrap;
                 }
                 .admin-sidebar-status-dot {
@@ -771,7 +771,7 @@
                             {{-- CENTER: shared page title (auto-generated from route name for consistency) --}}
                             <div class="hidden md:flex flex-1 items-center justify-center min-w-0 px-3">
                                 <div class="flex flex-col items-center leading-tight min-w-0 max-w-full">
-                                    <h2 class="text-lg md:text-xl lg:text-2xl font-black text-white tracking-tight whitespace-nowrap truncate max-w-full">{{ $adminPageTitle }}</h2>
+                                    <h2 class="text-lg md:text-xl lg:text-2xl font-bold text-white tracking-tight whitespace-nowrap truncate max-w-full">{{ $adminPageTitle }}</h2>
                                     <div class="mt-1 inline-flex items-center gap-2 text-[10px] lg:text-[11px] uppercase tracking-[0.2em] text-white/55 font-bold whitespace-nowrap truncate max-w-full" style="font-family: 'JetBrains Mono', ui-monospace, monospace;">
                                         <span class="topbar-pulse-ring text-emerald-400 inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
                                         <span class="text-accent">{{ __('ADMIN · LIVE') }}</span>
@@ -783,7 +783,7 @@
 
                             {{-- MOBILE: compact title --}}
                             <div class="flex md:hidden flex-1 items-center justify-center min-w-0 px-2">
-                                <h2 class="text-base font-black text-white tracking-tight whitespace-nowrap truncate max-w-full">{{ $adminPageTitle }}</h2>
+                                <h2 class="text-base font-bold text-white tracking-tight whitespace-nowrap truncate max-w-full">{{ $adminPageTitle }}</h2>
                             </div>
 
                             {{-- RIGHT: actions — all 36px tall, consistent spacing --}}
@@ -866,7 +866,7 @@
                                     @if ($adminProfilePhotoUrl)
                                         <img src="{{ $adminProfilePhotoUrl }}" alt="{{ __(':name profile photo', ['name' => $adminUser->name]) }}" class="h-7 w-7 rounded-md object-cover">
                                     @else
-                                        <span class="h-7 w-7 rounded-md grid place-items-center emboss-badge text-navy-deep text-[11px] font-black" style="font-family: 'JetBrains Mono', ui-monospace, monospace;">
+                                        <span class="h-7 w-7 rounded-md grid place-items-center emboss-badge text-navy-deep text-[11px] font-bold" style="font-family: 'JetBrains Mono', ui-monospace, monospace;">
                                             {{ $adminAvatarInitial }}
                                         </span>
                                     @endif

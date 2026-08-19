@@ -95,19 +95,19 @@
                     <div class="flex flex-wrap gap-2">
                         <div class="min-w-[92px] rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 dark:border-slate-700 dark:bg-slate-800/60">
                             <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-slate-500">{{ __('Checks passed') }}</p>
-                            <p class="mt-0.5 text-base font-extrabold tabular-nums text-emerald-600 dark:text-emerald-300">{{ $checksPassed }}<span class="text-xs font-bold text-gray-400 dark:text-slate-500"> / {{ count($checks) }}</span></p>
+                            <p class="mt-0.5 text-base font-bold tabular-nums text-emerald-600 dark:text-emerald-300">{{ $checksPassed }}<span class="text-xs font-bold text-gray-400 dark:text-slate-500"> / {{ count($checks) }}</span></p>
                         </div>
                         <div class="min-w-[92px] rounded-lg border {{ $checksAction > 0 ? 'border-rose-300/70 dark:border-rose-400/35' : 'border-gray-200 dark:border-slate-700' }} bg-gray-50 px-3 py-1.5 dark:bg-slate-800/60">
                             <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-slate-500">{{ __('Action needed') }}</p>
-                            <p class="mt-0.5 text-base font-extrabold tabular-nums {{ $checksAction > 0 ? 'text-rose-600 dark:text-rose-300' : 'text-gray-900 dark:text-white' }}">{{ $checksAction }}</p>
+                            <p class="mt-0.5 text-base font-bold tabular-nums {{ $checksAction > 0 ? 'text-rose-600 dark:text-rose-300' : 'text-gray-900 dark:text-white' }}">{{ $checksAction }}</p>
                         </div>
                         <div class="min-w-[92px] rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 dark:border-slate-700 dark:bg-slate-800/60">
                             <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-slate-500">{{ __('Currency') }}</p>
-                            <p class="mt-0.5 text-base font-extrabold text-gray-900 dark:text-white">{{ $settings['currency_symbol'] ?? 'IQD' }}</p>
+                            <p class="mt-0.5 text-base font-bold text-gray-900 dark:text-white">{{ $settings['currency_symbol'] ?? 'IQD' }}</p>
                         </div>
                         <div class="min-w-[92px] rounded-lg border border-gray-200 bg-gray-50 px-3 py-1.5 dark:border-slate-700 dark:bg-slate-800/60">
                             <p class="text-[10px] font-bold uppercase tracking-widest text-gray-400 dark:text-slate-500">{{ __('Shipping Fee') }}</p>
-                            <p class="mt-0.5 text-base font-extrabold tabular-nums text-gray-900 dark:text-white">{{ number_format((float) ($settings['shipping_fee'] ?? 5000), 0) }}</p>
+                            <p class="mt-0.5 text-base font-bold tabular-nums text-gray-900 dark:text-white">{{ number_format((float) ($settings['shipping_fee'] ?? 5000), 0) }}</p>
                         </div>
                     </div>
                 </div>

@@ -22,18 +22,18 @@
 
             <div class="relative grid min-h-[540px] items-center gap-12 px-6 py-14 sm:px-10 lg:grid-cols-[1.08fr_.92fr] lg:px-14 lg:py-16">
                 <div class="max-w-2xl">
-                    <span class="sup-in inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.18em] text-white backdrop-blur-sm">
+                    <span class="sup-in inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-white backdrop-blur-sm">
                         <span class="ct-live-dot" aria-hidden="true"></span>
                         {{ __('Customer Service') }}
                     </span>
-                    <h1 class="sup-in mt-7 text-5xl font-black leading-[.98] tracking-[-0.055em] text-white sm:text-6xl lg:text-7xl" style="animation-delay: .1s">
+                    <h1 class="sup-in mt-7 text-5xl font-bold leading-[.98] tracking-[-0.055em] text-white sm:text-6xl lg:text-7xl" style="animation-delay: .1s">
                         {{ __('Contact Us') }}
                     </h1>
                     <p class="sup-in mt-6 max-w-xl text-base leading-8 text-slate-300 sm:text-lg" style="animation-delay: .2s">
                         {{ __('We are here to help you with any questions about our products, orders, or delivery services. If you need assistance, feel free to contact our customer support team.') }}
                     </p>
                     <div class="sup-in mt-8 flex flex-wrap items-center gap-3" style="animation-delay: .3s">
-                        <a href="#contact-form" class="font-display inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-accent px-6 text-sm font-extrabold text-primary shadow-lg shadow-accent/20 transition hover:-translate-y-0.5 hover:bg-accent hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white">
+                        <a href="#contact-form" class="font-display inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-accent px-6 text-sm font-bold text-primary shadow-lg shadow-accent/20 transition hover:-translate-y-0.5 hover:bg-accent hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white">
                             {{ __('Send a Support Request') }}
                             <svg class="ct-arrow h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
@@ -140,8 +140,8 @@
                             </svg>
                         </span>
                         <div>
-                            <p class="text-[11px] font-extrabold uppercase tracking-[0.2em] text-accent dark:text-accent">{{ __('Customer Service') }}</p>
-                            <h2 class="mt-1 text-2xl font-black tracking-tight text-primary sm:text-3xl dark:text-white">{{ __('Send a Support Request') }}</h2>
+                            <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-accent dark:text-accent">{{ __('Customer Service') }}</p>
+                            <h2 class="mt-1 text-2xl font-bold tracking-tight text-primary sm:text-3xl dark:text-white">{{ __('Send a Support Request') }}</h2>
                         </div>
                     </div>
                     <span class="ct-ticket-id"><span class="ct-live-dot" style="width:5px;height:5px;"></span>{{ __('REQ · NEW') }}</span>
@@ -198,7 +198,7 @@
 
                     <div class="flex flex-col gap-4 border-t border-slate-200/80 pt-7 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800">
                         <p class="max-w-sm text-xs leading-5 text-slate-500 dark:text-slate-400">{{ __('Our team will help you find the correct spare part.') }}</p>
-                        <button type="submit" class="ct-submit inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-sm font-extrabold text-white shadow-lg shadow-primary/20 transition hover:-translate-y-0.5 hover:bg-[#10105f] hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:bg-accent dark:text-navy dark:shadow-accent/10 dark:hover:bg-accent">
+                        <button type="submit" class="ct-submit inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-sm font-bold text-white shadow-lg shadow-primary/20 transition hover:-translate-y-0.5 hover:bg-[#10105f] hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:bg-accent dark:text-navy dark:shadow-accent/10 dark:hover:bg-accent">
                             {{ __('Send Message') }}
                             <svg class="ct-arrow h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
@@ -218,7 +218,7 @@
                         </span>
                         <span class="ct-open-badge"><i aria-hidden="true"></i>{{ __('Customer Service') }}</span>
                     </div>
-                    <h3 class="mt-6 text-lg font-black">{{ __('Working Hours') }}</h3>
+                    <h3 class="mt-6 text-lg font-bold">{{ __('Working Hours') }}</h3>
                     <div class="mt-4 border-t border-white/10 pt-4">
                         <div class="flex items-center justify-between gap-4 text-sm">
                             <span class="text-slate-300">{{ __('Monday - Saturday') }}</span>
@@ -234,11 +234,11 @@
                             <path d="M4 17h16M6 17l1-7h10l1 7M8 10l1-3h6l1 3M8 20h.01M16 20h.01" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </span>
-                    <h3 class="mt-5 text-lg font-black tracking-tight text-primary dark:text-white">{{ __('If you need help finding the correct part for your vehicle, please send us:') }}</h3>
+                    <h3 class="mt-5 text-lg font-bold tracking-tight text-primary dark:text-white">{{ __('If you need help finding the correct part for your vehicle, please send us:') }}</h3>
                     <ul class="mt-4 space-y-3 text-sm text-slate-600 dark:text-slate-300">
                         @foreach ([__('Car brand and model'), __('Year of manufacture'), __('Engine type (if available)'), __('Part name or photo')] as $item)
                             <li class="flex items-start gap-3">
-                                <span class="mt-1 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-accent text-[9px] font-black text-primary">✓</span>
+                                <span class="mt-1 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-accent text-[9px] font-bold text-primary">✓</span>
                                 <span>{{ $item }}</span>
                             </li>
                         @endforeach
@@ -253,8 +253,8 @@
                             </svg>
                         </span>
                         <div>
-                            <p class="text-[11px] font-extrabold uppercase tracking-[0.17em] text-slate-400">{{ __('Location') }}</p>
-                            <h3 class="mt-1 text-lg font-black text-primary dark:text-white">{{ __('Erbil, Iraq') }}</h3>
+                            <p class="text-[11px] font-bold uppercase tracking-[0.17em] text-slate-400">{{ __('Location') }}</p>
+                            <h3 class="mt-1 text-lg font-bold text-primary dark:text-white">{{ __('Erbil, Iraq') }}</h3>
                         </div>
                     </div>
                     <p class="mt-4 text-sm leading-6 text-slate-600 dark:text-slate-300">{{ __('We are based in Erbil, Iraq, and we deliver auto spare parts across different cities.') }}</p>
@@ -264,12 +264,12 @@
 
         <section data-vision-reveal class="ct-business mt-6 grid gap-6 overflow-hidden rounded-3xl border border-slate-200/80 bg-slate-50 px-6 py-7 sm:grid-cols-2 sm:px-8 dark:border-slate-800 dark:bg-slate-900/70">
             <div>
-                <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400">{{ __('Company Name') }}</p>
-                <p class="mt-2 text-base font-black text-primary dark:text-white">{{ __('Yalla Spare - Auto Parts Store') }}</p>
+                <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">{{ __('Company Name') }}</p>
+                <p class="mt-2 text-base font-bold text-primary dark:text-white">{{ __('Yalla Spare - Auto Parts Store') }}</p>
             </div>
             <div>
-                <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-slate-400">{{ __('Business Type') }}</p>
-                <p class="mt-2 text-base font-black text-primary dark:text-white">{{ __('Online Auto Spare Parts Supplier') }}</p>
+                <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">{{ __('Business Type') }}</p>
+                <p class="mt-2 text-base font-bold text-primary dark:text-white">{{ __('Online Auto Spare Parts Supplier') }}</p>
             </div>
         </section>
     </div>

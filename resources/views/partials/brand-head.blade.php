@@ -59,20 +59,15 @@
      subset covers U+0600-06FF, which includes the Sorani letters
      (ڕ ڵ ێ ۆ ە) a plain Arabic face would miss.
 
-     Weights run 400-800 because that is what the markup asks for: font-bold
-     appears 688 times, font-extrabold 234 and font-black 223, and every one
-     of them was being synthesised before. Synthetic weight is worse under
-     Sora than it was under the old face — Sora is already wide, so smearing
-     it wider blurs exactly the headings the face was chosen for.
-
-     900 is not loaded and not available in Sora anyway; font-black lands on
-     800, which is a real cut rather than a faked one. The better fix is to
-     take font-black and font-extrabold out of the markup — 900 is noise at
-     screen sizes — but that is a hierarchy decision to make deliberately,
-     not a side effect of changing the typeface. --}}
+     Weights stop at 700, which is now the top of the scale. 800 and 900 were
+     briefly loaded because 462 places asked for them, but those weights were
+     compensating for type too small to carry emphasis on its own — and that
+     type is larger now. Under Sora especially, stacking weight on an already
+     wide letterform reads as heavy rather than emphatic, so the markup was
+     brought down to 700 and the extra cuts came back off the wire. --}}
 <link rel="preconnect" href="https://fonts.bunny.net">
 <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
-<link href="https://fonts.bunny.net/css?family=sora:600,700,800|inter:400,500,600,700,800|ibm-plex-sans-arabic:400,500,600,700&display=swap" rel="stylesheet" />
+<link href="https://fonts.bunny.net/css?family=sora:600,700|inter:400,500,600,700|ibm-plex-sans-arabic:400,500,600,700&display=swap" rel="stylesheet" />
 <meta name="theme-color" content="#070740">
 <meta property="og:site_name" content="{{ $siteName }}">
 <meta property="og:type" content="website">

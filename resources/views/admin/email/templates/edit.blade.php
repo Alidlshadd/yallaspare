@@ -144,7 +144,7 @@
                             </div>
                             <div class="h-0.5 bg-accent"></div>
                             <div class="p-4 space-y-3">
-                                <p class="font-black text-slate-900 text-base leading-snug" id="preview-subject">{{ $subject }}</p>
+                                <p class="font-bold text-slate-900 text-base leading-snug" id="preview-subject">{{ $subject }}</p>
                                 <div class="prose prose-sm max-w-none text-slate-700 leading-relaxed" id="preview-body">
                                     {!! $body_html !!}
                                 </div>
@@ -190,7 +190,7 @@
         .dark .rt-btn:hover { background:#1e293b; color:#fff; }
         .rt-sep { width:1px; height:16px; background:#e2e8f0; margin:0 4px; }
         .dark .rt-sep { background:#334155; }
-        #preview-body h1 { font-size:1.5rem; font-weight:800; color:#070740; margin:0.5rem 0; }
+        #preview-body h1 { font-size:1.5rem; font-weight: 700; color:#070740; margin:0.5rem 0; }
         #preview-body h2 { font-size:1.25rem; font-weight:700; color:#070740; margin:0.5rem 0; }
         #preview-body h3 { font-size:1.1rem; font-weight:700; color:#070740; margin:0.5rem 0; }
         #preview-body p { margin:0.75rem 0; }

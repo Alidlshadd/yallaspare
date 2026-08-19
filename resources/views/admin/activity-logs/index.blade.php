@@ -23,17 +23,17 @@
             <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
                 <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-slate-700/60 dark:bg-slate-900">
                     <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-slate-400">{{ __('Total logged') }}</p>
-                    <p class="mt-2 text-2xl font-extrabold tabular-nums text-gray-900 dark:text-white">{{ number_format($totalCount) }}</p>
+                    <p class="mt-2 text-2xl font-bold tabular-nums text-gray-900 dark:text-white">{{ number_format($totalCount) }}</p>
                     <p class="mt-1 text-[11px] text-gray-400 dark:text-slate-500">{{ __('All recorded events') }}</p>
                 </div>
                 <div class="rounded-xl border border-emerald-300/70 bg-white p-4 shadow-sm dark:border-emerald-400/35 dark:bg-slate-900">
                     <p class="text-[11px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-300">{{ __('Today') }}</p>
-                    <p class="mt-2 text-2xl font-extrabold tabular-nums text-emerald-700 dark:text-emerald-300">{{ number_format($todayCount) }}</p>
+                    <p class="mt-2 text-2xl font-bold tabular-nums text-emerald-700 dark:text-emerald-300">{{ number_format($todayCount) }}</p>
                     <p class="mt-1 text-[11px] text-gray-400 dark:text-slate-500">{{ __('Events since midnight') }}</p>
                 </div>
                 <div class="rounded-xl border border-info/70 bg-white p-4 shadow-sm dark:border-info/35 dark:bg-slate-900">
                     <p class="text-[11px] font-bold uppercase tracking-widest text-info dark:text-info">{{ __('Most active admin') }}</p>
-                    <p class="mt-2 truncate text-2xl font-extrabold text-info dark:text-info">{{ $topCauser['name'] ?? '—' }}</p>
+                    <p class="mt-2 truncate text-2xl font-bold text-info dark:text-info">{{ $topCauser['name'] ?? '—' }}</p>
                     <p class="mt-1 text-[11px] text-gray-400 dark:text-slate-500">{{ isset($topCauser['count']) ? __(':count events', ['count' => number_format($topCauser['count'])]) : __('No activity yet') }}</p>
                 </div>
             </div>
@@ -186,7 +186,7 @@
                                         </td>
                                         <td class="px-4 py-3">
                                             <div class="flex items-center gap-2.5">
-                                                <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-100 text-[11px] font-extrabold text-gray-600 dark:bg-slate-800 dark:text-slate-300">
+                                                <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-gray-100 text-[11px] font-bold text-gray-600 dark:bg-slate-800 dark:text-slate-300">
                                                     {{ $causerInitial }}
                                                 </span>
                                                 <div class="min-w-0">
@@ -203,7 +203,7 @@
                                         </td>
                                         <td class="px-4 py-3">
                                             <div class="flex min-w-[220px] items-center gap-2.5">
-                                                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-[11px] font-extrabold text-amber-700 ring-1 ring-inset ring-amber-200 dark:bg-amber-400/10 dark:text-amber-300 dark:ring-amber-400/20">
+                                                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-[11px] font-bold text-amber-700 ring-1 ring-inset ring-amber-200 dark:bg-amber-400/10 dark:text-amber-300 dark:ring-amber-400/20">
                                                     {{ $target['initial'] }}
                                                 </span>
                                                 <div class="min-w-0">

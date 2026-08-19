@@ -96,18 +96,18 @@
             <section class="inv-hero">
                 <div class="grid items-center gap-4 px-5 py-5 sm:px-6 md:grid-cols-[1fr_auto_1fr]">
                     <a href="{{ $gateUrl('in') }}" class="font-display block rounded-xl border-2 px-4 py-3 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent {{ $type === 'in' ? 'border-accent bg-accent/15' : 'border-accent/60 bg-white/5' }}">
-                        <p class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-white/55">{{ __('Stock In') }} &mdash; {{ __('Gate A') }}</p>
-                        <p class="inv-mono mt-1 text-2xl font-black text-accent">+{{ number_format($totalStockIn) }} <span class="float-right">&#8594;</span></p>
+                        <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">{{ __('Stock In') }} &mdash; {{ __('Gate A') }}</p>
+                        <p class="inv-mono mt-1 text-2xl font-bold text-accent">+{{ number_format($totalStockIn) }} <span class="float-right">&#8594;</span></p>
                         <p class="text-[11px] text-white/60">{{ __('Units added') }} &middot; {{ $type === 'in' ? __('Filter active — click to clear') : __('Click to filter') }}</p>
                     </a>
                     <div class="text-center md:px-6">
-                        <p class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-white/55">{{ __('Net Movement') }}</p>
-                        <p class="inv-mono text-3xl font-black {{ $netMovement >= 0 ? 'text-emerald-300' : 'text-rose-300' }}">{{ $netMovement >= 0 ? '+' : '' }}{{ number_format($netMovement) }}</p>
+                        <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">{{ __('Net Movement') }}</p>
+                        <p class="inv-mono text-3xl font-bold {{ $netMovement >= 0 ? 'text-emerald-300' : 'text-rose-300' }}">{{ $netMovement >= 0 ? '+' : '' }}{{ number_format($netMovement) }}</p>
                         <p class="mt-1 text-[11px] text-white/60">{{ number_format($totalMovements) }} {{ __('movements') }} &middot; {{ number_format($todayMovements) }} {{ __('today') }}</p>
                     </div>
                     <a href="{{ $gateUrl('out') }}" class="block rounded-xl border-2 px-4 py-3 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-300 md:text-right {{ $type === 'out' ? 'border-rose-300 bg-rose-400/15' : 'border-rose-400/60 bg-white/5' }}">
-                        <p class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-white/55">{{ __('Stock Out') }} &mdash; {{ __('Gate B') }}</p>
-                        <p class="inv-mono mt-1 text-2xl font-black text-rose-300"><span class="float-left">&#8594;</span> &minus;{{ number_format($totalStockOut) }}</p>
+                        <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">{{ __('Stock Out') }} &mdash; {{ __('Gate B') }}</p>
+                        <p class="inv-mono mt-1 text-2xl font-bold text-rose-300"><span class="float-left">&#8594;</span> &minus;{{ number_format($totalStockOut) }}</p>
                         <p class="text-[11px] text-white/60">{{ __('Units removed') }} &middot; {{ $type === 'out' ? __('Filter active — click to clear') : __('Click to filter') }}</p>
                     </a>
                 </div>
@@ -131,7 +131,7 @@
                     >
                         <div class="flex items-start justify-between gap-3">
                             <div>
-                                <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-slate-400">{{ __('Adjustment') }}</p>
+                                <p class="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">{{ __('Adjustment') }}</p>
                                 <h3 class="mt-1 text-lg font-semibold text-slate-800 dark:text-slate-100">{{ __('Dock Control') }}</h3>
                             </div>
                             <span class="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300">
@@ -232,7 +232,7 @@
                             </div>
 
                             <div x-show="selectedProduct" x-cloak class="rounded-xl border border-amber-200/70 bg-amber-50/60 px-4 py-3 text-sm dark:border-amber-900/40 dark:bg-amber-950/15">
-                                <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-accent/80 dark:text-accent/80">{{ __('Manifest') }}</p>
+                                <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-accent/80 dark:text-accent/80">{{ __('Manifest') }}</p>
                                 <div class="mt-1.5 flex items-center justify-center gap-3">
                                     <span class="inv-mono text-lg font-bold text-slate-700 dark:text-slate-200" x-text="selectedStockText"></span>
                                     <span class="text-accent">&#8594;</span>
@@ -264,7 +264,7 @@
                     <section class="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         <div class="flex items-start justify-between gap-3">
                             <div>
-                                <p class="text-xs font-extrabold uppercase tracking-[0.16em] text-slate-400">{{ __('Bulk Delivery') }}</p>
+                                <p class="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">{{ __('Bulk Delivery') }}</p>
                                 <h3 class="mt-1 text-lg font-semibold text-slate-800 dark:text-slate-100">{{ __('Import CSV') }}</h3>
                             </div>
                             <span class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
@@ -327,14 +327,14 @@
                         @if(!$singleLane || $type === 'in')
                             <article class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                                 <header class="flex items-baseline justify-between gap-3 border-b border-amber-100 bg-amber-50/80 px-4 py-3 dark:border-amber-900/40 dark:bg-amber-950/20">
-                                    <h4 class="text-xs font-extrabold uppercase tracking-[0.16em] text-accent dark:text-accent">&#8595; {{ __('Inbound') }}</h4>
+                                    <h4 class="text-xs font-bold uppercase tracking-[0.16em] text-accent dark:text-accent">&#8595; {{ __('Inbound') }}</h4>
                                     <p class="text-[11px] font-bold text-accent/80 dark:text-accent/80">{{ number_format($inboundMovements->count()) }} {{ __('on page') }} &middot; <span class="inv-mono">+{{ number_format($inboundPageQty) }}</span></p>
                                 </header>
                                 <div class="divide-y divide-slate-100 dark:divide-slate-800">
                                     @forelse($inboundMovements as $movement)
                                         @php $movementDate = $movement->performed_at ?? $movement->created_at; @endphp
                                         <div class="flex items-start gap-3 px-4 py-3 transition hover:bg-amber-50/50 dark:hover:bg-slate-800/60">
-                                            <span class="inv-mono w-14 shrink-0 pt-0.5 text-base font-black text-accent dark:text-accent">+{{ number_format($movement->quantity) }}</span>
+                                            <span class="inv-mono w-14 shrink-0 pt-0.5 text-base font-bold text-accent dark:text-accent">+{{ number_format($movement->quantity) }}</span>
                                             <div class="min-w-0 flex-1">
                                                 <p class="truncate text-sm font-semibold text-slate-800 dark:text-slate-100">{{ $movement->product->name ?? __('Deleted Product') }}</p>
                                                 <p class="mt-0.5 truncate text-xs text-slate-500 dark:text-slate-400">
@@ -363,14 +363,14 @@
                         @if(!$singleLane || $type === 'out')
                             <article class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                                 <header class="flex items-baseline justify-between gap-3 border-b border-rose-100 bg-rose-50/80 px-4 py-3 dark:border-rose-900/40 dark:bg-rose-950/20">
-                                    <h4 class="text-xs font-extrabold uppercase tracking-[0.16em] text-rose-700 dark:text-rose-300">&#8593; {{ __('Outbound') }}</h4>
+                                    <h4 class="text-xs font-bold uppercase tracking-[0.16em] text-rose-700 dark:text-rose-300">&#8593; {{ __('Outbound') }}</h4>
                                     <p class="text-[11px] font-bold text-rose-700/80 dark:text-rose-300/80">{{ number_format($outboundMovements->count()) }} {{ __('on page') }} &middot; <span class="inv-mono">&minus;{{ number_format($outboundPageQty) }}</span></p>
                                 </header>
                                 <div class="divide-y divide-slate-100 dark:divide-slate-800">
                                     @forelse($outboundMovements as $movement)
                                         @php $movementDate = $movement->performed_at ?? $movement->created_at; @endphp
                                         <div class="flex items-start gap-3 px-4 py-3 transition hover:bg-rose-50/50 dark:hover:bg-slate-800/60">
-                                            <span class="inv-mono w-14 shrink-0 pt-0.5 text-base font-black text-rose-600 dark:text-rose-400">&minus;{{ number_format($movement->quantity) }}</span>
+                                            <span class="inv-mono w-14 shrink-0 pt-0.5 text-base font-bold text-rose-600 dark:text-rose-400">&minus;{{ number_format($movement->quantity) }}</span>
                                             <div class="min-w-0 flex-1">
                                                 <p class="truncate text-sm font-semibold text-slate-800 dark:text-slate-100">{{ $movement->product->name ?? __('Deleted Product') }}</p>
                                                 <p class="mt-0.5 truncate text-xs text-slate-500 dark:text-slate-400">

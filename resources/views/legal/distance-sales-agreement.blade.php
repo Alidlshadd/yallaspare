@@ -154,7 +154,7 @@
                             </span>
                             <div>
                                 <span class="n" style="color:#9294bb;">{{ __('Article 09') }}</span>
-                                <h2 class="mt-1 text-2xl font-black text-white sm:text-3xl">{{ __('9. Dispute Resolution') }}</h2>
+                                <h2 class="mt-1 text-2xl font-bold text-white sm:text-3xl">{{ __('9. Dispute Resolution') }}</h2>
                                 <p class="mt-2 max-w-xl text-sm leading-relaxed text-slate-300">{{ __('In case of any dispute related to this agreement, both parties agree to resolve the issue through communication and mutual agreement whenever possible.') }}</p>
                             </div>
                         </div>

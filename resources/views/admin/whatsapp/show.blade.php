@@ -19,7 +19,7 @@
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
                 <a href="{{ route('admin.whatsapp.index') }}" class="text-xs font-bold text-slate-500 hover:text-primary dark:text-slate-400"><i class="fas fa-arrow-left mr-1" aria-hidden="true"></i>{{ __('Back to events') }}</a>
-                <h1 class="mt-2 text-2xl font-black text-slate-900 dark:text-white">{{ __('Webhook event') }} #{{ $event->id }}</h1>
+                <h1 class="mt-2 text-2xl font-bold text-slate-900 dark:text-white">{{ __('Webhook event') }} #{{ $event->id }}</h1>
                 <p class="mt-1 break-all font-mono text-xs text-slate-400">{{ $event->event_id }}</p>
             </div>
             <span class="inline-flex w-fit rounded-full px-3 py-1.5 text-xs font-bold {{ $statusClass }}">{{ __(ucfirst($event->processing_status)) }}</span>
@@ -27,7 +27,7 @@
 
         <section class="grid gap-4 lg:grid-cols-2">
             <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                <div class="flex items-center gap-3"><span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-green-500 text-white"><i class="fab fa-whatsapp" aria-hidden="true"></i></span><h2 class="text-lg font-black text-slate-900 dark:text-white">{{ __('Message information') }}</h2></div>
+                <div class="flex items-center gap-3"><span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-green-500 text-white"><i class="fab fa-whatsapp" aria-hidden="true"></i></span><h2 class="text-lg font-bold text-slate-900 dark:text-white">{{ __('Message information') }}</h2></div>
                 <dl class="mt-5 grid gap-4 sm:grid-cols-2">
                     @foreach([
                         [__('Sender phone'), $event->sender_phone], [__('Sender name'), $event->sender_name],
@@ -40,7 +40,7 @@
             </div>
 
             <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                <div class="flex items-center gap-3"><span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-info text-info dark:bg-info/10 dark:text-info"><i class="fas fa-shield-halved" aria-hidden="true"></i></span><h2 class="text-lg font-black text-slate-900 dark:text-white">{{ __('Header and processing information') }}</h2></div>
+                <div class="flex items-center gap-3"><span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-info text-info dark:bg-info/10 dark:text-info"><i class="fas fa-shield-halved" aria-hidden="true"></i></span><h2 class="text-lg font-bold text-slate-900 dark:text-white">{{ __('Header and processing information') }}</h2></div>
                 <dl class="mt-5 grid gap-4 sm:grid-cols-2">
                     @foreach([
                         [__('Event type'), $event->event_type], [__('Attempt'), $event->attempt_number],

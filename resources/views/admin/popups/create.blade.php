@@ -18,8 +18,8 @@
 
             <div class="relative flex flex-wrap items-center justify-between gap-4">
                 <div>
-                    <div class="font-mono text-[10px] font-extrabold uppercase tracking-[0.28em] text-accent">{{ __('Marketing · Announcements') }}</div>
-                    <h1 class="text-2xl font-black mt-2 leading-tight">{{ __('Create Popup') }}</h1>
+                    <div class="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-accent">{{ __('Marketing · Announcements') }}</div>
+                    <h1 class="text-2xl font-bold mt-2 leading-tight">{{ __('Create Popup') }}</h1>
                     <p class="text-sm text-white/65 mt-1.5">{{ __('Publish a promotional or informational popup on the storefront.') }}</p>
                 </div>
                 <a href="{{ route('admin.popups.index') }}"

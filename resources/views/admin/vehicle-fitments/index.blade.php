@@ -102,7 +102,7 @@
             background: rgba(15,23,42,0.06);
             padding: 1px 7px; border-radius: 999px;
             font-size: 10.5px; font-family: ui-monospace, 'JetBrains Mono', monospace;
-            color: #475569; font-weight: 800;
+            color: #475569; font-weight: 700;
         }
         .ychip.on {
             background: #04041f; color: #ffb27a; border-color: #04041f;
@@ -119,7 +119,7 @@
         .vf-pill {
             display: inline-flex; align-items: center; gap: 5px;
             padding: 4px 10px; border-radius: 999px;
-            font-size: 11px; font-weight: 800; border: 1px solid;
+            font-size: 11px; font-weight: 700; border: 1px solid;
         }
         .vf-pill::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
         .vf-pill.good { background: #dcfce7; color: #15803d; border-color: #86efac; }
@@ -140,7 +140,7 @@
             display: flex; justify-content: space-between; gap: 8px;
             font-family: ui-monospace, monospace; font-size: 10px; font-weight: 700; color: #94a3b8;
         }
-        .vf-range .years .mid { font-weight: 800; color: #b45309; }
+        .vf-range .years .mid { font-weight: 700; color: #b45309; }
         .vf-range .years .mid.full { color: #15803d; }
         .dark .vf-range .years .mid { color: #ff8a3d; }
         .dark .vf-range .years .mid.full { color: #4ade80; }
@@ -166,7 +166,7 @@
             background: #fff; border: 1px solid #e2e8f0; border-radius: 999px; padding: 4px 9px;
         }
         .dark .vf-model { background: #0f172a; border-color: #334155; color: #94a3b8; }
-        .vf-model button[type="submit"] { color: #b91c1c; font-weight: 800; line-height: 1; }
+        .vf-model button[type="submit"] { color: #b91c1c; font-weight: 700; line-height: 1; }
         .dark .vf-model button[type="submit"] { color: #fca5a5; }
         .vf-model .edit { color: #94a3b8; line-height: 1; transition: color .15s ease; }
         .vf-model .edit:hover { color: #e65c00; }
@@ -219,7 +219,7 @@
             position: sticky; bottom: 18px; z-index: 30;
             margin-inline-start: auto; width: fit-content;
             display: flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 999px;
-            background: #04041f; color: #ffb27a; font-weight: 800; font-size: 13px;
+            background: #04041f; color: #ffb27a; font-weight: 700; font-size: 13px;
             box-shadow: 0 10px 28px rgba(4,4,42,0.35); cursor: pointer;
             border: 1px solid rgba(252,211,77,0.25);
             transition: all .15s ease;
@@ -283,8 +283,8 @@
                 <div class="absolute top-0 bottom-0 start-0 w-[3px]" style="background: linear-gradient(180deg, #ff8a3d 0%, #e65c00 100%);"></div>
                 <div class="absolute -top-16 -end-16 h-52 w-52 rounded-full bg-accent/10 blur-[60px] pointer-events-none"></div>
 
-                <div class="relative font-mono text-[10px] font-extrabold uppercase tracking-[0.28em] text-accent">{{ __('Catalog · Compatibility') }}</div>
-                <h1 class="relative text-2xl font-black leading-tight -mt-1">{{ __('Vehicle Finder') }}</h1>
+                <div class="relative font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-accent">{{ __('Catalog · Compatibility') }}</div>
+                <h1 class="relative text-2xl font-bold leading-tight -mt-1">{{ __('Vehicle Finder') }}</h1>
 
                 <div class="relative flex items-center gap-4">
                     <svg width="92" height="92" viewBox="0 0 92 92" class="shrink-0" role="img" aria-label="{{ __('Coverage: :pct%', ['pct' => $coveragePct]) }}">
@@ -294,7 +294,7 @@
                         <text x="46" y="52" text-anchor="middle" fill="#fff" font-size="18" font-weight="900">{{ $coveragePct }}%</text>
                     </svg>
                     <div>
-                        <div class="text-[26px] font-black leading-none">
+                        <div class="text-[26px] font-bold leading-none">
                             {{ number_format($coveredProducts) }} <span class="text-[13px] font-bold text-accent">/ {{ number_format($totalProducts) }}</span>
                         </div>
                         <p class="text-[11.5px] text-white/60 mt-1.5 leading-snug">
@@ -320,7 +320,7 @@
                             <i class="fas fa-car-side text-sm"></i>
                         </span>
                         <div>
-                            <div class="text-xl font-black text-slate-900 dark:text-white leading-none">{{ number_format((int) $stats['brands']) }}</div>
+                            <div class="text-xl font-bold text-slate-900 dark:text-white leading-none">{{ number_format((int) $stats['brands']) }}</div>
                             <div class="text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mt-1">{{ __('Brands') }}</div>
                         </div>
                     </div>
@@ -329,7 +329,7 @@
                             <i class="fas fa-layer-group text-sm"></i>
                         </span>
                         <div>
-                            <div class="text-xl font-black text-slate-900 dark:text-white leading-none">{{ number_format((int) $stats['models']) }}</div>
+                            <div class="text-xl font-bold text-slate-900 dark:text-white leading-none">{{ number_format((int) $stats['models']) }}</div>
                             <div class="text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mt-1">{{ __('Models') }}</div>
                         </div>
                     </div>
@@ -338,7 +338,7 @@
                             <i class="fas fa-link text-sm"></i>
                         </span>
                         <div>
-                            <div class="text-xl font-black text-slate-900 dark:text-white leading-none">{{ number_format((int) $stats['fitments']) }}</div>
+                            <div class="text-xl font-bold text-slate-900 dark:text-white leading-none">{{ number_format((int) $stats['fitments']) }}</div>
                             <div class="text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mt-1">{{ __('Fitment Rules') }}</div>
                         </div>
                     </div>
@@ -366,7 +366,7 @@
         <div class="overflow-hidden rounded-2xl border border-slate-200/70 bg-white bento-shadow dark:border-slate-800 dark:bg-slate-900">
             <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-5 py-4 dark:border-slate-800">
                 <div>
-                    <h2 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Vehicle Data') }}</h2>
+                    <h2 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Vehicle Data') }}</h2>
                     <p class="mt-0.5 text-[11.5px] text-slate-500 dark:text-slate-400">{{ __('Organize compatibility as brand, model family, and variant.') }}</p>
                 </div>
                 <span class="vf-pill good">{{ number_format((int) $stats['brands']) }} {{ __('brands') }} · {{ number_format((int) $stats['families']) }} {{ __('families') }} · {{ number_format((int) $stats['models']) }} {{ __('variants') }}</span>
@@ -396,7 +396,7 @@
                     @forelse($brands as $brand)
                         <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-950/40">
                             <div class="flex items-center justify-between gap-3 bg-navy-deep px-4 py-3 text-white dark:bg-slate-950">
-                                <span class="flex items-center gap-2.5 text-sm font-black tracking-wide"><i class="fas fa-car-side text-accent"></i>{{ $brand->name }}</span>
+                                <span class="flex items-center gap-2.5 text-sm font-bold tracking-wide"><i class="fas fa-car-side text-accent"></i>{{ $brand->name }}</span>
                                 <span class="font-mono text-[10px] text-slate-300">{{ $brand->modelFamilies->count() }} {{ __('families') }}</span>
                             </div>
                             <div class="space-y-2.5 p-3">
@@ -407,7 +407,7 @@
                                     <details class="group overflow-hidden rounded-xl border border-slate-200 bg-slate-50 open:bg-white dark:border-slate-700 dark:bg-slate-900/70 dark:open:bg-slate-900" @if($loop->first) open @endif>
                                         <summary class="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 transition hover:bg-white dark:hover:bg-slate-800/70">
                                             <span>
-                                                <span class="block text-[12px] font-black uppercase tracking-[.12em] text-slate-900 dark:text-white">{{ $family->localizedName() }}</span>
+                                                <span class="block text-[12px] font-bold uppercase tracking-[.12em] text-slate-900 dark:text-white">{{ $family->localizedName() }}</span>
                                                 <span class="mt-1 block font-mono text-[10px] text-slate-500 dark:text-slate-400">{{ $family->variants->count() }} {{ __('variants') }} · {{ $familyFitments }} {{ __('fitment rules') }}</span>
                                             </span>
                                             <i class="fas fa-chevron-down text-[10px] text-accent transition duration-200 group-open:rotate-180"></i>
@@ -430,7 +430,7 @@
                                                                 <span class="grid h-16 w-20 shrink-0 place-items-center rounded-lg border border-dashed border-slate-300 bg-slate-50 text-slate-400 dark:border-slate-700 dark:bg-slate-900"><i class="fas fa-car-side text-xl"></i></span>
                                                             @endif
                                                             <div class="min-w-0 flex-1">
-                                                                <h4 class="truncate text-sm font-extrabold text-slate-900 dark:text-white">{{ $model->localizedName() }}</h4>
+                                                                <h4 class="truncate text-sm font-bold text-slate-900 dark:text-white">{{ $model->localizedName() }}</h4>
                                                                 <p class="mt-1 font-mono text-[10px] text-slate-500">{{ $model->production_start_year || $model->production_end_year ? (($model->production_start_year ?: '…').'–'.($model->production_end_year ?: __('Present'))) : __('Years not specified') }}</p>
                                                                 <div class="mt-2 flex flex-wrap gap-1">
                                                                     @forelse($model->engineTypes as $engineType)
@@ -476,7 +476,7 @@
                         <i class="fas fa-link text-xs"></i>
                     </span>
                     <div>
-                        <h2 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Add Product Fitment') }}</h2>
+                        <h2 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Add Product Fitment') }}</h2>
                         <p class="text-[11.5px] text-slate-500 dark:text-slate-400 mt-0.5">{{ __('Connect one product to multiple vehicles and save every fitment at once.') }}</p>
                     </div>
                 </div>
@@ -563,25 +563,25 @@
                 {{-- Live preview plate --}}
                 <aside class="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 lg:sticky lg:top-24 lg:self-start bento-shadow">
                     <div class="flex items-center justify-between px-4 py-3 text-white" style="background: linear-gradient(135deg, #04041f, #070740);">
-                        <span class="font-mono text-[10px] font-extrabold uppercase tracking-[0.22em] text-accent">{{ __('Fitment Preview') }}</span>
-                        <span class="text-[10px] font-extrabold text-emerald-300" data-admin-preview-count>{{ count($fitmentRows) }} {{ __('vehicles') }}</span>
+                        <span class="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-accent">{{ __('Fitment Preview') }}</span>
+                        <span class="text-[10px] font-bold text-emerald-300" data-admin-preview-count>{{ count($fitmentRows) }} {{ __('vehicles') }}</span>
                     </div>
                     <div class="p-4 space-y-3 bg-white dark:bg-slate-900">
                         <div class="flex gap-3">
-                            <span class="w-[74px] shrink-0 text-[10px] font-extrabold uppercase tracking-widest text-slate-400 pt-0.5">{{ __('Product') }}</span>
-                            <span class="text-[13px] font-extrabold text-slate-900 dark:text-slate-100" data-admin-preview-product>{{ __('Select product') }}</span>
+                            <span class="w-[74px] shrink-0 text-[10px] font-bold uppercase tracking-widest text-slate-400 pt-0.5">{{ __('Product') }}</span>
+                            <span class="text-[13px] font-bold text-slate-900 dark:text-slate-100" data-admin-preview-product>{{ __('Select product') }}</span>
                         </div>
                         <div class="flex gap-3">
-                            <span class="w-[74px] shrink-0 text-[10px] font-extrabold uppercase tracking-widest text-slate-400 pt-0.5">{{ __('Vehicle') }}</span>
-                            <span class="text-[13px] font-extrabold text-slate-900 dark:text-slate-100" data-admin-preview-vehicle>{{ __('Select brand') }} / {{ __('Any model') }}</span>
+                            <span class="w-[74px] shrink-0 text-[10px] font-bold uppercase tracking-widest text-slate-400 pt-0.5">{{ __('Vehicle') }}</span>
+                            <span class="text-[13px] font-bold text-slate-900 dark:text-slate-100" data-admin-preview-vehicle>{{ __('Select brand') }} / {{ __('Any model') }}</span>
                         </div>
                         <div class="flex gap-3">
-                            <span class="w-[74px] shrink-0 text-[10px] font-extrabold uppercase tracking-widest text-slate-400 pt-0.5">{{ __('Years') }}</span>
-                            <span class="text-[13px] font-extrabold font-mono text-slate-900 dark:text-slate-100" data-admin-preview-years>{{ __('Any year') }}</span>
+                            <span class="w-[74px] shrink-0 text-[10px] font-bold uppercase tracking-widest text-slate-400 pt-0.5">{{ __('Years') }}</span>
+                            <span class="text-[13px] font-bold font-mono text-slate-900 dark:text-slate-100" data-admin-preview-years>{{ __('Any year') }}</span>
                         </div>
                         <div class="flex gap-3">
-                            <span class="w-[74px] shrink-0 text-[10px] font-extrabold uppercase tracking-widest text-slate-400 pt-0.5">{{ __('Engine') }}</span>
-                            <span class="text-[13px] font-extrabold text-slate-900 dark:text-slate-100" data-admin-preview-engine>{{ __('Any engine') }}</span>
+                            <span class="w-[74px] shrink-0 text-[10px] font-bold uppercase tracking-widest text-slate-400 pt-0.5">{{ __('Engine') }}</span>
+                            <span class="text-[13px] font-bold text-slate-900 dark:text-slate-100" data-admin-preview-engine>{{ __('Any engine') }}</span>
                         </div>
                     </div>
                 </aside>
@@ -592,7 +592,7 @@
         <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl bento-shadow overflow-hidden">
             <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-slate-100 dark:border-slate-800">
                 <div>
-                    <h2 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Fitment Rules') }}</h2>
+                    <h2 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Fitment Rules') }}</h2>
                     <p class="text-[11.5px] text-slate-500 dark:text-slate-400 mt-0.5">
                         {{ __('Year coverage is drawn as a timeline — narrow and catch-all rules read at a glance.') }}
                     </p>
@@ -640,7 +640,7 @@
                             @endif
                         </div>
                         <div class="min-w-0">
-                            <p class="truncate text-[13px] font-extrabold text-slate-900 dark:text-slate-100">{{ $fitment->product?->name ?? '-' }}</p>
+                            <p class="truncate text-[13px] font-bold text-slate-900 dark:text-slate-100">{{ $fitment->product?->name ?? '-' }}</p>
                             <p class="truncate font-mono text-[10.5px] text-slate-500 dark:text-slate-400 mt-0.5">
                                 {{ $fitment->product?->sku ?: __('No SKU') }}@if($fitment->product?->brand) · {{ $fitment->product->brand }}@endif
                             </p>

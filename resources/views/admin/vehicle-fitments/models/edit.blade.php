@@ -13,7 +13,7 @@
                     <span aria-hidden="true">/</span>
                     <span class="text-slate-900 dark:text-white">{{ $model->localizedName() }}</span>
                 </nav>
-                <h1 class="mt-1 text-xl font-black text-slate-900 dark:text-white">{{ $model->localizedName() }}</h1>
+                <h1 class="mt-1 text-xl font-bold text-slate-900 dark:text-white">{{ $model->localizedName() }}</h1>
                 <p class="mt-1 text-[11.5px] text-slate-500 dark:text-slate-400">
                     {{ $model->brand?->name }} · {{ $model->family?->localizedName() }}
                     @if($fitmentCount > 0)

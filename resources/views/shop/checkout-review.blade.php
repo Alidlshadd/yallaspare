@@ -92,7 +92,7 @@
                         @if (($discountAmount ?? 0) > 0)
                             <div class="flex items-center justify-between border-b border-slate-200/80 py-3 dark:border-slate-800">
                                 <span class="text-sm text-slate-600 dark:text-slate-300">{{ __('Discount') }}</span>
-                                <span class="text-sm font-semibold text-emerald-700 dark:text-emerald-300">-{{ number_format($discountAmount, 0) }} {{ $currencySymbol }}</span>
+                                <span class="text-sm font-semibold text-accent-ink dark:text-accent">-{{ number_format($discountAmount, 0) }} {{ $currencySymbol }}</span>
                             </div>
                         @endif
                         <div class="flex items-center justify-between py-3">

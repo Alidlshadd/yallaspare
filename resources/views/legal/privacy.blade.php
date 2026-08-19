@@ -22,10 +22,10 @@
 
             <div class="relative grid items-center gap-10 lg:grid-cols-[1.15fr_.85fr]">
                 <div>
-                    <span class="sup-in inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.18em] text-white backdrop-blur-sm">
+                    <span class="sup-in inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-white backdrop-blur-sm">
                         {{ __('Legal') }}
                     </span>
-                    <h1 class="sup-in mt-6 text-4xl font-black leading-[1.02] tracking-[-0.03em] text-white sm:text-5xl" style="animation-delay: .1s">
+                    <h1 class="sup-in mt-6 text-4xl font-bold leading-[1.02] tracking-[-0.03em] text-white sm:text-5xl" style="animation-delay: .1s">
                         {{ __('Privacy Policy & SSL Security') }}
                     </h1>
                     <p class="sup-in mt-5 max-w-xl text-base leading-relaxed text-slate-300" style="animation-delay: .18s">
@@ -219,8 +219,8 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v9a2.5 2.5 0 0 1-2.5 2.5H9l-5 4v-4.8a2.5 2.5 0 0 1-1-2V5.5Z" /></svg>
                     </span>
                     <div>
-                        <p class="text-[11px] font-extrabold uppercase tracking-[0.2em] text-accent">{{ __('Questions?') }}</p>
-                        <h2 class="mt-1 text-2xl font-black text-white sm:text-3xl">{{ __('11. Contact Us') }}</h2>
+                        <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-accent">{{ __('Questions?') }}</p>
+                        <h2 class="mt-1 text-2xl font-bold text-white sm:text-3xl">{{ __('11. Contact Us') }}</h2>
                         <p class="mt-2 max-w-xl text-sm leading-relaxed text-slate-300">{{ __('If you have any questions or suggestions regarding this Privacy Policy, please contact us through our Contact Page or customer support channels.') }}</p>
                     </div>
                 </div>

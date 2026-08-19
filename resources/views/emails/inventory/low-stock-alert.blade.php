@@ -10,7 +10,7 @@
     </p>
 
     {{-- Headline --}}
-    <h1 class="em-title" style="margin:0;color:#0f172a;font-size:30px;line-height:38px;font-weight:800;letter-spacing:-0.5px;">
+    <h1 class="em-title" style="margin:0;color:#0f172a;font-size:30px;line-height:38px;font-weight: 700;letter-spacing:-0.5px;">
         {{ $title ?? __('Low stock alert') }}
     </h1>
 

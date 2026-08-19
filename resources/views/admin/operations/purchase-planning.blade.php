@@ -44,7 +44,7 @@
         .pp-add {
             width: 32px; height: 32px; border-radius: 9px;
             background: #ff8a3d; color: #422006;
-            font-weight: 900; font-size: 16px; line-height: 1;
+            font-weight: 700; font-size: 16px; line-height: 1;
             display: inline-flex; align-items: center; justify-content: center;
             box-shadow: 0 3px 8px -3px rgba(180, 83, 9, 0.5);
             transition: transform .12s ease, background .15s ease;
@@ -55,11 +55,11 @@
 
         .pp-tab {
             padding: 6px 12px; border-radius: 9px 9px 0 0;
-            font-size: 12px; font-weight: 800; color: #94a3b8;
+            font-size: 12px; font-weight: 700; color: #94a3b8;
             display: inline-flex; align-items: center; gap: 5px;
         }
         .pp-tab .pp-tab-cnt {
-            font-size: 10px; font-weight: 800; padding: 1px 6px; border-radius: 999px;
+            font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 999px;
             background: #eef2f7; color: #94a3b8;
             font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace;
         }
@@ -120,28 +120,28 @@
                         <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500">{{ __('Out of Stock') }}</p>
                         <i class="fas fa-circle-exclamation text-rose-500"></i>
                     </div>
-                    <p class="pp-num mt-3 text-2xl font-black text-rose-600 dark:text-rose-400">{{ number_format($summary['out_of_stock']) }}</p>
+                    <p class="pp-num mt-3 text-2xl font-bold text-rose-600 dark:text-rose-400">{{ number_format($summary['out_of_stock']) }}</p>
                 </article>
                 <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-start justify-between gap-3">
                         <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500">{{ __('Low Stock') }}</p>
                         <i class="fas fa-arrow-trend-down text-accent"></i>
                     </div>
-                    <p class="pp-num mt-3 text-2xl font-black text-slate-900 dark:text-slate-100">{{ number_format($summary['low_stock']) }}</p>
+                    <p class="pp-num mt-3 text-2xl font-bold text-slate-900 dark:text-slate-100">{{ number_format($summary['low_stock']) }}</p>
                 </article>
                 <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-start justify-between gap-3">
                         <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500">{{ __('Waiting Customers') }}</p>
                         <i class="fas fa-bell text-info"></i>
                     </div>
-                    <p class="pp-num mt-3 text-2xl font-black text-info dark:text-info">{{ number_format($summary['waiting_customers']) }}</p>
+                    <p class="pp-num mt-3 text-2xl font-bold text-info dark:text-info">{{ number_format($summary['waiting_customers']) }}</p>
                 </article>
                 <article class="pp-hero rounded-2xl border border-transparent p-5 shadow-sm">
                     <div class="flex items-start justify-between gap-3">
                         <p class="text-xs font-bold uppercase tracking-[0.14em] text-white/55">{{ __('Page Budget') }}</p>
                         <i class="fas fa-coins text-accent"></i>
                     </div>
-                    <p class="pp-num mt-3 text-2xl font-black text-accent">{{ $money($summary['estimated_budget']) }}</p>
+                    <p class="pp-num mt-3 text-2xl font-bold text-accent">{{ $money($summary['estimated_budget']) }}</p>
                 </article>
             </section>
 
@@ -177,7 +177,7 @@
                     <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3 dark:border-slate-800">
                             <i class="fas fa-boxes-stacked text-slate-400"></i>
-                            <h3 class="text-sm font-extrabold text-slate-800 dark:text-slate-100">{{ __('Products to reorder') }}</h3>
+                            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Products to reorder') }}</h3>
                             <span class="ms-auto text-xs font-semibold text-slate-400">{{ __(':from–:to of :total', ['from' => $products->firstItem() ?? 0, 'to' => $products->lastItem() ?? 0, 'total' => $products->total()]) }}</span>
                         </div>
                         <div class="overflow-x-auto">
@@ -237,18 +237,18 @@
                     <section class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3 dark:border-slate-800">
                             <i class="fas fa-folder-open text-slate-400"></i>
-                            <h3 class="text-sm font-extrabold text-slate-800 dark:text-slate-100">{{ __('Recent Purchase Lists') }}</h3>
+                            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Recent Purchase Lists') }}</h3>
                             <span class="ms-auto text-xs font-semibold text-slate-400">{{ __('saved in this browser') }}</span>
                         </div>
                         <div class="grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-3" x-show="hasRecent">
                             <template x-for="entry in recentEntries" :key="entry.index">
                                 <article class="rounded-xl border border-slate-200 bg-slate-50 p-3.5 dark:border-slate-700 dark:bg-slate-950/40">
                                     <div class="flex items-center justify-between gap-2">
-                                        <h4 class="truncate text-sm font-extrabold text-slate-800 dark:text-slate-100" x-text="entry.name"></h4>
-                                        <span class="rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wide" :class="entry.statusClass" x-text="entry.statusLabel"></span>
+                                        <h4 class="truncate text-sm font-bold text-slate-800 dark:text-slate-100" x-text="entry.name"></h4>
+                                        <span class="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide" :class="entry.statusClass" x-text="entry.statusLabel"></span>
                                     </div>
                                     <p class="mt-1 text-xs text-slate-400" x-text="entry.meta"></p>
-                                    <p class="pp-num mt-2 text-sm font-extrabold text-accent dark:text-accent" x-text="entry.totalLabel"></p>
+                                    <p class="pp-num mt-2 text-sm font-bold text-accent dark:text-accent" x-text="entry.totalLabel"></p>
                                     <button type="button" class="mt-2 w-full rounded-lg border border-slate-200 bg-white py-1.5 text-sm font-bold text-slate-600 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300" @click="openView(entry)">
                                         {{ __('View items') }}
                                     </button>
@@ -281,25 +281,25 @@
                             <div class="flex items-center gap-2">
                                 <input
                                     type="text"
-                                    class="min-w-0 flex-1 border-0 border-b border-dashed border-white/25 bg-transparent p-0 pb-0.5 text-[15px] font-extrabold text-white focus:border-accent focus:ring-0"
+                                    class="min-w-0 flex-1 border-0 border-b border-dashed border-white/25 bg-transparent p-0 pb-0.5 text-[15px] font-bold text-white focus:border-accent focus:ring-0"
                                     :value="activeName"
                                     @input="onNameInput"
                                     aria-label="{{ __('List name') }}"
                                 >
-                                <span class="shrink-0 rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wide" :class="activeStatusClass" x-text="activeStatusLabel"></span>
+                                <span class="shrink-0 rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide" :class="activeStatusClass" x-text="activeStatusLabel"></span>
                             </div>
                             <div class="mt-2.5 flex gap-5">
                                 <div>
-                                    <p class="text-[10px] font-extrabold uppercase tracking-[0.12em] text-white/50">{{ __('Items') }}</p>
-                                    <p class="pp-num text-[15px] font-black" x-text="itemsCountLabel"></p>
+                                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-white/50">{{ __('Items') }}</p>
+                                    <p class="pp-num text-[15px] font-bold" x-text="itemsCountLabel"></p>
                                 </div>
                                 <div>
-                                    <p class="text-[10px] font-extrabold uppercase tracking-[0.12em] text-white/50">{{ __('Quantity') }}</p>
-                                    <p class="pp-num text-[15px] font-black" x-text="qtyTotalLabel"></p>
+                                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-white/50">{{ __('Quantity') }}</p>
+                                    <p class="pp-num text-[15px] font-bold" x-text="qtyTotalLabel"></p>
                                 </div>
                                 <div class="min-w-0">
-                                    <p class="text-[10px] font-extrabold uppercase tracking-[0.12em] text-white/50">{{ __('Est. Cost') }}</p>
-                                    <p class="pp-num truncate text-[15px] font-black text-accent" x-text="grandTotalLabel"></p>
+                                    <p class="text-[10px] font-bold uppercase tracking-[0.12em] text-white/50">{{ __('Est. Cost') }}</p>
+                                    <p class="pp-num truncate text-[15px] font-bold text-accent" x-text="grandTotalLabel"></p>
                                 </div>
                             </div>
                         </div>
@@ -316,26 +316,26 @@
                                         <div class="min-w-0 flex-1">
                                             <p class="text-[13px] font-bold leading-snug text-slate-900 dark:text-slate-100">
                                                 <span x-text="item.name"></span>
-                                                <span class="ms-1 inline-block rounded border border-dashed border-amber-600 bg-amber-50 px-1.5 align-[1px] text-[9px] font-black uppercase tracking-wide text-amber-700 dark:border-amber-400 dark:bg-amber-400/10 dark:text-amber-300" x-show="item.manual">{{ __('Manual — not in system') }}</span>
+                                                <span class="ms-1 inline-block rounded border border-dashed border-amber-600 bg-amber-50 px-1.5 align-[1px] text-[9px] font-bold uppercase tracking-wide text-amber-700 dark:border-amber-400 dark:bg-amber-400/10 dark:text-amber-300" x-show="item.manual">{{ __('Manual — not in system') }}</span>
                                             </p>
                                             <p class="text-[11px] text-slate-400" x-text="item.sku"></p>
                                         </div>
-                                        <button type="button" class="shrink-0 px-1 text-[15px] font-black text-rose-500 opacity-70 hover:opacity-100" @click="removeItem" :data-key="item.key" aria-label="{{ __('Remove') }}">✕</button>
+                                        <button type="button" class="shrink-0 px-1 text-[15px] font-bold text-rose-500 opacity-70 hover:opacity-100" @click="removeItem" :data-key="item.key" aria-label="{{ __('Remove') }}">✕</button>
                                     </div>
                                     <div class="mt-2 grid grid-cols-[84px_110px_1fr] items-center gap-1.5">
                                         <div>
-                                            <label class="mb-0.5 block text-[9px] font-extrabold uppercase tracking-[0.09em] text-slate-400">{{ __('Qty') }}</label>
+                                            <label class="mb-0.5 block text-[9px] font-bold uppercase tracking-[0.09em] text-slate-400">{{ __('Qty') }}</label>
                                             <input type="number" min="1" step="1" class="pp-num h-[30px] w-full rounded-lg border-slate-300 bg-slate-50 px-2 py-0 text-right text-[13px] focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:bg-slate-900"
                                                 :value="item.qty" :data-key="item.key" @input="onQtyInput" @change="onQtyChange">
                                         </div>
                                         <div>
-                                            <label class="mb-0.5 block text-[9px] font-extrabold uppercase tracking-[0.09em] text-slate-400">{{ __('Unit cost') }}</label>
+                                            <label class="mb-0.5 block text-[9px] font-bold uppercase tracking-[0.09em] text-slate-400">{{ __('Unit cost') }}</label>
                                             <input type="number" min="0" step="any" class="pp-num h-[30px] w-full rounded-lg border-slate-300 bg-slate-50 px-2 py-0 text-right text-[13px] focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:bg-slate-900"
                                                 :value="item.cost" :data-key="item.key" @input="onCostInput" @change="onCostChange">
                                         </div>
                                         <div class="text-right">
-                                            <p class="text-[9px] font-extrabold uppercase tracking-[0.09em] text-slate-400">{{ __('Row total') }}</p>
-                                            <p class="pp-num text-[13px] font-extrabold text-slate-900 dark:text-slate-100" x-text="rowTotalLabel(item)"></p>
+                                            <p class="text-[9px] font-bold uppercase tracking-[0.09em] text-slate-400">{{ __('Row total') }}</p>
+                                            <p class="pp-num text-[13px] font-bold text-slate-900 dark:text-slate-100" x-text="rowTotalLabel(item)"></p>
                                         </div>
                                     </div>
                                     <input type="text" placeholder="✎ {{ __('note…') }}" class="mt-1.5 h-[26px] w-full border-0 border-b border-dashed border-slate-200 bg-transparent p-0 px-0.5 text-[11.5px] text-slate-500 focus:border-accent focus:ring-0 dark:border-slate-700 dark:text-slate-400"
@@ -345,7 +345,7 @@
                         </div>
 
                         {{-- add by code --}}
-                        <button type="button" class="flex w-full items-center justify-between border-t border-slate-100 px-4 py-2.5 text-sm font-extrabold text-amber-700 hover:bg-amber-50/50 dark:border-slate-800 dark:text-amber-400 dark:hover:bg-slate-800/40" @click="toggleAbc">
+                        <button type="button" class="flex w-full items-center justify-between border-t border-slate-100 px-4 py-2.5 text-sm font-bold text-amber-700 hover:bg-amber-50/50 dark:border-slate-800 dark:text-amber-400 dark:hover:bg-slate-800/40" @click="toggleAbc">
                             <span><i class="fas fa-barcode me-1.5"></i>{{ __('Add by code (manual item)') }}</span>
                             <span x-text="abcChevron"></span>
                         </button>
@@ -360,7 +360,7 @@
                             </div>
                             <input type="text" x-model="abc.note" placeholder="{{ __('Notes') }}" class="h-8 w-full rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             <p class="text-[10.5px] leading-snug text-slate-400">{{ __('Not in the product database? It is added to this list only, flagged Manual. No product record is created.') }}</p>
-                            <button type="button" class="w-full rounded-lg bg-navy-deep py-2 text-sm font-extrabold text-white hover:bg-navy-raised" @click="addManual">{{ __('Add to current list') }}</button>
+                            <button type="button" class="w-full rounded-lg bg-navy-deep py-2 text-sm font-bold text-white hover:bg-navy-raised" @click="addManual">{{ __('Add to current list') }}</button>
                         </div>
 
                         {{-- budget warning --}}
@@ -371,21 +371,21 @@
                         {{-- grand total --}}
                         <div class="border-t-2 border-accent bg-slate-50 px-4 py-2.5 dark:bg-slate-950/40">
                             <div class="flex items-baseline justify-between">
-                                <span class="text-[10.5px] font-black uppercase tracking-[0.12em] text-slate-400">{{ __('Grand Total') }}</span>
-                                <span class="pp-num text-lg font-black text-accent dark:text-accent" x-text="grandTotalLabel"></span>
+                                <span class="text-[10.5px] font-bold uppercase tracking-[0.12em] text-slate-400">{{ __('Grand Total') }}</span>
+                                <span class="pp-num text-lg font-bold text-accent dark:text-accent" x-text="grandTotalLabel"></span>
                             </div>
                             <p class="mt-0.5 text-right text-[11px] font-semibold text-slate-400" x-show="hasBudget" x-text="budgetRemainingLabel"></p>
                         </div>
 
-                        <p class="px-4 pt-2 text-xs font-extrabold text-emerald-600 dark:text-emerald-400" x-show="hasFlash" x-cloak x-text="flashMessage"></p>
+                        <p class="px-4 pt-2 text-xs font-bold text-emerald-600 dark:text-emerald-400" x-show="hasFlash" x-cloak x-text="flashMessage"></p>
 
                         {{-- actions --}}
                         <div class="flex flex-wrap gap-1.5 px-3.5 py-3">
-                            <button type="button" class="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-extrabold text-white hover:bg-emerald-500" @click="saveList"><i class="fas fa-floppy-disk me-1"></i>{{ __('Save List') }}</button>
-                            <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-extrabold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="saveDraft">{{ __('Save Draft') }}</button>
-                            <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-extrabold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="printList"><i class="fas fa-print me-1"></i>{{ __('Print') }}</button>
-                            <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-extrabold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="exportCsv"><i class="fas fa-file-csv me-1"></i>{{ __('Export CSV') }}</button>
-                            <button type="button" class="rounded-lg px-3 py-1.5 text-sm font-extrabold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30" @click="clearList">✕ {{ __('Clear') }}</button>
+                            <button type="button" class="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-bold text-white hover:bg-emerald-500" @click="saveList"><i class="fas fa-floppy-disk me-1"></i>{{ __('Save List') }}</button>
+                            <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="saveDraft">{{ __('Save Draft') }}</button>
+                            <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="printList"><i class="fas fa-print me-1"></i>{{ __('Print') }}</button>
+                            <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="exportCsv"><i class="fas fa-file-csv me-1"></i>{{ __('Export CSV') }}</button>
+                            <button type="button" class="rounded-lg px-3 py-1.5 text-sm font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30" @click="clearList">✕ {{ __('Clear') }}</button>
                         </div>
                         <p class="px-4 pb-3 text-[10.5px] text-slate-400">{{ __('Lists are stored in this browser only — they survive reloads and filters, but other admins cannot see them.') }}</p>
                     </div>
@@ -397,7 +397,7 @@
                 <div class="max-h-[82vh] w-full max-w-xl overflow-auto rounded-2xl bg-white shadow-2xl dark:bg-slate-900">
                     <div class="pp-dock-head flex items-center justify-between px-5 py-3.5 text-white">
                         <div class="min-w-0">
-                            <h3 class="truncate text-[15px] font-extrabold" x-text="viewTitle"></h3>
+                            <h3 class="truncate text-[15px] font-bold" x-text="viewTitle"></h3>
                             <p class="text-[11px] text-white/60" x-text="viewMeta"></p>
                         </div>
                         <button type="button" class="px-1 text-lg" @click="closeView" aria-label="{{ __('Close') }}">✕</button>
@@ -417,24 +417,24 @@
                                     <tr>
                                         <td class="px-4 py-2.5">
                                             <span class="font-semibold text-slate-800 dark:text-slate-100" x-text="item.name"></span>
-                                            <span class="ms-1 inline-block rounded border border-dashed border-amber-600 bg-amber-50 px-1.5 text-[9px] font-black uppercase text-amber-700 dark:border-amber-400 dark:bg-amber-400/10 dark:text-amber-300" x-show="item.manual">{{ __('Manual') }}</span>
+                                            <span class="ms-1 inline-block rounded border border-dashed border-amber-600 bg-amber-50 px-1.5 text-[9px] font-bold uppercase text-amber-700 dark:border-amber-400 dark:bg-amber-400/10 dark:text-amber-300" x-show="item.manual">{{ __('Manual') }}</span>
                                             <span class="block text-[11px] text-slate-400" x-text="item.sku"></span>
                                         </td>
                                         <td class="pp-num px-4 py-2.5 text-right" x-text="item.qtyLabel"></td>
                                         <td class="pp-num px-4 py-2.5 text-right" x-text="item.unitLabel"></td>
-                                        <td class="pp-num px-4 py-2.5 text-right font-extrabold" x-text="item.totalLabel"></td>
+                                        <td class="pp-num px-4 py-2.5 text-right font-bold" x-text="item.totalLabel"></td>
                                     </tr>
                                 </template>
                             </tbody>
                         </table>
                     </div>
                     <div class="flex items-baseline justify-between border-t-2 border-accent px-5 py-3">
-                        <span class="text-[10.5px] font-black uppercase tracking-[0.12em] text-slate-400">{{ __('Total') }}</span>
-                        <span class="pp-num text-lg font-black text-accent dark:text-accent" x-text="viewTotalLabel"></span>
+                        <span class="text-[10.5px] font-bold uppercase tracking-[0.12em] text-slate-400">{{ __('Total') }}</span>
+                        <span class="pp-num text-lg font-bold text-accent dark:text-accent" x-text="viewTotalLabel"></span>
                     </div>
                     <div class="flex flex-wrap items-center gap-1.5 px-5 pb-4">
-                        <button type="button" class="rounded-lg border border-info px-3 py-1.5 text-sm font-extrabold text-info hover:bg-info dark:border-info dark:text-info dark:hover:bg-info/30" @click="markOrdered">{{ __('Mark as Ordered') }}</button>
-                        <button type="button" class="ms-auto rounded-lg px-3 py-1.5 text-sm font-extrabold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30" @click="deleteViewedList">{{ __('Delete list') }}</button>
+                        <button type="button" class="rounded-lg border border-info px-3 py-1.5 text-sm font-bold text-info hover:bg-info dark:border-info dark:text-info dark:hover:bg-info/30" @click="markOrdered">{{ __('Mark as Ordered') }}</button>
+                        <button type="button" class="ms-auto rounded-lg px-3 py-1.5 text-sm font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30" @click="deleteViewedList">{{ __('Delete list') }}</button>
                     </div>
                 </div>
             </div>
@@ -442,8 +442,8 @@
             {{-- ============ print-only purchase order ============ --}}
             <section class="pp-print">
                 <div style="border-bottom: 3px solid #04041f; padding-bottom: 12px; margin-bottom: 16px;">
-                    <p style="margin: 0; font-size: 11px; font-weight: 900; letter-spacing: 0.15em; color: #b45309;">YALLA SPARE</p>
-                    <h1 style="margin: 2px 0 0; font-size: 22px; font-weight: 900; color: #04041f;">{{ __('Purchase Order') }} — <span x-text="activeName"></span></h1>
+                    <p style="margin: 0; font-size: 11px; font-weight: 700; letter-spacing: 0.15em; color: #b45309;">YALLA SPARE</p>
+                    <h1 style="margin: 2px 0 0; font-size: 22px; font-weight: 700; color: #04041f;">{{ __('Purchase Order') }} — <span x-text="activeName"></span></h1>
                     <p style="margin: 4px 0 0; font-size: 12px; color: #64748b;"><span x-text="printDateLabel"></span> · <span x-text="activeStatusLabel"></span></p>
                 </div>
                 <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
@@ -470,7 +470,7 @@
                         </template>
                     </tbody>
                 </table>
-                <p style="margin-top: 14px; text-align: right; font-size: 16px; font-weight: 900; color: #04041f;">
+                <p style="margin-top: 14px; text-align: right; font-size: 16px; font-weight: 700; color: #04041f;">
                     {{ __('Grand Total') }}: <span x-text="grandTotalLabel"></span>
                 </p>
             </section>

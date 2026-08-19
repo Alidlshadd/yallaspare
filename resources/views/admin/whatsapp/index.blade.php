@@ -36,7 +36,7 @@
                 <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-center justify-between gap-3">
                         <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl {{ $tone }}"><i class="{{ $card['icon'] }}" aria-hidden="true"></i></span>
-                        <span class="font-mono text-2xl font-black tabular-nums text-slate-900 dark:text-white">{{ number_format($card['value']) }}</span>
+                        <span class="font-mono text-2xl font-bold tabular-nums text-slate-900 dark:text-white">{{ number_format($card['value']) }}</span>
                     </div>
                     <p class="mt-3 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ $card['label'] }}</p>
                 </div>
@@ -49,7 +49,7 @@
                     <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-green-500 text-white shadow-lg shadow-green-500/20"><i class="fab fa-whatsapp text-xl" aria-hidden="true"></i></span>
                     <div>
                         <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">{{ __('System status') }}</p>
-                        <h3 class="text-lg font-black text-slate-900 dark:text-white">{{ __('OTPIQ inbound webhook') }}</h3>
+                        <h3 class="text-lg font-bold text-slate-900 dark:text-white">{{ __('OTPIQ inbound webhook') }}</h3>
                     </div>
                 </div>
                 <form method="POST" action="{{ route('admin.whatsapp.processing.update') }}" class="flex items-center gap-3">

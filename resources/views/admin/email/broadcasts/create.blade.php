@@ -187,7 +187,7 @@
                                 <span class="font-mono text-[10px] text-slate-400">{{ __('estimated') }}</span>
                             </div>
                             <div class="p-5">
-                                <p class="text-3xl font-black text-slate-900 dark:text-white" id="recipient-count">—</p>
+                                <p class="text-3xl font-bold text-slate-900 dark:text-white" id="recipient-count">—</p>
                                 <p class="text-[11px] text-slate-500 mt-0.5 dark:text-slate-400" id="recipient-label">{{ __('Pick an audience to estimate') }}</p>
                             </div>
                         </div>
@@ -205,7 +205,7 @@
                                     </div>
                                     <div class="h-0.5 bg-accent"></div>
                                     <div class="p-4 space-y-3 text-[12px] leading-relaxed">
-                                        <p class="font-black text-slate-900 text-base" id="preview-subject">{{ __('Your subject will appear here') }}</p>
+                                        <p class="font-bold text-slate-900 text-base" id="preview-subject">{{ __('Your subject will appear here') }}</p>
                                         <div class="text-slate-700 whitespace-pre-wrap" id="preview-body">{{ __('Your message body will appear here once you start typing.') }}</div>
                                         <div id="preview-cta" style="display:none">
                                             <a class="font-display inline-block rounded-lg bg-primary px-4 py-2 text-white text-sm font-bold" id="preview-cta-text">{{ __('Shop now') }}</a>

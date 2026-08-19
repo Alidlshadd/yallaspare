@@ -173,7 +173,7 @@
                     <div class="mt-6 relative rounded-xl border border-primary/15 bg-gradient-to-br from-primary/[0.06] to-white p-3 corner-brackets-em dark:from-primary/20 dark:to-slate-900 dark:border-primary/30">
                         <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-primary dark:text-info">{{ __('Delivery health') }}</p>
                         <div class="mt-2 flex items-baseline gap-2">
-                            <span class="num-display text-2xl font-black text-primary dark:text-white">{{ $successRate7d ?? $successRate ?? 0 }}</span>
+                            <span class="num-display text-2xl font-bold text-primary dark:text-white">{{ $successRate7d ?? $successRate ?? 0 }}</span>
                             <span class="text-xs font-mono text-slate-500 dark:text-slate-400">%</span>
                         </div>
                         <div class="mt-1.5 h-1 rounded-full bg-slate-200 overflow-hidden dark:bg-slate-800">
@@ -206,7 +206,7 @@
                     <div class="flex flex-wrap items-start justify-between gap-3">
                         <div>
                             <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">{{ __('Overview') }} · YALLASPARE / EMAIL</p>
-                            <h2 class="mt-1 text-2xl font-black tracking-tight text-primary dark:text-white">{{ __('Broadcast console') }}</h2>
+                            <h2 class="mt-1 text-2xl font-bold tracking-tight text-primary dark:text-white">{{ __('Broadcast console') }}</h2>
                             <p class="mt-1 text-sm text-slate-500 font-mono dark:text-slate-400">
                                 {{ __('queue: :q', ['q' => $summary['queue'] ?: 'sync']) }} · {{ $emailStats['last_sent_label'] }}
                             </p>
@@ -230,7 +230,7 @@
                                     <i class="fas fa-envelopes-bulk text-[10px]"></i>
                                 </div>
                             </div>
-                            <p class="mt-3 num-display text-3xl font-black text-primary dark:text-white">{{ number_format($totalSent7d) }}</p>
+                            <p class="mt-3 num-display text-3xl font-bold text-primary dark:text-white">{{ number_format($totalSent7d) }}</p>
                             <div class="mt-2 flex items-center justify-between">
                                 <span class="text-[10px] text-slate-400 font-mono">{{ __('last 7 days') }}</span>
                                 @if($successRate7d !== null)
@@ -251,7 +251,7 @@
                                     <i class="fas fa-circle-check text-[10px]"></i>
                                 </div>
                             </div>
-                            <p class="mt-3 num-display text-3xl font-black text-primary dark:text-white">{{ number_format($sent24h) }}</p>
+                            <p class="mt-3 num-display text-3xl font-bold text-primary dark:text-white">{{ number_format($sent24h) }}</p>
                             <div class="mt-2 flex items-center justify-between">
                                 <span class="text-[10px] font-mono font-bold text-emerald-600">{{ $successRate === null ? '—' : $successRate . '%' }}</span>
                                 <span class="text-[10px] font-mono text-slate-400">{{ __('24h') }}</span>
@@ -270,7 +270,7 @@
                                     <i class="fas fa-clock text-[10px]"></i>
                                 </div>
                             </div>
-                            <p class="mt-3 num-display text-3xl font-black text-primary flex items-center gap-2 dark:text-white">
+                            <p class="mt-3 num-display text-3xl font-bold text-primary flex items-center gap-2 dark:text-white">
                                 {{ number_format($queuedCount) }}
                                 @if($queuedCount > 0)
                                     <span class="inline-flex h-1.5 w-1.5 rounded-full bg-accent animate-pulse"></span>
@@ -386,7 +386,7 @@
                                         <p class="text-sm font-bold text-primary truncate dark:text-slate-100" title="{{ $broadcast->subject }}">{{ $broadcast->subject }}</p>
                                         <p class="text-[11px] text-slate-500 font-mono mt-0.5 dark:text-slate-400 truncate">
                                             <span class="inline-flex items-center gap-1">
-                                                <span class="h-4 w-4 rounded-full {{ $audienceAvatar }} grid place-items-center text-[9px] font-black">{{ $audienceLetter }}</span>
+                                                <span class="h-4 w-4 rounded-full {{ $audienceAvatar }} grid place-items-center text-[9px] font-bold">{{ $audienceLetter }}</span>
                                                 {{ $audienceLabel }}@if($broadcast->audience_role) · {{ $audienceRoles[$broadcast->audience_role] ?? $broadcast->audience_role }}@endif
                                             </span>
                                             · {{ number_format($broadcast->recipient_count) }} {{ __('recipients') }}

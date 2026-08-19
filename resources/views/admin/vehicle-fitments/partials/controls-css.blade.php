@@ -3,13 +3,13 @@
 .vf-engine-chip {
     display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 999px;
     background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412;
-    font-size: 9.5px; font-weight: 800; line-height: 1.25;
+    font-size: 9.5px; font-weight: 700; line-height: 1.25;
 }
 .dark .vf-engine-chip { background: rgba(245,158,11,.10); border-color: rgb(255 138 61 / .28); color: #ff8a3d; }
 .vf-year-chip {
     display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 999px;
     background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8;
-    font-size: 9.5px; font-weight: 800; line-height: 1.25;
+    font-size: 9.5px; font-weight: 700; line-height: 1.25;
 }
 .dark .vf-year-chip { background: rgba(59,130,246,.10); border-color: rgba(96,165,250,.28); color: #93c5fd; }
 
@@ -17,7 +17,7 @@
 .vf-btn {
     display: inline-flex; align-items: center; justify-content: center; gap: 7px;
     height: 38px; padding: 0 16px; border-radius: 10px; border: 1px solid #e2e8f0;
-    background: #fff; color: #475569; font-size: 12px; font-weight: 800; cursor: pointer;
+    background: #fff; color: #475569; font-size: 12px; font-weight: 700; cursor: pointer;
     text-decoration: none; transition: all .15s ease;
 }
 .vf-btn:hover { transform: translateY(-1px); }
@@ -64,7 +64,7 @@
 }
 .vf-tag {
     display: inline-flex; align-items: center; gap: 5px; padding: 4px 7px 4px 9px; border-radius: 999px;
-    background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; font-size: 10.5px; font-weight: 800;
+    background: #fff7ed; border: 1px solid #fed7aa; color: #9a3412; font-size: 10.5px; font-weight: 700;
 }
 .vf-tag button { color: #c2410c; font-size: 14px; line-height: 1; }
 .dark .vf-tagbox { background: #1e293b; border-color: #334155; }
@@ -74,7 +74,7 @@
 .dark .vf-tag button { color: #ffb27a; }
 
 .vf-lbl {
-    display: block; font-size: 10px; font-weight: 800; text-transform: uppercase;
+    display: block; font-size: 10px; font-weight: 700; text-transform: uppercase;
     letter-spacing: .12em; color: #64748b; margin-bottom: 5px;
 }
 .dark .vf-lbl { color: #94a3b8; }

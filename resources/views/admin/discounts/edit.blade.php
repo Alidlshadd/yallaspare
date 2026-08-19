@@ -104,8 +104,8 @@
         <section class="cp-hero rounded-3xl p-6 text-white shadow-sm sm:p-7">
             <div class="flex flex-wrap items-start justify-between gap-4">
                 <div class="min-w-0">
-                    <p class="text-[11px] font-black uppercase tracking-[0.16em] text-accent">{{ __('Coupon Operations') }}</p>
-                    <h1 class="mt-1.5 text-2xl font-black tracking-tight sm:text-3xl">
+                    <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-accent">{{ __('Coupon Operations') }}</p>
+                    <h1 class="mt-1.5 text-2xl font-bold tracking-tight sm:text-3xl">
                         <span class="cp-num">{{ number_format(count($couponRows)) }}</span> {{ __('campaigns') }}
                         <span class="text-white/40">·</span>
                         <span class="cp-num">{{ number_format($totalRedemptions) }}</span> {{ __('redemptions') }}
@@ -116,30 +116,30 @@
                     <p class="mt-1.5 max-w-2xl text-sm text-white/60">{{ __('Manage coupon campaigns, watch redemption momentum, and control the site coupon from one console.') }}</p>
                 </div>
                 <div class="flex shrink-0 items-center gap-2">
-                    <span class="rounded-full px-3 py-1 text-xs font-black uppercase tracking-wide" :class="settingsStateClass" x-text="settingsStateLabel"></span>
-                    <a href="{{ route('admin.discounts.coupons.create') }}" class="font-display rounded-xl bg-accent px-4 py-2 text-sm font-extrabold text-[#422006] hover:bg-accent">+ {{ __('New Coupon') }}</a>
+                    <span class="rounded-full px-3 py-1 text-xs font-bold uppercase tracking-wide" :class="settingsStateClass" x-text="settingsStateLabel"></span>
+                    <a href="{{ route('admin.discounts.coupons.create') }}" class="font-display rounded-xl bg-accent px-4 py-2 text-sm font-bold text-[#422006] hover:bg-accent">+ {{ __('New Coupon') }}</a>
                 </div>
             </div>
             <div class="mt-5 grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-3 lg:flex lg:flex-wrap lg:gap-10">
                 <div>
-                    <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/45">{{ __('Active') }}</p>
-                    <p class="cp-num mt-0.5 text-xl font-black text-emerald-300">{{ number_format($activeRowCount) }}</p>
+                    <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/45">{{ __('Active') }}</p>
+                    <p class="cp-num mt-0.5 text-xl font-bold text-emerald-300">{{ number_format($activeRowCount) }}</p>
                 </div>
                 <div>
-                    <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/45">{{ __('Scheduled') }}</p>
-                    <p class="cp-num mt-0.5 text-xl font-black text-accent">{{ number_format($scheduledRowCount) }}</p>
+                    <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/45">{{ __('Scheduled') }}</p>
+                    <p class="cp-num mt-0.5 text-xl font-bold text-accent">{{ number_format($scheduledRowCount) }}</p>
                 </div>
                 <div>
-                    <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/45">{{ __('Expired') }}</p>
-                    <p class="cp-num mt-0.5 text-xl font-black text-rose-300">{{ number_format($expiredRowCount) }}</p>
+                    <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/45">{{ __('Expired') }}</p>
+                    <p class="cp-num mt-0.5 text-xl font-bold text-rose-300">{{ number_format($expiredRowCount) }}</p>
                 </div>
                 <div>
-                    <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/45">{{ __('Paused') }}</p>
-                    <p class="cp-num mt-0.5 text-xl font-black text-slate-300">{{ number_format($pausedRowCount) }}</p>
+                    <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/45">{{ __('Paused') }}</p>
+                    <p class="cp-num mt-0.5 text-xl font-bold text-slate-300">{{ number_format($pausedRowCount) }}</p>
                 </div>
                 <div>
-                    <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/45">{{ __('Average Discount') }}</p>
-                    <p class="cp-num mt-0.5 text-xl font-black">{{ $avgDiscount }}</p>
+                    <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/45">{{ __('Average Discount') }}</p>
+                    <p class="cp-num mt-0.5 text-xl font-bold">{{ $avgDiscount }}</p>
                 </div>
             </div>
         </section>
@@ -149,10 +149,10 @@
             <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <div class="flex items-center justify-between gap-3">
                     <div>
-                        <p class="text-[10px] font-extrabold uppercase tracking-[0.13em] text-slate-400">{{ __('Redemptions') }}</p>
-                        <h2 class="mt-0.5 text-sm font-extrabold text-slate-800 dark:text-slate-100">{{ __('Last 12 days') }}</h2>
+                        <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-slate-400">{{ __('Redemptions') }}</p>
+                        <h2 class="mt-0.5 text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Last 12 days') }}</h2>
                     </div>
-                    <span class="cp-num rounded-full bg-slate-100 px-3 py-1 text-xs font-black text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ number_format($totalRedemptions) }} {{ __('total') }}</span>
+                    <span class="cp-num rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ number_format($totalRedemptions) }} {{ __('total') }}</span>
                 </div>
                 <div class="cp-spark mt-4">
                     @foreach ($trendPoints as $index => $point)
@@ -165,8 +165,8 @@
                 </div>
             </article>
             <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                <p class="text-[10px] font-extrabold uppercase tracking-[0.13em] text-slate-400">{{ __('Usage depth') }}</p>
-                <h2 class="mt-0.5 text-sm font-extrabold text-slate-800 dark:text-slate-100">{{ __('How exhausted are limited coupons?') }}</h2>
+                <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-slate-400">{{ __('Usage depth') }}</p>
+                <h2 class="mt-0.5 text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('How exhausted are limited coupons?') }}</h2>
                 <div class="mt-4 space-y-3.5">
                     @foreach ($usageDistribution as $bucket)
                         <div>
@@ -187,7 +187,7 @@
         <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <div class="flex flex-wrap items-center gap-2 border-b border-slate-200 px-4 py-3 dark:border-slate-800">
                 <i class="fas fa-ticket text-slate-400"></i>
-                <h3 class="text-sm font-extrabold text-slate-800 dark:text-slate-100">{{ __('Coupon Campaigns') }}</h3>
+                <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Coupon Campaigns') }}</h3>
                 <div class="ms-auto flex flex-wrap items-center gap-2">
                     <input type="search" placeholder="{{ __('Search code…') }}" class="h-9 w-44 rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" @input="onSearchInput">
                     <select class="h-9 rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" @change="onStatusChange">
@@ -240,7 +240,7 @@
                                     data-code="{{ strtolower($couponRow['code']) }}"
                                     data-status="{{ $couponRow['status'] }}"
                                     @if($rowJson) data-coupon="{{ $rowJson }}" @endif>
-                                    <td class="cp-num px-4 py-3 font-black tracking-wide text-slate-900 dark:text-slate-100">{{ $couponRow['code'] }}</td>
+                                    <td class="cp-num px-4 py-3 font-bold tracking-wide text-slate-900 dark:text-slate-100">{{ $couponRow['code'] }}</td>
                                     <td class="cp-num px-4 py-3 text-slate-700 dark:text-slate-200">{{ $couponRow['discount'] }}</td>
                                     <td class="px-4 py-3">
                                         <span class="cp-num text-xs text-slate-500 dark:text-slate-400">{{ $usageLabel($couponRow) }}</span>
@@ -250,7 +250,7 @@
                                     </td>
                                     <td class="px-4 py-3 text-xs text-slate-500 dark:text-slate-400">{{ $couponRow['expiry'] }}</td>
                                     <td class="px-4 py-3">
-                                        <span class="inline-flex rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wide {{ $rowChip['class'] }}">{{ $rowChip['label'] }}</span>
+                                        <span class="inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide {{ $rowChip['class'] }}">{{ $rowChip['label'] }}</span>
                                     </td>
                                     <td class="px-4 py-3">
                                         @if ($couponRow['id'] > 0)
@@ -271,7 +271,7 @@
                                             </div>
                                         @else
                                             <div class="flex justify-end">
-                                                <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-slate-400 dark:bg-slate-800" title="{{ __('This row comes from the site coupon settings below.') }}">{{ __('Settings coupon') }}</span>
+                                                <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-slate-400 dark:bg-slate-800" title="{{ __('This row comes from the site coupon settings below.') }}">{{ __('Settings coupon') }}</span>
                                             </div>
                                         @endif
                                     </td>
@@ -290,8 +290,8 @@
         <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <button type="button" class="flex w-full items-center gap-2 px-4 py-3.5 text-left" @click="toggleSettings">
                 <i class="fas fa-sliders text-slate-400"></i>
-                <span class="text-sm font-extrabold text-slate-800 dark:text-slate-100">{{ __('Site Coupon Settings') }}</span>
-                <span class="cp-num ms-2 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-black text-slate-500 dark:bg-slate-800 dark:text-slate-400">{{ $couponCode !== '' ? $couponCode : __('No code') }}</span>
+                <span class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Site Coupon Settings') }}</span>
+                <span class="cp-num ms-2 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-500 dark:bg-slate-800 dark:text-slate-400">{{ $couponCode !== '' ? $couponCode : __('No code') }}</span>
                 <span class="ms-auto text-slate-400" x-text="settingsChevron">▾</span>
             </button>
             <div class="border-t border-slate-200 dark:border-slate-800" x-show="settingsOpen" x-cloak>
@@ -320,7 +320,7 @@
                     <label class="inline-flex items-center gap-2.5 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-700 dark:border-slate-700 dark:text-slate-200">
                         <input type="checkbox" name="coupon_enabled" value="1" x-model="couponEnabled" class="h-4 w-4 rounded border-slate-300 text-accent focus:ring-accent dark:border-slate-600 dark:bg-slate-900">
                         {{ __('Campaign Active') }}
-                        <span class="rounded-full px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wide" :class="settingsStateClass" x-text="settingsStateLabel"></span>
+                        <span class="rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide" :class="settingsStateClass" x-text="settingsStateLabel"></span>
                     </label>
 
                     <div class="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3" :class="settingsDimClass">
@@ -375,7 +375,7 @@
 
                     <div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4 dark:border-slate-800">
                         <p class="text-xs text-slate-400">{{ __('Saving publishes the site coupon configuration. Discount rule settings are preserved.') }}</p>
-                        <button type="submit" class="rounded-xl bg-navy-deep px-5 py-2.5 text-sm font-extrabold text-white hover:bg-navy-raised">{{ __('Save Coupon Configuration') }}</button>
+                        <button type="submit" class="rounded-xl bg-navy-deep px-5 py-2.5 text-sm font-bold text-white hover:bg-navy-raised">{{ __('Save Coupon Configuration') }}</button>
                     </div>
                 </form>
             </div>
@@ -386,8 +386,8 @@
             <aside class="absolute end-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl dark:bg-slate-900">
                 <div class="cp-hero flex items-start justify-between gap-3 px-5 py-4 text-white">
                     <div class="min-w-0">
-                        <p class="text-[10px] font-black uppercase tracking-[0.14em] text-accent">{{ __('Edit Coupon') }}</p>
-                        <h3 class="cp-num mt-0.5 truncate text-lg font-black tracking-wide" x-text="edit.code"></h3>
+                        <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-accent">{{ __('Edit Coupon') }}</p>
+                        <h3 class="cp-num mt-0.5 truncate text-lg font-bold tracking-wide" x-text="edit.code"></h3>
                         <p class="cp-num text-[11px] text-white/60"><span x-text="editUsageLabel"></span> {{ __('used') }}</p>
                     </div>
                     <button type="button" class="shrink-0 px-1 text-lg" @click="closeEdit" aria-label="{{ __('Close') }}">✕</button>
@@ -431,7 +431,7 @@
                         <p class="rounded-xl bg-slate-50 px-3.5 py-2.5 text-[11px] leading-relaxed text-slate-500 dark:bg-slate-950/40 dark:text-slate-400">{{ __('Changes are saved to the coupons table and logged in the activity log. Status follows the active switch and the schedule automatically.') }}</p>
                     </div>
                     <div class="flex items-center gap-2 border-t border-slate-200 px-5 py-3.5 dark:border-slate-800">
-                        <button type="submit" class="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-extrabold text-white hover:bg-emerald-500">{{ __('Save Changes') }}</button>
+                        <button type="submit" class="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-emerald-500">{{ __('Save Changes') }}</button>
                         <button type="button" class="ms-auto rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="closeEdit">{{ __('Cancel') }}</button>
                     </div>
                 </form>

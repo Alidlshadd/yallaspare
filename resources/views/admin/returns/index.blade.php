@@ -93,7 +93,7 @@
             background: rgba(15,23,42,0.06);
             padding: 1px 7px; border-radius: 999px;
             font-size: 10.5px; font-family: ui-monospace, 'JetBrains Mono', monospace;
-            color: #475569; font-weight: 800; letter-spacing: -0.01em;
+            color: #475569; font-weight: 700; letter-spacing: -0.01em;
         }
         .ret-chip.c-all { --chip-hover-bg: #f8fafc; --chip-hover-bd: #cbd5e1; --chip-hover-fg: #04041f; }
         .ret-chip.c-req { --chip-hover-bg: #fffbeb; --chip-hover-bd: #ff8a3d; --chip-hover-fg: #92400e; }
@@ -207,7 +207,7 @@
                 <div class="relative mt-7">
                     <div class="flex items-baseline gap-2 flex-wrap">
                         <span class="text-sm font-bold text-accent">{{ $currencyLabel }}</span>
-                        <span class="num-display text-5xl md:text-6xl font-black leading-none">{{ number_format((float) ($stats['refund_total'] ?? 0), $currencyDecimals) }}</span>
+                        <span class="num-display text-5xl md:text-6xl font-bold leading-none">{{ number_format((float) ($stats['refund_total'] ?? 0), $currencyDecimals) }}</span>
                     </div>
                     <p class="mt-3 text-xs text-white/55">{{ __('Sum of approved refunds') }}</p>
                 </div>
@@ -215,15 +215,15 @@
                 <div class="relative mt-6 pt-5 border-t border-dashed border-white/15 grid grid-cols-3 gap-4">
                     <div>
                         <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-white/50">{{ __('Total Requests') }}</div>
-                        <div class="num-display text-xl font-black mt-1">{{ number_format((int) ($stats['total'] ?? 0)) }}</div>
+                        <div class="num-display text-xl font-bold mt-1">{{ number_format((int) ($stats['total'] ?? 0)) }}</div>
                     </div>
                     <div>
                         <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-white/50">{{ __('Open Workflow') }}</div>
-                        <div class="num-display text-xl font-black mt-1 text-accent">{{ number_format((int) ($stats['open'] ?? 0)) }}</div>
+                        <div class="num-display text-xl font-bold mt-1 text-accent">{{ number_format((int) ($stats['open'] ?? 0)) }}</div>
                     </div>
                     <div>
                         <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-white/50">{{ __('Closed') }}</div>
-                        <div class="num-display text-xl font-black mt-1">{{ number_format((int) ($stats['closed'] ?? 0)) }}</div>
+                        <div class="num-display text-xl font-bold mt-1">{{ number_format((int) ($stats['closed'] ?? 0)) }}</div>
                     </div>
                 </div>
             </div>
@@ -283,7 +283,7 @@
                         </div>
                         <div class="text-[10px] uppercase tracking-widest font-bold text-slate-500 dark:text-slate-400">{{ $t['label'] }}</div>
                     </div>
-                    <div class="num-display text-3xl font-black text-slate-900 dark:text-white mt-4">{{ number_format((int) $t['value']) }}</div>
+                    <div class="num-display text-3xl font-bold text-slate-900 dark:text-white mt-4">{{ number_format((int) $t['value']) }}</div>
                     <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5">
                         <span class="inline-block w-1.5 h-1.5 rounded-full {{ $t['dot'] }}"></span> {{ $t['foot'] }}
                     </div>
@@ -325,7 +325,7 @@
                         </div>
                         <div class="text-[10px] uppercase tracking-widest font-bold text-slate-500 dark:text-slate-400">{{ $t['label'] }}</div>
                     </div>
-                    <div class="num-display text-3xl font-black text-slate-900 dark:text-white mt-4">{{ number_format((int) $t['value']) }}</div>
+                    <div class="num-display text-3xl font-bold text-slate-900 dark:text-white mt-4">{{ number_format((int) $t['value']) }}</div>
                     <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5">
                         <span class="inline-block w-1.5 h-1.5 rounded-full {{ $t['dot'] }}"></span> {{ $t['foot'] }}
                     </div>
@@ -339,12 +339,12 @@
                 <div class="h-9 w-9 rounded-xl bg-navy-deep text-accent grid place-items-center">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
                 </div>
-                <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Filter Requests') }}</h3>
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Filter Requests') }}</h3>
             </div>
 
             <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_auto] items-end">
                 <div>
-                    <label for="filter-search" class="block text-[10.5px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Search') }}</label>
+                    <label for="filter-search" class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Search') }}</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 start-0 flex items-center ps-3 text-slate-400">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 100-15 7.5 7.5 0 000 15z"/></svg>
@@ -355,7 +355,7 @@
                     </div>
                 </div>
                 <div>
-                    <label for="filter-status" class="block text-[10.5px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Status') }}</label>
+                    <label for="filter-status" class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Status') }}</label>
                     <select id="filter-status" name="status"
                             class="ret-select h-11 w-full px-3 rounded-xl border border-slate-200 bg-slate-50 text-sm font-semibold text-slate-900 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-900">
                         <option value="">{{ __('All Statuses') }}</option>
@@ -387,7 +387,7 @@
 
             {{-- Status quick filter band --}}
             <div class="flex flex-wrap items-center gap-4 px-5 py-4 border-b border-slate-200/70 dark:border-slate-800 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900/60 dark:to-slate-900">
-                <span class="inline-flex items-center gap-2 font-mono text-[10px] font-extrabold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400 shrink-0">
+                <span class="inline-flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400 shrink-0">
                     <span class="relative inline-flex h-1.5 w-1.5">
                         <span class="absolute inset-0 rounded-full bg-accent ys-pulse-dot"></span>
                         <span class="relative h-1.5 w-1.5 rounded-full bg-accent"></span>
@@ -424,7 +424,7 @@
 
             {{-- List card head --}}
             <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-slate-200/70 dark:border-slate-800">
-                <div class="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2.5">
+                <div class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2.5">
                     <span class="inline-block w-1 h-4 rounded-full" style="background: linear-gradient(180deg, #ff8a3d, #e65c00);"></span>
                     {{ __('Requests') }}
                     <span class="text-xs font-medium text-slate-500 dark:text-slate-400">
@@ -462,7 +462,7 @@
                     {{-- Col 1: Request meta --}}
                     <div>
                         <div class="flex flex-wrap items-center gap-1.5 mb-2">
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[9.5px] font-extrabold uppercase tracking-wide border {{ $rowTypeMeta['class'] }}">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded text-[9.5px] font-bold uppercase tracking-wide border {{ $rowTypeMeta['class'] }}">
                                 {{ $rowTypeMeta['label'] }}
                             </span>
                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-bold leading-none border {{ $rowStatusMeta['pill'] }}">
@@ -470,7 +470,7 @@
                                 {{ $rowStatusMeta['label'] }}
                             </span>
                         </div>
-                        <div class="font-mono text-[13px] font-extrabold text-slate-900 dark:text-white">#R-{{ $requestRow->id }}</div>
+                        <div class="font-mono text-[13px] font-bold text-slate-900 dark:text-white">#R-{{ $requestRow->id }}</div>
                         <div class="font-mono text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">
                             {{ $requestRow->requested_at?->format('M d, Y') ?? '-' }}
                             @if($requestRow->requested_at)
@@ -489,10 +489,10 @@
                     <div>
                         @if($order)
                             <a href="{{ route('admin.orders.show', $order) }}"
-                               class="inline-block font-mono text-[13px] font-extrabold text-info hover:text-info dark:text-info dark:hover:text-info">
+                               class="inline-block font-mono text-[13px] font-bold text-info hover:text-info dark:text-info dark:hover:text-info">
                                 {{ $order->order_number }}
                             </a>
-                            <div class="num-display text-[14px] font-extrabold text-slate-900 dark:text-white mt-1.5">
+                            <div class="num-display text-[14px] font-bold text-slate-900 dark:text-white mt-1.5">
                                 {{ number_format((float) $order->total_amount, $currencyDecimals) }}
                                 <span class="text-[10px] text-slate-400 font-medium ms-1">{{ $currencyLabel }}</span>
                             </div>
@@ -554,7 +554,7 @@
                         <p class="text-[12.5px] leading-relaxed text-slate-700 dark:text-slate-300 line-clamp-5">{{ $requestRow->reason }}</p>
                         @if($requestRow->admin_note)
                             <div class="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] leading-relaxed text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
-                                <span class="font-extrabold">{{ __('Admin note') }}:</span>
+                                <span class="font-bold">{{ __('Admin note') }}:</span>
                                 {{ $requestRow->admin_note }}
                             </div>
                         @endif
@@ -568,7 +568,7 @@
 
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
-                                    <label class="block text-[10px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">{{ __('Status') }}</label>
+                                    <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">{{ __('Status') }}</label>
                                     <select name="status"
                                             class="ret-select h-10 w-full px-2.5 rounded-lg border border-slate-200 bg-white text-[12.5px] font-semibold text-slate-900 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100">
                                         @foreach($statuses as $status)
@@ -579,7 +579,7 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">{{ __('Refund') }}</label>
+                                    <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">{{ __('Refund') }}</label>
                                     <input name="refund_amount" type="number" step="0.01" min="0"
                                            value="{{ $requestRow->refund_amount }}" placeholder="0"
                                            class="h-10 w-full px-2.5 rounded-lg border border-slate-200 bg-white text-[12.5px] font-semibold text-slate-900 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100">
@@ -587,13 +587,13 @@
                             </div>
 
                             <div>
-                                <label class="block text-[10px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">{{ __('Internal note') }}</label>
+                                <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">{{ __('Internal note') }}</label>
                                 <textarea name="admin_note" rows="2" placeholder="{{ __('Add handling note for the team') }}"
                                           class="w-full p-2.5 rounded-lg border border-slate-200 bg-white text-[12.5px] text-slate-900 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 resize-none">{{ $requestRow->admin_note }}</textarea>
                             </div>
 
                             <button type="submit"
-                                    class="inline-flex items-center justify-center gap-2 w-full h-10 rounded-lg text-sm font-extrabold text-navy-deep border border-accent/20 shadow-md shadow-accent/30 transition hover:brightness-105"
+                                    class="inline-flex items-center justify-center gap-2 w-full h-10 rounded-lg text-sm font-bold text-navy-deep border border-accent/20 shadow-md shadow-accent/30 transition hover:brightness-105"
                                     style="background: linear-gradient(180deg, #ff8a3d, #e65c00);">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
                                 {{ __('Save Workflow') }}

@@ -31,7 +31,7 @@
         .dl-avatar {
             width: 38px; height: 38px; border-radius: 11px; flex: none;
             display: inline-flex; align-items: center; justify-content: center;
-            background: #04041f; color: #ff8a3d; font-weight: 900; font-size: 15px;
+            background: #04041f; color: #ff8a3d; font-weight: 700; font-size: 15px;
         }
     </style>
 
@@ -53,8 +53,8 @@
             <section class="dl-hero rounded-3xl p-6 text-white shadow-sm sm:p-7">
                 <div class="flex flex-wrap items-start justify-between gap-4">
                     <div class="min-w-0">
-                        <p class="text-[11px] font-black uppercase tracking-[0.16em] text-accent">{{ __('Dealer Operations') }}</p>
-                        <h1 class="mt-1.5 text-2xl font-black tracking-tight sm:text-3xl">
+                        <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-accent">{{ __('Dealer Operations') }}</p>
+                        <h1 class="mt-1.5 text-2xl font-bold tracking-tight sm:text-3xl">
                             <span class="dl-num">{{ number_format($totalDealers) }}</span> {{ __('dealers') }}
                             <span class="text-white/40">·</span>
                             <span class="dl-num text-accent">{{ $money($dealerRevenue) }}</span>
@@ -68,24 +68,24 @@
                 </div>
                 <div class="mt-5 grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-3 lg:flex lg:flex-wrap lg:gap-10">
                     <div>
-                        <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/45">{{ __('Active') }}</p>
-                        <p class="dl-num mt-0.5 text-xl font-black text-emerald-300">{{ number_format($activeDealers) }}</p>
+                        <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/45">{{ __('Active') }}</p>
+                        <p class="dl-num mt-0.5 text-xl font-bold text-emerald-300">{{ number_format($activeDealers) }}</p>
                     </div>
                     <div>
-                        <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/45">{{ __('Inactive') }}</p>
-                        <p class="dl-num mt-0.5 text-xl font-black text-slate-300">{{ number_format($inactiveDealers) }}</p>
+                        <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/45">{{ __('Inactive') }}</p>
+                        <p class="dl-num mt-0.5 text-xl font-bold text-slate-300">{{ number_format($inactiveDealers) }}</p>
                     </div>
                     <div>
-                        <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/45">{{ __('Suspended') }}</p>
-                        <p class="dl-num mt-0.5 text-xl font-black text-rose-300">{{ number_format($suspendedDealers) }}</p>
+                        <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/45">{{ __('Suspended') }}</p>
+                        <p class="dl-num mt-0.5 text-xl font-bold text-rose-300">{{ number_format($suspendedDealers) }}</p>
                     </div>
                     <div>
-                        <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/45">{{ __('Average Discount') }}</p>
-                        <p class="dl-num mt-0.5 text-xl font-black text-accent">{{ number_format($averageDiscount, 2) }}%</p>
+                        <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/45">{{ __('Average Discount') }}</p>
+                        <p class="dl-num mt-0.5 text-xl font-bold text-accent">{{ number_format($averageDiscount, 2) }}%</p>
                     </div>
                     <div>
-                        <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/45">{{ __('Dealer Orders') }}</p>
-                        <p class="dl-num mt-0.5 text-xl font-black">{{ number_format($dealerOrdersTotal) }}</p>
+                        <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-white/45">{{ __('Dealer Orders') }}</p>
+                        <p class="dl-num mt-0.5 text-xl font-bold">{{ number_format($dealerOrdersTotal) }}</p>
                     </div>
                 </div>
             </section>
@@ -116,7 +116,7 @@
             <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3 dark:border-slate-800">
                     <i class="fas fa-handshake text-slate-400"></i>
-                    <h3 class="text-sm font-extrabold text-slate-800 dark:text-slate-100">{{ __('Dealer Directory') }}</h3>
+                    <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Dealer Directory') }}</h3>
                     <span class="ms-auto text-xs font-semibold text-slate-400">
                         {{ __(':from–:to of :total', ['from' => $dealers->firstItem() ?? 0, 'to' => $dealers->lastItem() ?? 0, 'total' => $dealers->total()]) }}
                     </span>
@@ -178,7 +178,7 @@
                                         <div class="mt-0.5 text-xs text-slate-400">{{ $dealer->phone ?: __('No phone number') }}</div>
                                     </td>
                                     <td class="px-4 py-3">
-                                        <span class="inline-flex rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wide {{ $chip['class'] }}">{{ $chip['label'] }}</span>
+                                        <span class="inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide {{ $chip['class'] }}">{{ $chip['label'] }}</span>
                                     </td>
                                     <td class="dl-num px-4 py-3 text-right font-bold text-slate-900 dark:text-slate-100">{{ number_format((float) $dealer->dealer_discount, 2) }}%</td>
                                     <td class="dl-num px-4 py-3 text-right text-slate-600 dark:text-slate-300">{{ number_format((int) $dealer->orders_count) }}</td>
@@ -235,12 +235,12 @@
                 ] as $tile)
                     <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         <div class="flex items-start justify-between gap-2">
-                            <p class="text-[10px] font-extrabold uppercase tracking-[0.13em] text-slate-400">{{ $tile['label'] }}</p>
+                            <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-slate-400">{{ $tile['label'] }}</p>
                             <i class="fas {{ $tile['icon'] }} text-accent"></i>
                         </div>
                         @if ($tile['dealer'])
-                            <p class="mt-2 truncate text-sm font-extrabold text-slate-900 dark:text-slate-100">{{ $tile['dealer']->name }}</p>
-                            <p class="dl-num mt-0.5 text-sm font-black text-accent dark:text-accent">{{ $tile['value'] }}</p>
+                            <p class="mt-2 truncate text-sm font-bold text-slate-900 dark:text-slate-100">{{ $tile['dealer']->name }}</p>
+                            <p class="dl-num mt-0.5 text-sm font-bold text-accent dark:text-accent">{{ $tile['value'] }}</p>
                         @else
                             <p class="mt-2 text-sm font-semibold text-slate-400">{{ __('No dealer data yet') }}</p>
                         @endif
@@ -255,7 +255,7 @@
                         <div class="flex min-w-0 items-center gap-3">
                             <span class="dl-avatar" style="background: rgb(255 138 61 / 0.15);" x-text="drawerInitial"></span>
                             <div class="min-w-0">
-                                <h3 class="truncate text-[15px] font-extrabold" x-text="drawerName"></h3>
+                                <h3 class="truncate text-[15px] font-bold" x-text="drawerName"></h3>
                                 <p class="text-[11px] text-white/60" x-text="drawerMeta"></p>
                             </div>
                         </div>
@@ -265,7 +265,7 @@
                     <div class="min-h-0 flex-1 space-y-4 overflow-y-auto p-5">
                         {{-- contact --}}
                         <div class="rounded-xl border border-slate-200 p-3.5 dark:border-slate-700">
-                            <p class="text-[10px] font-extrabold uppercase tracking-[0.13em] text-slate-400">{{ __('Contact') }}</p>
+                            <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-slate-400">{{ __('Contact') }}</p>
                             <p class="mt-1.5 truncate text-sm font-semibold text-slate-800 dark:text-slate-100" x-text="drawerEmail"></p>
                             <p class="mt-0.5 text-sm text-slate-500 dark:text-slate-400" x-text="drawerPhone"></p>
                         </div>
@@ -273,12 +273,12 @@
                         {{-- performance --}}
                         <div class="grid grid-cols-2 gap-3">
                             <div class="rounded-xl border border-slate-200 p-3.5 dark:border-slate-700">
-                                <p class="text-[10px] font-extrabold uppercase tracking-[0.13em] text-slate-400">{{ __('Orders') }}</p>
-                                <p class="dl-num mt-1 text-lg font-black text-slate-900 dark:text-slate-100" x-text="drawerOrdersLabel"></p>
+                                <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-slate-400">{{ __('Orders') }}</p>
+                                <p class="dl-num mt-1 text-lg font-bold text-slate-900 dark:text-slate-100" x-text="drawerOrdersLabel"></p>
                             </div>
                             <div class="rounded-xl border border-slate-200 p-3.5 dark:border-slate-700">
-                                <p class="text-[10px] font-extrabold uppercase tracking-[0.13em] text-slate-400">{{ __('Revenue') }}</p>
-                                <p class="dl-num mt-1 truncate text-lg font-black text-accent dark:text-accent" x-text="drawerRevenueLabel"></p>
+                                <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-slate-400">{{ __('Revenue') }}</p>
+                                <p class="dl-num mt-1 truncate text-lg font-bold text-accent dark:text-accent" x-text="drawerRevenueLabel"></p>
                             </div>
                         </div>
 
@@ -287,8 +287,8 @@
                             @csrf
                             @method('PATCH')
                             <div class="flex items-center justify-between">
-                                <p class="text-[10px] font-extrabold uppercase tracking-[0.13em] text-slate-400">{{ __('Update Dealer') }}</p>
-                                <span class="inline-flex rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wide" :class="drawerStatusClass" x-text="drawerStatusLabel"></span>
+                                <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-slate-400">{{ __('Update Dealer') }}</p>
+                                <span class="inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide" :class="drawerStatusClass" x-text="drawerStatusLabel"></span>
                             </div>
                             <label class="block">
                                 <span class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Status') }}</span>
@@ -302,20 +302,20 @@
                                 <span class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Discount') }} (%)</span>
                                 <input type="number" name="dealer_discount" x-model="form.discount" min="0" max="100" step="0.01" class="dl-num w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             </label>
-                            <button type="submit" class="w-full rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-extrabold text-white hover:bg-emerald-500">
+                            <button type="submit" class="w-full rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-emerald-500">
                                 {{ __('Save Changes') }}
                             </button>
                         </form>
                     </div>
 
                     <div class="flex flex-wrap items-center gap-2 border-t border-slate-200 px-5 py-3.5 dark:border-slate-800">
-                        <a x-show="drawerHasView" :href="drawerViewUrl" class="rounded-lg border border-slate-200 px-3.5 py-2 text-sm font-extrabold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
+                        <a x-show="drawerHasView" :href="drawerViewUrl" class="rounded-lg border border-slate-200 px-3.5 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
                             <i class="fas fa-eye me-1"></i>{{ __('View profile') }}
                         </a>
                         <form method="POST" :action="drawerDemoteUrl" class="ms-auto" data-confirm="{{ __('Convert this dealer to regular user?') }}">
                             @csrf
                             @method('PATCH')
-                            <button type="submit" class="rounded-lg border border-rose-200 px-3.5 py-2 text-sm font-extrabold text-rose-600 hover:bg-rose-50 dark:border-rose-900/60 dark:text-rose-300 dark:hover:bg-rose-950/30">
+                            <button type="submit" class="rounded-lg border border-rose-200 px-3.5 py-2 text-sm font-bold text-rose-600 hover:bg-rose-50 dark:border-rose-900/60 dark:text-rose-300 dark:hover:bg-rose-950/30">
                                 {{ __('Convert To User') }}
                             </button>
                         </form>

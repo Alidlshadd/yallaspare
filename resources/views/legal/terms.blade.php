@@ -126,7 +126,7 @@
                             </span>
                             <div>
                                 <span class="n" style="color:#9294bb;">{{ __('Article 07') }}</span>
-                                <h2 class="mt-1 text-2xl font-black text-white sm:text-3xl">{{ __('Contact Information') }}</h2>
+                                <h2 class="mt-1 text-2xl font-bold text-white sm:text-3xl">{{ __('Contact Information') }}</h2>
                                 <p class="mt-2 max-w-xl text-sm leading-relaxed text-slate-300">{{ __('We are committed to fairness, transparency, and your success. For legal, contractual, or policy-related inquiries, contact:') }}</p>
                             </div>
                         </div>

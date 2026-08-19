@@ -5,7 +5,7 @@
     $inputBase = 'h-11 w-full px-3 rounded-xl border bg-slate-50 text-sm text-slate-900 placeholder:text-slate-400 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-900';
     $inputOk = 'border-slate-200 dark:border-slate-700';
     $inputErr = 'border-rose-300 dark:border-rose-500/50';
-    $labelClass = 'block text-[10.5px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5';
+    $labelClass = 'block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5';
 @endphp
 
 <style>
@@ -25,7 +25,7 @@
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
             </div>
             <div>
-                <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Category Details') }}</h3>
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Category Details') }}</h3>
                 <p class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('Names in all three languages are required.') }}</p>
             </div>
         </div>
@@ -76,7 +76,7 @@
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             </div>
             <div>
-                <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Category Image') }}</h3>
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Category Image') }}</h3>
                 <p class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('Shown on the storefront category listing.') }}</p>
             </div>
         </div>
@@ -95,7 +95,7 @@
                         <img src="{{ asset('storage/' . ltrim($category->image, '/')) }}" alt="{{ $category->name_en }}" class="max-h-full max-w-full object-contain">
                     </div>
                     <div>
-                        <div class="text-[10.5px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ __('Current Image') }}</div>
+                        <div class="text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ __('Current Image') }}</div>
                         <label class="mt-1.5 flex items-center gap-2 text-xs font-bold text-slate-600 dark:text-slate-300 cursor-pointer">
                             <input type="checkbox" name="remove_image" value="1" class="rounded border-slate-300 text-accent focus:ring-accent dark:border-slate-600 dark:bg-slate-800">
                             {{ __('Remove') }}

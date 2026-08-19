@@ -37,16 +37,16 @@
 
             <div class="grid gap-4 sm:grid-cols-3">
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <p class="text-xs font-extrabold uppercase tracking-widest text-slate-400">{{ __('Total Brands') }}</p>
-                    <p class="mt-2 text-3xl font-black text-slate-900 dark:text-white">{{ number_format($totalBrands) }}</p>
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-400">{{ __('Total Brands') }}</p>
+                    <p class="mt-2 text-3xl font-bold text-slate-900 dark:text-white">{{ number_format($totalBrands) }}</p>
                 </div>
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <p class="text-xs font-extrabold uppercase tracking-widest text-slate-400">{{ __('Brands With Products') }}</p>
-                    <p class="mt-2 text-3xl font-black text-emerald-600 dark:text-emerald-400">{{ number_format($assignedBrands) }}</p>
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-400">{{ __('Brands With Products') }}</p>
+                    <p class="mt-2 text-3xl font-bold text-emerald-600 dark:text-emerald-400">{{ number_format($assignedBrands) }}</p>
                 </div>
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <p class="text-xs font-extrabold uppercase tracking-widest text-slate-400">{{ __('Assigned Products') }}</p>
-                    <p class="mt-2 text-3xl font-black text-accent">{{ number_format($totalAssignedProducts) }}</p>
+                    <p class="text-xs font-bold uppercase tracking-widest text-slate-400">{{ __('Assigned Products') }}</p>
+                    <p class="mt-2 text-3xl font-bold text-accent">{{ number_format($totalAssignedProducts) }}</p>
                 </div>
             </div>
 
@@ -55,7 +55,7 @@
                     <div class="mb-5 flex items-center gap-3">
                         <span class="grid h-10 w-10 place-items-center rounded-xl bg-navy-deep text-accent"><i class="fas fa-plus"></i></span>
                         <div>
-                            <h3 class="font-extrabold text-slate-900 dark:text-white">{{ __('Add Product Brand') }}</h3>
+                            <h3 class="font-bold text-slate-900 dark:text-white">{{ __('Add Product Brand') }}</h3>
                             <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Name and logo can be changed later.') }}</p>
                         </div>
                     </div>
@@ -63,15 +63,15 @@
                     <form method="POST" action="{{ route('admin.product-brands.store') }}" enctype="multipart/form-data" class="space-y-4" data-loading-form>
                         @csrf
                         <div>
-                            <label for="brand-name" class="mb-1.5 block text-xs font-extrabold uppercase tracking-wider text-slate-500">{{ __('Brand Name') }}</label>
+                            <label for="brand-name" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">{{ __('Brand Name') }}</label>
                             <input id="brand-name" name="name" value="{{ old('name') }}" required maxlength="120" class="{{ $inputClass }}" placeholder="{{ __('e.g., Bosch, Denso') }}">
                         </div>
                         <div>
-                            <label for="brand-logo" class="mb-1.5 block text-xs font-extrabold uppercase tracking-wider text-slate-500">{{ __('Brand Logo') }}</label>
+                            <label for="brand-logo" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">{{ __('Brand Logo') }}</label>
                             <input id="brand-logo" type="file" name="logo" accept="image/png,image/jpeg,image/webp" class="block w-full rounded-xl border border-dashed border-slate-300 bg-slate-50 p-3 text-xs text-slate-600 file:me-3 file:rounded-lg file:border-0 file:bg-navy-deep file:px-3 file:py-2 file:font-bold file:text-accent dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
                             <p class="mt-1.5 text-xs text-slate-400">{{ __('PNG, JPG or WebP up to 2MB.') }}</p>
                         </div>
-                        <button type="submit" class="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-navy-deep px-4 text-sm font-extrabold text-accent transition hover:bg-[#090946]">
+                        <button type="submit" class="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-navy-deep px-4 text-sm font-bold text-accent transition hover:bg-[#090946]">
                             <i class="fas fa-plus"></i> {{ __('Create Brand') }}
                         </button>
                     </form>
@@ -86,7 +86,7 @@
                                 <option value="assigned" @selected($assignment === 'assigned')>{{ __('With Products') }}</option>
                                 <option value="empty" @selected($assignment === 'empty')>{{ __('Without Products') }}</option>
                             </select>
-                            <button class="h-11 rounded-xl bg-accent px-5 text-sm font-extrabold text-navy-deep hover:bg-accent">{{ __('Filter') }}</button>
+                            <button class="h-11 rounded-xl bg-accent px-5 text-sm font-bold text-navy-deep hover:bg-accent">{{ __('Filter') }}</button>
                         </div>
                     </form>
 
@@ -99,7 +99,7 @@
                     @if($brands->isEmpty())
                         <div class="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center dark:border-slate-700 dark:bg-slate-900">
                             <i class="fas fa-tags text-4xl text-slate-300 dark:text-slate-600"></i>
-                            <h3 class="mt-4 font-extrabold text-slate-900 dark:text-white">{{ __('No product brands found.') }}</h3>
+                            <h3 class="mt-4 font-bold text-slate-900 dark:text-white">{{ __('No product brands found.') }}</h3>
                             <p class="mt-1 text-sm text-slate-500">{{ __('Add the first brand using the form.') }}</p>
                         </div>
                     @else
@@ -110,14 +110,14 @@
                                         @if($brand->logo_path)
                                             <img src="{{ asset('storage/' . ltrim((string) $brand->logo_path, '/')) }}" alt="{{ $brand->name }}" class="max-h-20 max-w-[75%] object-contain">
                                         @else
-                                            <span class="grid h-16 w-16 place-items-center rounded-2xl bg-navy-deep text-2xl font-black text-accent">{{ mb_strtoupper(mb_substr($brand->name, 0, 1)) }}</span>
+                                            <span class="grid h-16 w-16 place-items-center rounded-2xl bg-navy-deep text-2xl font-bold text-accent">{{ mb_strtoupper(mb_substr($brand->name, 0, 1)) }}</span>
                                         @endif
                                     </div>
                                     <div class="p-4">
-                                        <h3 class="truncate text-base font-black text-slate-900 dark:text-white">{{ $brand->name }}</h3>
+                                        <h3 class="truncate text-base font-bold text-slate-900 dark:text-white">{{ $brand->name }}</h3>
                                         <p class="mt-1 truncate font-mono text-[11px] text-slate-400">{{ $brand->slug }}</p>
 
-                                        <a href="{{ route('admin.products.index', ['product_brand_id' => $brand->id]) }}" class="mt-3 flex items-center justify-between rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-extrabold text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300">
+                                        <a href="{{ route('admin.products.index', ['product_brand_id' => $brand->id]) }}" class="mt-3 flex items-center justify-between rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300">
                                             <span><i class="fas fa-box me-1"></i> {{ __('Products') }}</span>
                                             <span>{{ number_format($brand->products_count) }}</span>
                                         </a>
@@ -136,7 +136,7 @@
                                                         <input type="checkbox" name="remove_logo" value="1" class="rounded border-slate-300 text-rose-600 focus:ring-rose-500"> {{ __('Remove current logo') }}
                                                     </label>
                                                 @endif
-                                                <button class="h-9 w-full rounded-lg bg-navy-deep text-sm font-extrabold text-accent dark:bg-accent dark:text-navy-deep">{{ __('Save Changes') }}</button>
+                                                <button class="h-9 w-full rounded-lg bg-navy-deep text-sm font-bold text-accent dark:bg-accent dark:text-navy-deep">{{ __('Save Changes') }}</button>
                                             </form>
                                         </details>
 

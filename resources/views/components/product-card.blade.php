@@ -83,7 +83,7 @@
     <div class="flex flex-1 flex-col">
         <div class="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-xl border border-slate-200/80 bg-slate-50 p-2.5 transition duration-300 group-hover:border-primary/10 group-hover:bg-white dark:border-slate-800 dark:bg-slate-950 dark:group-hover:border-primary/20 dark:group-hover:bg-slate-950">
             @if ($hasDiscount)
-                <div class="absolute left-2.5 top-2.5 z-10 inline-flex items-center rounded-full bg-rose-600 px-2.5 py-0.5 text-[11px] font-bold text-white shadow-sm">
+                <div class="absolute left-2.5 top-2.5 z-10 inline-flex items-center rounded-full bg-accent px-2.5 py-0.5 text-[11px] font-bold text-navy shadow-sm">
                     -{{ $discountPercent }}%
                 </div>
             @endif
@@ -224,7 +224,7 @@
             class="relative flex aspect-[4/3] w-full items-center justify-center overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-50 p-3 transition duration-300 group-hover:border-primary/10 group-hover:bg-white dark:border-slate-800 dark:bg-slate-950 dark:group-hover:border-primary/20 dark:group-hover:bg-slate-950 sm:rounded-[1.4rem] sm:p-4"
         >
             @if ($hasDiscount)
-                <div class="absolute left-3 top-3 z-10 inline-flex items-center rounded-full bg-rose-600 px-3 py-1 text-xs font-bold text-white shadow-sm">
+                <div class="absolute left-3 top-3 z-10 inline-flex items-center rounded-full bg-accent px-3 py-1 text-xs font-bold text-navy shadow-sm">
                     -{{ $discountPercent }}%
                 </div>
             @endif

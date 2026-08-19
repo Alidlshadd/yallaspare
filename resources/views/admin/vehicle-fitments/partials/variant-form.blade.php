@@ -48,7 +48,7 @@
         <div class="space-y-5">
             {{-- ── Where the variant belongs ── --}}
             <section class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-                <h2 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Vehicle') }}</h2>
+                <h2 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Vehicle') }}</h2>
                 <p class="mb-4 mt-0.5 text-[11.5px] text-slate-500 dark:text-slate-400">{{ __('A variant belongs to one model family, and a family belongs to one brand.') }}</p>
 
                 <div class="grid gap-4 sm:grid-cols-2">
@@ -101,7 +101,7 @@
 
             {{-- ── Names and years ── --}}
             <section class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-                <h2 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Variant Details') }}</h2>
+                <h2 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Variant Details') }}</h2>
                 <p class="mb-4 mt-0.5 text-[11.5px] text-slate-500 dark:text-slate-400">{{ __('Arabic and Kurdish names are optional; the English name is shown when one is missing.') }}</p>
 
                 <div class="grid gap-4">
@@ -138,7 +138,7 @@
             <section class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
                 <div class="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                        <h2 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Engines') }}</h2>
+                        <h2 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Engines') }}</h2>
                         <p class="mt-0.5 text-[11.5px] text-slate-500 dark:text-slate-400">{{ __('Add one row per engine offered on this variant. Electric variants need no engine size.') }}</p>
                     </div>
                     <button type="button" class="vf-btn sm" data-engine-add>
@@ -177,7 +177,7 @@
         {{-- ── Image + actions ── --}}
         <div class="space-y-5">
             <section class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-                <h2 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Vehicle Image') }}</h2>
+                <h2 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Vehicle Image') }}</h2>
                 <p class="mb-4 mt-0.5 text-[11.5px] text-slate-500 dark:text-slate-400">{{ __('JPG, PNG or WEBP up to 2 MB.') }}</p>
 
                 <div data-image-picker>

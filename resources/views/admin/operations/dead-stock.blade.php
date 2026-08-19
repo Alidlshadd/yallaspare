@@ -35,13 +35,13 @@
         .ds-hero > * { position: relative; z-index: 1; }
         .ds-hero .ds-lbl { color: rgba(255,255,255,0.55); }
         .ds-hero-big {
-            margin-top: 6px; font-size: 28px; font-weight: 900; line-height: 1.1; color: #ff8a3d;
+            margin-top: 6px; font-size: 28px; font-weight: 700; line-height: 1.1; color: #ff8a3d;
             font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace; font-variant-numeric: tabular-nums;
         }
         .ds-hero-sub { margin-top: 4px; font-size: 12px; color: rgba(255,255,255,0.65); }
 
         .ds-lbl {
-            font-size: 10px; font-weight: 800; letter-spacing: 0.13em; text-transform: uppercase;
+            font-size: 10px; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase;
             color: #94a3b8;
         }
         .ds-stat {
@@ -50,7 +50,7 @@
         }
         .dark .ds-stat { background: #0f172a; border-color: #1e293b; }
         .ds-stat-big {
-            margin-top: 4px; font-size: 24px; font-weight: 900; color: #0f172a;
+            margin-top: 4px; font-size: 24px; font-weight: 700; color: #0f172a;
             font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace; font-variant-numeric: tabular-nums;
         }
         .dark .ds-stat-big { color: #f1f5f9; }
@@ -68,7 +68,7 @@
         .ds-chip:hover { background: #f8fafc; border-color: #cbd5e1; color: #04041f; }
         .ds-chip .cnt {
             background: rgba(15,23,42,0.06); padding: 1px 7px; border-radius: 999px;
-            font-size: 10.5px; font-weight: 800; color: #475569;
+            font-size: 10.5px; font-weight: 700; color: #475569;
             font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace;
         }
         .ds-chip.on {
@@ -99,7 +99,7 @@
         .ds-btn {
             display: inline-flex; align-items: center; justify-content: center;
             height: 38px; padding: 0 18px; border-radius: 10px; border: 1px solid #04041f;
-            background: #04041f; color: #ffb27a; font-size: 12px; font-weight: 800; cursor: pointer;
+            background: #04041f; color: #ffb27a; font-size: 12px; font-weight: 700; cursor: pointer;
             transition: all .15s ease;
         }
         .ds-btn:hover { background: #070740; transform: translateY(-1px); }
@@ -108,7 +108,7 @@
 
         /* Age pills */
         .ds-pill {
-            display: inline-block; font-size: 10.5px; font-weight: 800; padding: 3px 9px; border-radius: 999px;
+            display: inline-block; font-size: 10.5px; font-weight: 700; padding: 3px 9px; border-radius: 999px;
             font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace; font-variant-numeric: tabular-nums;
             white-space: nowrap;
         }
@@ -130,7 +130,7 @@
         }
         .ds-vbar b {
             position: absolute; inset: 0; display: flex; align-items: center; justify-content: flex-end;
-            padding: 0 9px; font-size: 11px; font-weight: 800; color: #0f172a;
+            padding: 0 9px; font-size: 11px; font-weight: 700; color: #0f172a;
             font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace; font-variant-numeric: tabular-nums;
         }
         .dark .ds-vbar b { color: #f1f5f9; }

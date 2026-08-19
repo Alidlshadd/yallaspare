@@ -54,7 +54,7 @@
                                 {{ $errorBadge }}
                             </span>
                             <div class="space-y-3">
-                                <p class="text-6xl font-black tracking-[-0.08em] text-slate-950 dark:text-white sm:text-7xl lg:text-8xl">{{ $errorCode }}</p>
+                                <p class="text-6xl font-bold tracking-[-0.08em] text-slate-950 dark:text-white sm:text-7xl lg:text-8xl">{{ $errorCode }}</p>
                                 <h1 class="max-w-2xl text-3xl font-bold tracking-[-0.04em] text-slate-950 dark:text-white sm:text-5xl">
                                     {{ $errorTitle }}
                                 </h1>

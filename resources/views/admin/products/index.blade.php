@@ -58,8 +58,8 @@
             display: grid; place-items: center;
         }
         .ptile .row1 { display: flex; align-items: center; gap: 12px; }
-        .ptile .lbl { font-size: 10px; font-weight: 800; letter-spacing: 0.10em; text-transform: uppercase; color: #64748b; }
-        .ptile .val { font-size: 28px; font-weight: 900; color: #04041f; margin-top: 12px; letter-spacing: -0.02em; }
+        .ptile .lbl { font-size: 10px; font-weight: 700; letter-spacing: 0.10em; text-transform: uppercase; color: #64748b; }
+        .ptile .val { font-size: 28px; font-weight: 700; color: #04041f; margin-top: 12px; letter-spacing: -0.02em; }
         .ptile .foot { font-size: 11px; color: #64748b; margin-top: 4px; display: flex; align-items: center; gap: 6px; }
         .ptile .dot { display: inline-block; width: 6px; height: 6px; border-radius: 50%; }
         .dark .ptile { background: #0f172a; border-color: #1e293b; }
@@ -102,7 +102,7 @@
             background: rgba(15,23,42,0.06);
             padding: 1px 7px; border-radius: 999px;
             font-size: 10.5px; font-family: ui-monospace, 'JetBrains Mono', monospace;
-            color: #475569; font-weight: 800;
+            color: #475569; font-weight: 700;
         }
         .ychip.on {
             background: #04041f; color: #ffb27a; border-color: #04041f;
@@ -178,7 +178,7 @@
         }
         .dark .prod-card .price-row { border-top-color: #334155; }
         .prod-card .price {
-            font-size: 15px; font-weight: 900; color: #04041f;
+            font-size: 15px; font-weight: 700; color: #04041f;
             font-variant-numeric: tabular-nums;
         }
         .dark .prod-card .price { color: #ffb27a; }
@@ -210,7 +210,7 @@
         /* Stock badge */
         .stock-badge {
             display: inline-flex; align-items: center; gap: 4px;
-            font-size: 10.5px; font-weight: 800;
+            font-size: 10.5px; font-weight: 700;
             padding: 4px 9px; border-radius: 7px;
             font-family: ui-monospace, monospace;
             white-space: nowrap;
@@ -226,7 +226,7 @@
         .status-pill {
             display: inline-flex; align-items: center; gap: 5px;
             padding: 3px 8px; border-radius: 999px;
-            font-size: 9.5px; font-weight: 800;
+            font-size: 9.5px; font-weight: 700;
             border: 1px solid; backdrop-filter: blur(6px);
             text-transform: uppercase; letter-spacing: 0.04em;
         }
@@ -239,7 +239,7 @@
             display: inline-flex; align-items: center; gap: 4px;
             background: #fef3c7; color: #92400e;
             padding: 2px 7px; border-radius: 6px;
-            font-size: 9.5px; font-weight: 800;
+            font-size: 9.5px; font-weight: 700;
             font-family: ui-monospace, monospace;
             border: 1px solid #ffc9a3;
         }
@@ -318,8 +318,8 @@
 
             <div class="relative flex flex-wrap items-center justify-between gap-4">
                 <div>
-                    <div class="font-mono text-[10px] font-extrabold uppercase tracking-[0.28em] text-accent">{{ __('Catalog · Inventory') }}</div>
-                    <h1 class="text-3xl font-black mt-2 leading-tight">{{ __('Products') }}</h1>
+                    <div class="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-accent">{{ __('Catalog · Inventory') }}</div>
+                    <h1 class="text-3xl font-bold mt-2 leading-tight">{{ __('Products') }}</h1>
                     <p class="text-sm text-white/65 mt-2">
                         {{ __(':total products', ['total' => number_format((int) ($statusTabs['all']['count'] ?? 0))]) }}
                         @if($lowStockCount > 0)
@@ -364,7 +364,7 @@
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
                                         </div>
                                         <div>
-                                            <div class="text-sm font-extrabold">{{ __('Bulk Import') }}</div>
+                                            <div class="text-sm font-bold">{{ __('Bulk Import') }}</div>
                                             <div class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('Upload CSV / XLSX to update or create products') }}</div>
                                         </div>
                                     </div>
@@ -383,13 +383,13 @@
                                     <input type="hidden" name="return_to" value="{{ $currentProductsUrl }}">
 
                                     <div>
-                                        <label for="import-file" class="block text-[10.5px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('File') }}</label>
+                                        <label for="import-file" class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('File') }}</label>
                                         <input id="import-file" type="file" name="import_file" accept=".csv,.txt,.xls,.xlsx" required
                                                class="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 file:mr-3 file:rounded-md file:border-0 file:bg-slate-200 file:px-3 file:py-1 file:text-xs file:font-bold dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
                                     </div>
 
                                     <div class="rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 p-3 text-[11px] leading-relaxed text-slate-600 dark:text-slate-300">
-                                        <div class="font-extrabold uppercase text-[10px] tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Requirements') }}</div>
+                                        <div class="font-bold uppercase text-[10px] tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Requirements') }}</div>
                                         <p>
                                             {{ __('Supported files: CSV, TXT, XLS, XLSX.') }}
                                         </p>
@@ -523,12 +523,12 @@
                 <div class="h-9 w-9 rounded-xl bg-navy-deep text-accent grid place-items-center">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
                 </div>
-                <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Filter Products') }}</h3>
+                <h3 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Filter Products') }}</h3>
             </div>
 
             <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_auto] items-end">
                 <div>
-                    <label for="filter-search" class="block text-[10.5px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Search') }}</label>
+                    <label for="filter-search" class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Search') }}</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 start-0 flex items-center ps-3 text-slate-400">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 100-15 7.5 7.5 0 000 15z"/></svg>
@@ -540,7 +540,7 @@
                 </div>
 
                 <div>
-                    <label for="filter-category" class="block text-[10.5px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Category') }}</label>
+                    <label for="filter-category" class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Category') }}</label>
                     <select id="filter-category" name="category_id"
                             class="y-select h-11 w-full px-3 rounded-xl border border-slate-200 bg-slate-50 text-sm font-semibold text-slate-900 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-900">
                         <option value="">{{ __('All Categories') }}</option>
@@ -553,7 +553,7 @@
                 </div>
 
                 <div>
-                    <label for="filter-brand" class="block text-[10.5px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Brand') }}</label>
+                    <label for="filter-brand" class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Brand') }}</label>
                     <select id="filter-brand" name="product_brand_id"
                             class="y-select h-11 w-full px-3 rounded-xl border border-slate-200 bg-slate-50 text-sm font-semibold text-slate-900 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-900">
                         <option value="">{{ __('All Brands') }}</option>
@@ -583,7 +583,7 @@
 
         {{-- ═════════════ Status quick-filter band ═════════════ --}}
         <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl px-5 py-4 mb-4 bento-shadow flex flex-wrap items-center gap-4">
-            <span class="inline-flex items-center gap-2 font-mono text-[10px] font-extrabold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400 shrink-0">
+            <span class="inline-flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400 shrink-0">
                 <span class="relative inline-flex h-1.5 w-1.5">
                     <span class="absolute inset-0 rounded-full bg-accent ys-pulse-dot"></span>
                     <span class="relative h-1.5 w-1.5 rounded-full bg-accent"></span>

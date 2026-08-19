@@ -22,8 +22,8 @@
 
             <div class="relative flex flex-wrap items-center justify-between gap-4">
                 <div>
-                    <div class="font-mono text-[10px] font-extrabold uppercase tracking-[0.28em] text-accent">{{ __('Catalog · Taxonomy') }}</div>
-                    <h1 class="text-2xl font-black mt-2 leading-tight">{{ __('Edit Category') }}</h1>
+                    <div class="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-accent">{{ __('Catalog · Taxonomy') }}</div>
+                    <h1 class="text-2xl font-bold mt-2 leading-tight">{{ __('Edit Category') }}</h1>
                     <p class="text-sm text-white/65 mt-1.5">
                         {{ $category->name }}
                         <span class="text-white/35 mx-1">·</span>

@@ -13,7 +13,7 @@
                     <span aria-hidden="true">/</span>
                     <span class="text-slate-900 dark:text-white">{{ __('Create Vehicle Variant') }}</span>
                 </nav>
-                <h1 class="mt-1 text-xl font-black text-slate-900 dark:text-white">{{ __('Create Vehicle Variant') }}</h1>
+                <h1 class="mt-1 text-xl font-bold text-slate-900 dark:text-white">{{ __('Create Vehicle Variant') }}</h1>
             </div>
             <a href="{{ route('admin.vehicle-fitments.index') }}" class="vf-btn sm">
                 <i class="fas fa-arrow-left text-[9px]"></i> {{ __('Back to Vehicle Finder') }}

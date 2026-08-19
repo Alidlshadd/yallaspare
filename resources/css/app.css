@@ -722,14 +722,14 @@
 
     .ys-loading-logo-fallback-text {
         font-size: 0.75rem;
-        font-weight: 800;
+        font-weight: 700;
         letter-spacing: 0.14em;
         color: #ffffff;
     }
 
     .ys-loading-brand-name {
         font-size: 1.0625rem;
-        font-weight: 800;
+        font-weight: 700;
         letter-spacing: -0.015em;
         line-height: 1;
         color: #ffffff;
@@ -2272,7 +2272,7 @@
     margin-bottom: 3px;
     color: #94a3b8;
     font-size: 0.64rem;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.13em;
     text-transform: uppercase;
 }
@@ -2304,7 +2304,7 @@
     gap: 10px;
     color: #070740;
     font-size: 0.78rem;
-    font-weight: 900;
+    font-weight: 700;
     letter-spacing: 0.11em;
     text-transform: uppercase;
 }
@@ -2326,7 +2326,7 @@
     display: block;
     color: #475569;
     font-size: 0.72rem;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
 }
@@ -2392,7 +2392,7 @@
     color: #cbd5e1;
     background: rgba(255, 255, 255, 0.06);
     font-size: 0.6rem;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.09em;
     text-transform: uppercase;
 }
@@ -2411,7 +2411,7 @@
     bottom: -1.8rem;
     color: rgba(7, 7, 64, 0.035);
     font-size: 6rem;
-    font-weight: 950;
+    font-weight: 700;
     letter-spacing: -0.08em;
     line-height: 1;
     pointer-events: none;
@@ -2755,7 +2755,7 @@
 }
 .abt-track span {
     font-size: 0.8rem;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     color: rgb(255 255 255 / 0.85);
@@ -2903,7 +2903,7 @@
 }
 .vs-title {
     font-size: clamp(2.5rem, 7.2vw, 5.25rem);
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: -0.035em;
     line-height: 1.02;
     margin-top: 1rem;
@@ -3079,7 +3079,7 @@
 .vs-stat b {
     display: block;
     font-size: clamp(1.75rem, 3.4vw, 2.6rem);
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: -0.03em;
     color: var(--vs-ink);
     font-variant-numeric: tabular-nums;
@@ -3122,7 +3122,7 @@
 }
 .vs-tl-head h2 {
     font-size: clamp(1.75rem, 4vw, 2.75rem);
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: -0.03em;
     margin-top: 0.7rem;
     color: var(--vs-ink);
@@ -3188,14 +3188,14 @@
 }
 .vs-ms-year {
     font-size: 12px;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--vs-peach);
 }
 .vs-ms-card h3 {
     font-size: 1.2rem;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: -0.015em;
     margin-top: 0.45rem;
     color: var(--vs-ink);
@@ -3210,7 +3210,7 @@
     display: inline-block;
     margin-top: 0.8rem;
     font-size: 10.5px;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.12em;
     text-transform: uppercase;
     border-radius: 9999px;
@@ -3287,7 +3287,7 @@
 }
 .vs-cta h2 {
     font-size: clamp(1.9rem, 4.6vw, 3.25rem);
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: -0.03em;
     margin-top: 0.9rem;
     color: #fff;
@@ -3306,7 +3306,7 @@
     gap: 10px;
     background: var(--vs-orange);
     color: #fff;
-    font-weight: 800;
+    font-weight: 700;
     font-size: 0.95rem;
     border-radius: 14px;
     padding: 0.95rem 1.9rem;
@@ -3526,7 +3526,7 @@
     color: var(--pv-accent-ink, #b45309);
 }
 .pv-card-icon svg { width: 19px; height: 19px; }
-.pv-card h2 { font-size: 1.15rem; font-weight: 800; letter-spacing: -0.01em; color: #0f172a; }
+.pv-card h2 { font-size: 1.15rem; font-weight: 700; letter-spacing: -0.01em; color: #0f172a; }
 .dark .pv-card h2 { color: #f1f5f9; }
 .pv-card .pv-status { margin-inline-start: auto; }
 .pv-card p { margin-top: 1rem; font-size: 0.92rem; line-height: 1.7; color: #475569; }
@@ -3540,7 +3540,7 @@
     border-radius: 999px;
     padding: 0.3rem 0.65rem;
     font-size: 0.66rem;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
     white-space: nowrap;
@@ -3605,7 +3605,7 @@
     background: #ff8a3d;
     color: #070740;
     padding: 0.85rem 1.5rem;
-    font-weight: 800;
+    font-weight: 700;
     font-size: 0.9rem;
     box-shadow: 0 16px 34px -14px rgb(255 138 61 / 0.5);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -3679,11 +3679,11 @@
     padding: 7px 14px;
     color: #e7e7f4;
     font-size: 0.72rem;
-    font-weight: 800;
+    font-weight: 700;
     letter-spacing: 0.16em;
     text-transform: uppercase;
 }
-.tos-hero h1 { font-weight: 900; letter-spacing: -0.035em; line-height: 1; color: #fff; }
+.tos-hero h1 { font-weight: 700; letter-spacing: -0.035em; line-height: 1; color: #fff; }
 .tos-hero .tos-sub { color: #cbd0f0; font-weight: 600; }
 .tos-hero .tos-lede { color: #b9bad6; max-width: 34rem; }
 .tos-hero .tos-meta { display: inline-flex; align-items: center; gap: 8px; color: #9294bb; font-size: 0.8rem; }
@@ -3757,7 +3757,7 @@
 .tos-nav a .n { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.68rem; color: #94a3b8; width: 1.4rem; flex-shrink: 0; }
 .tos-nav a:hover { background: #f8fafc; color: #0f172a; }
 .dark .tos-nav a:hover { background: rgba(255, 255, 255, 0.05); color: #f1f5f9; }
-.tos-nav a.on { background: #fffbeb; color: #070740; font-weight: 800; }
+.tos-nav a.on { background: #fffbeb; color: #070740; font-weight: 700; }
 .dark .tos-nav a.on { background: rgb(255 138 61 / 0.08); color: #fff; }
 .tos-nav a.on::before { background: #ff8a3d; border-color: #ff8a3d; box-shadow: 0 0 0 4px rgb(255 138 61 / 0.18); }
 
@@ -3785,8 +3785,8 @@
 }
 .dark .tos-card-icon { background: linear-gradient(160deg, #1c2670, #070740); }
 .tos-card-icon svg { width: 20px; height: 20px; }
-.tos-card .n { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.08em; color: #94a3b8; text-transform: uppercase; }
-.tos-card h2 { position: relative; z-index: 1; margin-top: 2px; font-size: 1.2rem; font-weight: 800; letter-spacing: -0.01em; color: #0f172a; }
+.tos-card .n { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; color: #94a3b8; text-transform: uppercase; }
+.tos-card h2 { position: relative; z-index: 1; margin-top: 2px; font-size: 1.2rem; font-weight: 700; letter-spacing: -0.01em; color: #0f172a; }
 .dark .tos-card h2 { color: #f1f5f9; }
 .tos-card p { position: relative; z-index: 1; margin-top: 1.1rem; font-size: 0.93rem; line-height: 1.75; color: #475569; }
 .dark .tos-card p { color: #94a3b8; }
@@ -3798,7 +3798,7 @@
 .tos-cta::after { content: ""; position: absolute; inset: auto -10% -30% auto; z-index: -1; width: 45%; aspect-ratio: 1; background: radial-gradient(circle, rgb(255 138 61 / 0.14), transparent 70%); filter: blur(6px); }
 .tos-cta-btn {
     display: inline-flex; align-items: center; gap: 8px; border-radius: 12px; background: #ff8a3d; color: #070740;
-    padding: 0.85rem 1.5rem; font-weight: 800; font-size: 0.9rem; box-shadow: 0 16px 34px -14px rgb(255 138 61 / 0.5);
+    padding: 0.85rem 1.5rem; font-weight: 700; font-size: 0.9rem; box-shadow: 0 16px 34px -14px rgb(255 138 61 / 0.5);
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .tos-cta-btn:hover { transform: translateY(-2px); box-shadow: 0 22px 40px -14px rgb(255 138 61 / 0.6); }

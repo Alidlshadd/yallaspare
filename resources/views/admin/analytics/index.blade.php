@@ -23,7 +23,7 @@
     .kicker { font-size: 10px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: #64748b; }
     .kicker-w { color: rgba(255,255,255,0.60); }
     .strip { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
-    .rank { display:inline-grid; place-items:center; width:22px; height:22px; border-radius:6px; font-size:11px; font-weight:800; background:#eef2ff; color:#3730a3; margin-right:8px; font-family: ui-monospace, monospace; }
+    .rank { display:inline-grid; place-items:center; width:22px; height:22px; border-radius:6px; font-size:11px; font-weight: 700; background:#eef2ff; color:#3730a3; margin-right:8px; font-family: ui-monospace, monospace; }
     .rank-1 { background:#fef3c7; color:#92400e; }
     .rank-2 { background:#e0e7ff; color:#3730a3; }
     .rank-3 { background:#fce7f3; color:#9d174d; }
@@ -81,7 +81,7 @@
                 </div>
                 <div class="grid h-9 w-9 place-items-center rounded-lg bg-info text-info"><i class="far fa-eye"></i></div>
             </div>
-            <p class="num-display mt-4 pl-2 text-3xl font-extrabold text-slate-900">{{ number_format($kpi['page_views']) }}</p>
+            <p class="num-display mt-4 pl-2 text-3xl font-bold text-slate-900">{{ number_format($kpi['page_views']) }}</p>
             <div class="mt-2 flex items-center gap-2 pl-2">
                 <span class="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-bold {{ $d['class'] }}">
                     <i class="fas {{ $d['icon'] }} text-[9px]"></i> {{ number_format(abs($kpi['page_views_delta']), 1) }}%
@@ -100,7 +100,7 @@
                 </div>
                 <div class="grid h-9 w-9 place-items-center rounded-lg bg-info text-info"><i class="fas fa-users-line"></i></div>
             </div>
-            <p class="num-display mt-4 pl-2 text-3xl font-extrabold text-slate-900">{{ number_format($kpi['unique_visitors']) }}</p>
+            <p class="num-display mt-4 pl-2 text-3xl font-bold text-slate-900">{{ number_format($kpi['unique_visitors']) }}</p>
             <div class="mt-2 flex items-center gap-2 pl-2">
                 <span class="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-bold {{ $d['class'] }}">
                     <i class="fas {{ $d['icon'] }} text-[9px]"></i> {{ number_format(abs($kpi['unique_visitors_delta']), 1) }}%
@@ -119,7 +119,7 @@
                 </div>
                 <div class="grid h-9 w-9 place-items-center rounded-lg bg-rose-50 text-rose-600"><i class="fas fa-cart-plus"></i></div>
             </div>
-            <p class="num-display mt-4 pl-2 text-3xl font-extrabold text-slate-900">{{ number_format($kpi['cart_adds']) }}</p>
+            <p class="num-display mt-4 pl-2 text-3xl font-bold text-slate-900">{{ number_format($kpi['cart_adds']) }}</p>
             <div class="mt-2 flex items-center gap-2 pl-2">
                 <span class="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-bold {{ $d['class'] }}">
                     <i class="fas {{ $d['icon'] }} text-[9px]"></i> {{ number_format(abs($kpi['cart_adds_delta']), 1) }}%
@@ -146,7 +146,7 @@
                 </div>
                 <div class="grid h-9 w-9 place-items-center rounded-lg bg-amber-50 text-amber-700"><i class="far fa-heart"></i></div>
             </div>
-            <p class="num-display mt-4 pl-2 text-3xl font-extrabold text-slate-900">{{ number_format($kpi['wishlist_clicks']) }}</p>
+            <p class="num-display mt-4 pl-2 text-3xl font-bold text-slate-900">{{ number_format($kpi['wishlist_clicks']) }}</p>
             <div class="mt-2 flex items-center gap-2 pl-2">
                 <span class="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-bold {{ $d['class'] }}">
                     <i class="fas {{ $d['icon'] }} text-[9px]"></i> {{ number_format(abs($kpi['wishlist_clicks_delta']), 1) }}%
@@ -163,7 +163,7 @@
             <div class="relative flex items-start justify-between gap-4 flex-wrap">
                 <div>
                     <span class="kicker kicker-w">{{ __('Activity over time') }}</span>
-                    <h3 class="mt-1 text-xl font-extrabold tracking-tight text-white">{{ __('Daily event volume') }}</h3>
+                    <h3 class="mt-1 text-xl font-bold tracking-tight text-white">{{ __('Daily event volume') }}</h3>
                 </div>
                 <span class="rounded-md border border-accent/30 bg-accent/10 px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-accent">
                     {{ count($dailySeries['labels']) }} {{ __('days') }}
@@ -185,7 +185,7 @@
 
         <div class="rounded-2xl border border-slate-200 bg-white p-6 bento-shadow">
             <div class="flex items-center justify-between">
-                <h3 class="text-base font-extrabold text-slate-900">{{ __('Conversion funnel') }}</h3>
+                <h3 class="text-base font-bold text-slate-900">{{ __('Conversion funnel') }}</h3>
                 <span class="kicker">{{ __('period') }}</span>
             </div>
             @php
@@ -217,11 +217,11 @@
             <div class="mt-5 grid grid-cols-2 gap-4 border-t border-slate-100 pt-4">
                 <div>
                     <p class="kicker">{{ __('Cart rate') }}</p>
-                    <p class="num-display mt-1 text-lg font-extrabold text-slate-900">{{ number_format($kpi['cart_conversion_pct'], 1) }}%</p>
+                    <p class="num-display mt-1 text-lg font-bold text-slate-900">{{ number_format($kpi['cart_conversion_pct'], 1) }}%</p>
                 </div>
                 <div>
                     <p class="kicker">{{ __('Checkout rate') }}</p>
-                    <p class="num-display mt-1 text-lg font-extrabold text-slate-900">{{ number_format($kpi['checkout_conversion_pct'], 1) }}%</p>
+                    <p class="num-display mt-1 text-lg font-bold text-slate-900">{{ number_format($kpi['checkout_conversion_pct'], 1) }}%</p>
                 </div>
             </div>
         </div>
@@ -239,7 +239,7 @@
         @foreach($tables as $table)
             <div class="rounded-2xl border border-slate-200 bg-white bento-shadow">
                 <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
-                    <h3 class="text-sm font-extrabold text-slate-900">
+                    <h3 class="text-sm font-bold text-slate-900">
                         <i class="{{ $table['icon'] }} mr-1 {{ $table['iconColor'] }}"></i>
                         {{ $table['title'] }}
                     </h3>
@@ -273,7 +273,7 @@
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
         <div class="rounded-2xl border border-slate-200 bg-white bento-shadow">
             <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
-                <h3 class="text-sm font-extrabold text-slate-900">
+                <h3 class="text-sm font-bold text-slate-900">
                     <i class="fas fa-magnifying-glass mr-1 text-info"></i>
                     {{ __('Top searched keywords') }}
                 </h3>
@@ -308,7 +308,7 @@
 
         <div class="rounded-2xl border border-slate-200 bg-white bento-shadow">
             <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
-                <h3 class="text-sm font-extrabold text-slate-900">
+                <h3 class="text-sm font-bold text-slate-900">
                     <i class="far fa-clock mr-1 text-slate-500"></i>
                     {{ __('Recent searches') }}
                 </h3>

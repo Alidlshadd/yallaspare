@@ -91,10 +91,10 @@
 
             <section class="sr-hero flex flex-col gap-3 rounded-2xl px-5 py-4 text-white shadow-sm sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <p class="text-xs font-black uppercase tracking-[0.14em] text-accent">{{ __('Automatic restock notifications') }}</p>
+                    <p class="text-xs font-bold uppercase tracking-[0.14em] text-accent">{{ __('Automatic restock notifications') }}</p>
                     <p class="mt-1 text-sm text-white/75">{{ __('When stock changes from zero to available, waiting customers are notified automatically.') }}</p>
                 </div>
-                <span class="inline-flex w-fit items-center gap-2 rounded-full bg-emerald-400/15 px-3 py-1.5 text-xs font-extrabold text-emerald-300 ring-1 ring-inset ring-emerald-300/25">
+                <span class="inline-flex w-fit items-center gap-2 rounded-full bg-emerald-400/15 px-3 py-1.5 text-xs font-bold text-emerald-300 ring-1 ring-inset ring-emerald-300/25">
                     <span class="h-2 w-2 rounded-full bg-emerald-400"></span>{{ __('Active') }}
                 </span>
             </section>
@@ -106,42 +106,42 @@
                         <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 dark:text-slate-500">{{ __('Pending') }}</p>
                         <i class="fas fa-hourglass-half text-accent"></i>
                     </div>
-                    <p class="sr-num mt-2 text-2xl font-black text-accent dark:text-accent">{{ number_format($summary['pending']) }}</p>
+                    <p class="sr-num mt-2 text-2xl font-bold text-accent dark:text-accent">{{ number_format($summary['pending']) }}</p>
                 </article>
                 <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-start justify-between gap-2">
                         <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 dark:text-slate-500">{{ __('Notified') }}</p>
                         <i class="fas fa-bell text-emerald-500"></i>
                     </div>
-                    <p class="sr-num mt-2 text-2xl font-black text-emerald-600 dark:text-emerald-400">{{ number_format($summary['notified']) }}</p>
+                    <p class="sr-num mt-2 text-2xl font-bold text-emerald-600 dark:text-emerald-400">{{ number_format($summary['notified']) }}</p>
                 </article>
                 <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-start justify-between gap-2">
                         <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 dark:text-slate-500">{{ __('Products') }}</p>
                         <i class="fas fa-box-open text-info"></i>
                     </div>
-                    <p class="sr-num mt-2 text-2xl font-black text-info dark:text-info">{{ number_format($summary['products']) }}</p>
+                    <p class="sr-num mt-2 text-2xl font-bold text-info dark:text-info">{{ number_format($summary['products']) }}</p>
                 </article>
                 <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-start justify-between gap-2">
                         <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 dark:text-slate-500">{{ __('High Demand') }}</p>
                         <i class="fas fa-fire text-rose-500"></i>
                     </div>
-                    <p class="sr-num mt-2 text-2xl font-black text-rose-600 dark:text-rose-400">{{ number_format($summary['high_demand']) }}</p>
+                    <p class="sr-num mt-2 text-2xl font-bold text-rose-600 dark:text-rose-400">{{ number_format($summary['high_demand']) }}</p>
                 </article>
                 <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-start justify-between gap-2">
                         <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 dark:text-slate-500">{{ __('Out of Stock') }}</p>
                         <i class="fas fa-circle-exclamation text-rose-500"></i>
                     </div>
-                    <p class="sr-num mt-2 text-2xl font-black text-rose-600 dark:text-rose-400">{{ number_format($summary['out_of_stock_requests']) }}</p>
+                    <p class="sr-num mt-2 text-2xl font-bold text-rose-600 dark:text-rose-400">{{ number_format($summary['out_of_stock_requests']) }}</p>
                 </article>
                 <article class="sr-hero rounded-2xl border border-transparent p-4 shadow-sm">
                     <div class="flex items-start justify-between gap-2">
                         <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-white/55">{{ __('In Purchase List') }}</p>
                         <i class="fas fa-cart-shopping text-accent"></i>
                     </div>
-                    <p class="sr-num mt-2 text-2xl font-black text-accent" x-text="inListCountLabel">0</p>
+                    <p class="sr-num mt-2 text-2xl font-bold text-accent" x-text="inListCountLabel">0</p>
                     <p class="text-[10px] text-white/45">{{ __('on this page') }}</p>
                 </article>
             </section>
@@ -171,7 +171,7 @@
                 <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3 dark:border-slate-800">
                         <i class="fas fa-list-check text-slate-400"></i>
-                        <h3 class="text-sm font-extrabold text-slate-800 dark:text-slate-100">{{ __('Requested products') }}</h3>
+                        <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Requested products') }}</h3>
                         <span class="ms-auto text-xs font-semibold text-slate-400">{{ __(':from–:to of :total', ['from' => $products->firstItem() ?? 0, 'to' => $products->lastItem() ?? 0, 'total' => $products->total()]) }}</span>
                     </div>
                     <div class="overflow-x-auto">
@@ -219,13 +219,13 @@
                                         </td>
                                         <td class="px-4 py-3 text-right">
                                             <span class="sr-num font-semibold {{ $stock <= 0 ? 'text-rose-600' : 'text-slate-700 dark:text-slate-200' }}">{{ number_format($stock) }}</span>
-                                            <span class="mt-1 block"><span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wide {{ $stockBadge['class'] }}">{{ $stockBadge['label'] }}</span></span>
+                                            <span class="mt-1 block"><span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide {{ $stockBadge['class'] }}">{{ $stockBadge['label'] }}</span></span>
                                         </td>
                                         <td class="sr-num px-4 py-3 text-right text-slate-600 dark:text-slate-300">{{ number_format((int) $product->request_count) }}</td>
-                                        <td class="sr-num px-4 py-3 text-right text-lg font-black {{ $pending > 0 ? 'text-accent dark:text-accent' : 'text-slate-300 dark:text-slate-600' }}">{{ number_format($pending) }}</td>
+                                        <td class="sr-num px-4 py-3 text-right text-lg font-bold {{ $pending > 0 ? 'text-accent dark:text-accent' : 'text-slate-300 dark:text-slate-600' }}">{{ number_format($pending) }}</td>
                                         <td class="px-4 py-3 text-right text-xs text-slate-500">{{ optional($product->latest_requested_at ? \Carbon\Carbon::parse($product->latest_requested_at) : null)->diffForHumans() ?? __('N/A') }}</td>
                                         <td class="px-4 py-3">
-                                            <span class="inline-flex rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wide {{ $priority['class'] }}">{{ $priority['label'] }}</span>
+                                            <span class="inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide {{ $priority['class'] }}">{{ $priority['label'] }}</span>
                                         </td>
                                         <td class="px-4 py-3">
                                             <div class="flex items-center justify-end gap-1.5">
@@ -276,7 +276,7 @@
                 <section class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3 dark:border-slate-800">
                         <i class="fas fa-clock-rotate-left text-slate-400"></i>
-                        <h3 class="text-sm font-extrabold text-slate-800 dark:text-slate-100">{{ __('Recent Requests') }}</h3>
+                        <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Recent Requests') }}</h3>
                         <span class="ms-auto text-xs font-semibold text-slate-400">{{ __('latest :count', ['count' => $requests->count()]) }}</span>
                     </div>
                     <div class="grid gap-3 p-4 md:grid-cols-2 xl:grid-cols-3">
@@ -287,7 +287,7 @@
                                         <div class="truncate text-sm font-bold text-slate-900 dark:text-slate-100">{{ $requestRow->product?->name ?? __('Deleted product') }}</div>
                                         <div class="mt-0.5 truncate text-xs text-slate-500">{{ $requestRow->user?->name ?? __('Guest') }} · {{ $requestRow->user?->email ?: $requestRow->user?->phone }}</div>
                                     </div>
-                                    <span class="inline-flex shrink-0 rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wide {{ $requestRow->notified_at ? 'sr-chip-notified' : 'sr-chip-waiting' }}">
+                                    <span class="inline-flex shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide {{ $requestRow->notified_at ? 'sr-chip-notified' : 'sr-chip-waiting' }}">
                                         {{ $requestRow->notified_at ? __('Notified') : __('Waiting') }}
                                     </span>
                                 </div>
@@ -314,8 +314,8 @@
                 <aside class="absolute end-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl dark:bg-slate-900">
                     <div class="sr-hero flex items-start justify-between gap-3 px-5 py-4 text-white">
                         <div class="min-w-0">
-                            <p class="text-[10px] font-black uppercase tracking-[0.14em] text-accent">{{ __('Waiting customers') }}</p>
-                            <h3 class="mt-0.5 truncate text-[15px] font-extrabold" x-text="drawerName"></h3>
+                            <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-accent">{{ __('Waiting customers') }}</p>
+                            <h3 class="mt-0.5 truncate text-[15px] font-bold" x-text="drawerName"></h3>
                             <p class="text-[11px] text-white/60" x-text="drawerMeta"></p>
                         </div>
                         <button type="button" class="shrink-0 px-1 text-lg" @click="closeDrawer" aria-label="{{ __('Close') }}">✕</button>
@@ -333,23 +333,23 @@
                                     <p class="truncate text-xs text-slate-500" x-text="sub.email"></p>
                                     <p class="text-[11px] text-slate-400" x-text="sub.date"></p>
                                 </div>
-                                <span class="inline-flex shrink-0 rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wide" :class="subChipClass(sub)" x-text="subStatusLabel(sub)"></span>
+                                <span class="inline-flex shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide" :class="subChipClass(sub)" x-text="subStatusLabel(sub)"></span>
                             </div>
                         </template>
                     </div>
 
-                    <p class="px-5 pt-2 text-xs font-extrabold text-emerald-600 dark:text-emerald-400" x-show="hasFlash" x-cloak x-text="flashMessage"></p>
+                    <p class="px-5 pt-2 text-xs font-bold text-emerald-600 dark:text-emerald-400" x-show="hasFlash" x-cloak x-text="flashMessage"></p>
                     <div class="flex flex-wrap items-center gap-2 border-t border-slate-200 px-5 py-3.5 dark:border-slate-800">
                         <form method="POST" :action="drawerNotifyUrl" x-show="drawerCanNotify">
                             @csrf
                             @method('PATCH')
-                            <button class="rounded-lg bg-navy-deep px-3.5 py-2 text-sm font-extrabold text-white hover:bg-navy-raised">{{ __('Send Notifications') }}</button>
+                            <button class="rounded-lg bg-navy-deep px-3.5 py-2 text-sm font-bold text-white hover:bg-navy-raised">{{ __('Send Notifications') }}</button>
                         </form>
-                        <span class="rounded-lg bg-amber-50 px-3.5 py-2 text-xs font-extrabold text-amber-700 dark:bg-amber-950/40 dark:text-amber-300" x-show="drawerHasPending && !drawerCanNotify">{{ __('Awaiting stock') }}</span>
-                        <button type="button" class="rounded-lg bg-accent px-3.5 py-2 text-sm font-extrabold text-[#422006] hover:bg-accent" @click="addFromDrawer">
+                        <span class="rounded-lg bg-amber-50 px-3.5 py-2 text-xs font-bold text-amber-700 dark:bg-amber-950/40 dark:text-amber-300" x-show="drawerHasPending && !drawerCanNotify">{{ __('Awaiting stock') }}</span>
+                        <button type="button" class="rounded-lg bg-accent px-3.5 py-2 text-sm font-bold text-[#422006] hover:bg-accent" @click="addFromDrawer">
                             <i class="fas fa-cart-plus me-1"></i>{{ __('Add to Purchase List') }}
                         </button>
-                        <button type="button" class="ms-auto rounded-lg border border-slate-200 px-3.5 py-2 text-sm font-extrabold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="closeDrawer">{{ __('Close') }}</button>
+                        <button type="button" class="ms-auto rounded-lg border border-slate-200 px-3.5 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="closeDrawer">{{ __('Close') }}</button>
                     </div>
                 </aside>
             </div>

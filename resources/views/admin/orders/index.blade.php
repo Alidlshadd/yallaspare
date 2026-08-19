@@ -93,7 +93,7 @@
             letter-spacing: .14em;
             color: #64748b;
             padding: 8px 10px 6px;
-            font-weight: 800;
+            font-weight: 700;
         }
         .dark .op-menu .head { color: #94a3b8; }
         .op-menu form { display: flex; align-items: center; gap: 8px; padding: 4px 6px 8px; }
@@ -109,7 +109,7 @@
         .op-menu button[type="submit"] {
             background: #04041f; color: #ffb27a;
             height: 38px; padding: 0 14px; border-radius: 8px;
-            font-size: 12.5px; font-weight: 800;
+            font-size: 12.5px; font-weight: 700;
             border: 1px solid #04041f; cursor: pointer;
         }
         .op-menu button[type="submit"]:hover { background: #070740; }
@@ -142,7 +142,7 @@
             display: inline-flex; align-items: center; justify-content: center;
             width: 34px; height: 24px; border-radius: 999px;
             background: #fef3c7; color: #b45309; font-size: 11px; letter-spacing: .04em;
-            font-weight: 800;
+            font-weight: 700;
         }
         .dark .op-invoice-menu .invoice-code { background: rgb(255 138 61 / 0.16); color: #ffb27a; }
 
@@ -207,11 +207,11 @@
                     @if($todayRevenue !== null)
                         <div class="flex items-baseline gap-2 flex-wrap">
                             <span class="text-sm font-bold text-accent">{{ $currencyLabel }}</span>
-                            <span class="num-display text-5xl md:text-6xl font-black leading-none">{{ number_format($todayRevenue, $currencyDecimals) }}</span>
+                            <span class="num-display text-5xl md:text-6xl font-bold leading-none">{{ number_format($todayRevenue, $currencyDecimals) }}</span>
                         </div>
                     @else
                         <div class="flex items-baseline gap-2 flex-wrap">
-                            <span class="num-display text-5xl md:text-6xl font-black leading-none text-white/40">—</span>
+                            <span class="num-display text-5xl md:text-6xl font-bold leading-none text-white/40">—</span>
                         </div>
                     @endif
                     <p class="mt-3 text-xs text-white/55">{{ __('Sum of delivered orders today') }}</p>
@@ -220,15 +220,15 @@
                 <div class="relative mt-6 pt-5 border-t border-dashed border-white/15 grid grid-cols-3 gap-4">
                     <div>
                         <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-white/50">{{ __('Total') }}</div>
-                        <div class="num-display text-xl font-black mt-1">{{ number_format($stats['total'] ?? 0) }}</div>
+                        <div class="num-display text-xl font-bold mt-1">{{ number_format($stats['total'] ?? 0) }}</div>
                     </div>
                     <div>
                         <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-white/50">{{ __('Today') }}</div>
-                        <div class="num-display text-xl font-black mt-1">{{ $todayCount !== null ? number_format($todayCount) : '—' }}</div>
+                        <div class="num-display text-xl font-bold mt-1">{{ $todayCount !== null ? number_format($todayCount) : '—' }}</div>
                     </div>
                     <div>
                         <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-white/50">{{ __('Attention') }}</div>
-                        <div class="num-display text-xl font-black mt-1 text-accent">{{ number_format($needAttention) }}</div>
+                        <div class="num-display text-xl font-bold mt-1 text-accent">{{ number_format($needAttention) }}</div>
                     </div>
                 </div>
 
@@ -306,7 +306,7 @@
                         </div>
                         <div class="text-[10px] uppercase tracking-widest font-bold text-slate-500 dark:text-slate-400">{{ $t['label'] }}</div>
                     </div>
-                    <div class="num-display text-3xl font-black text-slate-900 dark:text-white mt-4">
+                    <div class="num-display text-3xl font-bold text-slate-900 dark:text-white mt-4">
                         {{ $t['value'] === null ? '—' : number_format((int) $t['value']) }}
                     </div>
                     <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5 {{ $t['foot_class'] ?? '' }}">
@@ -350,7 +350,7 @@
                         </div>
                         <div class="text-[10px] uppercase tracking-widest font-bold text-slate-500 dark:text-slate-400">{{ $t['label'] }}</div>
                     </div>
-                    <div class="num-display text-3xl font-black text-slate-900 dark:text-white mt-4">{{ number_format((int) $t['value']) }}</div>
+                    <div class="num-display text-3xl font-bold text-slate-900 dark:text-white mt-4">{{ number_format((int) $t['value']) }}</div>
                     <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5">
                         <span class="inline-block w-1.5 h-1.5 rounded-full {{ $t['dot'] }}"></span> {{ $t['foot'] }}
                     </div>
@@ -607,7 +607,7 @@
                                 </td>
                                 <td class="px-3 py-4 align-middle">
                                     <div class="flex items-center gap-2.5 min-w-0">
-                                        <div class="h-9 w-9 rounded-xl grid place-items-center text-accent font-black text-[12px] shrink-0"
+                                        <div class="h-9 w-9 rounded-xl grid place-items-center text-accent font-bold text-[12px] shrink-0"
                                              style="background: linear-gradient(135deg, #04041f, #070740);">
                                             {{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($order->user?->name ?? __('G'), 0, 2)) }}
                                         </div>

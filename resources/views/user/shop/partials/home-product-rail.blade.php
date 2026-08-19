@@ -74,7 +74,7 @@
                                 </span>
 
                                 @if ($hasDiscount)
-                                    <span class="absolute bottom-2 left-2 z-10 inline-flex rounded-full bg-rose-600 px-2.5 py-0.5 text-[11px] font-bold text-white shadow-sm">
+                                    <span class="absolute bottom-2 left-2 z-10 inline-flex rounded-full bg-accent px-2.5 py-0.5 text-[11px] font-bold text-navy shadow-sm">
                                         -{{ $discountPercent }}%
                                     </span>
                                 @endif

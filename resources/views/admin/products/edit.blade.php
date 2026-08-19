@@ -296,7 +296,7 @@
                             <div class="flex items-center justify-between gap-3">
                                 <div>
                                     <p class="text-xs font-bold uppercase tracking-wide text-slate-500 dark:text-slate-400">{{ __('Product Analytics') }}</p>
-                                    <h3 class="mt-1 text-2xl font-black text-slate-900 dark:text-slate-100">{{ number_format($productViewsCount) }}</h3>
+                                    <h3 class="mt-1 text-2xl font-bold text-slate-900 dark:text-slate-100">{{ number_format($productViewsCount) }}</h3>
                                 </div>
                                 <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300">
                                     <i class="fas fa-eye"></i>

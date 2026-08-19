@@ -101,7 +101,7 @@
             {{-- Identity header --}}
             <section class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <div class="flex flex-wrap items-center gap-4">
-                    <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl text-2xl font-extrabold {{ $roleMeta['avatar'] }}">
+                    <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl text-2xl font-bold {{ $roleMeta['avatar'] }}">
                         {{ strtoupper(substr($user->name, 0, 1)) }}
                     </div>
                     <div class="min-w-0 flex-1">
@@ -113,7 +113,7 @@
                                 {{ $roleMeta['label'] }}
                             </span>
                             @if($user->isBanned())
-                                <span class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-black {{ $user->isPermanentlyBanned() ? 'border-slate-950 bg-slate-950 text-white dark:border-black dark:bg-black' : 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300' }}">
+                                <span class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-bold {{ $user->isPermanentlyBanned() ? 'border-slate-950 bg-slate-950 text-white dark:border-black dark:bg-black' : 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300' }}">
                                     <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
                                     {{ $user->isPermanentlyBanned() ? __('Permanent Ban') : __('Temporarily Banned') }}
                                 </span>
@@ -153,23 +153,23 @@
             <div class="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
                 <div class="rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-slate-700/60 dark:bg-slate-900">
                     <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-slate-400">{{ __('Total Orders') }}</p>
-                    <p class="mt-2 text-2xl font-extrabold tabular-nums text-gray-900 dark:text-white">{{ number_format($stats['orders_total']) }}</p>
+                    <p class="mt-2 text-2xl font-bold tabular-nums text-gray-900 dark:text-white">{{ number_format($stats['orders_total']) }}</p>
                 </div>
                 <div class="rounded-xl border border-emerald-300/70 bg-white p-4 shadow-sm dark:border-emerald-400/35 dark:bg-slate-900">
                     <p class="text-[11px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-300">{{ __('Delivered Orders') }}</p>
-                    <p class="mt-2 text-2xl font-extrabold tabular-nums text-emerald-700 dark:text-emerald-300">{{ number_format($stats['orders_delivered']) }}</p>
+                    <p class="mt-2 text-2xl font-bold tabular-nums text-emerald-700 dark:text-emerald-300">{{ number_format($stats['orders_delivered']) }}</p>
                 </div>
                 <div class="rounded-xl border border-rose-300/70 bg-white p-4 shadow-sm dark:border-rose-400/35 dark:bg-slate-900">
                     <p class="text-[11px] font-bold uppercase tracking-widest text-rose-600 dark:text-rose-300">{{ __('Cancelled Orders') }}</p>
-                    <p class="mt-2 text-2xl font-extrabold tabular-nums text-rose-700 dark:text-rose-300">{{ number_format($stats['orders_cancelled']) }}</p>
+                    <p class="mt-2 text-2xl font-bold tabular-nums text-rose-700 dark:text-rose-300">{{ number_format($stats['orders_cancelled']) }}</p>
                 </div>
                 <div class="rounded-xl border border-info/70 bg-white p-4 shadow-sm dark:border-info/35 dark:bg-slate-900">
                     <p class="text-[11px] font-bold uppercase tracking-widest text-info dark:text-info">{{ __('Total Spent') }}</p>
-                    <p class="mt-2 text-2xl font-extrabold tabular-nums text-info dark:text-info">{{ number_format($stats['spent_total'], $currencyDecimals) }} <span class="text-sm font-bold">{{ $currencyLabel }}</span></p>
+                    <p class="mt-2 text-2xl font-bold tabular-nums text-info dark:text-info">{{ number_format($stats['spent_total'], $currencyDecimals) }} <span class="text-sm font-bold">{{ $currencyLabel }}</span></p>
                 </div>
                 <div class="rounded-xl border border-accent/70 bg-white p-4 shadow-sm dark:border-accent/35 dark:bg-slate-900">
                     <p class="text-[11px] font-bold uppercase tracking-widest text-accent dark:text-accent">{{ __('Customer Reviews') }}</p>
-                    <p class="mt-2 text-2xl font-extrabold tabular-nums text-accent dark:text-accent">{{ $reviewAverage ? number_format((float) $reviewAverage, 1) : '0.0' }}<span class="text-sm font-bold text-gray-400 dark:text-slate-500"> / 5 · {{ number_format($userReviews->count()) }}</span></p>
+                    <p class="mt-2 text-2xl font-bold tabular-nums text-accent dark:text-accent">{{ $reviewAverage ? number_format((float) $reviewAverage, 1) : '0.0' }}<span class="text-sm font-bold text-gray-400 dark:text-slate-500"> / 5 · {{ number_format($userReviews->count()) }}</span></p>
                 </div>
             </div>
 
@@ -282,7 +282,7 @@
                                 <p class="text-[11px] font-bold uppercase tracking-widest text-rose-600 dark:text-rose-300">{{ __('Account Access') }}</p>
                                 <h4 class="mt-1 text-base font-bold text-gray-900 dark:text-white">{{ __('Ban Management') }}</h4>
                             </div>
-                            <span class="inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-black {{ $user->isBanned() ? ($user->isPermanentlyBanned() ? 'border-slate-950 bg-slate-950 text-white dark:border-black dark:bg-black' : 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300') : 'border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-300' }}">
+                            <span class="inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-bold {{ $user->isBanned() ? ($user->isPermanentlyBanned() ? 'border-slate-950 bg-slate-950 text-white dark:border-black dark:bg-black' : 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300') : 'border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-300' }}">
                                 {{ $user->isBanned() ? ($user->isPermanentlyBanned() ? __('Permanent Ban') : __('Temporary Ban')) : __('Active') }}
                             </span>
                         </div>
@@ -320,14 +320,14 @@
                                         <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-slate-950 shadow-sm">
                                             <i class="fas fa-clock" aria-hidden="true"></i>
                                         </div>
-                                        <p class="mt-3 text-sm font-black text-slate-900 dark:text-white">{{ __('Temporary Ban') }}</p>
+                                        <p class="mt-3 text-sm font-bold text-slate-900 dark:text-white">{{ __('Temporary Ban') }}</p>
                                         <p class="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">{{ __('Locks the account for a selected period.') }}</p>
                                     </div>
                                     <div class="rounded-xl border border-slate-800 bg-slate-950 p-3 text-white shadow-sm dark:border-black dark:bg-black">
                                         <div class="flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-white">
                                             <i class="fas fa-lock" aria-hidden="true"></i>
                                         </div>
-                                        <p class="mt-3 text-sm font-black">{{ __('Permanent Ban') }}</p>
+                                        <p class="mt-3 text-sm font-bold">{{ __('Permanent Ban') }}</p>
                                         <p class="mt-1 text-xs leading-5 text-slate-400">{{ __('Keeps the account locked until an admin removes it.') }}</p>
                                     </div>
                                 </div>
@@ -358,7 +358,7 @@
                                         class="group inline-flex min-h-12 items-center justify-between gap-3 rounded-xl bg-accent px-4 py-3 text-start text-slate-950 shadow-sm transition hover:bg-accent focus:outline-none focus:ring-4 focus:ring-accent/25"
                                     >
                                         <span>
-                                            <span class="block text-sm font-black">{{ __('Apply Temporary Ban') }}</span>
+                                            <span class="block text-sm font-bold">{{ __('Apply Temporary Ban') }}</span>
                                             <span class="block text-[11px] font-semibold text-accent/65">{{ __('Uses selected duration') }}</span>
                                         </span>
                                         <i class="fas fa-arrow-right text-xs transition-transform group-hover:translate-x-0.5" aria-hidden="true"></i>
@@ -372,7 +372,7 @@
                                         class="group inline-flex min-h-12 items-center justify-between gap-3 rounded-xl border border-black bg-slate-950 px-4 py-3 text-start text-white shadow-lg shadow-slate-950/20 transition hover:bg-black focus:outline-none focus:ring-4 focus:ring-slate-950/20 dark:bg-black"
                                     >
                                         <span>
-                                            <span class="block text-sm font-black">{{ __('Apply Permanent Ban') }}</span>
+                                            <span class="block text-sm font-bold">{{ __('Apply Permanent Ban') }}</span>
                                             <span class="block text-[11px] font-semibold text-slate-400">{{ __('No automatic expiry') }}</span>
                                         </span>
                                         <i class="fas fa-lock text-xs text-slate-300" aria-hidden="true"></i>

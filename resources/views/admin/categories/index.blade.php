@@ -32,7 +32,7 @@
             background: rgba(15,23,42,0.06);
             padding: 1px 7px; border-radius: 999px;
             font-size: 10.5px; font-family: ui-monospace, 'JetBrains Mono', monospace;
-            color: #475569; font-weight: 800;
+            color: #475569; font-weight: 700;
         }
         .ychip.on {
             background: #04041f; color: #ffb27a; border-color: #04041f;
@@ -78,7 +78,7 @@
         .cat-card .img-wrap .placeholder { color: #94a3b8; font-size: 28px; }
         .cat-card .badge-tr { position: absolute; top: 8px; right: 8px; }
         [dir='rtl'] .cat-card .badge-tr { right: auto; left: 8px; }
-        .cat-card .cname { font-weight: 800; color: #04041f; font-size: 14px; line-height: 1.3; }
+        .cat-card .cname { font-weight: 700; color: #04041f; font-size: 14px; line-height: 1.3; }
         .dark .cat-card .cname { color: #f8fafc; }
         .cat-card .langs { font-size: 11.5px; color: #64748b; margin-top: 2px; }
         .dark .cat-card .langs { color: #94a3b8; }
@@ -123,7 +123,7 @@
         .count-pill {
             display: inline-flex; align-items: center; gap: 5px;
             padding: 4px 10px; border-radius: 999px;
-            font-size: 11px; font-weight: 800;
+            font-size: 11px; font-weight: 700;
             border: 1px solid; backdrop-filter: blur(6px);
             text-decoration: none;
             transition: all .15s ease;
@@ -194,8 +194,8 @@
 
             <div class="relative flex flex-wrap items-center justify-between gap-4">
                 <div>
-                    <div class="font-mono text-[10px] font-extrabold uppercase tracking-[0.28em] text-accent">{{ __('Catalog · Taxonomy') }}</div>
-                    <h1 class="text-3xl font-black mt-2 leading-tight">{{ __('Categories') }}</h1>
+                    <div class="font-mono text-[10px] font-bold uppercase tracking-[0.28em] text-accent">{{ __('Catalog · Taxonomy') }}</div>
+                    <h1 class="text-3xl font-bold mt-2 leading-tight">{{ __('Categories') }}</h1>
                     <p class="text-sm text-white/65 mt-2">
                         {{ __(':total categories', ['total' => number_format($totalCategories)]) }}
                         @if($emptyCategories > 0)
@@ -236,7 +236,7 @@
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
                                         </div>
                                         <div>
-                                            <div class="text-sm font-extrabold">{{ __('Bulk Import') }}</div>
+                                            <div class="text-sm font-bold">{{ __('Bulk Import') }}</div>
                                             <div class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('Upload CSV / XLSX to create categories') }}</div>
                                         </div>
                                     </div>
@@ -254,13 +254,13 @@
                                     @csrf
 
                                     <div>
-                                        <label for="import-file" class="block text-[10.5px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('File') }}</label>
+                                        <label for="import-file" class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('File') }}</label>
                                         <input id="import-file" type="file" name="import_file" accept=".csv,.txt,.xls,.xlsx" required
                                                class="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 file:mr-3 file:rounded-md file:border-0 file:bg-slate-200 file:px-3 file:py-1 file:text-xs file:font-bold dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
                                     </div>
 
                                     <div class="rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 p-3 text-[11px] leading-relaxed text-slate-600 dark:text-slate-300">
-                                        <div class="font-extrabold uppercase text-[10px] tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Requirements') }}</div>
+                                        <div class="font-bold uppercase text-[10px] tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Requirements') }}</div>
                                         <p>
                                             {{ __('Supported files: CSV, TXT, XLS, XLSX.') }}
                                         </p>

@@ -236,7 +236,7 @@
                     <section class="overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10">
                         @if ($hasDiscount)
                             <div class="mb-4 flex flex-wrap items-center gap-2">
-                                <span class="inline-flex rounded-full bg-rose-600 px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-white shadow-sm">
+                                <span class="inline-flex rounded-full bg-accent px-3 py-1 text-xs font-bold uppercase tracking-[0.08em] text-navy shadow-sm">
                                     -{{ $discountPercent }}%
                                 </span>
                                 <span class="inline-flex rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-bold text-emerald-700 shadow-sm dark:border-emerald-900/40 dark:bg-emerald-900/20 dark:text-emerald-300">

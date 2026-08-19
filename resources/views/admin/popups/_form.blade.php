@@ -5,7 +5,7 @@
     $inputBase = 'h-11 w-full px-3 rounded-xl border bg-slate-50 text-sm text-slate-900 placeholder:text-slate-400 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-900';
     $inputOk = 'border-slate-200 dark:border-slate-700';
     $inputErr = 'border-rose-300 dark:border-rose-500/50';
-    $labelClass = 'block text-[10.5px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5';
+    $labelClass = 'block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5';
     $checkLabel = 'flex items-center gap-2 text-xs font-bold text-slate-600 dark:text-slate-300 cursor-pointer';
     $checkBox = 'rounded border-slate-300 text-accent focus:ring-accent dark:border-slate-600 dark:bg-slate-800';
 
@@ -67,7 +67,7 @@
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
                     </div>
                     <div>
-                        <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Popup Content') }}</h3>
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Popup Content') }}</h3>
                         <p class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('English is required; Arabic and Kurdish fall back to English when empty.') }}</p>
                     </div>
                 </div>
@@ -120,7 +120,7 @@
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
                     </div>
                     <div>
-                        <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Action Button (optional)') }}</h3>
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Action Button (optional)') }}</h3>
                         <p class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('Shown only when both a label and a link are set.') }}</p>
                     </div>
                 </div>
@@ -162,7 +162,7 @@
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                     </div>
                     <div>
-                        <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Popup Image') }}</h3>
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Popup Image') }}</h3>
                         <p class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('Covers the whole card; text sits on a dark gradient at the bottom. Without an image a navy brand background is used.') }}</p>
                     </div>
                 </div>
@@ -181,7 +181,7 @@
                                 <img src="{{ $previewImageUrl }}" alt="{{ $popup->title_en }}" class="h-full w-full object-cover">
                             </div>
                             <div>
-                                <div class="text-[10.5px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ __('Current Image') }}</div>
+                                <div class="text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ __('Current Image') }}</div>
                                 <label class="mt-1.5 {{ $checkLabel }}">
                                     <input id="remove_image" type="checkbox" name="remove_image" value="1" class="{{ $checkBox }}">
                                     {{ __('Remove') }}
@@ -199,7 +199,7 @@
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                     </div>
                     <div>
-                        <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Schedule & Display Rules') }}</h3>
+                        <h3 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Schedule & Display Rules') }}</h3>
                         <p class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('Leave dates empty for an open-ended popup.') }}</p>
                     </div>
                 </div>

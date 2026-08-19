@@ -45,7 +45,7 @@
         @foreach($families as $family)
             <article class="overflow-hidden rounded-xl border border-app bg-surface-1">
                 <div class="flex items-center justify-between border-b border-app px-3.5 py-2.5">
-                    <h3 class="text-[12px] font-black uppercase tracking-[.12em] text-app">{{ $family['name'] }}</h3>
+                    <h3 class="text-[12px] font-bold uppercase tracking-[.12em] text-app">{{ $family['name'] }}</h3>
                     <span class="font-mono text-[10px] text-muted">{{ $family['variants']->count() }} {{ __('variants') }}</span>
                 </div>
                 <div class="divide-y divide-slate-200/70 dark:divide-slate-700/70">
