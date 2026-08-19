@@ -3878,5 +3878,9 @@
     "Select existing family": "خێزانی هەبوو هەڵبژێرە",
     "Create Variant": "دروستکردنی جۆر",
     "Vehicle Image": "وێنەی ئۆتۆمبێل",
-    "{1} :count fitment rule|[2,*] :count fitment rules": "{1} یەک یاسای گونجاندن|[2,*] :count یاسای گونجاندن"
+    "{1} :count fitment rule|[2,*] :count fitment rules": "{1} یەک یاسای گونجاندن|[2,*] :count یاسای گونجاندن",
+    "Pagination Navigation": "ڕێنیشاندەری پەڕەکان",
+    "to": "تا",
+    "Go to page :page": "بڕۆ بۆ پەڕەی :page",
+    "Other": "ئەوانی تر"
 }

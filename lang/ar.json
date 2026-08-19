@@ -3878,5 +3878,9 @@
     "Select existing family": "اختر عائلة موجودة",
     "Create Variant": "إنشاء فئة",
     "Vehicle Image": "صورة المركبة",
-    "{1} :count fitment rule|[2,*] :count fitment rules": "{1} قاعدة توافق واحدة|[2,*] :count قواعد توافق"
+    "{1} :count fitment rule|[2,*] :count fitment rules": "{1} قاعدة توافق واحدة|[2,*] :count قواعد توافق",
+    "Pagination Navigation": "التنقل بين الصفحات",
+    "to": "إلى",
+    "Go to page :page": "الذهاب إلى الصفحة :page",
+    "Other": "أخرى"
 }

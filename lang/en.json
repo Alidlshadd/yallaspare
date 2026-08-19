@@ -3878,5 +3878,9 @@
     "Select existing family": "Select existing family",
     "Create Variant": "Create Variant",
     "Vehicle Image": "Vehicle Image",
-    "{1} :count fitment rule|[2,*] :count fitment rules": "{1} :count fitment rule|[2,*] :count fitment rules"
+    "{1} :count fitment rule|[2,*] :count fitment rules": "{1} :count fitment rule|[2,*] :count fitment rules",
+    "Pagination Navigation": "Pagination Navigation",
+    "to": "to",
+    "Go to page :page": "Go to page :page",
+    "Other": "Other"
 }
