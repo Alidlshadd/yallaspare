@@ -87,8 +87,8 @@
     .dark .cp-chip-scheduled { color: #ff8a3d; }
     .cp-chip-expired { background: rgba(225,29,72,0.12); color: #e11d48; }
     .dark .cp-chip-expired { color: #fb7185; }
-    .cp-chip-paused { background: rgba(100,116,139,0.14); color: #64748b; }
-    .dark .cp-chip-paused { color: #94a3b8; }
+    .cp-chip-paused { background: rgba(100,116,139,0.14); color: var(--text-muted); }
+    .dark .cp-chip-paused { color: var(--text-muted); }
 
     .cp-spark { display: flex; align-items: flex-end; gap: 4px; height: 120px; }
     .cp-spark > div { flex: 1; border-radius: 4px 4px 0 0; background: linear-gradient(to top, #04041f, #12124a); min-height: 4px; }

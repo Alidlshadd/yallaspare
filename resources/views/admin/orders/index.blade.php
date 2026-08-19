@@ -78,12 +78,12 @@
             box-shadow: 0 24px 48px -28px rgba(15,23,42,0.32), 0 1px 0 rgba(255,255,255,0.85) inset;
             padding: 8px;
             z-index: 60;
-            color: #0f172a;
+            color: var(--text);
             font-family: inherit;
         }
         .dark .op-menu {
-            background: #1e293b;
-            border-color: #334155;
+            background: var(--surface-sunk);
+            border-color: var(--border);
             color: #f8fafc;
             box-shadow: 0 24px 48px -28px rgba(0,0,0,0.75), 0 1px 0 rgba(255,255,255,0.04) inset;
         }
@@ -91,20 +91,20 @@
             font-size: 10.5px;
             text-transform: uppercase;
             letter-spacing: .14em;
-            color: #64748b;
+            color: var(--text-muted);
             padding: 8px 10px 6px;
             font-weight: 700;
         }
-        .dark .op-menu .head { color: #94a3b8; }
+        .dark .op-menu .head { color: var(--text-muted); }
         .op-menu form { display: flex; align-items: center; gap: 8px; padding: 4px 6px 8px; }
         .op-menu select {
             flex: 1 1 auto; min-width: 0;
-            background: #f8fafc; border: 1px solid #cbd5e1; color: #0f172a;
+            background: var(--surface-sunk); border: 1px solid #cbd5e1; color: var(--text);
             height: 38px; padding: 0 10px; border-radius: 8px; font-size: 12.5px;
             color-scheme: light;
         }
         .dark .op-menu select {
-            background: #0f172a; border-color: #334155; color: #f8fafc; color-scheme: dark;
+            background: var(--surface); border-color: var(--border); color: #f8fafc; color-scheme: dark;
         }
         .op-menu button[type="submit"] {
             background: #04041f; color: #ffb27a;
@@ -114,7 +114,7 @@
         }
         .op-menu button[type="submit"]:hover { background: #070740; }
         .op-menu hr { border: 0; border-top: 1px solid #e2e8f0; margin: 4px 0; }
-        .dark .op-menu hr { border-top-color: #334155; }
+        .dark .op-menu hr { border-top-color: var(--border); }
         .op-menu .danger {
             display: block; width: 100%;
             text-align: left;
@@ -132,7 +132,7 @@
         .op-invoice-menu .invoice-lang {
             display: flex; align-items: center; justify-content: space-between;
             gap: 10px; padding: 10px 12px; border-radius: 8px;
-            color: #0f172a; font-size: 12.5px; font-weight: 700;
+            color: var(--text); font-size: 12.5px; font-weight: 700;
             text-decoration: none;
         }
         .dark .op-invoice-menu .invoice-lang { color: #f8fafc; }
@@ -803,11 +803,11 @@
             display: inline-flex; align-items: center; justify-content: center;
             min-width: 34px; height: 34px; padding: 0 10px;
             border-radius: 9px; background: #fff;
-            border: 1px solid #e2e8f0; color: #475569;
+            border: 1px solid #e2e8f0; color: var(--text-secondary);
             font-size: 12px; font-weight: 700; text-decoration: none;
             transition: all .15s ease;
         }
-        .orders-pagination a:hover { color: #0f172a; border-color: #cbd5e1; background: #f8fafc; }
+        .orders-pagination a:hover { color: var(--text); border-color: var(--border); background: var(--surface-sunk); }
         .orders-pagination .active span,
         .orders-pagination span[aria-current="page"] {
             background: #04041f; color: #ffb27a; border-color: #04041f;
@@ -816,9 +816,9 @@
         .orders-pagination span[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
         .dark .orders-pagination a,
         .dark .orders-pagination span {
-            background: #0f172a; border-color: #334155; color: #cbd5e1;
+            background: var(--surface); border-color: var(--border); color: var(--text-secondary);
         }
-        .dark .orders-pagination a:hover { background: #1e293b; color: #fff; border-color: #475569; }
+        .dark .orders-pagination a:hover { background: var(--surface-sunk); color: #fff; border-color: #475569; }
         .dark .orders-pagination .active span,
         .dark .orders-pagination span[aria-current="page"] {
             background: #ff8a3d; color: #04041f; border-color: #ff8a3d;

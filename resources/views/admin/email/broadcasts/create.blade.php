@@ -238,10 +238,10 @@
     </div>
 
     <style>
-        .rt-btn { display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:8px; color:#475569; transition:background .12s, color .12s; }
-        .rt-btn:hover { background:#f1f5f9; color:#070740; }
-        .dark .rt-btn { color:#cbd5e1; }
-        .dark .rt-btn:hover { background:#1e293b; color:#fff; }
+        .rt-btn { display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; border-radius:8px; color: var(--text-secondary); transition:background .12s, color .12s; }
+        .rt-btn:hover { background: var(--surface-sunk); color:#070740; }
+        .dark .rt-btn { color: var(--text-secondary); }
+        .dark .rt-btn:hover { background: var(--surface-sunk); color:#fff; }
         .rt-sep { width:1px; height:18px; background:#e2e8f0; margin:0 4px; }
         .dark .rt-sep { background:#334155; }
     </style>

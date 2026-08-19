@@ -20,7 +20,7 @@
         background-image: repeating-linear-gradient(135deg, rgba(7,7,64,0.04) 0px, rgba(7,7,64,0.04) 1px, transparent 1px, transparent 14px);
     }
     .num-display { font-feature-settings: "tnum" 1, "lnum" 1; letter-spacing: -0.025em; }
-    .kicker { font-size: 10px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: #64748b; }
+    .kicker { font-size: 10px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-muted); }
     .kicker-w { color: rgba(255,255,255,0.60); }
     .strip { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
     .rank { display:inline-grid; place-items:center; width:22px; height:22px; border-radius:6px; font-size:11px; font-weight: 700; background:#eef2ff; color:#3730a3; margin-right:8px; font-family: ui-monospace, monospace; }

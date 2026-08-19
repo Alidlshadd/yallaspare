@@ -55,15 +55,15 @@
 
         .pp-tab {
             padding: 6px 12px; border-radius: 9px 9px 0 0;
-            font-size: 12px; font-weight: 700; color: #94a3b8;
+            font-size: 12px; font-weight: 700; color: var(--text-muted);
             display: inline-flex; align-items: center; gap: 5px;
         }
         .pp-tab .pp-tab-cnt {
             font-size: 10px; font-weight: 700; padding: 1px 6px; border-radius: 999px;
-            background: #eef2f7; color: #94a3b8;
+            background: #eef2f7; color: var(--text-muted);
             font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace;
         }
-        .dark .pp-tab .pp-tab-cnt { background: rgba(255,255,255,0.06); color: #94a3b8; }
+        .dark .pp-tab .pp-tab-cnt { background: rgba(255,255,255,0.06); color: var(--text-muted); }
         .pp-tab.pp-tab-on { background: #04041f; color: #fff; }
         .pp-tab.pp-tab-on .pp-tab-cnt { background: rgb(255 138 61 / 0.2); color: #ff8a3d; }
         .pp-tab-new { color: #b45309; }
@@ -105,7 +105,7 @@
             .pp-print, .pp-print * { visibility: visible; }
             .pp-print {
                 display: block !important; position: absolute; inset: 0 auto auto 0;
-                width: 100%; padding: 24px; background: #fff; color: #0f172a;
+                width: 100%; padding: 24px; background: #fff; color: var(--text);
             }
         }
     </style>

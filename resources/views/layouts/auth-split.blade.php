@@ -84,12 +84,12 @@
         }
 
         html:not(.dark) #auth-panel :is(input:not([type='checkbox']):not([type='radio']), select, textarea)::placeholder {
-            color: #94a3b8 !important;
+            color: var(--text-muted) !important;
         }
 
         html:not(.dark) #auth-panel a {
             color: #475569 !important;
-            text-decoration-color: #cbd5e1 !important;
+            text-decoration-color: var(--text-secondary) !important;
         }
 
         html:not(.dark) #auth-panel a:hover {

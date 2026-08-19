@@ -53,12 +53,12 @@
         .sr-icon-btn {
             width: 30px; height: 30px; border-radius: 8px;
             display: inline-flex; align-items: center; justify-content: center;
-            font-size: 12px; border: 1px solid #e2e8f0; color: #64748b; background: #fff;
+            font-size: 12px; border: 1px solid #e2e8f0; color: var(--text-muted); background: #fff;
             transition: transform .12s ease, background .15s ease, color .15s ease;
         }
-        .sr-icon-btn:hover { transform: scale(1.06); color: #04041f; border-color: #cbd5e1; }
-        .dark .sr-icon-btn { background: #0f172a; border-color: #334155; color: #94a3b8; }
-        .dark .sr-icon-btn:hover { color: #f1f5f9; }
+        .sr-icon-btn:hover { transform: scale(1.06); color: #04041f; border-color: var(--border); }
+        .dark .sr-icon-btn { background: var(--surface); border-color: var(--border); color: var(--text-muted); }
+        .dark .sr-icon-btn:hover { color: var(--text); }
 
         .sr-add {
             background: #ff8a3d; border-color: #ff8a3d; color: #422006;

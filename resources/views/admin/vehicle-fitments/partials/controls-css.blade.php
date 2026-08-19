@@ -43,7 +43,7 @@
 .vf-inp, .vf-sel {
     width: 100%; height: 38px; padding: 0 12px; font-size: 13px;
     border: 1px solid #e2e8f0; border-radius: 10px;
-    background: #f8fafc; color: #0f172a;
+    background: var(--surface-sunk); color: #0f172a;
 }
 .vf-inp:focus, .vf-sel:focus {
     outline: none; border-color: #ff8a3d; background: #fff;

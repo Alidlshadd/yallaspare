@@ -42,18 +42,18 @@
 
         .ds-lbl {
             font-size: 10px; font-weight: 700; letter-spacing: 0.13em; text-transform: uppercase;
-            color: #94a3b8;
+            color: var(--text-muted);
         }
         .ds-stat {
             background: #fff; border: 1px solid #e3e9f1; border-radius: 16px; padding: 14px 16px;
             box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06);
         }
-        .dark .ds-stat { background: #0f172a; border-color: #1e293b; }
+        .dark .ds-stat { background: var(--surface); border-color: var(--border); }
         .ds-stat-big {
-            margin-top: 4px; font-size: 24px; font-weight: 700; color: #0f172a;
+            margin-top: 4px; font-size: 24px; font-weight: 700; color: var(--text);
             font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace; font-variant-numeric: tabular-nums;
         }
-        .dark .ds-stat-big { color: #f1f5f9; }
+        .dark .ds-stat-big { color: var(--text); }
         .ds-stat-big.rose { color: #be123c; }
         .dark .ds-stat-big.rose { color: #fda4af; }
 
@@ -62,13 +62,13 @@
             display: inline-flex; align-items: center; gap: 8px;
             padding: 6px 12px; border-radius: 999px;
             font-size: 11.5px; font-weight: 700; line-height: 1;
-            border: 1px solid #e2e8f0; background: #fff; color: #475569;
+            border: 1px solid #e2e8f0; background: #fff; color: var(--text-secondary);
             text-decoration: none; transition: all .15s ease;
         }
-        .ds-chip:hover { background: #f8fafc; border-color: #cbd5e1; color: #04041f; }
+        .ds-chip:hover { background: var(--surface-sunk); border-color: var(--border); color: #04041f; }
         .ds-chip .cnt {
             background: rgba(15,23,42,0.06); padding: 1px 7px; border-radius: 999px;
-            font-size: 10.5px; font-weight: 700; color: #475569;
+            font-size: 10.5px; font-weight: 700; color: var(--text-secondary);
             font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace;
         }
         .ds-chip.on {
@@ -76,8 +76,8 @@
             box-shadow: 0 6px 14px -8px rgba(4,4,42,0.40);
         }
         .ds-chip.on .cnt { background: rgba(252,211,77,0.18); color: #ffb27a; }
-        .dark .ds-chip { background: #1e293b; border-color: #334155; color: #cbd5e1; }
-        .dark .ds-chip .cnt { background: rgba(255,255,255,0.06); color: #cbd5e1; }
+        .dark .ds-chip { background: var(--surface-sunk); border-color: var(--border); color: var(--text-secondary); }
+        .dark .ds-chip .cnt { background: rgba(255,255,255,0.06); color: var(--text-secondary); }
         .dark .ds-chip:hover { background: #334155; color: #fff; }
         .dark .ds-chip.on { background: #ff8a3d; color: #04041f; border-color: #ff8a3d; }
         .dark .ds-chip.on .cnt { background: rgba(4,4,42,0.18); color: #04041f; }
@@ -87,14 +87,14 @@
         .ds-inp {
             width: 100%; height: 38px; padding: 0 12px; font-size: 13px;
             border: 1px solid #e2e8f0; border-radius: 10px;
-            background: #f8fafc; color: #0f172a;
+            background: var(--surface-sunk); color: var(--text);
         }
         .ds-inp:focus {
             outline: none; border-color: #ff8a3d; background: #fff;
             box-shadow: 0 0 0 3px rgb(255 138 61 / 0.25);
         }
-        .dark .ds-inp { background: #1e293b; border-color: #334155; color: #f1f5f9; }
-        .dark .ds-inp:focus { background: #0f172a; }
+        .dark .ds-inp { background: var(--surface-sunk); border-color: var(--border); color: var(--text); }
+        .dark .ds-inp:focus { background: var(--surface); }
 
         .ds-btn {
             display: inline-flex; align-items: center; justify-content: center;
@@ -123,25 +123,25 @@
             position: relative; height: 24px; min-width: 150px; border-radius: 7px;
             background: #eef2f7; overflow: hidden;
         }
-        .dark .ds-vbar { background: #1e293b; }
+        .dark .ds-vbar { background: var(--surface-sunk); }
         .ds-vbar i {
             position: absolute; inset-block: 0; inset-inline-start: 0; border-radius: 7px;
             background: linear-gradient(90deg, #ff8a3d, #e65c00); opacity: 0.8;
         }
         .ds-vbar b {
             position: absolute; inset: 0; display: flex; align-items: center; justify-content: flex-end;
-            padding: 0 9px; font-size: 11px; font-weight: 700; color: #0f172a;
+            padding: 0 9px; font-size: 11px; font-weight: 700; color: var(--text);
             font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace; font-variant-numeric: tabular-nums;
         }
-        .dark .ds-vbar b { color: #f1f5f9; }
+        .dark .ds-vbar b { color: var(--text); }
 
         .ds-edit {
             display: inline-block; border: 1px solid #e2e8f0; border-radius: 8px; padding: 5px 12px;
-            font-size: 11px; font-weight: 700; color: #475569; text-decoration: none;
+            font-size: 11px; font-weight: 700; color: var(--text-secondary); text-decoration: none;
             transition: all .15s ease;
         }
-        .ds-edit:hover { background: #f8fafc; border-color: #cbd5e1; color: #04041f; }
-        .dark .ds-edit { border-color: #334155; color: #cbd5e1; }
+        .ds-edit:hover { background: var(--surface-sunk); border-color: var(--border); color: #04041f; }
+        .dark .ds-edit { border-color: var(--border); color: var(--text-secondary); }
         .dark .ds-edit:hover { background: #334155; color: #fff; }
     </style>
 

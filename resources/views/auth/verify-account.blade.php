@@ -10,10 +10,10 @@
 >
     <style>
         .otp-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .5rem; }
-        .otp-box { height: 3.5rem; border-radius: .875rem; border: 1px solid #cbd5e1; background: #fff; color: #0f172a; text-align: center; font-size: 1.35rem; font-weight: 700; line-height: 1; outline: none; transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease, background-color 160ms ease; }
+        .otp-box { height: 3.5rem; border-radius: .875rem; border: 1px solid #cbd5e1; background: #fff; color: var(--text); text-align: center; font-size: 1.35rem; font-weight: 700; line-height: 1; outline: none; transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease, background-color 160ms ease; }
         .otp-box:focus { border-color: var(--brand-orange); box-shadow: 0 0 0 4px var(--focus); transform: translateY(-1px); }
-        .otp-box:not(:placeholder-shown) { border-color: #94a3b8; background: #f8fafc; }
-        .dark .otp-box { border-color: #334155; background: rgba(30, 41, 59, .9); color: #f8fafc; }
+        .otp-box:not(:placeholder-shown) { border-color: #94a3b8; background: var(--surface-sunk); }
+        .dark .otp-box { border-color: var(--border); background: rgba(30, 41, 59, .9); color: #f8fafc; }
         .dark .otp-box:focus { border-color: #ef4444; box-shadow: 0 0 0 4px rgba(239, 68, 68, .2); }
         .dark .otp-box:not(:placeholder-shown) { border-color: #475569; background: rgba(51, 65, 85, .95); }
         [data-channel-panel][hidden] { display: none; }

@@ -128,7 +128,7 @@
         border-radius: 8px 18px 18px 8px; padding: 14px 14px 12px 27px;
         box-shadow: 0 6px 16px -6px rgba(4,4,42,0.28);
     }
-    .dark .dr-tag { background: #0f172a; border-color: #334155; }
+    .dark .dr-tag { background: var(--surface); border-color: var(--border); }
     .dr-tag::before {
         content: ""; position: absolute; left: 9px; top: 23px;
         width: 9px; height: 9px; border-radius: 999px; background: #e8edf4;
@@ -138,15 +138,15 @@
     .dr-tag.dr-live { border-color: rgba(5,150,105,0.55); }
     .dark .dr-tag.dr-live { border-color: rgba(52,211,153,0.5); }
     .dr-tag.dr-draft { border-style: dashed; }
-    .dr-tag.dr-draft .dr-tag-val { color: #94a3b8; }
+    .dr-tag.dr-draft .dr-tag-val { color: var(--text-muted); }
     .dr-tag.dr-expired { opacity: 0.62; }
     .dr-tag-val { font-size: 26px; font-weight: 700; color: #b45309; letter-spacing: -0.01em; }
     .dark .dr-tag-val { color: #ff8a3d; }
 
     .dr-st-live { background: rgba(5,150,105,0.13); color: #059669; }
     .dark .dr-st-live { color: #34d399; }
-    .dr-st-draft { background: rgba(100,116,139,0.15); color: #64748b; }
-    .dark .dr-st-draft { color: #94a3b8; }
+    .dr-st-draft { background: rgba(100,116,139,0.15); color: var(--text-muted); }
+    .dark .dr-st-draft { color: var(--text-muted); }
     .dr-st-scheduled { background: rgb(255 138 61 / 0.2); color: #b45309; }
     .dark .dr-st-scheduled { color: #ff8a3d; }
     .dr-st-expired { background: rgba(225,29,72,0.12); color: #e11d48; }
@@ -160,11 +160,11 @@
 
     .dr-tag-new {
         border: 2px dashed #94a3b8; border-radius: 8px 18px 18px 8px; background: transparent;
-        display: grid; place-items: center; min-height: 150px; color: #64748b;
+        display: grid; place-items: center; min-height: 150px; color: var(--text-muted);
         transition: border-color .15s, color .15s; text-decoration: none;
     }
     .dr-tag-new:hover { border-color: #b45309; color: #b45309; }
-    .dark .dr-tag-new { border-color: #475569; color: #94a3b8; }
+    .dark .dr-tag-new { border-color: #475569; color: var(--text-muted); }
     .dark .dr-tag-new:hover { border-color: #ff8a3d; color: #ff8a3d; }
 </style>
 

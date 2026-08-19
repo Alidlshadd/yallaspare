@@ -22,25 +22,25 @@
             display: inline-flex; align-items: center; gap: 8px;
             padding: 6px 12px; border-radius: 999px;
             font-size: 11.5px; font-weight: 700; line-height: 1;
-            border: 1px solid #e2e8f0; background: #fff; color: #475569;
+            border: 1px solid #e2e8f0; background: #fff; color: var(--text-secondary);
             text-decoration: none;
             transition: all .15s ease;
         }
-        .ychip:hover { background: #f8fafc; border-color: #cbd5e1; color: #04041f; }
+        .ychip:hover { background: var(--surface-sunk); border-color: var(--border); color: #04041f; }
         .ychip .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
         .ychip .cnt {
             background: rgba(15,23,42,0.06);
             padding: 1px 7px; border-radius: 999px;
             font-size: 10.5px; font-family: ui-monospace, 'JetBrains Mono', monospace;
-            color: #475569; font-weight: 700;
+            color: var(--text-secondary); font-weight: 700;
         }
         .ychip.on {
             background: #04041f; color: #ffb27a; border-color: #04041f;
             box-shadow: 0 6px 14px -8px rgba(4,4,42,0.40);
         }
         .ychip.on .cnt { background: rgba(252,211,77,0.18); color: #ffb27a; }
-        .dark .ychip { background: #1e293b; border-color: #334155; color: #cbd5e1; }
-        .dark .ychip .cnt { background: rgba(255,255,255,0.06); color: #cbd5e1; }
+        .dark .ychip { background: var(--surface-sunk); border-color: var(--border); color: var(--text-secondary); }
+        .dark .ychip .cnt { background: rgba(255,255,255,0.06); color: var(--text-secondary); }
         .dark .ychip:hover { background: #334155; color: #fff; }
         .dark .ychip.on { background: #ff8a3d; color: #04041f; border-color: #ff8a3d; }
         .dark .ychip.on .cnt { background: rgba(4,4,42,0.18); color: #04041f; }
@@ -55,7 +55,7 @@
             display: flex; flex-direction: column;
         }
         .cat-card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(7,7,64,0.10); border-color: #ffb27a; }
-        .dark .cat-card { background: #0f172a; border-color: #1e293b; }
+        .dark .cat-card { background: var(--surface); border-color: var(--border); }
         .dark .cat-card:hover { border-color: #ff8a3d; }
         .cat-card .img-wrap {
             position: relative;
@@ -67,7 +67,7 @@
             overflow: hidden;
             padding: 16px;
         }
-        .dark .cat-card .img-wrap { background: linear-gradient(135deg, #1e293b, #0f172a); border-color: #334155; }
+        .dark .cat-card .img-wrap { background: linear-gradient(135deg, #1e293b, #0f172a); border-color: var(--border); }
         .cat-card .img-wrap img {
             max-width: 50%; max-height: 70%;
             width: auto; height: auto;
@@ -75,31 +75,31 @@
             object-position: center;
             display: block;
         }
-        .cat-card .img-wrap .placeholder { color: #94a3b8; font-size: 28px; }
+        .cat-card .img-wrap .placeholder { color: var(--text-muted); font-size: 28px; }
         .cat-card .badge-tr { position: absolute; top: 8px; right: 8px; }
         [dir='rtl'] .cat-card .badge-tr { right: auto; left: 8px; }
         .cat-card .cname { font-weight: 700; color: #04041f; font-size: 14px; line-height: 1.3; }
         .dark .cat-card .cname { color: #f8fafc; }
-        .cat-card .langs { font-size: 11.5px; color: #64748b; margin-top: 2px; }
-        .dark .cat-card .langs { color: #94a3b8; }
+        .cat-card .langs { font-size: 11.5px; color: var(--text-muted); margin-top: 2px; }
+        .dark .cat-card .langs { color: var(--text-muted); }
         .cat-card .meta-row {
             display: flex; justify-content: space-between; align-items: center; gap: 8px;
             margin-top: 10px; padding-top: 10px;
             border-top: 1px dashed #e3e9f1;
-            font-size: 11px; color: #64748b;
+            font-size: 11px; color: var(--text-muted);
         }
-        .dark .cat-card .meta-row { border-top-color: #334155; color: #94a3b8; }
+        .dark .cat-card .meta-row { border-top-color: var(--border); color: var(--text-muted); }
         .cat-card .slug-chip {
             display: inline-block; font-family: ui-monospace, monospace; font-size: 10.5px; font-weight: 600;
-            background: #f8fafc; border: 1px solid #e3e9f1;
-            padding: 3px 8px; border-radius: 7px; color: #64748b;
+            background: var(--surface-sunk); border: 1px solid #e3e9f1;
+            padding: 3px 8px; border-radius: 7px; color: var(--text-muted);
             max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
         }
-        .dark .cat-card .slug-chip { background: #1e293b; border-color: #334155; color: #94a3b8; }
+        .dark .cat-card .slug-chip { background: var(--surface-sunk); border-color: var(--border); color: var(--text-muted); }
         .cat-card .acts { display: flex; gap: 6px; margin-top: 10px; }
         .cat-card .acts .btn {
             flex: 1; height: 34px; border-radius: 9px;
-            background: #fff; border: 1px solid #e2e8f0; color: #475569;
+            background: #fff; border: 1px solid #e2e8f0; color: var(--text-secondary);
             font-size: 11.5px; font-weight: 700; cursor: pointer;
             display: inline-flex; align-items: center; justify-content: center; gap: 6px;
             text-decoration: none;
@@ -110,14 +110,14 @@
         .cat-card .acts .btn.primary:hover { background: #070740; }
         .cat-card .acts .btn.danger { color: #b91c1c; border-color: #fca5a5; background: #fef2f2; }
         .cat-card .acts .btn.danger:hover { background: #fee2e2; }
-        .cat-card .acts .btn.locked { color: #94a3b8; background: #f8fafc; border-color: #e2e8f0; cursor: not-allowed; }
+        .cat-card .acts .btn.locked { color: var(--text-muted); background: var(--surface-sunk); border-color: var(--border); cursor: not-allowed; }
         .cat-card .acts .btn.locked:hover { transform: none; }
-        .dark .cat-card .acts .btn { background: #1e293b; border-color: #334155; color: #cbd5e1; }
+        .dark .cat-card .acts .btn { background: var(--surface-sunk); border-color: var(--border); color: var(--text-secondary); }
         .dark .cat-card .acts .btn:hover { background: #334155; }
         .dark .cat-card .acts .btn.primary { background: #ff8a3d; color: #04041f; border-color: #ff8a3d; }
         .dark .cat-card .acts .btn.primary:hover { background: #e65c00; }
         .dark .cat-card .acts .btn.danger { color: #fca5a5; border-color: rgba(239,68,68,0.30); background: rgba(239,68,68,0.10); }
-        .dark .cat-card .acts .btn.locked { color: #64748b; background: #0f172a; border-color: #1e293b; }
+        .dark .cat-card .acts .btn.locked { color: #64748b; background: var(--surface); border-color: var(--border); }
 
         /* Product-count pill */
         .count-pill {
@@ -144,11 +144,11 @@
             display: inline-flex; align-items: center; justify-content: center;
             min-width: 34px; height: 34px; padding: 0 10px;
             border-radius: 9px; background: #fff;
-            border: 1px solid #e2e8f0; color: #475569;
+            border: 1px solid #e2e8f0; color: var(--text-secondary);
             font-size: 12px; font-weight: 700; text-decoration: none;
             transition: all .15s ease;
         }
-        .y-pagination a:hover { color: #0f172a; border-color: #cbd5e1; background: #f8fafc; }
+        .y-pagination a:hover { color: var(--text); border-color: var(--border); background: var(--surface-sunk); }
         .y-pagination .active span,
         .y-pagination span[aria-current="page"] {
             background: #04041f; color: #ffb27a; border-color: #04041f;
@@ -156,8 +156,8 @@
         .y-pagination .disabled span,
         .y-pagination span[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
         .dark .y-pagination a,
-        .dark .y-pagination span { background: #0f172a; border-color: #334155; color: #cbd5e1; }
-        .dark .y-pagination a:hover { background: #1e293b; color: #fff; border-color: #475569; }
+        .dark .y-pagination span { background: var(--surface); border-color: var(--border); color: var(--text-secondary); }
+        .dark .y-pagination a:hover { background: var(--surface-sunk); color: #fff; border-color: #475569; }
         .dark .y-pagination .active span,
         .dark .y-pagination span[aria-current="page"] {
             background: #ff8a3d; color: #04041f; border-color: #ff8a3d;

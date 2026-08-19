@@ -83,7 +83,7 @@
             display: inline-flex; align-items: center; gap: 8px;
             padding: 6px 12px; border-radius: 999px;
             font-size: 11.5px; font-weight: 700; line-height: 1;
-            border: 1px solid #e2e8f0; background: #fff; color: #475569;
+            border: 1px solid #e2e8f0; background: #fff; color: var(--text-secondary);
             text-decoration: none;
             transition: all .15s ease;
         }
@@ -93,7 +93,7 @@
             background: rgba(15,23,42,0.06);
             padding: 1px 7px; border-radius: 999px;
             font-size: 10.5px; font-family: ui-monospace, 'JetBrains Mono', monospace;
-            color: #475569; font-weight: 700; letter-spacing: -0.01em;
+            color: var(--text-secondary); font-weight: 700; letter-spacing: -0.01em;
         }
         .ret-chip.c-all { --chip-hover-bg: #f8fafc; --chip-hover-bd: #cbd5e1; --chip-hover-fg: #04041f; }
         .ret-chip.c-req { --chip-hover-bg: #fffbeb; --chip-hover-bd: #ff8a3d; --chip-hover-fg: #92400e; }
@@ -107,8 +107,8 @@
             box-shadow: 0 6px 14px -8px rgba(4,4,42,0.40);
         }
         .ret-chip.on .cnt { background: rgba(252,211,77,0.18); color: #ffb27a; }
-        .dark .ret-chip { background: #1e293b; border-color: #334155; color: #cbd5e1; }
-        .dark .ret-chip .cnt { background: rgba(255,255,255,0.06); color: #cbd5e1; }
+        .dark .ret-chip { background: var(--surface-sunk); border-color: var(--border); color: var(--text-secondary); }
+        .dark .ret-chip .cnt { background: rgba(255,255,255,0.06); color: var(--text-secondary); }
         .dark .ret-chip:hover { background: #334155; color: #fff; }
         .dark .ret-chip.on { background: #ff8a3d; color: #04041f; border-color: #ff8a3d; }
         .dark .ret-chip.on .cnt { background: rgba(4,4,42,0.18); color: #04041f; }
@@ -133,11 +133,11 @@
             display: inline-flex; align-items: center; justify-content: center;
             min-width: 34px; height: 34px; padding: 0 10px;
             border-radius: 9px; background: #fff;
-            border: 1px solid #e2e8f0; color: #475569;
+            border: 1px solid #e2e8f0; color: var(--text-secondary);
             font-size: 12px; font-weight: 700; text-decoration: none;
             transition: all .15s ease;
         }
-        .ret-pagination a:hover { color: #0f172a; border-color: #cbd5e1; background: #f8fafc; }
+        .ret-pagination a:hover { color: var(--text); border-color: var(--border); background: var(--surface-sunk); }
         .ret-pagination .active span,
         .ret-pagination span[aria-current="page"] {
             background: #04041f; color: #ffb27a; border-color: #04041f;
@@ -145,8 +145,8 @@
         .ret-pagination .disabled span,
         .ret-pagination span[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
         .dark .ret-pagination a,
-        .dark .ret-pagination span { background: #0f172a; border-color: #334155; color: #cbd5e1; }
-        .dark .ret-pagination a:hover { background: #1e293b; color: #fff; border-color: #475569; }
+        .dark .ret-pagination span { background: var(--surface); border-color: var(--border); color: var(--text-secondary); }
+        .dark .ret-pagination a:hover { background: var(--surface-sunk); color: #fff; border-color: #475569; }
         .dark .ret-pagination .active span,
         .dark .ret-pagination span[aria-current="page"] {
             background: #ff8a3d; color: #04041f; border-color: #ff8a3d;
