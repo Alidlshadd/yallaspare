@@ -21,7 +21,7 @@
     @endphp
 
     <div class="space-y-6 sm:space-y-8 lg:space-y-10">
-        <section class="relative mx-auto w-full overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-950 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:shadow-black/10 sm:rounded-3xl">
+        <section class="relative mx-auto w-full overflow-hidden rounded-2xl border border-navy/10 bg-navy-deep shadow-sm shadow-navy/10 dark:border-white/10 dark:shadow-black/20 sm:rounded-3xl">
             <div class="absolute inset-0 overflow-hidden">
                 @if ($heroVideoUrl)
                     @if ($heroImageUrl)
@@ -62,23 +62,25 @@
                     <div class="absolute inset-0 h-full w-full bg-[linear-gradient(135deg,#070740_0%,#070740_52%,#04041f_100%)]"></div>
                 @endif
 
-                <div class="absolute inset-0 bg-gradient-to-t from-[rgba(7,7,64,0.92)] via-[rgba(7,7,64,0.45)] to-[rgba(7,7,64,0.15)]"></div>
+                <div class="absolute inset-0 bg-[rgba(7,7,64,0.32)]"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-[rgba(4,4,31,0.94)] via-[rgba(7,7,64,0.46)] to-[rgba(7,7,64,0.12)]"></div>
             </div>
 
-            <div class="relative grid grid-cols-1 items-end gap-5 p-4 pt-32 sm:p-6 sm:pt-40 lg:min-h-[470px] lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end lg:gap-8 lg:p-11 lg:pt-28">
+            <div class="relative grid grid-cols-1 items-end gap-4 p-4 pt-24 sm:gap-6 sm:p-6 sm:pt-36 lg:min-h-[470px] lg:grid-cols-[minmax(0,1fr)_370px] lg:items-end lg:gap-10 lg:p-11 lg:pt-28">
                 <div>
-                    <span class="inline-block rounded-full border border-white/30 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/90">
+                    <span class="inline-flex items-center gap-2 rounded-full border border-white/20 bg-[rgba(7,7,64,0.5)] px-3.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-white/85 backdrop-blur-sm">
+                        <span class="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true"></span>
                         {{ __('Genuine & OEM parts') }}
                     </span>
-                    <h1 class="mt-3 max-w-xl text-2xl font-bold leading-tight tracking-[-0.03em] text-white sm:mt-4 sm:text-3xl lg:text-[44px] lg:leading-[1.06]">
+                    <h1 class="mt-3 max-w-[20ch] text-[24px] font-bold leading-[1.14] tracking-[-0.03em] text-white sm:mt-5 sm:text-3xl lg:text-[40px] lg:leading-[1.08]">
                         {{ $heroTitle }}
                     </h1>
-                    <p class="mt-2 max-w-xl text-xs leading-5 text-slate-300 sm:mt-3 sm:text-sm sm:leading-6 lg:text-base">
+                    <p class="mt-2.5 max-w-[48ch] text-[13px] leading-[1.55] text-white/70 sm:mt-3 sm:text-sm sm:leading-6 lg:text-[15px] lg:leading-7">
                         {{ $heroSubtitle }}
                     </p>
                     <a
                         href="{{ $heroButtonUrl }}"
-                        class="font-display mt-4 inline-flex items-center justify-center rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-navy transition duration-200 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:mt-5 sm:rounded-2xl"
+                        class="font-display mt-5 inline-flex items-center justify-center rounded-xl border border-white/30 bg-white/5 px-5 py-2.5 text-sm font-semibold text-white backdrop-blur-sm transition duration-200 hover:border-white/45 hover:bg-white/12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-[#04041f] sm:mt-7"
                     >
                         {{ $heroButtonLabel }}
                     </a>
@@ -88,7 +90,7 @@
                     id="vehicle-finder"
                     method="GET"
                     action="{{ route('shop.index') }}"
-                    class="flex flex-col gap-2.5 rounded-2xl border border-white/25 bg-white/10 p-4 backdrop-blur-xl sm:p-5"
+                    class="flex flex-col gap-2.5 rounded-2xl border border-white/25 bg-white/10 p-4 shadow-[0_28px_60px_-30px_rgba(4,4,31,0.85)] backdrop-blur-xl sm:gap-3 sm:p-6"
                     data-vehicle-finder
                     data-model-map='@json($modelOptionsByBrand)'
                     data-vehicle-option-map='@json($vehicleOptionsByModel)'
@@ -101,12 +103,13 @@
                     data-no-engines-placeholder="{{ __('No engines for this model yet') }}"
                     data-no-years-placeholder="{{ __('No years for this model yet') }}"
                 >
-                    <p class="text-sm font-semibold text-white">{{ __('Find parts for your vehicle') }}</p>
+                    <p class="font-display text-[15px] font-semibold leading-tight text-white">{{ __('Find parts for your vehicle') }}</p>
 
                     <select
                         name="brand"
+                        aria-label="{{ __('Brand') }}"
                         data-vehicle-brand
-                        class="w-full rounded-xl border-0 bg-white/95 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:ring-4 focus:ring-accent/45"
+                        class="h-11 w-full rounded-xl border-0 bg-white px-3.5 text-sm font-medium text-slate-900 outline-none transition duration-200 focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-[#070740] disabled:cursor-not-allowed disabled:bg-[#E6E8EC] disabled:text-slate-600 disabled:opacity-100"
                     >
                         <option value="">{{ __('Brand') }}</option>
                         @foreach ($brandOptions as $option)
@@ -116,8 +119,9 @@
 
                     <select
                         name="model"
+                        aria-label="{{ __('Model') }}"
                         data-vehicle-model
-                        class="w-full rounded-xl border-0 bg-white/95 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:ring-4 focus:ring-accent/45"
+                        class="h-11 w-full rounded-xl border-0 bg-white px-3.5 text-sm font-medium text-slate-900 outline-none transition duration-200 focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-[#070740] disabled:cursor-not-allowed disabled:bg-[#E6E8EC] disabled:text-slate-600 disabled:opacity-100"
                     >
                         <option value="">{{ __('Model') }}</option>
                         @foreach ($modelOptions as $option)
@@ -127,9 +131,10 @@
 
                     <select
                         name="engine"
+                        aria-label="{{ __('Engine') }}"
                         data-vehicle-engine
                         @disabled($vehicleOptionsByModel !== [])
-                        class="w-full rounded-xl border-0 bg-white/95 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:ring-4 focus:ring-accent/45 disabled:cursor-not-allowed disabled:opacity-60"
+                        class="h-11 w-full rounded-xl border-0 bg-white px-3.5 text-sm font-medium text-slate-900 outline-none transition duration-200 focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-[#070740] disabled:cursor-not-allowed disabled:bg-[#E6E8EC] disabled:text-slate-600 disabled:opacity-100"
                     >
                         <option value="">{{ __('Any engine') }}</option>
                         @if($vehicleOptionsByModel === [])
@@ -141,16 +146,17 @@
 
                     <select
                         name="year"
+                        aria-label="{{ __('Year') }}"
                         data-vehicle-year
                         disabled
-                        class="w-full rounded-xl border-0 bg-white/95 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:ring-4 focus:ring-accent/45 disabled:cursor-not-allowed disabled:opacity-60"
+                        class="h-11 w-full rounded-xl border-0 bg-white px-3.5 text-sm font-medium text-slate-900 outline-none transition duration-200 focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-[#070740] disabled:cursor-not-allowed disabled:bg-[#E6E8EC] disabled:text-slate-600 disabled:opacity-100"
                     >
                         <option value="">{{ __('Any year') }}</option>
                     </select>
 
                     <button
                         type="submit"
-                        class="mt-1 inline-flex items-center justify-center rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-navy transition duration-200 hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
+                        class="mt-1.5 inline-flex h-11 w-full items-center justify-center rounded-xl bg-accent sm:mt-2 sm:h-12 px-4 text-sm font-bold tracking-[0.01em] text-navy transition duration-200 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#070740]"
                     >
                         {{ __('Find parts') }}
                     </button>
