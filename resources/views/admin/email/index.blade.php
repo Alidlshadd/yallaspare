@@ -28,24 +28,24 @@
         \App\Models\EmailBroadcast::AUDIENCE_USER => __('User'),
     ];
     $audienceAvatarClasses = [
-        \App\Models\EmailBroadcast::AUDIENCE_ALL => 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-200',
+        \App\Models\EmailBroadcast::AUDIENCE_ALL => 'bg-info text-info dark:bg-info/40 dark:text-info',
         \App\Models\EmailBroadcast::AUDIENCE_ROLE => 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-200',
         \App\Models\EmailBroadcast::AUDIENCE_USER => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200',
     ];
     $broadcastStatusClasses = [
         'sent' => ['cls' => 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/40 dark:text-emerald-200 dark:border-emerald-900/60', 'icon' => 'fa-check'],
-        'sending' => ['cls' => 'bg-sky-50 text-sky-700 border-sky-100 dark:bg-sky-900/40 dark:text-sky-200 dark:border-sky-900/60', 'icon' => 'fa-paper-plane'],
+        'sending' => ['cls' => 'bg-info text-info border-info dark:bg-info/40 dark:text-info dark:border-info/60', 'icon' => 'fa-paper-plane'],
         'queued' => ['cls' => 'bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-900/60', 'icon' => 'fa-clock'],
         'failed' => ['cls' => 'bg-rose-50 text-rose-700 border-rose-100 dark:bg-rose-900/40 dark:text-rose-200 dark:border-rose-900/60', 'icon' => 'fa-xmark'],
     ];
     $toneClasses = [
-        'blue' => 'border-blue-200 bg-blue-50 text-blue-700 dark:border-blue-900/50 dark:bg-blue-950/30 dark:text-blue-200',
+        'blue' => 'border-info bg-info text-info dark:border-info/50 dark:bg-info/30 dark:text-info',
         'emerald' => 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-200',
         'rose' => 'border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/30 dark:text-rose-200',
         'amber' => 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-200',
-        'violet' => 'border-violet-200 bg-violet-50 text-violet-700 dark:border-violet-900/50 dark:bg-violet-950/30 dark:text-violet-200',
-        'cyan' => 'border-cyan-200 bg-cyan-50 text-cyan-700 dark:border-cyan-900/50 dark:bg-cyan-950/30 dark:text-cyan-200',
-        'indigo' => 'border-indigo-200 bg-indigo-50 text-indigo-700 dark:border-indigo-900/50 dark:bg-indigo-950/30 dark:text-indigo-200',
+        'violet' => 'border-info bg-info text-info dark:border-info/50 dark:bg-info/30 dark:text-info',
+        'cyan' => 'border-info bg-info text-info dark:border-info/50 dark:bg-info/30 dark:text-info',
+        'indigo' => 'border-info bg-info text-info dark:border-info/50 dark:bg-info/30 dark:text-info',
         'orange' => 'border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-900/50 dark:bg-orange-950/30 dark:text-orange-200',
         'slate' => 'border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200',
     ];
@@ -97,7 +97,7 @@
 
     <div class="relative rounded-2xl border border-slate-200/70 bg-white overflow-hidden bento-shadow-em dark:bg-slate-900 dark:border-slate-800">
         {{-- Top accent stripe --}}
-        <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-indigo-500 to-accent z-10"></div>
+        <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary to-accent z-10"></div>
 
         <div class="grid grid-cols-1 lg:grid-cols-[260px_1fr]">
 
@@ -110,7 +110,7 @@
                 <div class="relative">
                     {{-- Compose CTA --}}
                     <a href="{{ route('admin.email.broadcasts.create') }}"
-                       class="w-full flex items-center gap-2 rounded-xl bg-gradient-to-br from-primary to-indigo-700 text-white px-3 py-2.5 text-sm font-bold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition">
+                       class="w-full flex items-center gap-2 rounded-xl bg-gradient-to-br from-primary to-navy-raised text-white px-3 py-2.5 text-sm font-bold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition">
                         <i class="fas fa-pen-to-square text-xs"></i> {{ __('New Broadcast') }}
                     </a>
 
@@ -119,9 +119,9 @@
                         <p class="px-2 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">{{ __('Workspace') }}</p>
                         <nav class="mt-1 space-y-0.5">
                             <a href="#overview"
-                               class="font-display flex items-center gap-2.5 rounded-lg bg-primary/10 px-2.5 py-2 text-sm font-bold text-primary dark:bg-primary/20 dark:text-indigo-200">
-                                <i class="fas fa-house w-4 text-primary text-xs dark:text-indigo-200"></i> {{ __('Overview') }}
-                                <span class="ml-auto font-mono text-[10px] text-primary/70 dark:text-indigo-300">{{ number_format($totalSent7d) }}</span>
+                               class="font-display flex items-center gap-2.5 rounded-lg bg-primary/10 px-2.5 py-2 text-sm font-bold text-primary dark:bg-primary/20 dark:text-info">
+                                <i class="fas fa-house w-4 text-primary text-xs dark:text-info"></i> {{ __('Overview') }}
+                                <span class="ml-auto font-mono text-[10px] text-primary/70 dark:text-info">{{ number_format($totalSent7d) }}</span>
                             </a>
                             <a href="#broadcasts"
                                class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white">
@@ -171,13 +171,13 @@
 
                     {{-- Delivery health card --}}
                     <div class="mt-6 relative rounded-xl border border-primary/15 bg-gradient-to-br from-primary/[0.06] to-white p-3 corner-brackets-em dark:from-primary/20 dark:to-slate-900 dark:border-primary/30">
-                        <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-primary dark:text-indigo-200">{{ __('Delivery health') }}</p>
+                        <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-primary dark:text-info">{{ __('Delivery health') }}</p>
                         <div class="mt-2 flex items-baseline gap-2">
                             <span class="num-display text-2xl font-black text-primary dark:text-white">{{ $successRate7d ?? $successRate ?? 0 }}</span>
                             <span class="text-xs font-mono text-slate-500 dark:text-slate-400">%</span>
                         </div>
                         <div class="mt-1.5 h-1 rounded-full bg-slate-200 overflow-hidden dark:bg-slate-800">
-                            <div class="h-full rounded-full bg-gradient-to-r from-primary to-indigo-500" style="width: {{ $successRate7d ?? $successRate ?? 0 }}%"></div>
+                            <div class="h-full rounded-full bg-gradient-to-r from-primary to-navy-raised" style="width: {{ $successRate7d ?? $successRate ?? 0 }}%"></div>
                         </div>
                         <p class="mt-2 text-[10px] font-mono text-slate-500 dark:text-slate-400">{{ __('last 7 days') }}</p>
                     </div>
@@ -223,10 +223,10 @@
                     <div class="mt-6 grid gap-3 grid-cols-1 sm:grid-cols-3">
                         {{-- Total Sent 7d --}}
                         <div class="relative rounded-2xl border border-slate-200/70 bg-white p-5 bento-shadow-em overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-                            <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-primary to-indigo-700"></div>
+                            <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-primary to-navy-raised"></div>
                             <div class="flex items-start justify-between">
                                 <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">{{ __('Total Sent') }}</p>
-                                <div class="h-7 w-7 rounded-lg bg-primary/10 text-primary grid place-items-center dark:bg-primary/20 dark:text-indigo-200">
+                                <div class="h-7 w-7 rounded-lg bg-primary/10 text-primary grid place-items-center dark:bg-primary/20 dark:text-info">
                                     <i class="fas fa-envelopes-bulk text-[10px]"></i>
                                 </div>
                             </div>
@@ -234,11 +234,11 @@
                             <div class="mt-2 flex items-center justify-between">
                                 <span class="text-[10px] text-slate-400 font-mono">{{ __('last 7 days') }}</span>
                                 @if($successRate7d !== null)
-                                    <span class="text-[10px] font-bold text-primary dark:text-indigo-300"><i class="fas fa-arrow-up text-[8px]"></i> {{ $successRate7d }}%</span>
+                                    <span class="text-[10px] font-bold text-primary dark:text-info"><i class="fas fa-arrow-up text-[8px]"></i> {{ $successRate7d }}%</span>
                                 @endif
                             </div>
                             <div class="mt-2 h-1 rounded-full bg-slate-100 overflow-hidden dark:bg-slate-800">
-                                <div class="h-full rounded-full bg-gradient-to-r from-primary to-indigo-500" style="width: {{ $successRate7d ?? 0 }}%"></div>
+                                <div class="h-full rounded-full bg-gradient-to-r from-primary to-navy-raised" style="width: {{ $successRate7d ?? 0 }}%"></div>
                             </div>
                         </div>
 
@@ -295,7 +295,7 @@
                         {{-- Header --}}
                         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
                             <div class="flex items-center gap-2.5">
-                                <div class="h-8 w-8 rounded-lg bg-primary/10 text-primary grid place-items-center dark:bg-primary/20 dark:text-indigo-200">
+                                <div class="h-8 w-8 rounded-lg bg-primary/10 text-primary grid place-items-center dark:bg-primary/20 dark:text-info">
                                     <i class="fas fa-clock-rotate-left text-xs"></i>
                                 </div>
                                 <div>
@@ -434,7 +434,7 @@
                     <div class="relative rounded-2xl border border-slate-200/70 bg-white bento-shadow-em overflow-hidden dark:bg-slate-900 dark:border-slate-800">
                         <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
                             <div class="flex items-center gap-2.5">
-                                <div class="h-8 w-8 rounded-lg bg-sky-100 text-sky-700 grid place-items-center dark:bg-sky-900/50 dark:text-sky-200">
+                                <div class="h-8 w-8 rounded-lg bg-info text-info grid place-items-center dark:bg-info/50 dark:text-info">
                                     <i class="fas fa-inbox text-xs"></i>
                                 </div>
                                 <div>
@@ -489,12 +489,12 @@
                     <form method="POST" action="{{ route('admin.email.broadcast') }}" id="inline-compose"
                           class="relative rounded-2xl border border-slate-200/70 bg-white bento-shadow-em overflow-hidden dark:bg-slate-900 dark:border-slate-800">
                         @csrf
-                        <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-indigo-500 to-accent"></div>
+                        <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary to-accent"></div>
 
                         {{-- Header with CREATE button --}}
                         <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
                             <div class="flex items-center gap-2.5">
-                                <div class="h-8 w-8 rounded-lg bg-primary/10 text-primary grid place-items-center dark:bg-primary/20 dark:text-indigo-200">
+                                <div class="h-8 w-8 rounded-lg bg-primary/10 text-primary grid place-items-center dark:bg-primary/20 dark:text-info">
                                     <i class="fas fa-pen-nib text-xs"></i>
                                 </div>
                                 <div>
@@ -573,7 +573,7 @@
 
                             {{-- Send button (prominent) --}}
                             <button type="submit" @disabled(! $broadcastsAvailable)
-                                    class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-primary to-indigo-700 px-4 py-3 text-sm font-bold text-white shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition disabled:cursor-not-allowed disabled:from-slate-400 disabled:to-slate-500 disabled:shadow-none">
+                                    class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-primary to-navy-raised px-4 py-3 text-sm font-bold text-white shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition disabled:cursor-not-allowed disabled:from-slate-400 disabled:to-slate-500 disabled:shadow-none">
                                 <i class="fas fa-paper-plane"></i> {{ __('Send Broadcast') }}
                             </button>
 
@@ -632,11 +632,11 @@
                 <section id="templates" class="mt-6 space-y-6">
                     {{-- Template Library --}}
                     <div class="relative rounded-2xl border border-slate-200/70 bg-white bento-shadow-em overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-                        <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-indigo-500 to-cyan-400"></div>
+                        <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary to-accent"></div>
                         <div class="border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
                             <div class="flex items-center justify-between gap-3">
                                 <div class="flex items-center gap-2.5">
-                                    <div class="h-8 w-8 rounded-lg bg-primary/10 text-primary grid place-items-center dark:bg-primary/20 dark:text-indigo-200">
+                                    <div class="h-8 w-8 rounded-lg bg-primary/10 text-primary grid place-items-center dark:bg-primary/20 dark:text-info">
                                         <i class="fas fa-layer-group text-xs"></i>
                                     </div>
                                     <div>
@@ -644,7 +644,7 @@
                                         <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">{{ count($templateCards) }} {{ __('templates') }} · EN · AR · KU</p>
                                     </div>
                                 </div>
-                                <span class="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2.5 py-1 text-[10px] font-bold border border-primary/20 dark:bg-primary/20 dark:text-indigo-200 dark:border-primary/40">
+                                <span class="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2.5 py-1 text-[10px] font-bold border border-primary/20 dark:bg-primary/20 dark:text-info dark:border-primary/40">
                                     <i class="fas fa-envelope-open-text text-[9px]"></i> {{ __('transactional') }}
                                 </span>
                             </div>

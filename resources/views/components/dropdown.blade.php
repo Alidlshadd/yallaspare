@@ -1,4 +1,4 @@
-@props(['align' => 'right', 'width' => '48', 'contentClasses' => 'py-1 bg-white dark:bg-slate-800 dark:text-slate-100'])
+@props(['align' => 'right', 'width' => '48', 'contentClasses' => 'py-1 bg-surface-2 text-app'])
 
 @php
 switch ($align) {
@@ -33,10 +33,12 @@ switch ($width) {
             x-transition:leave="transition ease-in duration-75"
             x-transition:leave-start="opacity-100 scale-100"
             x-transition:leave-end="opacity-0 scale-95"
-            class="absolute z-50 mt-2 {{ $width }} rounded-md shadow-lg {{ $alignmentClasses }}"
+            class="absolute z-50 mt-2 {{ $width }} rounded-app shadow-app {{ $alignmentClasses }}"
             style="display: none;"
             @click="close">
-        <div class="rounded-md ring-1 ring-black/5 dark:ring-white/10 {{ $contentClasses }}">
+        {{-- ring-black/5 went grey over a navy surface; the border token reads
+             as an edge in both themes. --}}
+        <div class="overflow-hidden rounded-app border border-app {{ $contentClasses }}">
             {{ $content }}
         </div>
     </div>

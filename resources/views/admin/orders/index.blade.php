@@ -27,8 +27,8 @@
         $pillClass = function (?string $key) {
             return match ((string) $key) {
                 'pending'                              => 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/30',
-                'processing'                           => 'bg-violet-100 text-violet-800 border-violet-200 dark:bg-violet-500/10 dark:text-violet-300 dark:border-violet-500/30',
-                'shipped'                              => 'bg-sky-100 text-sky-800 border-sky-200 dark:bg-sky-500/10 dark:text-sky-300 dark:border-sky-500/30',
+                'processing'                           => 'bg-info text-info border-info dark:bg-info/10 dark:text-info dark:border-info/30',
+                'shipped'                              => 'bg-info text-info border-info dark:bg-info/10 dark:text-info dark:border-info/30',
                 'delivered', 'paid'                    => 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/30',
                 'cancelled', 'failed'                  => 'bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-500/10 dark:text-rose-300 dark:border-rose-500/30',
                 'pending_payment', 'pending-payment'   => 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/30',
@@ -40,8 +40,8 @@
         $dotColor = function (?string $key) {
             return match ((string) $key) {
                 'pending', 'pending_payment', 'pending-payment' => 'bg-accent',
-                'processing'                                    => 'bg-violet-500',
-                'shipped'                                       => 'bg-sky-500',
+                'processing'                                    => 'bg-info',
+                'shipped'                                       => 'bg-info',
                 'delivered', 'paid'                             => 'bg-emerald-500',
                 'cancelled', 'failed'                           => 'bg-rose-500',
                 'refunded'                                      => 'bg-slate-400',
@@ -179,7 +179,7 @@
                  style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
                 <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
                 <div class="absolute -top-24 -right-24 h-80 w-80 rounded-full bg-accent/20 blur-[80px] pointer-events-none"></div>
-                <div class="absolute -bottom-24 -left-12 h-64 w-64 rounded-full bg-cyan-400/15 blur-[80px] pointer-events-none"></div>
+                <div class="absolute -bottom-24 -left-12 h-64 w-64 rounded-full bg-info/15 blur-[80px] pointer-events-none"></div>
                 <div class="absolute top-0 left-0 right-0 h-[2px]" style="background: linear-gradient(90deg, #22d3ee, #ff8a3d, #e65c00);"></div>
 
                 <div class="relative flex items-start justify-between gap-4">
@@ -256,7 +256,7 @@
                     [
                         'label' => __('Pending'),
                         'value' => $stats['pending'] ?? 0,
-                        'stripe' => 'from-accent to-accent',
+                        'stripe' => 'bg-accent',
                         'ic_bg' => 'bg-amber-100 dark:bg-amber-500/10',
                         'ic_fg' => 'text-accent dark:text-accent',
                         'dot' => 'bg-accent',
@@ -266,27 +266,27 @@
                     [
                         'label' => __('Processing'),
                         'value' => $stats['processing'] ?? 0,
-                        'stripe' => 'from-violet-400 to-violet-500',
-                        'ic_bg' => 'bg-violet-100 dark:bg-violet-500/10',
-                        'ic_fg' => 'text-violet-700 dark:text-violet-300',
-                        'dot' => 'bg-violet-500',
+                        'stripe' => 'bg-info',
+                        'ic_bg' => 'bg-info dark:bg-info/10',
+                        'ic_fg' => 'text-info dark:text-info',
+                        'dot' => 'bg-info',
                         'foot' => __('In workshop'),
                         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>',
                     ],
                     [
                         'label' => __('Shipped'),
                         'value' => $stats['shipped'] ?? 0,
-                        'stripe' => 'from-sky-400 to-sky-500',
-                        'ic_bg' => 'bg-sky-100 dark:bg-sky-500/10',
-                        'ic_fg' => 'text-sky-700 dark:text-sky-300',
-                        'dot' => 'bg-sky-500',
+                        'stripe' => 'bg-info',
+                        'ic_bg' => 'bg-info dark:bg-info/10',
+                        'ic_fg' => 'text-info dark:text-info',
+                        'dot' => 'bg-info',
                         'foot' => __('On the road'),
                         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M9 17a2 2 0 11-4 0 2 2 0 014 0zM19 17a2 2 0 11-4 0 2 2 0 014 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M13 16V6a1 1 0 00-1-1H4a1 1 0 00-1 1v10a1 1 0 001 1h1m8-1a1 1 0 01-1 1H9m4-1V8a1 1 0 011-1h2.586a1 1 0 01.707.293l3.414 3.414a1 1 0 01.293.707V16a1 1 0 01-1 1h-1m-6-1a1 1 0 001 1h1M5 17a2 2 0 104 0m-4 0a2 2 0 114 0m6 0a2 2 0 104 0m-4 0a2 2 0 114 0"/>',
                     ],
                     [
                         'label' => __('Unpaid'),
                         'value' => $unpaidCount,
-                        'stripe' => 'from-rose-400 to-rose-500',
+                        'stripe' => 'bg-[var(--danger)]',
                         'ic_bg' => 'bg-rose-100 dark:bg-rose-500/10',
                         'ic_fg' => 'text-rose-700 dark:text-rose-300',
                         'dot' => 'bg-rose-500',
@@ -299,7 +299,7 @@
 
             @foreach($attentionTiles as $t)
                 <div class="relative overflow-hidden rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 p-6 bento-shadow transition">
-                    <div class="absolute top-0 bottom-0 left-0 w-[3px] bg-gradient-to-b {{ $t['stripe'] }}"></div>
+                    <div class="absolute top-0 bottom-0 left-0 w-[3px] {{ $t['stripe'] }}"></div>
                     <div class="flex items-center gap-3">
                         <div class="h-10 w-10 rounded-xl grid place-items-center {{ $t['ic_bg'] }} {{ $t['ic_fg'] }}">
                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">{!! $t['icon'] !!}</svg>
@@ -321,7 +321,7 @@
                     [
                         'label' => __('Delivered'),
                         'value' => $stats['delivered'] ?? 0,
-                        'stripe' => 'from-emerald-400 to-emerald-500',
+                        'stripe' => 'bg-[var(--success)]',
                         'ic_bg' => 'bg-emerald-100 dark:bg-emerald-500/10',
                         'ic_fg' => 'text-emerald-700 dark:text-emerald-300',
                         'dot' => 'bg-emerald-500',
@@ -331,7 +331,7 @@
                     [
                         'label' => __('Cancelled'),
                         'value' => $stats['cancelled'] ?? 0,
-                        'stripe' => 'from-slate-400 to-slate-500',
+                        'stripe' => 'bg-[var(--text-muted)]',
                         'ic_bg' => 'bg-slate-100 dark:bg-slate-700/40',
                         'ic_fg' => 'text-slate-600 dark:text-slate-300',
                         'dot' => 'bg-slate-400',
@@ -343,7 +343,7 @@
 
             @foreach($closingTiles as $t)
                 <div class="relative overflow-hidden rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 p-6 bento-shadow transition">
-                    <div class="absolute top-0 bottom-0 left-0 w-[3px] bg-gradient-to-b {{ $t['stripe'] }}"></div>
+                    <div class="absolute top-0 bottom-0 left-0 w-[3px] {{ $t['stripe'] }}"></div>
                     <div class="flex items-center gap-3">
                         <div class="h-10 w-10 rounded-xl grid place-items-center {{ $t['ic_bg'] }} {{ $t['ic_fg'] }}">
                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">{!! $t['icon'] !!}</svg>
@@ -616,9 +616,9 @@
                                             <div class="text-[10.5px] text-slate-500 dark:text-slate-400 truncate">{{ $order->user?->email ?? '-' }}</div>
                                             @if($order->user)
                                                 @if($isDealer)
-                                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide mt-1 bg-violet-100 text-violet-700 border border-violet-200 dark:bg-violet-500/10 dark:text-violet-300 dark:border-violet-500/30">{{ __('Dealer') }}</span>
+                                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide mt-1 bg-info text-info border border-info dark:bg-info/10 dark:text-info dark:border-info/30">{{ __('Dealer') }}</span>
                                                 @else
-                                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide mt-1 bg-sky-100 text-sky-700 border border-sky-200 dark:bg-sky-500/10 dark:text-sky-300 dark:border-sky-500/30">{{ __('User') }}</span>
+                                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide mt-1 bg-info text-info border border-info dark:bg-info/10 dark:text-info dark:border-info/30">{{ __('User') }}</span>
                                                 @endif
                                             @endif
                                         </div>

@@ -7,7 +7,7 @@
             'processed' => 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300',
             'failed' => 'bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-300',
             'ignored' => 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300',
-            'processing' => 'bg-sky-50 text-sky-700 dark:bg-sky-500/10 dark:text-sky-300',
+            'processing' => 'bg-info text-info dark:bg-info/10 dark:text-info',
             default => 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300',
         };
     @endphp
@@ -40,7 +40,7 @@
             </div>
 
             <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                <div class="flex items-center gap-3"><span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 dark:bg-indigo-500/10 dark:text-indigo-300"><i class="fas fa-shield-halved" aria-hidden="true"></i></span><h2 class="text-lg font-black text-slate-900 dark:text-white">{{ __('Header and processing information') }}</h2></div>
+                <div class="flex items-center gap-3"><span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-info text-info dark:bg-info/10 dark:text-info"><i class="fas fa-shield-halved" aria-hidden="true"></i></span><h2 class="text-lg font-black text-slate-900 dark:text-white">{{ __('Header and processing information') }}</h2></div>
                 <dl class="mt-5 grid gap-4 sm:grid-cols-2">
                     @foreach([
                         [__('Event type'), $event->event_type], [__('Attempt'), $event->attempt_number],

@@ -16,8 +16,8 @@
             ],
             'approved' => [
                 'label' => __('Approved'),
-                'pill'  => 'bg-blue-100 text-blue-800 border-blue-200 dark:bg-blue-500/10 dark:text-blue-300 dark:border-blue-500/30',
-                'dot'   => 'bg-blue-500',
+                'pill'  => 'bg-info text-info border-info dark:bg-info/10 dark:text-info dark:border-info/30',
+                'dot'   => 'bg-info',
                 'hex'   => '#2563eb',
             ],
             'rejected' => [
@@ -28,8 +28,8 @@
             ],
             'received' => [
                 'label' => __('Received'),
-                'pill'  => 'bg-cyan-100 text-cyan-800 border-cyan-200 dark:bg-cyan-500/10 dark:text-cyan-300 dark:border-cyan-500/30',
-                'dot'   => 'bg-cyan-500',
+                'pill'  => 'bg-info text-info border-info dark:bg-info/10 dark:text-info dark:border-info/30',
+                'dot'   => 'bg-info',
                 'hex'   => '#0891b2',
             ],
             'refunded' => [
@@ -48,7 +48,7 @@
 
         $typeMeta = [
             'return'   => ['label' => __('Return'),   'class' => 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-700/40 dark:text-slate-200'],
-            'exchange' => ['label' => __('Exchange'), 'class' => 'bg-violet-100 text-violet-700 border-violet-200 dark:bg-violet-500/10 dark:text-violet-300'],
+            'exchange' => ['label' => __('Exchange'), 'class' => 'bg-info text-info border-info dark:bg-info/10 dark:text-info'],
             'refund'   => ['label' => __('Refund'),   'class' => 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300'],
         ];
 
@@ -180,7 +180,7 @@
                  style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
                 <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
                 <div class="absolute -top-24 -right-24 h-80 w-80 rounded-full bg-accent/20 blur-[80px] pointer-events-none"></div>
-                <div class="absolute -bottom-24 -left-12 h-64 w-64 rounded-full bg-cyan-400/15 blur-[80px] pointer-events-none"></div>
+                <div class="absolute -bottom-24 -left-12 h-64 w-64 rounded-full bg-info/15 blur-[80px] pointer-events-none"></div>
                 <div class="absolute top-0 left-0 right-0 h-[2px]" style="background: linear-gradient(90deg, #22d3ee, #ff8a3d, #e65c00);"></div>
 
                 <div class="relative flex items-start justify-between gap-4">
@@ -234,7 +234,7 @@
                     [
                         'label' => __('Requested'),
                         'value' => $statusCounts->get('requested', 0),
-                        'stripe' => 'from-accent to-accent',
+                        'stripe' => 'bg-accent',
                         'ic_bg' => 'bg-amber-100 dark:bg-amber-500/10',
                         'ic_fg' => 'text-accent dark:text-accent',
                         'dot' => 'bg-accent',
@@ -244,27 +244,27 @@
                     [
                         'label' => __('Approved'),
                         'value' => $statusCounts->get('approved', 0),
-                        'stripe' => 'from-blue-400 to-blue-500',
-                        'ic_bg' => 'bg-blue-100 dark:bg-blue-500/10',
-                        'ic_fg' => 'text-blue-700 dark:text-blue-300',
-                        'dot' => 'bg-blue-500',
+                        'stripe' => 'bg-info',
+                        'ic_bg' => 'bg-info dark:bg-info/10',
+                        'ic_fg' => 'text-info dark:text-info',
+                        'dot' => 'bg-info',
                         'foot' => __('Awaiting return'),
                         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>',
                     ],
                     [
                         'label' => __('Received'),
                         'value' => $statusCounts->get('received', 0),
-                        'stripe' => 'from-cyan-400 to-cyan-500',
-                        'ic_bg' => 'bg-cyan-100 dark:bg-cyan-500/10',
-                        'ic_fg' => 'text-cyan-700 dark:text-cyan-300',
-                        'dot' => 'bg-cyan-500',
+                        'stripe' => 'bg-info',
+                        'ic_bg' => 'bg-info dark:bg-info/10',
+                        'ic_fg' => 'text-info dark:text-info',
+                        'dot' => 'bg-info',
                         'foot' => __('Item inspected'),
                         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/>',
                     ],
                     [
                         'label' => __('Refunded'),
                         'value' => $statusCounts->get('refunded', $stats['refunded'] ?? 0),
-                        'stripe' => 'from-emerald-400 to-emerald-500',
+                        'stripe' => 'bg-[var(--success)]',
                         'ic_bg' => 'bg-emerald-100 dark:bg-emerald-500/10',
                         'ic_fg' => 'text-emerald-700 dark:text-emerald-300',
                         'dot' => 'bg-emerald-500',
@@ -276,7 +276,7 @@
 
             @foreach($attentionTiles as $t)
                 <div class="relative overflow-hidden rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 p-6 bento-shadow transition">
-                    <div class="absolute top-0 bottom-0 left-0 w-[3px] bg-gradient-to-b {{ $t['stripe'] }}"></div>
+                    <div class="absolute top-0 bottom-0 left-0 w-[3px] {{ $t['stripe'] }}"></div>
                     <div class="flex items-center gap-3">
                         <div class="h-10 w-10 rounded-xl grid place-items-center {{ $t['ic_bg'] }} {{ $t['ic_fg'] }}">
                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">{!! $t['icon'] !!}</svg>
@@ -296,7 +296,7 @@
                     [
                         'label' => __('Rejected'),
                         'value' => $statusCounts->get('rejected', 0),
-                        'stripe' => 'from-rose-400 to-rose-500',
+                        'stripe' => 'bg-[var(--danger)]',
                         'ic_bg' => 'bg-rose-100 dark:bg-rose-500/10',
                         'ic_fg' => 'text-rose-700 dark:text-rose-300',
                         'dot' => 'bg-rose-500',
@@ -306,7 +306,7 @@
                     [
                         'label' => __('Closed'),
                         'value' => $statusCounts->get('closed', 0),
-                        'stripe' => 'from-slate-400 to-slate-500',
+                        'stripe' => 'bg-[var(--text-muted)]',
                         'ic_bg' => 'bg-slate-100 dark:bg-slate-700/40',
                         'ic_fg' => 'text-slate-600 dark:text-slate-300',
                         'dot' => 'bg-slate-400',
@@ -318,7 +318,7 @@
 
             @foreach($footerTiles as $t)
                 <div class="relative overflow-hidden rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 p-6 bento-shadow transition">
-                    <div class="absolute top-0 bottom-0 left-0 w-[3px] bg-gradient-to-b {{ $t['stripe'] }}"></div>
+                    <div class="absolute top-0 bottom-0 left-0 w-[3px] {{ $t['stripe'] }}"></div>
                     <div class="flex items-center gap-3">
                         <div class="h-10 w-10 rounded-xl grid place-items-center {{ $t['ic_bg'] }} {{ $t['ic_fg'] }}">
                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">{!! $t['icon'] !!}</svg>
@@ -489,7 +489,7 @@
                     <div>
                         @if($order)
                             <a href="{{ route('admin.orders.show', $order) }}"
-                               class="inline-block font-mono text-[13px] font-extrabold text-blue-700 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-200">
+                               class="inline-block font-mono text-[13px] font-extrabold text-info hover:text-info dark:text-info dark:hover:text-info">
                                 {{ $order->order_number }}
                             </a>
                             <div class="num-display text-[14px] font-extrabold text-slate-900 dark:text-white mt-1.5">
@@ -513,7 +513,7 @@
                         <div>
                             @if($customer && Route::has('admin.users.show'))
                                 <a href="{{ route('admin.users.show', $customer) }}"
-                                   class="block max-w-full truncate font-semibold text-[13px] text-blue-700 hover:text-blue-800 dark:text-blue-300 dark:hover:text-blue-200">
+                                   class="block max-w-full truncate font-semibold text-[13px] text-info hover:text-info dark:text-info dark:hover:text-info">
                                     {{ $customer->name }}
                                 </a>
                             @else

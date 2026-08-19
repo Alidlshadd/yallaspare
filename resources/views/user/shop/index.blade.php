@@ -258,7 +258,7 @@
             @if ($activeFilterCount > 0)
                 <div class="flex flex-wrap items-center gap-2 border-t border-slate-200/80 p-3 dark:border-slate-800 sm:p-3.5">
                     @if ($search !== '')
-                        <a href="{{ $clearFilterUrl(['search', 'q']) }}" class="inline-flex max-w-full items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-sm font-semibold text-blue-700 transition hover:bg-blue-100 dark:border-blue-900/50 dark:bg-blue-950/30 dark:text-blue-300">
+                        <a href="{{ $clearFilterUrl(['search', 'q']) }}" class="inline-flex max-w-full items-center gap-1 rounded-full border border-info bg-info px-3 py-1 text-sm font-semibold text-info transition hover:bg-info dark:border-info/50 dark:bg-info/30 dark:text-info">
                             <span class="truncate">{{ __('Search') }}: {{ $search }}</span>
                             <span aria-hidden="true">&times;</span>
                         </a>

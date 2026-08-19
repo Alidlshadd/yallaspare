@@ -6,14 +6,14 @@
                 <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Create a new product listing with pricing and inventory details.') }}</p>
             </div>
             <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
-                <i class="fas fa-circle-info text-indigo-500"></i>
+                <i class="fas fa-circle-info text-info"></i>
                 {{ __('Required fields are marked') }}
             </span>
         </div>
     </x-slot>
 
     @php
-        $inputBase = 'w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder-slate-400 shadow-sm transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/30 invalid:border-rose-500 invalid:ring-rose-500/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500';
+        $inputBase = 'w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder-slate-400 shadow-sm transition focus:border-info focus:ring-2 focus:ring-info/30 invalid:border-rose-500 invalid:ring-rose-500/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500';
         $inputError = 'border-rose-500 focus:border-rose-500 focus:ring-rose-500/30';
     @endphp
 
@@ -94,7 +94,7 @@
                                             <option value="{{ $brand->id }}" @selected((string) old('product_brand_id') === (string) $brand->id)>{{ $brand->name }}</option>
                                         @endforeach
                                     </select>
-                                    <a href="{{ route('admin.product-brands.index') }}" class="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 hover:text-indigo-800 dark:text-indigo-400 dark:hover:text-indigo-300">
+                                    <a href="{{ route('admin.product-brands.index') }}" class="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-info hover:text-info dark:text-info dark:hover:text-info">
                                         <i class="fas fa-tags"></i> {{ __('Manage product brands') }}
                                     </a>
                                     @error('product_brand_id')
@@ -203,7 +203,7 @@
                             <div class="p-6">
                                 <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{{ __('Product Image') }}</label>
                                 <div class="flex flex-col gap-4">
-                                    <label class="group flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 px-6 py-6 text-center text-sm text-slate-500 transition hover:border-indigo-400 hover:text-indigo-600 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-400 dark:hover:border-indigo-400">
+                                    <label class="group flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 px-6 py-6 text-center text-sm text-slate-500 transition hover:border-info hover:text-info dark:border-slate-700 dark:bg-slate-950 dark:text-slate-400 dark:hover:border-info">
                                         <input id="productImage" type="file" name="image" accept="image/*" class="hidden">
                                         <div class="flex flex-col items-center gap-2">
                                             <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-white text-slate-600 shadow-sm dark:bg-slate-900 dark:text-slate-300">
@@ -237,7 +237,7 @@
                             <div class="p-6">
                                 <label class="inline-flex items-center gap-4">
                                     <input type="checkbox" name="is_active" value="1" class="sr-only peer" {{ old('is_active', true) ? 'checked' : '' }}>
-                                    <span class="relative h-6 w-11 rounded-full bg-slate-200 transition peer-checked:bg-indigo-600 peer-focus:ring-2 peer-focus:ring-indigo-500/40 dark:bg-slate-800">
+                                    <span class="relative h-6 w-11 rounded-full bg-slate-200 transition peer-checked:bg-info peer-focus:ring-2 peer-focus:ring-info/40 dark:bg-slate-800">
                                         <span class="absolute left-1 top-1 h-4 w-4 rounded-full bg-white transition peer-checked:translate-x-5"></span>
                                     </span>
                                     <span class="text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Active') }}</span>

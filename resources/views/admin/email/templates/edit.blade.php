@@ -17,7 +17,7 @@
                     </p>
                     <h2 class="text-2xl font-semibold text-slate-900 dark:text-white mt-1">
                         {{ $meta['title'] }}
-                        <span class="ml-2 inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2.5 py-1 text-xs font-bold border border-primary/20 dark:bg-primary/20 dark:text-indigo-200 dark:border-primary/40">
+                        <span class="ml-2 inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2.5 py-1 text-xs font-bold border border-primary/20 dark:bg-primary/20 dark:text-info dark:border-primary/40">
                             <i class="fas fa-globe text-[10px]"></i> {{ strtoupper($locale) }}
                         </span>
                     </h2>
@@ -110,7 +110,7 @@
                 {{-- Actions --}}
                 <div class="flex items-center gap-2">
                     <button type="submit" @disabled(! $tableExists)
-                            class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-primary to-indigo-700 px-5 py-3 text-sm font-bold text-white shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition disabled:cursor-not-allowed disabled:from-slate-400 disabled:to-slate-500 disabled:shadow-none">
+                            class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-primary to-navy-raised px-5 py-3 text-sm font-bold text-white shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition disabled:cursor-not-allowed disabled:from-slate-400 disabled:to-slate-500 disabled:shadow-none">
                         <i class="fas fa-check"></i> {{ __('Save template') }}
                     </button>
                     <a href="{{ route('admin.email.templates.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
@@ -170,7 +170,7 @@
                         @endphp
                         @foreach($sampleVars as $k => $v)
                             <div class="flex items-center justify-between gap-3 text-[11px] font-mono">
-                                <code class="text-primary dark:text-indigo-300">{{ '{' . $k . '}' }}</code>
+                                <code class="text-primary dark:text-info">{{ '{' . $k . '}' }}</code>
                                 <span class="text-slate-500 dark:text-slate-400 truncate">{{ $v }}</span>
                             </div>
                         @endforeach

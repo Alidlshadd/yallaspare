@@ -122,7 +122,7 @@
                 <a href="{{ route('admin.dashboard', ['analytics_days' => $dayOption]) }}"
                    class="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold transition
                           {{ $isActive
-                              ? 'bg-gradient-to-r from-primary to-indigo-700 text-white shadow-md'
+                              ? 'bg-gradient-to-r from-primary to-navy-raised text-white shadow-md'
                               : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 dark:text-slate-200 dark:border-slate-700' }}">
                     @if($isActive)
                         <span class="relative inline-flex h-1.5 w-1.5">
@@ -147,15 +147,15 @@
         {{-- ============ TOTAL REVENUE — HERO 2x2 ============ --}}
         <div id="admin-revenue-section" class="relative sm:col-span-2 lg:col-span-2 lg:row-span-2 rounded-3xl bg-primary text-white p-7 overflow-hidden bento-shadow-lg corner-brackets scroll-mt-24" style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
             <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
-            <div class="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-indigo-500/25 blur-[100px]"></div>
-            <div class="absolute -bottom-32 -left-20 h-80 w-80 rounded-full bg-cyan-500/15 blur-[100px]"></div>
+            <div class="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-info/25 blur-[100px]"></div>
+            <div class="absolute -bottom-32 -left-20 h-80 w-80 rounded-full bg-info/15 blur-[100px]"></div>
             <div class="absolute top-0 left-0 right-0 h-[2px]" style="background: linear-gradient(90deg, #22d3ee, #818cf8, #e879f9);"></div>
 
             <div class="relative flex items-start justify-between">
                 <div>
                     <div class="flex items-center gap-2">
                         <span class="text-[10px] uppercase tracking-widest text-white/60 font-bold">{{ __('Total Revenue') }}</span>
-                        <span class="text-[10px] font-mono text-cyan-300/80 px-1.5 py-0.5 rounded bg-cyan-400/10 border border-cyan-400/20">YS · {{ __('Live') }}</span>
+                        <span class="text-[10px] font-mono text-info/80 px-1.5 py-0.5 rounded bg-info/10 border border-info/20">YS · {{ __('Live') }}</span>
                     </div>
                     <p class="mt-1.5 text-xs text-white/50">{{ __('Completed orders · all time') }}</p>
                 </div>
@@ -166,7 +166,7 @@
 
             <div class="relative mt-8">
                 <div class="flex items-baseline gap-2 flex-wrap">
-                    <span class="text-sm font-bold text-cyan-300/80">{{ $currencyLabel }}</span>
+                    <span class="text-sm font-bold text-info/80">{{ $currencyLabel }}</span>
                     <span class="num-display text-5xl md:text-6xl lg:text-7xl font-black leading-none">{{ number_format($totalRevenue, $currencyDecimals) }}</span>
                 </div>
                 <div class="mt-5 flex items-center gap-3 text-xs flex-wrap">
@@ -234,14 +234,14 @@
 
         {{-- ============ TOTAL ORDERS ============ --}}
         <div class="relative rounded-3xl bg-white p-6 bento-shadow transition-shadow border border-slate-200/70 overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-            <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-indigo-500 to-indigo-600"></div>
-            <div class="absolute -bottom-8 -right-8 h-32 w-32 rounded-full bg-indigo-500/5 blur-2xl"></div>
+            <div class="absolute top-0 left-0 bottom-0 w-1 bg-info"></div>
+            <div class="absolute -bottom-8 -right-8 h-32 w-32 rounded-full bg-info/5 blur-2xl"></div>
             <div class="flex items-start justify-between">
                 <div>
                     <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold dark:text-slate-400">{{ __('Total Orders') }}</p>
                     <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">{{ __('All-time fulfilled') }}</p>
                 </div>
-                <div class="h-10 w-10 rounded-xl bg-indigo-50 text-indigo-600 grid place-items-center dark:bg-indigo-900/30 dark:text-indigo-300">
+                <div class="h-10 w-10 rounded-xl bg-info text-info grid place-items-center dark:bg-info/30 dark:text-info">
                     <i class="fas fa-bag-shopping"></i>
                 </div>
             </div>
@@ -278,14 +278,14 @@
 
         {{-- ============ TOTAL PRODUCTS ============ --}}
         <div class="relative rounded-3xl bg-white p-6 bento-shadow transition-shadow border border-slate-200/70 overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-            <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-fuchsia-500 to-violet-600"></div>
-            <div class="absolute -bottom-8 -right-8 h-32 w-32 rounded-full bg-violet-500/5 blur-2xl"></div>
+            <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-info to-info/70"></div>
+            <div class="absolute -bottom-8 -right-8 h-32 w-32 rounded-full bg-info/5 blur-2xl"></div>
             <div class="flex items-start justify-between">
                 <div>
                     <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold dark:text-slate-400">{{ __('Total Products') }}</p>
                     <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">{{ __('Active catalog') }}</p>
                 </div>
-                <div class="h-10 w-10 rounded-xl bg-violet-50 text-violet-600 grid place-items-center dark:bg-violet-900/30 dark:text-violet-300">
+                <div class="h-10 w-10 rounded-xl bg-info text-info grid place-items-center dark:bg-info/30 dark:text-info">
                     <i class="fas fa-screwdriver-wrench"></i>
                 </div>
             </div>
@@ -311,10 +311,10 @@
             <div class="mt-4">
                 <div class="flex items-center justify-between text-[10px] uppercase tracking-widest text-slate-400 font-bold mb-1.5">
                     <span>{{ __('Stock Health') }}</span>
-                    <span class="text-violet-600 dark:text-violet-300">{{ $healthyPct }}%</span>
+                    <span class="text-info dark:text-info">{{ $healthyPct }}%</span>
                 </div>
                 <div class="h-1.5 bg-slate-100 rounded-full overflow-hidden dark:bg-slate-800">
-                    <div class="h-full bg-gradient-to-r from-violet-500 to-fuchsia-500 rounded-full" style="width: {{ $healthyPct }}%"></div>
+                    <div class="h-full bg-gradient-to-r from-info to-info/70 rounded-full" style="width: {{ $healthyPct }}%"></div>
                 </div>
             </div>
         </div>
@@ -387,10 +387,10 @@
 
         {{-- Total Users with breakdown bar --}}
         <div class="relative rounded-3xl bg-white p-5 bento-shadow border border-slate-200/70 lg:col-span-2 overflow-hidden transition-shadow dark:bg-slate-900 dark:border-slate-800">
-            <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-cyan-400 to-blue-600"></div>
+            <div class="absolute top-0 left-0 bottom-0 w-1 bg-info"></div>
             <div class="flex items-center justify-between">
                 <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold dark:text-slate-400">{{ __('Total Users') }}</p>
-                <div class="h-9 w-9 rounded-xl bg-cyan-50 text-cyan-600 grid place-items-center dark:bg-cyan-900/30 dark:text-cyan-300">
+                <div class="h-9 w-9 rounded-xl bg-info text-info grid place-items-center dark:bg-info/30 dark:text-info">
                     <i class="fas fa-users"></i>
                 </div>
             </div>
@@ -425,15 +425,15 @@
 
         {{-- New Customers --}}
         <div class="relative rounded-3xl bg-white p-5 bento-shadow border border-slate-200/70 lg:col-span-1 overflow-hidden transition-shadow dark:bg-slate-900 dark:border-slate-800">
-            <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-sky-400 to-indigo-500"></div>
+            <div class="absolute top-0 left-0 bottom-0 w-1 bg-info"></div>
             <div class="flex items-center justify-between">
                 <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold dark:text-slate-400">{{ __('New') }}</p>
-                <div class="h-9 w-9 rounded-xl bg-sky-50 text-sky-600 grid place-items-center dark:bg-sky-900/30 dark:text-sky-300">
+                <div class="h-9 w-9 rounded-xl bg-info text-info grid place-items-center dark:bg-info/30 dark:text-info">
                     <i class="fas fa-user-plus"></i>
                 </div>
             </div>
             <p class="mt-3 num-display text-3xl font-black text-primary dark:text-slate-100">{{ number_format($newCustomers) }}</p>
-            <p class="mt-2 text-xs text-sky-600 font-bold dark:text-sky-400">{{ __('This month') }}</p>
+            <p class="mt-2 text-xs text-info font-bold dark:text-info">{{ __('This month') }}</p>
         </div>
 
         {{-- Low Stock with BIG gauge --}}
@@ -505,19 +505,21 @@
             @foreach($siteAnalyticsCards as $card)
                 @php
                     $tone = $card['tone'] ?? 'slate';
+                    // The tone names are decorative leftovers — indigo, cyan,
+                    // blue and violet all meant "a card", not four different
+                    // things. They collapse onto the state colours, so a strip
+                    // now tells the reader something instead of just varying.
+                    // Flat fills, not gradients: a 4px bar has no room for one.
                     $toneClasses = match ($tone) {
-                        'indigo' => ['from-indigo-500 to-indigo-600', 'bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-300'],
-                        'cyan' => ['from-cyan-400 to-cyan-600', 'bg-cyan-50 text-cyan-600 dark:bg-cyan-900/30 dark:text-cyan-300'],
-                        'rose' => ['from-rose-400 to-rose-600', 'bg-rose-50 text-rose-600 dark:bg-rose-900/30 dark:text-rose-300'],
-                        'amber' => ['from-amber-400 to-orange-500', 'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'],
-                        'blue' => ['from-sky-400 to-blue-600', 'bg-sky-50 text-sky-600 dark:bg-sky-900/30 dark:text-sky-300'],
-                        'violet' => ['from-violet-500 to-fuchsia-600', 'bg-violet-50 text-violet-600 dark:bg-violet-900/30 dark:text-violet-300'],
-                        'emerald' => ['from-emerald-400 to-teal-600', 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-300'],
-                        default => ['from-slate-400 to-slate-600', 'bg-slate-50 text-slate-600 dark:bg-slate-800 dark:text-slate-300'],
+                        'rose' => ['bg-[var(--danger)]', 'bg-rose-50 text-rose-600 dark:bg-rose-900/30 dark:text-rose-300'],
+                        'amber' => ['bg-[var(--warning)]', 'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'],
+                        'emerald' => ['bg-[var(--success)]', 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-300'],
+                        'indigo', 'cyan', 'blue', 'violet' => ['bg-info', 'bg-info/10 text-info'],
+                        default => ['bg-[var(--text-muted)]', 'bg-surface-1 text-muted'],
                     };
                 @endphp
                 <div class="relative overflow-hidden rounded-2xl border border-slate-200/70 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950/40">
-                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-gradient-to-b {{ $toneClasses[0] }}"></div>
+                    <div class="absolute left-0 top-0 bottom-0 w-1 {{ $toneClasses[0] }}"></div>
                     <div class="flex items-start justify-between gap-3 pl-1">
                         <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">{{ $card['label'] }}</p>
                         <span class="grid h-8 w-8 shrink-0 place-items-center rounded-lg {{ $toneClasses[1] }}">
@@ -533,7 +535,7 @@
             <div class="rounded-2xl border border-slate-200/70 bg-slate-50 dark:border-slate-800 dark:bg-slate-950/40">
                 <div class="flex items-center justify-between border-b border-slate-200/70 px-4 py-3 dark:border-slate-800">
                     <p class="text-xs font-black uppercase tracking-[0.16em] text-slate-600 dark:text-slate-300">{{ __('Most viewed products') }}</p>
-                    <i class="far fa-eye text-indigo-500"></i>
+                    <i class="far fa-eye text-info"></i>
                 </div>
                 @if($siteAnalyticsTopViewed->isEmpty())
                     <p class="px-4 py-6 text-center text-xs font-semibold text-slate-400">{{ __('No product views yet.') }}</p>
@@ -557,7 +559,7 @@
             <div class="rounded-2xl border border-slate-200/70 bg-slate-50 dark:border-slate-800 dark:bg-slate-950/40">
                 <div class="flex items-center justify-between border-b border-slate-200/70 px-4 py-3 dark:border-slate-800">
                     <p class="text-xs font-black uppercase tracking-[0.16em] text-slate-600 dark:text-slate-300">{{ __('Search keywords') }}</p>
-                    <i class="fas fa-magnifying-glass text-sky-500"></i>
+                    <i class="fas fa-magnifying-glass text-info"></i>
                 </div>
                 @if($siteAnalyticsTopSearches->isEmpty())
                     <p class="px-4 py-6 text-center text-xs font-semibold text-slate-400">{{ __('No searches recorded yet.') }}</p>
@@ -584,7 +586,7 @@
     <div class="mb-8 relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5 sm:p-7" style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
         <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
         <div class="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-accent/15 blur-[100px]"></div>
-        <div class="absolute -bottom-24 -left-20 h-80 w-80 rounded-full bg-indigo-500/15 blur-[100px]"></div>
+        <div class="absolute -bottom-24 -left-20 h-80 w-80 rounded-full bg-info/15 blur-[100px]"></div>
         <div class="absolute top-0 left-0 right-0 h-[2px]" style="background: linear-gradient(90deg, #e65c00, #f43f5e, #818cf8, #22d3ee);"></div>
 
         {{-- Header --}}
@@ -744,8 +746,8 @@
         {{-- ============ MONTHLY ORDERS TREND — COMPACT ============ --}}
         <div class="xl:col-span-2 relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5" style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
             <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
-            <div class="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-indigo-500/20 blur-[100px]"></div>
-            <div class="absolute -bottom-16 -left-12 h-56 w-56 rounded-full bg-cyan-500/15 blur-[80px]"></div>
+            <div class="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-info/20 blur-[100px]"></div>
+            <div class="absolute -bottom-16 -left-12 h-56 w-56 rounded-full bg-info/15 blur-[80px]"></div>
             <div class="absolute top-0 left-0 right-0 h-[2px]" style="background: linear-gradient(90deg, #22d3ee, #818cf8, #e879f9);"></div>
 
             {{-- Compact header with inline stats --}}
@@ -755,7 +757,7 @@
                         <div class="text-[10px] uppercase tracking-widest text-white/60 font-bold inline-flex items-center gap-2">
                             <span class="pulse-dot text-emerald-400 inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
                             {{ __('Performance · Live') }}
-                            <span class="font-mono text-cyan-300/80 px-1.5 py-0.5 rounded bg-cyan-400/10 border border-cyan-400/20">{{ __('YTD') }} · {{ date('Y') }}</span>
+                            <span class="font-mono text-info/80 px-1.5 py-0.5 rounded bg-info/10 border border-info/20">{{ __('YTD') }} · {{ date('Y') }}</span>
                         </div>
                         <h3 class="mt-1 text-xl font-bold tracking-tight">{{ __('Monthly Orders Trend') }}</h3>
                     </div>
@@ -769,12 +771,12 @@
                         <span class="h-8 w-px bg-white/10"></span>
                         <div class="text-center">
                             <p class="text-[9px] uppercase tracking-widest text-white/45 font-bold leading-none">{{ __('Peak') }}</p>
-                            <p class="text-lg font-black text-cyan-300 mt-0.5 leading-none">{{ $monthPeakLabel }}</p>
+                            <p class="text-lg font-black text-info mt-0.5 leading-none">{{ $monthPeakLabel }}</p>
                         </div>
                         <span class="h-8 w-px bg-white/10"></span>
                         <div class="text-center">
                             <p class="text-[9px] uppercase tracking-widest text-white/45 font-bold leading-none">{{ __('Avg') }}</p>
-                            <p class="num-display text-lg font-black text-indigo-300 mt-0.5 leading-none">{{ number_format($monthAvg) }}</p>
+                            <p class="num-display text-lg font-black text-info mt-0.5 leading-none">{{ number_format($monthAvg) }}</p>
                         </div>
                         @if($monthChange != 0)
                             <span class="h-8 w-px bg-white/10"></span>
@@ -807,20 +809,20 @@
         {{-- ============ PRODUCTS DISTRIBUTION — COMPACT TOP 5 ============ --}}
         <div class="relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5" style="background: linear-gradient(135deg, #04041f 0%, #070740 60%, #070740 100%);">
             <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
-            <div class="absolute -top-16 -right-16 h-48 w-48 rounded-full bg-fuchsia-500/20 blur-[70px]"></div>
-            <div class="absolute -bottom-16 -left-10 h-48 w-48 rounded-full bg-violet-500/15 blur-[70px]"></div>
+            <div class="absolute -top-16 -right-16 h-48 w-48 rounded-full bg-info/20 blur-[70px]"></div>
+            <div class="absolute -bottom-16 -left-10 h-48 w-48 rounded-full bg-info/15 blur-[70px]"></div>
             <div class="absolute top-0 left-0 right-0 h-[2px]" style="background: linear-gradient(90deg, #e879f9, #a78bfa, #818cf8);"></div>
 
             <div class="relative text-white">
                 <div class="flex items-start justify-between gap-3">
                     <div class="min-w-0">
                         <div class="text-[10px] uppercase tracking-widest text-white/60 font-bold inline-flex items-center gap-2">
-                            <span class="pulse-dot text-fuchsia-400 inline-flex h-1.5 w-1.5 rounded-full bg-fuchsia-400"></span>
+                            <span class="pulse-dot text-info inline-flex h-1.5 w-1.5 rounded-full bg-info"></span>
                             {{ __('Catalog') }}
                         </div>
                         <h3 class="mt-1 text-xl font-bold tracking-tight">{{ __('Products Distribution') }}</h3>
                     </div>
-                    <span class="text-[10px] font-mono font-bold text-fuchsia-300/80 px-2 py-1 rounded bg-fuchsia-400/10 border border-fuchsia-400/20 whitespace-nowrap">{{ $catCount }} {{ __('CAT') }}</span>
+                    <span class="text-[10px] font-mono font-bold text-info/80 px-2 py-1 rounded bg-info/10 border border-info/20 whitespace-nowrap">{{ $catCount }} {{ __('CAT') }}</span>
                 </div>
 
                 @if(count($categoryNames) > 0)
@@ -854,7 +856,7 @@
                         </div>
 
                         @if($catCount > 5 && Route::has('admin.categories.index'))
-                            <a href="{{ route('admin.categories.index') }}" class="mt-3 inline-flex items-center gap-1.5 text-[11px] font-bold text-fuchsia-300 hover:text-white transition">
+                            <a href="{{ route('admin.categories.index') }}" class="mt-3 inline-flex items-center gap-1.5 text-[11px] font-bold text-info hover:text-white transition">
                                 <i class="fas fa-arrow-right text-[9px]"></i>
                                 {{ __('View all :n categories', ['n' => $catCount]) }}
                             </a>
@@ -895,13 +897,13 @@
         </div>
 
         <div class="relative rounded-3xl bg-white p-5 bento-shadow border border-slate-200/70 overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-            <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-blue-400 to-blue-600"></div>
+            <div class="absolute top-0 left-0 bottom-0 w-1 bg-info"></div>
             <div class="flex items-start justify-between">
                 <div>
                     <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold dark:text-slate-400">{{ __('Avg Ship Time (30d)') }}</p>
                     <p class="mt-1 text-xs text-slate-400 dark:text-slate-500">{{ __('Processing → Shipped') }}</p>
                 </div>
-                <div class="h-10 w-10 rounded-xl bg-blue-50 text-blue-600 grid place-items-center dark:bg-blue-900/30 dark:text-blue-300">
+                <div class="h-10 w-10 rounded-xl bg-info text-info grid place-items-center dark:bg-info/30 dark:text-info">
                     <i class="fas fa-truck-fast"></i>
                 </div>
             </div>
@@ -1037,15 +1039,15 @@
 
         <div class="relative rounded-3xl bg-white p-6 bento-shadow border border-slate-200/70 dark:bg-slate-900 dark:border-slate-800 overflow-hidden corner-brackets-dark">
             <div class="absolute top-0 left-0 right-0 h-[2px]" style="background: linear-gradient(90deg, #06b6d4, #38bdf8, #818cf8);"></div>
-            <div class="absolute -top-12 -right-12 h-40 w-40 rounded-full bg-cyan-500/5 blur-3xl"></div>
+            <div class="absolute -top-12 -right-12 h-40 w-40 rounded-full bg-info/5 blur-3xl"></div>
             <div class="flex items-start justify-between mb-3">
                 <div>
                     <div class="text-[10px] uppercase tracking-widest text-primary font-bold inline-flex items-center gap-2">
-                        <span class="pulse-dot text-cyan-500 inline-flex h-1.5 w-1.5 rounded-full bg-cyan-500"></span>
+                        <span class="pulse-dot text-info inline-flex h-1.5 w-1.5 rounded-full bg-info"></span>
                         {{ __('Inventory · Live') }}
                     </div>
                     <h3 class="mt-1 text-lg font-bold text-primary dark:text-slate-100 tracking-tight">
-                        <i class="fas fa-arrows-up-down mr-1 text-cyan-500"></i> {{ __('Recent Inventory Movements') }}
+                        <i class="fas fa-arrows-up-down mr-1 text-info"></i> {{ __('Recent Inventory Movements') }}
                     </h3>
                     <p class="text-xs text-slate-500 mt-1 dark:text-slate-400">{{ __('Stock in vs stock out (last :n days)', ['n' => $analyticsDays]) }}</p>
                 </div>
@@ -1069,7 +1071,7 @@
                 <div class="h-56 flex flex-col items-center justify-center text-slate-400 dark:text-slate-500">
                     <div class="relative">
                         <i class="fas fa-warehouse text-5xl opacity-20"></i>
-                        <span class="absolute inset-0 grid place-items-center"><span class="h-2 w-2 rounded-full bg-cyan-500/40"></span></span>
+                        <span class="absolute inset-0 grid place-items-center"><span class="h-2 w-2 rounded-full bg-info/40"></span></span>
                     </div>
                     <p class="mt-3 text-sm font-bold">{{ __('No recent inventory movement data') }}</p>
                     <p class="text-[11px] mt-1 font-mono text-slate-400">— {{ __('Awaiting signal') }} —</p>
@@ -1091,7 +1093,7 @@
                     <div class="text-[10px] uppercase tracking-widest text-rose-200 font-bold inline-flex items-center gap-2">
                         <span class="pulse-dot text-rose-400 inline-flex h-1.5 w-1.5 rounded-full bg-rose-400"></span>
                         {{ __('Alerts') }}
-                        <span class="font-mono text-cyan-300/80 px-1.5 py-0.5 rounded bg-rose-400/10 border border-rose-400/20">{{ $lowStockProducts->count() }} {{ __('CRITICAL') }}</span>
+                        <span class="font-mono text-info/80 px-1.5 py-0.5 rounded bg-rose-400/10 border border-rose-400/20">{{ $lowStockProducts->count() }} {{ __('CRITICAL') }}</span>
                     </div>
                     <h3 class="mt-1 text-2xl font-bold tracking-tight">
                         <i class="fas fa-triangle-exclamation mr-1 text-rose-400"></i> {{ __('Low Stock Alerts') }}
@@ -1158,7 +1160,7 @@
     <div class="relative mb-8 rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5 sm:p-6" style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
         <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
         <div class="absolute -top-24 -right-24 h-80 w-80 rounded-full bg-emerald-500/15 blur-[100px]"></div>
-        <div class="absolute -bottom-20 -left-16 h-64 w-64 rounded-full bg-cyan-500/10 blur-[80px]"></div>
+        <div class="absolute -bottom-20 -left-16 h-64 w-64 rounded-full bg-info/10 blur-[80px]"></div>
         <div class="absolute top-0 left-0 right-0 h-[2px]" style="background: linear-gradient(90deg, #10b981, #14b8a6, #06b6d4);"></div>
 
         <div class="relative text-white">
@@ -1244,7 +1246,7 @@
         <div class="relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5 sm:p-6" style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
             <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
             <div class="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-purple-500/15 blur-[100px]"></div>
-            <div class="absolute -bottom-20 -left-16 h-56 w-56 rounded-full bg-indigo-500/10 blur-[80px]"></div>
+            <div class="absolute -bottom-20 -left-16 h-56 w-56 rounded-full bg-info/10 blur-[80px]"></div>
             <div class="absolute top-0 left-0 right-0 h-[2px]" style="background: linear-gradient(90deg, #a855f7, #818cf8, #60a5fa);"></div>
 
             <div class="relative text-white">

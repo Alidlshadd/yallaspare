@@ -22,8 +22,8 @@
             if ($role === \App\Models\User::ROLE_SUPER_ADMIN) {
                 return [
                     'label' => __('Super Admin'),
-                    'chip' => 'border-violet-300 bg-violet-50 text-violet-700 dark:border-violet-400/40 dark:bg-violet-400/10 dark:text-violet-300',
-                    'avatar' => 'bg-violet-100 text-violet-700 dark:bg-violet-400/15 dark:text-violet-300',
+                    'chip' => 'border-info bg-info text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
+                    'avatar' => 'bg-info text-info dark:bg-info/15 dark:text-info',
                 ];
             }
             if ($role === \App\Models\User::ROLE_ADMIN) {
@@ -43,25 +43,25 @@
             if (in_array($role, $managerRoleList, true)) {
                 return [
                     'label' => __(ucwords(str_replace('_', ' ', $role))),
-                    'chip' => 'border-cyan-300 bg-cyan-50 text-cyan-700 dark:border-cyan-400/40 dark:bg-cyan-400/10 dark:text-cyan-300',
-                    'avatar' => 'bg-cyan-100 text-cyan-700 dark:bg-cyan-400/15 dark:text-cyan-300',
+                    'chip' => 'border-info bg-info text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
+                    'avatar' => 'bg-info text-info dark:bg-info/15 dark:text-info',
                 ];
             }
 
             return [
                 'label' => __('User'),
-                'chip' => 'border-blue-300 bg-blue-50 text-blue-700 dark:border-blue-400/40 dark:bg-blue-400/10 dark:text-blue-300',
-                'avatar' => 'bg-blue-100 text-blue-700 dark:bg-blue-400/15 dark:text-blue-300',
+                'chip' => 'border-info bg-info text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
+                'avatar' => 'bg-info text-info dark:bg-info/15 dark:text-info',
             ];
         };
 
         $roleFilters = [
             'all' => ['label' => __('All accounts'), 'count' => $totalUsers, 'swatch' => 'bg-slate-400 dark:bg-slate-300'],
-            'super_admin' => ['label' => __('Super Admins'), 'count' => $superAdminUsers, 'swatch' => 'bg-violet-500'],
+            'super_admin' => ['label' => __('Super Admins'), 'count' => $superAdminUsers, 'swatch' => 'bg-info'],
             'admin' => ['label' => __('Admins'), 'count' => $adminUsers, 'swatch' => 'bg-rose-500'],
-            'manager' => ['label' => __('Managers'), 'count' => $managerUsers, 'swatch' => 'bg-cyan-500'],
+            'manager' => ['label' => __('Managers'), 'count' => $managerUsers, 'swatch' => 'bg-info'],
             'dealer' => ['label' => __('Dealers'), 'count' => $dealerUsers, 'swatch' => 'bg-accent'],
-            'user' => ['label' => __('Users'), 'count' => $regularUsers, 'swatch' => 'bg-blue-500'],
+            'user' => ['label' => __('Users'), 'count' => $regularUsers, 'swatch' => 'bg-info'],
         ];
 
         $verifyFilters = [
@@ -121,9 +121,9 @@
                 'label' => __('Super Admins'),
                 'count' => $superAdminUsers,
                 'caption' => __(':percent% of all accounts', ['percent' => $sharePercent($superAdminUsers)]),
-                'card' => 'border-violet-300/70 dark:border-violet-400/35',
-                'accent' => 'text-violet-600 dark:text-violet-300',
-                'number' => 'text-violet-700 dark:text-violet-300',
+                'card' => 'border-info/70 dark:border-info/35',
+                'accent' => 'text-info dark:text-info',
+                'number' => 'text-info dark:text-info',
             ],
             'admin' => [
                 'label' => __('Admins'),
@@ -137,9 +137,9 @@
                 'label' => __('Managers'),
                 'count' => $managerUsers,
                 'caption' => __(':percent% of all accounts', ['percent' => $sharePercent($managerUsers)]),
-                'card' => 'border-cyan-300/70 dark:border-cyan-400/35',
-                'accent' => 'text-cyan-600 dark:text-cyan-300',
-                'number' => 'text-cyan-700 dark:text-cyan-300',
+                'card' => 'border-info/70 dark:border-info/35',
+                'accent' => 'text-info dark:text-info',
+                'number' => 'text-info dark:text-info',
             ],
             'dealer' => [
                 'label' => __('Dealers'),
@@ -153,9 +153,9 @@
                 'label' => __('Users'),
                 'count' => $regularUsers,
                 'caption' => __(':percent% of all accounts', ['percent' => $sharePercent($regularUsers)]),
-                'card' => 'border-blue-300/70 dark:border-blue-400/35',
-                'accent' => 'text-blue-600 dark:text-blue-300',
-                'number' => 'text-blue-700 dark:text-blue-300',
+                'card' => 'border-info/70 dark:border-info/35',
+                'accent' => 'text-info dark:text-info',
+                'number' => 'text-info dark:text-info',
             ],
         ];
 

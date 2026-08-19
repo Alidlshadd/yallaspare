@@ -28,7 +28,7 @@
                 </div>
                 <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Placed') }} {{ $order->created_at?->format('M d, Y h:i A') }}</p>
             </div>
-            <a href="{{ route('admin.orders.index') }}" class="inline-flex items-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-700">
+            <a href="{{ route('admin.orders.index') }}" class="inline-flex items-center gap-2 text-sm font-medium text-info hover:text-info">
                 <i class="fas fa-arrow-left"></i>
                 {{ __('Back to Orders') }}
             </a>
@@ -154,7 +154,7 @@
                         <form method="POST" action="{{ route('admin.orders.update-status', $order) }}" class="mt-4 space-y-3" data-loading-form data-loading-button-text="Saving...">
                             @csrf
                             @method('PATCH')
-                            <select name="status" class="w-full rounded-lg border-slate-300 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
+                            <select name="status" class="w-full rounded-lg border-slate-300 text-sm focus:border-info focus:ring-info dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
                                 @php
                                     $statusChoices = array_values(array_unique(array_merge([(string) $order->status], $nextStatuses ?? [])));
                                 @endphp
@@ -164,7 +164,7 @@
                                     </option>
                                 @endforeach
                             </select>
-                            <button type="submit" class="w-full rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">
+                            <button type="submit" class="w-full rounded-lg bg-info px-4 py-2 text-sm font-semibold text-white hover:bg-info">
                                 {{ __('Update Status') }}
                             </button>
                         </form>
@@ -226,7 +226,7 @@
                         <form method="POST" action="{{ route('admin.orders.update-payment', $order) }}" class="mt-4 space-y-3">
                             @csrf
                             @method('PATCH')
-                            <select name="payment_status" class="w-full rounded-lg border-slate-300 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
+                            <select name="payment_status" class="w-full rounded-lg border-slate-300 text-sm focus:border-info focus:ring-info dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
                                 @foreach(\App\Models\Order::allowedPaymentStatuses() as $paymentStatus)
                                     <option value="{{ $paymentStatus }}" @selected(\App\Models\Order::normalizedPaymentStatus((string) ($order->payment_status ?? 'pending')) === $paymentStatus)>
                                         {{ \App\Models\Order::paymentStatusMeta((string) $paymentStatus)['label'] }}
@@ -238,7 +238,7 @@
                                 name="payment_reference"
                                 value="{{ old('payment_reference', $order->payment_reference) }}"
                                 placeholder="{{ __('Payment reference') }}"
-                                class="w-full rounded-lg border-slate-300 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                                class="w-full rounded-lg border-slate-300 text-sm focus:border-info focus:ring-info dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                             >
                             <button type="submit" class="w-full rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100">
                                 {{ __('Update Payment') }}
@@ -256,12 +256,12 @@
                                 maxlength="3000"
                                 required
                                 placeholder="{{ __('Customer called, part checked, waiting for courier...') }}"
-                                class="w-full rounded-lg border-slate-300 text-sm focus:border-indigo-500 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                                class="w-full rounded-lg border-slate-300 text-sm focus:border-info focus:ring-info dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
                             >{{ old('note') }}</textarea>
                             @error('note')
                                 <p class="text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>
                             @enderror
-                            <button type="submit" class="w-full rounded-lg bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-700">
+                            <button type="submit" class="w-full rounded-lg bg-info px-4 py-2 text-sm font-semibold text-white hover:bg-info">
                                 {{ __('Add Internal Note') }}
                             </button>
                         </form>
@@ -294,7 +294,7 @@
                                         @if($returnRequest->admin_note)
                                             <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">{{ __('Admin note:') }} {{ $returnRequest->admin_note }}</p>
                                         @endif
-                                        <a href="{{ route('admin.returns.index', ['search' => $order->order_number]) }}" class="mt-3 inline-flex text-xs font-semibold text-indigo-600 hover:text-indigo-700">{{ __('Manage return') }}</a>
+                                        <a href="{{ route('admin.returns.index', ['search' => $order->order_number]) }}" class="mt-3 inline-flex text-xs font-semibold text-info hover:text-info">{{ __('Manage return') }}</a>
                                     </div>
                                 @endforeach
                             </div>
@@ -340,7 +340,7 @@
                         <div>
                             <p class="text-xs uppercase text-slate-500 dark:text-slate-400">{{ __('Association') }}</p>
                             @if($order->user && $order->user->role === \App\Models\User::ROLE_DEALER)
-                                <p class="inline-flex rounded-full bg-violet-100 px-2 py-1 text-xs font-semibold text-violet-700 dark:bg-slate-800/70 dark:text-slate-100">{{ __('Dealer') }}</p>
+                                <p class="inline-flex rounded-full bg-info px-2 py-1 text-xs font-semibold text-info dark:bg-slate-800/70 dark:text-slate-100">{{ __('Dealer') }}</p>
                                 <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Status: :status', ['status' => __(ucfirst($order->user->dealer_status ?? 'inactive'))]) }} | {{ __('Discount: :percent%', ['percent' => number_format((float) ($order->user->dealer_discount ?? 0), 2)]) }}</p>
                             @else
                                 <p class="inline-flex rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-700 dark:bg-slate-800/70 dark:text-slate-100">{{ __('User') }}</p>

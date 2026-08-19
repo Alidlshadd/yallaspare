@@ -38,10 +38,10 @@
 
         {{-- Header card --}}
         <div class="relative rounded-2xl border border-slate-200/70 bg-white overflow-hidden shadow-sm dark:bg-slate-900 dark:border-slate-800">
-            <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-indigo-500 to-accent"></div>
+            <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary to-accent"></div>
             <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
                 <div class="flex items-center gap-3">
-                    <div class="h-11 w-11 rounded-2xl bg-gradient-to-br from-primary to-indigo-700 text-white grid place-items-center shadow-lg shadow-primary/20">
+                    <div class="h-11 w-11 rounded-2xl bg-gradient-to-br from-primary to-navy-raised text-white grid place-items-center shadow-lg shadow-primary/20">
                         <i class="fas fa-file-pen text-sm"></i>
                     </div>
                     <div>
@@ -65,13 +65,13 @@
                     <li class="px-5 py-4">
                         <div class="flex items-start gap-4">
                             <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border
-                                {{ $row['tone'] === 'blue' ? 'border-blue-200 bg-blue-50 text-blue-700' :
+                                {{ $row['tone'] === 'blue' ? 'border-info bg-info text-info' :
                                    ($row['tone'] === 'emerald' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' :
                                    ($row['tone'] === 'rose' ? 'border-rose-200 bg-rose-50 text-rose-700' :
                                    ($row['tone'] === 'amber' ? 'border-amber-200 bg-amber-50 text-amber-700' :
-                                   ($row['tone'] === 'violet' ? 'border-violet-200 bg-violet-50 text-violet-700' :
-                                   ($row['tone'] === 'cyan' ? 'border-cyan-200 bg-cyan-50 text-cyan-700' :
-                                   ($row['tone'] === 'indigo' ? 'border-indigo-200 bg-indigo-50 text-indigo-700' :
+                                   ($row['tone'] === 'violet' ? 'border-info bg-info text-info' :
+                                   ($row['tone'] === 'cyan' ? 'border-info bg-info text-info' :
+                                   ($row['tone'] === 'indigo' ? 'border-info bg-info text-info' :
                                    ($row['tone'] === 'orange' ? 'border-orange-200 bg-orange-50 text-orange-700' :
                                    'border-slate-200 bg-slate-50 text-slate-700'))))))) }}">
                                 <i class="fas {{ $row['icon'] }} text-xs"></i>
@@ -85,7 +85,7 @@
                                 <div class="mt-3 flex flex-wrap items-center gap-2">
                                     @foreach($row['locales'] as $locale => $info)
                                         <a href="{{ route('admin.email.templates.edit', ['key' => $key, 'locale' => $locale]) }}"
-                                           class="group inline-flex items-center gap-1.5 rounded-lg border {{ $info['has_override'] ? 'border-primary/30 bg-primary/5 text-primary dark:border-primary/50 dark:bg-primary/10 dark:text-indigo-200' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }} px-2.5 py-1 text-[11px] font-bold hover:bg-primary hover:text-white hover:border-primary transition">
+                                           class="group inline-flex items-center gap-1.5 rounded-lg border {{ $info['has_override'] ? 'border-primary/30 bg-primary/5 text-primary dark:border-primary/50 dark:bg-primary/10 dark:text-info' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }} px-2.5 py-1 text-[11px] font-bold hover:bg-primary hover:text-white hover:border-primary transition">
                                             <span class="uppercase">{{ $locale }}</span>
                                             @if($info['has_override'])
                                                 <i class="fas fa-check text-[9px] text-emerald-500 group-hover:text-white"></i>

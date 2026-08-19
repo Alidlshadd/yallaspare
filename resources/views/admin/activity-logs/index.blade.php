@@ -31,9 +31,9 @@
                     <p class="mt-2 text-2xl font-extrabold tabular-nums text-emerald-700 dark:text-emerald-300">{{ number_format($todayCount) }}</p>
                     <p class="mt-1 text-[11px] text-gray-400 dark:text-slate-500">{{ __('Events since midnight') }}</p>
                 </div>
-                <div class="rounded-xl border border-indigo-300/70 bg-white p-4 shadow-sm dark:border-indigo-400/35 dark:bg-slate-900">
-                    <p class="text-[11px] font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-300">{{ __('Most active admin') }}</p>
-                    <p class="mt-2 truncate text-2xl font-extrabold text-indigo-700 dark:text-indigo-300">{{ $topCauser['name'] ?? '—' }}</p>
+                <div class="rounded-xl border border-info/70 bg-white p-4 shadow-sm dark:border-info/35 dark:bg-slate-900">
+                    <p class="text-[11px] font-bold uppercase tracking-widest text-info dark:text-info">{{ __('Most active admin') }}</p>
+                    <p class="mt-2 truncate text-2xl font-extrabold text-info dark:text-info">{{ $topCauser['name'] ?? '—' }}</p>
                     <p class="mt-1 text-[11px] text-gray-400 dark:text-slate-500">{{ isset($topCauser['count']) ? __(':count events', ['count' => number_format($topCauser['count'])]) : __('No activity yet') }}</p>
                 </div>
             </div>

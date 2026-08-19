@@ -35,6 +35,7 @@
            unreliable before. */
         --primary-solid-rgb: 7 7 64;
         --accent-rgb: 255 106 0;
+        --info-rgb: 11 105 163;
 
         --bg: #f7f8fa;
         --surface: #ffffff;
@@ -89,6 +90,7 @@
 
         --primary-solid-rgb: 43 43 143;
         --accent-rgb: 255 138 61;
+        --info-rgb: 125 211 252;
 
         /* Navy-tinted, where this used to be Tailwind slate. Admin dark
            was already navy (--admin-* below), so the storefront sitting

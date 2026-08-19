@@ -64,7 +64,7 @@
                             <i class="fas {{ $isVerified ? 'fa-circle-check' : 'fa-circle-exclamation' }}"></i>
                             {{ $isVerified ? __('Verified Email') : __('Email Pending') }}
                         </span>
-                        <span class="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-bold {{ $adminTwoFactorRequired ? 'border-sky-300/30 bg-sky-400/10 text-sky-100' : 'border-slate-300/30 bg-white/10 text-slate-100' }}">
+                        <span class="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-bold {{ $adminTwoFactorRequired ? 'border-info/30 bg-info/10 text-info' : 'border-slate-300/30 bg-white/10 text-slate-100' }}">
                             <i class="fas fa-lock"></i>
                             {{ $adminTwoFactorRequired ? __('Admin 2FA') : __('2FA Optional') }}
                         </span>
@@ -108,14 +108,14 @@
                         </div>
                         <div class="flex items-center justify-between gap-3 px-5 py-3">
                             <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">{{ __('Admin 2FA') }}</span>
-                            <span class="inline-flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs font-bold {{ $adminTwoFactorRequired ? 'bg-sky-50 text-sky-700 dark:bg-sky-950/30 dark:text-sky-300' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300' }}">
+                            <span class="inline-flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs font-bold {{ $adminTwoFactorRequired ? 'bg-info text-info dark:bg-info/30 dark:text-info' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300' }}">
                                 <i class="fas fa-key text-[10px]"></i>
                                 {{ $adminTwoFactorRequired ? __('Required') : __('Optional') }}
                             </span>
                         </div>
                         <div class="flex items-center justify-between gap-3 px-5 py-3">
                             <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">{{ __('Profile Photo') }}</span>
-                            <span class="inline-flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs font-bold {{ $profilePhotoUrl ? 'bg-violet-50 text-violet-700 dark:bg-violet-950/30 dark:text-violet-300' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300' }}">
+                            <span class="inline-flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs font-bold {{ $profilePhotoUrl ? 'bg-info text-info dark:bg-info/30 dark:text-info' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300' }}">
                                 <i class="fas fa-image text-[10px]"></i>
                                 {{ $profilePhotoUrl ? __('Set') : __('Initials') }}
                             </span>

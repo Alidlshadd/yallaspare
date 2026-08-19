@@ -118,9 +118,9 @@
                 <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-start justify-between gap-2">
                         <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 dark:text-slate-500">{{ __('Products') }}</p>
-                        <i class="fas fa-box-open text-sky-500"></i>
+                        <i class="fas fa-box-open text-info"></i>
                     </div>
-                    <p class="sr-num mt-2 text-2xl font-black text-sky-700 dark:text-sky-300">{{ number_format($summary['products']) }}</p>
+                    <p class="sr-num mt-2 text-2xl font-black text-info dark:text-info">{{ number_format($summary['products']) }}</p>
                 </article>
                 <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-start justify-between gap-2">
@@ -294,7 +294,7 @@
                                 <div class="mt-2 flex items-center justify-between">
                                     <span class="text-[11px] text-slate-400">{{ $requestRow->created_at?->diffForHumans() }}</span>
                                     @if($requestRow->product)
-                                        <a href="{{ route('admin.products.edit', $requestRow->product) }}" class="text-[11px] font-bold text-sky-700 hover:underline dark:text-sky-300">{{ __('View product') }}</a>
+                                        <a href="{{ route('admin.products.edit', $requestRow->product) }}" class="text-[11px] font-bold text-info hover:underline dark:text-info">{{ __('View product') }}</a>
                                     @endif
                                 </div>
                             </div>

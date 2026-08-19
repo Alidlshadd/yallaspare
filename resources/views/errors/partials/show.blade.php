@@ -31,8 +31,8 @@
     <body class="min-h-screen bg-[linear-gradient(180deg,#f8fafc_0%,#eef2ff_42%,#f8fafc_100%)] text-slate-900 dark:bg-[linear-gradient(180deg,#020617_0%,#0f172a_52%,#020617_100%)] dark:text-slate-100">
         <div class="relative overflow-hidden">
             <div class="pointer-events-none absolute inset-x-0 top-0 h-[30rem] bg-[radial-gradient(circle_at_top,rgba(14,165,233,0.16),transparent_40%),radial-gradient(circle_at_82%_18%,rgba(59,130,246,0.14),transparent_24%),radial-gradient(circle_at_20%_30%,rgba(16,185,129,0.12),transparent_28%)]"></div>
-            <div class="pointer-events-none absolute left-1/2 top-20 h-64 w-64 -translate-x-1/2 rounded-full bg-cyan-200/30 blur-3xl dark:bg-cyan-500/10"></div>
-            <div class="pointer-events-none absolute right-0 top-36 h-72 w-72 rounded-full bg-sky-200/20 blur-3xl dark:bg-sky-500/10"></div>
+            <div class="pointer-events-none absolute left-1/2 top-20 h-64 w-64 -translate-x-1/2 rounded-full bg-info/30 blur-3xl dark:bg-info/10"></div>
+            <div class="pointer-events-none absolute right-0 top-36 h-72 w-72 rounded-full bg-info/20 blur-3xl dark:bg-info/10"></div>
 
             <main class="relative mx-auto flex min-h-[calc(100vh-13rem)] max-w-7xl items-center px-4 py-10 sm:px-6 lg:px-8">
                 <section class="grid w-full gap-8 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
@@ -50,7 +50,7 @@
                         </a>
 
                         <div class="space-y-4">
-                            <span class="inline-flex items-center rounded-full border border-cyan-200 bg-cyan-50 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-cyan-700 dark:border-cyan-900/60 dark:bg-cyan-950/20 dark:text-cyan-300">
+                            <span class="inline-flex items-center rounded-full border border-info bg-info px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-info dark:border-info/60 dark:bg-info/20 dark:text-info">
                                 {{ $errorBadge }}
                             </span>
                             <div class="space-y-3">
@@ -71,7 +71,7 @@
                             <a href="{{ $secondaryAction['url'] }}" class="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
                                 {{ $secondaryAction['label'] }}
                             </a>
-                            <a href="{{ $tertiaryAction['url'] }}" class="inline-flex items-center justify-center rounded-2xl border border-cyan-200 bg-cyan-50 px-5 py-3 text-sm font-semibold text-cyan-700 transition hover:bg-cyan-100 dark:border-cyan-900/60 dark:bg-cyan-950/20 dark:text-cyan-300 dark:hover:bg-cyan-950/30">
+                            <a href="{{ $tertiaryAction['url'] }}" class="inline-flex items-center justify-center rounded-2xl border border-info bg-info px-5 py-3 text-sm font-semibold text-info transition hover:bg-info dark:border-info/60 dark:bg-info/20 dark:text-info dark:hover:bg-info/30">
                                 {{ $tertiaryAction['label'] }}
                             </a>
                         </div>
@@ -96,7 +96,7 @@
                                 <div class="mt-4 space-y-3">
                                     @foreach ($recoverySteps as $index => $step)
                                         <div class="flex items-start gap-3 rounded-2xl border border-slate-200 bg-white px-4 py-3 dark:border-slate-800 dark:bg-slate-950/70">
-                                            <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-white dark:bg-cyan-500">
+                                            <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-slate-950 text-white dark:bg-info">
                                                 {{ $index + 1 }}
                                             </span>
                                             <div>

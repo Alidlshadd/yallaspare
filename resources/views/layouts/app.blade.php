@@ -821,7 +821,7 @@
                                                 <button
                                                     id="adminNotificationsMarkAll"
                                                     type="button"
-                                                    class="text-sm font-semibold text-indigo-600 hover:text-indigo-700"
+                                                    class="text-sm font-semibold text-info hover:text-info"
                                                 >
                                                     {{ __('Mark all read') }}
                                                 </button>
@@ -848,8 +848,8 @@
 
                                             <div class="px-4 py-3">
                                                 <div class="flex items-center justify-between mb-2">
-                                                    <p class="text-xs font-semibold uppercase tracking-wide text-indigo-700">{{ __('Dealer Requests') }}</p>
-                                                    <span id="adminDealerRequestCount" class="text-xs font-semibold text-indigo-700">0</span>
+                                                    <p class="text-xs font-semibold uppercase tracking-wide text-info">{{ __('Dealer Requests') }}</p>
+                                                    <span id="adminDealerRequestCount" class="text-xs font-semibold text-info">0</span>
                                                 </div>
                                                 <div id="adminDealerRequestList" class="space-y-2"></div>
                                             </div>
@@ -912,14 +912,14 @@
                 </div>
             </div>
         @else
-            <div class="min-h-screen bg-gray-100">
+            <div class="min-h-screen bg-app">
                 @unless ($hideNavigation)
                     @include('layouts.navigation')
                 @endunless
 
                 <!-- Page Heading -->
                 @if (isset($header))
-                    <header class="bg-white shadow">
+                    <header class="bg-surface-2 shadow-app">
                         <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                             {{ $header }}
                         </div>
@@ -1066,7 +1066,7 @@
                         items.forEach((item, index) => {
                             const wrapper = setClass(
                                 document.createElement('div'),
-                                `admin-notification-item block rounded-lg px-2 py-2 ${item.read ? 'bg-white dark:bg-slate-900/60' : 'bg-indigo-50/50 dark:bg-indigo-500/10'} hover:bg-slate-50 dark:hover:bg-slate-800/80 transition`
+                                `admin-notification-item block rounded-lg px-2 py-2 ${item.read ? 'bg-white dark:bg-slate-900/60' : 'bg-info/50 dark:bg-info/10'} hover:bg-slate-50 dark:hover:bg-slate-800/80 transition`
                             );
                             wrapper.style.setProperty('--admin-item-index', String(index));
 
@@ -1084,7 +1084,7 @@
                             if (!item.read) {
                                 const markReadButton = setClass(
                                     document.createElement('button'),
-                                    'admin-mark-read mt-2 text-[11px] font-semibold text-indigo-600 hover:text-indigo-700'
+                                    'admin-mark-read mt-2 text-[11px] font-semibold text-info hover:text-info'
                                 );
                                 markReadButton.setAttribute('type', 'button');
                                 markReadButton.setAttribute('data-key', String(item.key || ''));

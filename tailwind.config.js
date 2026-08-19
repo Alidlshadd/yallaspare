@@ -46,6 +46,13 @@ export default {
                     deep: 'rgb(4 4 31 / <alpha-value>)',
                     raised: 'rgb(18 18 74 / <alpha-value>)',
                 },
+                // One informational hue replacing five. cyan, indigo, violet,
+                // sky and blue were all in play at once across the admin,
+                // carrying the same meaning in different colours — leftovers
+                // from an earlier theme rather than a decision.
+                info: {
+                    DEFAULT: 'rgb(var(--info-rgb) / <alpha-value>)',
+                },
                 surface: {
                     DEFAULT: 'var(--surface)',
                     sunk: 'var(--surface-sunk)',

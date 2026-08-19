@@ -34,7 +34,7 @@
     {{-- Time range selector --}}
     <div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 bento-shadow">
         <div class="flex items-center gap-3">
-            <div class="grid h-10 w-10 place-items-center rounded-xl bg-indigo-50 text-indigo-600">
+            <div class="grid h-10 w-10 place-items-center rounded-xl bg-info text-info">
                 <i class="far fa-calendar-days"></i>
             </div>
             <div>
@@ -51,7 +51,7 @@
                     href="{{ route('admin.analytics.index', ['days' => $option]) }}"
                     class="rounded-lg border px-3 py-1.5 text-xs font-bold transition
                         {{ $option === $days
-                            ? 'border-indigo-300 bg-indigo-50 text-indigo-700'
+                            ? 'border-info bg-info text-info'
                             : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-700' }}"
                 >
                     {{ $option === 365 ? '1Y' : ($option . 'D') }}
@@ -73,13 +73,13 @@
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         @php $d = $deltaTone((float) $kpi['page_views_delta']); @endphp
         <div class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 bento-shadow">
-            <div class="strip bg-gradient-to-b from-indigo-500 to-indigo-700"></div>
+            <div class="strip bg-info"></div>
             <div class="flex items-start justify-between pl-2">
                 <div>
                     <p class="kicker">{{ __('Page Views') }}</p>
                     <p class="mt-1 text-[11px] text-slate-400">{{ __('All trackable pages') }}</p>
                 </div>
-                <div class="grid h-9 w-9 place-items-center rounded-lg bg-indigo-50 text-indigo-600"><i class="far fa-eye"></i></div>
+                <div class="grid h-9 w-9 place-items-center rounded-lg bg-info text-info"><i class="far fa-eye"></i></div>
             </div>
             <p class="num-display mt-4 pl-2 text-3xl font-extrabold text-slate-900">{{ number_format($kpi['page_views']) }}</p>
             <div class="mt-2 flex items-center gap-2 pl-2">
@@ -92,13 +92,13 @@
 
         @php $d = $deltaTone((float) $kpi['unique_visitors_delta']); @endphp
         <div class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 bento-shadow">
-            <div class="strip bg-gradient-to-b from-cyan-500 to-cyan-700"></div>
+            <div class="strip bg-info"></div>
             <div class="flex items-start justify-between pl-2">
                 <div>
                     <p class="kicker">{{ __('Unique Visitors') }}</p>
                     <p class="mt-1 text-[11px] text-slate-400">{{ __('Distinct sessions') }}</p>
                 </div>
-                <div class="grid h-9 w-9 place-items-center rounded-lg bg-cyan-50 text-cyan-600"><i class="fas fa-users-line"></i></div>
+                <div class="grid h-9 w-9 place-items-center rounded-lg bg-info text-info"><i class="fas fa-users-line"></i></div>
             </div>
             <p class="num-display mt-4 pl-2 text-3xl font-extrabold text-slate-900">{{ number_format($kpi['unique_visitors']) }}</p>
             <div class="mt-2 flex items-center gap-2 pl-2">
@@ -190,8 +190,8 @@
             </div>
             @php
                 $funnel = [
-                    ['label' => __('Page views'), 'value' => $kpi['page_views'], 'color' => 'bg-indigo-500'],
-                    ['label' => __('Product views'), 'value' => $kpi['product_views'], 'color' => 'bg-cyan-500'],
+                    ['label' => __('Page views'), 'value' => $kpi['page_views'], 'color' => 'bg-info'],
+                    ['label' => __('Product views'), 'value' => $kpi['product_views'], 'color' => 'bg-info'],
                     ['label' => __('Add to cart'), 'value' => $kpi['cart_adds'], 'color' => 'bg-rose-500'],
                     ['label' => __('Checkout started'), 'value' => $kpi['checkout_starts'], 'color' => 'bg-accent'],
                     ['label' => __('Orders completed'), 'value' => $kpi['orders_completed'], 'color' => 'bg-emerald-500'],
@@ -231,7 +231,7 @@
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
         @php
             $tables = [
-                ['title' => __('Top viewed'), 'icon' => 'far fa-eye', 'iconColor' => 'text-indigo-600', 'rows' => $topViewed, 'empty' => __('No product views yet.')],
+                ['title' => __('Top viewed'), 'icon' => 'far fa-eye', 'iconColor' => 'text-info', 'rows' => $topViewed, 'empty' => __('No product views yet.')],
                 ['title' => __('Top cart adds'), 'icon' => 'fas fa-cart-plus', 'iconColor' => 'text-rose-600', 'rows' => $topCartAdds, 'empty' => __('No add-to-cart events yet.')],
                 ['title' => __('Top wishlisted'), 'icon' => 'far fa-heart', 'iconColor' => 'text-accent', 'rows' => $topWishlisted, 'empty' => __('No wishlist activity yet.')],
             ];
@@ -274,7 +274,7 @@
         <div class="rounded-2xl border border-slate-200 bg-white bento-shadow">
             <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
                 <h3 class="text-sm font-extrabold text-slate-900">
-                    <i class="fas fa-magnifying-glass mr-1 text-cyan-600"></i>
+                    <i class="fas fa-magnifying-glass mr-1 text-info"></i>
                     {{ __('Top searched keywords') }}
                 </h3>
                 <span class="kicker">{{ __('Last :n days', ['n' => $days]) }}</span>

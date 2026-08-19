@@ -1,9 +1,9 @@
 @props(['active'])
 
 @php
-$classes = ($active ?? false)
-            ? 'block w-full ps-3 pe-4 py-2 border-l-4 border-indigo-400 text-start text-base font-medium text-indigo-700 bg-indigo-50 focus:outline-none focus:text-indigo-800 focus:bg-indigo-100 focus:border-indigo-700 dark:border-indigo-500 dark:bg-indigo-500/10 dark:text-indigo-300 dark:focus:text-indigo-200 dark:focus:bg-indigo-500/20 transition duration-150 ease-in-out'
-            : 'block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-50 hover:border-gray-300 focus:outline-none focus:text-gray-800 focus:bg-gray-50 focus:border-gray-300 dark:text-slate-400 dark:hover:text-slate-200 dark:hover:bg-slate-800 dark:hover:border-slate-600 dark:focus:text-slate-200 dark:focus:bg-slate-800 dark:focus:border-slate-600 transition duration-150 ease-in-out';
+    $classes = ($active ?? false)
+        ? 'block w-full border-s-4 border-accent bg-accent/10 py-2 pe-4 ps-3 text-start text-base font-medium text-app transition duration-150 focus:outline-none focus-visible:bg-accent/15'
+        : 'block w-full border-s-4 border-transparent py-2 pe-4 ps-3 text-start text-base font-medium text-muted transition duration-150 hover:border-app hover:bg-surface-1 hover:text-app focus:outline-none focus-visible:border-accent focus-visible:bg-surface-1 focus-visible:text-app';
 @endphp
 
 <a {{ $attributes->merge(['class' => $classes]) }}>

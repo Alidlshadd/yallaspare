@@ -19,8 +19,8 @@
         if ($user->role === \App\Models\User::ROLE_SUPER_ADMIN) {
             $roleMeta = [
                 'label' => __('Super Admin'),
-                'chip' => 'border-violet-300 bg-violet-50 text-violet-700 dark:border-violet-400/40 dark:bg-violet-400/10 dark:text-violet-300',
-                'avatar' => 'bg-violet-100 text-violet-700 dark:bg-violet-400/15 dark:text-violet-300',
+                'chip' => 'border-info bg-info text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
+                'avatar' => 'bg-info text-info dark:bg-info/15 dark:text-info',
             ];
         } elseif ($user->role === \App\Models\User::ROLE_ADMIN) {
             $roleMeta = [
@@ -37,14 +37,14 @@
         } elseif (in_array($user->role, $managerRoleList, true)) {
             $roleMeta = [
                 'label' => __(ucwords(str_replace('_', ' ', $user->role))),
-                'chip' => 'border-cyan-300 bg-cyan-50 text-cyan-700 dark:border-cyan-400/40 dark:bg-cyan-400/10 dark:text-cyan-300',
-                'avatar' => 'bg-cyan-100 text-cyan-700 dark:bg-cyan-400/15 dark:text-cyan-300',
+                'chip' => 'border-info bg-info text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
+                'avatar' => 'bg-info text-info dark:bg-info/15 dark:text-info',
             ];
         } else {
             $roleMeta = [
                 'label' => __('User'),
-                'chip' => 'border-blue-300 bg-blue-50 text-blue-700 dark:border-blue-400/40 dark:bg-blue-400/10 dark:text-blue-300',
-                'avatar' => 'bg-blue-100 text-blue-700 dark:bg-blue-400/15 dark:text-blue-300',
+                'chip' => 'border-info bg-info text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
+                'avatar' => 'bg-info text-info dark:bg-info/15 dark:text-info',
             ];
         }
 
@@ -56,8 +56,8 @@
                 'delivered' => 'border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-300',
                 'cancelled' => 'border-rose-300 bg-rose-50 text-rose-700 dark:border-rose-400/40 dark:bg-rose-400/10 dark:text-rose-300',
                 'pending' => 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300',
-                'processing' => 'border-cyan-300 bg-cyan-50 text-cyan-700 dark:border-cyan-400/40 dark:bg-cyan-400/10 dark:text-cyan-300',
-                'shipped' => 'border-blue-300 bg-blue-50 text-blue-700 dark:border-blue-400/40 dark:bg-blue-400/10 dark:text-blue-300',
+                'processing' => 'border-info bg-info text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
+                'shipped' => 'border-info bg-info text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
                 default => 'border-gray-300 bg-gray-50 text-gray-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300',
             };
         };
@@ -163,9 +163,9 @@
                     <p class="text-[11px] font-bold uppercase tracking-widest text-rose-600 dark:text-rose-300">{{ __('Cancelled Orders') }}</p>
                     <p class="mt-2 text-2xl font-extrabold tabular-nums text-rose-700 dark:text-rose-300">{{ number_format($stats['orders_cancelled']) }}</p>
                 </div>
-                <div class="rounded-xl border border-blue-300/70 bg-white p-4 shadow-sm dark:border-blue-400/35 dark:bg-slate-900">
-                    <p class="text-[11px] font-bold uppercase tracking-widest text-blue-600 dark:text-blue-300">{{ __('Total Spent') }}</p>
-                    <p class="mt-2 text-2xl font-extrabold tabular-nums text-blue-700 dark:text-blue-300">{{ number_format($stats['spent_total'], $currencyDecimals) }} <span class="text-sm font-bold">{{ $currencyLabel }}</span></p>
+                <div class="rounded-xl border border-info/70 bg-white p-4 shadow-sm dark:border-info/35 dark:bg-slate-900">
+                    <p class="text-[11px] font-bold uppercase tracking-widest text-info dark:text-info">{{ __('Total Spent') }}</p>
+                    <p class="mt-2 text-2xl font-extrabold tabular-nums text-info dark:text-info">{{ number_format($stats['spent_total'], $currencyDecimals) }} <span class="text-sm font-bold">{{ $currencyLabel }}</span></p>
                 </div>
                 <div class="rounded-xl border border-accent/70 bg-white p-4 shadow-sm dark:border-accent/35 dark:bg-slate-900">
                     <p class="text-[11px] font-bold uppercase tracking-widest text-accent dark:text-accent">{{ __('Customer Reviews') }}</p>
@@ -236,7 +236,7 @@
                                 <p class="mt-1 text-xs text-gray-500 dark:text-slate-400">{{ __('Super admin always has every permission. Other roles can be narrowed or expanded here.') }}</p>
                             </div>
                             @if ($user->role === \App\Models\User::ROLE_SUPER_ADMIN)
-                                <span class="inline-flex items-center gap-1.5 rounded-full border border-violet-300 bg-violet-50 px-2.5 py-0.5 text-[11px] font-bold text-violet-700 dark:border-violet-400/40 dark:bg-violet-400/10 dark:text-violet-300">
+                                <span class="inline-flex items-center gap-1.5 rounded-full border border-info bg-info px-2.5 py-0.5 text-[11px] font-bold text-info dark:border-info/40 dark:bg-info/10 dark:text-info">
                                     <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
                                     {{ __('All Access') }}
                                 </span>

@@ -58,7 +58,7 @@
                         $state = $popup->scheduleState();
                         $statePill = match ($state) {
                             'running' => ['bg-emerald-100 text-emerald-700 dark:bg-emerald-500/15 dark:text-emerald-300', 'bg-emerald-500'],
-                            'scheduled' => ['bg-sky-100 text-sky-700 dark:bg-sky-500/15 dark:text-sky-300', 'bg-sky-500'],
+                            'scheduled' => ['bg-info text-info dark:bg-info/15 dark:text-info', 'bg-info'],
                             'expired' => ['bg-slate-200 text-slate-600 dark:bg-slate-700/60 dark:text-slate-300', 'bg-slate-400'],
                             default => ['bg-rose-100 text-rose-700 dark:bg-rose-500/15 dark:text-rose-300', 'bg-rose-500'],
                         };

@@ -132,9 +132,9 @@
                 <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-start justify-between gap-3">
                         <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500">{{ __('Waiting Customers') }}</p>
-                        <i class="fas fa-bell text-sky-500"></i>
+                        <i class="fas fa-bell text-info"></i>
                     </div>
-                    <p class="pp-num mt-3 text-2xl font-black text-sky-700 dark:text-sky-300">{{ number_format($summary['waiting_customers']) }}</p>
+                    <p class="pp-num mt-3 text-2xl font-black text-info dark:text-info">{{ number_format($summary['waiting_customers']) }}</p>
                 </article>
                 <article class="pp-hero rounded-2xl border border-transparent p-5 shadow-sm">
                     <div class="flex items-start justify-between gap-3">
@@ -204,7 +204,7 @@
                                             <td class="pp-num px-4 py-3 text-right font-semibold {{ (int) $product->stock_quantity <= 0 ? 'text-rose-600' : 'text-slate-700 dark:text-slate-200' }}">{{ number_format((int) $product->stock_quantity) }}</td>
                                             <td class="pp-num px-4 py-3 text-right text-slate-600 dark:text-slate-300">{{ number_format((int) $product->sold_quantity) }}</td>
                                             <td class="pp-num px-4 py-3 text-right text-slate-600 dark:text-slate-300">{{ $product->days_remaining === null ? __('N/A') : number_format((int) $product->days_remaining) }}</td>
-                                            <td class="pp-num px-4 py-3 text-right text-sky-700 dark:text-sky-300">{{ number_format((int) $product->waiting_count) }}</td>
+                                            <td class="pp-num px-4 py-3 text-right text-info dark:text-info">{{ number_format((int) $product->waiting_count) }}</td>
                                             <td class="pp-num px-4 py-3 text-right font-bold text-slate-900 dark:text-slate-100">{{ number_format((int) $product->recommended_quantity) }}</td>
                                             <td class="pp-num px-4 py-3 text-right text-slate-600 dark:text-slate-300">{{ $money($product->estimated_purchase_cost) }}</td>
                                             <td class="px-4 py-3 text-right">
@@ -433,7 +433,7 @@
                         <span class="pp-num text-lg font-black text-accent dark:text-accent" x-text="viewTotalLabel"></span>
                     </div>
                     <div class="flex flex-wrap items-center gap-1.5 px-5 pb-4">
-                        <button type="button" class="rounded-lg border border-sky-300 px-3 py-1.5 text-sm font-extrabold text-sky-700 hover:bg-sky-50 dark:border-sky-800 dark:text-sky-300 dark:hover:bg-sky-950/30" @click="markOrdered">{{ __('Mark as Ordered') }}</button>
+                        <button type="button" class="rounded-lg border border-info px-3 py-1.5 text-sm font-extrabold text-info hover:bg-info dark:border-info dark:text-info dark:hover:bg-info/30" @click="markOrdered">{{ __('Mark as Ordered') }}</button>
                         <button type="button" class="ms-auto rounded-lg px-3 py-1.5 text-sm font-extrabold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30" @click="deleteViewedList">{{ __('Delete list') }}</button>
                     </div>
                 </div>
