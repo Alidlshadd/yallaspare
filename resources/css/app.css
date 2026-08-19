@@ -140,6 +140,30 @@
         font-family: theme('fontFamily.display');
     }
 
+    /* Button labels are display type too: short, set in a medium weight, and
+       read as a target rather than as prose. Binding to the element covers
+       all 293 of them plus every shared button component, which all render a
+       real <button>.
+
+       A caveat worth knowing: 47 of those are set below 14px, where Sora's
+       x-height starts to thin out. They are mostly icon-adjacent controls in
+       admin tables, so the label is short enough to carry it, but if a small
+       button ever reads weak this is why. */
+    button,
+    [type='button'],
+    [type='submit'],
+    [type='reset'] {
+        font-family: theme('fontFamily.display');
+    }
+
+    /* Links wearing a brand fill are buttons in everything but tag name, so
+       they get the same treatment. Matched on the fill rather than on <a>
+       broadly, which would have pulled ordinary text links off the reading
+       face along with them. */
+    a:is(.bg-accent, .bg-primary, .bg-navy) {
+        font-family: theme('fontFamily.display');
+    }
+
     .user-theme body,
     body.user-theme {
         background-color: var(--bg);
