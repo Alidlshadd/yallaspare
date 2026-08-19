@@ -24,7 +24,7 @@
             name="{{ $name }}"
             @if ($errorText) aria-invalid="true" aria-describedby="{{ $inputId }}-error" @elseif ($hint) aria-describedby="{{ $inputId }}-hint" @endif
             {{ $attributes->except('class')->class([
-                'block w-full rounded-app border bg-surface-2 px-3 py-2.5 text-sm text-app placeholder:text-slate-400',
+                'block w-full rounded-app border bg-surface-2 px-3 py-2.5 text-sm text-app placeholder-muted',
                 'border-app focus-ring',
                 $errorText ? 'border-[var(--danger)]' : '',
             ]) }}
@@ -37,7 +37,7 @@
             value="{{ old($name, $value) }}"
             @if ($errorText) aria-invalid="true" aria-describedby="{{ $inputId }}-error" @elseif ($hint) aria-describedby="{{ $inputId }}-hint" @endif
             {{ $attributes->except('class')->class([
-                'block w-full rounded-app border bg-surface-2 px-3 py-2.5 text-sm text-app placeholder:text-slate-400',
+                'block w-full rounded-app border bg-surface-2 px-3 py-2.5 text-sm text-app placeholder-muted',
                 'border-app focus-ring',
                 $errorText ? 'border-[var(--danger)]' : '',
             ]) }}

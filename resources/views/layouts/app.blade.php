@@ -1054,7 +1054,7 @@
 
                     const renderEmpty = (container, message) => {
                         container.textContent = '';
-                        appendText(container, 'p', 'text-xs text-slate-400 dark:text-slate-500', message);
+                        appendText(container, 'p', 'text-xs text-muted dark:text-slate-500', message);
                     };
 
                     const renderItems = (container, items) => {
@@ -1076,8 +1076,8 @@
                             appendText(link, 'p', 'text-xs text-slate-500 dark:text-slate-400', item.subtitle);
 
                             const metaRow = setClass(document.createElement('div'), 'flex items-center justify-between mt-1');
-                            appendText(metaRow, 'p', 'text-[11px] text-slate-400 dark:text-slate-500', item.meta || '');
-                            appendText(metaRow, 'p', 'text-[11px] text-slate-400 dark:text-slate-500', item.time || '');
+                            appendText(metaRow, 'p', 'text-[11px] text-muted dark:text-slate-500', item.meta || '');
+                            appendText(metaRow, 'p', 'text-[11px] text-muted dark:text-slate-500', item.time || '');
                             link.appendChild(metaRow);
                             wrapper.appendChild(link);
 

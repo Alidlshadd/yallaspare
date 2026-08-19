@@ -94,19 +94,19 @@
                     </div>
                     <div class="flex flex-wrap gap-2">
                         <div class="min-w-[92px] rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 dark:border-slate-700 dark:bg-slate-800/60">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('Checks passed') }}</p>
-                            <p class="mt-0.5 text-base font-bold tabular-nums text-emerald-600 dark:text-emerald-300">{{ $checksPassed }}<span class="text-xs font-bold text-slate-400 dark:text-slate-500"> / {{ count($checks) }}</span></p>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-muted dark:text-slate-500">{{ __('Checks passed') }}</p>
+                            <p class="mt-0.5 text-base font-bold tabular-nums text-emerald-600 dark:text-emerald-300">{{ $checksPassed }}<span class="text-xs font-bold text-muted dark:text-slate-500"> / {{ count($checks) }}</span></p>
                         </div>
                         <div class="min-w-[92px] rounded-lg border {{ $checksAction > 0 ? 'border-rose-300/70 dark:border-rose-400/35' : 'border-slate-200 dark:border-slate-700' }} bg-slate-50 px-3 py-1.5 dark:bg-slate-800/60">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('Action needed') }}</p>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-muted dark:text-slate-500">{{ __('Action needed') }}</p>
                             <p class="mt-0.5 text-base font-bold tabular-nums {{ $checksAction > 0 ? 'text-rose-600 dark:text-rose-300' : 'text-slate-900 dark:text-white' }}">{{ $checksAction }}</p>
                         </div>
                         <div class="min-w-[92px] rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 dark:border-slate-700 dark:bg-slate-800/60">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('Currency') }}</p>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-muted dark:text-slate-500">{{ __('Currency') }}</p>
                             <p class="mt-0.5 text-base font-bold text-slate-900 dark:text-white">{{ $settings['currency_symbol'] ?? 'IQD' }}</p>
                         </div>
                         <div class="min-w-[92px] rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 dark:border-slate-700 dark:bg-slate-800/60">
-                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('Shipping Fee') }}</p>
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-muted dark:text-slate-500">{{ __('Shipping Fee') }}</p>
                             <p class="mt-0.5 text-base font-bold tabular-nums text-slate-900 dark:text-white">{{ number_format((float) ($settings['shipping_fee'] ?? 5000), 0) }}</p>
                         </div>
                     </div>
@@ -160,7 +160,7 @@
                                     @enderror
                                     @if(!empty($settings['site_logo']))
                                         <label class="mt-2 inline-flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
-                                            <input type="checkbox" name="remove_logo" value="1" class="rounded border-slate-300 text-slate-400 focus:ring-accent dark:border-slate-700 dark:text-slate-500">
+                                            <input type="checkbox" name="remove_logo" value="1" class="rounded border-slate-300 text-muted focus:ring-accent dark:border-slate-700 dark:text-slate-500">
                                             {{ __('Remove current logo') }}
                                         </label>
                                     @endif
@@ -181,7 +181,7 @@
                                     <source src="{{ $storefrontHeroVideoUrl }}" type="video/mp4">
                                 </video>
                                 <label class="mt-2 inline-flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
-                                    <input type="checkbox" name="remove_storefront_hero_video" value="1" class="rounded border-slate-300 text-slate-400 focus:ring-accent dark:border-slate-700 dark:text-slate-500">
+                                    <input type="checkbox" name="remove_storefront_hero_video" value="1" class="rounded border-slate-300 text-muted focus:ring-accent dark:border-slate-700 dark:text-slate-500">
                                     {{ __('Remove current hero video') }}
                                 </label>
                             @endif

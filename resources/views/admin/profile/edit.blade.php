@@ -74,19 +74,19 @@
 
             <div class="grid divide-y divide-slate-200 dark:divide-slate-800 md:grid-cols-4 md:divide-x md:divide-y-0">
                 <div class="px-5 py-4">
-                    <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">{{ __('Role') }}</p>
+                    <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-muted">{{ __('Role') }}</p>
                     <p class="mt-1 text-sm font-bold text-slate-900 dark:text-white">{{ $roleLabel }}</p>
                 </div>
                 <div class="px-5 py-4">
-                    <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">{{ __('Permissions') }}</p>
+                    <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-muted">{{ __('Permissions') }}</p>
                     <p class="mt-1 text-sm font-bold text-slate-900 dark:text-white">{{ number_format($permissionLabels->count()) }}</p>
                 </div>
                 <div class="px-5 py-4">
-                    <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">{{ __('Account Age') }}</p>
+                    <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-muted">{{ __('Account Age') }}</p>
                     <p class="mt-1 text-sm font-bold text-slate-900 dark:text-white">{{ $accountAgeLabel }}</p>
                 </div>
                 <div class="px-5 py-4">
-                    <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-400">{{ __('Last Updated') }}</p>
+                    <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-muted">{{ __('Last Updated') }}</p>
                     <p class="mt-1 text-sm font-bold text-slate-900 dark:text-white">{{ $updatedLabel }}</p>
                 </div>
             </div>
@@ -221,7 +221,7 @@
                                 <div class="md:col-span-2">
                                     <div class="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-950/60">
                                         <div>
-                                            <p class="text-xs font-bold uppercase tracking-[0.12em] text-slate-400">{{ __('Email Verification') }}</p>
+                                            <p class="text-xs font-bold uppercase tracking-[0.12em] text-muted">{{ __('Email Verification') }}</p>
                                             <p class="mt-1 text-sm font-bold text-slate-700 dark:text-slate-200">{{ $isVerified ? __('Verified address') : __('Verification required after email changes') }}</p>
                                         </div>
                                         <span class="inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold {{ $isVerified ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300' : 'bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300' }}">

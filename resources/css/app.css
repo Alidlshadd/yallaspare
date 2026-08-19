@@ -1548,6 +1548,14 @@
         color: var(--muted);
     }
 
+    /* The placeholder twin of .text-muted. Tailwind's `placeholder:` variant
+       cannot reach .text-muted — that class is authored here, not generated —
+       so the token needs its own hook to land on ::placeholder. */
+    .placeholder-muted::placeholder {
+        color: var(--muted);
+        opacity: 1;
+    }
+
     /* Kept as an override on purpose. Tailwind's `primary` tracks the fill
        role, which stays dark in both themes; brand-coloured *text* has to
        lift off a dark ground instead, so this one narrows to --primary.
@@ -1969,10 +1977,6 @@
     .dark .user-shell .hover\:bg-slate-50:hover,
     .dark .user-shell .hover\:bg-slate-100:hover {
         background-color: var(--surface-sunk);
-    }
-    .dark .user-shell .placeholder\:text-slate-400::placeholder {
-        color: var(--text-muted);
-        opacity: 1;
     }
     .dark .user-shell :is(input, select, textarea) {
         background-color: var(--surface-sunk);

@@ -427,7 +427,7 @@
                                                             @if($model->image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($model->image_path))
                                                                 <img src="{{ asset('storage/'.ltrim($model->image_path, '/')) }}" alt="{{ $model->localizedName() }}" class="h-16 w-20 rounded-lg border border-slate-200 bg-slate-50 object-cover dark:border-slate-700 dark:bg-slate-900">
                                                             @else
-                                                                <span class="grid h-16 w-20 shrink-0 place-items-center rounded-lg border border-dashed border-slate-300 bg-slate-50 text-slate-400 dark:border-slate-700 dark:bg-slate-900"><i class="fas fa-car-side text-xl"></i></span>
+                                                                <span class="grid h-16 w-20 shrink-0 place-items-center rounded-lg border border-dashed border-slate-300 bg-slate-50 text-muted dark:border-slate-700 dark:bg-slate-900"><i class="fas fa-car-side text-xl"></i></span>
                                                             @endif
                                                             <div class="min-w-0 flex-1">
                                                                 <h4 class="truncate text-sm font-bold text-slate-900 dark:text-white">{{ $model->localizedName() }}</h4>
@@ -436,7 +436,7 @@
                                                                     @forelse($model->engineTypes as $engineType)
                                                                         <span class="vf-engine-chip">{{ $engineType->localizedName() }}</span>
                                                                     @empty
-                                                                        <span class="text-[10px] text-slate-400">{{ __('Engine not specified') }}</span>
+                                                                        <span class="text-[10px] text-muted">{{ __('Engine not specified') }}</span>
                                                                     @endforelse
                                                                 </div>
                                                             </div>
@@ -568,19 +568,19 @@
                     </div>
                     <div class="p-4 space-y-3 bg-white dark:bg-slate-900">
                         <div class="flex gap-3">
-                            <span class="w-[74px] shrink-0 text-[10px] font-bold uppercase tracking-widest text-slate-400 pt-0.5">{{ __('Product') }}</span>
+                            <span class="w-[74px] shrink-0 text-[10px] font-bold uppercase tracking-widest text-muted pt-0.5">{{ __('Product') }}</span>
                             <span class="text-[13px] font-bold text-slate-900 dark:text-slate-100" data-admin-preview-product>{{ __('Select product') }}</span>
                         </div>
                         <div class="flex gap-3">
-                            <span class="w-[74px] shrink-0 text-[10px] font-bold uppercase tracking-widest text-slate-400 pt-0.5">{{ __('Vehicle') }}</span>
+                            <span class="w-[74px] shrink-0 text-[10px] font-bold uppercase tracking-widest text-muted pt-0.5">{{ __('Vehicle') }}</span>
                             <span class="text-[13px] font-bold text-slate-900 dark:text-slate-100" data-admin-preview-vehicle>{{ __('Select brand') }} / {{ __('Any model') }}</span>
                         </div>
                         <div class="flex gap-3">
-                            <span class="w-[74px] shrink-0 text-[10px] font-bold uppercase tracking-widest text-slate-400 pt-0.5">{{ __('Years') }}</span>
+                            <span class="w-[74px] shrink-0 text-[10px] font-bold uppercase tracking-widest text-muted pt-0.5">{{ __('Years') }}</span>
                             <span class="text-[13px] font-bold font-mono text-slate-900 dark:text-slate-100" data-admin-preview-years>{{ __('Any year') }}</span>
                         </div>
                         <div class="flex gap-3">
-                            <span class="w-[74px] shrink-0 text-[10px] font-bold uppercase tracking-widest text-slate-400 pt-0.5">{{ __('Engine') }}</span>
+                            <span class="w-[74px] shrink-0 text-[10px] font-bold uppercase tracking-widest text-muted pt-0.5">{{ __('Engine') }}</span>
                             <span class="text-[13px] font-bold text-slate-900 dark:text-slate-100" data-admin-preview-engine>{{ __('Any engine') }}</span>
                         </div>
                     </div>
@@ -602,7 +602,7 @@
                         <input type="hidden" name="brand" value="{{ $brandFilter }}">
                     @endif
                     <div class="relative flex-1 sm:w-72">
-                        <span class="absolute inset-y-0 start-0 flex items-center ps-3 text-slate-400">
+                        <span class="absolute inset-y-0 start-0 flex items-center ps-3 text-muted">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 100-15 7.5 7.5 0 000 15z"/></svg>
                         </span>
                         <input name="search" value="{{ $search }}" placeholder="{{ __('Search product, SKU, brand, model, engine...') }}"

@@ -131,7 +131,7 @@
                     >
                         <div class="flex items-start justify-between gap-3">
                             <div>
-                                <p class="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">{{ __('Adjustment') }}</p>
+                                <p class="text-xs font-bold uppercase tracking-[0.16em] text-muted">{{ __('Adjustment') }}</p>
                                 <h3 class="mt-1 text-lg font-semibold text-slate-800 dark:text-slate-100">{{ __('Dock Control') }}</h3>
                             </div>
                             <span class="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-300">
@@ -264,7 +264,7 @@
                     <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         <div class="flex items-start justify-between gap-3">
                             <div>
-                                <p class="text-xs font-bold uppercase tracking-[0.16em] text-slate-400">{{ __('Bulk Delivery') }}</p>
+                                <p class="text-xs font-bold uppercase tracking-[0.16em] text-muted">{{ __('Bulk Delivery') }}</p>
                                 <h3 class="mt-1 text-lg font-semibold text-slate-800 dark:text-slate-100">{{ __('Import CSV') }}</h3>
                             </div>
                             <span class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">

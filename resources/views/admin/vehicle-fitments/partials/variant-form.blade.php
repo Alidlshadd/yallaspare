@@ -183,7 +183,7 @@
                 <div data-image-picker>
                     <div class="grid aspect-[4/3] w-full place-items-center overflow-hidden rounded-xl border border-dashed border-slate-300 bg-slate-50 dark:border-slate-600 dark:bg-slate-950/50">
                         <img src="{{ $currentImage }}" alt="" class="h-full w-full object-cover" data-image-preview @unless($currentImage) hidden @endunless>
-                        <span class="flex flex-col items-center gap-2 px-4 text-center text-slate-400" data-image-placeholder @if($currentImage) hidden @endif>
+                        <span class="flex flex-col items-center gap-2 px-4 text-center text-muted" data-image-placeholder @if($currentImage) hidden @endif>
                             <i class="fas fa-car-side text-3xl"></i>
                             <span class="text-[11px] font-semibold">{{ __('No image selected') }}</span>
                         </span>

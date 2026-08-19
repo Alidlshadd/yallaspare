@@ -564,7 +564,7 @@ const initSearchAutocomplete = () => {
         row.className = 'flex items-center gap-3 px-3 py-2.5 text-sm transition hover:bg-slate-50 dark:hover:bg-slate-900';
 
         const media = document.createElement('span');
-        media.className = 'flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-slate-400 dark:border-slate-800 dark:bg-slate-900';
+        media.className = 'flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50 text-xs font-semibold text-muted dark:border-slate-800 dark:bg-slate-900';
         if (item.image_url) {
             const image = document.createElement('img');
             image.src = item.image_url;

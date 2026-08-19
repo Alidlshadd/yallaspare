@@ -48,7 +48,7 @@
                 <div class="flex items-center gap-3">
                     <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-green-500 text-white shadow-lg shadow-green-500/20"><i class="fab fa-whatsapp text-xl" aria-hidden="true"></i></span>
                     <div>
-                        <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">{{ __('System status') }}</p>
+                        <p class="text-xs font-bold uppercase tracking-[0.2em] text-muted">{{ __('System status') }}</p>
                         <h3 class="text-lg font-bold text-slate-900 dark:text-white">{{ __('OTPIQ inbound webhook') }}</h3>
                     </div>
                 </div>
@@ -68,7 +68,7 @@
 
             <div class="grid gap-4 p-5 md:grid-cols-2 xl:grid-cols-4">
                 <div class="md:col-span-2 xl:col-span-4">
-                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-slate-400">{{ __('Webhook URL') }}</label>
+                    <label class="mb-1.5 block text-[10px] font-bold uppercase tracking-widest text-muted">{{ __('Webhook URL') }}</label>
                     <div class="flex min-w-0 gap-2">
                         <div class="min-w-0 flex-1 overflow-x-auto rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 font-mono text-sm font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200" dir="ltr">{{ $webhookUrl }}</div>
                         <button type="button" data-copy-webhook-url="{{ $webhookUrl }}" class="inline-flex h-10 shrink-0 items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:border-green-300 hover:text-green-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-green-500/50 dark:hover:text-green-300">
@@ -84,23 +84,23 @@
                     [__('Last successful webhook'), $lastSuccessfulEvent?->processed_at?->timezone(config('app.timezone'))->format('Y-m-d H:i:s') ?? __('Never'), (bool) $lastSuccessfulEvent],
                 ] as [$label, $value, $ok])
                     <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3 dark:border-slate-800 dark:bg-slate-950/40">
-                        <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400">{{ $label }}</div>
+                        <div class="text-[10px] font-bold uppercase tracking-widest text-muted">{{ $label }}</div>
                         <div class="mt-1 flex items-center gap-2 text-sm font-bold text-slate-800 dark:text-slate-100"><span class="h-2 w-2 rounded-full {{ $ok ? 'bg-emerald-500' : 'bg-accent' }}"></span>{{ $value }}</div>
                     </div>
                 @endforeach
 
                 <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3 dark:border-slate-800 dark:bg-slate-950/40 xl:col-span-2">
-                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400">{{ __('Queue status') }}</div>
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-muted">{{ __('Queue status') }}</div>
                     <div class="mt-1 text-sm font-bold text-slate-800 dark:text-slate-100">{{ strtoupper($queueStatus['connection']) }} · {{ $queueStatus['mode'] }}</div>
                     <div class="mt-1 text-xs text-slate-500 dark:text-slate-400">
                         {{ __('Pending') }}: {{ $queueStatus['pending'] ?? __('Unavailable') }} · {{ __('Failed jobs') }}: {{ $queueStatus['failed'] ?? __('Unavailable') }}
                     </div>
-                    <p class="mt-1 text-[11px] text-slate-400">{{ __('This confirms queue configuration and database counts, not worker process liveness.') }}</p>
+                    <p class="mt-1 text-[11px] text-muted">{{ __('This confirms queue configuration and database counts, not worker process liveness.') }}</p>
                 </div>
                 <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3 dark:border-slate-800 dark:bg-slate-950/40 xl:col-span-2">
-                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400">{{ __('Last error') }}</div>
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-muted">{{ __('Last error') }}</div>
                     <div class="mt-1 text-sm font-semibold text-slate-700 dark:text-slate-200">{{ $lastFailedEvent?->error_message ?? __('No processing error recorded.') }}</div>
-                    @if($lastFailedEvent)<div class="mt-1 font-mono text-[11px] text-slate-400">{{ $lastFailedEvent->event_id }}</div>@endif
+                    @if($lastFailedEvent)<div class="mt-1 font-mono text-[11px] text-muted">{{ $lastFailedEvent->event_id }}</div>@endif
                 </div>
             </div>
         </section>

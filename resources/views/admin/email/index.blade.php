@@ -116,7 +116,7 @@
 
                     {{-- Workspace nav --}}
                     <div class="mt-5">
-                        <p class="px-2 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">{{ __('Workspace') }}</p>
+                        <p class="px-2 text-[10px] font-bold uppercase tracking-[0.2em] text-muted">{{ __('Workspace') }}</p>
                         <nav class="mt-1 space-y-0.5">
                             <a href="#overview"
                                class="font-display flex items-center gap-2.5 rounded-lg bg-primary/10 px-2.5 py-2 text-sm font-bold text-primary dark:bg-primary/20 dark:text-info">
@@ -125,46 +125,46 @@
                             </a>
                             <a href="#broadcasts"
                                class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white">
-                                <i class="fas fa-bullhorn w-4 text-slate-400 text-xs"></i> {{ __('Broadcasts') }}
-                                <span class="ml-auto font-mono text-[10px] text-slate-400">{{ number_format($broadcastAll) }}</span>
+                                <i class="fas fa-bullhorn w-4 text-muted text-xs"></i> {{ __('Broadcasts') }}
+                                <span class="ml-auto font-mono text-[10px] text-muted">{{ number_format($broadcastAll) }}</span>
                             </a>
                             <a href="{{ route('admin.email.outbox') }}"
                                class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white">
-                                <i class="fas fa-inbox w-4 text-slate-400 text-xs"></i> {{ __('Outbox') }}
-                                <span class="ml-auto font-mono text-[10px] text-slate-400"><i class="fas fa-arrow-up-right-from-square text-[8px]"></i></span>
+                                <i class="fas fa-inbox w-4 text-muted text-xs"></i> {{ __('Outbox') }}
+                                <span class="ml-auto font-mono text-[10px] text-muted"><i class="fas fa-arrow-up-right-from-square text-[8px]"></i></span>
                             </a>
                             <a href="#settings"
                                class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white">
-                                <i class="fas fa-gears w-4 text-slate-400 text-xs"></i> {{ __('Settings') }}
+                                <i class="fas fa-gears w-4 text-muted text-xs"></i> {{ __('Settings') }}
                             </a>
                             <a href="{{ route('admin.email.templates.index') }}"
                                class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white">
-                                <i class="fas fa-file-pen w-4 text-slate-400 text-xs"></i> {{ __('Template Editor') }}
-                                <span class="ml-auto font-mono text-[10px] text-slate-400"><i class="fas fa-arrow-up-right-from-square text-[8px]"></i></span>
+                                <i class="fas fa-file-pen w-4 text-muted text-xs"></i> {{ __('Template Editor') }}
+                                <span class="ml-auto font-mono text-[10px] text-muted"><i class="fas fa-arrow-up-right-from-square text-[8px]"></i></span>
                             </a>
                             <a href="#templates"
                                class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white">
-                                <i class="fas fa-file-lines w-4 text-slate-400 text-xs"></i> {{ __('Templates') }}
-                                <span class="ml-auto font-mono text-[10px] text-slate-400">{{ count($templateCards) }}</span>
+                                <i class="fas fa-file-lines w-4 text-muted text-xs"></i> {{ __('Templates') }}
+                                <span class="ml-auto font-mono text-[10px] text-muted">{{ count($templateCards) }}</span>
                             </a>
                         </nav>
                     </div>
 
                     {{-- Audiences --}}
                     <div class="mt-6">
-                        <p class="px-2 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">{{ __('Audiences') }}</p>
+                        <p class="px-2 text-[10px] font-bold uppercase tracking-[0.2em] text-muted">{{ __('Audiences') }}</p>
                         <nav class="mt-1 space-y-0.5">
                             <div class="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm text-slate-600 dark:text-slate-300">
                                 <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> {{ __('Customers') }}
-                                <span class="ml-auto font-mono text-[10px] text-slate-400">{{ number_format($audienceCounts['customers']) }}</span>
+                                <span class="ml-auto font-mono text-[10px] text-muted">{{ number_format($audienceCounts['customers']) }}</span>
                             </div>
                             <div class="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm text-slate-600 dark:text-slate-300">
                                 <span class="h-1.5 w-1.5 rounded-full bg-accent"></span> {{ __('Dealers') }}
-                                <span class="ml-auto font-mono text-[10px] text-slate-400">{{ number_format($audienceCounts['dealers']) }}</span>
+                                <span class="ml-auto font-mono text-[10px] text-muted">{{ number_format($audienceCounts['dealers']) }}</span>
                             </div>
                             <div class="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm text-slate-600 dark:text-slate-300">
                                 <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span> {{ __('Admins') }}
-                                <span class="ml-auto font-mono text-[10px] text-slate-400">{{ number_format($audienceCounts['admins']) }}</span>
+                                <span class="ml-auto font-mono text-[10px] text-muted">{{ number_format($audienceCounts['admins']) }}</span>
                             </div>
                         </nav>
                     </div>
@@ -205,7 +205,7 @@
                 <section id="overview">
                     <div class="flex flex-wrap items-start justify-between gap-3">
                         <div>
-                            <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">{{ __('Overview') }} · YALLASPARE / EMAIL</p>
+                            <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-muted">{{ __('Overview') }} · YALLASPARE / EMAIL</p>
                             <h2 class="mt-1 text-2xl font-bold tracking-tight text-primary dark:text-white">{{ __('Broadcast console') }}</h2>
                             <p class="mt-1 text-sm text-slate-500 font-mono dark:text-slate-400">
                                 {{ __('queue: :q', ['q' => $summary['queue'] ?: 'sync']) }} · {{ $emailStats['last_sent_label'] }}
@@ -232,7 +232,7 @@
                             </div>
                             <p class="mt-3 num-display text-3xl font-bold text-primary dark:text-white">{{ number_format($totalSent7d) }}</p>
                             <div class="mt-2 flex items-center justify-between">
-                                <span class="text-[10px] text-slate-400 font-mono">{{ __('last 7 days') }}</span>
+                                <span class="text-[10px] text-muted font-mono">{{ __('last 7 days') }}</span>
                                 @if($successRate7d !== null)
                                     <span class="text-[10px] font-bold text-primary dark:text-info"><i class="fas fa-arrow-up text-[8px]"></i> {{ $successRate7d }}%</span>
                                 @endif
@@ -254,7 +254,7 @@
                             <p class="mt-3 num-display text-3xl font-bold text-primary dark:text-white">{{ number_format($sent24h) }}</p>
                             <div class="mt-2 flex items-center justify-between">
                                 <span class="text-[10px] font-mono font-bold text-emerald-600">{{ $successRate === null ? '—' : $successRate . '%' }}</span>
-                                <span class="text-[10px] font-mono text-slate-400">{{ __('24h') }}</span>
+                                <span class="text-[10px] font-mono text-muted">{{ __('24h') }}</span>
                             </div>
                             <div class="mt-2 h-1 rounded-full bg-slate-100 overflow-hidden dark:bg-slate-800">
                                 <div class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600" style="width: {{ $successRate ?? 0 }}%"></div>
@@ -300,7 +300,7 @@
                                 </div>
                                 <div>
                                     <p class="text-sm font-bold text-primary leading-none dark:text-white">{{ __('Broadcast History') }}</p>
-                                    <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">{{ __(':n records', ['n' => $broadcastAll]) }} · {{ __('last 10') }}</p>
+                                    <p class="font-mono text-[10px] uppercase tracking-widest text-muted mt-1">{{ __(':n records', ['n' => $broadcastAll]) }} · {{ __('last 10') }}</p>
                                 </div>
                             </div>
                             <div class="flex flex-wrap items-center gap-2">
@@ -343,7 +343,7 @@
                                 <input type="hidden" name="status" value="{{ $activeStatus }}">
                             @endif
                             <div class="relative">
-                                <i class="fas fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+                                <i class="fas fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-muted text-xs"></i>
                                 <input type="search"
                                        name="q"
                                        value="{{ $searchTerm }}"
@@ -398,7 +398,7 @@
                                         @if($broadcast->failed_count > 0)
                                             <span class="text-[10px] font-mono text-rose-600 font-bold">{{ number_format($broadcast->failed_count) }} {{ __('failed') }}</span>
                                         @else
-                                            <span class="text-[10px] font-mono text-slate-400">{{ __('sent') }}</span>
+                                            <span class="text-[10px] font-mono text-muted">{{ __('sent') }}</span>
                                         @endif
                                     </div>
                                     <span class="text-[10px] font-mono font-bold uppercase tracking-wider w-16 text-right {{ $statusKey === 'sent' ? 'text-emerald-600' : ($statusKey === 'failed' ? 'text-rose-600' : ($statusKey === 'queued' || $statusKey === 'sending' ? 'text-accent' : 'text-slate-500')) }}">
@@ -439,7 +439,7 @@
                                 </div>
                                 <div>
                                     <p class="text-sm font-bold text-primary leading-none dark:text-white">{{ __('Recent Activity') }}</p>
-                                    <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">{{ __('mail log') }} · {{ __(':n records', ['n' => $recentLogs->count()]) }}</p>
+                                    <p class="font-mono text-[10px] uppercase tracking-widest text-muted mt-1">{{ __('mail log') }} · {{ __(':n records', ['n' => $recentLogs->count()]) }}</p>
                                 </div>
                             </div>
                             <a href="{{ route('admin.email.outbox') }}" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
@@ -499,7 +499,7 @@
                                 </div>
                                 <div>
                                     <p class="text-sm font-bold text-primary leading-none dark:text-white">{{ __('Create Broadcast') }}</p>
-                                    <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">{{ __('to one user or all users') }}</p>
+                                    <p class="font-mono text-[10px] uppercase tracking-widest text-muted mt-1">{{ __('to one user or all users') }}</p>
                                 </div>
                             </div>
                             <a href="{{ route('admin.email.broadcasts.create') }}"
@@ -519,7 +519,7 @@
                                             <i class="fas fa-users text-base"></i>
                                             <span>{{ __('All users') }}</span>
                                         </div>
-                                        <p class="font-mono text-[9px] text-slate-400 mt-1 truncate">{{ number_format($audienceCounts['total']) }} {{ __('verified') }}</p>
+                                        <p class="font-mono text-[9px] text-muted mt-1 truncate">{{ number_format($audienceCounts['total']) }} {{ __('verified') }}</p>
                                     </button>
                                     <button type="button" data-audience="user"
                                             class="ic-tile rounded-xl border border-slate-200 px-3 py-3 text-sm font-bold text-slate-600 text-left hover:bg-slate-50 transition dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
@@ -552,7 +552,7 @@
                                             class="ic-purpose-btn rounded-lg text-slate-600 px-3 py-1.5 text-sm font-bold transition dark:text-slate-300">{{ __('Operational') }}</button>
                                 </div>
                                 <input type="hidden" name="purpose" id="ic-purpose" value="{{ old('purpose', 'promotional') }}">
-                                <p class="mt-1.5 text-[10px] font-mono text-slate-400">{{ __('Promotional broadcasts only go to users who opted into marketing.') }}</p>
+                                <p class="mt-1.5 text-[10px] font-mono text-muted">{{ __('Promotional broadcasts only go to users who opted into marketing.') }}</p>
                             </div>
 
                             {{-- Subject --}}
@@ -595,7 +595,7 @@
                                 </div>
                                 <div>
                                     <p class="text-sm font-bold text-primary leading-none dark:text-white">{{ __('Readiness Checks') }}</p>
-                                    <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">{{ $health['ok'] }} / {{ $health['total'] }} {{ __('OK') }} · {{ $health['label'] }}</p>
+                                    <p class="font-mono text-[10px] uppercase tracking-widest text-muted mt-1">{{ $health['ok'] }} / {{ $health['total'] }} {{ __('OK') }} · {{ $health['label'] }}</p>
                                 </div>
                             </div>
                             <span class="rounded-full border px-2.5 py-1 text-xs font-bold {{ $healthClasses['badge'] }}">{{ $health['score'] }}/100</span>
@@ -641,7 +641,7 @@
                                     </div>
                                     <div>
                                         <p class="text-sm font-bold text-primary leading-none dark:text-white">{{ __('Template Library') }}</p>
-                                        <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">{{ count($templateCards) }} {{ __('templates') }} · EN · AR · KU</p>
+                                        <p class="font-mono text-[10px] uppercase tracking-widest text-muted mt-1">{{ count($templateCards) }} {{ __('templates') }} · EN · AR · KU</p>
                                     </div>
                                 </div>
                                 <span class="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2.5 py-1 text-[10px] font-bold border border-primary/20 dark:bg-primary/20 dark:text-info dark:border-primary/40">
@@ -659,7 +659,7 @@
                                     <div class="min-w-0 flex-1">
                                         <div class="flex items-center gap-2">
                                             <p class="text-sm font-bold text-primary truncate dark:text-slate-100">{{ $template['title'] }}</p>
-                                            <span class="font-mono text-[9px] uppercase tracking-widest text-slate-400 shrink-0">{{ $template['sample']['spec'] }}</span>
+                                            <span class="font-mono text-[9px] uppercase tracking-widest text-muted shrink-0">{{ $template['sample']['spec'] }}</span>
                                         </div>
                                         <p class="text-[11px] text-slate-500 truncate dark:text-slate-400">{{ $template['description'] }}</p>
                                     </div>

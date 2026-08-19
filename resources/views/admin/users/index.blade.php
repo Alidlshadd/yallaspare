@@ -195,7 +195,7 @@
                     >
                         <p class="text-[11px] font-bold uppercase tracking-widest {{ $card['accent'] }}">{{ $card['label'] }}</p>
                         <p class="mt-2 text-2xl font-bold tabular-nums {{ $card['number'] }}">{{ number_format($card['count']) }}</p>
-                        <p class="mt-1 text-[11px] text-slate-400 dark:text-slate-500">{{ $card['caption'] }}</p>
+                        <p class="mt-1 text-[11px] text-muted dark:text-slate-500">{{ $card['caption'] }}</p>
                     </a>
                 @endforeach
             </div>
@@ -232,7 +232,7 @@
                         @endif
                         <label for="users-search" class="sr-only">{{ __('Search') }}</label>
                         <div class="relative">
-                            <svg class="pointer-events-none absolute inset-y-0 my-auto ms-3 h-4 w-4 text-slate-400 dark:text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                            <svg class="pointer-events-none absolute inset-y-0 my-auto ms-3 h-4 w-4 text-muted dark:text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <circle cx="11" cy="11" r="7" />
                                 <path stroke-linecap="round" d="m20 20-3.5-3.5" />
                             </svg>
@@ -242,7 +242,7 @@
                                 name="search"
                                 value="{{ $search }}"
                                 placeholder="{{ __('Search by name, email, phone, id, or role...') }}"
-                                class="w-full rounded-lg border-slate-300 bg-white ps-9 text-sm text-slate-900 placeholder:text-slate-400 focus:border-accent focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500"
+                                class="w-full rounded-lg border-slate-300 bg-white ps-9 text-sm text-slate-900 placeholder-muted focus:border-accent focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                             >
                         </div>
                         @if($search !== '')
@@ -266,7 +266,7 @@
                                     <span class="h-2 w-2 shrink-0 rounded-full {{ $item['swatch'] }}"></span>
                                     <span class="truncate">{{ $item['label'] }}</span>
                                 </span>
-                                <span class="text-xs tabular-nums text-slate-400 dark:text-slate-500">{{ number_format($item['count']) }}</span>
+                                <span class="text-xs tabular-nums text-muted dark:text-slate-500">{{ number_format($item['count']) }}</span>
                             </a>
                         @endforeach
                     </nav>
@@ -287,18 +287,18 @@
                                     @if($key === 'verified')
                                         <svg class="h-3.5 w-3.5 shrink-0 text-emerald-500 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" /></svg>
                                     @else
-                                        <svg class="h-3.5 w-3.5 shrink-0 text-slate-400 dark:text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path stroke-linecap="round" d="M12 7.5V12l2.5 2.5" /></svg>
+                                        <svg class="h-3.5 w-3.5 shrink-0 text-muted dark:text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path stroke-linecap="round" d="M12 7.5V12l2.5 2.5" /></svg>
                                     @endif
                                     <span class="truncate">{{ $item['label'] }}</span>
                                 </span>
-                                <span class="text-xs tabular-nums text-slate-400 dark:text-slate-500">{{ number_format($item['count']) }}</span>
+                                <span class="text-xs tabular-nums text-muted dark:text-slate-500">{{ number_format($item['count']) }}</span>
                             </a>
                         @endforeach
                     </nav>
 
                     <hr class="my-3 border-slate-200 dark:border-slate-800">
 
-                    <div class="mb-1.5 px-3 text-[10px] font-bold uppercase tracking-[0.16em] text-slate-400 dark:text-slate-500">
+                    <div class="mb-1.5 px-3 text-[10px] font-bold uppercase tracking-[0.16em] text-muted dark:text-slate-500">
                         {{ __('Access Status') }}
                     </div>
                     <nav class="space-y-0.5" aria-label="{{ __('Access Status') }}">
@@ -315,7 +315,7 @@
                                     <span class="h-2 w-2 shrink-0 rounded-full {{ $item['swatch'] }}"></span>
                                     <span class="truncate">{{ $item['label'] }}</span>
                                 </span>
-                                <span class="text-xs tabular-nums text-slate-400 dark:text-slate-500">{{ number_format($item['count']) }}</span>
+                                <span class="text-xs tabular-nums text-muted dark:text-slate-500">{{ number_format($item['count']) }}</span>
                             </a>
                         @endforeach
                     </nav>
@@ -339,7 +339,7 @@
                                 <div class="min-w-0 flex-1">
                                     <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
                                         <span class="font-semibold text-slate-800 dark:text-slate-100">{{ $user->name }}</span>
-                                        <span class="text-xs tabular-nums text-slate-400 dark:text-slate-500">#{{ $user->id }}</span>
+                                        <span class="text-xs tabular-nums text-muted dark:text-slate-500">#{{ $user->id }}</span>
                                         <span class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-bold {{ $meta['chip'] }}">
                                             <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
                                             {{ $meta['label'] }}
@@ -398,7 +398,7 @@
                                         </a>
 
                                         @if($isSelf || $isLastSuperAdmin)
-                                            <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-400 dark:text-slate-500" title="{{ $isSelf ? __('Self-protection enabled.') : __('Last super admin is protected.') }}">
+                                            <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-muted dark:text-slate-500" title="{{ $isSelf ? __('Self-protection enabled.') : __('Last super admin is protected.') }}">
                                                 <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                                     <path stroke-linecap="round" stroke-linejoin="round" d="M8 11V8a4 4 0 0 1 8 0v3" />
                                                     <rect x="5" y="11" width="14" height="9" rx="2" />

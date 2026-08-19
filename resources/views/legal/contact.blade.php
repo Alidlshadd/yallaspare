@@ -253,7 +253,7 @@
                             </svg>
                         </span>
                         <div>
-                            <p class="text-[11px] font-bold uppercase tracking-[0.17em] text-slate-400">{{ __('Location') }}</p>
+                            <p class="text-[11px] font-bold uppercase tracking-[0.17em] text-muted">{{ __('Location') }}</p>
                             <h3 class="mt-1 text-lg font-bold text-primary dark:text-white">{{ __('Erbil, Iraq') }}</h3>
                         </div>
                     </div>
@@ -264,11 +264,11 @@
 
         <section data-vision-reveal class="ct-business mt-6 grid gap-6 overflow-hidden rounded-3xl border border-slate-200/80 bg-slate-50 px-6 py-7 sm:grid-cols-2 sm:px-8 dark:border-slate-800 dark:bg-slate-900/70">
             <div>
-                <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">{{ __('Company Name') }}</p>
+                <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-muted">{{ __('Company Name') }}</p>
                 <p class="mt-2 text-base font-bold text-primary dark:text-white">{{ __('Yalla Spare - Auto Parts Store') }}</p>
             </div>
             <div>
-                <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-slate-400">{{ __('Business Type') }}</p>
+                <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-muted">{{ __('Business Type') }}</p>
                 <p class="mt-2 text-base font-bold text-primary dark:text-white">{{ __('Online Auto Spare Parts Supplier') }}</p>
             </div>
         </section>

@@ -222,7 +222,7 @@
                                             <i class="fas fa-cloud-upload-alt text-lg"></i>
                                         </span>
                                         <span class="font-medium">{{ __('Drag & drop or click to upload') }}</span>
-                                        <span class="text-xs text-slate-400">{{ __('PNG, JPG up to 2MB') }}</span>
+                                        <span class="text-xs text-muted">{{ __('PNG, JPG up to 2MB') }}</span>
                                     </div>
                                 </label>
 

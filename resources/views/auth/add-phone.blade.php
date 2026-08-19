@@ -35,7 +35,7 @@
                     value="{{ old('phone') }}"
                     required
                     placeholder="0770 000 0000"
-                    class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-accent focus:ring-accent dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500"
+                    class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder-muted focus:border-accent focus:ring-accent dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                 >
             </div>
             <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">{{ __('Accepted: 07700000000, 7700000000, or +9647700000000.') }}</p>

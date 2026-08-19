@@ -20,7 +20,7 @@
             <x-password-input
                 id="password"
                 container-class="mt-2"
-                class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition duration-200 focus:border-accent focus:ring-accent dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100 dark:placeholder:text-slate-500"
+                class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder-muted shadow-sm transition duration-200 focus:border-accent focus:ring-accent dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100"
                 name="password"
                 required
                 autofocus

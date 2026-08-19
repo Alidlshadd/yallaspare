@@ -8,7 +8,7 @@
                     <i class="fas fa-arrow-left text-xs"></i>
                 </a>
                 <div>
-                    <p class="text-[10px] uppercase tracking-[0.22em] text-slate-400 font-bold leading-none">
+                    <p class="text-[10px] uppercase tracking-[0.22em] text-muted font-bold leading-none">
                         <a href="{{ route('admin.email.index') }}" class="hover:text-primary dark:hover:text-white">{{ __('Email Center') }}</a>
                         <span class="mx-1 text-slate-300">/</span>
                         <span class="text-primary dark:text-white">{{ __('Create Broadcast') }}</span>
@@ -54,7 +54,7 @@
                                         <button type="button" data-audience="all"
                                                 class="audience-tile rounded-xl border-2 border-primary bg-primary/5 px-3 py-3 text-sm font-bold text-primary text-center dark:bg-primary/10">
                                             <i class="fas fa-users block mb-1 text-base"></i>{{ __('All eligible') }}
-                                            <p class="font-mono text-[10px] text-slate-400 mt-1">{{ __('Verified users') }}</p>
+                                            <p class="font-mono text-[10px] text-muted mt-1">{{ __('Verified users') }}</p>
                                         </button>
                                         <button type="button" data-audience="role"
                                                 class="audience-tile rounded-xl border border-slate-200 px-3 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 text-center dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
@@ -111,7 +111,7 @@
                                     <label for="broadcast_subject" class="block text-xs font-bold text-slate-700 mb-1 dark:text-slate-300">{{ __('Subject line') }}</label>
                                     <input id="broadcast_subject" type="text" name="subject" value="{{ old('subject') }}" placeholder="{{ __('Happy Newroz from YallaSpare') }}" required maxlength="160"
                                            class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 font-semibold focus:border-primary focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                                    <div class="mt-1 flex items-center justify-between text-[10px] font-mono text-slate-400">
+                                    <div class="mt-1 flex items-center justify-between text-[10px] font-mono text-muted">
                                         <span>{{ __('keep it short and clear') }}</span>
                                         <span><span id="subject-counter">0</span> / 160</span>
                                     </div>
@@ -137,12 +137,12 @@
                                             <span class="rt-sep"></span>
                                             <button type="button" data-md="line-break" title="{{ __('Line break') }}" class="rt-btn"><i class="fas fa-paragraph text-xs"></i></button>
                                             <span class="ml-auto"></span>
-                                            <span class="font-mono text-[10px] text-slate-400 pr-2">{{ __('plain text · markdown supported') }}</span>
+                                            <span class="font-mono text-[10px] text-muted pr-2">{{ __('plain text · markdown supported') }}</span>
                                         </div>
                                         <textarea id="broadcast_message" name="message" rows="12" required maxlength="5000"
                                                   placeholder="{{ __('Write the email body. Plain text is safest and line breaks are preserved.') }}"
                                                   class="w-full border-0 bg-white px-4 py-4 text-sm leading-7 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-100 resize-y">{{ old('message') }}</textarea>
-                                        <div class="flex items-center justify-between border-t border-slate-200 bg-slate-50/60 px-3 py-1.5 text-[10px] font-mono text-slate-400 dark:border-slate-800 dark:bg-slate-950">
+                                        <div class="flex items-center justify-between border-t border-slate-200 bg-slate-50/60 px-3 py-1.5 text-[10px] font-mono text-muted dark:border-slate-800 dark:bg-slate-950">
                                             <span><span id="msg-words">0</span> {{ __('words') }} · <span id="msg-chars">0</span> {{ __('chars') }}</span>
                                             <span><span id="msg-remaining">5000</span> {{ __('remaining') }}</span>
                                         </div>
@@ -161,7 +161,7 @@
                                     <label for="action_url" class="block text-xs font-bold text-slate-700 mb-1 dark:text-slate-300">{{ __('Button URL') }}</label>
                                     <input id="action_url" type="url" name="action_url" value="{{ old('action_url') }}" placeholder="{{ url('/') }}" maxlength="2048"
                                            class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 font-mono focus:border-primary focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                                    <p class="mt-1 text-[10px] font-mono text-slate-400">{{ __('Must point to the YallaSpare website') }}</p>
+                                    <p class="mt-1 text-[10px] font-mono text-muted">{{ __('Must point to the YallaSpare website') }}</p>
                                 </div>
                                 <div>
                                     <label for="action_text" class="block text-xs font-bold text-slate-700 mb-1 dark:text-slate-300">{{ __('Button text') }}</label>
@@ -184,7 +184,7 @@
                         <div class="rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
                             <div class="px-5 py-3 border-b border-slate-200/70 bg-slate-50/60 flex items-center justify-between dark:border-slate-800 dark:bg-slate-900">
                                 <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold dark:text-slate-400">{{ __('Recipients') }}</p>
-                                <span class="font-mono text-[10px] text-slate-400">{{ __('estimated') }}</span>
+                                <span class="font-mono text-[10px] text-muted">{{ __('estimated') }}</span>
                             </div>
                             <div class="p-5">
                                 <p class="text-3xl font-bold text-slate-900 dark:text-white" id="recipient-count">—</p>
@@ -210,7 +210,7 @@
                                         <div id="preview-cta" style="display:none">
                                             <a class="font-display inline-block rounded-lg bg-primary px-4 py-2 text-white text-sm font-bold" id="preview-cta-text">{{ __('Shop now') }}</a>
                                         </div>
-                                        <p class="text-[10px] text-slate-400 pt-2 border-t border-slate-100">YallaSpare · <a class="underline">{{ __('unsubscribe') }}</a></p>
+                                        <p class="text-[10px] text-muted pt-2 border-t border-slate-100">YallaSpare · <a class="underline">{{ __('unsubscribe') }}</a></p>
                                     </div>
                                 </div>
                             </div>

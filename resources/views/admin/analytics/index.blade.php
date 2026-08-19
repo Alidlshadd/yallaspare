@@ -127,7 +127,7 @@
                 <span class="text-[11px] text-slate-500">{{ __('vs previous period') }}</span>
             </div>
             <div class="mt-3 pl-2">
-                <div class="mb-1 flex justify-between text-[10px] font-bold uppercase tracking-widest text-slate-400">
+                <div class="mb-1 flex justify-between text-[10px] font-bold uppercase tracking-widest text-muted">
                     <span>{{ __('Cart conversion') }}</span><span class="text-rose-600">{{ number_format($kpi['cart_conversion_pct'], 1) }}%</span>
                 </div>
                 <div class="h-1.5 overflow-hidden rounded-full bg-slate-100">
@@ -256,7 +256,7 @@
                                         <span class="rank {{ $i === 0 ? 'rank-1' : ($i === 1 ? 'rank-2' : ($i === 2 ? 'rank-3' : '')) }}">{{ $i + 1 }}</span>
                                         <span class="font-semibold">{{ $row['name'] }}</span>
                                         @if($row['sku'] !== '')
-                                            <span class="ml-1 font-mono text-[10px] text-slate-400">{{ $row['sku'] }}</span>
+                                            <span class="ml-1 font-mono text-[10px] text-muted">{{ $row['sku'] }}</span>
                                         @endif
                                     </td>
                                     <td class="px-5 py-2.5 text-right num-display font-bold text-slate-900">{{ number_format($row['count']) }}</td>

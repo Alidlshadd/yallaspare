@@ -8,7 +8,7 @@
                     <i class="fas fa-arrow-left text-xs"></i>
                 </a>
                 <div>
-                    <p class="text-[10px] uppercase tracking-[0.22em] text-slate-400 font-bold leading-none">
+                    <p class="text-[10px] uppercase tracking-[0.22em] text-muted font-bold leading-none">
                         <a href="{{ route('admin.email.index') }}" class="hover:text-primary">{{ __('Email Center') }}</a>
                         <span class="mx-1 text-slate-300">/</span>
                         <a href="{{ route('admin.email.templates.index') }}" class="hover:text-primary">{{ __('Template Editor') }}</a>
@@ -69,7 +69,7 @@
                         <input type="text" name="subject" id="editor-subject" value="{{ $subject }}" required maxlength="255" placeholder="{{ $defaults['subject'] }}"
                                class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold text-base focus:border-primary focus:bg-white focus:ring-2 focus:ring-accent/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                         @error('subject')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
-                        <p class="mt-2 text-[10px] font-mono text-slate-400">{{ __('Default') }}: {{ $defaults['subject'] }}</p>
+                        <p class="mt-2 text-[10px] font-mono text-muted">{{ __('Default') }}: {{ $defaults['subject'] }}</p>
                     </div>
                 </div>
 
@@ -95,7 +95,7 @@
                         <textarea name="body_html" id="editor-body" rows="16" required maxlength="65000"
                                   class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-mono text-[13px] leading-relaxed focus:border-primary focus:bg-white focus:ring-2 focus:ring-accent/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 resize-y">{{ $body_html }}</textarea>
                         @error('body_html')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
-                        <p class="mt-2 text-[10px] font-mono text-slate-400">
+                        <p class="mt-2 text-[10px] font-mono text-muted">
                             {{ __('Allowed tags') }}: p, br, strong, b, em, i, u, s, a, ul, ol, li, h1-h4, blockquote, hr, span, div.
                             {{ __('Placeholders') }}: <code class="text-primary">{name}</code>, <code class="text-primary">{code}</code>, <code class="text-primary">{url}</code>, <code class="text-primary">{email}</code>.
                         </p>
@@ -117,7 +117,7 @@
                         <i class="fas fa-xmark"></i> {{ __('Cancel') }}
                     </a>
                     @if($override)
-                        <span class="ml-auto font-mono text-[10px] text-slate-400">
+                        <span class="ml-auto font-mono text-[10px] text-muted">
                             {{ __('Last edit') }}: {{ $override->updated_at->diffForHumans() }}
                         </span>
                     @endif
@@ -134,7 +134,7 @@
                             </div>
                             <p class="text-sm font-bold text-primary leading-none dark:text-white">{{ __('Live preview') }}</p>
                         </div>
-                        <span class="font-mono text-[10px] uppercase tracking-widest text-slate-400">{{ __('sample data') }}</span>
+                        <span class="font-mono text-[10px] uppercase tracking-widest text-muted">{{ __('sample data') }}</span>
                     </div>
                     <div class="bg-slate-100 p-3 dark:bg-slate-950">
                         <div class="mx-auto max-w-md overflow-hidden rounded-lg border border-slate-300 bg-white shadow-sm dark:border-slate-700">
@@ -148,7 +148,7 @@
                                 <div class="prose prose-sm max-w-none text-slate-700 leading-relaxed" id="preview-body">
                                     {!! $body_html !!}
                                 </div>
-                                <p class="text-[10px] text-slate-400 pt-2 border-t border-slate-100">YallaSpare · <a class="underline">{{ __('unsubscribe') }}</a></p>
+                                <p class="text-[10px] text-muted pt-2 border-t border-slate-100">YallaSpare · <a class="underline">{{ __('unsubscribe') }}</a></p>
                             </div>
                         </div>
                     </div>

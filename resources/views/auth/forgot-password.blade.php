@@ -20,7 +20,7 @@
             <x-input-label for="login" :value="__('Email or phone')" class="text-sm font-medium text-slate-300" />
             <x-text-input
                 id="login"
-                class="mt-2 block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 transition duration-200 focus:border-accent focus:ring-accent dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100 dark:placeholder:text-slate-500"
+                class="mt-2 block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder-muted transition duration-200 focus:border-accent focus:ring-accent dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100"
                 type="text"
                 name="login"
                 :value="old('login')"

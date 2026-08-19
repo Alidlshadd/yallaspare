@@ -164,15 +164,15 @@
                 <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center dark:border-slate-700 dark:bg-slate-900">
                     <i class="fas fa-plug-circle-xmark mb-3 block text-2xl text-slate-300 dark:text-slate-600"></i>
                     <p class="text-sm font-bold text-slate-600 dark:text-slate-300">{{ __('Back-in-stock subscriptions table is not available yet.') }}</p>
-                    <p class="mt-1 text-xs text-slate-400">{{ __('Run the pending database migrations to enable stock request tracking.') }}</p>
+                    <p class="mt-1 text-xs text-muted">{{ __('Run the pending database migrations to enable stock request tracking.') }}</p>
                 </div>
             @else
                 {{-- ============ main request table ============ --}}
                 <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3 dark:border-slate-800">
-                        <i class="fas fa-list-check text-slate-400"></i>
+                        <i class="fas fa-list-check text-muted"></i>
                         <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Requested products') }}</h3>
-                        <span class="ms-auto text-xs font-semibold text-slate-400">{{ __(':from–:to of :total', ['from' => $products->firstItem() ?? 0, 'to' => $products->lastItem() ?? 0, 'total' => $products->total()]) }}</span>
+                        <span class="ms-auto text-xs font-semibold text-muted">{{ __(':from–:to of :total', ['from' => $products->firstItem() ?? 0, 'to' => $products->lastItem() ?? 0, 'total' => $products->total()]) }}</span>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
@@ -258,7 +258,7 @@
                                         <td colspan="7" class="px-4 py-12 text-center">
                                             <i class="fas fa-inbox mb-3 block text-2xl text-slate-300 dark:text-slate-600"></i>
                                             <p class="text-sm font-bold text-slate-600 dark:text-slate-300">{{ __('No stock requests matched the filters.') }}</p>
-                                            <p class="mt-1 text-xs text-slate-400">{{ __('Requests will appear here when customers ask for unavailable products.') }}</p>
+                                            <p class="mt-1 text-xs text-muted">{{ __('Requests will appear here when customers ask for unavailable products.') }}</p>
                                             <div class="mt-4 flex justify-center gap-2">
                                                 <a href="{{ route('admin.products.index') }}" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Go to Products') }}</a>
                                                 <a href="{{ route('admin.purchase-planning.index') }}" class="font-display rounded-xl bg-navy-deep px-4 py-2 text-sm font-bold text-white hover:bg-navy-raised">{{ __('Purchase Planning') }}</a>
@@ -275,9 +275,9 @@
                 {{-- ============ recent requests ============ --}}
                 <section class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3 dark:border-slate-800">
-                        <i class="fas fa-clock-rotate-left text-slate-400"></i>
+                        <i class="fas fa-clock-rotate-left text-muted"></i>
                         <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Recent Requests') }}</h3>
-                        <span class="ms-auto text-xs font-semibold text-slate-400">{{ __('latest :count', ['count' => $requests->count()]) }}</span>
+                        <span class="ms-auto text-xs font-semibold text-muted">{{ __('latest :count', ['count' => $requests->count()]) }}</span>
                     </div>
                     <div class="grid gap-3 p-4 md:grid-cols-2 xl:grid-cols-3">
                         @forelse($requests as $requestRow)
@@ -292,7 +292,7 @@
                                     </span>
                                 </div>
                                 <div class="mt-2 flex items-center justify-between">
-                                    <span class="text-[11px] text-slate-400">{{ $requestRow->created_at?->diffForHumans() }}</span>
+                                    <span class="text-[11px] text-muted">{{ $requestRow->created_at?->diffForHumans() }}</span>
                                     @if($requestRow->product)
                                         <a href="{{ route('admin.products.edit', $requestRow->product) }}" class="text-[11px] font-bold text-info hover:underline dark:text-info">{{ __('View product') }}</a>
                                     @endif
@@ -302,7 +302,7 @@
                             <div class="md:col-span-2 xl:col-span-3 py-8 text-center">
                                 <i class="fas fa-inbox mb-2 block text-xl text-slate-300 dark:text-slate-600"></i>
                                 <p class="text-sm font-bold text-slate-600 dark:text-slate-300">{{ __('No stock requests yet.') }}</p>
-                                <p class="mt-1 text-xs text-slate-400">{{ __('Requests will appear here when customers ask for unavailable products.') }}</p>
+                                <p class="mt-1 text-xs text-muted">{{ __('Requests will appear here when customers ask for unavailable products.') }}</p>
                             </div>
                         @endforelse
                     </div>
@@ -331,7 +331,7 @@
                                 <div class="min-w-0">
                                     <p class="truncate text-sm font-bold text-slate-900 dark:text-slate-100" x-text="sub.name"></p>
                                     <p class="truncate text-xs text-slate-500" x-text="sub.email"></p>
-                                    <p class="text-[11px] text-slate-400" x-text="sub.date"></p>
+                                    <p class="text-[11px] text-muted" x-text="sub.date"></p>
                                 </div>
                                 <span class="inline-flex shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide" :class="subChipClass(sub)" x-text="subStatusLabel(sub)"></span>
                             </div>

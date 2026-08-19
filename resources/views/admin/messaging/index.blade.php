@@ -2,7 +2,7 @@
     <x-slot name="header">
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
-                <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-slate-400">
+                <div class="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-muted">
                     <span>{{ __('Communications') }}</span>
                     <span class="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600"></span>
                     <span>OTPIQ</span>
@@ -70,7 +70,7 @@
                 <div class="space-y-5">
                     <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         <div class="border-b border-slate-200 px-5 py-4 dark:border-slate-800">
-                            <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">{{ __('Delivery channels') }}</p>
+                            <p class="text-xs font-bold uppercase tracking-[0.2em] text-muted">{{ __('Delivery channels') }}</p>
                             <h3 class="mt-1 text-lg font-bold text-slate-900 dark:text-white">{{ __('Provider health') }}</h3>
                         </div>
                         <div class="grid gap-4 p-5 {{ $whatsappVisible ? 'md:grid-cols-2' : '' }}">
@@ -109,10 +109,10 @@
                                     </p>
                                     @if ($key === 'whatsapp' && $configuration['template_name'] !== '')
                                         <div class="mt-4 rounded-xl border border-white/70 bg-white/70 px-3 py-2 dark:border-white/5 dark:bg-slate-900/60">
-                                            <p class="text-[10px] font-bold uppercase tracking-widest text-slate-400">{{ __('Template') }}</p>
+                                            <p class="text-[10px] font-bold uppercase tracking-widest text-muted">{{ __('Template') }}</p>
                                             <p class="mt-0.5 truncate font-mono text-xs font-semibold text-slate-700 dark:text-slate-200">
                                                 {{ $configuration['template_name'] }}
-                                                <span class="ml-1 font-sans text-[10px] font-bold uppercase text-slate-400">{{ $configuration['template_language'] }}</span>
+                                                <span class="ml-1 font-sans text-[10px] font-bold uppercase text-muted">{{ $configuration['template_language'] }}</span>
                                             </p>
                                         </div>
                                     @endif
@@ -134,7 +134,7 @@
 
                     <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         <div class="border-b border-slate-200 px-5 py-4 dark:border-slate-800">
-                            <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">{{ __('Configuration') }}</p>
+                            <p class="text-xs font-bold uppercase tracking-[0.2em] text-muted">{{ __('Configuration') }}</p>
                             <h3 class="mt-1 text-lg font-bold text-slate-900 dark:text-white">{{ __('Readiness checks') }}</h3>
                         </div>
                         <div class="grid gap-x-6 p-5 sm:grid-cols-2">
@@ -201,7 +201,7 @@
                                 <i class="fas fa-flask" aria-hidden="true"></i>
                             </span>
                             <div>
-                                <p class="text-xs font-bold uppercase tracking-[0.2em] text-slate-400">{{ __('Diagnostics') }}</p>
+                                <p class="text-xs font-bold uppercase tracking-[0.2em] text-muted">{{ __('Diagnostics') }}</p>
                                 <h3 class="text-lg font-bold text-slate-900 dark:text-white">{{ __('Send test OTP') }}</h3>
                             </div>
                         </div>
@@ -217,7 +217,7 @@
                                 @endif
                             </select>
                             @if ($whatsappVisible && ! $channels['whatsapp']['available'] && $channels['whatsapp']['missing'] !== [])
-                                <p class="mt-1.5 text-xs leading-5 text-slate-400">
+                                <p class="mt-1.5 text-xs leading-5 text-muted">
                                     {{ __('WhatsApp needs') }}: {{ implode(' · ', $channels['whatsapp']['missing']) }}
                                 </p>
                             @endif
@@ -229,7 +229,7 @@
                             <div class="rounded-xl border border-slate-300 bg-slate-50 px-3.5 py-3 font-mono text-sm font-bold text-slate-700 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200" dir="ltr">
                                 {{ $testPhone }}
                             </div>
-                            <p class="mt-1.5 text-xs leading-5 text-slate-400">{{ __('A random verification code will be generated and sent once') }}</p>
+                            <p class="mt-1.5 text-xs leading-5 text-muted">{{ __('A random verification code will be generated and sent once') }}</p>
                             @error('test_delivery')<p class="mt-1.5 text-xs font-semibold text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
                         </div>
 

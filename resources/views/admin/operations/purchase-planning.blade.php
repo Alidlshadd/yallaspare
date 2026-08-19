@@ -176,9 +176,9 @@
                 <div class="min-w-0 space-y-6">
                     <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3 dark:border-slate-800">
-                            <i class="fas fa-boxes-stacked text-slate-400"></i>
+                            <i class="fas fa-boxes-stacked text-muted"></i>
                             <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Products to reorder') }}</h3>
-                            <span class="ms-auto text-xs font-semibold text-slate-400">{{ __(':from–:to of :total', ['from' => $products->firstItem() ?? 0, 'to' => $products->lastItem() ?? 0, 'total' => $products->total()]) }}</span>
+                            <span class="ms-auto text-xs font-semibold text-muted">{{ __(':from–:to of :total', ['from' => $products->firstItem() ?? 0, 'to' => $products->lastItem() ?? 0, 'total' => $products->total()]) }}</span>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
@@ -236,9 +236,9 @@
                     {{-- ---------- recent purchase lists ---------- --}}
                     <section class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3 dark:border-slate-800">
-                            <i class="fas fa-folder-open text-slate-400"></i>
+                            <i class="fas fa-folder-open text-muted"></i>
                             <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Recent Purchase Lists') }}</h3>
-                            <span class="ms-auto text-xs font-semibold text-slate-400">{{ __('saved in this browser') }}</span>
+                            <span class="ms-auto text-xs font-semibold text-muted">{{ __('saved in this browser') }}</span>
                         </div>
                         <div class="grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-3" x-show="hasRecent">
                             <template x-for="entry in recentEntries" :key="entry.index">
@@ -255,7 +255,7 @@
                                 </article>
                             </template>
                         </div>
-                        <p class="px-4 py-8 text-center text-sm text-slate-400" x-show="recentEmpty" x-cloak>
+                        <p class="px-4 py-8 text-center text-sm text-muted" x-show="recentEmpty" x-cloak>
                             {{ __('No purchase lists yet. Add products to a list and save it — it will appear here.') }}
                         </p>
                     </section>
@@ -306,7 +306,7 @@
 
                         {{-- items --}}
                         <div class="max-h-[380px] overflow-y-auto">
-                            <div class="px-4 py-8 text-center text-sm text-slate-400" x-show="activeEmpty">
+                            <div class="px-4 py-8 text-center text-sm text-muted" x-show="activeEmpty">
                                 <i class="fas fa-cart-plus mb-2 block text-xl"></i>
                                 {{ __('This list is empty. Click + on a product, or add a manual item by code below.') }}
                             </div>
@@ -318,23 +318,23 @@
                                                 <span x-text="item.name"></span>
                                                 <span class="ms-1 inline-block rounded border border-dashed border-amber-600 bg-amber-50 px-1.5 align-[1px] text-[9px] font-bold uppercase tracking-wide text-amber-700 dark:border-amber-400 dark:bg-amber-400/10 dark:text-amber-300" x-show="item.manual">{{ __('Manual — not in system') }}</span>
                                             </p>
-                                            <p class="text-[11px] text-slate-400" x-text="item.sku"></p>
+                                            <p class="text-[11px] text-muted" x-text="item.sku"></p>
                                         </div>
                                         <button type="button" class="shrink-0 px-1 text-[15px] font-bold text-rose-500 opacity-70 hover:opacity-100" @click="removeItem" :data-key="item.key" aria-label="{{ __('Remove') }}">✕</button>
                                     </div>
                                     <div class="mt-2 grid grid-cols-[84px_110px_1fr] items-center gap-1.5">
                                         <div>
-                                            <label class="mb-0.5 block text-[9px] font-bold uppercase tracking-[0.09em] text-slate-400">{{ __('Qty') }}</label>
+                                            <label class="mb-0.5 block text-[9px] font-bold uppercase tracking-[0.09em] text-muted">{{ __('Qty') }}</label>
                                             <input type="number" min="1" step="1" class="pp-num h-[30px] w-full rounded-lg border-slate-300 bg-slate-50 px-2 py-0 text-right text-[13px] focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:bg-slate-900"
                                                 :value="item.qty" :data-key="item.key" @input="onQtyInput" @change="onQtyChange">
                                         </div>
                                         <div>
-                                            <label class="mb-0.5 block text-[9px] font-bold uppercase tracking-[0.09em] text-slate-400">{{ __('Unit cost') }}</label>
+                                            <label class="mb-0.5 block text-[9px] font-bold uppercase tracking-[0.09em] text-muted">{{ __('Unit cost') }}</label>
                                             <input type="number" min="0" step="any" class="pp-num h-[30px] w-full rounded-lg border-slate-300 bg-slate-50 px-2 py-0 text-right text-[13px] focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:bg-slate-900"
                                                 :value="item.cost" :data-key="item.key" @input="onCostInput" @change="onCostChange">
                                         </div>
                                         <div class="text-right">
-                                            <p class="text-[9px] font-bold uppercase tracking-[0.09em] text-slate-400">{{ __('Row total') }}</p>
+                                            <p class="text-[9px] font-bold uppercase tracking-[0.09em] text-muted">{{ __('Row total') }}</p>
                                             <p class="pp-num text-[13px] font-bold text-slate-900 dark:text-slate-100" x-text="rowTotalLabel(item)"></p>
                                         </div>
                                     </div>
@@ -359,7 +359,7 @@
                                 <input type="number" min="0" step="any" x-model="abc.cost" placeholder="{{ __('Unit cost') }}" class="pp-num h-8 rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             </div>
                             <input type="text" x-model="abc.note" placeholder="{{ __('Notes') }}" class="h-8 w-full rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                            <p class="text-[10.5px] leading-snug text-slate-400">{{ __('Not in the product database? It is added to this list only, flagged Manual. No product record is created.') }}</p>
+                            <p class="text-[10.5px] leading-snug text-muted">{{ __('Not in the product database? It is added to this list only, flagged Manual. No product record is created.') }}</p>
                             <button type="button" class="w-full rounded-lg bg-navy-deep py-2 text-sm font-bold text-white hover:bg-navy-raised" @click="addManual">{{ __('Add to current list') }}</button>
                         </div>
 
@@ -387,7 +387,7 @@
                             <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="exportCsv"><i class="fas fa-file-csv me-1"></i>{{ __('Export CSV') }}</button>
                             <button type="button" class="rounded-lg px-3 py-1.5 text-sm font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30" @click="clearList">✕ {{ __('Clear') }}</button>
                         </div>
-                        <p class="px-4 pb-3 text-[10.5px] text-slate-400">{{ __('Lists are stored in this browser only — they survive reloads and filters, but other admins cannot see them.') }}</p>
+                        <p class="px-4 pb-3 text-[10.5px] text-muted">{{ __('Lists are stored in this browser only — they survive reloads and filters, but other admins cannot see them.') }}</p>
                     </div>
                 </aside>
             </div>
@@ -418,7 +418,7 @@
                                         <td class="px-4 py-2.5">
                                             <span class="font-semibold text-slate-800 dark:text-slate-100" x-text="item.name"></span>
                                             <span class="ms-1 inline-block rounded border border-dashed border-amber-600 bg-amber-50 px-1.5 text-[9px] font-bold uppercase text-amber-700 dark:border-amber-400 dark:bg-amber-400/10 dark:text-amber-300" x-show="item.manual">{{ __('Manual') }}</span>
-                                            <span class="block text-[11px] text-slate-400" x-text="item.sku"></span>
+                                            <span class="block text-[11px] text-muted" x-text="item.sku"></span>
                                         </td>
                                         <td class="pp-num px-4 py-2.5 text-right" x-text="item.qtyLabel"></td>
                                         <td class="pp-num px-4 py-2.5 text-right" x-text="item.unitLabel"></td>
@@ -429,7 +429,7 @@
                         </table>
                     </div>
                     <div class="flex items-baseline justify-between border-t-2 border-accent px-5 py-3">
-                        <span class="text-[10.5px] font-bold uppercase tracking-[0.12em] text-slate-400">{{ __('Total') }}</span>
+                        <span class="text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted">{{ __('Total') }}</span>
                         <span class="pp-num text-lg font-bold text-accent dark:text-accent" x-text="viewTotalLabel"></span>
                     </div>
                     <div class="flex flex-wrap items-center gap-1.5 px-5 pb-4">

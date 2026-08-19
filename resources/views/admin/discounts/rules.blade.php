@@ -92,7 +92,7 @@
             'productOn' => 'border-amber-400 bg-amber-50/60 dark:border-amber-500/60 dark:bg-amber-950/20',
             'productOff' => 'border-slate-200 bg-white hover:border-amber-300 hover:bg-amber-50/40 dark:border-slate-700 dark:bg-slate-950 dark:hover:border-amber-900/40',
             'tickOn' => 'border-accent bg-accent text-[#422006]',
-            'tickOff' => 'border-slate-300 bg-white text-slate-400 dark:border-slate-600 dark:bg-slate-900 dark:text-slate-500',
+            'tickOff' => 'border-slate-300 bg-white text-muted dark:border-slate-600 dark:bg-slate-900 dark:text-slate-500',
             'stockOut' => 'bg-rose-100 text-rose-700 dark:bg-rose-950/30 dark:text-rose-300',
             'stockLow' => 'bg-amber-100 text-amber-700 dark:bg-amber-950/30 dark:text-amber-300',
             'stockIn' => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300',
@@ -227,7 +227,7 @@
                 <div class="rounded-2xl border-2 border-dashed border-slate-300 bg-white/60 px-6 py-14 text-center dark:border-slate-700 dark:bg-slate-900/60">
                     <i class="fas fa-tag mb-3 block text-2xl text-slate-300 dark:text-slate-600"></i>
                     <p class="text-sm font-bold text-slate-600 dark:text-slate-300">{{ __('No saved discount rules yet') }}</p>
-                    <p class="mt-1 text-xs text-slate-400">{{ __('Press your first tag in the builder below — it will hang here.') }}</p>
+                    <p class="mt-1 text-xs text-muted">{{ __('Press your first tag in the builder below — it will hang here.') }}</p>
                     <a href="#discount-rule-form" class="font-display mt-4 inline-flex rounded-xl bg-navy-deep px-4 py-2 text-sm font-bold text-white hover:bg-navy-raised">{{ __('Create Discount Rule') }}</a>
                 </div>
             @else
@@ -257,7 +257,7 @@
                             <span class="absolute end-3 top-2.5 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide {{ $chip['class'] }}">{{ $chip['label'] }}</span>
                             <p class="dr-tag-val dr-num">−{{ $row['valueLabel'] }}</p>
                             <h3 class="mt-0.5 text-sm font-bold text-slate-900 dark:text-slate-100">{{ $row['name'] }}</h3>
-                            <p class="mt-0.5 text-[11px] text-slate-400">
+                            <p class="mt-0.5 text-[11px] text-muted">
                                 {{ $row['scopeLabel'] }} · {{ $row['targetLabel'] }} · {{ $row['windowLabel'] }}@if($row['usedCount'] > 0) · {{ __('used :n×', ['n' => number_format($row['usedCount'])]) }}@endif
                             </p>
                             @if ($row['countdown'] !== '')
@@ -305,7 +305,7 @@
                         </span>
                     </a>
                 </div>
-                <p class="rounded-2xl border-2 border-dashed border-slate-300 bg-white/60 px-6 py-10 text-center text-sm text-slate-400 dark:border-slate-700 dark:bg-slate-900/60" x-show="wallEmpty" x-cloak>
+                <p class="rounded-2xl border-2 border-dashed border-slate-300 bg-white/60 px-6 py-10 text-center text-sm text-muted dark:border-slate-700 dark:bg-slate-900/60" x-show="wallEmpty" x-cloak>
                     {{ __('No rules matched the search or status filter.') }}
                 </p>
             @endif
@@ -382,25 +382,25 @@
                                 <input type="radio" name="discount_scope" value="all" x-model="scope" class="sr-only">
                                 <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-navy-deep text-accent"><i class="fas fa-globe text-xs"></i></span>
                                 <span class="block text-sm font-bold text-slate-900 dark:text-slate-100">{{ __('All Products') }}</span>
-                                <span class="block text-[11px] text-slate-400">{{ __('Full catalog') }}</span>
+                                <span class="block text-[11px] text-muted">{{ __('Full catalog') }}</span>
                             </label>
                             <label class="cursor-pointer rounded-xl border-[1.5px] p-3 transition" :class="scopeProductsCardClass">
                                 <input type="radio" name="discount_scope" value="products" x-model="scope" class="sr-only">
                                 <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-navy-deep text-accent"><i class="fas fa-box text-xs"></i></span>
                                 <span class="block text-sm font-bold text-slate-900 dark:text-slate-100">{{ __('Specific Products') }}</span>
-                                <span class="block text-[11px] text-slate-400">{{ __('Pick exact items') }}</span>
+                                <span class="block text-[11px] text-muted">{{ __('Pick exact items') }}</span>
                             </label>
                             <label class="cursor-pointer rounded-xl border-[1.5px] p-3 transition" :class="scopeCategoriesCardClass">
                                 <input type="radio" name="discount_scope" value="categories" x-model="scope" class="sr-only">
                                 <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-navy-deep text-accent"><i class="fas fa-layer-group text-xs"></i></span>
                                 <span class="block text-sm font-bold text-slate-900 dark:text-slate-100">{{ __('Specific Categories') }}</span>
-                                <span class="block text-[11px] text-slate-400">{{ __('Product families') }}</span>
+                                <span class="block text-[11px] text-muted">{{ __('Product families') }}</span>
                             </label>
                             <label class="cursor-pointer rounded-xl border-[1.5px] p-3 transition" :class="scopeBrandsCardClass">
                                 <input type="radio" name="discount_scope" value="brands" x-model="scope" class="sr-only">
                                 <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-navy-deep text-accent"><i class="fas fa-tags text-xs"></i></span>
                                 <span class="block text-sm font-bold text-slate-900 dark:text-slate-100">{{ __('Specific Brands') }}</span>
-                                <span class="block text-[11px] text-slate-400">{{ __('Brand-led rules') }}</span>
+                                <span class="block text-[11px] text-muted">{{ __('Brand-led rules') }}</span>
                             </label>
                         </div>
 
@@ -442,8 +442,8 @@
                             </div>
 
                             <div class="mt-3 min-h-[10rem]">
-                                <p class="py-10 text-center text-sm text-slate-400" x-show="loading" x-cloak>{{ __('Loading products...') }}</p>
-                                <p class="rounded-xl border border-dashed border-slate-300 bg-white px-4 py-10 text-center text-sm text-slate-400 dark:border-slate-700 dark:bg-slate-900" x-show="productsEmpty" x-cloak>{{ __('No products matched the current search and filters.') }}</p>
+                                <p class="py-10 text-center text-sm text-muted" x-show="loading" x-cloak>{{ __('Loading products...') }}</p>
+                                <p class="rounded-xl border border-dashed border-slate-300 bg-white px-4 py-10 text-center text-sm text-muted dark:border-slate-700 dark:bg-slate-900" x-show="productsEmpty" x-cloak>{{ __('No products matched the current search and filters.') }}</p>
                                 <div class="grid gap-2.5 md:grid-cols-2 xl:grid-cols-3" x-show="productsVisible" x-cloak>
                                     <template x-for="product in products" :key="product.id">
                                         <button type="button" @click="toggleProduct(product)" class="rounded-xl border-[1.5px] p-3 text-left transition" :class="productCardClass(product)">
@@ -454,7 +454,7 @@
                                                     <span x-show="productNotSelected(product)">+</span>
                                                 </span>
                                             </div>
-                                            <div class="mt-1.5 flex flex-wrap gap-1 text-[10px] text-slate-400">
+                                            <div class="mt-1.5 flex flex-wrap gap-1 text-[10px] text-muted">
                                                 <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 dark:border-slate-700 dark:bg-slate-800" x-text="productSku(product)"></span>
                                                 <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 dark:border-slate-700 dark:bg-slate-800" x-show="product.brand" x-text="product.brand"></span>
                                                 <span class="rounded-full px-2 py-0.5 font-bold" :class="stockToneClass(product)" x-text="stockLabel(product)"></span>
@@ -479,7 +479,7 @@
                                         <div class="flex items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 dark:border-slate-700 dark:bg-slate-900">
                                             <div class="min-w-0">
                                                 <p class="truncate text-[12.5px] font-bold text-slate-800 dark:text-slate-100" x-text="product.name"></p>
-                                                <p class="text-[10px] text-slate-400" x-text="productSku(product)"></p>
+                                                <p class="text-[10px] text-muted" x-text="productSku(product)"></p>
                                             </div>
                                             <button type="button" @click="removeProduct(product)" class="shrink-0 rounded-lg px-2 py-1 text-sm font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30">✕</button>
                                         </div>
@@ -530,7 +530,7 @@
                             <p class="dr-num mt-0.5 text-xs text-muted" x-text="summaryWindowLabel"></p>
 
                             <div class="mt-4 border-t border-dashed border-slate-200 pt-3 dark:border-slate-700">
-                                <label class="text-[10px] font-bold uppercase tracking-[0.13em] text-slate-400">{{ __('Price Simulator') }}</label>
+                                <label class="text-[10px] font-bold uppercase tracking-[0.13em] text-muted">{{ __('Price Simulator') }}</label>
                                 <input type="number" min="0" placeholder="{{ __('Sample price, e.g. 25000') }}" class="dr-num mt-1.5 w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" @input="onSimInput">
                                 <p class="dr-num mt-2 text-sm font-bold text-emerald-600 dark:text-emerald-400" x-text="simOutLabel"></p>
                             </div>

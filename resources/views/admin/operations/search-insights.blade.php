@@ -119,8 +119,8 @@
             <section class="grid gap-5 xl:grid-cols-[1.65fr_1fr]">
                 <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex flex-wrap items-baseline justify-between gap-2 px-5 pt-4 pb-2">
-                        <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">{{ __('Keyword Register') }} <span class="text-accent">&mdash; {{ __('by demand') }}</span></p>
-                        <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400">{{ number_format($keywords->total()) }} {{ __('records') }}</p>
+                        <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-muted">{{ __('Keyword Register') }} <span class="text-accent">&mdash; {{ __('by demand') }}</span></p>
+                        <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-muted">{{ number_format($keywords->total()) }} {{ __('records') }}</p>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="min-w-full text-sm">
@@ -140,7 +140,7 @@
                                         $demandShare = max(4, (int) round((((int) $keyword->search_count) / $pageMaxCount) * 100));
                                     @endphp
                                     <tr class="{{ $isZero ? 'bg-rose-50/60 dark:bg-rose-950/15' : '' }}">
-                                        <td class="si-mono px-5 py-3 text-xs text-slate-400">{{ str_pad($keywords->firstItem() + $index, 2, '0', STR_PAD_LEFT) }}</td>
+                                        <td class="si-mono px-5 py-3 text-xs text-muted">{{ str_pad($keywords->firstItem() + $index, 2, '0', STR_PAD_LEFT) }}</td>
                                         <td class="px-5 py-3">
                                             <span class="block font-bold text-slate-900 dark:text-slate-100">{{ $keyword->keyword }}</span>
                                             <span class="mt-1.5 block h-1 max-w-[260px] rounded-full {{ $isZero ? 'bg-gradient-to-r from-rose-600 to-rose-400' : 'bg-gradient-to-r from-accent to-accent' }}" style="width: {{ $demandShare }}%"></span>
@@ -166,7 +166,7 @@
                     {{-- Coverage gap register --}}
                     <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         <div class="flex items-baseline justify-between gap-3">
-                            <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">{{ __('Coverage Gap Register') }}</p>
+                            <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-muted">{{ __('Coverage Gap Register') }}</p>
                             <p class="text-[11px] font-bold uppercase tracking-[0.12em] {{ $summary['zero_result_on_page'] > 0 ? 'text-rose-600' : 'text-emerald-600' }}">{{ number_format($summary['zero_result_on_page']) }} {{ __('on page') }}</p>
                         </div>
                         <div class="mt-3 space-y-2">
@@ -199,8 +199,8 @@
                     {{-- Demand pulse --}}
                     <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         <div class="flex items-baseline justify-between gap-3">
-                            <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-400">{{ __('Demand Pulse') }} <span class="text-accent">&mdash; {{ __('7 days') }}</span></p>
-                            <p class="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400">{{ __('Active keywords / day') }}</p>
+                            <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-muted">{{ __('Demand Pulse') }} <span class="text-accent">&mdash; {{ __('7 days') }}</span></p>
+                            <p class="text-[10px] font-bold uppercase tracking-[0.1em] text-muted">{{ __('Active keywords / day') }}</p>
                         </div>
                         <div class="mt-4 flex h-24 items-end gap-1.5">
                             @foreach ($demandPulse as $pulse)
@@ -223,7 +223,7 @@
             </section>
 
             {{-- ===== Footer strip ===== --}}
-            <section class="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400 dark:border-slate-800 dark:bg-slate-900">
+            <section class="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-[10px] font-bold uppercase tracking-[0.14em] text-muted dark:border-slate-800 dark:bg-slate-900">
                 <span>{{ __('Zero-hit rows are highlighted in rose') }}</span>
                 <span>{{ __('Page') }} {{ $keywords->currentPage() }} / {{ max(1, $keywords->lastPage()) }} &middot; {{ number_format($keywords->total()) }} {{ __('records') }}</span>
             </section>

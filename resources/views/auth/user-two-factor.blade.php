@@ -109,7 +109,7 @@
 
     <div class="my-5 flex items-center gap-3" aria-hidden="true">
         <span class="h-px flex-1 bg-slate-200 dark:bg-white/10"></span>
-        <span class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400">{{ __('or') }}</span>
+        <span class="text-[10px] font-semibold uppercase tracking-[0.16em] text-muted">{{ __('or') }}</span>
         <span class="h-px flex-1 bg-slate-200 dark:bg-white/10"></span>
     </div>
 
@@ -138,7 +138,7 @@
                     <h2 class="text-lg font-bold">{{ __('Choose verification method') }}</h2>
                     <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('We will invalidate the previous code after the new code is sent successfully.') }}</p>
                 </div>
-                <button type="button" class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-white/10 dark:hover:text-white" data-method-dialog-close aria-label="{{ __('Close') }}">×</button>
+                <button type="button" class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full text-muted hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-white/10 dark:hover:text-white" data-method-dialog-close aria-label="{{ __('Close') }}">×</button>
             </div>
 
             <div class="mt-5 space-y-2">

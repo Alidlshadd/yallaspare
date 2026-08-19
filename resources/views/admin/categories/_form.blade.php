@@ -2,7 +2,7 @@
     $isEdit = isset($category);
     $formAction = $isEdit ? route('admin.categories.update', $category) : route('admin.categories.store');
 
-    $inputBase = 'h-11 w-full px-3 rounded-xl border bg-slate-50 text-sm text-slate-900 placeholder:text-slate-400 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-900';
+    $inputBase = 'h-11 w-full px-3 rounded-xl border bg-slate-50 text-sm text-slate-900 placeholder-muted transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-900';
     $inputOk = 'border-slate-200 dark:border-slate-700';
     $inputErr = 'border-rose-300 dark:border-rose-500/50';
     $labelClass = 'block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5';

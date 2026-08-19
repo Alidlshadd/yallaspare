@@ -37,15 +37,15 @@
 
             <div class="grid gap-4 sm:grid-cols-3">
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <p class="text-xs font-bold uppercase tracking-widest text-slate-400">{{ __('Total Brands') }}</p>
+                    <p class="text-xs font-bold uppercase tracking-widest text-muted">{{ __('Total Brands') }}</p>
                     <p class="mt-2 text-3xl font-bold text-slate-900 dark:text-white">{{ number_format($totalBrands) }}</p>
                 </div>
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <p class="text-xs font-bold uppercase tracking-widest text-slate-400">{{ __('Brands With Products') }}</p>
+                    <p class="text-xs font-bold uppercase tracking-widest text-muted">{{ __('Brands With Products') }}</p>
                     <p class="mt-2 text-3xl font-bold text-emerald-600 dark:text-emerald-400">{{ number_format($assignedBrands) }}</p>
                 </div>
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <p class="text-xs font-bold uppercase tracking-widest text-slate-400">{{ __('Assigned Products') }}</p>
+                    <p class="text-xs font-bold uppercase tracking-widest text-muted">{{ __('Assigned Products') }}</p>
                     <p class="mt-2 text-3xl font-bold text-accent">{{ number_format($totalAssignedProducts) }}</p>
                 </div>
             </div>
@@ -69,7 +69,7 @@
                         <div>
                             <label for="brand-logo" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">{{ __('Brand Logo') }}</label>
                             <input id="brand-logo" type="file" name="logo" accept="image/png,image/jpeg,image/webp" class="block w-full rounded-xl border border-dashed border-slate-300 bg-slate-50 p-3 text-xs text-slate-600 file:me-3 file:rounded-lg file:border-0 file:bg-navy-deep file:px-3 file:py-2 file:font-bold file:text-accent dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                            <p class="mt-1.5 text-xs text-slate-400">{{ __('PNG, JPG or WebP up to 2MB.') }}</p>
+                            <p class="mt-1.5 text-xs text-muted">{{ __('PNG, JPG or WebP up to 2MB.') }}</p>
                         </div>
                         <button type="submit" class="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-navy-deep px-4 text-sm font-bold text-accent transition hover:bg-[#090946]">
                             <i class="fas fa-plus"></i> {{ __('Create Brand') }}
@@ -115,7 +115,7 @@
                                     </div>
                                     <div class="p-4">
                                         <h3 class="truncate text-base font-bold text-slate-900 dark:text-white">{{ $brand->name }}</h3>
-                                        <p class="mt-1 truncate font-mono text-[11px] text-slate-400">{{ $brand->slug }}</p>
+                                        <p class="mt-1 truncate font-mono text-[11px] text-muted">{{ $brand->slug }}</p>
 
                                         <a href="{{ route('admin.products.index', ['product_brand_id' => $brand->id]) }}" class="mt-3 flex items-center justify-between rounded-xl border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300">
                                             <span><i class="fas fa-box me-1"></i> {{ __('Products') }}</span>

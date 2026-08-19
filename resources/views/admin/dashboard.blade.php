@@ -110,13 +110,13 @@
                 <i class="far fa-calendar-days text-sm"></i>
             </div>
             <div>
-                <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold leading-none">{{ __('Time Range') }}</p>
-                <p class="text-sm font-bold text-primary dark:text-slate-100 leading-tight mt-0.5">{{ __('Analytics Period') }} <span class="font-mono text-[11px] text-slate-400">· {{ __('Last :n days', ['n' => $analyticsDays]) }}</span></p>
+                <p class="text-[10px] uppercase tracking-widest text-muted font-bold leading-none">{{ __('Time Range') }}</p>
+                <p class="text-sm font-bold text-primary dark:text-slate-100 leading-tight mt-0.5">{{ __('Analytics Period') }} <span class="font-mono text-[11px] text-muted">· {{ __('Last :n days', ['n' => $analyticsDays]) }}</span></p>
             </div>
         </div>
 
         <div class="flex items-center gap-1.5">
-            <span class="hidden sm:inline text-[10px] uppercase tracking-widest text-slate-400 font-bold mr-1">{{ __('Preset') }}</span>
+            <span class="hidden sm:inline text-[10px] uppercase tracking-widest text-muted font-bold mr-1">{{ __('Preset') }}</span>
             @foreach($allowedAnalyticsDays as $dayOption)
                 @php $isActive = (int) $analyticsDays === (int) $dayOption; @endphp
                 <a href="{{ route('admin.dashboard', ['analytics_days' => $dayOption]) }}"
@@ -344,7 +344,7 @@
                     @else
                         <span class="text-slate-500 font-bold">0%</span>
                     @endif
-                    <span class="text-slate-400 text-[11px]">{{ __('vs yesterday') }}</span>
+                    <span class="text-muted text-[11px]">{{ __('vs yesterday') }}</span>
                 </div>
                 <div class="h-1.5 bg-slate-100 rounded-full overflow-hidden dark:bg-slate-800">
                     <div class="h-full {{ $salesChangePercent >= 0 ? 'bg-gradient-to-r from-emerald-400 to-teal-500' : 'bg-gradient-to-r from-rose-400 to-rose-600' }} rounded-full" style="width: {{ $todayPct }}%"></div>
@@ -546,7 +546,7 @@
                                 <div class="min-w-0">
                                     <p class="truncate text-sm font-bold text-slate-700 dark:text-slate-200">{{ $row['name'] }}</p>
                                     @if(($row['sku'] ?? '') !== '')
-                                        <p class="font-mono text-[10px] text-slate-400">{{ $row['sku'] }}</p>
+                                        <p class="font-mono text-[10px] text-muted">{{ $row['sku'] }}</p>
                                     @endif
                                 </div>
                                 <span class="num-display shrink-0 text-sm font-bold text-primary dark:text-slate-100">{{ number_format((int) $row['count']) }}</span>
@@ -909,7 +909,7 @@
             </div>
             <p class="mt-4 num-display text-3xl font-bold text-primary dark:text-slate-100">
                 @if($avgShipHours === null)
-                    <span class="text-slate-400">—</span>
+                    <span class="text-muted">—</span>
                 @elseif($avgShipHours >= 24)
                     {{ number_format($avgShipHours / 24, 1) }}<span class="text-base font-bold text-slate-500">{{ __('d') }}</span>
                 @else
@@ -939,7 +939,7 @@
                     @foreach($topProfitable->take(3) as $i => $product)
                         <li class="flex items-center justify-between gap-2">
                             <span class="inline-flex items-center gap-2 truncate text-slate-700 dark:text-slate-200" title="{{ $product->name_en }}">
-                                <span class="font-mono text-[10px] text-slate-400">0{{ $i + 1 }}</span>
+                                <span class="font-mono text-[10px] text-muted">0{{ $i + 1 }}</span>
                                 {{ \Illuminate\Support\Str::limit((string) $product->name_en, 20) }}
                             </span>
                             <span class="num-display font-bold text-emerald-700 dark:text-emerald-300 whitespace-nowrap text-xs">
@@ -1019,7 +1019,7 @@
                     <p class="text-xs text-slate-500 mt-1 dark:text-slate-400">{{ __('Last :n days (in minus out)', ['n' => $analyticsDays]) }}</p>
                 </div>
                 <div class="text-right">
-                    <p class="text-[9px] uppercase tracking-widest text-slate-400 font-bold">{{ __('Net') }}</p>
+                    <p class="text-[9px] uppercase tracking-widest text-muted font-bold">{{ __('Net') }}</p>
                     <p class="num-display text-xl font-bold {{ $stockNet >= 0 ? 'text-emerald-600 dark:text-emerald-300' : 'text-rose-600 dark:text-rose-300' }}">{{ $stockNet >= 0 ? '+' : '' }}{{ number_format($stockNet) }}</p>
                 </div>
             </div>
@@ -1032,7 +1032,7 @@
                         <span class="absolute inset-0 grid place-items-center"><span class="h-2 w-2 rounded-full bg-emerald-500/40"></span></span>
                     </div>
                     <p class="mt-3 text-sm font-bold">{{ __('No stock movement trend data yet') }}</p>
-                    <p class="text-[11px] mt-1 font-mono text-slate-400">— {{ __('Awaiting signal') }} —</p>
+                    <p class="text-[11px] mt-1 font-mono text-muted">— {{ __('Awaiting signal') }} —</p>
                 </div>
             @endif
         </div>
@@ -1074,7 +1074,7 @@
                         <span class="absolute inset-0 grid place-items-center"><span class="h-2 w-2 rounded-full bg-info/40"></span></span>
                     </div>
                     <p class="mt-3 text-sm font-bold">{{ __('No recent inventory movement data') }}</p>
-                    <p class="text-[11px] mt-1 font-mono text-slate-400">— {{ __('Awaiting signal') }} —</p>
+                    <p class="text-[11px] mt-1 font-mono text-muted">— {{ __('Awaiting signal') }} —</p>
                 </div>
             @endif
         </div>
@@ -1134,7 +1134,7 @@
                                 </div>
                                 <div class="text-right shrink-0">
                                     <p class="num-display text-2xl font-bold" style="color: {{ $sevColor }};">{{ $product->stock_quantity }}</p>
-                                    <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold">{{ __('left') }}</p>
+                                    <p class="text-[10px] uppercase tracking-widest text-muted font-bold">{{ __('left') }}</p>
                                 </div>
                             </div>
                             {{-- Threshold proximity bar --}}
@@ -1142,7 +1142,7 @@
                                 <div class="flex-1 h-1.5 bg-white/60 dark:bg-slate-800 rounded-full overflow-hidden">
                                     <div class="h-full rounded-full" style="width: {{ $stockPct }}%; background: linear-gradient(90deg, {{ $sevColor }}, {{ $sevColor }}aa);"></div>
                                 </div>
-                                <span class="text-[10px] font-mono text-slate-400 whitespace-nowrap">{{ $product->stock_quantity }} / {{ $lowStockThreshold }}</span>
+                                <span class="text-[10px] font-mono text-muted whitespace-nowrap">{{ $product->stock_quantity }} / {{ $lowStockThreshold }}</span>
                             </div>
                         </div>
                     @endforeach

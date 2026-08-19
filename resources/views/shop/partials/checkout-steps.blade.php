@@ -25,7 +25,7 @@
                     'checkout-step-dot relative flex h-9 w-9 items-center justify-center rounded-full border-2 transition-colors duration-300',
                     'border-primary bg-primary text-white checkout-step-active' => $isActive,
                     'border-emerald-500 bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-300' => $isDone,
-                    'border-slate-200 bg-white text-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-500' => ! $isDone && ! $isActive,
+                    'border-slate-200 bg-white text-muted dark:border-slate-700 dark:bg-slate-900 dark:text-slate-500' => ! $isDone && ! $isActive,
                 ])
             >
                 @if ($isDone)
@@ -55,7 +55,7 @@
                     'hidden text-sm font-semibold sm:block',
                     'text-primary dark:text-white' => $isActive,
                     'text-emerald-600 dark:text-emerald-300' => $isDone,
-                    'text-slate-400 dark:text-slate-500' => ! $isDone && ! $isActive,
+                    'text-muted dark:text-slate-500' => ! $isDone && ! $isActive,
                 ])
             >{{ $step['label'] }}</span>
         </div>

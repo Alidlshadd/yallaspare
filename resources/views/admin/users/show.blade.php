@@ -107,7 +107,7 @@
                     <div class="min-w-0 flex-1">
                         <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1">
                             <h3 class="text-xl font-bold text-slate-900 dark:text-white">{{ $user->name }}</h3>
-                            <span class="text-sm tabular-nums text-slate-400 dark:text-slate-500">#{{ $user->id }}</span>
+                            <span class="text-sm tabular-nums text-muted dark:text-slate-500">#{{ $user->id }}</span>
                             <span class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-bold {{ $roleMeta['chip'] }}">
                                 <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
                                 {{ $roleMeta['label'] }}
@@ -141,8 +141,8 @@
                         </div>
                     </div>
                     <div class="grid grid-cols-2 gap-x-6 gap-y-1 text-sm sm:text-end">
-                        <span class="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('Last Order') }}</span>
-                        <span class="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('Updated') }}</span>
+                        <span class="text-[11px] font-bold uppercase tracking-widest text-muted dark:text-slate-500">{{ __('Last Order') }}</span>
+                        <span class="text-[11px] font-bold uppercase tracking-widest text-muted dark:text-slate-500">{{ __('Updated') }}</span>
                         <span class="font-semibold tabular-nums text-slate-800 dark:text-slate-100">{{ $stats['last_order_at'] ? $stats['last_order_at']->format('d M Y') : '—' }}</span>
                         <span class="font-semibold tabular-nums text-slate-800 dark:text-slate-100">{{ $user->updated_at?->format('d M Y') }}</span>
                     </div>
@@ -169,7 +169,7 @@
                 </div>
                 <div class="rounded-xl border border-accent/70 bg-white p-4 shadow-sm dark:border-accent/35 dark:bg-slate-900">
                     <p class="text-[11px] font-bold uppercase tracking-widest text-accent dark:text-accent">{{ __('Customer Reviews') }}</p>
-                    <p class="mt-2 text-2xl font-bold tabular-nums text-accent dark:text-accent">{{ $reviewAverage ? number_format((float) $reviewAverage, 1) : '0.0' }}<span class="text-sm font-bold text-slate-400 dark:text-slate-500"> / 5 · {{ number_format($userReviews->count()) }}</span></p>
+                    <p class="mt-2 text-2xl font-bold tabular-nums text-accent dark:text-accent">{{ $reviewAverage ? number_format((float) $reviewAverage, 1) : '0.0' }}<span class="text-sm font-bold text-muted dark:text-slate-500"> / 5 · {{ number_format($userReviews->count()) }}</span></p>
                 </div>
             </div>
 
@@ -291,12 +291,12 @@
                             <dl class="mt-4 space-y-3 text-sm">
                                 @if($user->banned_until)
                                     <div>
-                                        <dt class="text-xs font-bold uppercase tracking-wide text-slate-400 dark:text-slate-500">{{ __('Banned Until') }}</dt>
+                                        <dt class="text-xs font-bold uppercase tracking-wide text-muted dark:text-slate-500">{{ __('Banned Until') }}</dt>
                                         <dd class="mt-1 font-semibold text-slate-900 dark:text-slate-100">{{ $user->banned_until->format('d M Y H:i') }}</dd>
                                     </div>
                                 @endif
                                 <div>
-                                    <dt class="text-xs font-bold uppercase tracking-wide text-slate-400 dark:text-slate-500">{{ __('Reason') }}</dt>
+                                    <dt class="text-xs font-bold uppercase tracking-wide text-muted dark:text-slate-500">{{ __('Reason') }}</dt>
                                     <dd class="mt-1 text-slate-700 dark:text-slate-300">{{ $user->ban_reason ?: __('No reason provided.') }}</dd>
                                 </div>
                             </dl>
@@ -418,19 +418,19 @@
                         <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ __('Current Snapshot') }}</p>
                         <dl class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
                             <div>
-                                <dt class="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('Email Verified') }}</dt>
+                                <dt class="text-[11px] font-bold uppercase tracking-widest text-muted dark:text-slate-500">{{ __('Email Verified') }}</dt>
                                 <dd class="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $user->email_verified_at ? $user->email_verified_at->format('d M Y H:i') : __('Unverified') }}</dd>
                             </div>
                             <div>
-                                <dt class="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('Created') }}</dt>
+                                <dt class="text-[11px] font-bold uppercase tracking-widest text-muted dark:text-slate-500">{{ __('Created') }}</dt>
                                 <dd class="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $user->created_at?->format('d M Y H:i') }}</dd>
                             </div>
                             <div>
-                                <dt class="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('Updated') }}</dt>
+                                <dt class="text-[11px] font-bold uppercase tracking-widest text-muted dark:text-slate-500">{{ __('Updated') }}</dt>
                                 <dd class="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $user->updated_at?->format('d M Y H:i') }}</dd>
                             </div>
                             <div>
-                                <dt class="text-[11px] font-bold uppercase tracking-widest text-slate-400 dark:text-slate-500">{{ __('Last Order') }}</dt>
+                                <dt class="text-[11px] font-bold uppercase tracking-widest text-muted dark:text-slate-500">{{ __('Last Order') }}</dt>
                                 <dd class="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $stats['last_order_at'] ? $stats['last_order_at']->format('d M Y H:i') : '—' }}</dd>
                             </div>
                         </dl>
@@ -529,7 +529,7 @@
                                     @if($review->product?->image)
                                         <img src="{{ asset('storage/' . ltrim((string) $review->product->image, '/')) }}" alt="{{ $review->product->name }}" class="h-full w-full object-contain">
                                     @else
-                                        <div class="flex h-full w-full items-center justify-center text-slate-400 dark:text-slate-500">
+                                        <div class="flex h-full w-full items-center justify-center text-muted dark:text-slate-500">
                                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 16 9 11l4 4 3-3 4 4" />
                                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 19h16" />

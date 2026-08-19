@@ -115,9 +115,9 @@
             {{-- ============ dealer roster ============ --}}
             <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3 dark:border-slate-800">
-                    <i class="fas fa-handshake text-slate-400"></i>
+                    <i class="fas fa-handshake text-muted"></i>
                     <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Dealer Directory') }}</h3>
-                    <span class="ms-auto text-xs font-semibold text-slate-400">
+                    <span class="ms-auto text-xs font-semibold text-muted">
                         {{ __(':from–:to of :total', ['from' => $dealers->firstItem() ?? 0, 'to' => $dealers->lastItem() ?? 0, 'total' => $dealers->total()]) }}
                     </span>
                 </div>
@@ -169,13 +169,13 @@
                                                         {{ $dealer->name }}
                                                     @endif
                                                 </div>
-                                                <div class="mt-0.5 text-xs text-slate-400">#{{ $dealer->id }}</div>
+                                                <div class="mt-0.5 text-xs text-muted">#{{ $dealer->id }}</div>
                                             </div>
                                         </div>
                                     </td>
                                     <td class="px-4 py-3">
                                         <div class="truncate text-slate-700 dark:text-slate-200">{{ $dealer->email }}</div>
-                                        <div class="mt-0.5 text-xs text-slate-400">{{ $dealer->phone ?: __('No phone number') }}</div>
+                                        <div class="mt-0.5 text-xs text-muted">{{ $dealer->phone ?: __('No phone number') }}</div>
                                     </td>
                                     <td class="px-4 py-3">
                                         <span class="inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide {{ $chip['class'] }}">{{ $chip['label'] }}</span>
@@ -185,7 +185,7 @@
                                     <td class="dl-num px-4 py-3 text-right text-slate-600 dark:text-slate-300">{{ $money((float) $dealer->paid_revenue) }}</td>
                                     <td class="px-4 py-3">
                                         <div class="text-slate-600 dark:text-slate-300">{{ $dealer->created_at?->format('d M Y') }}</div>
-                                        <div class="mt-0.5 text-xs text-slate-400">{{ $dealer->created_at?->diffForHumans() }}</div>
+                                        <div class="mt-0.5 text-xs text-muted">{{ $dealer->created_at?->diffForHumans() }}</div>
                                     </td>
                                     <td class="px-4 py-3">
                                         <div class="flex items-center justify-end gap-1.5">
@@ -205,7 +205,7 @@
                                     <td colspan="8" class="px-4 py-12 text-center">
                                         <i class="fas fa-handshake-slash mb-3 block text-2xl text-slate-300 dark:text-slate-600"></i>
                                         <p class="text-sm font-bold text-slate-600 dark:text-slate-300">{{ __('No dealers found') }}</p>
-                                        <p class="mt-1 text-xs text-slate-400">{{ __('Try adjusting the search query or switching the status filter. Dealers are promoted from user accounts.') }}</p>
+                                        <p class="mt-1 text-xs text-muted">{{ __('Try adjusting the search query or switching the status filter. Dealers are promoted from user accounts.') }}</p>
                                         <div class="mt-4 flex justify-center gap-2">
                                             <a href="{{ route('admin.dealers.index') }}" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Reset filters') }}</a>
                                             @if (Route::has('admin.users.index') && auth()->user()?->can('manage-users'))
@@ -235,14 +235,14 @@
                 ] as $tile)
                     <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         <div class="flex items-start justify-between gap-2">
-                            <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-slate-400">{{ $tile['label'] }}</p>
+                            <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-muted">{{ $tile['label'] }}</p>
                             <i class="fas {{ $tile['icon'] }} text-accent"></i>
                         </div>
                         @if ($tile['dealer'])
                             <p class="mt-2 truncate text-sm font-bold text-slate-900 dark:text-slate-100">{{ $tile['dealer']->name }}</p>
                             <p class="dl-num mt-0.5 text-sm font-bold text-accent dark:text-accent">{{ $tile['value'] }}</p>
                         @else
-                            <p class="mt-2 text-sm font-semibold text-slate-400">{{ __('No dealer data yet') }}</p>
+                            <p class="mt-2 text-sm font-semibold text-muted">{{ __('No dealer data yet') }}</p>
                         @endif
                     </article>
                 @endforeach
@@ -265,7 +265,7 @@
                     <div class="min-h-0 flex-1 space-y-4 overflow-y-auto p-5">
                         {{-- contact --}}
                         <div class="rounded-xl border border-slate-200 p-3.5 dark:border-slate-700">
-                            <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-slate-400">{{ __('Contact') }}</p>
+                            <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-muted">{{ __('Contact') }}</p>
                             <p class="mt-1.5 truncate text-sm font-semibold text-slate-800 dark:text-slate-100" x-text="drawerEmail"></p>
                             <p class="mt-0.5 text-sm text-slate-500 dark:text-slate-400" x-text="drawerPhone"></p>
                         </div>
@@ -273,11 +273,11 @@
                         {{-- performance --}}
                         <div class="grid grid-cols-2 gap-3">
                             <div class="rounded-xl border border-slate-200 p-3.5 dark:border-slate-700">
-                                <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-slate-400">{{ __('Orders') }}</p>
+                                <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-muted">{{ __('Orders') }}</p>
                                 <p class="dl-num mt-1 text-lg font-bold text-slate-900 dark:text-slate-100" x-text="drawerOrdersLabel"></p>
                             </div>
                             <div class="rounded-xl border border-slate-200 p-3.5 dark:border-slate-700">
-                                <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-slate-400">{{ __('Revenue') }}</p>
+                                <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-muted">{{ __('Revenue') }}</p>
                                 <p class="dl-num mt-1 truncate text-lg font-bold text-accent dark:text-accent" x-text="drawerRevenueLabel"></p>
                             </div>
                         </div>
@@ -287,7 +287,7 @@
                             @csrf
                             @method('PATCH')
                             <div class="flex items-center justify-between">
-                                <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-slate-400">{{ __('Update Dealer') }}</p>
+                                <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-muted">{{ __('Update Dealer') }}</p>
                                 <span class="inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide" :class="drawerStatusClass" x-text="drawerStatusLabel"></span>
                             </div>
                             <label class="block">

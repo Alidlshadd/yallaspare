@@ -330,12 +330,12 @@
                     <input type="hidden" name="stock" value="{{ $stockFilter }}">
                 @endif
                 <div class="relative flex-1">
-                    <span class="absolute inset-y-0 start-0 flex items-center ps-3 text-slate-400">
+                    <span class="absolute inset-y-0 start-0 flex items-center ps-3 text-muted">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 100-15 7.5 7.5 0 000 15z"/></svg>
                     </span>
                     <input name="search" value="{{ $search }}"
                            placeholder="{{ __('Search by name, slug, or description...') }}"
-                           class="h-10 w-full ps-10 pe-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 placeholder:text-slate-400 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-900">
+                           class="h-10 w-full ps-10 pe-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 placeholder-muted transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-900">
                 </div>
                 <button type="submit" class="inline-flex items-center gap-2 h-10 px-4 rounded-xl text-sm font-bold text-accent bg-navy-deep hover:bg-navy transition shrink-0">
                     {{ __('Search') }}

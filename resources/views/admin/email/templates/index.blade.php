@@ -8,7 +8,7 @@
                     <i class="fas fa-arrow-left text-xs"></i>
                 </a>
                 <div>
-                    <p class="text-[10px] uppercase tracking-[0.22em] text-slate-400 font-bold leading-none">
+                    <p class="text-[10px] uppercase tracking-[0.22em] text-muted font-bold leading-none">
                         <a href="{{ route('admin.email.index') }}" class="hover:text-primary dark:hover:text-white">{{ __('Email Center') }}</a>
                         <span class="mx-1 text-slate-300">/</span>
                         <span class="text-primary dark:text-white">{{ __('Template Editor') }}</span>
@@ -45,9 +45,9 @@
                         <i class="fas fa-file-pen text-sm"></i>
                     </div>
                     <div>
-                        <p class="text-[10px] uppercase tracking-[0.22em] text-slate-400 font-bold leading-none">{{ __('Transactional templates') }}</p>
+                        <p class="text-[10px] uppercase tracking-[0.22em] text-muted font-bold leading-none">{{ __('Transactional templates') }}</p>
                         <p class="text-2xl font-semibold text-slate-900 dark:text-white leading-tight mt-1 tracking-tight">{{ count($rows) }} {{ __('templates') }} · {{ count($rows) * count(\App\Models\EmailTemplate::LOCALES) }} {{ __('locales') }}</p>
-                        <p class="text-[11px] text-slate-400 font-mono mt-0.5">EN · AR · KU</p>
+                        <p class="text-[11px] text-muted font-mono mt-0.5">EN · AR · KU</p>
                     </div>
                 </div>
                 <div class="flex items-center gap-2">
@@ -91,7 +91,7 @@
                                                 <i class="fas fa-check text-[9px] text-emerald-500 group-hover:text-white"></i>
                                             @endif
                                             @if($info['updated_at'])
-                                                <span class="font-mono text-[9px] text-slate-400 group-hover:text-white/70">· {{ $info['updated_at']->diffForHumans() }}</span>
+                                                <span class="font-mono text-[9px] text-muted group-hover:text-white/70">· {{ $info['updated_at']->diffForHumans() }}</span>
                                             @endif
                                         </a>
                                     @endforeach
@@ -103,7 +103,7 @@
             </ul>
         </div>
 
-        <p class="text-[10px] font-mono text-slate-400">
+        <p class="text-[10px] font-mono text-muted">
             <i class="fas fa-info-circle"></i>
             {{ __('Green check = admin override saved. Empty = using default hardcoded content.') }}
         </p>

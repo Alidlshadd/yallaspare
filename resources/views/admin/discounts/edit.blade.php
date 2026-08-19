@@ -149,7 +149,7 @@
             <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <div class="flex items-center justify-between gap-3">
                     <div>
-                        <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-slate-400">{{ __('Redemptions') }}</p>
+                        <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-muted">{{ __('Redemptions') }}</p>
                         <h2 class="mt-0.5 text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Last 12 days') }}</h2>
                     </div>
                     <span class="cp-num rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ number_format($totalRedemptions) }} {{ __('total') }}</span>
@@ -165,7 +165,7 @@
                 </div>
             </article>
             <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-slate-400">{{ __('Usage depth') }}</p>
+                <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-muted">{{ __('Usage depth') }}</p>
                 <h2 class="mt-0.5 text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('How exhausted are limited coupons?') }}</h2>
                 <div class="mt-4 space-y-3.5">
                     @foreach ($usageDistribution as $bucket)
@@ -186,7 +186,7 @@
         {{-- ============ coupons table ============ --}}
         <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <div class="flex flex-wrap items-center gap-2 border-b border-slate-200 px-4 py-3 dark:border-slate-800">
-                <i class="fas fa-ticket text-slate-400"></i>
+                <i class="fas fa-ticket text-muted"></i>
                 <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Coupon Campaigns') }}</h3>
                 <div class="ms-auto flex flex-wrap items-center gap-2">
                     <input type="search" placeholder="{{ __('Search code…') }}" class="h-9 w-44 rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" @input="onSearchInput">
@@ -271,7 +271,7 @@
                                             </div>
                                         @else
                                             <div class="flex justify-end">
-                                                <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-slate-400 dark:bg-slate-800" title="{{ __('This row comes from the site coupon settings below.') }}">{{ __('Settings coupon') }}</span>
+                                                <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-muted dark:bg-slate-800" title="{{ __('This row comes from the site coupon settings below.') }}">{{ __('Settings coupon') }}</span>
                                             </div>
                                         @endif
                                     </td>
@@ -289,10 +289,10 @@
         {{-- ============ site coupon settings (collapsible, existing form) ============ --}}
         <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <button type="button" class="flex w-full items-center gap-2 px-4 py-3.5 text-left" @click="toggleSettings">
-                <i class="fas fa-sliders text-slate-400"></i>
+                <i class="fas fa-sliders text-muted"></i>
                 <span class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Site Coupon Settings') }}</span>
                 <span class="cp-num ms-2 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-500 dark:bg-slate-800 dark:text-slate-400">{{ $couponCode !== '' ? $couponCode : __('No code') }}</span>
-                <span class="ms-auto text-slate-400" x-text="settingsChevron">▾</span>
+                <span class="ms-auto text-muted" x-text="settingsChevron">▾</span>
             </button>
             <div class="border-t border-slate-200 dark:border-slate-800" x-show="settingsOpen" x-cloak>
                 <form method="POST" action="{{ route('admin.discounts.update') }}" class="p-4 sm:p-5">
@@ -344,7 +344,7 @@
                         <div>
                             <label for="coupon_value" class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Value') }}</label>
                             <input type="number" step="0.01" min="0" :max="settingsValueMax" name="coupon_value" id="coupon_value" value="{{ old('coupon_value', (string) data_get($settings, 'coupon_value', '0')) }}" class="cp-num w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                            <span class="mt-1 block text-[11px] text-slate-400">{{ __('Percent type supports max 100.') }}</span>
+                            <span class="mt-1 block text-[11px] text-muted">{{ __('Percent type supports max 100.') }}</span>
                             @error('coupon_value')
                                 <span class="mt-1 block text-xs font-medium text-rose-600">{{ $message }}</span>
                             @enderror
@@ -374,7 +374,7 @@
                     </div>
 
                     <div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4 dark:border-slate-800">
-                        <p class="text-xs text-slate-400">{{ __('Saving publishes the site coupon configuration. Discount rule settings are preserved.') }}</p>
+                        <p class="text-xs text-muted">{{ __('Saving publishes the site coupon configuration. Discount rule settings are preserved.') }}</p>
                         <button type="submit" class="rounded-xl bg-navy-deep px-5 py-2.5 text-sm font-bold text-white hover:bg-navy-raised">{{ __('Save Coupon Configuration') }}</button>
                     </div>
                 </form>
@@ -415,7 +415,7 @@
                             </div>
                         </div>
                         <div>
-                            <label class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Usage Limit') }} <span class="font-normal text-slate-400">({{ __('0 = unlimited') }})</span></label>
+                            <label class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Usage Limit') }} <span class="font-normal text-muted">({{ __('0 = unlimited') }})</span></label>
                             <input type="number" name="usage_limit" min="0" x-model="edit.usageLimit" class="cp-num w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                         </div>
                         <div class="grid grid-cols-2 gap-3">

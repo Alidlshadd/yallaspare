@@ -126,7 +126,7 @@
                                 type="text"
                                 value="{{ old('phone', $user->phone) }}"
                                 aria-describedby="phone-hint"
-                                class="block w-full rounded-app border bg-surface-2 px-3 py-2.5 text-sm text-app placeholder:text-slate-400 focus-ring @error('phone') border-[var(--danger)] @else border-app @enderror"
+                                class="block w-full rounded-app border bg-surface-2 px-3 py-2.5 text-sm text-app placeholder-muted focus-ring @error('phone') border-[var(--danger)] @else border-app @enderror"
                             >
                             @error('phone')
                                 <p class="text-xs font-medium text-[var(--danger)]">{{ $message }}</p>
@@ -296,7 +296,7 @@
                                     autocomplete="one-time-code"
                                     maxlength="6"
                                     pattern="[0-9]{6}"
-                                    class="block w-full rounded-app border bg-surface-2 px-3 py-2.5 text-sm tracking-[0.3em] text-app placeholder:text-slate-400 focus-ring @error('verification_code') border-[var(--danger)] @else border-app @enderror"
+                                    class="block w-full rounded-app border bg-surface-2 px-3 py-2.5 text-sm tracking-[0.3em] text-app placeholder-muted focus-ring @error('verification_code') border-[var(--danger)] @else border-app @enderror"
                                     placeholder="000000"
                                 >
                                 @error('verification_code')
