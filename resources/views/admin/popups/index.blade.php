@@ -94,7 +94,7 @@
                             @endif
                             <div class="absolute inset-0 popup-preview-scrim"></div>
                             <div class="relative px-4 pb-4 pt-2 text-white">
-                                <div class="font-bold leading-tight line-clamp-2" style="font-family: 'Space Grotesk', sans-serif;">{{ $popup->localizedTitle() }}</div>
+                                <div class="font-bold leading-tight line-clamp-2" style="font-family: Sora, Inter, sans-serif;">{{ $popup->localizedTitle() }}</div>
                                 @if($description)
                                     <p class="text-[11px] text-white/75 mt-1 line-clamp-1">{{ $description }}</p>
                                 @endif

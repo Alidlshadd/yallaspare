@@ -45,8 +45,18 @@ export default {
                     sunk: 'var(--surface-sunk)',
                 },
             },
+            // Two roles, not one family. Sora earns its place on headings and
+            // prices and loses it everywhere else — it widens long text and
+            // has no tabular figures, which admin tables depend on.
+            //
+            // 'IBM Plex Sans Arabic' sits in both stacks rather than behind a
+            // dir="rtl" rule: fallback is per glyph, so Latin resolves to the
+            // face in front of it and Arabic script falls through to Plex on
+            // its own. Sora ships no Arabic at all, so without this the ar and
+            // ku pages would silently render in a system font.
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Inter', 'IBM Plex Sans Arabic', ...defaultTheme.fontFamily.sans],
+                display: ['Sora', 'Inter', 'IBM Plex Sans Arabic', ...defaultTheme.fontFamily.sans],
             },
         },
     },

@@ -166,7 +166,7 @@
                         </div>
                         <div class="flex items-end justify-between pt-3">
                             <dt class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Subtotal') }}</dt>
-                            <dd class="break-all text-xl font-bold tracking-[-0.02em] text-primary dark:text-white">
+                            <dd class="break-all font-display text-xl font-bold tracking-[-0.02em] text-primary dark:text-white">
                                 {{ number_format($subtotal, 2) }}
                                 <span class="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">{{ $currencySymbol }}</span>
                             </dd>

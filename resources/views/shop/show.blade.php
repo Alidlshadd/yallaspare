@@ -248,7 +248,7 @@
                             <div>
                                 <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ $hasDiscount ? __('Discounted Price') : __('Price') }}</p>
                                 <div class="mt-1 flex flex-wrap items-end gap-2">
-                                    <p class="break-all text-3xl font-bold tracking-[-0.03em] text-primary dark:text-white sm:text-4xl">{{ number_format($currentPrice, 2) }}</p>
+                                    <p class="break-all font-display text-3xl font-bold tracking-[-0.03em] text-primary dark:text-white sm:text-4xl">{{ number_format($currentPrice, 2) }}</p>
                                     <span class="pb-1 text-sm font-semibold uppercase tracking-[0.1em] text-slate-600 dark:text-slate-300">{{ $currencySymbol }}</span>
                                 </div>
                             </div>

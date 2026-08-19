@@ -509,20 +509,20 @@
                             >
                                 <a
                                     href="{{ $storeHomeUrl }}"
-                                    class="inline-flex items-center rounded-xl px-3 py-1 text-sm font-medium transition duration-200 {{ request()->routeIs('user.shop.home') ? 'bg-white/10 text-white shadow-[inset_0_-2px_0_0_var(--brand-orange)]' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
+                                    class="inline-flex items-center rounded-xl px-3 py-1 font-display text-sm font-medium transition duration-200 {{ request()->routeIs('user.shop.home') ? 'bg-white/10 text-white shadow-[inset_0_-2px_0_0_var(--brand-orange)]' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
                                 >
                                     {{ __('Home') }}
                                 </a>
                                 <a
                                     href="{{ route('shop.index') }}"
-                                    class="inline-flex items-center rounded-xl px-3 py-1 text-sm font-medium transition duration-200 {{ request()->routeIs('shop.index') || request()->routeIs('user.shop.index') ? 'bg-white/10 text-white shadow-[inset_0_-2px_0_0_var(--brand-orange)]' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
+                                    class="inline-flex items-center rounded-xl px-3 py-1 font-display text-sm font-medium transition duration-200 {{ request()->routeIs('shop.index') || request()->routeIs('user.shop.index') ? 'bg-white/10 text-white shadow-[inset_0_-2px_0_0_var(--brand-orange)]' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
                                 >
                                     {{ __('Shop') }}
                                 </a>
 
                                 <a
                                     href="{{ route('categories.index') }}"
-                                    class="inline-flex items-center gap-1 rounded-xl px-3 py-1 text-sm font-medium transition duration-200 {{ request()->routeIs('categories.*') ? 'bg-white/10 text-white shadow-[inset_0_-2px_0_0_var(--brand-orange)]' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
+                                    class="inline-flex items-center gap-1 rounded-xl px-3 py-1 font-display text-sm font-medium transition duration-200 {{ request()->routeIs('categories.*') ? 'bg-white/10 text-white shadow-[inset_0_-2px_0_0_var(--brand-orange)]' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
                                     data-store-categories-trigger
                                     aria-expanded="false"
                                     aria-haspopup="menu"
@@ -535,13 +535,13 @@
 
                                 <a
                                     href="{{ route('legal.about') }}"
-                                    class="inline-flex items-center rounded-xl px-3 py-1 text-sm font-medium text-white/80 transition duration-200 hover:bg-white/10 hover:text-white"
+                                    class="inline-flex items-center rounded-xl px-3 py-1 font-display text-sm font-medium text-white/80 transition duration-200 hover:bg-white/10 hover:text-white"
                                 >
                                     {{ __('About Us') }}
                                 </a>
                                 <a
                                     href="{{ route('legal.contact') }}"
-                                    class="inline-flex items-center rounded-xl px-3 py-1 text-sm font-medium text-white/80 transition duration-200 hover:bg-white/10 hover:text-white"
+                                    class="inline-flex items-center rounded-xl px-3 py-1 font-display text-sm font-medium text-white/80 transition duration-200 hover:bg-white/10 hover:text-white"
                                 >
                                     {{ __('Contact') }}
                                 </a>

@@ -127,7 +127,7 @@
         </p>
 
         <div class="mt-3 flex flex-wrap items-end gap-x-2 gap-y-0.5">
-            <p class="break-all text-lg font-semibold leading-none tracking-[-0.03em] text-primary dark:text-white">
+            <p class="break-all font-display text-lg font-semibold leading-none tracking-[-0.03em] text-primary dark:text-white">
                 {{ number_format($price, 2) }}
                 <span class="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted">{{ $currencySymbol }}</span>
             </p>
@@ -278,7 +278,7 @@
                 {{ __('Price') }}
             </p>
             <div class="mt-1 flex flex-wrap items-end gap-2">
-                <p class="break-all text-xl font-semibold leading-none tracking-[-0.03em] text-primary dark:text-white sm:text-[1.45rem]">
+                <p class="break-all font-display text-xl font-semibold leading-none tracking-[-0.03em] text-primary dark:text-white sm:text-[1.45rem]">
                     {{ number_format($price, 2) }}
                     <span class="text-xs font-semibold uppercase tracking-[0.12em] text-muted">{{ $currencySymbol }}</span>
                 </p>

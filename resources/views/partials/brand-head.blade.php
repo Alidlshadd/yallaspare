@@ -34,18 +34,45 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}?v={{ $iconVersion }}">
 @endif
 <link rel="manifest" href="{{ route('brand.manifest') }}">
-{{-- The webfont lives here, not in the layouts. Only layouts/app and
-     layouts/guest ever linked it, so the whole storefront — layouts/user,
+{{-- The webfonts live here, not in the layouts. Only layouts/app and
+     layouts/guest ever linked one, so the whole storefront — layouts/user,
      user-account, auth-split, legal — fell back to the OS font while
-     tailwind.config.js still asked for Figtree. Every layout includes this
-     partial, so one link covers the system.
+     tailwind.config.js still asked for a face it never downloaded. Every
+     layout includes this partial, so one link covers the system.
 
-     Weight 700 is loaded because it is used: font-bold appears 688 times,
-     and without the file the browser was synthesising every heading and
-     price. 800 and 900 are deliberately absent — they should be edited out
-     of the markup rather than downloaded. --}}
+     Three families, one job each:
+
+     Sora carries display — headings, hero, price. Its wide, confident
+     figures are the reason it was chosen, and they only pay off at size;
+     below about 14px its x-height gets thin, so it stays off body text.
+
+     Inter carries body and UI — paragraphs, forms, tables, everything
+     dense. It also holds the tabular figures that admin tables need and
+     Sora does not have.
+
+     IBM Plex Sans Arabic carries Arabic and Kurdish. Sora ships latin and
+     latin-ext only, so without this the ar and ku storefronts rendered in
+     whatever the OS supplied. It sits last in both stacks rather than
+     behind a dir="rtl" rule because font fallback is per glyph: Latin
+     resolves to Sora or Inter, Arabic script falls through to Plex, and a
+     mixed-script line gets both without any selector deciding. Its arabic
+     subset covers U+0600-06FF, which includes the Sorani letters
+     (ڕ ڵ ێ ۆ ە) a plain Arabic face would miss.
+
+     Weights run 400-800 because that is what the markup asks for: font-bold
+     appears 688 times, font-extrabold 234 and font-black 223, and every one
+     of them was being synthesised before. Synthetic weight is worse under
+     Sora than it was under the old face — Sora is already wide, so smearing
+     it wider blurs exactly the headings the face was chosen for.
+
+     900 is not loaded and not available in Sora anyway; font-black lands on
+     800, which is a real cut rather than a faked one. The better fix is to
+     take font-black and font-extrabold out of the markup — 900 is noise at
+     screen sizes — but that is a hierarchy decision to make deliberately,
+     not a side effect of changing the typeface. --}}
 <link rel="preconnect" href="https://fonts.bunny.net">
-<link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+<link href="https://fonts.bunny.net/css?family=sora:600,700,800|inter:400,500,600,700,800|ibm-plex-sans-arabic:400,500,600,700&display=swap" rel="stylesheet" />
 <meta name="theme-color" content="#070740">
 <meta property="og:site_name" content="{{ $siteName }}">
 <meta property="og:type" content="website">

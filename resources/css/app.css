@@ -124,6 +124,22 @@
         --primary-solid-hover: #3636ad;
     }
 
+    /* Sora on the display roles, set once here rather than sprinkled as a
+       font-display utility across 190 files — the markup already says which
+       elements are headings. Anything that reads as display but is not an
+       h1-h3 (a price, a KPI figure, the wordmark) opts in with the utility.
+
+       No letter-spacing here on purpose. Sora wants a little negative
+       tracking and the headings that need it already carry a tracking-[…]
+       utility, but Arabic and Kurdish are connected scripts where negative
+       tracking breaks the joins — a blanket rule would have damaged two of
+       the three locales to tighten the third. */
+    h1,
+    h2,
+    h3 {
+        font-family: theme('fontFamily.display');
+    }
+
     .user-theme body,
     body.user-theme {
         background-color: var(--bg);
@@ -216,6 +232,9 @@
        white background at upload time, which is where it belongs. */
 
     .app-logo-text {
+        /* The wordmark sits beside the logo artwork, so it takes the display
+           face — this is the one piece of type that is part of the mark. */
+        font-family: theme('fontFamily.display');
         font-size: 18px;
         font-weight: 600;
         letter-spacing: 0.02em;

@@ -79,7 +79,7 @@
             padding: 8px;
             z-index: 60;
             color: #0f172a;
-            font-family: 'Figtree', system-ui, sans-serif;
+            font-family: inherit;
         }
         .dark .op-menu {
             background: #1e293b;

@@ -45,7 +45,7 @@
                      class="absolute inset-0 h-full w-full object-contain {{ $previewImageUrl === '' ? 'hidden' : '' }}">
                 <div class="absolute inset-0 popup-preview-scrim"></div>
                 <div class="relative px-5 pb-5 pt-2 text-white">
-                    <div id="popupPreviewTitle" class="font-bold leading-tight text-lg sm:text-xl" style="font-family: 'Space Grotesk', sans-serif;">
+                    <div id="popupPreviewTitle" class="font-bold leading-tight text-lg sm:text-xl" style="font-family: Sora, Inter, sans-serif;">
                         {{ $previewTitle !== '' ? $previewTitle : __('Your popup title') }}
                     </div>
                     <p id="popupPreviewDesc" class="text-xs text-white/75 mt-1.5 {{ $previewDescription === '' ? 'hidden' : '' }}">{{ $previewDescription }}</p>
