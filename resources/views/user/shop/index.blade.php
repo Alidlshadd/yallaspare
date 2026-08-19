@@ -7,13 +7,13 @@
                 <div class="grid gap-4 p-4 sm:gap-5 sm:p-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
                     <div>
                         <p class="text-xs font-semibold uppercase tracking-[0.16em] text-orange-600 dark:text-orange-300">{{ __('Account checkout') }}</p>
-                        <h1 class="mt-2 text-xl font-semibold tracking-[-0.03em] text-slate-950 dark:text-white sm:text-2xl">{{ __('Login or create an account to order') }}</h1>
-                        <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">
+                        <h1 class="mt-2 text-xl font-semibold tracking-[-0.03em] text-slate-950 sm:text-2xl">{{ __('Login or create an account to order') }}</h1>
+                        <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
                             {{ __('Pick a product, then sign in or create an account to place a cash-on-delivery order.') }}
                         </p>
                     </div>
                     <div class="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap lg:justify-end">
-                        <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-slate-800 sm:rounded-2xl sm:px-4 sm:py-2.5">
+                        <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:bg-slate-950 dark:hover:bg-slate-800 sm:rounded-2xl sm:px-4 sm:py-2.5">
                             {{ __('Login') }}
                         </a>
                         <a href="{{ route('register') }}" class="font-display inline-flex items-center justify-center rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-white transition hover:bg-navy-raised sm:rounded-2xl sm:px-4 sm:py-2.5">
@@ -85,7 +85,7 @@
                 <div class="p-3 sm:p-3.5 lg:hidden">
                     <button
                         type="button"
-                        class="inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-slate-200/80 bg-white px-3 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                        class="inline-flex w-full items-center justify-center gap-1.5 rounded-xl border border-slate-200/80 bg-white px-3 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-800"
                         @click="filtersOpen = !filtersOpen"
                         :aria-expanded="filtersOpen ? 'true' : 'false'"
                         aria-controls="shop-filter-fields"
@@ -104,7 +104,7 @@
 
                 <div
                     id="shop-filter-fields"
-                    class="border-t border-slate-200/80 p-3 dark:border-slate-800 sm:p-3.5 lg:border-0 lg:grid lg:grid-cols-[repeat(5,minmax(0,1fr))_auto] lg:items-center lg:gap-2"
+                    class="border-t border-slate-200/80 p-3 sm:p-3.5 lg:border-0 lg:grid lg:grid-cols-[repeat(5,minmax(0,1fr))_auto] lg:items-center lg:gap-2"
                     :class="filtersOpen ? 'grid grid-cols-1 gap-2 sm:grid-cols-2' : 'hidden lg:grid'"
                 >
                     <div>
@@ -178,7 +178,7 @@
                         </button>
                         <a
                             href="{{ route('shop.index') }}"
-                            class="inline-flex items-center justify-center rounded-xl border border-slate-200/80 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition duration-200 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                            class="inline-flex items-center justify-center rounded-xl border border-slate-200/80 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition duration-200 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-800"
                         >
                             {{ __('Reset') }}
                         </a>
@@ -187,13 +187,13 @@
             </form>
 
             @if ($categories->isNotEmpty())
-                <div class="border-t border-slate-200/80 dark:border-slate-800">
+                <div class="border-t border-slate-200/80">
                     <div class="flex items-center gap-1.5 p-3 sm:p-3.5" data-category-rail>
                         <button
                             type="button"
                             data-category-prev
                             aria-label="{{ __('Scroll categories backward') }}"
-                            class="hidden h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200/80 bg-white text-slate-500 transition duration-200 hover:border-primary/30 hover:text-primary disabled:cursor-default disabled:opacity-35 disabled:hover:border-slate-200/80 disabled:hover:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-white dark:disabled:hover:border-slate-700 dark:disabled:hover:text-slate-300 md:inline-flex"
+                            class="hidden h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200/80 bg-white text-slate-500 transition duration-200 hover:border-primary/30 hover:text-primary disabled:cursor-default disabled:opacity-35 disabled:hover:border-slate-200/80 disabled:hover:text-slate-500 dark:bg-slate-900 dark:hover:border-slate-500 dark:hover:text-white dark:disabled:hover:border-slate-700 dark:disabled:hover:text-slate-300 md:inline-flex"
                         >
                             <svg class="h-3.5 w-3.5 rtl:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m15 6-6 6 6 6" />
@@ -245,7 +245,7 @@
                             type="button"
                             data-category-next
                             aria-label="{{ __('Scroll categories forward') }}"
-                            class="hidden h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200/80 bg-white text-slate-500 transition duration-200 hover:border-primary/30 hover:text-primary disabled:cursor-default disabled:opacity-35 disabled:hover:border-slate-200/80 disabled:hover:text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-white dark:disabled:hover:border-slate-700 dark:disabled:hover:text-slate-300 md:inline-flex"
+                            class="hidden h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200/80 bg-white text-slate-500 transition duration-200 hover:border-primary/30 hover:text-primary disabled:cursor-default disabled:opacity-35 disabled:hover:border-slate-200/80 disabled:hover:text-slate-500 dark:bg-slate-900 dark:hover:border-slate-500 dark:hover:text-white dark:disabled:hover:border-slate-700 dark:disabled:hover:text-slate-300 md:inline-flex"
                         >
                             <svg class="h-3.5 w-3.5 rtl:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="m9 6 6 6-6 6" />
@@ -256,7 +256,7 @@
             @endif
 
             @if ($activeFilterCount > 0)
-                <div class="flex flex-wrap items-center gap-2 border-t border-slate-200/80 p-3 dark:border-slate-800 sm:p-3.5">
+                <div class="flex flex-wrap items-center gap-2 border-t border-slate-200/80 p-3 sm:p-3.5">
                     @if ($search !== '')
                         <a href="{{ $clearFilterUrl(['search', 'q']) }}" class="inline-flex max-w-full items-center gap-1 rounded-full border border-info bg-info px-3 py-1 text-sm font-semibold text-info transition hover:bg-info dark:border-info/50 dark:bg-info/30 dark:text-info">
                             <span class="truncate">{{ __('Search') }}: {{ $search }}</span>
@@ -282,14 +282,14 @@
         </section>
 
         @if ($products->isEmpty())
-            <section class="rounded-2xl border border-slate-200/80 bg-white p-5 text-center shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:rounded-3xl sm:p-8">
-                <h2 class="text-xl font-semibold tracking-[-0.03em] text-slate-950 dark:text-white sm:text-2xl">{{ __('No products found') }}</h2>
-                <p class="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{{ __('Try changing the filter or clearing your search.') }}</p>
+            <section class="rounded-2xl border border-slate-200/80 bg-white p-5 text-center shadow-sm shadow-slate-900/5 dark:bg-slate-900 dark:shadow-black/10 sm:rounded-3xl sm:p-8">
+                <h2 class="text-xl font-semibold tracking-[-0.03em] text-slate-950 sm:text-2xl">{{ __('No products found') }}</h2>
+                <p class="mt-3 text-sm leading-6 text-slate-600">{{ __('Try changing the filter or clearing your search.') }}</p>
             </section>
         @else
             <div class="flex flex-wrap items-center justify-between gap-2 px-1">
-                <p class="text-sm text-slate-600 dark:text-slate-300">
-                    <span class="font-semibold text-slate-950 dark:text-white">{{ number_format($products->total()) }}</span>
+                <p class="text-sm text-slate-600">
+                    <span class="font-semibold text-slate-950">{{ number_format($products->total()) }}</span>
                     {{ __('Products') }}
                     @if ($activeCategoryModel)
                         · {{ $activeCategoryModel->name }}
@@ -311,7 +311,7 @@
                 @endforeach
             </div>
 
-            <div class="rounded-2xl border border-slate-200/80 bg-white px-4 py-3 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10">
+            <div class="rounded-2xl border border-slate-200/80 bg-white px-4 py-3 shadow-sm shadow-slate-900/5 dark:bg-slate-900 dark:shadow-black/10">
                 {{ $products->links() }}
             </div>
         @endif

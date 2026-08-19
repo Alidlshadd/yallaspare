@@ -194,7 +194,7 @@
         </section>
 
         {{-- ============ toolbar ============ --}}
-        <div class="flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <div class="flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
             <input type="search" placeholder="{{ __('Search rule name or scope…') }}" class="min-w-0 flex-[2_1_200px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" @input="onWallSearch">
             <select class="min-w-0 flex-[1_1_130px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" @change="onWallStatus">
                 <option value="all">{{ __('All statuses') }}</option>
@@ -209,23 +209,23 @@
                 <option value="used">{{ __('Sort: Most used') }}</option>
                 <option value="name">{{ __('Sort: Name A–Z') }}</option>
             </select>
-            <button type="button" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="exportRules"><i class="fas fa-file-csv me-1"></i>{{ __('Export') }}</button>
-            <p class="w-full text-xs font-bold text-emerald-600 dark:text-emerald-400 sm:ms-auto sm:w-auto" x-show="hasFlash" x-cloak x-text="flashMessage"></p>
+            <button type="button" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800" @click="exportRules"><i class="fas fa-file-csv me-1"></i>{{ __('Export') }}</button>
+            <p class="w-full text-xs font-bold text-emerald-600 sm:ms-auto sm:w-auto" x-show="hasFlash" x-cloak x-text="flashMessage"></p>
         </div>
 
         {{-- ============ overlap warning ============ --}}
         @if ($overlapNames->count() > 1)
-            <div class="flex items-center gap-2 rounded-2xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm font-bold text-rose-600 dark:border-rose-800 dark:bg-rose-950/30 dark:text-rose-300">
+            <div class="flex items-center gap-2 rounded-2xl border border-rose-300 bg-rose-50 px-4 py-3 text-sm font-bold text-rose-600 dark:border-rose-800">
                 ⚠ {{ __(':count live storewide rules are competing (:names) — customers get only one; check which should win.', ['count' => $overlapNames->count(), 'names' => $overlapNames->implode(', ')]) }}
             </div>
         @endif
 
         {{-- ============ tag wall ============ --}}
-        <section class="dr-pegboard rounded-3xl border border-slate-200 p-5 dark:border-slate-800">
+        <section class="dr-pegboard rounded-3xl border border-slate-200 p-5">
             @if ($discountRows->isEmpty())
                 <div class="rounded-2xl border-2 border-dashed border-slate-300 bg-white/60 px-6 py-14 text-center dark:border-slate-700 dark:bg-slate-900/60">
-                    <i class="fas fa-tag mb-3 block text-2xl text-slate-300 dark:text-slate-600"></i>
-                    <p class="text-sm font-bold text-slate-600 dark:text-slate-300">{{ __('No saved discount rules yet') }}</p>
+                    <i class="fas fa-tag mb-3 block text-2xl text-slate-300"></i>
+                    <p class="text-sm font-bold text-slate-600">{{ __('No saved discount rules yet') }}</p>
                     <p class="mt-1 text-xs text-muted">{{ __('Press your first tag in the builder below — it will hang here.') }}</p>
                     <a href="#discount-rule-form" class="font-display mt-4 inline-flex rounded-xl bg-navy-deep px-4 py-2 text-sm font-bold text-white hover:bg-navy-raised">{{ __('Create Discount Rule') }}</a>
                 </div>
@@ -255,7 +255,7 @@
                         >
                             <span class="absolute end-3 top-2.5 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide {{ $chip['class'] }}">{{ $chip['label'] }}</span>
                             <p class="dr-tag-val dr-num">−{{ $row['valueLabel'] }}</p>
-                            <h3 class="mt-0.5 text-sm font-bold text-slate-900 dark:text-slate-100">{{ $row['name'] }}</h3>
+                            <h3 class="mt-0.5 text-sm font-bold text-slate-900">{{ $row['name'] }}</h3>
                             <p class="mt-0.5 text-[11px] text-muted">
                                 {{ $row['scopeLabel'] }} · {{ $row['targetLabel'] }} · {{ $row['windowLabel'] }}@if($row['usedCount'] > 0) · {{ __('used :n×', ['n' => number_format($row['usedCount'])]) }}@endif
                             </p>
@@ -269,12 +269,12 @@
                                     @csrf
                                     @method('PATCH')
                                     <input type="hidden" name="is_active" value="{{ $row['isActive'] ? 0 : 1 }}">
-                                    <button type="submit" class="rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800">
+                                    <button type="submit" class="rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800">
                                         {{ $row['isActive'] ? __('Pause') : __('Activate') }}
                                     </button>
                                 </form>
-                                <button type="button" class="rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800" @click="duplicateRule">{{ __('Duplicate') }}</button>
-                                <button type="button" class="rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800" @click="toggle">
+                                <button type="button" class="rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800" @click="duplicateRule">{{ __('Duplicate') }}</button>
+                                <button type="button" class="rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800" @click="toggle">
                                     <span x-show="closed">{{ __('Details') }}</span>
                                     <span x-show="open" x-cloak>{{ __('Hide') }}</span>
                                 </button>
@@ -285,12 +285,12 @@
                                 </form>
                             </div>
 
-                            <div class="mt-2.5 border-t border-dashed border-slate-200 pt-2 text-[11px] text-slate-500 dark:border-slate-700 dark:text-slate-400" x-show="open" x-cloak>
+                            <div class="mt-2.5 border-t border-dashed border-slate-200 pt-2 text-[11px] text-slate-500" x-show="open" x-cloak>
                                 <p>{{ __('Min subtotal') }}: {{ $row['minimumSubtotalLabel'] }} · {{ __('Usage limit') }}: {{ $row['usageLimitLabel'] }}</p>
                                 <p class="mt-0.5">{{ __('Created') }} {{ $row['createdAtLabel'] }} · {{ __('Updated') }} {{ $row['updatedAtLabel'] }}</p>
                                 <div class="mt-1.5 flex flex-wrap gap-1">
                                     @foreach ($row['targetPreview'] as $target)
-                                        <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] text-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400">{{ $target }}</span>
+                                        <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[10px] text-slate-500">{{ $target }}</span>
                                     @endforeach
                                 </div>
                             </div>
@@ -315,7 +315,7 @@
             id="discount-rule-form"
             action="{{ route('admin.discounts.update-rules') }}"
             method="POST"
-            class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900"
+            class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm"
         >
             @csrf
             @method('PUT')
@@ -338,34 +338,34 @@
                     {{-- basics --}}
                     <div class="grid gap-3 md:grid-cols-2">
                         <div class="md:col-span-2">
-                            <label for="discount_label" class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Display Label') }}</label>
+                            <label for="discount_label" class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Display Label') }}</label>
                             <input id="discount_label" type="text" name="discount_label" x-model="basics.label" placeholder="{{ __('Summer Campaign, Brand Event, Clearance...') }}" class="w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                         </div>
                         <div>
-                            <label for="discount_type" class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Discount Type') }}</label>
+                            <label for="discount_type" class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Discount Type') }}</label>
                             <select id="discount_type" name="discount_type" x-model="basics.type" class="w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                 <option value="percent">{{ __('Percent') }}</option>
                                 <option value="fixed">{{ __('Fixed') }}</option>
                             </select>
                         </div>
                         <div>
-                            <label for="discount_value" class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Discount Value') }}</label>
+                            <label for="discount_value" class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Discount Value') }}</label>
                             <input id="discount_value" type="number" step="0.01" min="0" max="100000000" name="discount_value" x-model="basics.value" class="dr-num w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                         </div>
                         <div>
-                            <label for="discount_minimum_subtotal" class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Minimum Subtotal') }}</label>
+                            <label for="discount_minimum_subtotal" class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Minimum Subtotal') }}</label>
                             <input id="discount_minimum_subtotal" type="number" step="0.01" min="0" max="100000000" name="discount_minimum_subtotal" value="{{ $discountMinimumSubtotal }}" placeholder="{{ __('Optional') }}" class="dr-num w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                         </div>
                         <div>
-                            <label for="discount_usage_limit" class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Usage Limit') }}</label>
+                            <label for="discount_usage_limit" class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Usage Limit') }}</label>
                             <input id="discount_usage_limit" type="number" min="0" max="1000000" name="discount_usage_limit" value="{{ $discountUsageLimit }}" placeholder="{{ __('Unlimited') }}" class="dr-num w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                         </div>
                         <div>
-                            <label for="discount_starts_at" class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Starts At') }}</label>
+                            <label for="discount_starts_at" class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Starts At') }}</label>
                             <input id="discount_starts_at" type="datetime-local" name="discount_starts_at" x-model="basics.startsAt" class="w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                         </div>
                         <div>
-                            <label for="discount_ends_at" class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Ends At') }}</label>
+                            <label for="discount_ends_at" class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Ends At') }}</label>
                             <input id="discount_ends_at" type="datetime-local" name="discount_ends_at" x-model="basics.endsAt" class="w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                         </div>
                     </div>
@@ -373,32 +373,32 @@
                     {{-- scope --}}
                     <div>
                         <div class="mb-2 flex items-center justify-between">
-                            <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Discount Scope') }}</p>
-                            <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-slate-500 dark:bg-slate-800 dark:text-slate-400" x-text="scopeBadgeLabel"></span>
+                            <p class="text-[11px] font-bold text-slate-500">{{ __('Discount Scope') }}</p>
+                            <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-slate-500" x-text="scopeBadgeLabel"></span>
                         </div>
                         <div class="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-4">
                             <label class="cursor-pointer rounded-xl border-[1.5px] p-3 transition" :class="scopeAllCardClass">
                                 <input type="radio" name="discount_scope" value="all" x-model="scope" class="sr-only">
                                 <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-navy-deep text-accent"><i class="fas fa-globe text-xs"></i></span>
-                                <span class="block text-sm font-bold text-slate-900 dark:text-slate-100">{{ __('All Products') }}</span>
+                                <span class="block text-sm font-bold text-slate-900">{{ __('All Products') }}</span>
                                 <span class="block text-[11px] text-muted">{{ __('Full catalog') }}</span>
                             </label>
                             <label class="cursor-pointer rounded-xl border-[1.5px] p-3 transition" :class="scopeProductsCardClass">
                                 <input type="radio" name="discount_scope" value="products" x-model="scope" class="sr-only">
                                 <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-navy-deep text-accent"><i class="fas fa-box text-xs"></i></span>
-                                <span class="block text-sm font-bold text-slate-900 dark:text-slate-100">{{ __('Specific Products') }}</span>
+                                <span class="block text-sm font-bold text-slate-900">{{ __('Specific Products') }}</span>
                                 <span class="block text-[11px] text-muted">{{ __('Pick exact items') }}</span>
                             </label>
                             <label class="cursor-pointer rounded-xl border-[1.5px] p-3 transition" :class="scopeCategoriesCardClass">
                                 <input type="radio" name="discount_scope" value="categories" x-model="scope" class="sr-only">
                                 <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-navy-deep text-accent"><i class="fas fa-layer-group text-xs"></i></span>
-                                <span class="block text-sm font-bold text-slate-900 dark:text-slate-100">{{ __('Specific Categories') }}</span>
+                                <span class="block text-sm font-bold text-slate-900">{{ __('Specific Categories') }}</span>
                                 <span class="block text-[11px] text-muted">{{ __('Product families') }}</span>
                             </label>
                             <label class="cursor-pointer rounded-xl border-[1.5px] p-3 transition" :class="scopeBrandsCardClass">
                                 <input type="radio" name="discount_scope" value="brands" x-model="scope" class="sr-only">
                                 <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-navy-deep text-accent"><i class="fas fa-tags text-xs"></i></span>
-                                <span class="block text-sm font-bold text-slate-900 dark:text-slate-100">{{ __('Specific Brands') }}</span>
+                                <span class="block text-sm font-bold text-slate-900">{{ __('Specific Brands') }}</span>
                                 <span class="block text-[11px] text-muted">{{ __('Brand-led rules') }}</span>
                             </label>
                         </div>
@@ -407,15 +407,15 @@
                             <input type="hidden" name="discount_product_ids[]" :value="productId">
                         </template>
 
-                        <p class="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-xs text-slate-500 dark:border-slate-700 dark:bg-slate-950/40 dark:text-slate-400" x-show="scopeIsAll" x-cloak>
+                        <p class="mt-3 rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-2.5 text-xs text-slate-500" x-show="scopeIsAll" x-cloak>
                             {{ __('This discount will apply across the full catalog. No additional targeting is required.') }}
                         </p>
 
                         {{-- products picker --}}
-                        <div class="mt-3 rounded-2xl border border-slate-200 bg-slate-50/70 p-4 dark:border-slate-700 dark:bg-slate-950/40" x-show="scopeIsProducts" x-cloak>
+                        <div class="mt-3 rounded-2xl border border-slate-200 bg-slate-50/70 p-4 dark:bg-slate-950/40" x-show="scopeIsProducts" x-cloak>
                             <div class="flex flex-wrap items-center justify-between gap-2">
-                                <p class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Search and select products') }}</p>
-                                <span class="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-slate-500 shadow-sm dark:bg-slate-900 dark:text-slate-400"><span x-text="meta.total"></span> {{ __('results') }} · <span x-text="selectedCountLabel"></span> {{ __('selected') }}</span>
+                                <p class="text-sm font-bold text-slate-800">{{ __('Search and select products') }}</p>
+                                <span class="rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-slate-500 shadow-sm"><span x-text="meta.total"></span> {{ __('results') }} · <span x-text="selectedCountLabel"></span> {{ __('selected') }}</span>
                             </div>
                             <div class="mt-3 grid gap-2 md:grid-cols-4">
                                 <input type="text" x-model="filters.query" @input.debounce.300ms="refreshProducts" placeholder="{{ __('Search name, SKU, or brand') }}" class="rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 md:col-span-4">
@@ -437,25 +437,25 @@
                                     <option value="low_stock">{{ __('Low stock') }}</option>
                                     <option value="out_of_stock">{{ __('Out of stock') }}</option>
                                 </select>
-                                <button type="button" @click="resetFilters" class="rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Reset Filters') }}</button>
+                                <button type="button" @click="resetFilters" class="rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800">{{ __('Reset Filters') }}</button>
                             </div>
 
                             <div class="mt-3 min-h-[10rem]">
                                 <p class="py-10 text-center text-sm text-muted" x-show="loading" x-cloak>{{ __('Loading products...') }}</p>
-                                <p class="rounded-xl border border-dashed border-slate-300 bg-white px-4 py-10 text-center text-sm text-muted dark:border-slate-700 dark:bg-slate-900" x-show="productsEmpty" x-cloak>{{ __('No products matched the current search and filters.') }}</p>
+                                <p class="rounded-xl border border-dashed border-slate-300 bg-white px-4 py-10 text-center text-sm text-muted dark:border-slate-700" x-show="productsEmpty" x-cloak>{{ __('No products matched the current search and filters.') }}</p>
                                 <div class="grid gap-2.5 md:grid-cols-2 xl:grid-cols-3" x-show="productsVisible" x-cloak>
                                     <template x-for="product in products" :key="product.id">
                                         <button type="button" @click="toggleProduct(product)" class="rounded-xl border-[1.5px] p-3 text-left transition" :class="productCardClass(product)">
                                             <div class="flex items-start justify-between gap-2">
-                                                <span class="line-clamp-2 text-[13px] font-bold leading-snug text-slate-900 dark:text-slate-100" x-text="product.name"></span>
+                                                <span class="line-clamp-2 text-[13px] font-bold leading-snug text-slate-900" x-text="product.name"></span>
                                                 <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border text-[11px] font-bold" :class="productTickClass(product)">
                                                     <span x-show="productIsSelected(product)" x-cloak>✓</span>
                                                     <span x-show="productNotSelected(product)">+</span>
                                                 </span>
                                             </div>
                                             <div class="mt-1.5 flex flex-wrap gap-1 text-[10px] text-muted">
-                                                <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 dark:border-slate-700 dark:bg-slate-800" x-text="productSku(product)"></span>
-                                                <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 dark:border-slate-700 dark:bg-slate-800" x-show="product.brand" x-text="product.brand"></span>
+                                                <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5" x-text="productSku(product)"></span>
+                                                <span class="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5" x-show="product.brand" x-text="product.brand"></span>
                                                 <span class="rounded-full px-2 py-0.5 font-bold" :class="stockToneClass(product)" x-text="stockLabel(product)"></span>
                                             </div>
                                         </button>
@@ -466,18 +466,18 @@
                             <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
                                 <p class="text-xs text-muted">{{ __('Page') }} <span x-text="meta.currentPage"></span> / <span x-text="meta.lastPage"></span></p>
                                 <div class="flex gap-2">
-                                    <button type="button" x-show="meta.hasMore" x-cloak @click="loadMoreProducts" class="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Load More Products') }}</button>
-                                    <button type="button" @click="clearSelectedProducts" :disabled="selectionEmpty" class="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Clear All') }}</button>
+                                    <button type="button" x-show="meta.hasMore" x-cloak @click="loadMoreProducts" class="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800">{{ __('Load More Products') }}</button>
+                                    <button type="button" @click="clearSelectedProducts" :disabled="selectionEmpty" class="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50 dark:hover:bg-slate-800">{{ __('Clear All') }}</button>
                                 </div>
                             </div>
 
                             <div class="mt-3 space-y-2" x-show="hasSelection" x-cloak>
-                                <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Selected Products') }}</p>
+                                <p class="text-[11px] font-bold text-slate-500">{{ __('Selected Products') }}</p>
                                 <div class="grid max-h-64 gap-2 overflow-y-auto md:grid-cols-2">
                                     <template x-for="product in selectedProductList" :key="product.id">
-                                        <div class="flex items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 dark:border-slate-700 dark:bg-slate-900">
+                                        <div class="flex items-center justify-between gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2">
                                             <div class="min-w-0">
-                                                <p class="truncate text-[12.5px] font-bold text-slate-800 dark:text-slate-100" x-text="product.name"></p>
+                                                <p class="truncate text-[12.5px] font-bold text-slate-800" x-text="product.name"></p>
                                                 <p class="text-[10px] text-muted" x-text="productSku(product)"></p>
                                             </div>
                                             <button type="button" @click="removeProduct(product)" class="shrink-0 rounded-lg px-2 py-1 text-sm font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30">✕</button>
@@ -488,11 +488,11 @@
                         </div>
 
                         {{-- categories --}}
-                        <div class="mt-3 rounded-2xl border border-slate-200 bg-slate-50/70 p-4 dark:border-slate-700 dark:bg-slate-950/40" x-show="scopeIsCategories" x-cloak>
-                            <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Categories') }}</p>
+                        <div class="mt-3 rounded-2xl border border-slate-200 bg-slate-50/70 p-4 dark:bg-slate-950/40" x-show="scopeIsCategories" x-cloak>
+                            <p class="text-[11px] font-bold text-slate-500">{{ __('Categories') }}</p>
                             <div class="mt-2 grid max-h-72 gap-1.5 overflow-y-auto md:grid-cols-2" @change="syncCategorySelection">
                                 @foreach ($categories as $category)
-                                    <label class="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-accent/50">
+                                    <label class="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-accent dark:hover:border-accent/50">
                                         <input type="checkbox" name="discount_category_ids[]" value="{{ $category->id }}" class="h-4 w-4 rounded border-slate-300 text-accent focus:ring-accent" @checked(in_array((int) $category->id, $selectedCategories, true))>
                                         <span class="truncate">{{ $category->name }}</span>
                                     </label>
@@ -501,11 +501,11 @@
                         </div>
 
                         {{-- brands --}}
-                        <div class="mt-3 rounded-2xl border border-slate-200 bg-slate-50/70 p-4 dark:border-slate-700 dark:bg-slate-950/40" x-show="scopeIsBrands" x-cloak>
-                            <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Brands') }}</p>
+                        <div class="mt-3 rounded-2xl border border-slate-200 bg-slate-50/70 p-4 dark:bg-slate-950/40" x-show="scopeIsBrands" x-cloak>
+                            <p class="text-[11px] font-bold text-slate-500">{{ __('Brands') }}</p>
                             <div class="mt-2 grid max-h-72 gap-1.5 overflow-y-auto md:grid-cols-2" @change="syncBrandSelection">
                                 @foreach ($brands as $brand)
-                                    <label class="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-accent/50">
+                                    <label class="flex items-center gap-2.5 rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-accent dark:hover:border-accent/50">
                                         <input type="checkbox" name="discount_brands[]" value="{{ $brand }}" class="h-4 w-4 rounded border-slate-300 text-accent focus:ring-accent" @checked(in_array((string) $brand, $selectedBrands, true))>
                                         <span class="truncate">{{ $brand }}</span>
                                     </label>
@@ -517,26 +517,26 @@
 
                 {{-- sticky summary rail --}}
                 <aside class="min-w-0 xl:sticky xl:top-4 xl:self-start">
-                    <div class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-700">
-                        <div class="flex items-center justify-between bg-slate-50 px-4 py-2.5 dark:bg-slate-950/40">
+                    <div class="overflow-hidden rounded-2xl border border-slate-200">
+                        <div class="flex items-center justify-between bg-slate-50 px-4 py-2.5">
                             <span class="text-[10px] font-bold uppercase tracking-[0.13em] text-muted">{{ __('Live Summary') }}</span>
                             <span class="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide {{ $discountsEnabled ? 'dr-st-live' : 'dr-st-draft' }}">{{ $discountsEnabled ? __('Live') : __('Draft') }}</span>
                         </div>
                         <div class="p-4">
                             <p class="dr-num text-3xl font-bold text-accent dark:text-accent" x-text="summaryValueLabel"></p>
-                            <p class="mt-1 text-sm font-bold text-slate-700 dark:text-slate-200" x-text="summaryLabelText"></p>
+                            <p class="mt-1 text-sm font-bold text-slate-700" x-text="summaryLabelText"></p>
                             <p class="mt-0.5 text-xs text-muted" x-text="scopeUtilizationLabel"></p>
                             <p class="dr-num mt-0.5 text-xs text-muted" x-text="summaryWindowLabel"></p>
 
-                            <div class="mt-4 border-t border-dashed border-slate-200 pt-3 dark:border-slate-700">
+                            <div class="mt-4 border-t border-dashed border-slate-200 pt-3">
                                 <label class="text-[10px] font-bold uppercase tracking-[0.13em] text-muted">{{ __('Price Simulator') }}</label>
                                 <input type="number" min="0" placeholder="{{ __('Sample price, e.g. 25000') }}" class="dr-num mt-1.5 w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" @input="onSimInput">
-                                <p class="dr-num mt-2 text-sm font-bold text-emerald-600 dark:text-emerald-400" x-text="simOutLabel"></p>
+                                <p class="dr-num mt-2 text-sm font-bold text-emerald-600" x-text="simOutLabel"></p>
                             </div>
 
                             <button type="submit" class="mt-4 w-full rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-emerald-500">{{ $builderActionLabel }}</button>
                             @if ($isEditingDiscount)
-                                <a href="{{ route('admin.discounts.rules') }}#discount-rule-form" class="mt-2 block rounded-xl border border-slate-200 px-4 py-2.5 text-center text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Create New Rule') }}</a>
+                                <a href="{{ route('admin.discounts.rules') }}#discount-rule-form" class="mt-2 block rounded-xl border border-slate-200 px-4 py-2.5 text-center text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800">{{ __('Create New Rule') }}</a>
                             @endif
                         </div>
                     </div>

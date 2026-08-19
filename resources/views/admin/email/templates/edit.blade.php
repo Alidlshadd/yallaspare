@@ -3,7 +3,7 @@
         <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div class="flex items-center gap-3">
                 <a href="{{ route('admin.email.templates.index') }}"
-                   class="h-10 w-10 rounded-xl border border-slate-200 bg-white text-slate-600 grid place-items-center hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                   class="h-10 w-10 rounded-xl border border-slate-200 bg-white text-slate-600 grid place-items-center hover:bg-slate-50 dark:hover:bg-slate-800"
                    title="{{ __('Back to templates') }}">
                     <i class="fas fa-arrow-left text-xs"></i>
                 </a>
@@ -15,7 +15,7 @@
                         <span class="mx-1 text-slate-300">/</span>
                         <span class="text-primary dark:text-white">{{ $meta['title'] }}</span>
                     </p>
-                    <h2 class="text-2xl font-semibold text-slate-900 dark:text-white mt-1">
+                    <h2 class="text-2xl font-semibold text-slate-900 mt-1">
                         {{ $meta['title'] }}
                         <span class="ml-2 inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2.5 py-1 text-xs font-bold border border-primary/20 dark:bg-primary/20 dark:text-info dark:border-primary/40">
                             <i class="fas fa-globe text-[10px]"></i> {{ strtoupper($locale) }}
@@ -31,13 +31,13 @@
     <div class="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8 space-y-6">
 
         @if(session('success'))
-            <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-900/30 dark:text-emerald-200">
+            <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
                 {{ session('success') }}
             </div>
         @endif
 
         @if(! $tableExists)
-            <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">
+            <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800 dark:text-amber-200">
                 <i class="fas fa-triangle-exclamation mr-1"></i>
                 {{ __('Email templates table is not installed yet. Run the pending migrations to enable saving edits.') }}
             </div>
@@ -51,7 +51,7 @@
             {{-- LEFT: Editor --}}
             <div class="space-y-4">
                 {{-- Locale switcher --}}
-                <div class="flex items-center gap-1 rounded-xl border border-slate-200 bg-white p-1 shadow-sm dark:border-slate-700 dark:bg-slate-900 w-fit">
+                <div class="flex items-center gap-1 rounded-xl border border-slate-200 bg-white p-1 shadow-sm w-fit">
                     @foreach(\App\Models\EmailTemplate::LOCALES as $loc)
                         <a href="{{ route('admin.email.templates.edit', ['key' => $templateKey, 'locale' => $loc]) }}"
                            class="inline-flex items-center gap-1 rounded-lg px-3 py-1.5 text-xs font-bold uppercase tracking-wider transition {{ $loc === $locale ? 'bg-primary text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800' }}">
@@ -61,22 +61,22 @@
                 </div>
 
                 {{-- Subject --}}
-                <div class="rounded-2xl border border-slate-200/70 bg-white shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-                    <div class="border-b border-slate-200/70 px-5 py-3 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
-                        <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold dark:text-slate-400">{{ __('Subject line') }}</p>
+                <div class="rounded-2xl border border-slate-200/70 bg-white shadow-sm overflow-hidden">
+                    <div class="border-b border-slate-200/70 px-5 py-3 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
+                        <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">{{ __('Subject line') }}</p>
                     </div>
                     <div class="p-5">
                         <input type="text" name="subject" id="editor-subject" value="{{ $subject }}" required maxlength="255" placeholder="{{ $defaults['subject'] }}"
-                               class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold text-base focus:border-primary focus:bg-white focus:ring-2 focus:ring-accent/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                        @error('subject')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
+                               class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold text-base focus:border-primary focus:bg-white focus:ring-2 focus:ring-accent/20 transition">
+                        @error('subject')<p class="mt-1 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                         <p class="mt-2 text-[10px] font-mono text-muted">{{ __('Default') }}: {{ $defaults['subject'] }}</p>
                     </div>
                 </div>
 
                 {{-- Body editor --}}
-                <div class="rounded-2xl border border-slate-200/70 bg-white shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-                    <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
-                        <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold dark:text-slate-400">{{ __('Body (HTML)') }}</p>
+                <div class="rounded-2xl border border-slate-200/70 bg-white shadow-sm overflow-hidden">
+                    <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
+                        <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">{{ __('Body (HTML)') }}</p>
                         <div class="rt-toolbar flex items-center flex-wrap gap-0.5">
                             <button type="button" data-md="bold" title="{{ __('Bold') }}" class="rt-btn"><i class="fas fa-bold text-xs"></i></button>
                             <button type="button" data-md="italic" title="{{ __('Italic') }}" class="rt-btn"><i class="fas fa-italic text-xs"></i></button>
@@ -93,8 +93,8 @@
                     </div>
                     <div class="p-5">
                         <textarea name="body_html" id="editor-body" rows="16" required maxlength="65000"
-                                  class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-mono text-[13px] leading-relaxed focus:border-primary focus:bg-white focus:ring-2 focus:ring-accent/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 resize-y">{{ $body_html }}</textarea>
-                        @error('body_html')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
+                                  class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-mono text-[13px] leading-relaxed focus:border-primary focus:bg-white focus:ring-2 focus:ring-accent/20 transition resize-y">{{ $body_html }}</textarea>
+                        @error('body_html')<p class="mt-1 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                         <p class="mt-2 text-[10px] font-mono text-muted">
                             {{ __('Allowed tags') }}: p, br, strong, b, em, i, u, s, a, ul, ol, li, h1-h4, blockquote, hr, span, div.
                             {{ __('Placeholders') }}: <code class="text-primary">{name}</code>, <code class="text-primary">{code}</code>, <code class="text-primary">{url}</code>, <code class="text-primary">{email}</code>.
@@ -102,7 +102,7 @@
                     </div>
                 </div>
 
-                <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">
+                <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800 dark:text-amber-200">
                     <i class="fas fa-lightbulb"></i>
                     {{ __('Only the subject and body are editable — the email chrome (logo, hero, footer) stays fixed. Variables in curly braces get substituted at send time.') }}
                 </div>
@@ -113,7 +113,7 @@
                             class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-primary to-navy-raised px-5 py-3 text-sm font-bold text-white shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition disabled:cursor-not-allowed disabled:from-slate-400 disabled:to-slate-500 disabled:shadow-none">
                         <i class="fas fa-check"></i> {{ __('Save template') }}
                     </button>
-                    <a href="{{ route('admin.email.templates.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+                    <a href="{{ route('admin.email.templates.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800">
                         <i class="fas fa-xmark"></i> {{ __('Cancel') }}
                     </a>
                     @if($override)
@@ -126,17 +126,17 @@
 
             {{-- RIGHT: Live preview --}}
             <aside class="space-y-4 xl:sticky xl:top-24 self-start">
-                <div class="rounded-2xl border border-slate-200/70 bg-white shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-                    <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
+                <div class="rounded-2xl border border-slate-200/70 bg-white shadow-sm overflow-hidden">
+                    <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
                         <div class="flex items-center gap-2">
-                            <div class="h-7 w-7 rounded-lg bg-emerald-100 text-emerald-700 grid place-items-center dark:bg-emerald-900/50 dark:text-emerald-200">
+                            <div class="h-7 w-7 rounded-lg bg-emerald-100 text-emerald-700 grid place-items-center dark:bg-emerald-900/50">
                                 <i class="fas fa-eye text-[10px]"></i>
                             </div>
                             <p class="text-sm font-bold text-primary leading-none dark:text-white">{{ __('Live preview') }}</p>
                         </div>
                         <span class="font-mono text-[10px] uppercase tracking-widest text-muted">{{ __('sample data') }}</span>
                     </div>
-                    <div class="bg-slate-100 p-3 dark:bg-slate-950">
+                    <div class="bg-slate-100 p-3">
                         <div class="mx-auto max-w-md overflow-hidden rounded-lg border border-slate-300 bg-white shadow-sm dark:border-slate-700">
                             <div class="flex items-center justify-between bg-primary px-4 py-3 text-white">
                                 <span class="text-xs font-bold tracking-wide">YALLASPARE</span>
@@ -154,9 +154,9 @@
                     </div>
                 </div>
 
-                <div class="rounded-2xl border border-slate-200/70 bg-white shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-                    <div class="border-b border-slate-200/70 px-5 py-3 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900">
-                        <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold dark:text-slate-400">{{ __('Sample variables') }}</p>
+                <div class="rounded-2xl border border-slate-200/70 bg-white shadow-sm overflow-hidden">
+                    <div class="border-b border-slate-200/70 px-5 py-3 bg-slate-50/60 dark:bg-slate-900">
+                        <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">{{ __('Sample variables') }}</p>
                     </div>
                     <div class="p-4 space-y-1">
                         @php
@@ -171,7 +171,7 @@
                         @foreach($sampleVars as $k => $v)
                             <div class="flex items-center justify-between gap-3 text-[11px] font-mono">
                                 <code class="text-primary dark:text-info">{{ '{' . $k . '}' }}</code>
-                                <span class="text-slate-500 dark:text-slate-400 truncate">{{ $v }}</span>
+                                <span class="text-slate-500 truncate">{{ $v }}</span>
                             </div>
                         @endforeach
                     </div>

@@ -2,10 +2,10 @@
     <x-slot name="header">
         <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
             <div>
-                <h2 class="text-2xl font-semibold text-slate-800 dark:text-slate-100">{{ __('Purchase Planning') }}</h2>
-                <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Prioritize products to reorder using sales velocity, stock, and customer demand.') }}</p>
+                <h2 class="text-2xl font-semibold text-slate-800">{{ __('Purchase Planning') }}</h2>
+                <p class="text-sm text-slate-500">{{ __('Prioritize products to reorder using sales velocity, stock, and customer demand.') }}</p>
             </div>
-            <span class="inline-flex w-fit rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
+            <span class="inline-flex w-fit rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600 shadow-sm">
                 {{ __('Inventory Intelligence') }}
             </span>
         </div>
@@ -115,21 +115,21 @@
 
             {{-- ============ summary cards ============ --}}
             <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                     <div class="flex items-start justify-between gap-3">
                         <p class="text-xs font-bold uppercase tracking-[0.14em] text-muted dark:text-slate-500">{{ __('Out of Stock') }}</p>
                         <i class="fas fa-circle-exclamation text-rose-500"></i>
                     </div>
-                    <p class="pp-num mt-3 text-2xl font-bold text-rose-600 dark:text-rose-400">{{ number_format($summary['out_of_stock']) }}</p>
+                    <p class="pp-num mt-3 text-2xl font-bold text-rose-600">{{ number_format($summary['out_of_stock']) }}</p>
                 </article>
-                <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                     <div class="flex items-start justify-between gap-3">
                         <p class="text-xs font-bold uppercase tracking-[0.14em] text-muted dark:text-slate-500">{{ __('Low Stock') }}</p>
                         <i class="fas fa-arrow-trend-down text-accent"></i>
                     </div>
-                    <p class="pp-num mt-3 text-2xl font-bold text-slate-900 dark:text-slate-100">{{ number_format($summary['low_stock']) }}</p>
+                    <p class="pp-num mt-3 text-2xl font-bold text-slate-900">{{ number_format($summary['low_stock']) }}</p>
                 </article>
-                <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                     <div class="flex items-start justify-between gap-3">
                         <p class="text-xs font-bold uppercase tracking-[0.14em] text-muted dark:text-slate-500">{{ __('Waiting Customers') }}</p>
                         <i class="fas fa-bell text-info"></i>
@@ -146,7 +146,7 @@
             </section>
 
             {{-- ============ filters (unchanged fields, compact) ============ --}}
-            <form method="GET" action="{{ route('admin.purchase-planning.index') }}" class="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <form method="GET" action="{{ route('admin.purchase-planning.index') }}" class="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
                 <div class="flex flex-wrap items-center gap-2">
                     <input type="search" name="search" value="{{ $search }}" placeholder="{{ __('Search product, SKU, brand') }}" class="min-w-0 flex-[2_1_220px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                     <select name="status" class="min-w-0 flex-[1_1_140px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
@@ -164,7 +164,7 @@
                             <option value="{{ $option }}" @selected($coverageDays === $option)>{{ __('Cover :days days', ['days' => $option]) }}</option>
                         @endforeach
                     </select>
-                    <a href="{{ route('admin.purchase-planning.index') }}" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Reset') }}</a>
+                    <a href="{{ route('admin.purchase-planning.index') }}" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800">{{ __('Reset') }}</a>
                     <button class="rounded-xl bg-navy-deep px-4 py-2 text-sm font-semibold text-white hover:bg-navy-raised">{{ __('Apply') }}</button>
                 </div>
             </form>
@@ -174,15 +174,15 @@
 
                 {{-- ---------- left column ---------- --}}
                 <div class="min-w-0 space-y-6">
-                    <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                        <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3 dark:border-slate-800">
+                    <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                        <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3">
                             <i class="fas fa-boxes-stacked text-muted"></i>
-                            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Products to reorder') }}</h3>
+                            <h3 class="text-sm font-bold text-slate-800">{{ __('Products to reorder') }}</h3>
                             <span class="ms-auto text-xs font-semibold text-muted">{{ __(':from–:to of :total', ['from' => $products->firstItem() ?? 0, 'to' => $products->lastItem() ?? 0, 'total' => $products->total()]) }}</span>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
-                                <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500 dark:bg-slate-950/40 dark:text-slate-400">
+                                <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                                     <tr>
                                         <th class="px-4 py-3 text-left">{{ __('Product') }}</th>
                                         <th class="px-4 py-3 text-right">{{ __('Stock') }}</th>
@@ -198,15 +198,15 @@
                                     @forelse($products as $product)
                                         <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40">
                                             <td class="px-4 py-3">
-                                                <div class="font-semibold text-slate-900 dark:text-slate-100">{{ $product->name }}</div>
+                                                <div class="font-semibold text-slate-900">{{ $product->name }}</div>
                                                 <div class="mt-1 text-xs text-slate-500">{{ $product->sku ?? __('N/A') }} @if($product->brand) · {{ $product->brand }} @endif</div>
                                             </td>
                                             <td class="pp-num px-4 py-3 text-right font-semibold {{ (int) $product->stock_quantity <= 0 ? 'text-rose-600' : 'text-slate-700 dark:text-slate-200' }}">{{ number_format((int) $product->stock_quantity) }}</td>
-                                            <td class="pp-num px-4 py-3 text-right text-slate-600 dark:text-slate-300">{{ number_format((int) $product->sold_quantity) }}</td>
-                                            <td class="pp-num px-4 py-3 text-right text-slate-600 dark:text-slate-300">{{ $product->days_remaining === null ? __('N/A') : number_format((int) $product->days_remaining) }}</td>
+                                            <td class="pp-num px-4 py-3 text-right text-slate-600">{{ number_format((int) $product->sold_quantity) }}</td>
+                                            <td class="pp-num px-4 py-3 text-right text-slate-600">{{ $product->days_remaining === null ? __('N/A') : number_format((int) $product->days_remaining) }}</td>
                                             <td class="pp-num px-4 py-3 text-right text-info dark:text-info">{{ number_format((int) $product->waiting_count) }}</td>
-                                            <td class="pp-num px-4 py-3 text-right font-bold text-slate-900 dark:text-slate-100">{{ number_format((int) $product->recommended_quantity) }}</td>
-                                            <td class="pp-num px-4 py-3 text-right text-slate-600 dark:text-slate-300">{{ $money($product->estimated_purchase_cost) }}</td>
+                                            <td class="pp-num px-4 py-3 text-right font-bold text-slate-900">{{ number_format((int) $product->recommended_quantity) }}</td>
+                                            <td class="pp-num px-4 py-3 text-right text-slate-600">{{ $money($product->estimated_purchase_cost) }}</td>
                                             <td class="px-4 py-3 text-right">
                                                 <button
                                                     type="button"
@@ -230,26 +230,26 @@
                                 </tbody>
                             </table>
                         </div>
-                        <div class="border-t border-slate-200 px-4 py-3 dark:border-slate-800">{{ $products->links() }}</div>
+                        <div class="border-t border-slate-200 px-4 py-3">{{ $products->links() }}</div>
                     </section>
 
                     {{-- ---------- recent purchase lists ---------- --}}
-                    <section class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                        <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3 dark:border-slate-800">
+                    <section class="rounded-2xl border border-slate-200 bg-white shadow-sm">
+                        <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3">
                             <i class="fas fa-folder-open text-muted"></i>
-                            <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Recent Purchase Lists') }}</h3>
+                            <h3 class="text-sm font-bold text-slate-800">{{ __('Recent Purchase Lists') }}</h3>
                             <span class="ms-auto text-xs font-semibold text-muted">{{ __('saved in this browser') }}</span>
                         </div>
                         <div class="grid gap-3 p-4 sm:grid-cols-2 lg:grid-cols-3" x-show="hasRecent">
                             <template x-for="entry in recentEntries" :key="entry.index">
-                                <article class="rounded-xl border border-slate-200 bg-slate-50 p-3.5 dark:border-slate-700 dark:bg-slate-950/40">
+                                <article class="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
                                     <div class="flex items-center justify-between gap-2">
-                                        <h4 class="truncate text-sm font-bold text-slate-800 dark:text-slate-100" x-text="entry.name"></h4>
+                                        <h4 class="truncate text-sm font-bold text-slate-800" x-text="entry.name"></h4>
                                         <span class="rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide" :class="entry.statusClass" x-text="entry.statusLabel"></span>
                                     </div>
                                     <p class="mt-1 text-xs text-muted" x-text="entry.meta"></p>
                                     <p class="pp-num mt-2 text-sm font-bold text-accent dark:text-accent" x-text="entry.totalLabel"></p>
-                                    <button type="button" class="mt-2 w-full rounded-lg border border-slate-200 bg-white py-1.5 text-sm font-bold text-slate-600 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300" @click="openView(entry)">
+                                    <button type="button" class="mt-2 w-full rounded-lg border border-slate-200 bg-white py-1.5 text-sm font-bold text-slate-600 hover:border-slate-400" @click="openView(entry)">
                                         {{ __('View items') }}
                                     </button>
                                 </article>
@@ -263,7 +263,7 @@
 
                 {{-- ---------- right column: side dock ---------- --}}
                 <aside class="min-w-0 xl:sticky xl:top-4">
-                    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                    <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
 
                         {{-- tabs --}}
                         <div class="flex flex-wrap gap-1.5 px-2.5 pt-2.5">
@@ -311,12 +311,12 @@
                                 {{ __('This list is empty. Click + on a product, or add a manual item by code below.') }}
                             </div>
                             <template x-for="item in activeItems" :key="item.key">
-                                <div class="border-b border-slate-100 px-4 py-2.5 dark:border-slate-800" :data-key="item.key">
+                                <div class="border-b border-slate-100 px-4 py-2.5" :data-key="item.key">
                                     <div class="flex items-start gap-2">
                                         <div class="min-w-0 flex-1">
-                                            <p class="text-[13px] font-bold leading-snug text-slate-900 dark:text-slate-100">
+                                            <p class="text-[13px] font-bold leading-snug text-slate-900">
                                                 <span x-text="item.name"></span>
-                                                <span class="ms-1 inline-block rounded border border-dashed border-amber-600 bg-amber-50 px-1.5 align-[1px] text-[9px] font-bold uppercase tracking-wide text-amber-700 dark:border-amber-400 dark:bg-amber-400/10 dark:text-amber-300" x-show="item.manual">{{ __('Manual — not in system') }}</span>
+                                                <span class="ms-1 inline-block rounded border border-dashed border-amber-600 bg-amber-50 px-1.5 align-[1px] text-[9px] font-bold uppercase tracking-wide text-amber-700 dark:border-amber-400" x-show="item.manual">{{ __('Manual — not in system') }}</span>
                                             </p>
                                             <p class="text-[11px] text-muted" x-text="item.sku"></p>
                                         </div>
@@ -325,51 +325,51 @@
                                     <div class="mt-2 grid grid-cols-[84px_110px_1fr] items-center gap-1.5">
                                         <div>
                                             <label class="mb-0.5 block text-[9px] font-bold uppercase tracking-[0.09em] text-muted">{{ __('Qty') }}</label>
-                                            <input type="number" min="1" step="1" class="pp-num h-[30px] w-full rounded-lg border-slate-300 bg-slate-50 px-2 py-0 text-right text-[13px] focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:bg-slate-900"
+                                            <input type="number" min="1" step="1" class="pp-num h-[30px] w-full rounded-lg border-slate-300 bg-slate-50 px-2 py-0 text-right text-[13px] focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-900"
                                                 :value="item.qty" :data-key="item.key" @input="onQtyInput" @change="onQtyChange">
                                         </div>
                                         <div>
                                             <label class="mb-0.5 block text-[9px] font-bold uppercase tracking-[0.09em] text-muted">{{ __('Unit cost') }}</label>
-                                            <input type="number" min="0" step="any" class="pp-num h-[30px] w-full rounded-lg border-slate-300 bg-slate-50 px-2 py-0 text-right text-[13px] focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:bg-slate-900"
+                                            <input type="number" min="0" step="any" class="pp-num h-[30px] w-full rounded-lg border-slate-300 bg-slate-50 px-2 py-0 text-right text-[13px] focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-900"
                                                 :value="item.cost" :data-key="item.key" @input="onCostInput" @change="onCostChange">
                                         </div>
                                         <div class="text-right">
                                             <p class="text-[9px] font-bold uppercase tracking-[0.09em] text-muted">{{ __('Row total') }}</p>
-                                            <p class="pp-num text-[13px] font-bold text-slate-900 dark:text-slate-100" x-text="rowTotalLabel(item)"></p>
+                                            <p class="pp-num text-[13px] font-bold text-slate-900" x-text="rowTotalLabel(item)"></p>
                                         </div>
                                     </div>
-                                    <input type="text" placeholder="✎ {{ __('note…') }}" class="mt-1.5 h-[26px] w-full border-0 border-b border-dashed border-slate-200 bg-transparent p-0 px-0.5 text-[11.5px] text-slate-500 focus:border-accent focus:ring-0 dark:border-slate-700 dark:text-slate-400"
+                                    <input type="text" placeholder="✎ {{ __('note…') }}" class="mt-1.5 h-[26px] w-full border-0 border-b border-dashed border-slate-200 bg-transparent p-0 px-0.5 text-[11.5px] text-slate-500 focus:border-accent focus:ring-0"
                                         :value="item.note" :data-key="item.key" @input="onNoteInput">
                                 </div>
                             </template>
                         </div>
 
                         {{-- add by code --}}
-                        <button type="button" class="flex w-full items-center justify-between border-t border-slate-100 px-4 py-2.5 text-sm font-bold text-amber-700 hover:bg-amber-50/50 dark:border-slate-800 dark:text-amber-400 dark:hover:bg-slate-800/40" @click="toggleAbc">
+                        <button type="button" class="flex w-full items-center justify-between border-t border-slate-100 px-4 py-2.5 text-sm font-bold text-amber-700 hover:bg-amber-50/50 dark:hover:bg-slate-800/40" @click="toggleAbc">
                             <span><i class="fas fa-barcode me-1.5"></i>{{ __('Add by code (manual item)') }}</span>
                             <span x-text="abcChevron"></span>
                         </button>
                         <div class="space-y-1.5 px-4 pb-3" x-show="abcOpen" x-cloak>
                             <div class="grid grid-cols-2 gap-1.5">
-                                <input type="text" x-model="abc.code" placeholder="{{ __('Code / SKU / part no. *') }}" class="h-8 rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                                <input type="text" x-model="abc.name" placeholder="{{ __('Product name (optional)') }}" class="h-8 rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                <input type="text" x-model="abc.code" placeholder="{{ __('Code / SKU / part no. *') }}" class="h-8 rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:text-slate-100">
+                                <input type="text" x-model="abc.name" placeholder="{{ __('Product name (optional)') }}" class="h-8 rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:text-slate-100">
                             </div>
                             <div class="grid grid-cols-2 gap-1.5">
-                                <input type="number" min="1" step="1" x-model="abc.qty" placeholder="{{ __('Quantity *') }}" class="pp-num h-8 rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                                <input type="number" min="0" step="any" x-model="abc.cost" placeholder="{{ __('Unit cost') }}" class="pp-num h-8 rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                <input type="number" min="1" step="1" x-model="abc.qty" placeholder="{{ __('Quantity *') }}" class="pp-num h-8 rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:text-slate-100">
+                                <input type="number" min="0" step="any" x-model="abc.cost" placeholder="{{ __('Unit cost') }}" class="pp-num h-8 rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:text-slate-100">
                             </div>
-                            <input type="text" x-model="abc.note" placeholder="{{ __('Notes') }}" class="h-8 w-full rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                            <input type="text" x-model="abc.note" placeholder="{{ __('Notes') }}" class="h-8 w-full rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:text-slate-100">
                             <p class="text-[10.5px] leading-snug text-muted">{{ __('Not in the product database? It is added to this list only, flagged Manual. No product record is created.') }}</p>
                             <button type="button" class="w-full rounded-lg bg-navy-deep py-2 text-sm font-bold text-white hover:bg-navy-raised" @click="addManual">{{ __('Add to current list') }}</button>
                         </div>
 
                         {{-- budget warning --}}
-                        <p class="mx-4 mb-2 rounded-lg border border-rose-300 bg-rose-50 px-3 py-2 text-xs font-bold text-rose-600 dark:border-rose-800 dark:bg-rose-950/30 dark:text-rose-300" x-show="overBudget" x-cloak>
+                        <p class="mx-4 mb-2 rounded-lg border border-rose-300 bg-rose-50 px-3 py-2 text-xs font-bold text-rose-600 dark:border-rose-800" x-show="overBudget" x-cloak>
                             ⚠ <span x-text="budgetWarningLabel"></span>
                         </p>
 
                         {{-- grand total --}}
-                        <div class="border-t-2 border-accent bg-slate-50 px-4 py-2.5 dark:bg-slate-950/40">
+                        <div class="border-t-2 border-accent bg-slate-50 px-4 py-2.5">
                             <div class="flex items-baseline justify-between">
                                 <span class="text-[10.5px] font-bold uppercase tracking-[0.12em] text-muted">{{ __('Grand Total') }}</span>
                                 <span class="pp-num text-lg font-bold text-accent dark:text-accent" x-text="grandTotalLabel"></span>
@@ -377,14 +377,14 @@
                             <p class="mt-0.5 text-right text-[11px] font-semibold text-muted" x-show="hasBudget" x-text="budgetRemainingLabel"></p>
                         </div>
 
-                        <p class="px-4 pt-2 text-xs font-bold text-emerald-600 dark:text-emerald-400" x-show="hasFlash" x-cloak x-text="flashMessage"></p>
+                        <p class="px-4 pt-2 text-xs font-bold text-emerald-600" x-show="hasFlash" x-cloak x-text="flashMessage"></p>
 
                         {{-- actions --}}
                         <div class="flex flex-wrap gap-1.5 px-3.5 py-3">
                             <button type="button" class="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-bold text-white hover:bg-emerald-500" @click="saveList"><i class="fas fa-floppy-disk me-1"></i>{{ __('Save List') }}</button>
-                            <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="saveDraft">{{ __('Save Draft') }}</button>
-                            <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="printList"><i class="fas fa-print me-1"></i>{{ __('Print') }}</button>
-                            <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="exportCsv"><i class="fas fa-file-csv me-1"></i>{{ __('Export CSV') }}</button>
+                            <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800" @click="saveDraft">{{ __('Save Draft') }}</button>
+                            <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800" @click="printList"><i class="fas fa-print me-1"></i>{{ __('Print') }}</button>
+                            <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800" @click="exportCsv"><i class="fas fa-file-csv me-1"></i>{{ __('Export CSV') }}</button>
                             <button type="button" class="rounded-lg px-3 py-1.5 text-sm font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30" @click="clearList">✕ {{ __('Clear') }}</button>
                         </div>
                         <p class="px-4 pb-3 text-[10.5px] text-muted">{{ __('Lists are stored in this browser only — they survive reloads and filters, but other admins cannot see them.') }}</p>
@@ -394,7 +394,7 @@
 
             {{-- ============ view saved list modal ============ --}}
             <div class="fixed inset-0 z-50 flex items-center justify-center bg-navy-deep/55 p-4" x-show="viewOpen" x-cloak @click.self="closeView" role="dialog" aria-modal="true">
-                <div class="max-h-[82vh] w-full max-w-xl overflow-auto rounded-2xl bg-white shadow-2xl dark:bg-slate-900">
+                <div class="max-h-[82vh] w-full max-w-xl overflow-auto rounded-2xl bg-white shadow-2xl">
                     <div class="pp-dock-head flex items-center justify-between px-5 py-3.5 text-white">
                         <div class="min-w-0">
                             <h3 class="truncate text-[15px] font-bold" x-text="viewTitle"></h3>
@@ -404,7 +404,7 @@
                     </div>
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
-                            <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500 dark:bg-slate-950/40 dark:text-slate-400">
+                            <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                                 <tr>
                                     <th class="px-4 py-2.5 text-left">{{ __('Item') }}</th>
                                     <th class="px-4 py-2.5 text-right">{{ __('Qty') }}</th>
@@ -416,8 +416,8 @@
                                 <template x-for="item in viewItems" :key="item.key">
                                     <tr>
                                         <td class="px-4 py-2.5">
-                                            <span class="font-semibold text-slate-800 dark:text-slate-100" x-text="item.name"></span>
-                                            <span class="ms-1 inline-block rounded border border-dashed border-amber-600 bg-amber-50 px-1.5 text-[9px] font-bold uppercase text-amber-700 dark:border-amber-400 dark:bg-amber-400/10 dark:text-amber-300" x-show="item.manual">{{ __('Manual') }}</span>
+                                            <span class="font-semibold text-slate-800" x-text="item.name"></span>
+                                            <span class="ms-1 inline-block rounded border border-dashed border-amber-600 bg-amber-50 px-1.5 text-[9px] font-bold uppercase text-amber-700 dark:border-amber-400" x-show="item.manual">{{ __('Manual') }}</span>
                                             <span class="block text-[11px] text-muted" x-text="item.sku"></span>
                                         </td>
                                         <td class="pp-num px-4 py-2.5 text-right" x-text="item.qtyLabel"></td>

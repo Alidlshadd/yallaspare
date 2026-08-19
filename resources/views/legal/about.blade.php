@@ -9,7 +9,7 @@
         <section class="abt-hero relative overflow-hidden rounded-3xl px-6 py-16 text-center sm:py-20">
             <span class="abt-blob abt-b1" aria-hidden="true"></span>
             <span class="abt-blob abt-b2" aria-hidden="true"></span>
-            <span class="sup-in relative inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-white px-4 py-1.5 text-xs font-bold text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+            <span class="sup-in relative inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-white px-4 py-1.5 text-xs font-bold text-slate-700 shadow-sm dark:bg-slate-900">
                 <span class="inline-block h-2 w-2 rounded-full bg-accent" aria-hidden="true"></span>
                 {{ __('Modern auto spare parts store') }}
             </span>
@@ -17,14 +17,14 @@
                 {{ __('Finding the right part') }}<br>
                 <span class="abt-grad">{{ __('is no longer a struggle.') }}</span>
             </h1>
-            <p class="sup-in relative mx-auto mt-6 max-w-2xl text-base leading-relaxed text-slate-600 dark:text-slate-300" style="animation-delay: .24s">
+            <p class="sup-in relative mx-auto mt-6 max-w-2xl text-base leading-relaxed text-slate-600" style="animation-delay: .24s">
                 {{ __('We are an online auto spare parts store dedicated to providing reliable and high-quality automotive parts for different vehicle brands and models.') }}
             </p>
             <div class="sup-in relative mt-8 flex flex-wrap items-center justify-center gap-3" style="animation-delay: .36s">
                 <a href="{{ route('shop.index') }}" class="font-display inline-flex items-center rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-lg shadow-primary/25 transition hover:-translate-y-0.5 hover:bg-navy hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:bg-accent dark:text-navy dark:shadow-accent/20 dark:hover:bg-accent">
                     {{ __('Find your part') }}
                 </a>
-                <a href="{{ route('legal.vision') }}" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-primary transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:hover:border-slate-600">
+                <a href="{{ route('legal.vision') }}" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-primary transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md dark:bg-slate-900 dark:text-white dark:hover:border-slate-600">
                     {{ __('Our Vision') }} <span aria-hidden="true">&rarr;</span>
                 </a>
             </div>
@@ -54,26 +54,26 @@
                 </div>
             </aside>
             <div class="space-y-8">
-                <article data-vision-reveal data-about-panel="why" class="rounded-3xl border border-slate-200/80 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <article data-vision-reveal data-about-panel="why" class="rounded-3xl border border-slate-200/80 bg-white p-8 shadow-sm dark:bg-slate-900">
                     <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-accent md:hidden dark:text-accent">{{ __('Why we exist') }}</p>
                     <h2 class="mt-2 text-2xl font-bold tracking-tight text-primary md:mt-0 dark:text-white">{{ __('Because the wrong part is lost time.') }}</h2>
-                    <p class="mt-4 max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                    <p class="mt-4 max-w-2xl text-sm leading-relaxed text-slate-600">
                         {{ __('Shop after shop, wrong parts, days of waiting — YallaSpare was founded to break that loop.') }}
                         {{ __('All products are carefully selected to ensure quality and compatibility with different vehicle models.') }}
                     </p>
                 </article>
-                <article data-vision-reveal data-about-panel="how" class="rounded-3xl border border-slate-200/80 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <article data-vision-reveal data-about-panel="how" class="rounded-3xl border border-slate-200/80 bg-white p-8 shadow-sm dark:bg-slate-900">
                     <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-accent md:hidden dark:text-accent">{{ __('How we work') }}</p>
                     <h2 class="mt-2 text-2xl font-bold tracking-tight text-primary md:mt-0 dark:text-white">{{ __('A simple promise, kept every day.') }}</h2>
-                    <p class="mt-4 max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                    <p class="mt-4 max-w-2xl text-sm leading-relaxed text-slate-600">
                         {{ __('Our mission is to provide high-quality auto spare parts, competitive prices, and fast delivery while maintaining excellent customer service.') }}
                         {{ __('If you are not sure which part you need, our support team can help you find the correct product.') }}
                     </p>
                 </article>
-                <article data-vision-reveal data-about-panel="next" class="rounded-3xl border border-slate-200/80 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <article data-vision-reveal data-about-panel="next" class="rounded-3xl border border-slate-200/80 bg-white p-8 shadow-sm dark:bg-slate-900">
                     <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-accent md:hidden dark:text-accent">{{ __("Where we're going") }}</p>
                     <h2 class="mt-2 text-2xl font-bold tracking-tight text-primary md:mt-0 dark:text-white">{{ __('This is only the beginning.') }}</h2>
-                    <p class="mt-4 max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                    <p class="mt-4 max-w-2xl text-sm leading-relaxed text-slate-600">
                         {{ __('A mobile app, VIN matching, same-day delivery, and more are on the road ahead — see the full journey on Our Vision.') }}
                     </p>
                 </article>
@@ -82,15 +82,15 @@
 
         {{-- Bento grid --}}
         <section class="mt-14 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            <div data-vision-reveal class="abt-card rounded-3xl border border-slate-200/80 bg-white p-7 shadow-sm sm:col-span-2 dark:border-slate-800 dark:bg-slate-900">
-                <h2 class="text-sm font-bold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('YallaSpare in numbers') }}</h2>
+            <div data-vision-reveal class="abt-card rounded-3xl border border-slate-200/80 bg-white p-7 shadow-sm sm:col-span-2 dark:bg-slate-900">
+                <h2 class="text-sm font-bold uppercase tracking-[0.14em] text-slate-500">{{ __('YallaSpare in numbers') }}</h2>
                 <div class="mt-5 grid grid-cols-2 gap-6 sm:grid-cols-4">
                     @foreach ($stats as $stat)
                         <div>
                             <p class="text-3xl font-bold tracking-tighter text-primary tabular-nums dark:text-white">
                                 <span data-vision-count="{{ $stat['value'] }}">0</span>{{ $stat['suffix'] }}
                             </p>
-                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ $stat['label'] }}</p>
+                            <p class="mt-1 text-xs text-slate-500">{{ $stat['label'] }}</p>
                         </div>
                     @endforeach
                 </div>
@@ -102,25 +102,25 @@
                     </svg>
                 </span>
                 <h2 class="mt-4 text-base font-bold tracking-tight text-primary dark:text-white">{{ __('Fit guarantee') }}</h2>
-                <p class="mt-1.5 text-sm leading-relaxed text-slate-600 dark:text-slate-300">{{ __('Every part is fit-checked for your vehicle.') }}</p>
+                <p class="mt-1.5 text-sm leading-relaxed text-slate-600">{{ __('Every part is fit-checked for your vehicle.') }}</p>
             </div>
-            <div data-vision-reveal class="abt-card rounded-3xl border border-slate-200/80 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div data-vision-reveal class="abt-card rounded-3xl border border-slate-200/80 bg-white p-7 shadow-sm dark:bg-slate-900">
                 <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-primary dark:bg-slate-800 dark:text-slate-200">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M13 3 5 14h6l-1 7 8-11h-6l1-7Z" />
                     </svg>
                 </span>
                 <h2 class="mt-4 text-base font-bold tracking-tight text-primary dark:text-white">{{ __('Fast delivery') }}</h2>
-                <p class="mt-1.5 text-sm leading-relaxed text-slate-600 dark:text-slate-300">{{ __('1-3 business days with trusted shipping partners.') }}</p>
+                <p class="mt-1.5 text-sm leading-relaxed text-slate-600">{{ __('1-3 business days with trusted shipping partners.') }}</p>
             </div>
-            <div data-vision-reveal class="abt-card rounded-3xl border border-slate-200/80 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div data-vision-reveal class="abt-card rounded-3xl border border-slate-200/80 bg-white p-7 shadow-sm dark:bg-slate-900">
                 <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-slate-100 text-primary dark:bg-slate-800 dark:text-slate-200">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                         <path d="M8 10h8M8 14h5" /><path d="M21 12a9 9 0 1 1-4-7.5" />
                     </svg>
                 </span>
                 <h2 class="mt-4 text-base font-bold tracking-tight text-primary dark:text-white">{{ __('Not sure which part?') }}</h2>
-                <p class="mt-1.5 text-sm leading-relaxed text-slate-600 dark:text-slate-300">{{ __('Send brand, model, year, and a photo — we will find it.') }}</p>
+                <p class="mt-1.5 text-sm leading-relaxed text-slate-600">{{ __('Send brand, model, year, and a photo — we will find it.') }}</p>
             </div>
             <div data-vision-reveal class="abt-card abt-dark relative overflow-hidden rounded-3xl p-7 sm:col-span-2 lg:col-span-2">
                 <span class="abt-glow" aria-hidden="true"></span>

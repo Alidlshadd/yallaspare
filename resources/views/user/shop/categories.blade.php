@@ -54,7 +54,7 @@
 
                     <a
                         href="{{ route('shop.index', ['category' => $category->slug ?: $category->id]) }}"
-                        class="group relative flex h-56 flex-col overflow-hidden rounded-3xl border border-slate-200/80 shadow-sm shadow-slate-900/5 transition duration-200 hover:shadow-lg hover:shadow-slate-900/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2 dark:border-slate-800 dark:shadow-black/10"
+                        class="group relative flex h-56 flex-col overflow-hidden rounded-3xl border border-slate-200/80 shadow-sm shadow-slate-900/5 transition duration-200 hover:shadow-lg hover:shadow-slate-900/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 focus-visible:ring-offset-2 dark:shadow-black/10"
                         data-category-card
                         data-category-name="{{ Str::lower($category->name) }}"
                         data-category-description="{{ Str::lower((string) $category->localized_description) }}"
@@ -92,18 +92,18 @@
                     </a>
                 @empty
                     <div class="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center dark:border-slate-700 dark:bg-slate-900 sm:col-span-2 lg:col-span-3 xl:col-span-4">
-                        <h2 class="text-xl font-semibold text-slate-950 dark:text-white">{{ __('No categories found.') }}</h2>
-                        <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">{{ __('Create categories in admin to show them here.') }}</p>
+                        <h2 class="text-xl font-semibold text-slate-950">{{ __('No categories found.') }}</h2>
+                        <p class="mt-2 text-sm text-slate-500">{{ __('Create categories in admin to show them here.') }}</p>
                     </div>
                 @endforelse
             </div>
 
-            <p class="hidden py-10 text-center text-sm font-medium text-slate-500 dark:text-slate-400" data-category-empty>
+            <p class="hidden py-10 text-center text-sm font-medium text-slate-500" data-category-empty>
                 {{ __('No categories match your search.') }}
             </p>
 
             @if ($categories->hasPages())
-                <div class="mt-5 rounded-2xl border border-slate-200/80 bg-white px-4 py-3 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10">
+                <div class="mt-5 rounded-2xl border border-slate-200/80 bg-white px-4 py-3 shadow-sm shadow-slate-900/5 dark:bg-slate-900 dark:shadow-black/10">
                     {{ $categories->links() }}
                 </div>
             @endif

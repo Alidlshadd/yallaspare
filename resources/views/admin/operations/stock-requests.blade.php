@@ -1,8 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
         <div>
-            <h2 class="text-2xl font-semibold text-slate-800 dark:text-slate-100">{{ __('Product Requests') }}</h2>
-            <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('See who is waiting for unavailable products and send real restock notifications.') }}</p>
+            <h2 class="text-2xl font-semibold text-slate-800">{{ __('Product Requests') }}</h2>
+            <p class="text-sm text-slate-500">{{ __('See who is waiting for unavailable products and send real restock notifications.') }}</p>
         </div>
     </x-slot>
 
@@ -83,10 +83,10 @@
     <div class="py-8">
         <div class="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8" x-data="stockRequestsBoard" data-config="{{ json_encode($srConfig) }}">
             @if(session('success'))
-                <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/20 dark:text-emerald-300">{{ session('success') }}</div>
+                <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">{{ session('success') }}</div>
             @endif
             @if(session('error'))
-                <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/20 dark:text-rose-300">{{ session('error') }}</div>
+                <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700">{{ session('error') }}</div>
             @endif
 
             <section class="sr-hero flex flex-col gap-3 rounded-2xl px-5 py-4 text-white shadow-sm sm:flex-row sm:items-center sm:justify-between">
@@ -101,40 +101,40 @@
 
             {{-- ============ summary cards ============ --}}
             <section class="grid gap-3 md:grid-cols-3 xl:grid-cols-6">
-                <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                     <div class="flex items-start justify-between gap-2">
                         <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-muted dark:text-slate-500">{{ __('Pending') }}</p>
                         <i class="fas fa-hourglass-half text-accent"></i>
                     </div>
                     <p class="sr-num mt-2 text-2xl font-bold text-accent dark:text-accent">{{ number_format($summary['pending']) }}</p>
                 </article>
-                <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                     <div class="flex items-start justify-between gap-2">
                         <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-muted dark:text-slate-500">{{ __('Notified') }}</p>
                         <i class="fas fa-bell text-emerald-500"></i>
                     </div>
-                    <p class="sr-num mt-2 text-2xl font-bold text-emerald-600 dark:text-emerald-400">{{ number_format($summary['notified']) }}</p>
+                    <p class="sr-num mt-2 text-2xl font-bold text-emerald-600">{{ number_format($summary['notified']) }}</p>
                 </article>
-                <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                     <div class="flex items-start justify-between gap-2">
                         <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-muted dark:text-slate-500">{{ __('Products') }}</p>
                         <i class="fas fa-box-open text-info"></i>
                     </div>
                     <p class="sr-num mt-2 text-2xl font-bold text-info dark:text-info">{{ number_format($summary['products']) }}</p>
                 </article>
-                <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                     <div class="flex items-start justify-between gap-2">
                         <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-muted dark:text-slate-500">{{ __('High Demand') }}</p>
                         <i class="fas fa-fire text-rose-500"></i>
                     </div>
-                    <p class="sr-num mt-2 text-2xl font-bold text-rose-600 dark:text-rose-400">{{ number_format($summary['high_demand']) }}</p>
+                    <p class="sr-num mt-2 text-2xl font-bold text-rose-600">{{ number_format($summary['high_demand']) }}</p>
                 </article>
-                <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                     <div class="flex items-start justify-between gap-2">
                         <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-muted dark:text-slate-500">{{ __('Out of Stock') }}</p>
                         <i class="fas fa-circle-exclamation text-rose-500"></i>
                     </div>
-                    <p class="sr-num mt-2 text-2xl font-bold text-rose-600 dark:text-rose-400">{{ number_format($summary['out_of_stock_requests']) }}</p>
+                    <p class="sr-num mt-2 text-2xl font-bold text-rose-600">{{ number_format($summary['out_of_stock_requests']) }}</p>
                 </article>
                 <article class="sr-hero rounded-2xl border border-transparent p-4 shadow-sm">
                     <div class="flex items-start justify-between gap-2">
@@ -147,7 +147,7 @@
             </section>
 
             {{-- ============ filters ============ --}}
-            <form method="GET" action="{{ route('admin.stock-requests.index') }}" class="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <form method="GET" action="{{ route('admin.stock-requests.index') }}" class="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
                 <div class="flex flex-wrap items-center gap-2">
                     <input type="search" name="search" value="{{ $search }}" placeholder="{{ __('Search product, SKU, brand') }}" class="min-w-0 flex-[2_1_220px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                     <select name="status" class="min-w-0 flex-[1_1_140px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
@@ -155,28 +155,28 @@
                             <option value="{{ $value }}" @selected($status === $value)>{{ $label }}</option>
                         @endforeach
                     </select>
-                    <a href="{{ route('admin.stock-requests.index') }}" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Reset') }}</a>
+                    <a href="{{ route('admin.stock-requests.index') }}" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800">{{ __('Reset') }}</a>
                     <button class="rounded-xl bg-navy-deep px-4 py-2 text-sm font-semibold text-white hover:bg-navy-raised">{{ __('Filter') }}</button>
                 </div>
             </form>
 
             @unless($hasTable)
-                <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center dark:border-slate-700 dark:bg-slate-900">
-                    <i class="fas fa-plug-circle-xmark mb-3 block text-2xl text-slate-300 dark:text-slate-600"></i>
-                    <p class="text-sm font-bold text-slate-600 dark:text-slate-300">{{ __('Back-in-stock subscriptions table is not available yet.') }}</p>
+                <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center dark:border-slate-700">
+                    <i class="fas fa-plug-circle-xmark mb-3 block text-2xl text-slate-300"></i>
+                    <p class="text-sm font-bold text-slate-600">{{ __('Back-in-stock subscriptions table is not available yet.') }}</p>
                     <p class="mt-1 text-xs text-muted">{{ __('Run the pending database migrations to enable stock request tracking.') }}</p>
                 </div>
             @else
                 {{-- ============ main request table ============ --}}
-                <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3 dark:border-slate-800">
+                <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                    <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3">
                         <i class="fas fa-list-check text-muted"></i>
-                        <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Requested products') }}</h3>
+                        <h3 class="text-sm font-bold text-slate-800">{{ __('Requested products') }}</h3>
                         <span class="ms-auto text-xs font-semibold text-muted">{{ __(':from–:to of :total', ['from' => $products->firstItem() ?? 0, 'to' => $products->lastItem() ?? 0, 'total' => $products->total()]) }}</span>
                     </div>
                     <div class="overflow-x-auto">
                         <table class="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
-                            <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500 dark:bg-slate-950/40 dark:text-slate-400">
+                            <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                                 <tr>
                                     <th class="px-4 py-3 text-left">{{ __('Product') }}</th>
                                     <th class="px-4 py-3 text-right">{{ __('Stock') }}</th>
@@ -214,14 +214,14 @@
                                     @endphp
                                     <tr class="hover:bg-slate-50/70 dark:hover:bg-slate-800/40" data-product="{{ json_encode($rowProduct) }}" data-subs="{{ json_encode($rowSubs) }}">
                                         <td class="px-4 py-3">
-                                            <div class="font-semibold text-slate-900 dark:text-slate-100">{{ $product->name }}</div>
+                                            <div class="font-semibold text-slate-900">{{ $product->name }}</div>
                                             <div class="mt-1 text-xs text-slate-500">{{ $product->sku ?? __('N/A') }} @if($product->brand) · {{ $product->brand }} @endif</div>
                                         </td>
                                         <td class="px-4 py-3 text-right">
                                             <span class="sr-num font-semibold {{ $stock <= 0 ? 'text-rose-600' : 'text-slate-700 dark:text-slate-200' }}">{{ number_format($stock) }}</span>
                                             <span class="mt-1 block"><span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide {{ $stockBadge['class'] }}">{{ $stockBadge['label'] }}</span></span>
                                         </td>
-                                        <td class="sr-num px-4 py-3 text-right text-slate-600 dark:text-slate-300">{{ number_format((int) $product->request_count) }}</td>
+                                        <td class="sr-num px-4 py-3 text-right text-slate-600">{{ number_format((int) $product->request_count) }}</td>
                                         <td class="sr-num px-4 py-3 text-right text-lg font-bold {{ $pending > 0 ? 'text-accent dark:text-accent' : 'text-slate-300 dark:text-slate-600' }}">{{ number_format($pending) }}</td>
                                         <td class="px-4 py-3 text-right text-xs text-slate-500">{{ optional($product->latest_requested_at ? \Carbon\Carbon::parse($product->latest_requested_at) : null)->diffForHumans() ?? __('N/A') }}</td>
                                         <td class="px-4 py-3">
@@ -246,9 +246,9 @@
                                                         <button class="rounded-lg bg-navy-deep px-2.5 py-1.5 text-sm font-bold text-white hover:bg-navy-raised">{{ __('Send Notifications') }}</button>
                                                     </form>
                                                 @elseif($pending > 0)
-                                                    <span class="rounded-lg bg-amber-50 px-2.5 py-1.5 text-[11px] font-bold text-amber-700 dark:bg-amber-950/40 dark:text-amber-300">{{ __('Awaiting stock') }}</span>
+                                                    <span class="rounded-lg bg-amber-50 px-2.5 py-1.5 text-[11px] font-bold text-amber-700">{{ __('Awaiting stock') }}</span>
                                                 @else
-                                                    <span class="rounded-lg bg-emerald-50 px-2.5 py-1.5 text-[11px] font-bold text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-300">{{ __('Done') }}</span>
+                                                    <span class="rounded-lg bg-emerald-50 px-2.5 py-1.5 text-[11px] font-bold text-emerald-600">{{ __('Done') }}</span>
                                                 @endif
                                             </div>
                                         </td>
@@ -256,11 +256,11 @@
                                 @empty
                                     <tr>
                                         <td colspan="7" class="px-4 py-12 text-center">
-                                            <i class="fas fa-inbox mb-3 block text-2xl text-slate-300 dark:text-slate-600"></i>
-                                            <p class="text-sm font-bold text-slate-600 dark:text-slate-300">{{ __('No stock requests matched the filters.') }}</p>
+                                            <i class="fas fa-inbox mb-3 block text-2xl text-slate-300"></i>
+                                            <p class="text-sm font-bold text-slate-600">{{ __('No stock requests matched the filters.') }}</p>
                                             <p class="mt-1 text-xs text-muted">{{ __('Requests will appear here when customers ask for unavailable products.') }}</p>
                                             <div class="mt-4 flex justify-center gap-2">
-                                                <a href="{{ route('admin.products.index') }}" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Go to Products') }}</a>
+                                                <a href="{{ route('admin.products.index') }}" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800">{{ __('Go to Products') }}</a>
                                                 <a href="{{ route('admin.purchase-planning.index') }}" class="font-display rounded-xl bg-navy-deep px-4 py-2 text-sm font-bold text-white hover:bg-navy-raised">{{ __('Purchase Planning') }}</a>
                                             </div>
                                         </td>
@@ -269,22 +269,22 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="border-t border-slate-200 px-4 py-3 dark:border-slate-800">{{ $products->links() }}</div>
+                    <div class="border-t border-slate-200 px-4 py-3">{{ $products->links() }}</div>
                 </section>
 
                 {{-- ============ recent requests ============ --}}
-                <section class="rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3 dark:border-slate-800">
+                <section class="rounded-2xl border border-slate-200 bg-white shadow-sm">
+                    <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3">
                         <i class="fas fa-clock-rotate-left text-muted"></i>
-                        <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Recent Requests') }}</h3>
+                        <h3 class="text-sm font-bold text-slate-800">{{ __('Recent Requests') }}</h3>
                         <span class="ms-auto text-xs font-semibold text-muted">{{ __('latest :count', ['count' => $requests->count()]) }}</span>
                     </div>
                     <div class="grid gap-3 p-4 md:grid-cols-2 xl:grid-cols-3">
                         @forelse($requests as $requestRow)
-                            <div class="rounded-xl border border-slate-200 bg-slate-50 p-3.5 dark:border-slate-700 dark:bg-slate-950/40">
+                            <div class="rounded-xl border border-slate-200 bg-slate-50 p-3.5">
                                 <div class="flex items-start justify-between gap-2">
                                     <div class="min-w-0">
-                                        <div class="truncate text-sm font-bold text-slate-900 dark:text-slate-100">{{ $requestRow->product?->name ?? __('Deleted product') }}</div>
+                                        <div class="truncate text-sm font-bold text-slate-900">{{ $requestRow->product?->name ?? __('Deleted product') }}</div>
                                         <div class="mt-0.5 truncate text-xs text-slate-500">{{ $requestRow->user?->name ?? __('Guest') }} · {{ $requestRow->user?->email ?: $requestRow->user?->phone }}</div>
                                     </div>
                                     <span class="inline-flex shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wide {{ $requestRow->notified_at ? 'sr-chip-notified' : 'sr-chip-waiting' }}">
@@ -300,8 +300,8 @@
                             </div>
                         @empty
                             <div class="md:col-span-2 xl:col-span-3 py-8 text-center">
-                                <i class="fas fa-inbox mb-2 block text-xl text-slate-300 dark:text-slate-600"></i>
-                                <p class="text-sm font-bold text-slate-600 dark:text-slate-300">{{ __('No stock requests yet.') }}</p>
+                                <i class="fas fa-inbox mb-2 block text-xl text-slate-300"></i>
+                                <p class="text-sm font-bold text-slate-600">{{ __('No stock requests yet.') }}</p>
                                 <p class="mt-1 text-xs text-muted">{{ __('Requests will appear here when customers ask for unavailable products.') }}</p>
                             </div>
                         @endforelse
@@ -311,7 +311,7 @@
 
             {{-- ============ waiting customers drawer ============ --}}
             <div class="fixed inset-0 z-50 bg-navy-deep/55" x-show="drawerOpen" x-cloak @click.self="closeDrawer" role="dialog" aria-modal="true">
-                <aside class="absolute end-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl dark:bg-slate-900">
+                <aside class="absolute end-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl">
                     <div class="sr-hero flex items-start justify-between gap-3 px-5 py-4 text-white">
                         <div class="min-w-0">
                             <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-accent">{{ __('Waiting customers') }}</p>
@@ -323,13 +323,13 @@
 
                     <div class="min-h-0 flex-1 overflow-y-auto">
                         <div class="px-5 py-10 text-center" x-show="drawerEmpty">
-                            <i class="fas fa-user-clock mb-2 block text-xl text-slate-300 dark:text-slate-600"></i>
-                            <p class="text-sm font-bold text-slate-600 dark:text-slate-300">{{ __('No customer requests for this product.') }}</p>
+                            <i class="fas fa-user-clock mb-2 block text-xl text-slate-300"></i>
+                            <p class="text-sm font-bold text-slate-600">{{ __('No customer requests for this product.') }}</p>
                         </div>
                         <template x-for="sub in drawerSubs" :key="sub.id">
-                            <div class="flex items-center justify-between gap-3 border-b border-slate-100 px-5 py-3 dark:border-slate-800">
+                            <div class="flex items-center justify-between gap-3 border-b border-slate-100 px-5 py-3">
                                 <div class="min-w-0">
-                                    <p class="truncate text-sm font-bold text-slate-900 dark:text-slate-100" x-text="sub.name"></p>
+                                    <p class="truncate text-sm font-bold text-slate-900" x-text="sub.name"></p>
                                     <p class="truncate text-xs text-slate-500" x-text="sub.email"></p>
                                     <p class="text-[11px] text-muted" x-text="sub.date"></p>
                                 </div>
@@ -338,18 +338,18 @@
                         </template>
                     </div>
 
-                    <p class="px-5 pt-2 text-xs font-bold text-emerald-600 dark:text-emerald-400" x-show="hasFlash" x-cloak x-text="flashMessage"></p>
-                    <div class="flex flex-wrap items-center gap-2 border-t border-slate-200 px-5 py-3.5 dark:border-slate-800">
+                    <p class="px-5 pt-2 text-xs font-bold text-emerald-600" x-show="hasFlash" x-cloak x-text="flashMessage"></p>
+                    <div class="flex flex-wrap items-center gap-2 border-t border-slate-200 px-5 py-3.5">
                         <form method="POST" :action="drawerNotifyUrl" x-show="drawerCanNotify">
                             @csrf
                             @method('PATCH')
                             <button class="rounded-lg bg-navy-deep px-3.5 py-2 text-sm font-bold text-white hover:bg-navy-raised">{{ __('Send Notifications') }}</button>
                         </form>
-                        <span class="rounded-lg bg-amber-50 px-3.5 py-2 text-xs font-bold text-amber-700 dark:bg-amber-950/40 dark:text-amber-300" x-show="drawerHasPending && !drawerCanNotify">{{ __('Awaiting stock') }}</span>
+                        <span class="rounded-lg bg-amber-50 px-3.5 py-2 text-xs font-bold text-amber-700" x-show="drawerHasPending && !drawerCanNotify">{{ __('Awaiting stock') }}</span>
                         <button type="button" class="rounded-lg bg-accent px-3.5 py-2 text-sm font-bold text-[#422006] hover:bg-accent" @click="addFromDrawer">
                             <i class="fas fa-cart-plus me-1"></i>{{ __('Add to Purchase List') }}
                         </button>
-                        <button type="button" class="ms-auto rounded-lg border border-slate-200 px-3.5 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="closeDrawer">{{ __('Close') }}</button>
+                        <button type="button" class="ms-auto rounded-lg border border-slate-200 px-3.5 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800" @click="closeDrawer">{{ __('Close') }}</button>
                     </div>
                 </aside>
             </div>

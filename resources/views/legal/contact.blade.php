@@ -89,7 +89,7 @@
             </div>
         @endif
 
-        <section class="ct-channels relative z-10 -mt-6 mx-4 grid gap-3 rounded-3xl border border-slate-200/80 bg-white/95 p-3 shadow-xl shadow-slate-900/10 backdrop-blur-xl sm:grid-cols-3 lg:mx-10 dark:border-slate-700 dark:bg-slate-900/95 dark:shadow-black/25">
+        <section class="ct-channels relative z-10 -mt-6 mx-4 grid gap-3 rounded-3xl border border-slate-200/80 bg-white/95 p-3 shadow-xl shadow-slate-900/10 backdrop-blur-xl sm:grid-cols-3 lg:mx-10 dark:bg-slate-900/95 dark:shadow-black/25">
             <a href="tel:+9647704488315" class="ct-channel group flex items-center gap-4 rounded-2xl px-4 py-4 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent">
                 <span class="ct-channel-icon">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -131,8 +131,8 @@
         </section>
 
         <section class="mt-16 grid gap-6 lg:grid-cols-[minmax(0,1.55fr)_minmax(300px,.75fr)] lg:items-start">
-            <article id="contact-form" data-vision-reveal class="ct-form-card scroll-mt-28 overflow-hidden rounded-[2rem] border border-slate-200/80 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                <header class="flex flex-wrap items-start justify-between gap-4 border-b border-slate-200/80 px-6 py-7 sm:px-8 dark:border-slate-800">
+            <article id="contact-form" data-vision-reveal class="ct-form-card scroll-mt-28 overflow-hidden rounded-[2rem] border border-slate-200/80 bg-white shadow-sm dark:bg-slate-900">
+                <header class="flex flex-wrap items-start justify-between gap-4 border-b border-slate-200/80 px-6 py-7 sm:px-8">
                     <div class="flex items-start gap-4">
                         <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20 dark:bg-accent dark:text-navy">
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -180,7 +180,7 @@
                         </div>
                     </fieldset>
 
-                    <fieldset class="border-t border-slate-200/80 pt-7 dark:border-slate-800">
+                    <fieldset class="border-t border-slate-200/80 pt-7">
                         <legend class="ct-step-title"><span>02</span>{{ __('Message') }}</legend>
                         <div class="mt-5 space-y-5">
                             <div>
@@ -196,8 +196,8 @@
                         </div>
                     </fieldset>
 
-                    <div class="flex flex-col gap-4 border-t border-slate-200/80 pt-7 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800">
-                        <p class="max-w-sm text-xs leading-5 text-slate-500 dark:text-slate-400">{{ __('Our team will help you find the correct spare part.') }}</p>
+                    <div class="flex flex-col gap-4 border-t border-slate-200/80 pt-7 sm:flex-row sm:items-center sm:justify-between">
+                        <p class="max-w-sm text-xs leading-5 text-slate-500">{{ __('Our team will help you find the correct spare part.') }}</p>
                         <button type="submit" class="ct-submit inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-sm font-bold text-white shadow-lg shadow-primary/20 transition hover:-translate-y-0.5 hover:bg-[#10105f] hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:bg-accent dark:text-navy dark:shadow-accent/10 dark:hover:bg-accent">
                             {{ __('Send Message') }}
                             <svg class="ct-arrow h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -235,7 +235,7 @@
                         </svg>
                     </span>
                     <h3 class="mt-5 text-lg font-bold tracking-tight text-primary dark:text-white">{{ __('If you need help finding the correct part for your vehicle, please send us:') }}</h3>
-                    <ul class="mt-4 space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                    <ul class="mt-4 space-y-3 text-sm text-slate-600">
                         @foreach ([__('Car brand and model'), __('Year of manufacture'), __('Engine type (if available)'), __('Part name or photo')] as $item)
                             <li class="flex items-start gap-3">
                                 <span class="mt-1 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-accent text-[9px] font-bold text-primary">✓</span>
@@ -245,7 +245,7 @@
                     </ul>
                 </article>
 
-                <article data-vision-reveal class="ct-side-card rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <article data-vision-reveal class="ct-side-card rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm dark:bg-slate-900">
                     <div class="flex items-start gap-4">
                         <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-slate-100 text-primary dark:bg-slate-800 dark:text-slate-200">
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
@@ -257,12 +257,12 @@
                             <h3 class="mt-1 text-lg font-bold text-primary dark:text-white">{{ __('Erbil, Iraq') }}</h3>
                         </div>
                     </div>
-                    <p class="mt-4 text-sm leading-6 text-slate-600 dark:text-slate-300">{{ __('We are based in Erbil, Iraq, and we deliver auto spare parts across different cities.') }}</p>
+                    <p class="mt-4 text-sm leading-6 text-slate-600">{{ __('We are based in Erbil, Iraq, and we deliver auto spare parts across different cities.') }}</p>
                 </article>
             </aside>
         </section>
 
-        <section data-vision-reveal class="ct-business mt-6 grid gap-6 overflow-hidden rounded-3xl border border-slate-200/80 bg-slate-50 px-6 py-7 sm:grid-cols-2 sm:px-8 dark:border-slate-800 dark:bg-slate-900/70">
+        <section data-vision-reveal class="ct-business mt-6 grid gap-6 overflow-hidden rounded-3xl border border-slate-200/80 bg-slate-50 px-6 py-7 sm:grid-cols-2 sm:px-8">
             <div>
                 <p class="text-[11px] font-bold uppercase tracking-[0.18em] text-muted">{{ __('Company Name') }}</p>
                 <p class="mt-2 text-base font-bold text-primary dark:text-white">{{ __('Yalla Spare - Auto Parts Store') }}</p>

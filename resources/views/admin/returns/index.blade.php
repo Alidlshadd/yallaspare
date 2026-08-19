@@ -159,13 +159,13 @@
 
         {{-- ─────────────── Flash + errors ─────────────── --}}
         @if(session('success'))
-            <div class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300">
+            <div class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
                 {{ session('success') }}
             </div>
         @endif
 
         @if($errors->any())
-            <div class="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300">
+            <div class="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
                 {{ $errors->first() }}
             </div>
         @endif
@@ -275,16 +275,16 @@
             @endphp
 
             @foreach($attentionTiles as $t)
-                <div class="relative overflow-hidden rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 p-6 bento-shadow transition">
+                <div class="relative overflow-hidden rounded-3xl bg-white border border-slate-200/70 p-6 bento-shadow transition">
                     <div class="absolute top-0 bottom-0 left-0 w-[3px] {{ $t['stripe'] }}"></div>
                     <div class="flex items-center gap-3">
                         <div class="h-10 w-10 rounded-xl grid place-items-center {{ $t['ic_bg'] }} {{ $t['ic_fg'] }}">
                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">{!! $t['icon'] !!}</svg>
                         </div>
-                        <div class="text-[10px] uppercase tracking-widest font-bold text-slate-500 dark:text-slate-400">{{ $t['label'] }}</div>
+                        <div class="text-[10px] uppercase tracking-widest font-bold text-slate-500">{{ $t['label'] }}</div>
                     </div>
-                    <div class="num-display text-3xl font-bold text-slate-900 dark:text-white mt-4">{{ number_format((int) $t['value']) }}</div>
-                    <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5">
+                    <div class="num-display text-3xl font-bold text-slate-900 mt-4">{{ number_format((int) $t['value']) }}</div>
+                    <div class="text-[11px] text-slate-500 mt-1 flex items-center gap-1.5">
                         <span class="inline-block w-1.5 h-1.5 rounded-full {{ $t['dot'] }}"></span> {{ $t['foot'] }}
                     </div>
                 </div>
@@ -317,16 +317,16 @@
             @endphp
 
             @foreach($footerTiles as $t)
-                <div class="relative overflow-hidden rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 p-6 bento-shadow transition">
+                <div class="relative overflow-hidden rounded-3xl bg-white border border-slate-200/70 p-6 bento-shadow transition">
                     <div class="absolute top-0 bottom-0 left-0 w-[3px] {{ $t['stripe'] }}"></div>
                     <div class="flex items-center gap-3">
                         <div class="h-10 w-10 rounded-xl grid place-items-center {{ $t['ic_bg'] }} {{ $t['ic_fg'] }}">
                             <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">{!! $t['icon'] !!}</svg>
                         </div>
-                        <div class="text-[10px] uppercase tracking-widest font-bold text-slate-500 dark:text-slate-400">{{ $t['label'] }}</div>
+                        <div class="text-[10px] uppercase tracking-widest font-bold text-slate-500">{{ $t['label'] }}</div>
                     </div>
-                    <div class="num-display text-3xl font-bold text-slate-900 dark:text-white mt-4">{{ number_format((int) $t['value']) }}</div>
-                    <div class="text-[11px] text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5">
+                    <div class="num-display text-3xl font-bold text-slate-900 mt-4">{{ number_format((int) $t['value']) }}</div>
+                    <div class="text-[11px] text-slate-500 mt-1 flex items-center gap-1.5">
                         <span class="inline-block w-1.5 h-1.5 rounded-full {{ $t['dot'] }}"></span> {{ $t['foot'] }}
                     </div>
                 </div>
@@ -334,30 +334,30 @@
         </div>
 
         {{-- ═════════════ Filter card ═════════════ --}}
-        <form method="GET" action="{{ route('admin.returns.index') }}" class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-5 bento-shadow mb-4">
+        <form method="GET" action="{{ route('admin.returns.index') }}" class="bg-white border border-slate-200/70 rounded-2xl p-5 bento-shadow mb-4">
             <div class="flex items-center gap-2.5 mb-4">
                 <div class="h-9 w-9 rounded-xl bg-navy-deep text-accent grid place-items-center">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
                 </div>
-                <h3 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Filter Requests') }}</h3>
+                <h3 class="text-sm font-bold text-slate-900">{{ __('Filter Requests') }}</h3>
             </div>
 
             <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_auto] items-end">
                 <div>
-                    <label for="filter-search" class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Search') }}</label>
+                    <label for="filter-search" class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 mb-1.5">{{ __('Search') }}</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 start-0 flex items-center ps-3 text-muted">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 100-15 7.5 7.5 0 000 15z"/></svg>
                         </span>
                         <input id="filter-search" name="search" value="{{ $currentSearch }}"
                                placeholder="{{ __('Search order, customer, email, or reason...') }}"
-                               class="h-11 w-full ps-10 pe-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 placeholder-muted transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-900">
+                               class="h-11 w-full ps-10 pe-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 placeholder-muted transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:focus:bg-slate-900">
                     </div>
                 </div>
                 <div>
-                    <label for="filter-status" class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Status') }}</label>
+                    <label for="filter-status" class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 mb-1.5">{{ __('Status') }}</label>
                     <select id="filter-status" name="status"
-                            class="ret-select h-11 w-full px-3 rounded-xl border border-slate-200 bg-slate-50 text-sm font-semibold text-slate-900 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-900">
+                            class="ret-select h-11 w-full px-3 rounded-xl border border-slate-200 bg-slate-50 text-sm font-semibold text-slate-900 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:focus:bg-slate-900">
                         <option value="">{{ __('All Statuses') }}</option>
                         @foreach($statuses as $status)
                             <option value="{{ $status }}" @selected($currentStatus === $status)>
@@ -369,7 +369,7 @@
                 <div class="flex gap-2 justify-end">
                     @if($hasActiveFilters)
                         <a href="{{ route('admin.returns.index') }}"
-                           class="inline-flex items-center gap-2 h-11 px-4 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700 transition">
+                           class="inline-flex items-center gap-2 h-11 px-4 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                             {{ __('Reset') }}
                         </a>
@@ -383,11 +383,11 @@
         </form>
 
         {{-- ═════════════ List card with status band + rows ═════════════ --}}
-        <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl overflow-hidden bento-shadow">
+        <div class="bg-white border border-slate-200/70 rounded-2xl overflow-hidden bento-shadow">
 
             {{-- Status quick filter band --}}
-            <div class="flex flex-wrap items-center gap-4 px-5 py-4 border-b border-slate-200/70 dark:border-slate-800 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900/60 dark:to-slate-900">
-                <span class="inline-flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400 shrink-0">
+            <div class="flex flex-wrap items-center gap-4 px-5 py-4 border-b border-slate-200/70 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900/60 dark:to-slate-900">
+                <span class="inline-flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500 shrink-0">
                     <span class="relative inline-flex h-1.5 w-1.5">
                         <span class="absolute inset-0 rounded-full bg-accent ys-pulse-dot"></span>
                         <span class="relative h-1.5 w-1.5 rounded-full bg-accent"></span>
@@ -423,11 +423,11 @@
             </div>
 
             {{-- List card head --}}
-            <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-slate-200/70 dark:border-slate-800">
-                <div class="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2.5">
+            <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-slate-200/70">
+                <div class="text-sm font-bold text-slate-900 flex items-center gap-2.5">
                     <span class="inline-block w-1 h-4 rounded-full" style="background: linear-gradient(180deg, #ff8a3d, #e65c00);"></span>
                     {{ __('Requests') }}
-                    <span class="text-xs font-medium text-slate-500 dark:text-slate-400">
+                    <span class="text-xs font-medium text-slate-500">
                         ({{ __('showing :from–:to of :total', [
                             'from'  => $requests->firstItem() ?? 0,
                             'to'    => $requests->lastItem() ?? 0,
@@ -435,7 +435,7 @@
                         ]) }})
                     </span>
                 </div>
-                <div class="text-[11.5px] font-mono text-slate-500 dark:text-slate-400 hidden sm:block">
+                <div class="text-[11.5px] font-mono text-slate-500 hidden sm:block">
                     {{ __('Updated :time · auto-refresh 30s', ['time' => now()->format('H:i')]) }}
                 </div>
             </div>
@@ -457,7 +457,7 @@
                     $customer = $requestRow->user;
                     $paymentMeta = $order ? \App\Models\Order::paymentStatusMeta((string) $order->payment_status) : null;
                 @endphp
-                <div class="grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)_260px_minmax(0,1fr)_280px] gap-4 px-5 py-5 border-b border-slate-100 dark:border-slate-800/60 hover:bg-amber-50/40 dark:hover:bg-slate-800/40 transition">
+                <div class="grid grid-cols-1 lg:grid-cols-[220px_minmax(0,1fr)_260px_minmax(0,1fr)_280px] gap-4 px-5 py-5 border-b border-slate-100 hover:bg-amber-50/40 dark:hover:bg-slate-800/40 transition">
 
                     {{-- Col 1: Request meta --}}
                     <div>
@@ -470,16 +470,16 @@
                                 {{ $rowStatusMeta['label'] }}
                             </span>
                         </div>
-                        <div class="font-mono text-[13px] font-bold text-slate-900 dark:text-white">#R-{{ $requestRow->id }}</div>
+                        <div class="font-mono text-[13px] font-bold text-slate-900">#R-{{ $requestRow->id }}</div>
                         <div class="font-mono text-[11px] text-muted dark:text-slate-500 mt-0.5">
                             {{ $requestRow->requested_at?->format('M d, Y') ?? '-' }}
                             @if($requestRow->requested_at)
-                                <span class="text-slate-300 dark:text-slate-600">/</span>
+                                <span class="text-slate-300">/</span>
                                 {{ $requestRow->requested_at->format('h:i A') }}
                             @endif
                         </div>
                         @if($requestRow->resolved_at)
-                            <div class="font-mono text-[10.5px] text-emerald-700 dark:text-emerald-400 mt-1.5">
+                            <div class="font-mono text-[10.5px] text-emerald-700 mt-1.5">
                                 {{ __('Resolved') }}: {{ $requestRow->resolved_at->format('M d, Y') }}
                             </div>
                         @endif
@@ -492,7 +492,7 @@
                                class="inline-block font-mono text-[13px] font-bold text-info hover:text-info dark:text-info dark:hover:text-info">
                                 {{ $order->order_number }}
                             </a>
-                            <div class="num-display text-[14px] font-bold text-slate-900 dark:text-white mt-1.5">
+                            <div class="num-display text-[14px] font-bold text-slate-900 mt-1.5">
                                 {{ number_format((float) $order->total_amount, $currencyDecimals) }}
                                 <span class="text-[10px] text-muted font-medium ms-1">{{ $currencyLabel }}</span>
                             </div>
@@ -504,7 +504,7 @@
                                 </div>
                             @endif
                         @else
-                            <p class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ __('Order unavailable') }}</p>
+                            <p class="text-sm font-medium text-slate-500">{{ __('Order unavailable') }}</p>
                         @endif
                     </div>
 
@@ -517,33 +517,33 @@
                                     {{ $customer->name }}
                                 </a>
                             @else
-                                <p class="font-semibold text-[13px] text-slate-900 dark:text-white truncate">{{ $customer?->name ?? __('Guest customer') }}</p>
+                                <p class="font-semibold text-[13px] text-slate-900 truncate">{{ $customer?->name ?? __('Guest customer') }}</p>
                             @endif
-                            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 truncate">{{ $customer?->email ?? '-' }}</p>
+                            <p class="text-[11px] text-slate-500 mt-0.5 truncate">{{ $customer?->email ?? '-' }}</p>
                         </div>
-                        <dl class="grid gap-1.5 text-[11px] mt-2.5 rounded-lg bg-slate-50 dark:bg-slate-950/40 p-2.5 border border-slate-100 dark:border-slate-800">
+                        <dl class="grid gap-1.5 text-[11px] mt-2.5 rounded-lg bg-slate-50 p-2.5 border border-slate-100">
                             <div class="flex items-start justify-between gap-3">
-                                <dt class="font-bold text-slate-500 dark:text-slate-400">{{ __('Account phone') }}</dt>
-                                <dd class="text-right font-semibold text-slate-800 dark:text-slate-200">{{ $customer?->phone ?: '-' }}</dd>
+                                <dt class="font-bold text-slate-500">{{ __('Account phone') }}</dt>
+                                <dd class="text-right font-semibold text-slate-800">{{ $customer?->phone ?: '-' }}</dd>
                             </div>
                             <div class="flex items-start justify-between gap-3">
-                                <dt class="font-bold text-slate-500 dark:text-slate-400">{{ __('Delivery phone') }}</dt>
-                                <dd class="text-right font-semibold text-slate-800 dark:text-slate-200">{{ $order?->delivery_phone ?: '-' }}</dd>
+                                <dt class="font-bold text-slate-500">{{ __('Delivery phone') }}</dt>
+                                <dd class="text-right font-semibold text-slate-800">{{ $order?->delivery_phone ?: '-' }}</dd>
                             </div>
                             <div class="flex items-start justify-between gap-3">
-                                <dt class="font-bold text-slate-500 dark:text-slate-400">{{ __('City') }}</dt>
-                                <dd class="text-right font-semibold text-slate-800 dark:text-slate-200">{{ $order?->delivery_city ?: '-' }}</dd>
+                                <dt class="font-bold text-slate-500">{{ __('City') }}</dt>
+                                <dd class="text-right font-semibold text-slate-800">{{ $order?->delivery_city ?: '-' }}</dd>
                             </div>
                             @if($order?->delivery_address)
                                 <div>
-                                    <dt class="font-bold text-slate-500 dark:text-slate-400">{{ __('Address') }}</dt>
-                                    <dd class="mt-1 line-clamp-2 text-slate-800 dark:text-slate-200">{{ $order->delivery_address }}</dd>
+                                    <dt class="font-bold text-slate-500">{{ __('Address') }}</dt>
+                                    <dd class="mt-1 line-clamp-2 text-slate-800">{{ $order->delivery_address }}</dd>
                                 </div>
                             @endif
                             @if($customer)
                                 <div class="flex items-start justify-between gap-3">
-                                    <dt class="font-bold text-slate-500 dark:text-slate-400">{{ __('Role') }}</dt>
-                                    <dd class="text-right font-semibold capitalize text-slate-800 dark:text-slate-200">{{ str_replace('_', ' ', (string) $customer->role) }}</dd>
+                                    <dt class="font-bold text-slate-500">{{ __('Role') }}</dt>
+                                    <dd class="text-right font-semibold capitalize text-slate-800">{{ str_replace('_', ' ', (string) $customer->role) }}</dd>
                                 </div>
                             @endif
                         </dl>
@@ -551,9 +551,9 @@
 
                     {{-- Col 4: Reason --}}
                     <div>
-                        <p class="text-[12.5px] leading-relaxed text-slate-700 dark:text-slate-300 line-clamp-5">{{ $requestRow->reason }}</p>
+                        <p class="text-[12.5px] leading-relaxed text-slate-700 line-clamp-5">{{ $requestRow->reason }}</p>
                         @if($requestRow->admin_note)
-                            <div class="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] leading-relaxed text-amber-900 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-200">
+                            <div class="mt-3 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-[11px] leading-relaxed text-amber-900 dark:text-amber-200">
                                 <span class="font-bold">{{ __('Admin note') }}:</span>
                                 {{ $requestRow->admin_note }}
                             </div>
@@ -568,9 +568,9 @@
 
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
-                                    <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">{{ __('Status') }}</label>
+                                    <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">{{ __('Status') }}</label>
                                     <select name="status"
-                                            class="ret-select h-10 w-full px-2.5 rounded-lg border border-slate-200 bg-white text-[12.5px] font-semibold text-slate-900 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100">
+                                            class="ret-select h-10 w-full px-2.5 rounded-lg border border-slate-200 bg-white text-[12.5px] font-semibold text-slate-900 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30">
                                         @foreach($statuses as $status)
                                             <option value="{{ $status }}" @selected($requestRow->status === $status)>
                                                 {{ $statusMeta[$status]['label'] ?? __(ucfirst(str_replace('_', ' ', (string) $status))) }}
@@ -579,17 +579,17 @@
                                     </select>
                                 </div>
                                 <div>
-                                    <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">{{ __('Refund') }}</label>
+                                    <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">{{ __('Refund') }}</label>
                                     <input name="refund_amount" type="number" step="0.01" min="0"
                                            value="{{ $requestRow->refund_amount }}" placeholder="0"
-                                           class="h-10 w-full px-2.5 rounded-lg border border-slate-200 bg-white text-[12.5px] font-semibold text-slate-900 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100">
+                                           class="h-10 w-full px-2.5 rounded-lg border border-slate-200 bg-white text-[12.5px] font-semibold text-slate-900 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30">
                                 </div>
                             </div>
 
                             <div>
-                                <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">{{ __('Internal note') }}</label>
+                                <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">{{ __('Internal note') }}</label>
                                 <textarea name="admin_note" rows="2" placeholder="{{ __('Add handling note for the team') }}"
-                                          class="w-full p-2.5 rounded-lg border border-slate-200 bg-white text-[12.5px] text-slate-900 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 resize-none">{{ $requestRow->admin_note }}</textarea>
+                                          class="w-full p-2.5 rounded-lg border border-slate-200 bg-white text-[12.5px] text-slate-900 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 resize-none">{{ $requestRow->admin_note }}</textarea>
                             </div>
 
                             <button type="submit"
@@ -604,11 +604,11 @@
                 </div>
             @empty
                 <div class="py-14 px-4 text-center">
-                    <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-slate-50 border border-slate-200 grid place-items-center text-muted dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500">
+                    <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-slate-50 border border-slate-200 grid place-items-center text-muted dark:text-slate-500">
                         <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
                     </div>
-                    <div class="text-base font-bold text-slate-900 dark:text-white">{{ __('No return requests found.') }}</div>
-                    <div class="text-[13px] text-slate-500 dark:text-slate-400 mt-1.5">{{ __('Try changing the search or status filter.') }}</div>
+                    <div class="text-base font-bold text-slate-900">{{ __('No return requests found.') }}</div>
+                    <div class="text-[13px] text-slate-500 mt-1.5">{{ __('Try changing the search or status filter.') }}</div>
                     @if($hasActiveFilters)
                         <a href="{{ route('admin.returns.index') }}"
                            class="font-display inline-flex items-center gap-2 h-10 px-4 mt-4 rounded-xl text-sm font-bold text-accent bg-navy-deep hover:bg-navy transition">
@@ -621,8 +621,8 @@
 
             {{-- Pagination --}}
             @if($requests->hasPages())
-                <div class="flex flex-wrap justify-between items-center gap-3 px-5 py-3.5 border-t border-slate-200/70 dark:border-slate-800 bg-slate-50/40 dark:bg-slate-900/40">
-                    <span class="text-[12px] text-slate-500 dark:text-slate-400">
+                <div class="flex flex-wrap justify-between items-center gap-3 px-5 py-3.5 border-t border-slate-200/70 bg-slate-50/40 dark:bg-slate-900/40">
+                    <span class="text-[12px] text-slate-500">
                         {{ __('Showing :from–:to of :total', [
                             'from'  => $requests->firstItem() ?? 0,
                             'to'    => $requests->lastItem() ?? 0,

@@ -6,7 +6,7 @@
     <div class="flex flex-wrap items-center justify-end gap-3">
         <a
             href="{{ route('user.account.edit') }}"
-            class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+            class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:bg-slate-900 dark:hover:bg-slate-800"
         >
             {{ __('Account') }}
             <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -77,7 +77,7 @@
                                 <img
                                     src="{{ asset('storage/' . ltrim((string) $user->profile_photo_path, '/')) }}"
                                     alt="{{ __('Current profile photo') }}"
-                                    class="h-24 w-24 rounded-full object-cover border border-slate-200 dark:border-slate-700"
+                                    class="h-24 w-24 rounded-full object-cover border border-slate-200"
                                 >
                             @else
                                 <span class="inline-flex h-24 w-24 items-center justify-center rounded-full bg-primary text-2xl font-semibold text-white">
@@ -210,12 +210,12 @@
                     </div>
                 </x-ui.card>
 
-                <div class="flex flex-col gap-3 rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:flex-row sm:items-center sm:justify-between">
-                    <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Save your personal and delivery changes before leaving this page.') }}</p>
+                <div class="flex flex-col gap-3 rounded-3xl border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-900/5 dark:bg-slate-900 dark:shadow-black/10 sm:flex-row sm:items-center sm:justify-between">
+                    <p class="text-sm text-slate-500">{{ __('Save your personal and delivery changes before leaving this page.') }}</p>
                     <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-end">
                         <a
                             href="{{ route('user.account.edit') }}"
-                            class="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                            class="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:bg-slate-900 dark:hover:bg-slate-800"
                         >
                             {{ __('Cancel') }}
                         </a>
@@ -303,7 +303,7 @@
                                     <p class="text-xs font-medium text-[var(--danger)]">{{ $message }}</p>
                                 @enderror
                             </div>
-                            <button type="submit" class="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+                            <button type="submit" class="inline-flex h-11 items-center justify-center rounded-xl border border-slate-200 bg-white px-5 text-sm font-semibold text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:bg-slate-900 dark:hover:bg-slate-800">
                                 {{ __('user.verify_phone') }}
                             </button>
                         </form>

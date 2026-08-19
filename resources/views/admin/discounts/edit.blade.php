@@ -146,13 +146,13 @@
 
         {{-- ============ analytics row ============ --}}
         <section class="grid gap-4 xl:grid-cols-[1.5fr_1fr]">
-            <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <div class="flex items-center justify-between gap-3">
                     <div>
                         <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-muted">{{ __('Redemptions') }}</p>
-                        <h2 class="mt-0.5 text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Last 12 days') }}</h2>
+                        <h2 class="mt-0.5 text-sm font-bold text-slate-800">{{ __('Last 12 days') }}</h2>
                     </div>
-                    <span class="cp-num rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ number_format($totalRedemptions) }} {{ __('total') }}</span>
+                    <span class="cp-num rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">{{ number_format($totalRedemptions) }} {{ __('total') }}</span>
                 </div>
                 <div class="cp-spark mt-4">
                     @foreach ($trendPoints as $index => $point)
@@ -164,17 +164,17 @@
                     <span>{{ __('today') }}</span>
                 </div>
             </article>
-            <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                 <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-muted">{{ __('Usage depth') }}</p>
-                <h2 class="mt-0.5 text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('How exhausted are limited coupons?') }}</h2>
+                <h2 class="mt-0.5 text-sm font-bold text-slate-800">{{ __('How exhausted are limited coupons?') }}</h2>
                 <div class="mt-4 space-y-3.5">
                     @foreach ($usageDistribution as $bucket)
                         <div>
-                            <div class="mb-1 flex items-center justify-between text-xs font-bold text-slate-500 dark:text-slate-400">
+                            <div class="mb-1 flex items-center justify-between text-xs font-bold text-slate-500">
                                 <span>{{ $bucket['label'] }}</span>
                                 <span class="cp-num">{{ (int) $bucket['value'] }}%</span>
                             </div>
-                            <div class="h-2 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                            <div class="h-2 overflow-hidden rounded-full bg-slate-100">
                                 <div class="h-full rounded-full bg-accent" style="width: {{ (int) $bucket['value'] }}%"></div>
                             </div>
                         </div>
@@ -184,10 +184,10 @@
         </section>
 
         {{-- ============ coupons table ============ --}}
-        <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <div class="flex flex-wrap items-center gap-2 border-b border-slate-200 px-4 py-3 dark:border-slate-800">
+        <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+            <div class="flex flex-wrap items-center gap-2 border-b border-slate-200 px-4 py-3">
                 <i class="fas fa-ticket text-muted"></i>
-                <h3 class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Coupon Campaigns') }}</h3>
+                <h3 class="text-sm font-bold text-slate-800">{{ __('Coupon Campaigns') }}</h3>
                 <div class="ms-auto flex flex-wrap items-center gap-2">
                     <input type="search" placeholder="{{ __('Search code…') }}" class="h-9 w-44 rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" @input="onSearchInput">
                     <select class="h-9 rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" @change="onStatusChange">
@@ -197,20 +197,20 @@
                         <option value="expired">{{ __('Expired') }}</option>
                         <option value="paused">{{ __('Paused') }}</option>
                     </select>
-                    <button type="button" class="h-9 rounded-xl border border-slate-200 px-3.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="exportCsv"><i class="fas fa-file-csv me-1"></i>{{ __('Export') }}</button>
+                    <button type="button" class="h-9 rounded-xl border border-slate-200 px-3.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800" @click="exportCsv"><i class="fas fa-file-csv me-1"></i>{{ __('Export') }}</button>
                 </div>
             </div>
             @if (count($couponRows) === 0)
                 <div class="px-4 py-14 text-center">
-                    <i class="fas fa-ticket mb-3 block text-2xl text-slate-300 dark:text-slate-600"></i>
-                    <p class="text-sm font-bold text-slate-600 dark:text-slate-300">{{ __('No coupons yet') }}</p>
+                    <i class="fas fa-ticket mb-3 block text-2xl text-slate-300"></i>
+                    <p class="text-sm font-bold text-slate-600">{{ __('No coupons yet') }}</p>
                     <p class="mt-1 text-xs text-muted">{{ __('Create your first coupon campaign to start tracking redemptions here.') }}</p>
                     <a href="{{ route('admin.discounts.coupons.create') }}" class="font-display mt-4 inline-flex rounded-xl bg-navy-deep px-4 py-2 text-sm font-bold text-white hover:bg-navy-raised">{{ __('Create Coupon') }}</a>
                 </div>
             @else
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
-                        <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500 dark:bg-slate-950/40 dark:text-slate-400">
+                        <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                             <tr>
                                 <th class="px-4 py-3 text-left">{{ __('Coupon Code') }}</th>
                                 <th class="px-4 py-3 text-left">{{ __('Discount') }}</th>
@@ -240,22 +240,22 @@
                                     data-code="{{ strtolower($couponRow['code']) }}"
                                     data-status="{{ $couponRow['status'] }}"
                                     @if($rowJson) data-coupon="{{ $rowJson }}" @endif>
-                                    <td class="cp-num px-4 py-3 font-bold tracking-wide text-slate-900 dark:text-slate-100">{{ $couponRow['code'] }}</td>
-                                    <td class="cp-num px-4 py-3 text-slate-700 dark:text-slate-200">{{ $couponRow['discount'] }}</td>
+                                    <td class="cp-num px-4 py-3 font-bold tracking-wide text-slate-900">{{ $couponRow['code'] }}</td>
+                                    <td class="cp-num px-4 py-3 text-slate-700">{{ $couponRow['discount'] }}</td>
                                     <td class="px-4 py-3">
-                                        <span class="cp-num text-xs text-slate-500 dark:text-slate-400">{{ $usageLabel($couponRow) }}</span>
-                                        <div class="mt-1 h-1.5 w-28 overflow-hidden rounded-full bg-slate-100 dark:bg-slate-800">
+                                        <span class="cp-num text-xs text-slate-500">{{ $usageLabel($couponRow) }}</span>
+                                        <div class="mt-1 h-1.5 w-28 overflow-hidden rounded-full bg-slate-100">
                                             <div class="h-full rounded-full {{ $usagePercent($couponRow) >= 90 ? 'bg-rose-500' : 'bg-accent' }}" style="width: {{ $usagePercent($couponRow) }}%"></div>
                                         </div>
                                     </td>
-                                    <td class="px-4 py-3 text-xs text-slate-500 dark:text-slate-400">{{ $couponRow['expiry'] }}</td>
+                                    <td class="px-4 py-3 text-xs text-slate-500">{{ $couponRow['expiry'] }}</td>
                                     <td class="px-4 py-3">
                                         <span class="inline-flex rounded-full px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide {{ $rowChip['class'] }}">{{ $rowChip['label'] }}</span>
                                     </td>
                                     <td class="px-4 py-3">
                                         @if ($couponRow['id'] > 0)
                                             <div class="flex items-center justify-end gap-1.5">
-                                                <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="openEdit">{{ __('Edit') }}</button>
+                                                <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800" @click="openEdit">{{ __('Edit') }}</button>
                                                 <form method="POST" action="{{ route('admin.discounts.coupons.toggle', $couponRow['id']) }}">
                                                     @csrf
                                                     @method('PATCH')
@@ -271,7 +271,7 @@
                                             </div>
                                         @else
                                             <div class="flex justify-end">
-                                                <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-muted dark:bg-slate-800" title="{{ __('This row comes from the site coupon settings below.') }}">{{ __('Settings coupon') }}</span>
+                                                <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-muted" title="{{ __('This row comes from the site coupon settings below.') }}">{{ __('Settings coupon') }}</span>
                                             </div>
                                         @endif
                                     </td>
@@ -287,14 +287,14 @@
         </section>
 
         {{-- ============ site coupon settings (collapsible, existing form) ============ --}}
-        <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             <button type="button" class="flex w-full items-center gap-2 px-4 py-3.5 text-left" @click="toggleSettings">
                 <i class="fas fa-sliders text-muted"></i>
-                <span class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ __('Site Coupon Settings') }}</span>
-                <span class="cp-num ms-2 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-500 dark:bg-slate-800 dark:text-slate-400">{{ $couponCode !== '' ? $couponCode : __('No code') }}</span>
+                <span class="text-sm font-bold text-slate-800">{{ __('Site Coupon Settings') }}</span>
+                <span class="cp-num ms-2 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-500">{{ $couponCode !== '' ? $couponCode : __('No code') }}</span>
                 <span class="ms-auto text-muted" x-text="settingsChevron">▾</span>
             </button>
-            <div class="border-t border-slate-200 dark:border-slate-800" x-show="settingsOpen" x-cloak>
+            <div class="border-t border-slate-200" x-show="settingsOpen" x-cloak>
                 <form method="POST" action="{{ route('admin.discounts.update') }}" class="p-4 sm:p-5">
                     @csrf
                     @method('PUT')
@@ -317,7 +317,7 @@
                         <input type="hidden" name="discount_brands[]" value="{{ (string) $brand }}">
                     @endforeach
 
-                    <label class="inline-flex items-center gap-2.5 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-700 dark:border-slate-700 dark:text-slate-200">
+                    <label class="inline-flex items-center gap-2.5 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-700">
                         <input type="checkbox" name="coupon_enabled" value="1" x-model="couponEnabled" class="h-4 w-4 rounded border-slate-300 text-accent focus:ring-accent dark:border-slate-600 dark:bg-slate-900">
                         {{ __('Campaign Active') }}
                         <span class="rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide" :class="settingsStateClass" x-text="settingsStateLabel"></span>
@@ -325,24 +325,24 @@
 
                     <div class="mt-4 grid gap-4 md:grid-cols-2 xl:grid-cols-3" :class="settingsDimClass">
                         <div>
-                            <label for="coupon_code" class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Coupon Code') }}</label>
+                            <label for="coupon_code" class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Coupon Code') }}</label>
                             <div class="flex gap-2">
                                 <input type="text" name="coupon_code" id="coupon_code" :value="settingsCode" @input="onSettingsCodeInput" placeholder="SAVE10" class="cp-num w-full rounded-xl border-slate-300 text-sm uppercase focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                                <button type="button" class="shrink-0 rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="generateCode">{{ __('Generate') }}</button>
+                                <button type="button" class="shrink-0 rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800" @click="generateCode">{{ __('Generate') }}</button>
                             </div>
                             @error('coupon_code')
                                 <span class="mt-1 block text-xs font-medium text-rose-600">{{ $message }}</span>
                             @enderror
                         </div>
                         <div>
-                            <label for="coupon_type" class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Type') }}</label>
+                            <label for="coupon_type" class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Type') }}</label>
                             <select name="coupon_type" id="coupon_type" x-model="settingsType" class="w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                 <option value="percent" @selected($couponType === 'percent')>{{ __('Percent (%)') }}</option>
                                 <option value="fixed" @selected($couponType === 'fixed')>{{ __('Fixed Amount') }}</option>
                             </select>
                         </div>
                         <div>
-                            <label for="coupon_value" class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Value') }}</label>
+                            <label for="coupon_value" class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Value') }}</label>
                             <input type="number" step="0.01" min="0" :max="settingsValueMax" name="coupon_value" id="coupon_value" value="{{ old('coupon_value', (string) data_get($settings, 'coupon_value', '0')) }}" class="cp-num w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             <span class="mt-1 block text-[11px] text-muted">{{ __('Percent type supports max 100.') }}</span>
                             @error('coupon_value')
@@ -350,30 +350,30 @@
                             @enderror
                         </div>
                         <div>
-                            <label for="coupon_min_order" class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Minimum Order') }}</label>
+                            <label for="coupon_min_order" class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Minimum Order') }}</label>
                             <input type="number" step="0.01" min="0" name="coupon_min_order" id="coupon_min_order" value="{{ old('coupon_min_order', (string) data_get($settings, 'coupon_min_order', '0')) }}" class="cp-num w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                         </div>
                         <div>
-                            <label for="coupon_usage_limit" class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Usage Limit') }}</label>
+                            <label for="coupon_usage_limit" class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Usage Limit') }}</label>
                             <input type="number" min="0" name="coupon_usage_limit" id="coupon_usage_limit" value="{{ old('coupon_usage_limit', (string) data_get($settings, 'coupon_usage_limit', '0')) }}" class="cp-num w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                         </div>
                         <div class="grid grid-cols-[1fr_1fr_auto] items-end gap-2">
                             <div>
-                                <label for="coupon_starts_at" class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Starts At') }}</label>
+                                <label for="coupon_starts_at" class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Starts At') }}</label>
                                 <input type="date" name="coupon_starts_at" id="coupon_starts_at" x-ref="couponStarts" value="{{ $couponStartsAt }}" class="w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             </div>
                             <div>
-                                <label for="coupon_ends_at" class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Expiry') }}</label>
+                                <label for="coupon_ends_at" class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Expiry') }}</label>
                                 <input type="date" name="coupon_ends_at" id="coupon_ends_at" x-ref="couponEnds" value="{{ $couponEndsAt }}" class="w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                 @error('coupon_ends_at')
                                     <span class="mt-1 block text-xs font-medium text-rose-600">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <button type="button" class="h-[38px] rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="clearDates">{{ __('Clear') }}</button>
+                            <button type="button" class="h-[38px] rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800" @click="clearDates">{{ __('Clear') }}</button>
                         </div>
                     </div>
 
-                    <div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4 dark:border-slate-800">
+                    <div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4">
                         <p class="text-xs text-muted">{{ __('Saving publishes the site coupon configuration. Discount rule settings are preserved.') }}</p>
                         <button type="submit" class="rounded-xl bg-navy-deep px-5 py-2.5 text-sm font-bold text-white hover:bg-navy-raised">{{ __('Save Coupon Configuration') }}</button>
                     </div>
@@ -383,7 +383,7 @@
 
         {{-- ============ edit coupon drawer ============ --}}
         <div class="fixed inset-0 z-50 bg-navy-deep/55" x-show="editOpen" x-cloak @click.self="closeEdit" role="dialog" aria-modal="true">
-            <aside class="absolute end-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl dark:bg-slate-900">
+            <aside class="absolute end-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl">
                 <div class="cp-hero flex items-start justify-between gap-3 px-5 py-4 text-white">
                     <div class="min-w-0">
                         <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-accent">{{ __('Edit Coupon') }}</p>
@@ -398,41 +398,41 @@
                     @method('PATCH')
                     <div class="min-h-0 flex-1 space-y-4 overflow-y-auto p-5">
                         <div>
-                            <label class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Coupon Code') }}</label>
+                            <label class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Coupon Code') }}</label>
                             <input type="text" name="code" required :value="edit.code" @input="onEditCodeInput" class="cp-num w-full rounded-xl border-slate-300 text-sm uppercase focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Type') }}</label>
+                                <label class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Type') }}</label>
                                 <select name="type" x-model="edit.type" class="w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                     <option value="percent">{{ __('Percent (%)') }}</option>
                                     <option value="fixed">{{ __('Fixed Amount') }}</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Value') }}</label>
+                                <label class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Value') }}</label>
                                 <input type="number" name="value" required step="0.01" min="0" :max="editValueMax" x-model="edit.value" class="cp-num w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             </div>
                         </div>
                         <div>
-                            <label class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Usage Limit') }} <span class="font-normal text-muted">({{ __('0 = unlimited') }})</span></label>
+                            <label class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Usage Limit') }} <span class="font-normal text-muted">({{ __('0 = unlimited') }})</span></label>
                             <input type="number" name="usage_limit" min="0" x-model="edit.usageLimit" class="cp-num w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Starts At') }}</label>
+                                <label class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Starts At') }}</label>
                                 <input type="date" name="starts_at" x-model="edit.startsAt" class="w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             </div>
                             <div>
-                                <label class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Expiry') }}</label>
+                                <label class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Expiry') }}</label>
                                 <input type="date" name="ends_at" x-model="edit.endsAt" class="w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             </div>
                         </div>
-                        <p class="rounded-xl bg-slate-50 px-3.5 py-2.5 text-[11px] leading-relaxed text-slate-500 dark:bg-slate-950/40 dark:text-slate-400">{{ __('Changes are saved to the coupons table and logged in the activity log. Status follows the active switch and the schedule automatically.') }}</p>
+                        <p class="rounded-xl bg-slate-50 px-3.5 py-2.5 text-[11px] leading-relaxed text-slate-500">{{ __('Changes are saved to the coupons table and logged in the activity log. Status follows the active switch and the schedule automatically.') }}</p>
                     </div>
-                    <div class="flex items-center gap-2 border-t border-slate-200 px-5 py-3.5 dark:border-slate-800">
+                    <div class="flex items-center gap-2 border-t border-slate-200 px-5 py-3.5">
                         <button type="submit" class="rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-bold text-white hover:bg-emerald-500">{{ __('Save Changes') }}</button>
-                        <button type="button" class="ms-auto rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="closeEdit">{{ __('Cancel') }}</button>
+                        <button type="button" class="ms-auto rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800" @click="closeEdit">{{ __('Cancel') }}</button>
                     </div>
                 </form>
             </aside>

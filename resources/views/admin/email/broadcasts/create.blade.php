@@ -3,7 +3,7 @@
         <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
             <div class="flex items-center gap-3">
                 <a href="{{ route('admin.email.index') }}"
-                   class="h-10 w-10 rounded-xl border border-slate-200 bg-white text-slate-600 grid place-items-center hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                   class="h-10 w-10 rounded-xl border border-slate-200 bg-white text-slate-600 grid place-items-center hover:bg-slate-50 dark:hover:bg-slate-800"
                    title="{{ __('Back to Email Center') }}">
                     <i class="fas fa-arrow-left text-xs"></i>
                 </a>
@@ -13,7 +13,7 @@
                         <span class="mx-1 text-slate-300">/</span>
                         <span class="text-primary dark:text-white">{{ __('Create Broadcast') }}</span>
                     </p>
-                    <h2 class="text-2xl font-semibold text-slate-900 dark:text-white mt-1">{{ __('Create Broadcast') }}</h2>
+                    <h2 class="text-2xl font-semibold text-slate-900 mt-1">{{ __('Create Broadcast') }}</h2>
                 </div>
             </div>
         </div>
@@ -23,13 +23,13 @@
         <div class="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
 
             @if($errors->any())
-                <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700 dark:border-rose-900/60 dark:bg-rose-900/30 dark:text-rose-200">
+                <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
                     {{ $errors->first() }}
                 </div>
             @endif
 
             @if(! $broadcastsAvailable)
-                <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">
+                <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800 dark:text-amber-200">
                     {{ __('Email broadcast table is not installed yet. Run the pending migrations before sending broadcasts.') }}
                 </div>
             @endif
@@ -43,13 +43,13 @@
                     <div class="space-y-6">
 
                         {{-- Step 1: Audience --}}
-                        <div class="rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-                            <div class="px-5 py-3 border-b border-slate-200/70 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900">
-                                <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold dark:text-slate-400">{{ __('Step 1 · Audience') }}</p>
+                        <div class="rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden">
+                            <div class="px-5 py-3 border-b border-slate-200/70 bg-slate-50/60 dark:bg-slate-900">
+                                <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">{{ __('Step 1 · Audience') }}</p>
                             </div>
                             <div class="p-5 space-y-4">
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-700 mb-2 dark:text-slate-300">{{ __('Who should receive this?') }}</label>
+                                    <label class="block text-xs font-bold text-slate-700 mb-2">{{ __('Who should receive this?') }}</label>
                                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-2" id="audience-tiles">
                                         <button type="button" data-audience="all"
                                                 class="audience-tile rounded-xl border-2 border-primary bg-primary/5 px-3 py-3 text-sm font-bold text-primary text-center dark:bg-primary/10">
@@ -57,12 +57,12 @@
                                             <p class="font-mono text-[10px] text-muted mt-1">{{ __('Verified users') }}</p>
                                         </button>
                                         <button type="button" data-audience="role"
-                                                class="audience-tile rounded-xl border border-slate-200 px-3 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 text-center dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
+                                                class="audience-tile rounded-xl border border-slate-200 px-3 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 text-center dark:hover:bg-slate-800">
                                             <i class="fas fa-user-group block mb-1 text-base"></i>{{ __('Role group') }}
                                             <p class="font-mono text-[10px] text-muted mt-1">{{ __('Customers / Dealers') }}</p>
                                         </button>
                                         <button type="button" data-audience="user"
-                                                class="audience-tile rounded-xl border border-slate-200 px-3 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 text-center dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
+                                                class="audience-tile rounded-xl border border-slate-200 px-3 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 text-center dark:hover:bg-slate-800">
                                             <i class="fas fa-user block mb-1 text-base"></i>{{ __('Single user') }}
                                             <p class="font-mono text-[10px] text-muted mt-1">{{ __('By email') }}</p>
                                         </button>
@@ -71,9 +71,9 @@
                                 </div>
 
                                 <div id="audience-role-wrap" style="display:none">
-                                    <label for="audience_role" class="block text-xs font-bold text-slate-700 mb-1 dark:text-slate-300">{{ __('Role group') }}</label>
+                                    <label for="audience_role" class="block text-xs font-bold text-slate-700 mb-1">{{ __('Role group') }}</label>
                                     <select id="audience_role" name="audience_role"
-                                            class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 focus:border-primary focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                            class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 focus:border-primary focus:ring-2 focus:ring-accent/30 dark:border-slate-700">
                                         <option value="">{{ __('Choose role') }}</option>
                                         @foreach($audienceRoles as $role => $label)
                                             <option value="{{ $role }}" @selected(old('audience_role') === $role)>{{ $label }}</option>
@@ -82,35 +82,35 @@
                                 </div>
 
                                 <div id="audience-user-wrap" style="display:none">
-                                    <label for="recipient_email" class="block text-xs font-bold text-slate-700 mb-1 dark:text-slate-300">{{ __('Single user email') }}</label>
+                                    <label for="recipient_email" class="block text-xs font-bold text-slate-700 mb-1">{{ __('Single user email') }}</label>
                                     <input id="recipient_email" type="email" name="recipient_email" value="{{ old('recipient_email') }}" placeholder="customer@example.com"
-                                           class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 focus:border-primary focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                           class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 focus:border-primary focus:ring-2 focus:ring-accent/30 dark:border-slate-700">
                                 </div>
 
                                 <div>
-                                    <label class="block text-xs font-bold text-slate-700 mb-2 dark:text-slate-300">{{ __('Purpose') }}</label>
-                                    <div class="inline-flex w-full max-w-sm rounded-xl border border-slate-200 bg-slate-50 p-1 dark:border-slate-700 dark:bg-slate-950" id="purpose-toggle">
+                                    <label class="block text-xs font-bold text-slate-700 mb-2">{{ __('Purpose') }}</label>
+                                    <div class="inline-flex w-full max-w-sm rounded-xl border border-slate-200 bg-slate-50 p-1" id="purpose-toggle">
                                         <button type="button" data-purpose="promotional"
                                                 class="purpose-btn flex-1 rounded-lg bg-primary text-white px-3 py-1.5 text-sm font-bold">{{ __('Promotional') }}</button>
                                         <button type="button" data-purpose="operational"
-                                                class="purpose-btn flex-1 rounded-lg text-slate-600 px-3 py-1.5 text-sm font-bold dark:text-slate-300">{{ __('Operational') }}</button>
+                                                class="purpose-btn flex-1 rounded-lg text-slate-600 px-3 py-1.5 text-sm font-bold">{{ __('Operational') }}</button>
                                     </div>
                                     <input type="hidden" name="purpose" id="purpose" value="{{ old('purpose', 'promotional') }}">
-                                    <p class="mt-2 text-[11px] text-slate-500 dark:text-slate-400">{{ __('Promotional broadcasts only go to users who opted into marketing.') }}</p>
+                                    <p class="mt-2 text-[11px] text-slate-500">{{ __('Promotional broadcasts only go to users who opted into marketing.') }}</p>
                                 </div>
                             </div>
                         </div>
 
                         {{-- Step 2: Content --}}
-                        <div class="rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-                            <div class="px-5 py-3 border-b border-slate-200/70 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900">
-                                <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold dark:text-slate-400">{{ __('Step 2 · Content') }}</p>
+                        <div class="rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden">
+                            <div class="px-5 py-3 border-b border-slate-200/70 bg-slate-50/60 dark:bg-slate-900">
+                                <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">{{ __('Step 2 · Content') }}</p>
                             </div>
                             <div class="p-5 space-y-4">
                                 <div>
-                                    <label for="broadcast_subject" class="block text-xs font-bold text-slate-700 mb-1 dark:text-slate-300">{{ __('Subject line') }}</label>
+                                    <label for="broadcast_subject" class="block text-xs font-bold text-slate-700 mb-1">{{ __('Subject line') }}</label>
                                     <input id="broadcast_subject" type="text" name="subject" value="{{ old('subject') }}" placeholder="{{ __('Happy Newroz from YallaSpare') }}" required maxlength="160"
-                                           class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 font-semibold focus:border-primary focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                           class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 font-semibold focus:border-primary focus:ring-2 focus:ring-accent/30 dark:border-slate-700">
                                     <div class="mt-1 flex items-center justify-between text-[10px] font-mono text-muted">
                                         <span>{{ __('keep it short and clear') }}</span>
                                         <span><span id="subject-counter">0</span> / 160</span>
@@ -118,10 +118,10 @@
                                 </div>
 
                                 <div>
-                                    <label for="broadcast_message" class="block text-xs font-bold text-slate-700 mb-1 dark:text-slate-300">{{ __('Message body') }}</label>
-                                    <div class="rounded-xl border border-slate-200 overflow-hidden focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 dark:border-slate-700">
+                                    <label for="broadcast_message" class="block text-xs font-bold text-slate-700 mb-1">{{ __('Message body') }}</label>
+                                    <div class="rounded-xl border border-slate-200 overflow-hidden focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
                                         {{-- Toolbar (markdown-lite, plain text insertion only) --}}
-                                        <div class="rt-toolbar flex items-center flex-wrap gap-0.5 border-b border-slate-200 bg-slate-50/60 px-2 py-1.5 dark:border-slate-800 dark:bg-slate-950">
+                                        <div class="rt-toolbar flex items-center flex-wrap gap-0.5 border-b border-slate-200 bg-slate-50/60 px-2 py-1.5 dark:bg-slate-950">
                                             <button type="button" data-md="bold" title="{{ __('Bold (Markdown)') }}" class="rt-btn"><i class="fas fa-bold text-xs"></i></button>
                                             <button type="button" data-md="italic" title="{{ __('Italic (Markdown)') }}" class="rt-btn"><i class="fas fa-italic text-xs"></i></button>
                                             <button type="button" data-md="strike" title="{{ __('Strike') }}" class="rt-btn"><i class="fas fa-strikethrough text-xs"></i></button>
@@ -141,8 +141,8 @@
                                         </div>
                                         <textarea id="broadcast_message" name="message" rows="12" required maxlength="5000"
                                                   placeholder="{{ __('Write the email body. Plain text is safest and line breaks are preserved.') }}"
-                                                  class="w-full border-0 bg-white px-4 py-4 text-sm leading-7 focus:outline-none focus:ring-0 dark:bg-slate-900 dark:text-slate-100 resize-y">{{ old('message') }}</textarea>
-                                        <div class="flex items-center justify-between border-t border-slate-200 bg-slate-50/60 px-3 py-1.5 text-[10px] font-mono text-muted dark:border-slate-800 dark:bg-slate-950">
+                                                  class="w-full border-0 bg-white px-4 py-4 text-sm leading-7 focus:outline-none focus:ring-0 dark:text-slate-100 resize-y">{{ old('message') }}</textarea>
+                                        <div class="flex items-center justify-between border-t border-slate-200 bg-slate-50/60 px-3 py-1.5 text-[10px] font-mono text-muted dark:bg-slate-950">
                                             <span><span id="msg-words">0</span> {{ __('words') }} · <span id="msg-chars">0</span> {{ __('chars') }}</span>
                                             <span><span id="msg-remaining">5000</span> {{ __('remaining') }}</span>
                                         </div>
@@ -152,26 +152,26 @@
                         </div>
 
                         {{-- Step 3: CTA --}}
-                        <div class="rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-                            <div class="px-5 py-3 border-b border-slate-200/70 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900">
-                                <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold dark:text-slate-400">{{ __('Step 3 · Call to action (optional)') }}</p>
+                        <div class="rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden">
+                            <div class="px-5 py-3 border-b border-slate-200/70 bg-slate-50/60 dark:bg-slate-900">
+                                <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">{{ __('Step 3 · Call to action (optional)') }}</p>
                             </div>
                             <div class="p-5 grid gap-3 md:grid-cols-2">
                                 <div>
-                                    <label for="action_url" class="block text-xs font-bold text-slate-700 mb-1 dark:text-slate-300">{{ __('Button URL') }}</label>
+                                    <label for="action_url" class="block text-xs font-bold text-slate-700 mb-1">{{ __('Button URL') }}</label>
                                     <input id="action_url" type="url" name="action_url" value="{{ old('action_url') }}" placeholder="{{ url('/') }}" maxlength="2048"
-                                           class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 font-mono focus:border-primary focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                           class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 font-mono focus:border-primary focus:ring-2 focus:ring-accent/30 dark:border-slate-700">
                                     <p class="mt-1 text-[10px] font-mono text-muted">{{ __('Must point to the YallaSpare website') }}</p>
                                 </div>
                                 <div>
-                                    <label for="action_text" class="block text-xs font-bold text-slate-700 mb-1 dark:text-slate-300">{{ __('Button text') }}</label>
+                                    <label for="action_text" class="block text-xs font-bold text-slate-700 mb-1">{{ __('Button text') }}</label>
                                     <input id="action_text" type="text" name="action_text" value="{{ old('action_text') }}" placeholder="{{ __('Shop now') }}" maxlength="80"
-                                           class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 font-semibold focus:border-primary focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                           class="w-full rounded-xl border-slate-300 bg-slate-50 text-slate-900 font-semibold focus:border-primary focus:ring-2 focus:ring-accent/30 dark:border-slate-700">
                                 </div>
                             </div>
                         </div>
 
-                        <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">
+                        <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs leading-relaxed text-amber-800 dark:text-amber-200">
                             {{ __('Promotional broadcasts only go to verified users who allow email and marketing messages. Single-user broadcasts are sent immediately. Group and all-user broadcasts are queued and require a running queue worker.') }}
                         </div>
 
@@ -181,24 +181,24 @@
                     <aside class="space-y-6 xl:sticky xl:top-24 self-start">
 
                         {{-- Recipient summary --}}
-                        <div class="rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-                            <div class="px-5 py-3 border-b border-slate-200/70 bg-slate-50/60 flex items-center justify-between dark:border-slate-800 dark:bg-slate-900">
-                                <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold dark:text-slate-400">{{ __('Recipients') }}</p>
+                        <div class="rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden">
+                            <div class="px-5 py-3 border-b border-slate-200/70 bg-slate-50/60 flex items-center justify-between dark:bg-slate-900">
+                                <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">{{ __('Recipients') }}</p>
                                 <span class="font-mono text-[10px] text-muted">{{ __('estimated') }}</span>
                             </div>
                             <div class="p-5">
-                                <p class="text-3xl font-bold text-slate-900 dark:text-white" id="recipient-count">—</p>
-                                <p class="text-[11px] text-slate-500 mt-0.5 dark:text-slate-400" id="recipient-label">{{ __('Pick an audience to estimate') }}</p>
+                                <p class="text-3xl font-bold text-slate-900" id="recipient-count">—</p>
+                                <p class="text-[11px] text-slate-500 mt-0.5" id="recipient-label">{{ __('Pick an audience to estimate') }}</p>
                             </div>
                         </div>
 
                         {{-- Live preview --}}
-                        <div class="rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-                            <div class="px-5 py-3 border-b border-slate-200/70 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900">
-                                <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold dark:text-slate-400">{{ __('Live preview') }}</p>
+                        <div class="rounded-2xl bg-white border border-slate-200/70 shadow-sm overflow-hidden">
+                            <div class="px-5 py-3 border-b border-slate-200/70 bg-slate-50/60 dark:bg-slate-900">
+                                <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">{{ __('Live preview') }}</p>
                             </div>
-                            <div class="p-4 bg-slate-100 dark:bg-slate-950">
-                                <div class="mx-auto max-w-sm rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm dark:border-slate-700">
+                            <div class="p-4 bg-slate-100">
+                                <div class="mx-auto max-w-sm rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm">
                                     <div class="flex items-center justify-between bg-primary px-4 py-3 text-white">
                                         <span class="text-xs font-bold tracking-wide">YALLASPARE</span>
                                         <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-accent">{{ __('BROADCAST') }}</span>
@@ -217,7 +217,7 @@
                         </div>
 
                         {{-- Action buttons --}}
-                        <div class="rounded-2xl bg-white border border-slate-200/70 shadow-sm p-4 dark:bg-slate-900 dark:border-slate-800">
+                        <div class="rounded-2xl bg-white border border-slate-200/70 shadow-sm p-4">
                             <div class="flex flex-col gap-2">
                                 <button type="submit" @disabled(! $broadcastsAvailable)
                                         class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white shadow-md hover:bg-primary-hover transition disabled:cursor-not-allowed disabled:bg-slate-400">
@@ -225,7 +225,7 @@
                                     {{ __('Send Broadcast') }}
                                 </button>
                                 <a href="{{ route('admin.email.index') }}"
-                                   class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+                                   class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition dark:hover:bg-slate-800">
                                     <i class="fas fa-xmark"></i>
                                     {{ __('Cancel') }}
                                 </a>

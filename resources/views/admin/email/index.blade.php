@@ -77,25 +77,25 @@
 <div class="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8">
 
     @if(session('success'))
-        <div class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-900/30 dark:text-emerald-200">
+        <div class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
             {{ session('success') }}
         </div>
     @endif
 
     @if($errors->any())
-        <div class="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700 dark:border-rose-900/60 dark:bg-rose-900/30 dark:text-rose-200">
+        <div class="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
             {{ $errors->first() }}
         </div>
     @endif
 
     @if($emailStats['last_sent_label'] === __('Mail log table is not installed yet'))
-        <div class="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/30 dark:text-amber-200">
+        <div class="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800 dark:text-amber-200">
             <i class="fas fa-triangle-exclamation mr-1"></i>
             {{ __('Mail log table is not installed yet') }}. {{ __('Run the pending migrations to start recording email activity.') }}
         </div>
     @endif
 
-    <div class="relative rounded-2xl border border-slate-200/70 bg-white overflow-hidden bento-shadow-em dark:bg-slate-900 dark:border-slate-800">
+    <div class="relative rounded-2xl border border-slate-200/70 bg-white overflow-hidden bento-shadow-em">
         {{-- Top accent stripe --}}
         <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary to-accent z-10"></div>
 
@@ -104,7 +104,7 @@
             {{-- ============================================================
                  SIDEBAR
                  ============================================================ --}}
-            <aside class="relative border-b lg:border-b-0 lg:border-r border-slate-200/70 bg-[#f7f7fb] p-3 dark:bg-slate-950 dark:border-slate-800">
+            <aside class="relative border-b lg:border-b-0 lg:border-r border-slate-200/70 bg-[#f7f7fb] p-3 dark:bg-slate-950">
                 <div class="absolute inset-0 bento-stripes-em opacity-40 pointer-events-none"></div>
 
                 <div class="relative">
@@ -124,26 +124,26 @@
                                 <span class="ml-auto font-mono text-[10px] text-primary/70 dark:text-info">{{ number_format($totalSent7d) }}</span>
                             </a>
                             <a href="#broadcasts"
-                               class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white">
+                               class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:hover:bg-slate-900 dark:hover:text-white">
                                 <i class="fas fa-bullhorn w-4 text-muted text-xs"></i> {{ __('Broadcasts') }}
                                 <span class="ml-auto font-mono text-[10px] text-muted">{{ number_format($broadcastAll) }}</span>
                             </a>
                             <a href="{{ route('admin.email.outbox') }}"
-                               class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white">
+                               class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:hover:bg-slate-900 dark:hover:text-white">
                                 <i class="fas fa-inbox w-4 text-muted text-xs"></i> {{ __('Outbox') }}
                                 <span class="ml-auto font-mono text-[10px] text-muted"><i class="fas fa-arrow-up-right-from-square text-[8px]"></i></span>
                             </a>
                             <a href="#settings"
-                               class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white">
+                               class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:hover:bg-slate-900 dark:hover:text-white">
                                 <i class="fas fa-gears w-4 text-muted text-xs"></i> {{ __('Settings') }}
                             </a>
                             <a href="{{ route('admin.email.templates.index') }}"
-                               class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white">
+                               class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:hover:bg-slate-900 dark:hover:text-white">
                                 <i class="fas fa-file-pen w-4 text-muted text-xs"></i> {{ __('Template Editor') }}
                                 <span class="ml-auto font-mono text-[10px] text-muted"><i class="fas fa-arrow-up-right-from-square text-[8px]"></i></span>
                             </a>
                             <a href="#templates"
-                               class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:text-slate-300 dark:hover:bg-slate-900 dark:hover:text-white">
+                               class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:hover:bg-slate-900 dark:hover:text-white">
                                 <i class="fas fa-file-lines w-4 text-muted text-xs"></i> {{ __('Templates') }}
                                 <span class="ml-auto font-mono text-[10px] text-muted">{{ count($templateCards) }}</span>
                             </a>
@@ -154,15 +154,15 @@
                     <div class="mt-6">
                         <p class="px-2 text-[10px] font-bold uppercase tracking-[0.2em] text-muted">{{ __('Audiences') }}</p>
                         <nav class="mt-1 space-y-0.5">
-                            <div class="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm text-slate-600 dark:text-slate-300">
+                            <div class="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm text-slate-600">
                                 <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> {{ __('Customers') }}
                                 <span class="ml-auto font-mono text-[10px] text-muted">{{ number_format($audienceCounts['customers']) }}</span>
                             </div>
-                            <div class="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm text-slate-600 dark:text-slate-300">
+                            <div class="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm text-slate-600">
                                 <span class="h-1.5 w-1.5 rounded-full bg-accent"></span> {{ __('Dealers') }}
                                 <span class="ml-auto font-mono text-[10px] text-muted">{{ number_format($audienceCounts['dealers']) }}</span>
                             </div>
-                            <div class="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm text-slate-600 dark:text-slate-300">
+                            <div class="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm text-slate-600">
                                 <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span> {{ __('Admins') }}
                                 <span class="ml-auto font-mono text-[10px] text-muted">{{ number_format($audienceCounts['admins']) }}</span>
                             </div>
@@ -174,24 +174,24 @@
                         <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-primary dark:text-info">{{ __('Delivery health') }}</p>
                         <div class="mt-2 flex items-baseline gap-2">
                             <span class="num-display text-2xl font-bold text-primary dark:text-white">{{ $successRate7d ?? $successRate ?? 0 }}</span>
-                            <span class="text-xs font-mono text-slate-500 dark:text-slate-400">%</span>
+                            <span class="text-xs font-mono text-slate-500">%</span>
                         </div>
-                        <div class="mt-1.5 h-1 rounded-full bg-slate-200 overflow-hidden dark:bg-slate-800">
+                        <div class="mt-1.5 h-1 rounded-full bg-slate-200 overflow-hidden">
                             <div class="h-full rounded-full bg-gradient-to-r from-primary to-navy-raised" style="width: {{ $successRate7d ?? $successRate ?? 0 }}%"></div>
                         </div>
-                        <p class="mt-2 text-[10px] font-mono text-slate-500 dark:text-slate-400">{{ __('last 7 days') }}</p>
+                        <p class="mt-2 text-[10px] font-mono text-slate-500">{{ __('last 7 days') }}</p>
                     </div>
 
                     {{-- Readiness score mini --}}
-                    <div class="mt-3 rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-900">
+                    <div class="mt-3 rounded-xl border border-slate-200 bg-white p-3">
                         <div class="flex items-center justify-between">
-                            <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">{{ __('Readiness') }}</p>
+                            <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500">{{ __('Readiness') }}</p>
                             <span class="text-[10px] font-mono font-bold {{ $health['tone'] === 'green' ? 'text-emerald-600' : ($health['tone'] === 'amber' ? 'text-accent' : 'text-rose-600') }}">{{ $health['score'] }}/100</span>
                         </div>
-                        <div class="mt-2 h-1 rounded-full bg-slate-100 overflow-hidden dark:bg-slate-800">
+                        <div class="mt-2 h-1 rounded-full bg-slate-100 overflow-hidden">
                             <div class="h-full rounded-full {{ $healthClasses['bar'] }}" style="width: {{ $health['score'] }}%"></div>
                         </div>
-                        <p class="mt-2 text-[10px] font-mono text-slate-500 dark:text-slate-400">{{ $health['ok'] }}/{{ $health['total'] }} {{ __('OK') }}</p>
+                        <p class="mt-2 text-[10px] font-mono text-slate-500">{{ $health['ok'] }}/{{ $health['total'] }} {{ __('OK') }}</p>
                     </div>
                 </div>
             </aside>
@@ -207,13 +207,13 @@
                         <div>
                             <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-muted">{{ __('Overview') }} · YALLASPARE / EMAIL</p>
                             <h2 class="mt-1 text-2xl font-bold tracking-tight text-primary dark:text-white">{{ __('Broadcast console') }}</h2>
-                            <p class="mt-1 text-sm text-slate-500 font-mono dark:text-slate-400">
+                            <p class="mt-1 text-sm text-slate-500 font-mono">
                                 {{ __('queue: :q', ['q' => $summary['queue'] ?: 'sync']) }} · {{ $emailStats['last_sent_label'] }}
                             </p>
                         </div>
                         <div class="flex items-center gap-2">
                             <a href="{{ route('admin.email.preview', ['template' => 'order-status', 'locale' => app()->getLocale()]) }}" target="_blank" rel="noopener"
-                               class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+                               class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800">
                                 <i class="fas fa-eye text-[10px]"></i> {{ __('Preview templates') }}
                             </a>
                         </div>
@@ -222,10 +222,10 @@
                     {{-- 3 bento stat cards --}}
                     <div class="mt-6 grid gap-3 grid-cols-1 sm:grid-cols-3">
                         {{-- Total Sent 7d --}}
-                        <div class="relative rounded-2xl border border-slate-200/70 bg-white p-5 bento-shadow-em overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                        <div class="relative rounded-2xl border border-slate-200/70 bg-white p-5 bento-shadow-em overflow-hidden">
                             <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-primary to-navy-raised"></div>
                             <div class="flex items-start justify-between">
-                                <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">{{ __('Total Sent') }}</p>
+                                <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">{{ __('Total Sent') }}</p>
                                 <div class="h-7 w-7 rounded-lg bg-primary/10 text-primary grid place-items-center dark:bg-primary/20 dark:text-info">
                                     <i class="fas fa-envelopes-bulk text-[10px]"></i>
                                 </div>
@@ -237,17 +237,17 @@
                                     <span class="text-[10px] font-bold text-primary dark:text-info"><i class="fas fa-arrow-up text-[8px]"></i> {{ $successRate7d }}%</span>
                                 @endif
                             </div>
-                            <div class="mt-2 h-1 rounded-full bg-slate-100 overflow-hidden dark:bg-slate-800">
+                            <div class="mt-2 h-1 rounded-full bg-slate-100 overflow-hidden">
                                 <div class="h-full rounded-full bg-gradient-to-r from-primary to-navy-raised" style="width: {{ $successRate7d ?? 0 }}%"></div>
                             </div>
                         </div>
 
                         {{-- Delivered 24h --}}
-                        <div class="relative rounded-2xl border border-slate-200/70 bg-white p-5 bento-shadow-em overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                        <div class="relative rounded-2xl border border-slate-200/70 bg-white p-5 bento-shadow-em overflow-hidden">
                             <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-emerald-500 to-emerald-600"></div>
                             <div class="flex items-start justify-between">
-                                <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500 dark:text-slate-400">{{ __('Delivered') }}</p>
-                                <div class="h-7 w-7 rounded-lg bg-emerald-50 text-emerald-600 grid place-items-center dark:bg-emerald-900/40 dark:text-emerald-300">
+                                <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">{{ __('Delivered') }}</p>
+                                <div class="h-7 w-7 rounded-lg bg-emerald-50 text-emerald-600 grid place-items-center">
                                     <i class="fas fa-circle-check text-[10px]"></i>
                                 </div>
                             </div>
@@ -256,7 +256,7 @@
                                 <span class="text-[10px] font-mono font-bold text-emerald-600">{{ $successRate === null ? '—' : $successRate . '%' }}</span>
                                 <span class="text-[10px] font-mono text-muted">{{ __('24h') }}</span>
                             </div>
-                            <div class="mt-2 h-1 rounded-full bg-slate-100 overflow-hidden dark:bg-slate-800">
+                            <div class="mt-2 h-1 rounded-full bg-slate-100 overflow-hidden">
                                 <div class="h-full rounded-full bg-gradient-to-r from-emerald-500 to-emerald-600" style="width: {{ $successRate ?? 0 }}%"></div>
                             </div>
                         </div>
@@ -266,7 +266,7 @@
                             <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-accent to-accent"></div>
                             <div class="flex items-start justify-between">
                                 <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-accent dark:text-accent">{{ __('Pending') }}</p>
-                                <div class="h-7 w-7 rounded-lg bg-amber-100 text-amber-700 grid place-items-center dark:bg-amber-900/60 dark:text-amber-200">
+                                <div class="h-7 w-7 rounded-lg bg-amber-100 text-amber-700 grid place-items-center">
                                     <i class="fas fa-clock text-[10px]"></i>
                                 </div>
                             </div>
@@ -282,7 +282,7 @@
                                     <span class="text-[10px] font-mono text-accent">{{ $pendingShare }}%</span>
                                 @endif
                             </div>
-                            <div class="mt-2 h-1 rounded-full bg-amber-100 overflow-hidden dark:bg-amber-950/60">
+                            <div class="mt-2 h-1 rounded-full bg-amber-100 overflow-hidden">
                                 <div class="h-full rounded-full bg-gradient-to-r from-accent to-accent @if($queuedCount > 0) animate-pulse @endif" style="width: {{ $pendingShare }}%"></div>
                             </div>
                         </div>
@@ -291,9 +291,9 @@
 
                 {{-- ==================== BROADCASTS ==================== --}}
                 <section id="broadcasts" class="mt-6">
-                    <div class="relative rounded-2xl border border-slate-200/70 bg-white bento-shadow-em overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                    <div class="relative rounded-2xl border border-slate-200/70 bg-white bento-shadow-em overflow-hidden">
                         {{-- Header --}}
-                        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
+                        <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
                             <div class="flex items-center gap-2.5">
                                 <div class="h-8 w-8 rounded-lg bg-primary/10 text-primary grid place-items-center dark:bg-primary/20 dark:text-info">
                                     <i class="fas fa-clock-rotate-left text-xs"></i>
@@ -305,7 +305,7 @@
                             </div>
                             <div class="flex flex-wrap items-center gap-2">
                                 @if(! $broadcastsAvailable)
-                                    <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 text-amber-700 px-2.5 py-1 text-[10px] font-bold border border-amber-100 dark:bg-amber-950/40 dark:text-amber-200 dark:border-amber-900/60">
+                                    <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 text-amber-700 px-2.5 py-1 text-[10px] font-bold border border-amber-100 dark:border-amber-900/60">
                                         <i class="fas fa-triangle-exclamation"></i> {{ __('Table not installed') }}
                                     </span>
                                 @endif
@@ -316,7 +316,7 @@
                                     $countChipOn = 'ml-0.5 rounded-full bg-white/20 px-1 text-[9px]';
                                     $countChipOff = 'ml-0.5 rounded-full bg-slate-100 dark:bg-slate-800 px-1 text-[9px]';
                                 @endphp
-                                <nav class="inline-flex items-center gap-0.5 rounded-xl border border-slate-200 bg-white p-1 shadow-sm dark:border-slate-700 dark:bg-slate-900" aria-label="{{ __('Filter broadcasts by status') }}">
+                                <nav class="inline-flex items-center gap-0.5 rounded-xl border border-slate-200 bg-white p-1 shadow-sm" aria-label="{{ __('Filter broadcasts by status') }}">
                                     <a href="{{ route('admin.email.index', array_filter(['q' => $searchTerm])) }}#broadcasts"
                                        class="{{ $pillBase }} {{ $activeStatus === '' ? $pillOn : $pillOff }}">
                                         <i class="fas fa-layer-group text-[9px]"></i> {{ __('All') }} <span class="{{ $activeStatus === '' ? $countChipOn : $countChipOff }}">{{ number_format($broadcastAll) }}</span>
@@ -338,7 +338,7 @@
                         </div>
 
                         {{-- Search bar --}}
-                        <form method="GET" action="{{ route('admin.email.index') }}" class="border-b border-slate-200/70 px-5 py-3 bg-white dark:bg-slate-900 dark:border-slate-800">
+                        <form method="GET" action="{{ route('admin.email.index') }}" class="border-b border-slate-200/70 px-5 py-3 bg-white">
                             @if($activeStatus !== '')
                                 <input type="hidden" name="status" value="{{ $activeStatus }}">
                             @endif
@@ -349,7 +349,7 @@
                                        value="{{ $searchTerm }}"
                                        maxlength="100"
                                        placeholder="{{ __('Search subject...') }}"
-                                       class="w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-24 py-2 text-sm text-slate-900 focus:border-primary focus:bg-white focus:ring-2 focus:ring-accent/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                       class="w-full rounded-xl border border-slate-200 bg-slate-50 pl-9 pr-24 py-2 text-sm text-slate-900 focus:border-primary focus:bg-white focus:ring-2 focus:ring-accent/20 transition">
                                 @if($searchTerm !== '')
                                     <a href="{{ route('admin.email.index', array_filter(['status' => $activeStatus])) }}#broadcasts"
                                        class="absolute right-14 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-500 hover:text-rose-600">
@@ -384,7 +384,7 @@
                                     </span>
                                     <div class="flex-1 min-w-0">
                                         <p class="text-sm font-bold text-primary truncate dark:text-slate-100" title="{{ $broadcast->subject }}">{{ $broadcast->subject }}</p>
-                                        <p class="text-[11px] text-slate-500 font-mono mt-0.5 dark:text-slate-400 truncate">
+                                        <p class="text-[11px] text-slate-500 font-mono mt-0.5 truncate">
                                             <span class="inline-flex items-center gap-1">
                                                 <span class="h-4 w-4 rounded-full {{ $audienceAvatar }} grid place-items-center text-[9px] font-bold">{{ $audienceLetter }}</span>
                                                 {{ $audienceLabel }}@if($broadcast->audience_role) · {{ $audienceRoles[$broadcast->audience_role] ?? $broadcast->audience_role }}@endif
@@ -407,18 +407,18 @@
                                 </li>
                             @empty
                                 <li class="px-5 py-12 text-center">
-                                    <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300">
+                                    <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500">
                                         <i class="fas fa-bullhorn"></i>
                                     </span>
                                     @if($activeStatus !== '' || $searchTerm !== '')
                                         <p class="mt-3 text-sm font-semibold text-primary dark:text-slate-100">{{ __('No broadcasts match this filter') }}</p>
-                                        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Try a different status or clear the search.') }}</p>
-                                        <a href="{{ route('admin.email.index') }}#broadcasts" class="mt-4 inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+                                        <p class="mt-1 text-xs text-slate-500">{{ __('Try a different status or clear the search.') }}</p>
+                                        <a href="{{ route('admin.email.index') }}#broadcasts" class="mt-4 inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800">
                                             <i class="fas fa-rotate-left text-[10px]"></i> {{ __('Reset filters') }}
                                         </a>
                                     @else
                                         <p class="mt-3 text-sm font-semibold text-primary dark:text-slate-100">{{ __('No broadcasts yet') }}</p>
-                                        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Use Create Broadcast to send your first one.') }}</p>
+                                        <p class="mt-1 text-xs text-slate-500">{{ __('Use Create Broadcast to send your first one.') }}</p>
                                         <a href="{{ route('admin.email.broadcasts.create') }}" class="font-display mt-4 inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 py-2 text-sm font-bold text-white hover:bg-primary-hover">
                                             <i class="fas fa-plus text-[10px]"></i> {{ __('Create Broadcast') }}
                                         </a>
@@ -431,8 +431,8 @@
 
                 {{-- ==================== ACTIVITY (mail logs) ==================== --}}
                 <section id="activity" class="mt-6">
-                    <div class="relative rounded-2xl border border-slate-200/70 bg-white bento-shadow-em overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-                        <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
+                    <div class="relative rounded-2xl border border-slate-200/70 bg-white bento-shadow-em overflow-hidden">
+                        <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
                             <div class="flex items-center gap-2.5">
                                 <div class="h-8 w-8 rounded-lg bg-info text-info grid place-items-center dark:bg-info/50 dark:text-info">
                                     <i class="fas fa-inbox text-xs"></i>
@@ -442,7 +442,7 @@
                                     <p class="font-mono text-[10px] uppercase tracking-widest text-muted mt-1">{{ __('mail log') }} · {{ __(':n records', ['n' => $recentLogs->count()]) }}</p>
                                 </div>
                             </div>
-                            <a href="{{ route('admin.email.outbox') }}" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+                            <a href="{{ route('admin.email.outbox') }}" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800">
                                 <i class="fas fa-arrow-up-right-from-square text-[10px]"></i> {{ __('View all') }}
                             </a>
                         </div>
@@ -454,13 +454,13 @@
                                         <p class="mt-0.5 text-[10px] text-muted font-mono dark:text-slate-500">{{ optional($log->created_at)->diffForHumans() }}</p>
                                     </div>
                                     <div class="min-w-0 flex items-center gap-2.5">
-                                        <span class="h-7 w-7 shrink-0 rounded-lg bg-slate-100 text-slate-500 grid place-items-center dark:bg-slate-800 dark:text-slate-300">
+                                        <span class="h-7 w-7 shrink-0 rounded-lg bg-slate-100 text-slate-500 grid place-items-center">
                                             <i class="fas fa-envelope text-[10px]"></i>
                                         </span>
                                         <div class="min-w-0">
                                             <p class="truncate text-sm font-bold text-primary dark:text-slate-100" title="{{ $log->subject }}">{{ $log->subject ?: __('No subject') }}</p>
-                                            <p class="mt-0.5 text-[11px] text-slate-500 font-mono dark:text-slate-400">
-                                                {{ $log->recipient_domain ?: '-' }} <span class="mx-1 text-slate-300 dark:text-slate-600">/</span> {{ $log->mailer ?: '-' }}
+                                            <p class="mt-0.5 text-[11px] text-slate-500 font-mono">
+                                                {{ $log->recipient_domain ?: '-' }} <span class="mx-1 text-slate-300">/</span> {{ $log->mailer ?: '-' }}
                                             </p>
                                         </div>
                                     </div>
@@ -471,11 +471,11 @@
                                 </div>
                             @empty
                                 <div class="px-5 py-12 text-center">
-                                    <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-300">
+                                    <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500">
                                         <i class="fas fa-inbox"></i>
                                     </span>
                                     <p class="mt-3 text-sm font-bold text-primary dark:text-slate-100">{{ __('No mail activity yet') }}</p>
-                                    <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Send a test email to create the first outbox record.') }}</p>
+                                    <p class="mt-1 text-xs text-slate-500">{{ __('Send a test email to create the first outbox record.') }}</p>
                                 </div>
                             @endforelse
                         </div>
@@ -487,12 +487,12 @@
 
                     {{-- Compose Broadcast (inline · D-style) --}}
                     <form method="POST" action="{{ route('admin.email.broadcast') }}" id="inline-compose"
-                          class="relative rounded-2xl border border-slate-200/70 bg-white bento-shadow-em overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                          class="relative rounded-2xl border border-slate-200/70 bg-white bento-shadow-em overflow-hidden">
                         @csrf
                         <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary to-accent"></div>
 
                         {{-- Header with CREATE button --}}
-                        <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
+                        <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
                             <div class="flex items-center gap-2.5">
                                 <div class="h-8 w-8 rounded-lg bg-primary/10 text-primary grid place-items-center dark:bg-primary/20 dark:text-info">
                                     <i class="fas fa-pen-nib text-xs"></i>
@@ -503,7 +503,7 @@
                                 </div>
                             </div>
                             <a href="{{ route('admin.email.broadcasts.create') }}"
-                               class="font-display inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-sm font-bold text-slate-600 hover:bg-primary hover:text-white hover:border-primary transition dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+                               class="font-display inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-sm font-bold text-slate-600 hover:bg-primary hover:text-white hover:border-primary transition">
                                 <i class="fas fa-expand text-[9px]"></i> {{ __('Full editor') }}
                             </a>
                         </div>
@@ -511,7 +511,7 @@
                         <div class="p-5 space-y-4">
                             {{-- Audience picker --}}
                             <div>
-                                <label class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5 dark:text-slate-400">{{ __('Recipients') }}</label>
+                                <label class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5">{{ __('Recipients') }}</label>
                                 <div class="grid grid-cols-2 gap-2" id="ic-audience-tiles">
                                     <button type="button" data-audience="all"
                                             class="ic-tile rounded-xl border-2 border-primary bg-primary/5 text-primary px-3 py-3 text-sm font-bold text-left transition dark:bg-primary/10">
@@ -522,7 +522,7 @@
                                         <p class="font-mono text-[9px] text-muted mt-1 truncate">{{ number_format($audienceCounts['total']) }} {{ __('verified') }}</p>
                                     </button>
                                     <button type="button" data-audience="user"
-                                            class="ic-tile rounded-xl border border-slate-200 px-3 py-3 text-sm font-bold text-slate-600 text-left hover:bg-slate-50 transition dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
+                                            class="ic-tile rounded-xl border border-slate-200 px-3 py-3 text-sm font-bold text-slate-600 text-left hover:bg-slate-50 transition dark:hover:bg-slate-800">
                                         <div class="flex items-center gap-2">
                                             <i class="fas fa-user text-base"></i>
                                             <span>{{ __('Specific person') }}</span>
@@ -531,25 +531,25 @@
                                     </button>
                                 </div>
                                 <input type="hidden" name="audience_type" id="ic-audience-type" value="{{ old('audience_type', 'all') }}">
-                                @error('audience_type')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
+                                @error('audience_type')<p class="mt-1 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                             </div>
 
                             {{-- Conditional email input --}}
                             <div id="ic-user-wrap" style="display:none">
-                                <label for="ic-recipient-email" class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5 dark:text-slate-400">{{ __('Recipient email') }}</label>
+                                <label for="ic-recipient-email" class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5">{{ __('Recipient email') }}</label>
                                 <input id="ic-recipient-email" type="email" name="recipient_email" value="{{ old('recipient_email') }}" placeholder="customer@example.com" maxlength="255"
-                                       class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:border-primary focus:bg-white focus:ring-2 focus:ring-accent/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                                @error('recipient_email')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
+                                       class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 focus:border-primary focus:bg-white focus:ring-2 focus:ring-accent/20 transition">
+                                @error('recipient_email')<p class="mt-1 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                             </div>
 
                             {{-- Purpose toggle --}}
                             <div>
-                                <label class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5 dark:text-slate-400">{{ __('Purpose') }}</label>
-                                <div class="inline-flex rounded-xl border border-slate-200 bg-slate-50 p-1 dark:border-slate-700 dark:bg-slate-950" id="ic-purpose-toggle">
+                                <label class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5">{{ __('Purpose') }}</label>
+                                <div class="inline-flex rounded-xl border border-slate-200 bg-slate-50 p-1" id="ic-purpose-toggle">
                                     <button type="button" data-purpose="promotional"
                                             class="ic-purpose-btn rounded-lg bg-primary text-white px-3 py-1.5 text-sm font-bold transition">{{ __('Promotional') }}</button>
                                     <button type="button" data-purpose="operational"
-                                            class="ic-purpose-btn rounded-lg text-slate-600 px-3 py-1.5 text-sm font-bold transition dark:text-slate-300">{{ __('Operational') }}</button>
+                                            class="ic-purpose-btn rounded-lg text-slate-600 px-3 py-1.5 text-sm font-bold transition">{{ __('Operational') }}</button>
                                 </div>
                                 <input type="hidden" name="purpose" id="ic-purpose" value="{{ old('purpose', 'promotional') }}">
                                 <p class="mt-1.5 text-[10px] font-mono text-muted">{{ __('Promotional broadcasts only go to users who opted into marketing.') }}</p>
@@ -557,18 +557,18 @@
 
                             {{-- Subject --}}
                             <div>
-                                <label for="ic-subject" class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5 dark:text-slate-400">{{ __('Subject') }}</label>
+                                <label for="ic-subject" class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5">{{ __('Subject') }}</label>
                                 <input id="ic-subject" type="text" name="subject" value="{{ old('subject') }}" required maxlength="160" placeholder="{{ __('Happy Newroz from YallaSpare') }}"
-                                       class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold focus:border-primary focus:bg-white focus:ring-2 focus:ring-accent/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                                @error('subject')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
+                                       class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-semibold focus:border-primary focus:bg-white focus:ring-2 focus:ring-accent/20 transition">
+                                @error('subject')<p class="mt-1 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                             </div>
 
                             {{-- Message --}}
                             <div>
-                                <label for="ic-message" class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5 dark:text-slate-400">{{ __('Message') }}</label>
+                                <label for="ic-message" class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5">{{ __('Message') }}</label>
                                 <textarea id="ic-message" name="message" rows="5" required maxlength="5000" placeholder="{{ __('Write the email body. Plain text is safest and line breaks are preserved.') }}"
-                                          class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 leading-relaxed focus:border-primary focus:bg-white focus:ring-2 focus:ring-accent/20 transition dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">{{ old('message') }}</textarea>
-                                @error('message')<p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
+                                          class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 leading-relaxed focus:border-primary focus:bg-white focus:ring-2 focus:ring-accent/20 transition">{{ old('message') }}</textarea>
+                                @error('message')<p class="mt-1 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                             </div>
 
                             {{-- Send button (prominent) --}}
@@ -586,9 +586,9 @@
                     </form>
 
                     {{-- Readiness Checks --}}
-                    <div class="relative rounded-2xl border border-slate-200/70 bg-white bento-shadow-em overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                    <div class="relative rounded-2xl border border-slate-200/70 bg-white bento-shadow-em overflow-hidden">
                         <div class="absolute top-0 left-0 right-0 h-[2px] {{ $health['tone'] === 'green' ? 'bg-gradient-to-r from-emerald-400 via-emerald-500 to-teal-500' : ($health['tone'] === 'amber' ? 'bg-gradient-to-r from-accent via-accent to-orange-500' : 'bg-gradient-to-r from-rose-400 via-rose-500 to-pink-500') }}"></div>
-                        <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
+                        <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
                             <div class="flex items-center gap-2.5">
                                 <div class="h-8 w-8 rounded-lg {{ $health['tone'] === 'green' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-200' : ($health['tone'] === 'amber' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-200' : 'bg-rose-100 text-rose-700 dark:bg-rose-900/50 dark:text-rose-200') }} grid place-items-center">
                                     <i class="fas fa-shield-halved text-xs"></i>
@@ -601,7 +601,7 @@
                             <span class="rounded-full border px-2.5 py-1 text-xs font-bold {{ $healthClasses['badge'] }}">{{ $health['score'] }}/100</span>
                         </div>
                         <div class="px-5 pt-3">
-                            <div class="h-1.5 rounded-full bg-slate-100 overflow-hidden dark:bg-slate-800">
+                            <div class="h-1.5 rounded-full bg-slate-100 overflow-hidden">
                                 <div class="h-full rounded-full {{ $healthClasses['bar'] }}" style="width: {{ $health['score'] }}%"></div>
                             </div>
                         </div>
@@ -619,8 +619,8 @@
                                                 {{ $check['ok'] ? __('OK') : __('Action') }}
                                             </span>
                                         </div>
-                                        <p class="mt-0.5 font-mono text-[11px] text-slate-500 dark:text-slate-400 truncate">{{ $check['value'] }}</p>
-                                        <p class="mt-1 text-xs text-slate-600 leading-snug dark:text-slate-300">{{ $check['detail'] }}</p>
+                                        <p class="mt-0.5 font-mono text-[11px] text-slate-500 truncate">{{ $check['value'] }}</p>
+                                        <p class="mt-1 text-xs text-slate-600 leading-snug">{{ $check['detail'] }}</p>
                                     </div>
                                 </div>
                             @endforeach
@@ -631,9 +631,9 @@
                 {{-- ==================== TEMPLATES ==================== --}}
                 <section id="templates" class="mt-6 space-y-6">
                     {{-- Template Library --}}
-                    <div class="relative rounded-2xl border border-slate-200/70 bg-white bento-shadow-em overflow-hidden dark:bg-slate-900 dark:border-slate-800">
+                    <div class="relative rounded-2xl border border-slate-200/70 bg-white bento-shadow-em overflow-hidden">
                         <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary to-accent"></div>
-                        <div class="border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
+                        <div class="border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
                             <div class="flex items-center justify-between gap-3">
                                 <div class="flex items-center gap-2.5">
                                     <div class="h-8 w-8 rounded-lg bg-primary/10 text-primary grid place-items-center dark:bg-primary/20 dark:text-info">
@@ -661,18 +661,18 @@
                                             <p class="text-sm font-bold text-primary truncate dark:text-slate-100">{{ $template['title'] }}</p>
                                             <span class="font-mono text-[9px] uppercase tracking-widest text-muted shrink-0">{{ $template['sample']['spec'] }}</span>
                                         </div>
-                                        <p class="text-[11px] text-slate-500 truncate dark:text-slate-400">{{ $template['description'] }}</p>
+                                        <p class="text-[11px] text-slate-500 truncate">{{ $template['description'] }}</p>
                                     </div>
                                     <div class="hidden sm:flex items-center gap-0.5 shrink-0">
                                         @foreach(['en' => 'EN', 'ar' => 'AR', 'ku' => 'KU'] as $locale => $label)
                                             <a href="{{ route('admin.email.preview', ['template' => $template['key'], 'locale' => $locale]) }}" target="_blank" rel="noopener"
-                                               class="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-bold text-slate-500 hover:bg-primary hover:text-white transition dark:text-slate-400">
+                                               class="inline-flex items-center rounded px-1.5 py-0.5 text-[10px] font-bold text-slate-500 hover:bg-primary hover:text-white transition">
                                                 {{ $label }}
                                             </a>
                                         @endforeach
                                     </div>
                                     <a href="{{ route('admin.email.preview', ['template' => $template['key'], 'locale' => app()->getLocale()]) }}" target="_blank" rel="noopener"
-                                       class="shrink-0 inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[10px] font-bold text-slate-700 hover:bg-primary hover:text-white hover:border-primary transition dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                       class="shrink-0 inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[10px] font-bold text-slate-700 hover:bg-primary hover:text-white hover:border-primary transition">
                                         <i class="fas fa-up-right-from-square text-[8px]"></i> {{ __('Open') }}
                                     </a>
                                 </li>

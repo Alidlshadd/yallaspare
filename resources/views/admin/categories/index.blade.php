@@ -170,17 +170,17 @@
 
         {{-- ─────────────── Flash + errors ─────────────── --}}
         @if(session('success'))
-            <div class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300">
+            <div class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
                 {{ session('success') }}
             </div>
         @endif
         @if(session('error'))
-            <div class="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300">
+            <div class="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
                 {{ session('error') }}
             </div>
         @endif
         @if($errors->any())
-            <div class="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300">
+            <div class="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
                 {{ $errors->first() }}
             </div>
         @endif
@@ -229,15 +229,15 @@
                              @click.self="close()"
                              @keydown.escape.window="close()">
                             <div x-show="open" x-transition
-                                 class="w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-2xl overflow-hidden text-slate-900 dark:text-slate-100">
-                                <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-slate-200 dark:border-slate-800 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900/60 dark:to-slate-900">
+                                 class="w-full max-w-lg rounded-2xl bg-white border border-slate-200 shadow-2xl overflow-hidden text-slate-900">
+                                <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-slate-200 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900/60 dark:to-slate-900">
                                     <div class="flex items-center gap-2.5">
                                         <div class="h-9 w-9 rounded-xl bg-navy-deep text-accent grid place-items-center">
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
                                         </div>
                                         <div>
                                             <div class="text-sm font-bold">{{ __('Bulk Import') }}</div>
-                                            <div class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('Upload CSV / XLSX to create categories') }}</div>
+                                            <div class="text-[11px] text-slate-500">{{ __('Upload CSV / XLSX to create categories') }}</div>
                                         </div>
                                     </div>
                                     <button type="button" @click="close()"
@@ -254,13 +254,13 @@
                                     @csrf
 
                                     <div>
-                                        <label for="import-file" class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('File') }}</label>
+                                        <label for="import-file" class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 mb-1.5">{{ __('File') }}</label>
                                         <input id="import-file" type="file" name="import_file" accept=".csv,.txt,.xls,.xlsx" required
-                                               class="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 file:mr-3 file:rounded-md file:border-0 file:bg-slate-200 file:px-3 file:py-1 file:text-xs file:font-bold dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
+                                               class="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 file:mr-3 file:rounded-md file:border-0 file:bg-slate-200 file:px-3 file:py-1 file:text-xs file:font-bold">
                                     </div>
 
-                                    <div class="rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 p-3 text-[11px] leading-relaxed text-slate-600 dark:text-slate-300">
-                                        <div class="font-bold uppercase text-[10px] tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Requirements') }}</div>
+                                    <div class="rounded-lg bg-slate-50 border border-slate-200 p-3 text-[11px] leading-relaxed text-slate-600">
+                                        <div class="font-bold uppercase text-[10px] tracking-widest text-slate-500 mb-1.5">{{ __('Requirements') }}</div>
                                         <p>
                                             {{ __('Supported files: CSV, TXT, XLS, XLSX.') }}
                                         </p>
@@ -276,7 +276,7 @@
 
                                     <div class="flex justify-end gap-2 pt-2">
                                         <button type="button" @click="close()"
-                                                class="inline-flex items-center gap-2 h-10 px-4 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700 transition">
+                                                class="inline-flex items-center gap-2 h-10 px-4 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition">
                                             {{ __('Cancel') }}
                                         </button>
                                         <button type="submit"
@@ -295,14 +295,14 @@
 
         {{-- ═════════════ Import error report ═════════════ --}}
         @if(count($importErrors) > 0)
-            <div class="mb-4 bg-white dark:bg-slate-900 border border-rose-200 dark:border-rose-500/30 rounded-2xl overflow-hidden bento-shadow">
-                <div class="flex items-center gap-2 px-5 py-3 bg-rose-50 dark:bg-rose-500/10 border-b border-rose-200 dark:border-rose-500/30 text-sm font-bold text-rose-700 dark:text-rose-300">
+            <div class="mb-4 bg-white border border-rose-200 rounded-2xl overflow-hidden bento-shadow">
+                <div class="flex items-center gap-2 px-5 py-3 bg-rose-50 border-b border-rose-200 text-sm font-bold text-rose-700">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                     {{ __('Import Error Report') }} ({{ count($importErrors) }} {{ __('rows') }})
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left">
-                        <thead class="bg-slate-50 text-slate-600 dark:bg-slate-800/70 dark:text-slate-300">
+                        <thead class="bg-slate-50 text-slate-600">
                             <tr>
                                 <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest">{{ __('Row') }}</th>
                                 <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest">{{ __('Name (EN)') }}</th>
@@ -311,10 +311,10 @@
                         </thead>
                         <tbody>
                             @foreach($importErrors as $errorRow)
-                                <tr class="border-t border-slate-100 dark:border-slate-800">
-                                    <td class="px-4 py-3 font-mono text-slate-700 dark:text-slate-200">{{ $errorRow['row'] ?? '-' }}</td>
-                                    <td class="px-4 py-3 font-mono text-slate-600 dark:text-slate-300">{{ $errorRow['name_en'] ?? '-' }}</td>
-                                    <td class="px-4 py-3 text-rose-700 dark:text-rose-300">{{ $errorRow['message'] ?? __('Unknown error') }}</td>
+                                <tr class="border-t border-slate-100">
+                                    <td class="px-4 py-3 font-mono text-slate-700">{{ $errorRow['row'] ?? '-' }}</td>
+                                    <td class="px-4 py-3 font-mono text-slate-600">{{ $errorRow['name_en'] ?? '-' }}</td>
+                                    <td class="px-4 py-3 text-rose-700">{{ $errorRow['message'] ?? __('Unknown error') }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -324,7 +324,7 @@
         @endif
 
         {{-- ═════════════ Search + quick filter band ═════════════ --}}
-        <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl px-5 py-4 mb-4 bento-shadow flex flex-wrap items-center gap-4">
+        <div class="bg-white border border-slate-200/70 rounded-2xl px-5 py-4 mb-4 bento-shadow flex flex-wrap items-center gap-4">
             <form method="GET" action="{{ route('admin.categories.index') }}" class="flex flex-1 min-w-[220px] max-w-md gap-2">
                 @if($stockFilter !== '')
                     <input type="hidden" name="stock" value="{{ $stockFilter }}">
@@ -335,14 +335,14 @@
                     </span>
                     <input name="search" value="{{ $search }}"
                            placeholder="{{ __('Search by name, slug, or description...') }}"
-                           class="h-10 w-full ps-10 pe-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 placeholder-muted transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-900">
+                           class="h-10 w-full ps-10 pe-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 placeholder-muted transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:focus:bg-slate-900">
                 </div>
                 <button type="submit" class="inline-flex items-center gap-2 h-10 px-4 rounded-xl text-sm font-bold text-accent bg-navy-deep hover:bg-navy transition shrink-0">
                     {{ __('Search') }}
                 </button>
                 @if($search !== '')
                     <a href="{{ $stockUrl($stockFilter) }}"
-                       class="inline-flex items-center h-10 px-4 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700 transition shrink-0">
+                       class="inline-flex items-center h-10 px-4 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition shrink-0">
                         {{ __('Clear') }}
                     </a>
                 @endif
@@ -365,13 +365,13 @@
 
         {{-- ═════════════ Category card grid ═════════════ --}}
         @if($categories->count() === 0)
-            <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl py-14 px-4 text-center bento-shadow">
-                <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-slate-50 border border-slate-200 grid place-items-center text-muted dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500">
+            <div class="bg-white border border-slate-200/70 rounded-2xl py-14 px-4 text-center bento-shadow">
+                <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-slate-50 border border-slate-200 grid place-items-center text-muted dark:text-slate-500">
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
                 </div>
-                <div class="text-base font-bold text-slate-900 dark:text-white">{{ __('No categories found') }}</div>
+                <div class="text-base font-bold text-slate-900">{{ __('No categories found') }}</div>
                 @if($search !== '')
-                    <div class="text-[13px] text-slate-500 dark:text-slate-400 mt-1.5">{{ __('No results for ":search".', ['search' => $search]) }}</div>
+                    <div class="text-[13px] text-slate-500 mt-1.5">{{ __('No results for ":search".', ['search' => $search]) }}</div>
                     <a href="{{ $stockUrl($stockFilter) }}"
                        class="font-display inline-flex items-center gap-2 h-10 px-4 mt-4 rounded-xl text-sm font-bold text-accent bg-navy-deep hover:bg-navy transition">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
@@ -439,8 +439,8 @@
 
         {{-- ═════════════ Pagination ═════════════ --}}
         @if($categories->hasPages())
-            <div class="mt-6 flex flex-wrap justify-between items-center gap-3 bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl px-5 py-3.5 bento-shadow">
-                <span class="text-[12px] text-slate-500 dark:text-slate-400">
+            <div class="mt-6 flex flex-wrap justify-between items-center gap-3 bg-white border border-slate-200/70 rounded-2xl px-5 py-3.5 bento-shadow">
+                <span class="text-[12px] text-slate-500">
                     {{ __('Showing :from–:to of :total categories', [
                         'from'  => $categories->firstItem() ?? 0,
                         'to'    => $categories->lastItem() ?? 0,

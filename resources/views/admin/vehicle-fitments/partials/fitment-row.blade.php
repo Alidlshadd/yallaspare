@@ -10,7 +10,7 @@
     <div class="vf-fitment-card-head">
         <span class="inline-flex items-center gap-2">
             <span class="vf-fitment-number" data-fitment-row-number>{{ is_numeric($rowIndex) ? ((int) $rowIndex + 1) : 1 }}</span>
-            <span class="text-[11px] font-bold uppercase tracking-[.12em] text-slate-600 dark:text-slate-300">{{ __('Vehicle Fitment') }}</span>
+            <span class="text-[11px] font-bold uppercase tracking-[.12em] text-slate-600">{{ __('Vehicle Fitment') }}</span>
         </span>
         <button type="button" class="vf-btn danger sm" data-remove-fitment-row>
             <i class="fas fa-trash text-[9px]"></i> {{ __('Remove') }}

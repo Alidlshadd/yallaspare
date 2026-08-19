@@ -5,7 +5,7 @@
 @section('actions')
     <a
         href="{{ route('user.account.edit') }}"
-        class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+        class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:bg-slate-900 dark:hover:bg-slate-800"
     >
         {{ __('Account') }}
         <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -26,21 +26,21 @@
 
         <div class="space-y-6">
             <div class="grid grid-cols-1 gap-4 md:grid-cols-4">
-                <div class="rounded-3xl border border-slate-200/80 bg-white px-4 py-4 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10">
-                    <p class="text-xs font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Total Orders') }}</p>
-                    <p class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{{ $totalOrders }}</p>
+                <div class="rounded-3xl border border-slate-200/80 bg-white px-4 py-4 shadow-sm shadow-slate-900/5 dark:bg-slate-900 dark:shadow-black/10">
+                    <p class="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">{{ __('Total Orders') }}</p>
+                    <p class="mt-2 text-2xl font-semibold text-slate-900">{{ $totalOrders }}</p>
                 </div>
-                <div class="rounded-3xl border border-slate-200/80 bg-white px-4 py-4 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10">
-                    <p class="text-xs font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Pending') }}</p>
-                    <p class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{{ $pendingOrders }}</p>
+                <div class="rounded-3xl border border-slate-200/80 bg-white px-4 py-4 shadow-sm shadow-slate-900/5 dark:bg-slate-900 dark:shadow-black/10">
+                    <p class="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">{{ __('Pending') }}</p>
+                    <p class="mt-2 text-2xl font-semibold text-slate-900">{{ $pendingOrders }}</p>
                 </div>
-                <div class="rounded-3xl border border-slate-200/80 bg-white px-4 py-4 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10">
-                    <p class="text-xs font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Delivered') }}</p>
-                    <p class="mt-2 text-2xl font-semibold text-slate-900 dark:text-white">{{ $deliveredOrders }}</p>
+                <div class="rounded-3xl border border-slate-200/80 bg-white px-4 py-4 shadow-sm shadow-slate-900/5 dark:bg-slate-900 dark:shadow-black/10">
+                    <p class="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">{{ __('Delivered') }}</p>
+                    <p class="mt-2 text-2xl font-semibold text-slate-900">{{ $deliveredOrders }}</p>
                 </div>
-                <div class="rounded-3xl border border-slate-200/80 bg-white px-4 py-4 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10">
-                    <p class="text-xs font-medium uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Spend') }}</p>
-                    <p class="mt-2 text-xl font-semibold text-slate-900 dark:text-white">{{ number_format($totalSpend, $currencyDecimals) }} {{ $currencyLabel }}</p>
+                <div class="rounded-3xl border border-slate-200/80 bg-white px-4 py-4 shadow-sm shadow-slate-900/5 dark:bg-slate-900 dark:shadow-black/10">
+                    <p class="text-xs font-medium uppercase tracking-[0.14em] text-slate-500">{{ __('Spend') }}</p>
+                    <p class="mt-2 text-xl font-semibold text-slate-900">{{ number_format($totalSpend, $currencyDecimals) }} {{ $currencyLabel }}</p>
                 </div>
             </div>
 

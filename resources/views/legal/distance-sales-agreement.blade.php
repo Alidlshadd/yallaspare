@@ -60,10 +60,10 @@
                         <div><span class="n">{{ __('Article 02') }}</span><h2>{{ __('2. Seller Information') }}</h2></div>
                     </div>
                     <div class="mt-4 grid gap-x-8 gap-y-3 text-sm sm:grid-cols-2">
-                        <p><span class="font-semibold text-slate-900 dark:text-slate-100">{{ __('Company Name') }}</span><br>{{ __('Yalla Spare - Auto Parts Store') }}</p>
-                        <p><span class="font-semibold text-slate-900 dark:text-slate-100">{{ __('Business Type') }}</span><br>{{ __('Online Auto Spare Parts Supplier') }}</p>
-                        <p><span class="font-semibold text-slate-900 dark:text-slate-100">{{ __('Email') }}</span><br>support@yallaspare.com</p>
-                        <p><span class="font-semibold text-slate-900 dark:text-slate-100">{{ __('Location') }}</span><br>{{ __('Erbil, Iraq') }}</p>
+                        <p><span class="font-semibold text-slate-900">{{ __('Company Name') }}</span><br>{{ __('Yalla Spare - Auto Parts Store') }}</p>
+                        <p><span class="font-semibold text-slate-900">{{ __('Business Type') }}</span><br>{{ __('Online Auto Spare Parts Supplier') }}</p>
+                        <p><span class="font-semibold text-slate-900">{{ __('Email') }}</span><br>support@yallaspare.com</p>
+                        <p><span class="font-semibold text-slate-900">{{ __('Location') }}</span><br>{{ __('Erbil, Iraq') }}</p>
                     </div>
                 </article>
 
@@ -117,7 +117,7 @@
                     </div>
                     <p>{{ __('The buyer has the right to request a return within 7 days from the date of delivery.') }}</p>
                     <p>{{ __('To exercise this right:') }}</p>
-                    <ul class="mt-2 list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+                    <ul class="mt-2 list-disc space-y-1.5 pl-5 text-sm leading-relaxed text-slate-500">
                         <li>{{ __('The product must be unused') }}</li>
                         <li>{{ __('The product must be in its original packaging') }}</li>
                         <li>{{ __('All accessories and documents must be returned') }}</li>

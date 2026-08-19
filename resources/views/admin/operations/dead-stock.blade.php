@@ -1,8 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
         <div>
-            <h2 class="text-2xl font-semibold text-slate-800 dark:text-slate-100">{{ __('Dead Stock') }}</h2>
-            <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Find products holding stock value without recent paid sales.') }}</p>
+            <h2 class="text-2xl font-semibold text-slate-800">{{ __('Dead Stock') }}</h2>
+            <p class="text-sm text-slate-500">{{ __('Find products holding stock value without recent paid sales.') }}</p>
         </div>
     </x-slot>
 
@@ -167,7 +167,7 @@
                 </article>
             </section>
 
-            <section class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <section class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                 <form method="GET" action="{{ route('admin.dead-stock.index') }}" class="flex flex-col gap-3 sm:flex-row">
                     <input type="hidden" name="idle_days" value="{{ $idleDays }}">
                     @if($neverSoldOnly)
@@ -187,10 +187,10 @@
                 </div>
             </section>
 
-            <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
                 <div class="overflow-x-auto">
                     <table class="min-w-full divide-y divide-slate-200 text-sm dark:divide-slate-800">
-                        <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500 dark:bg-slate-950/40 dark:text-slate-400">
+                        <thead class="bg-slate-50 text-xs uppercase tracking-wide text-slate-500">
                             <tr>
                                 <th class="px-4 py-3 text-left">{{ __('Product') }}</th>
                                 <th class="px-4 py-3 text-right">{{ __('Stock') }}</th>
@@ -208,7 +208,7 @@
                                 @endphp
                                 <tr>
                                     <td class="px-4 py-3">
-                                        <div class="font-semibold text-slate-900 dark:text-slate-100">{{ $product->name }}</div>
+                                        <div class="font-semibold text-slate-900">{{ $product->name }}</div>
                                         <div class="text-xs text-slate-500">{{ $product->sku ?? __('N/A') }} @if($product->brand) · {{ $product->brand }} @endif</div>
                                     </td>
                                     <td class="px-4 py-3 text-right font-semibold tabular-nums">{{ number_format((int) $product->stock_quantity) }}</td>
@@ -219,7 +219,7 @@
                                             <span class="ds-pill {{ $lastSold->lt($yearCutoff) ? 'old' : 'idle' }}">{{ $lastSold->diffForHumans() }}</span>
                                         @endif
                                     </td>
-                                    <td class="px-4 py-3 text-right text-slate-600 tabular-nums dark:text-slate-300">{{ number_format((int) $product->lifetime_sold_quantity) }}</td>
+                                    <td class="px-4 py-3 text-right text-slate-600 tabular-nums">{{ number_format((int) $product->lifetime_sold_quantity) }}</td>
                                     <td class="px-4 py-3 text-right">
                                         <div class="ds-vbar"><i style="width: {{ $valuePct }}%"></i><b>{{ $money($product->inventory_value) }}</b></div>
                                     </td>
@@ -233,7 +233,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="border-t border-slate-200 px-4 py-3 dark:border-slate-800">{{ $products->links() }}</div>
+                <div class="border-t border-slate-200 px-4 py-3">{{ $products->links() }}</div>
             </section>
         </div>
     </div>

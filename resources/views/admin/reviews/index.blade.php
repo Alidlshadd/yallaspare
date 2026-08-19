@@ -212,12 +212,12 @@
 
         {{-- ─────────────── Flash ─────────────── --}}
         @if(session('success'))
-            <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300">
+            <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
                 {{ session('success') }}
             </div>
         @endif
         @if(session('error'))
-            <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300">
+            <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
                 {{ session('error') }}
             </div>
         @endif
@@ -258,9 +258,9 @@
                 @if($lowRating > 0)
                     <a href="{{ $ratingUrl($lowOnly ? 0 : 'low') }}"
                        class="relative inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-sm font-bold transition mt-auto border
-                              {{ $lowOnly
-                                    ? 'bg-rose-400/90 text-navy-deep border-rose-300 hover:bg-rose-300'
-                                    : 'bg-rose-500/15 text-rose-200 border-rose-400/30 hover:bg-rose-500/25' }}">
+  {{ $lowOnly
+  ? 'bg-rose-400/90 text-navy-deep border-rose-300 hover:bg-rose-300'
+  : 'bg-rose-500/15 text-rose-200 border-rose-400/30 hover:bg-rose-500/25' }}">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                         {{ $lowOnly
                             ? __('Showing low ratings — clear')
@@ -275,9 +275,9 @@
             </div>
 
             {{-- Rating distribution --}}
-            <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-5 bento-shadow flex flex-col justify-center gap-1">
+            <div class="bg-white border border-slate-200/70 rounded-2xl p-5 bento-shadow flex flex-col justify-center gap-1">
                 <div class="flex items-center justify-between gap-3 mb-2">
-                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ __('Rating distribution') }}</div>
+                    <div class="text-[10px] font-bold uppercase tracking-widest text-slate-500">{{ __('Rating distribution') }}</div>
                     @if((int) $rating > 0 || $lowOnly)
                         <a href="{{ $ratingUrl(0) }}" class="rv-btn sm">{{ __('Clear rating filter') }}</a>
                     @endif
@@ -301,7 +301,7 @@
         </div>
 
         {{-- ═════════════ Search band ═════════════ --}}
-        <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl px-5 py-4 bento-shadow flex flex-wrap items-center gap-4">
+        <div class="bg-white border border-slate-200/70 rounded-2xl px-5 py-4 bento-shadow flex flex-wrap items-center gap-4">
             <form method="GET" action="{{ route('admin.reviews.index') }}" class="flex flex-1 min-w-[220px] max-w-md gap-2">
                 @if($ratingQueryValue !== null)
                     <input type="hidden" name="rating" value="{{ $ratingQueryValue }}">
@@ -345,12 +345,12 @@
 
         {{-- ═════════════ Review cards ═════════════ --}}
         @if($reviews->count() === 0)
-            <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl py-14 px-4 text-center bento-shadow">
-                <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-slate-50 border border-slate-200 grid place-items-center text-muted dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500">
+            <div class="bg-white border border-slate-200/70 rounded-2xl py-14 px-4 text-center bento-shadow">
+                <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-slate-50 border border-slate-200 grid place-items-center text-muted dark:text-slate-500">
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8 10h8m-8 4h5m-9 4V7a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2H9l-5 4z"/></svg>
                 </div>
-                <div class="text-base font-bold text-slate-900 dark:text-white">{{ __('No reviews found.') }}</div>
-                <div class="text-[13px] text-slate-500 dark:text-slate-400 mt-1.5">{{ __('Try changing the search or rating filter.') }}</div>
+                <div class="text-base font-bold text-slate-900">{{ __('No reviews found.') }}</div>
+                <div class="text-[13px] text-slate-500 mt-1.5">{{ __('Try changing the search or rating filter.') }}</div>
                 @if($search !== '' || (int) $rating > 0 || $lowOnly)
                     <a href="{{ route('admin.reviews.index') }}" class="rv-btn primary mt-4 inline-flex">{{ __('Reset filters') }}</a>
                 @endif
@@ -371,7 +371,7 @@
                                     @endfor
                                 </span>
                                 @if($review->is_flagged)
-                                    <span class="inline-flex items-center gap-1 rounded-full border border-amber-300 bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700 dark:border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-300"
+                                    <span class="inline-flex items-center gap-1 rounded-full border border-amber-300 bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700"
                                           title="{{ __('Profanity was auto-masked in this review') }}">
                                         <i class="fas fa-eye-slash text-[9px]"></i> {{ __('Censored') }}
                                     </span>
@@ -383,9 +383,9 @@
                         </div>
 
                         <div>
-                            <p class="text-[13.5px] font-bold text-slate-900 dark:text-slate-100">{{ $review->title ?: __('Customer review') }}</p>
+                            <p class="text-[13.5px] font-bold text-slate-900">{{ $review->title ?: __('Customer review') }}</p>
                             @if($review->comment)
-                                <p class="rv-comment {{ $isLongComment ? 'clamp' : '' }} mt-1.5 text-[13px] leading-relaxed text-slate-600 dark:text-slate-300"
+                                <p class="rv-comment {{ $isLongComment ? 'clamp' : '' }} mt-1.5 text-[13px] leading-relaxed text-slate-600"
                                    @if($isLongComment) data-rv-comment @endif>{{ $review->comment }}</p>
                                 @if($isLongComment)
                                     <button type="button" class="rv-more mt-1" data-rv-more
@@ -394,7 +394,7 @@
                             @endif
                         </div>
 
-                        <div class="mt-auto pt-3 border-t border-dashed border-slate-200 dark:border-slate-700 flex flex-col gap-2.5">
+                        <div class="mt-auto pt-3 border-t border-dashed border-slate-200 flex flex-col gap-2.5">
                             @if($review->product)
                                 <div class="flex items-center gap-2.5 min-w-0">
                                     <div class="rv-thumb">
@@ -406,7 +406,7 @@
                                     </div>
                                     <div class="min-w-0 flex-1">
                                         <a href="{{ route('admin.products.edit', $review->product) }}"
-                                           class="block truncate text-[12.5px] font-bold text-slate-900 hover:text-accent dark:text-slate-100 dark:hover:text-accent transition">
+                                           class="block truncate text-[12.5px] font-bold text-slate-900 hover:text-accent dark:hover:text-accent transition">
                                             {{ $review->product->name }}
                                         </a>
                                         <span class="rv-mono">{{ $review->product->sku ?: __('No SKU') }}</span>
@@ -422,13 +422,13 @@
                                     <div class="min-w-0">
                                         @if($review->user && Route::has('admin.users.show'))
                                             <a href="{{ route('admin.users.show', $review->user) }}"
-                                               class="block truncate text-[12px] font-bold text-slate-900 hover:text-accent dark:text-slate-100 dark:hover:text-accent transition">
+                                               class="block truncate text-[12px] font-bold text-slate-900 hover:text-accent dark:hover:text-accent transition">
                                                 {{ $review->user->name }}
                                             </a>
                                         @else
-                                            <p class="truncate text-[12px] font-bold text-slate-900 dark:text-slate-100">{{ $review->user?->name ?? __('Customer') }}</p>
+                                            <p class="truncate text-[12px] font-bold text-slate-900">{{ $review->user?->name ?? __('Customer') }}</p>
                                         @endif
-                                        <p class="truncate text-[10.5px] text-slate-500 dark:text-slate-400">{{ $review->user?->email ?? '-' }}</p>
+                                        <p class="truncate text-[10.5px] text-slate-500">{{ $review->user?->email ?? '-' }}</p>
                                     </div>
                                 </div>
                                 <form method="POST" action="{{ route('admin.reviews.destroy', $review) }}"
@@ -450,8 +450,8 @@
 
         {{-- ═════════════ Pagination ═════════════ --}}
         @if($reviews->hasPages())
-            <div class="flex flex-wrap justify-between items-center gap-3 bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl px-5 py-3.5 bento-shadow">
-                <span class="text-[12px] text-slate-500 dark:text-slate-400">
+            <div class="flex flex-wrap justify-between items-center gap-3 bg-white border border-slate-200/70 rounded-2xl px-5 py-3.5 bento-shadow">
+                <span class="text-[12px] text-slate-500">
                     {{ __('Showing :from–:to of :total reviews', [
                         'from'  => $reviews->firstItem() ?? 0,
                         'to'    => $reviews->lastItem() ?? 0,

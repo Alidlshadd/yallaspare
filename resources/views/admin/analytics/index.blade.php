@@ -50,9 +50,9 @@
                 <a
                     href="{{ route('admin.analytics.index', ['days' => $option]) }}"
                     class="rounded-lg border px-3 py-1.5 text-xs font-bold transition
-                        {{ $option === $days
-                            ? 'border-info bg-info text-info'
-                            : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-700' }}"
+  {{ $option === $days
+  ? 'border-info bg-info text-info'
+  : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-700' }}"
                 >
                     {{ $option === 365 ? '1Y' : ($option . 'D') }}
                 </a>

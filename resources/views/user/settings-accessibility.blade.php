@@ -5,7 +5,7 @@
 @section('actions')
     <a
         href="{{ route('user.settings.edit') }}"
-        class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+        class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:bg-slate-900 dark:hover:bg-slate-800"
     >
         {{ __('Settings') }}
         <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -27,11 +27,11 @@
                 </x-ui.alert>
             @endif
 
-            <section class="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:p-8">
-                <div class="border-b border-slate-200/80 pb-6 dark:border-slate-800">
-                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ __('Section') }}</p>
-                    <h2 class="mt-1 text-2xl font-semibold tracking-[-0.03em] text-slate-950 dark:text-white">{{ __('Accessibility') }}</h2>
-                    <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">{{ __('Make the interface easier to read and more comfortable during long sessions.') }}</p>
+            <section class="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-900/5 dark:bg-slate-900 dark:shadow-black/10 sm:p-8">
+                <div class="border-b border-slate-200/80 pb-6">
+                    <p class="text-sm font-medium text-slate-500">{{ __('Section') }}</p>
+                    <h2 class="mt-1 text-2xl font-semibold tracking-[-0.03em] text-slate-950">{{ __('Accessibility') }}</h2>
+                    <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">{{ __('Make the interface easier to read and more comfortable during long sessions.') }}</p>
                 </div>
 
                 <form action="{{ route('user.settings.accessibility.update') }}" method="POST" class="mt-6 space-y-6">
@@ -39,27 +39,27 @@
                     @method('PATCH')
 
                     <div>
-                        <label for="font_size_preference" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Font Size') }}</label>
-                        <select id="font_size_preference" name="font_size_preference" class="mt-2 block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-accent/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white">
+                        <label for="font_size_preference" class="block text-sm font-medium text-slate-700">{{ __('Font Size') }}</label>
+                        <select id="font_size_preference" name="font_size_preference" class="mt-2 block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-accent/10 dark:bg-slate-950">
                             <option value="default" @selected(old('font_size_preference', $user->font_size_preference ?? 'default') === 'default')>{{ __('Default') }}</option>
                             <option value="large" @selected(old('font_size_preference', $user->font_size_preference ?? 'default') === 'large')>{{ __('Large') }}</option>
                             <option value="xl" @selected(old('font_size_preference', $user->font_size_preference ?? 'default') === 'xl')>{{ __('Extra large') }}</option>
                         </select>
                     </div>
 
-                    <label class="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-4 transition duration-200 hover:border-primary/20 hover:bg-white dark:border-slate-800 dark:bg-slate-950 dark:hover:border-primary/30 dark:hover:bg-slate-900">
+                    <label class="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-4 transition duration-200 hover:border-primary/20 hover:bg-white dark:hover:border-primary/30 dark:hover:bg-slate-900">
                         <input type="checkbox" name="reduced_motion" value="1" @checked(old('reduced_motion', $user->reduced_motion ?? false)) class="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary focus:ring-accent/30">
                         <span class="min-w-0">
-                            <span class="block text-sm font-medium text-slate-900 dark:text-white">{{ __('Reduced Motion') }}</span>
-                            <span class="mt-1 block text-sm leading-6 text-slate-500 dark:text-slate-400">{{ __('Limit animation and movement-heavy transitions.') }}</span>
+                            <span class="block text-sm font-medium text-slate-900">{{ __('Reduced Motion') }}</span>
+                            <span class="mt-1 block text-sm leading-6 text-slate-500">{{ __('Limit animation and movement-heavy transitions.') }}</span>
                         </span>
                     </label>
 
-                    <label class="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-4 transition duration-200 hover:border-primary/20 hover:bg-white dark:border-slate-800 dark:bg-slate-950 dark:hover:border-primary/30 dark:hover:bg-slate-900">
+                    <label class="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-4 transition duration-200 hover:border-primary/20 hover:bg-white dark:hover:border-primary/30 dark:hover:bg-slate-900">
                         <input type="checkbox" name="high_contrast_mode" value="1" @checked(old('high_contrast_mode', $user->high_contrast_mode ?? false)) class="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary focus:ring-accent/30">
                         <span class="min-w-0">
-                            <span class="block text-sm font-medium text-slate-900 dark:text-white">{{ __('High Contrast Mode') }}</span>
-                            <span class="mt-1 block text-sm leading-6 text-slate-500 dark:text-slate-400">{{ __('Use stronger contrast for text, controls, and card surfaces.') }}</span>
+                            <span class="block text-sm font-medium text-slate-900">{{ __('High Contrast Mode') }}</span>
+                            <span class="mt-1 block text-sm leading-6 text-slate-500">{{ __('Use stronger contrast for text, controls, and card surfaces.') }}</span>
                         </span>
                     </label>
 

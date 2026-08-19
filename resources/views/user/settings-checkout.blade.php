@@ -5,7 +5,7 @@
 @section('actions')
     <a
         href="{{ route('user.settings.edit') }}"
-        class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+        class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:bg-slate-900 dark:hover:bg-slate-800"
     >
         {{ __('Settings') }}
         <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -27,11 +27,11 @@
                 </x-ui.alert>
             @endif
 
-            <section class="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:p-8">
-                <div class="border-b border-slate-200/80 pb-6 dark:border-slate-800">
-                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ __('Section') }}</p>
-                    <h2 class="mt-1 text-2xl font-semibold tracking-[-0.03em] text-slate-950 dark:text-white">{{ __('Checkout Preferences') }}</h2>
-                    <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">{{ __('Set defaults so ordering is faster and needs fewer repeated choices.') }}</p>
+            <section class="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-900/5 dark:bg-slate-900 dark:shadow-black/10 sm:p-8">
+                <div class="border-b border-slate-200/80 pb-6">
+                    <p class="text-sm font-medium text-slate-500">{{ __('Section') }}</p>
+                    <h2 class="mt-1 text-2xl font-semibold tracking-[-0.03em] text-slate-950">{{ __('Checkout Preferences') }}</h2>
+                    <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">{{ __('Set defaults so ordering is faster and needs fewer repeated choices.') }}</p>
                 </div>
 
                 <form action="{{ route('user.settings.checkout.update') }}" method="POST" class="mt-6 space-y-6">
@@ -39,8 +39,8 @@
                     @method('PATCH')
 
                     <div>
-                        <label for="default_contact_method" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Default Contact Method') }}</label>
-                        <select id="default_contact_method" name="default_contact_method" class="mt-2 block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-accent/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white">
+                        <label for="default_contact_method" class="block text-sm font-medium text-slate-700">{{ __('Default Contact Method') }}</label>
+                        <select id="default_contact_method" name="default_contact_method" class="mt-2 block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-accent/10 dark:bg-slate-950">
                             <option value="phone" @selected(old('default_contact_method', $user->default_contact_method ?? 'phone') === 'phone')>{{ __('Phone') }}</option>
                             <option value="email" @selected(old('default_contact_method', $user->default_contact_method ?? 'phone') === 'email')>{{ __('Email') }}</option>
                             <option value="sms" @selected(in_array(old('default_contact_method', $user->default_contact_method ?? 'phone'), ['sms', 'whatsapp'], true))>{{ __('SMS') }}</option>
@@ -48,18 +48,18 @@
                     </div>
 
                     <div>
-                        <label for="default_delivery_note" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Default Delivery Note') }}</label>
-                        <textarea id="default_delivery_note" name="default_delivery_note" rows="4" class="mt-2 block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-accent/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white">{{ old('default_delivery_note', $user->default_delivery_note) }}</textarea>
+                        <label for="default_delivery_note" class="block text-sm font-medium text-slate-700">{{ __('Default Delivery Note') }}</label>
+                        <textarea id="default_delivery_note" name="default_delivery_note" rows="4" class="mt-2 block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-accent/10 dark:bg-slate-950">{{ old('default_delivery_note', $user->default_delivery_note) }}</textarea>
                         @error('default_delivery_note')
                             <p class="mt-2 text-sm text-rose-600 dark:text-rose-400">{{ $message }}</p>
                         @enderror
                     </div>
 
-                    <label class="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-4 transition duration-200 hover:border-primary/20 hover:bg-white dark:border-slate-800 dark:bg-slate-950 dark:hover:border-primary/30 dark:hover:bg-slate-900">
+                    <label class="flex items-start gap-3 rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-4 transition duration-200 hover:border-primary/20 hover:bg-white dark:hover:border-primary/30 dark:hover:bg-slate-900">
                         <input type="checkbox" name="express_checkout" value="1" @checked(old('express_checkout', $user->express_checkout ?? false)) class="mt-0.5 h-4 w-4 rounded border-slate-300 text-primary focus:ring-accent/30">
                         <span class="min-w-0">
-                            <span class="block text-sm font-medium text-slate-900 dark:text-white">{{ __('Express Checkout') }}</span>
-                            <span class="mt-1 block text-sm leading-6 text-slate-500 dark:text-slate-400">{{ __('Use your saved preferences more aggressively to reduce steps during checkout.') }}</span>
+                            <span class="block text-sm font-medium text-slate-900">{{ __('Express Checkout') }}</span>
+                            <span class="mt-1 block text-sm leading-6 text-slate-500">{{ __('Use your saved preferences more aggressively to reduce steps during checkout.') }}</span>
                         </span>
                     </label>
 

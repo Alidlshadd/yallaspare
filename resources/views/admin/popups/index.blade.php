@@ -37,18 +37,18 @@
         </div>
 
         @if (session('success'))
-            <div class="mb-5 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300">
+            <div class="mb-5 rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
                 {{ session('success') }}
             </div>
         @endif
 
         @if($popups->isEmpty())
-            <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-10 text-center bento-shadow">
+            <div class="bg-white border border-slate-200/70 rounded-2xl p-10 text-center bento-shadow">
                 <div class="mx-auto h-12 w-12 rounded-2xl bg-navy-deep text-accent grid place-items-center mb-4">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
                 </div>
-                <h3 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('No popups yet') }}</h3>
-                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1.5">{{ __('Create your first popup to announce campaigns on the storefront.') }}</p>
+                <h3 class="text-sm font-bold text-slate-900">{{ __('No popups yet') }}</h3>
+                <p class="text-xs text-slate-500 mt-1.5">{{ __('Create your first popup to announce campaigns on the storefront.') }}</p>
             </div>
         @else
             {{-- ═════════════ Preview gallery ═════════════ --}}
@@ -85,7 +85,7 @@
                         $imageUrl = ! empty($popup->image_path) ? asset('storage/' . ltrim($popup->image_path, '/')) : null;
                         $description = $popup->localizedDescription();
                     @endphp
-                    <div data-motion-lift class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl overflow-hidden bento-shadow {{ $state === 'running' ? '' : 'opacity-90' }}">
+                    <div data-motion-lift class="bg-white border border-slate-200/70 rounded-2xl overflow-hidden bento-shadow {{ $state === 'running' ? '' : 'opacity-90' }}">
 
                         {{-- Mini live preview — mirrors the real storefront poster card --}}
                         <div class="relative h-44 flex items-end overflow-hidden" style="background: linear-gradient(160deg, #0a1533 0%, #1a2f5f 45%, #35558f 100%);">
@@ -122,19 +122,19 @@
                                 </form>
                             </div>
 
-                            <div class="grid grid-cols-2 gap-3 text-[11px] text-slate-500 dark:text-slate-400 mb-3">
+                            <div class="grid grid-cols-2 gap-3 text-[11px] text-slate-500 mb-3">
                                 <div>
                                     <div class="uppercase tracking-wide font-bold text-[9.5px]">{{ __('Show On Pages') }}</div>
-                                    <div class="font-bold text-slate-800 dark:text-slate-100 mt-0.5 truncate" title="{{ $pageLabels }}">{{ $pageLabels }}</div>
+                                    <div class="font-bold text-slate-800 mt-0.5 truncate" title="{{ $pageLabels }}">{{ $pageLabels }}</div>
                                 </div>
                                 <div>
                                     <div class="uppercase tracking-wide font-bold text-[9.5px]">{{ __('Display Frequency') }}</div>
-                                    <div class="font-bold text-slate-800 dark:text-slate-100 mt-0.5">{{ $frequencyLabel }}</div>
+                                    <div class="font-bold text-slate-800 mt-0.5">{{ $frequencyLabel }}</div>
                                 </div>
                             </div>
 
-                            <div class="flex items-center justify-between gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
-                                <span class="text-[11px] text-slate-500 dark:text-slate-400">
+                            <div class="flex items-center justify-between gap-2 pt-3 border-t border-slate-100">
+                                <span class="text-[11px] text-slate-500">
                                     @if($popup->starts_at || $popup->ends_at)
                                         {{ $popup->starts_at?->format('d M Y') ?? '—' }} → {{ $popup->ends_at?->format('d M Y') ?? '∞' }}
                                     @else
@@ -144,7 +144,7 @@
                                 <div class="flex items-center gap-1.5">
                                     <a href="{{ route('admin.popups.edit', $popup) }}"
                                        aria-label="{{ __('Edit') }}"
-                                       class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 bg-slate-50 border border-slate-200 hover:text-slate-800 hover:bg-slate-100 dark:bg-slate-800 dark:text-slate-400 dark:border-slate-700 dark:hover:text-slate-100 transition">
+                                       class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 bg-slate-50 border border-slate-200 hover:text-slate-800 hover:bg-slate-100 dark:hover:text-slate-100 transition">
                                         <i class="fas fa-pen text-[11px]"></i>
                                     </a>
                                     <form method="POST" action="{{ route('admin.popups.destroy', $popup) }}"
@@ -155,7 +155,7 @@
                                         @method('DELETE')
                                         <button type="submit"
                                                 aria-label="{{ __('Delete') }}"
-                                                class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-rose-500 bg-rose-50 border border-rose-200 hover:bg-rose-100 dark:bg-rose-500/10 dark:border-rose-500/30 transition">
+                                                class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-rose-500 bg-rose-50 border border-rose-200 hover:bg-rose-100 transition">
                                             <i class="fas fa-trash-can text-[11px]"></i>
                                         </button>
                                     </form>

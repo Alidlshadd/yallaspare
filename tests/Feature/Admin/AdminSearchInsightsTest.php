@@ -77,8 +77,8 @@ class AdminSearchInsightsTest extends TestCase
         $response->assertOk();
         // Register rows render keywords in a font-bold span; the hero's global
         // "Top Keyword" still says "brake pad", so scope the check to the row markup.
-        $response->assertSee('font-bold text-slate-900 dark:text-slate-100">gearbox oil 75w90<', false);
-        $response->assertDontSee('font-bold text-slate-900 dark:text-slate-100">brake pad<', false);
+        $response->assertSee('font-bold text-slate-900">gearbox oil 75w90<', false);
+        $response->assertDontSee('font-bold text-slate-900">brake pad<', false);
     }
 
     public function test_window_filter_hides_stale_keywords(): void

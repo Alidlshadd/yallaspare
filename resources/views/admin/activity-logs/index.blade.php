@@ -1,8 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
         <div>
-            <h2 class="text-2xl font-bold text-slate-800 dark:text-slate-100">{{ __('Activity Logs') }}</h2>
-            <p class="text-sm text-slate-500 mt-1 dark:text-slate-400">{{ __('Super admin audit trail') }}</p>
+            <h2 class="text-2xl font-bold text-slate-800">{{ __('Activity Logs') }}</h2>
+            <p class="text-sm text-slate-500 mt-1">{{ __('Super admin audit trail') }}</p>
         </div>
     </x-slot>
 
@@ -21,17 +21,17 @@
 
             {{-- Insights --}}
             <div class="grid grid-cols-1 gap-3 sm:grid-cols-3">
-                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700/60 dark:bg-slate-900">
-                    <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ __('Total logged') }}</p>
-                    <p class="mt-2 text-2xl font-bold tabular-nums text-slate-900 dark:text-white">{{ number_format($totalCount) }}</p>
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                    <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500">{{ __('Total logged') }}</p>
+                    <p class="mt-2 text-2xl font-bold tabular-nums text-slate-900">{{ number_format($totalCount) }}</p>
                     <p class="mt-1 text-[11px] text-muted dark:text-slate-500">{{ __('All recorded events') }}</p>
                 </div>
-                <div class="rounded-xl border border-emerald-300/70 bg-white p-4 shadow-sm dark:border-emerald-400/35 dark:bg-slate-900">
-                    <p class="text-[11px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-300">{{ __('Today') }}</p>
-                    <p class="mt-2 text-2xl font-bold tabular-nums text-emerald-700 dark:text-emerald-300">{{ number_format($todayCount) }}</p>
+                <div class="rounded-xl border border-emerald-300/70 bg-white p-4 shadow-sm dark:border-emerald-400/35">
+                    <p class="text-[11px] font-bold uppercase tracking-widest text-emerald-600">{{ __('Today') }}</p>
+                    <p class="mt-2 text-2xl font-bold tabular-nums text-emerald-700">{{ number_format($todayCount) }}</p>
                     <p class="mt-1 text-[11px] text-muted dark:text-slate-500">{{ __('Events since midnight') }}</p>
                 </div>
-                <div class="rounded-xl border border-info/70 bg-white p-4 shadow-sm dark:border-info/35 dark:bg-slate-900">
+                <div class="rounded-xl border border-info/70 bg-white p-4 shadow-sm dark:border-info/35">
                     <p class="text-[11px] font-bold uppercase tracking-widest text-info dark:text-info">{{ __('Most active admin') }}</p>
                     <p class="mt-2 truncate text-2xl font-bold text-info dark:text-info">{{ $topCauser['name'] ?? '—' }}</p>
                     <p class="mt-1 text-[11px] text-muted dark:text-slate-500">{{ isset($topCauser['count']) ? __(':count events', ['count' => number_format($topCauser['count'])]) : __('No activity yet') }}</p>
@@ -39,11 +39,11 @@
             </div>
 
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <p class="text-sm text-slate-500 dark:text-slate-400">
-                    {{ __('Showing') }} <span class="font-semibold text-slate-800 dark:text-slate-100">{{ $logs->count() }}</span>
-                    {{ __('of') }} <span class="font-semibold text-slate-800 dark:text-slate-100">{{ number_format($logs->total()) }}</span>
+                <p class="text-sm text-slate-500">
+                    {{ __('Showing') }} <span class="font-semibold text-slate-800">{{ $logs->count() }}</span>
+                    {{ __('of') }} <span class="font-semibold text-slate-800">{{ number_format($logs->total()) }}</span>
                     @if(!empty($model))
-                        · <span class="font-semibold text-slate-800 dark:text-slate-100">{{ __($model) }}</span>
+                        · <span class="font-semibold text-slate-800">{{ __($model) }}</span>
                     @endif
                     @if(!empty($search))
                         · "{{ $search }}"
@@ -63,7 +63,7 @@
 
             <div class="grid gap-4 lg:grid-cols-[240px_minmax(0,1fr)] items-start">
                 {{-- Facet rail --}}
-                <aside class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-slate-900 lg:sticky lg:top-4">
+                <aside class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm lg:sticky lg:top-4">
                     <p class="px-3 pb-2 text-[11px] font-bold uppercase tracking-widest text-muted dark:text-slate-500">{{ __('Filter by model') }}</p>
                     <nav class="space-y-0.5" aria-label="{{ __('Model') }}">
                         @foreach($filters as $filterKey)
@@ -87,8 +87,8 @@
                 </aside>
 
                 {{-- Results --}}
-                <div class="min-w-0 rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <div class="flex items-center gap-2 border-b border-slate-200 p-3 dark:border-slate-800">
+                <div class="min-w-0 rounded-xl border border-slate-200 bg-white shadow-sm">
+                    <div class="flex items-center gap-2 border-b border-slate-200 p-3">
                         <div class="relative w-full max-w-sm">
                             <svg class="pointer-events-none absolute inset-y-0 my-auto ms-3 h-4 w-4 text-muted dark:text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <circle cx="11" cy="11" r="7" />
@@ -99,12 +99,12 @@
                                 type="text"
                                 value="{{ $search ?? '' }}"
                                 placeholder="{{ __('Search logs...') }}"
-                                class="w-full rounded-lg border-slate-300 bg-white ps-9 text-sm text-slate-900 placeholder-muted focus:border-accent focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                                class="w-full rounded-lg border-slate-300 bg-white ps-9 text-sm text-slate-900 placeholder-muted focus:border-accent focus:ring-2 focus:ring-accent/30 dark:border-slate-700"
                                 autocomplete="off"
                             />
                         </div>
                         @if(!empty($search))
-                            <a href="{{ route('admin.activity-logs.index', array_filter(['model' => $model])) }}" class="shrink-0 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200">
+                            <a href="{{ route('admin.activity-logs.index', array_filter(['model' => $model])) }}" class="shrink-0 text-xs font-semibold text-slate-500 hover:text-slate-700 dark:hover:text-slate-200">
                                 {{ __('Clear') }} ✕
                             </a>
                         @endif
@@ -112,7 +112,7 @@
 
                     <div class="overflow-x-auto">
                         <table class="min-w-full text-sm">
-                            <thead class="bg-slate-50 dark:bg-slate-800 text-slate-600 dark:text-slate-300">
+                            <thead class="bg-slate-50 text-slate-600">
                                 <tr>
                                     <th class="w-12 px-3 py-3 text-left font-semibold"></th>
                                     <th class="px-4 py-3 text-left font-semibold">{{ __('Admin') }}</th>
@@ -149,12 +149,12 @@
                                     $actorRole = \App\Support\ActivityLogPresenter::actorRole($log);
                                 @endphp
 
-                                <tbody x-data="toggle" class="border-b border-slate-100 dark:border-slate-800 last:border-b-0">
+                                <tbody x-data="toggle" class="border-b border-slate-100 last:border-b-0">
                                     <tr class="transition-colors hover:bg-slate-50/70 dark:hover:bg-slate-800/60">
                                         <td class="px-3 py-3">
                                             <button
                                                 type="button"
-                                                class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:scale-105 hover:border-slate-300 hover:text-slate-700 hover:shadow dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:border-slate-600 dark:hover:text-white"
+                                                class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-500 shadow-sm transition hover:scale-105 hover:border-slate-300 hover:text-slate-700 hover:shadow dark:hover:border-slate-600 dark:hover:text-white"
                                                 @click="toggle()"
                                                 :aria-expanded="ariaExpanded"
                                                 aria-label="{{ __('Toggle log details') }}"
@@ -186,11 +186,11 @@
                                         </td>
                                         <td class="px-4 py-3">
                                             <div class="flex items-center gap-2.5">
-                                                <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-[11px] font-bold text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                                                <span class="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-slate-100 text-[11px] font-bold text-slate-600">
                                                     {{ $causerInitial }}
                                                 </span>
                                                 <div class="min-w-0">
-                                                    <div class="truncate font-semibold text-slate-800 dark:text-slate-100">{{ $log->causer?->name ?? __('System') }}</div>
+                                                    <div class="truncate font-semibold text-slate-800">{{ $log->causer?->name ?? __('System') }}</div>
                                                     <div class="truncate text-[11px] text-muted dark:text-slate-500">
                                                         {{ $log->causer?->email ?: $actorRole }}
                                                     </div>
@@ -198,19 +198,19 @@
                                             </div>
                                         </td>
                                         <td class="px-4 py-3">
-                                            <div class="font-semibold text-slate-700 dark:text-slate-200">{{ \App\Support\ActivityLabelHelper::label($log->description, $log->subject_type) }}</div>
+                                            <div class="font-semibold text-slate-700">{{ \App\Support\ActivityLabelHelper::label($log->description, $log->subject_type) }}</div>
                                             <div class="mt-0.5 text-[11px] text-muted dark:text-slate-500">{{ __('on :type', ['type' => $target['type']]) }}</div>
                                         </td>
                                         <td class="px-4 py-3">
                                             <div class="flex min-w-[220px] items-center gap-2.5">
-                                                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-[11px] font-bold text-amber-700 ring-1 ring-inset ring-amber-200 dark:bg-amber-400/10 dark:text-amber-300 dark:ring-amber-400/20">
+                                                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-[11px] font-bold text-amber-700 ring-1 ring-inset ring-amber-200 dark:ring-amber-400/20">
                                                     {{ $target['initial'] }}
                                                 </span>
                                                 <div class="min-w-0">
                                                     @if($target['url'])
-                                                        <a href="{{ $target['url'] }}" class="block truncate font-semibold text-slate-800 hover:text-accent dark:text-slate-100 dark:hover:text-accent">{{ $target['name'] }}</a>
+                                                        <a href="{{ $target['url'] }}" class="block truncate font-semibold text-slate-800 hover:text-accent dark:hover:text-accent">{{ $target['name'] }}</a>
                                                     @else
-                                                        <div class="truncate font-semibold text-slate-800 dark:text-slate-100">{{ $target['name'] }}</div>
+                                                        <div class="truncate font-semibold text-slate-800">{{ $target['name'] }}</div>
                                                     @endif
                                                     <div class="truncate text-[11px] text-muted dark:text-slate-500">
                                                         {{ $target['type'] }} #{{ $target['id'] ?? '-' }}@if($target['secondary']) · {{ $target['secondary'] }}@endif
@@ -219,44 +219,44 @@
                                             </div>
                                         </td>
                                         <td class="whitespace-nowrap px-4 py-3">
-                                            <div class="font-mono text-xs text-slate-500 dark:text-slate-400">{{ $log->created_at?->timezone(config('app.timezone'))->format('Y-m-d H:i:s') ?? '-' }}</div>
+                                            <div class="font-mono text-xs text-slate-500">{{ $log->created_at?->timezone(config('app.timezone'))->format('Y-m-d H:i:s') ?? '-' }}</div>
                                             <div class="mt-0.5 text-[11px] text-muted dark:text-slate-500">{{ $log->created_at?->diffForHumans() }}</div>
                                         </td>
                                     </tr>
 
                                     <tr x-show="open" x-transition.opacity.duration.150ms>
                                         <td colspan="5" class="px-4 pb-4 pt-1">
-                                            <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-3 dark:border-slate-800 dark:bg-slate-900/50">
+                                            <div class="rounded-xl border border-slate-200 bg-slate-50/70 p-3 dark:bg-slate-900/50">
                                                 <div class="mb-3 grid gap-2 md:grid-cols-2 xl:grid-cols-4">
-                                                    <div class="rounded-lg border border-slate-200 bg-white px-3 py-2.5 dark:border-slate-800 dark:bg-slate-950/50">
+                                                    <div class="rounded-lg border border-slate-200 bg-white px-3 py-2.5">
                                                         <div class="text-[10px] font-bold uppercase tracking-widest text-muted dark:text-slate-500">{{ __('Performed by') }}</div>
-                                                        <div class="mt-1 truncate text-sm font-bold text-slate-800 dark:text-slate-100">{{ $log->causer?->name ?? __('System action') }}</div>
-                                                        <div class="truncate text-[11px] text-slate-500 dark:text-slate-400">{{ $actorRole }}@if($log->causer?->email) · {{ $log->causer->email }}@endif</div>
+                                                        <div class="mt-1 truncate text-sm font-bold text-slate-800">{{ $log->causer?->name ?? __('System action') }}</div>
+                                                        <div class="truncate text-[11px] text-slate-500">{{ $actorRole }}@if($log->causer?->email) · {{ $log->causer->email }}@endif</div>
                                                     </div>
-                                                    <div class="rounded-lg border border-amber-200 bg-amber-50/60 px-3 py-2.5 dark:border-amber-400/20 dark:bg-amber-400/5">
+                                                    <div class="rounded-lg border border-amber-200 bg-amber-50/60 px-3 py-2.5 dark:bg-amber-400/5">
                                                         <div class="text-[10px] font-bold uppercase tracking-widest text-accent/70 dark:text-accent/70">{{ __('Affected record') }}</div>
-                                                        <div class="mt-1 truncate text-sm font-bold text-slate-800 dark:text-slate-100">{{ $target['name'] }}</div>
-                                                        <div class="truncate text-[11px] text-slate-500 dark:text-slate-400">{{ $target['type'] }} #{{ $target['id'] ?? '-' }}@if($target['secondary']) · {{ $target['secondary'] }}@endif</div>
+                                                        <div class="mt-1 truncate text-sm font-bold text-slate-800">{{ $target['name'] }}</div>
+                                                        <div class="truncate text-[11px] text-slate-500">{{ $target['type'] }} #{{ $target['id'] ?? '-' }}@if($target['secondary']) · {{ $target['secondary'] }}@endif</div>
                                                     </div>
-                                                    <div class="rounded-lg border border-slate-200 bg-white px-3 py-2.5 dark:border-slate-800 dark:bg-slate-950/50">
+                                                    <div class="rounded-lg border border-slate-200 bg-white px-3 py-2.5">
                                                         <div class="text-[10px] font-bold uppercase tracking-widest text-muted dark:text-slate-500">{{ __('Exact time') }}</div>
-                                                        <div class="mt-1 font-mono text-sm font-bold text-slate-800 dark:text-slate-100">{{ $log->created_at?->timezone(config('app.timezone'))->format('Y-m-d H:i:s') ?? '-' }}</div>
-                                                        <div class="text-[11px] text-slate-500 dark:text-slate-400">{{ config('app.timezone') }}</div>
+                                                        <div class="mt-1 font-mono text-sm font-bold text-slate-800">{{ $log->created_at?->timezone(config('app.timezone'))->format('Y-m-d H:i:s') ?? '-' }}</div>
+                                                        <div class="text-[11px] text-slate-500">{{ config('app.timezone') }}</div>
                                                     </div>
-                                                    <div class="rounded-lg border border-slate-200 bg-white px-3 py-2.5 dark:border-slate-800 dark:bg-slate-950/50">
+                                                    <div class="rounded-lg border border-slate-200 bg-white px-3 py-2.5">
                                                         <div class="text-[10px] font-bold uppercase tracking-widest text-muted dark:text-slate-500">{{ __('Event context') }}</div>
-                                                        <div class="mt-1 font-mono text-sm font-bold text-slate-800 dark:text-slate-100">#{{ $log->id }} · {{ $log->event ?: $log->description }}</div>
-                                                        <div class="truncate text-[11px] text-slate-500 dark:text-slate-400">{{ $log->batch_uuid ? __('Batch: :id', ['id' => $log->batch_uuid]) : __('Single operation') }}</div>
+                                                        <div class="mt-1 font-mono text-sm font-bold text-slate-800">#{{ $log->id }} · {{ $log->event ?: $log->description }}</div>
+                                                        <div class="truncate text-[11px] text-slate-500">{{ $log->batch_uuid ? __('Batch: :id', ['id' => $log->batch_uuid]) : __('Single operation') }}</div>
                                                     </div>
                                                 </div>
 
                                                 <div class="mb-2 flex items-center justify-between gap-3">
                                                     <div>
-                                                        <div class="text-xs font-bold text-slate-700 dark:text-slate-200">{{ __('Changed fields') }}</div>
+                                                        <div class="text-xs font-bold text-slate-700">{{ __('Changed fields') }}</div>
                                                         <div class="text-[11px] text-muted dark:text-slate-500">{{ __('Previous and new values recorded for this action.') }}</div>
                                                     </div>
                                                     @if($target['url'])
-                                                        <a href="{{ $target['url'] }}" class="shrink-0 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-bold text-slate-600 hover:border-accent hover:text-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-accent/40 dark:hover:text-accent">{{ __('Open target') }}</a>
+                                                        <a href="{{ $target['url'] }}" class="shrink-0 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-bold text-slate-600 hover:border-accent hover:text-accent dark:hover:border-accent/40 dark:hover:text-accent">{{ __('Open target') }}</a>
                                                     @endif
                                                 </div>
 
@@ -272,12 +272,12 @@
                                                                 $isNumeric = is_numeric($oldVal) && is_numeric($newVal);
                                                                 $delta = $isNumeric ? ($newVal - $oldVal) : null;
                                                             @endphp
-                                                            <div class="grid grid-cols-[minmax(120px,180px),1fr] items-center gap-2 rounded-md border border-slate-200 bg-white/70 px-2 py-1.5 dark:border-slate-800 dark:bg-slate-900/40">
-                                                                <div class="truncate text-[11px] font-semibold text-slate-600 dark:text-slate-300">{{ \App\Support\ActivityLogPresenter::fieldLabel((string) $key) }}</div>
+                                                            <div class="grid grid-cols-[minmax(120px,180px),1fr] items-center gap-2 rounded-md border border-slate-200 bg-white/70 px-2 py-1.5 dark:bg-slate-900/40">
+                                                                <div class="truncate text-[11px] font-semibold text-slate-600">{{ \App\Support\ActivityLogPresenter::fieldLabel((string) $key) }}</div>
                                                                 <div class="flex flex-wrap items-center gap-2 text-[11px]">
-                                                                    <span class="text-rose-600 line-through dark:text-rose-400">{{ \App\Support\ActivityLogPresenter::value((string) $key, $oldVal) }}</span>
+                                                                    <span class="text-rose-600 line-through">{{ \App\Support\ActivityLogPresenter::value((string) $key, $oldVal) }}</span>
                                                                     <span class="text-muted dark:text-slate-500">→</span>
-                                                                    <span class="text-emerald-600 dark:text-emerald-400">{{ \App\Support\ActivityLogPresenter::value((string) $key, $newVal) }}</span>
+                                                                    <span class="text-emerald-600">{{ \App\Support\ActivityLogPresenter::value((string) $key, $newVal) }}</span>
                                                                     @if($delta !== null)
                                                                         <span class="ml-2 inline-flex items-center rounded-full px-2 py-0.5 text-[11px] font-semibold {{ $delta >= 0 ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-400/10 dark:text-emerald-300' : 'bg-rose-100 text-rose-700 dark:bg-rose-400/10 dark:text-rose-300' }}">
                                                                             {{ $delta >= 0 ? '+' : '' }}{{ $delta }}
@@ -290,7 +290,7 @@
                                                 @endif
 
                                                 <details class="group mt-3">
-                                                    <summary class="cursor-pointer text-xs font-semibold text-slate-600 hover:text-slate-800 dark:text-slate-300 dark:hover:text-slate-100">
+                                                    <summary class="cursor-pointer text-xs font-semibold text-slate-600 hover:text-slate-800 dark:hover:text-slate-100">
                                                         {{ __('View raw payload') }}
                                                     </summary>
                                                     <div class="mt-2 max-h-64 overflow-y-auto rounded-lg border border-slate-800 bg-slate-900 p-3 text-xs leading-relaxed text-slate-100">
@@ -304,7 +304,7 @@
                             @empty
                                 <tbody>
                                     <tr>
-                                        <td colspan="5" class="px-4 py-8 text-center text-slate-500 dark:text-slate-400">
+                                        <td colspan="5" class="px-4 py-8 text-center text-slate-500">
                                             {{ __('No activity logs found.') }}
                                         </td>
                                     </tr>
@@ -313,7 +313,7 @@
                         </table>
                     </div>
 
-                    <div class="border-t border-slate-100 px-4 py-3 dark:border-slate-800">
+                    <div class="border-t border-slate-100 px-4 py-3">
                         {{ $logs->links() }}
                     </div>
                 </div>

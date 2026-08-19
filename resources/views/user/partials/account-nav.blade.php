@@ -10,8 +10,8 @@
     ];
 @endphp
 
-<div class="rounded-3xl border border-slate-200/80 bg-white p-4 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10">
-    <p class="px-3 pb-3 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">{{ __('Account Sections') }}</p>
+<div class="rounded-3xl border border-slate-200/80 bg-white p-4 shadow-sm shadow-slate-900/5 dark:bg-slate-900 dark:shadow-black/10">
+    <p class="px-3 pb-3 text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">{{ __('Account Sections') }}</p>
     <nav class="space-y-1">
         @foreach ($items as $item)
             @php

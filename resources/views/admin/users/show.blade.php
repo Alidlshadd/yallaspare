@@ -66,12 +66,12 @@
     <x-slot name="header">
         <div class="flex items-center justify-between gap-3">
             <div>
-                <h2 class="font-bold text-2xl text-slate-800 dark:text-slate-100">{{ __('User Details') }}</h2>
-                <p class="text-sm text-slate-500 mt-1 dark:text-slate-400">{{ __('Extended user insights (super admin only)') }}</p>
+                <h2 class="font-bold text-2xl text-slate-800">{{ __('User Details') }}</h2>
+                <p class="text-sm text-slate-500 mt-1">{{ __('Extended user insights (super admin only)') }}</p>
             </div>
             <a
                 href="{{ route('admin.users.index') }}"
-                class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+                class="rounded-lg border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
             >
                 ← {{ __('Back to Users') }}
             </a>
@@ -81,7 +81,7 @@
     <div class="py-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-5">
             @if (session('success'))
-                <div class="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/20 dark:text-emerald-300">
+                <div class="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
                     {{ session('success') }}
                 </div>
             @endif
@@ -99,14 +99,14 @@
             @endif
 
             {{-- Identity header --}}
-            <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <section class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
                 <div class="flex flex-wrap items-center gap-4">
                     <div class="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl text-2xl font-bold {{ $roleMeta['avatar'] }}">
                         {{ strtoupper(substr($user->name, 0, 1)) }}
                     </div>
                     <div class="min-w-0 flex-1">
                         <div class="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-                            <h3 class="text-xl font-bold text-slate-900 dark:text-white">{{ $user->name }}</h3>
+                            <h3 class="text-xl font-bold text-slate-900">{{ $user->name }}</h3>
                             <span class="text-sm tabular-nums text-muted dark:text-slate-500">#{{ $user->id }}</span>
                             <span class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-bold {{ $roleMeta['chip'] }}">
                                 <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
@@ -119,17 +119,17 @@
                                 </span>
                             @endif
                             @if ($user->email_verified_at)
-                                <span class="inline-flex items-center gap-1 rounded-full border border-emerald-300 bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-300">
+                                <span class="inline-flex items-center gap-1 rounded-full border border-emerald-300 bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700 dark:border-emerald-400/40">
                                     <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" /></svg>
                                     {{ __('Verified email') }}
                                 </span>
                             @else
-                                <span class="inline-flex items-center rounded-full border border-slate-300 bg-slate-50 px-2.5 py-0.5 text-[11px] font-bold text-slate-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-400">
+                                <span class="inline-flex items-center rounded-full border border-slate-300 bg-slate-50 px-2.5 py-0.5 text-[11px] font-bold text-slate-500 dark:border-slate-600">
                                     {{ __('Unverified') }}
                                 </span>
                             @endif
                         </div>
-                        <div class="mt-1.5 flex flex-wrap gap-x-4 gap-y-0.5 text-sm text-slate-500 dark:text-slate-400">
+                        <div class="mt-1.5 flex flex-wrap gap-x-4 gap-y-0.5 text-sm text-slate-500">
                             <span class="truncate">{{ $user->email }}</span>
                             @if ($user->phone)
                                 <span dir="ltr">{{ $user->phone }}</span>
@@ -143,31 +143,31 @@
                     <div class="grid grid-cols-2 gap-x-6 gap-y-1 text-sm sm:text-end">
                         <span class="text-[11px] font-bold uppercase tracking-widest text-muted dark:text-slate-500">{{ __('Last Order') }}</span>
                         <span class="text-[11px] font-bold uppercase tracking-widest text-muted dark:text-slate-500">{{ __('Updated') }}</span>
-                        <span class="font-semibold tabular-nums text-slate-800 dark:text-slate-100">{{ $stats['last_order_at'] ? $stats['last_order_at']->format('d M Y') : '—' }}</span>
-                        <span class="font-semibold tabular-nums text-slate-800 dark:text-slate-100">{{ $user->updated_at?->format('d M Y') }}</span>
+                        <span class="font-semibold tabular-nums text-slate-800">{{ $stats['last_order_at'] ? $stats['last_order_at']->format('d M Y') : '—' }}</span>
+                        <span class="font-semibold tabular-nums text-slate-800">{{ $user->updated_at?->format('d M Y') }}</span>
                     </div>
                 </div>
             </section>
 
             {{-- Insights --}}
             <div class="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-5">
-                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-700/60 dark:bg-slate-900">
-                    <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ __('Total Orders') }}</p>
-                    <p class="mt-2 text-2xl font-bold tabular-nums text-slate-900 dark:text-white">{{ number_format($stats['orders_total']) }}</p>
+                <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+                    <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500">{{ __('Total Orders') }}</p>
+                    <p class="mt-2 text-2xl font-bold tabular-nums text-slate-900">{{ number_format($stats['orders_total']) }}</p>
                 </div>
-                <div class="rounded-xl border border-emerald-300/70 bg-white p-4 shadow-sm dark:border-emerald-400/35 dark:bg-slate-900">
-                    <p class="text-[11px] font-bold uppercase tracking-widest text-emerald-600 dark:text-emerald-300">{{ __('Delivered Orders') }}</p>
-                    <p class="mt-2 text-2xl font-bold tabular-nums text-emerald-700 dark:text-emerald-300">{{ number_format($stats['orders_delivered']) }}</p>
+                <div class="rounded-xl border border-emerald-300/70 bg-white p-4 shadow-sm dark:border-emerald-400/35">
+                    <p class="text-[11px] font-bold uppercase tracking-widest text-emerald-600">{{ __('Delivered Orders') }}</p>
+                    <p class="mt-2 text-2xl font-bold tabular-nums text-emerald-700">{{ number_format($stats['orders_delivered']) }}</p>
                 </div>
-                <div class="rounded-xl border border-rose-300/70 bg-white p-4 shadow-sm dark:border-rose-400/35 dark:bg-slate-900">
-                    <p class="text-[11px] font-bold uppercase tracking-widest text-rose-600 dark:text-rose-300">{{ __('Cancelled Orders') }}</p>
-                    <p class="mt-2 text-2xl font-bold tabular-nums text-rose-700 dark:text-rose-300">{{ number_format($stats['orders_cancelled']) }}</p>
+                <div class="rounded-xl border border-rose-300/70 bg-white p-4 shadow-sm dark:border-rose-400/35">
+                    <p class="text-[11px] font-bold uppercase tracking-widest text-rose-600">{{ __('Cancelled Orders') }}</p>
+                    <p class="mt-2 text-2xl font-bold tabular-nums text-rose-700">{{ number_format($stats['orders_cancelled']) }}</p>
                 </div>
-                <div class="rounded-xl border border-info/70 bg-white p-4 shadow-sm dark:border-info/35 dark:bg-slate-900">
+                <div class="rounded-xl border border-info/70 bg-white p-4 shadow-sm dark:border-info/35">
                     <p class="text-[11px] font-bold uppercase tracking-widest text-info dark:text-info">{{ __('Total Spent') }}</p>
                     <p class="mt-2 text-2xl font-bold tabular-nums text-info dark:text-info">{{ number_format($stats['spent_total'], $currencyDecimals) }} <span class="text-sm font-bold">{{ $currencyLabel }}</span></p>
                 </div>
-                <div class="rounded-xl border border-accent/70 bg-white p-4 shadow-sm dark:border-accent/35 dark:bg-slate-900">
+                <div class="rounded-xl border border-accent/70 bg-white p-4 shadow-sm dark:border-accent/35">
                     <p class="text-[11px] font-bold uppercase tracking-widest text-accent dark:text-accent">{{ __('Customer Reviews') }}</p>
                     <p class="mt-2 text-2xl font-bold tabular-nums text-accent dark:text-accent">{{ $reviewAverage ? number_format((float) $reviewAverage, 1) : '0.0' }}<span class="text-sm font-bold text-muted dark:text-slate-500"> / 5 · {{ number_format($userReviews->count()) }}</span></p>
                 </div>
@@ -175,14 +175,14 @@
 
             {{-- Edit + side column --}}
             <div class="grid gap-4 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] items-start">
-                <form method="POST" action="{{ route('admin.users.update-details', $user) }}" class="space-y-5 rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                <form method="POST" action="{{ route('admin.users.update-details', $user) }}" class="space-y-5 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
                     @csrf
                     @method('PATCH')
 
                     <div>
                         <p class="text-[11px] font-bold uppercase tracking-widest text-accent dark:text-accent">{{ __('Admin Controls') }}</p>
-                        <h3 class="mt-1 text-lg font-bold text-slate-900 dark:text-white">{{ __('Editable user profile') }}</h3>
-                        <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('Change account identity, role posture, dealer settings, and verification state from one section.') }}</p>
+                        <h3 class="mt-1 text-lg font-bold text-slate-900">{{ __('Editable user profile') }}</h3>
+                        <p class="mt-1 text-sm text-slate-500">{{ __('Change account identity, role posture, dealer settings, and verification state from one section.') }}</p>
                     </div>
 
                     <div class="grid gap-4 md:grid-cols-2">
@@ -224,16 +224,16 @@
                         </div>
                     </div>
 
-                    <label class="flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-200">
+                    <label class="flex items-center gap-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">
                         <input type="checkbox" name="email_verified" value="1" class="h-4 w-4 rounded border-slate-300 text-accent focus:ring-accent" @checked(old('email_verified', $user->email_verified_at !== null))>
                         <span>{{ __('Mark this account as email verified') }}</span>
                     </label>
 
-                    <div class="rounded-lg border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-800/60">
+                    <div class="rounded-lg border border-slate-200 bg-slate-50 p-4">
                         <div class="flex flex-wrap items-start justify-between gap-3">
                             <div>
-                                <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ __('Module Permissions') }}</p>
-                                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Super admin always has every permission. Other roles can be narrowed or expanded here.') }}</p>
+                                <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500">{{ __('Module Permissions') }}</p>
+                                <p class="mt-1 text-xs text-slate-500">{{ __('Super admin always has every permission. Other roles can be narrowed or expanded here.') }}</p>
                             </div>
                             @if ($user->role === \App\Models\User::ROLE_SUPER_ADMIN)
                                 <span class="inline-flex items-center gap-1.5 rounded-full border border-info bg-info px-2.5 py-0.5 text-[11px] font-bold text-info dark:border-info/40 dark:bg-info/10 dark:text-info">
@@ -245,11 +245,11 @@
 
                         <div class="mt-4 grid gap-3 md:grid-cols-2">
                             @foreach ($permissionGroups as $group => $permissions)
-                                <div class="rounded-lg border border-slate-200 bg-white p-4 dark:border-slate-700 dark:bg-slate-950">
-                                    <p class="text-xs font-bold text-slate-800 dark:text-slate-100">{{ __($group) }}</p>
+                                <div class="rounded-lg border border-slate-200 bg-white p-4">
+                                    <p class="text-xs font-bold text-slate-800">{{ __($group) }}</p>
                                     <div class="mt-3 space-y-2">
                                         @foreach ($permissions as $permission => $label)
-                                            <label class="flex items-start gap-3 text-sm text-slate-600 dark:text-slate-300">
+                                            <label class="flex items-start gap-3 text-sm text-slate-600">
                                                 <input
                                                     type="checkbox"
                                                     name="permissions[]"
@@ -268,7 +268,7 @@
                     </div>
 
                     <div class="flex flex-wrap items-center justify-between gap-3">
-                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('If the selected role is not `Dealer`, dealer status and discount will be reset automatically.') }}</p>
+                        <p class="text-xs text-slate-500">{{ __('If the selected role is not `Dealer`, dealer status and discount will be reset automatically.') }}</p>
                         <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-accent px-5 py-2.5 text-sm font-bold text-slate-900 shadow-sm transition hover:bg-accent">
                             {{ __('Save User Details') }}
                         </button>
@@ -276,11 +276,11 @@
                 </form>
 
                 <div class="space-y-4">
-                    <section class="rounded-xl border border-rose-200 bg-white p-5 shadow-sm dark:border-rose-900/50 dark:bg-slate-900">
+                    <section class="rounded-xl border border-rose-200 bg-white p-5 shadow-sm">
                         <div class="flex items-start justify-between gap-3">
                             <div>
-                                <p class="text-[11px] font-bold uppercase tracking-widest text-rose-600 dark:text-rose-300">{{ __('Account Access') }}</p>
-                                <h4 class="mt-1 text-base font-bold text-slate-900 dark:text-white">{{ __('Ban Management') }}</h4>
+                                <p class="text-[11px] font-bold uppercase tracking-widest text-rose-600">{{ __('Account Access') }}</p>
+                                <h4 class="mt-1 text-base font-bold text-slate-900">{{ __('Ban Management') }}</h4>
                             </div>
                             <span class="inline-flex items-center rounded-full border px-2.5 py-1 text-[11px] font-bold {{ $user->isBanned() ? ($user->isPermanentlyBanned() ? 'border-slate-950 bg-slate-950 text-white dark:border-black dark:bg-black' : 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300') : 'border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-300' }}">
                                 {{ $user->isBanned() ? ($user->isPermanentlyBanned() ? __('Permanent Ban') : __('Temporary Ban')) : __('Active') }}
@@ -292,12 +292,12 @@
                                 @if($user->banned_until)
                                     <div>
                                         <dt class="text-xs font-bold uppercase tracking-wide text-muted dark:text-slate-500">{{ __('Banned Until') }}</dt>
-                                        <dd class="mt-1 font-semibold text-slate-900 dark:text-slate-100">{{ $user->banned_until->format('d M Y H:i') }}</dd>
+                                        <dd class="mt-1 font-semibold text-slate-900">{{ $user->banned_until->format('d M Y H:i') }}</dd>
                                     </div>
                                 @endif
                                 <div>
                                     <dt class="text-xs font-bold uppercase tracking-wide text-muted dark:text-slate-500">{{ __('Reason') }}</dt>
-                                    <dd class="mt-1 text-slate-700 dark:text-slate-300">{{ $user->ban_reason ?: __('No reason provided.') }}</dd>
+                                    <dd class="mt-1 text-slate-700">{{ $user->ban_reason ?: __('No reason provided.') }}</dd>
                                 </div>
                             </dl>
 
@@ -316,14 +316,14 @@
                                 @method('PATCH')
 
                                 <div class="grid grid-cols-2 gap-3">
-                                    <div class="rounded-xl border border-amber-200 bg-amber-50/70 p-3 dark:border-amber-400/25 dark:bg-amber-400/5">
+                                    <div class="rounded-xl border border-amber-200 bg-amber-50/70 p-3 dark:bg-amber-400/5">
                                         <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-slate-950 shadow-sm">
                                             <i class="fas fa-clock" aria-hidden="true"></i>
                                         </div>
-                                        <p class="mt-3 text-sm font-bold text-slate-900 dark:text-white">{{ __('Temporary Ban') }}</p>
-                                        <p class="mt-1 text-xs leading-5 text-slate-500 dark:text-slate-400">{{ __('Locks the account for a selected period.') }}</p>
+                                        <p class="mt-3 text-sm font-bold text-slate-900">{{ __('Temporary Ban') }}</p>
+                                        <p class="mt-1 text-xs leading-5 text-slate-500">{{ __('Locks the account for a selected period.') }}</p>
                                     </div>
-                                    <div class="rounded-xl border border-slate-800 bg-slate-950 p-3 text-white shadow-sm dark:border-black dark:bg-black">
+                                    <div class="rounded-xl border border-slate-800 bg-slate-950 p-3 text-white shadow-sm dark:border-black">
                                         <div class="flex h-9 w-9 items-center justify-center rounded-lg border border-white/15 bg-white/10 text-white">
                                             <i class="fas fa-lock" aria-hidden="true"></i>
                                         </div>
@@ -369,7 +369,7 @@
                                         value="permanent"
                                         data-danger-title="{{ __('Permanent Ban') }}"
                                         data-danger-description="{{ __('The account will remain locked until a super admin or admin removes the ban.') }}"
-                                        class="group inline-flex min-h-12 items-center justify-between gap-3 rounded-xl border border-black bg-slate-950 px-4 py-3 text-start text-white shadow-lg shadow-slate-950/20 transition hover:bg-black focus:outline-none focus:ring-4 focus:ring-accent/20 dark:bg-black"
+                                        class="group inline-flex min-h-12 items-center justify-between gap-3 rounded-xl border border-black bg-slate-950 px-4 py-3 text-start text-white shadow-lg shadow-slate-950/20 transition hover:bg-black focus:outline-none focus:ring-4 focus:ring-accent/20"
                                     >
                                         <span>
                                             <span class="block text-sm font-bold">{{ __('Apply Permanent Ban') }}</span>
@@ -380,27 +380,27 @@
                                 </div>
                             </form>
                         @else
-                            <p class="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-400">
+                            <p class="mt-4 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs font-semibold text-slate-500">
                                 {{ __('Only super admins and admins can change account ban status.') }}
                             </p>
                         @endif
                     </section>
 
-                    <form method="POST" action="{{ route('admin.users.update-password', $user) }}" class="space-y-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                    <form method="POST" action="{{ route('admin.users.update-password', $user) }}" class="space-y-4 rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
                         @csrf
                         @method('PATCH')
 
                         <div>
                             <p class="text-[11px] font-bold uppercase tracking-widest text-accent dark:text-accent">{{ __('Password Reset') }}</p>
-                            <h4 class="mt-1 text-base font-bold text-slate-900 dark:text-white">{{ __('Set a new password') }}</h4>
-                            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('Existing passwords are encrypted and cannot be viewed. Super admins can replace the password from here.') }}</p>
+                            <h4 class="mt-1 text-base font-bold text-slate-900">{{ __('Set a new password') }}</h4>
+                            <p class="mt-1 text-sm text-slate-500">{{ __('Existing passwords are encrypted and cannot be viewed. Super admins can replace the password from here.') }}</p>
                         </div>
 
                         <div>
                             <label for="password" class="{{ $labelClasses }}">{{ __('New Password') }}</label>
                             <x-password-input id="password" name="password" autocomplete="new-password" class="{{ $inputClasses }}" />
                             @error('password')
-                                <p class="mt-2 text-xs font-semibold text-rose-600 dark:text-rose-300">{{ $message }}</p>
+                                <p class="mt-2 text-xs font-semibold text-rose-600">{{ $message }}</p>
                             @enderror
                         </div>
 
@@ -414,31 +414,31 @@
                         </button>
                     </form>
 
-                    <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                        <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ __('Current Snapshot') }}</p>
+                    <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                        <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500">{{ __('Current Snapshot') }}</p>
                         <dl class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
                             <div>
                                 <dt class="text-[11px] font-bold uppercase tracking-widest text-muted dark:text-slate-500">{{ __('Email Verified') }}</dt>
-                                <dd class="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $user->email_verified_at ? $user->email_verified_at->format('d M Y H:i') : __('Unverified') }}</dd>
+                                <dd class="mt-1 text-sm font-semibold text-slate-900">{{ $user->email_verified_at ? $user->email_verified_at->format('d M Y H:i') : __('Unverified') }}</dd>
                             </div>
                             <div>
                                 <dt class="text-[11px] font-bold uppercase tracking-widest text-muted dark:text-slate-500">{{ __('Created') }}</dt>
-                                <dd class="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $user->created_at?->format('d M Y H:i') }}</dd>
+                                <dd class="mt-1 text-sm font-semibold text-slate-900">{{ $user->created_at?->format('d M Y H:i') }}</dd>
                             </div>
                             <div>
                                 <dt class="text-[11px] font-bold uppercase tracking-widest text-muted dark:text-slate-500">{{ __('Updated') }}</dt>
-                                <dd class="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $user->updated_at?->format('d M Y H:i') }}</dd>
+                                <dd class="mt-1 text-sm font-semibold text-slate-900">{{ $user->updated_at?->format('d M Y H:i') }}</dd>
                             </div>
                             <div>
                                 <dt class="text-[11px] font-bold uppercase tracking-widest text-muted dark:text-slate-500">{{ __('Last Order') }}</dt>
-                                <dd class="mt-1 text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $stats['last_order_at'] ? $stats['last_order_at']->format('d M Y H:i') : '—' }}</dd>
+                                <dd class="mt-1 text-sm font-semibold text-slate-900">{{ $stats['last_order_at'] ? $stats['last_order_at']->format('d M Y H:i') : '—' }}</dd>
                             </div>
                         </dl>
                     </div>
 
-                    <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                        <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ __('Admin Notes') }}</p>
-                        <ul class="mt-3 space-y-2 text-sm text-slate-600 dark:text-slate-300">
+                    <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                        <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500">{{ __('Admin Notes') }}</p>
+                        <ul class="mt-3 space-y-2 text-sm text-slate-600">
                             <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"></span>{{ __('Role changes respect the existing super admin safety rules.') }}</li>
                             <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"></span>{{ __('Dealer status and discount are only meaningful when the role is set to `Dealer`.') }}</li>
                             <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"></span>{{ __('Email verification can be toggled directly without opening another workflow.') }}</li>
@@ -448,15 +448,15 @@
             </div>
 
             {{-- Recent Orders --}}
-            <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden dark:border-slate-800 dark:bg-slate-900">
-                <div class="flex items-center justify-between gap-3 border-b border-slate-200 p-4 dark:border-slate-800">
-                    <h3 class="font-bold text-slate-800 dark:text-slate-100">{{ __('Recent Orders') }}</h3>
-                    <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Last :count orders', ['count' => $recentOrders->count()]) }}</p>
+            <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+                <div class="flex items-center justify-between gap-3 border-b border-slate-200 p-4">
+                    <h3 class="font-bold text-slate-800">{{ __('Recent Orders') }}</h3>
+                    <p class="text-xs text-slate-500">{{ __('Last :count orders', ['count' => $recentOrders->count()]) }}</p>
                 </div>
 
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left">
-                        <thead class="bg-slate-50 text-slate-600 dark:bg-slate-800/70 dark:text-slate-300">
+                        <thead class="bg-slate-50 text-slate-600">
                             <tr>
                                 <th class="p-4 text-[11px] font-bold uppercase tracking-widest">{{ __('Order') }}</th>
                                 <th class="p-4 text-[11px] font-bold uppercase tracking-widest">{{ __('Status') }}</th>
@@ -468,19 +468,19 @@
                         <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
                             @forelse($recentOrders as $order)
                                 <tr class="hover:bg-slate-50 transition dark:hover:bg-slate-800/60">
-                                    <td class="p-4 font-semibold text-slate-900 dark:text-slate-100">{{ $order->order_number }}</td>
+                                    <td class="p-4 font-semibold text-slate-900">{{ $order->order_number }}</td>
                                     <td class="p-4">
                                         <span class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-bold {{ $orderStatusChip((string) $order->status) }}">
                                             <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
                                             {{ ucwords(str_replace('_', ' ', $order->status)) }}
                                         </span>
                                     </td>
-                                    <td class="p-4 tabular-nums text-slate-900 dark:text-slate-100">{{ number_format((float) $order->total_amount, $currencyDecimals) }} {{ $currencyLabel }}</td>
-                                    <td class="p-4 tabular-nums text-slate-500 dark:text-slate-400">{{ $order->created_at?->format('d M Y H:i') }}</td>
+                                    <td class="p-4 tabular-nums text-slate-900">{{ number_format((float) $order->total_amount, $currencyDecimals) }} {{ $currencyLabel }}</td>
+                                    <td class="p-4 tabular-nums text-slate-500">{{ $order->created_at?->format('d M Y H:i') }}</td>
                                     <td class="p-4 text-right">
                                         <a
                                             href="{{ route('admin.orders.show', $order) }}"
-                                            class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+                                            class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
                                         >
                                             {{ __('Open Order') }}
                                         </a>
@@ -488,7 +488,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="5" class="p-10 text-center text-slate-500 dark:text-slate-400">{{ __('No orders found for this user.') }}</td>
+                                    <td colspan="5" class="p-10 text-center text-slate-500">{{ __('No orders found for this user.') }}</td>
                                 </tr>
                             @endforelse
                         </tbody>
@@ -497,17 +497,17 @@
             </div>
 
             {{-- Reviews --}}
-            <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden dark:border-slate-800 dark:bg-slate-900">
-                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 p-4 dark:border-slate-800">
+            <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+                <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 p-4">
                     <div>
-                        <h3 class="font-bold text-slate-800 dark:text-slate-100">{{ __('Customer Reviews') }}</h3>
-                        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('All product reviews written by this user.') }}</p>
+                        <h3 class="font-bold text-slate-800">{{ __('Customer Reviews') }}</h3>
+                        <p class="mt-1 text-xs text-slate-500">{{ __('All product reviews written by this user.') }}</p>
                     </div>
                     <div class="flex flex-wrap items-center gap-2">
-                        <span class="inline-flex items-center rounded-full border border-slate-300 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                        <span class="inline-flex items-center rounded-full border border-slate-300 bg-slate-50 px-3 py-1 text-xs font-semibold text-slate-700 dark:border-slate-700">
                             {{ number_format($userReviews->count()) }} {{ __('reviews') }}
                         </span>
-                        <span class="inline-flex items-center rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300">
+                        <span class="inline-flex items-center rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-xs font-bold text-amber-700">
                             ★ {{ $reviewAverage ? number_format((float) $reviewAverage, 1) : '0.0' }} / 5
                         </span>
                         @can(\App\Models\User::PERMISSION_PRODUCTS_MANAGE)
@@ -525,7 +525,7 @@
                     @forelse($userReviews as $review)
                         <div class="grid gap-4 p-4 lg:grid-cols-[minmax(220px,0.8fr)_minmax(0,1.2fr)_auto]">
                             <div class="flex items-center gap-3">
-                                <div class="h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-950">
+                                <div class="h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-white">
                                     @if($review->product?->image)
                                         <img src="{{ asset('storage/' . ltrim((string) $review->product->image, '/')) }}" alt="{{ $review->product->name }}" class="h-full w-full object-contain">
                                     @else
@@ -544,30 +544,30 @@
                                                 {{ $review->product->name }}
                                             </a>
                                         @else
-                                            <p class="truncate text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $review->product->name }}</p>
+                                            <p class="truncate text-sm font-semibold text-slate-900">{{ $review->product->name }}</p>
                                         @endcan
-                                        <p class="mt-1 truncate text-xs text-slate-500 dark:text-slate-400">{{ __('SKU:') }} {{ $review->product->sku ?: '-' }}</p>
+                                        <p class="mt-1 truncate text-xs text-slate-500">{{ __('SKU:') }} {{ $review->product->sku ?: '-' }}</p>
                                     @else
-                                        <p class="text-sm font-semibold text-slate-500 dark:text-slate-400">{{ __('Product unavailable') }}</p>
+                                        <p class="text-sm font-semibold text-slate-500">{{ __('Product unavailable') }}</p>
                                     @endif
                                 </div>
                             </div>
 
                             <div>
                                 <div class="flex flex-wrap items-center gap-2">
-                                    <span class="inline-flex items-center rounded-full border border-amber-300 bg-amber-50 px-2.5 py-0.5 text-[11px] font-bold text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300">
+                                    <span class="inline-flex items-center rounded-full border border-amber-300 bg-amber-50 px-2.5 py-0.5 text-[11px] font-bold text-amber-700">
                                         ★ {{ (int) $review->rating }} / 5
                                     </span>
                                     <span class="inline-flex items-center rounded-full border px-2.5 py-0.5 text-[11px] font-bold {{ $review->is_approved ? 'border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-300' : 'border-slate-300 bg-slate-50 text-slate-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300' }}">
                                         {{ $review->is_approved ? __('Approved') : __('Hidden') }}
                                     </span>
-                                    <span class="text-xs text-slate-500 dark:text-slate-400">
+                                    <span class="text-xs text-slate-500">
                                         {{ optional($review->reviewed_at ?? $review->created_at)->format('M d, Y') ?: '-' }}
                                     </span>
                                 </div>
-                                <p class="mt-3 text-sm font-semibold text-slate-900 dark:text-slate-100">{{ $review->title ?: __('Customer review') }}</p>
+                                <p class="mt-3 text-sm font-semibold text-slate-900">{{ $review->title ?: __('Customer review') }}</p>
                                 @if($review->comment)
-                                    <p class="mt-2 text-sm leading-6 text-slate-700 dark:text-slate-300">{{ $review->comment }}</p>
+                                    <p class="mt-2 text-sm leading-6 text-slate-700">{{ $review->comment }}</p>
                                 @endif
                             </div>
 
@@ -575,7 +575,7 @@
                                 <form method="POST" action="{{ route('admin.reviews.destroy', $review) }}" data-confirm="{{ __('Delete this review?') }}" class="lg:text-right">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="rounded-lg border border-rose-300 bg-rose-50 px-3 py-1.5 text-sm font-semibold text-rose-700 transition hover:bg-rose-100 dark:border-rose-400/40 dark:bg-rose-400/10 dark:text-rose-300 dark:hover:bg-rose-400/20">
+                                    <button type="submit" class="rounded-lg border border-rose-300 bg-rose-50 px-3 py-1.5 text-sm font-semibold text-rose-700 transition hover:bg-rose-100 dark:border-rose-400/40 dark:hover:bg-rose-400/20">
                                         {{ __('Delete') }}
                                     </button>
                                 </form>
@@ -583,8 +583,8 @@
                         </div>
                     @empty
                         <div class="px-6 py-12 text-center">
-                            <p class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('No reviews found for this user.') }}</p>
-                            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('Reviews will appear here after this customer rates purchased items.') }}</p>
+                            <p class="text-sm font-semibold text-slate-700">{{ __('No reviews found for this user.') }}</p>
+                            <p class="mt-1 text-sm text-slate-500">{{ __('Reviews will appear here after this customer rates purchased items.') }}</p>
                         </div>
                     @endforelse
                 </div>

@@ -7,8 +7,8 @@
     <div data-vision-page class="mx-auto w-full max-w-5xl">
         <section class="sup-in">
             <p class="text-xs font-semibold uppercase tracking-[0.22em] text-accent dark:text-accent">{{ __('Shipping & Delivery') }}</p>
-            <h1 class="mt-5 text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl dark:text-slate-100">{{ __('The journey of your part') }}</h1>
-            <p class="mt-6 max-w-3xl text-base leading-relaxed text-slate-600 dark:text-slate-300">
+            <h1 class="mt-5 text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl">{{ __('The journey of your part') }}</h1>
+            <p class="mt-6 max-w-3xl text-base leading-relaxed text-slate-600">
                 {{ __('From checkout to your door — every step of your order on one road.') }}
             </p>
         </section>
@@ -43,24 +43,24 @@
         <section class="del-steps mt-12">
             <article data-vision-reveal class="del-step">
                 <span class="del-tag">{{ __('Step 1') }}</span>
-                <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-100">{{ __('Order received') }}</h2>
-                <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                <h2 class="text-lg font-semibold tracking-tight text-slate-900">{{ __('Order received') }}</h2>
+                <p class="mt-2 text-sm leading-relaxed text-slate-600">
                     {{ __('Orders can be placed 24/7 through our website.') }}
                 </p>
             </article>
 
             <article data-vision-reveal class="del-step">
                 <span class="del-tag">{{ __('Step 2') }}</span>
-                <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-100">{{ __('Prepared in the warehouse') }}</h2>
-                <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                <h2 class="text-lg font-semibold tracking-tight text-slate-900">{{ __('Prepared in the warehouse') }}</h2>
+                <p class="mt-2 text-sm leading-relaxed text-slate-600">
                     {{ __('After your order is confirmed, our team will prepare the product and send it to the shipping company as soon as possible.') }}
                 </p>
             </article>
 
             <article data-vision-reveal class="del-step del-step-now">
                 <span class="del-tag del-tag-now">{{ __('On the road') }}</span>
-                <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-100">{{ __('Handed to the courier') }}</h2>
-                <p class="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                <h2 class="text-lg font-semibold tracking-tight text-slate-900">{{ __('Handed to the courier') }}</h2>
+                <p class="mt-2 text-sm leading-relaxed text-slate-600">
                     {{ __('Once your order is shipped, you may receive a tracking number from the shipping company to follow the delivery status.') }}
                     {{ __('Orders are shipped through reliable delivery partners to ensure safe and fast delivery.') }}
                 </p>
@@ -68,12 +68,12 @@
 
             <article data-vision-reveal class="del-step">
                 <span class="del-tag">{{ __('Step 4') }}</span>
-                <h2 class="text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-100">{{ __('At your door') }}</h2>
-                <ul class="mt-2 list-disc space-y-1.5 ps-5 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+                <h2 class="text-lg font-semibold tracking-tight text-slate-900">{{ __('At your door') }}</h2>
+                <ul class="mt-2 list-disc space-y-1.5 ps-5 text-sm leading-relaxed text-slate-600">
                     <li>{{ __('Local deliveries: 1 business days') }}</li>
                     <li>{{ __('Other cities: 1 - 3 business days') }}</li>
                 </ul>
-                <p class="mt-2 text-xs leading-relaxed text-slate-500 dark:text-slate-400">
+                <p class="mt-2 text-xs leading-relaxed text-slate-500">
                     {{ __('Please note that delivery times may vary depending on shipping conditions and holidays.') }}
                 </p>
             </article>
@@ -81,41 +81,41 @@
 
         {{-- Stats band --}}
         <section data-vision-reveal class="mt-12 grid grid-cols-1 gap-4 sm:grid-cols-3">
-            <div class="rounded-2xl border border-slate-200/80 bg-white p-6 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                <p class="text-3xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">1–3</p>
-                <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">{{ __('Business days to deliver') }}</p>
+            <div class="rounded-2xl border border-slate-200/80 bg-white p-6 text-center shadow-sm dark:bg-slate-900">
+                <p class="text-3xl font-semibold tracking-tight text-slate-900">1–3</p>
+                <p class="mt-1.5 text-sm text-slate-500">{{ __('Business days to deliver') }}</p>
             </div>
-            <div class="rounded-2xl border border-slate-200/80 bg-white p-6 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                <p class="text-3xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">7/24</p>
-                <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">{{ __('Online ordering') }}</p>
+            <div class="rounded-2xl border border-slate-200/80 bg-white p-6 text-center shadow-sm dark:bg-slate-900">
+                <p class="text-3xl font-semibold tracking-tight text-slate-900">7/24</p>
+                <p class="mt-1.5 text-sm text-slate-500">{{ __('Online ordering') }}</p>
             </div>
-            <div class="rounded-2xl border border-slate-200/80 bg-white p-6 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                <p class="text-3xl font-semibold tracking-tight text-slate-900 dark:text-slate-100"><span data-vision-count="24">0</span></p>
-                <p class="mt-1.5 text-sm text-slate-500 dark:text-slate-400">{{ __('Hours to report damage') }}</p>
+            <div class="rounded-2xl border border-slate-200/80 bg-white p-6 text-center shadow-sm dark:bg-slate-900">
+                <p class="text-3xl font-semibold tracking-tight text-slate-900"><span data-vision-count="24">0</span></p>
+                <p class="mt-1.5 text-sm text-slate-500">{{ __('Hours to report damage') }}</p>
             </div>
         </section>
 
         {{-- Delivery checklist --}}
-        <section data-vision-reveal class="mt-12 rounded-2xl border border-slate-200/80 bg-white p-7 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <h2 class="text-xl font-semibold tracking-tight text-slate-900 dark:text-slate-100">{{ __('Delivery checklist') }}</h2>
-            <p class="mt-3 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
+        <section data-vision-reveal class="mt-12 rounded-2xl border border-slate-200/80 bg-white p-7 shadow-sm dark:bg-slate-900">
+            <h2 class="text-xl font-semibold tracking-tight text-slate-900">{{ __('Delivery checklist') }}</h2>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600">
                 {{ __('Please make sure the following information is correct when placing your order:') }}
             </p>
             <ul class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-3">
-                <li class="flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 dark:bg-slate-800/60 dark:text-slate-200">
+                <li class="flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700">
                     <svg class="h-4 w-4 shrink-0 text-accent" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m4.5 10.5 3.5 3.5 7.5-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     {{ __('Full name') }}
                 </li>
-                <li class="flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 dark:bg-slate-800/60 dark:text-slate-200">
+                <li class="flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700">
                     <svg class="h-4 w-4 shrink-0 text-accent" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m4.5 10.5 3.5 3.5 7.5-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     {{ __('Correct phone number') }}
                 </li>
-                <li class="flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 dark:bg-slate-800/60 dark:text-slate-200">
+                <li class="flex items-center gap-3 rounded-xl bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700">
                     <svg class="h-4 w-4 shrink-0 text-accent" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m4.5 10.5 3.5 3.5 7.5-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
                     {{ __('Accurate delivery address') }}
                 </li>
             </ul>
-            <p class="mt-4 text-xs text-slate-500 dark:text-slate-400">{{ __('Incorrect information may cause delays in delivery.') }}</p>
+            <p class="mt-4 text-xs text-slate-500">{{ __('Incorrect information may cause delays in delivery.') }}</p>
         </section>
 
         {{-- Damaged package warning --}}

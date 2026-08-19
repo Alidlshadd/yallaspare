@@ -21,12 +21,12 @@
     <section class="space-y-5">
         <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between sm:gap-3">
             <div class="min-w-0">
-                <h2 class="text-xl font-semibold text-slate-950 dark:text-white">{{ $title }}</h2>
-                <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ $subtitle }}</p>
+                <h2 class="text-xl font-semibold text-slate-950">{{ $title }}</h2>
+                <p class="mt-1 text-sm text-slate-500">{{ $subtitle }}</p>
             </div>
             <a
                 href="{{ $viewAllUrl }}"
-                class="inline-flex w-fit shrink-0 items-center whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium text-slate-600 transition duration-200 hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white dark:focus-visible:ring-accent/30"
+                class="inline-flex w-fit shrink-0 items-center whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium text-slate-600 transition duration-200 hover:bg-slate-100 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 dark:hover:bg-slate-800 dark:hover:text-white dark:focus-visible:ring-accent/30"
             >
                 {{ __('View catalog') }}
             </a>
@@ -133,7 +133,7 @@
                             </div>
 
                             <div class="flex flex-1 flex-col gap-3 p-4">
-                                <a href="{{ data_get($product, 'detail_url') }}" class="line-clamp-2 block min-h-[2.6rem] text-sm font-semibold leading-5 text-slate-950 transition hover:text-primary dark:text-white dark:hover:text-slate-200">
+                                <a href="{{ data_get($product, 'detail_url') }}" class="line-clamp-2 block min-h-[2.6rem] text-sm font-semibold leading-5 text-slate-950 transition hover:text-primary dark:hover:text-slate-200">
                                     {{ data_get($product, 'name') }}
                                 </a>
 
@@ -151,7 +151,7 @@
                                 <div class="mt-auto grid grid-cols-[auto_minmax(0,1fr)] items-stretch gap-2">
                                     <a
                                         href="{{ data_get($product, 'detail_url') }}"
-                                        class="inline-flex h-full items-center justify-center rounded-xl border border-slate-200/80 px-3 py-2.5 text-xs font-medium text-slate-700 transition duration-200 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 dark:border-slate-800 dark:text-slate-300 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-white dark:focus-visible:ring-accent/30"
+                                        class="inline-flex h-full items-center justify-center rounded-xl border border-slate-200/80 px-3 py-2.5 text-xs font-medium text-slate-700 transition duration-200 hover:border-slate-300 hover:bg-slate-50 hover:text-slate-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/20 dark:hover:border-slate-700 dark:hover:bg-slate-800 dark:hover:text-white dark:focus-visible:ring-accent/30"
                                     >
                                         {{ __('View') }}
                                     </a>

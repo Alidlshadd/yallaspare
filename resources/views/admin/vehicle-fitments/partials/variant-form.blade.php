@@ -47,15 +47,15 @@
     <div class="grid gap-5 xl:grid-cols-[minmax(0,1fr)_360px]">
         <div class="space-y-5">
             {{-- ── Where the variant belongs ── --}}
-            <section class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-                <h2 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Vehicle') }}</h2>
-                <p class="mb-4 mt-0.5 text-[11.5px] text-slate-500 dark:text-slate-400">{{ __('A variant belongs to one model family, and a family belongs to one brand.') }}</p>
+            <section class="rounded-2xl border border-slate-200 bg-white p-5">
+                <h2 class="text-sm font-bold text-slate-900">{{ __('Vehicle') }}</h2>
+                <p class="mb-4 mt-0.5 text-[11.5px] text-slate-500">{{ __('A variant belongs to one model family, and a family belongs to one brand.') }}</p>
 
                 <div class="grid gap-4 sm:grid-cols-2">
                     @if($isEdit)
                         <div>
                             <span class="vf-lbl">{{ __('Brand') }}</span>
-                            <p class="flex h-[38px] items-center rounded-[10px] border border-slate-200 bg-slate-100 px-3 text-[13px] font-bold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                            <p class="flex h-[38px] items-center rounded-[10px] border border-slate-200 bg-slate-100 px-3 text-[13px] font-bold text-slate-700">
                                 {{ $model->brand?->name }}
                             </p>
                         </div>
@@ -94,15 +94,15 @@
                             <input name="new_family_name_ar" value="{{ old('new_family_name_ar') }}" maxlength="120" dir="rtl" placeholder="{{ __('Family Name — Arabic') }}" class="vf-inp" aria-label="{{ __('Family Name — Arabic') }}">
                             <input name="new_family_name_ku" value="{{ old('new_family_name_ku') }}" maxlength="120" dir="rtl" placeholder="{{ __('Family Name — Kurdish') }}" class="vf-inp" aria-label="{{ __('Family Name — Kurdish') }}">
                         </div>
-                        <p class="mt-2 text-[11px] text-slate-500 dark:text-slate-400">{{ __('Leave empty to use the family selected above.') }}</p>
+                        <p class="mt-2 text-[11px] text-slate-500">{{ __('Leave empty to use the family selected above.') }}</p>
                     </div>
                 @endunless
             </section>
 
             {{-- ── Names and years ── --}}
-            <section class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-                <h2 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Variant Details') }}</h2>
-                <p class="mb-4 mt-0.5 text-[11.5px] text-slate-500 dark:text-slate-400">{{ __('Arabic and Kurdish names are optional; the English name is shown when one is missing.') }}</p>
+            <section class="rounded-2xl border border-slate-200 bg-white p-5">
+                <h2 class="text-sm font-bold text-slate-900">{{ __('Variant Details') }}</h2>
+                <p class="mb-4 mt-0.5 text-[11.5px] text-slate-500">{{ __('Arabic and Kurdish names are optional; the English name is shown when one is missing.') }}</p>
 
                 <div class="grid gap-4">
                     <div>
@@ -135,11 +135,11 @@
             </section>
 
             {{-- ── Engines ── --}}
-            <section class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+            <section class="rounded-2xl border border-slate-200 bg-white p-5">
                 <div class="flex flex-wrap items-start justify-between gap-3">
                     <div>
-                        <h2 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Engines') }}</h2>
-                        <p class="mt-0.5 text-[11.5px] text-slate-500 dark:text-slate-400">{{ __('Add one row per engine offered on this variant. Electric variants need no engine size.') }}</p>
+                        <h2 class="text-sm font-bold text-slate-900">{{ __('Engines') }}</h2>
+                        <p class="mt-0.5 text-[11.5px] text-slate-500">{{ __('Add one row per engine offered on this variant. Electric variants need no engine size.') }}</p>
                     </div>
                     <button type="button" class="vf-btn sm" data-engine-add>
                         <i class="fas fa-plus text-[9px]"></i> {{ __('Add Engine') }}
@@ -158,7 +158,7 @@
                     @endforeach
                 </div>
 
-                <p class="mt-3 text-[11px] text-slate-500 dark:text-slate-400" data-engine-empty @if(count($engineRows) > 0) hidden @endif>
+                <p class="mt-3 text-[11px] text-slate-500" data-engine-empty @if(count($engineRows) > 0) hidden @endif>
                     {{ __('No engines yet. Products can still be linked to this variant without one.') }}
                 </p>
 
@@ -176,12 +176,12 @@
 
         {{-- ── Image + actions ── --}}
         <div class="space-y-5">
-            <section class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
-                <h2 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Vehicle Image') }}</h2>
-                <p class="mb-4 mt-0.5 text-[11.5px] text-slate-500 dark:text-slate-400">{{ __('JPG, PNG or WEBP up to 2 MB.') }}</p>
+            <section class="rounded-2xl border border-slate-200 bg-white p-5">
+                <h2 class="text-sm font-bold text-slate-900">{{ __('Vehicle Image') }}</h2>
+                <p class="mb-4 mt-0.5 text-[11.5px] text-slate-500">{{ __('JPG, PNG or WEBP up to 2 MB.') }}</p>
 
                 <div data-image-picker>
-                    <div class="grid aspect-[4/3] w-full place-items-center overflow-hidden rounded-xl border border-dashed border-slate-300 bg-slate-50 dark:border-slate-600 dark:bg-slate-950/50">
+                    <div class="grid aspect-[4/3] w-full place-items-center overflow-hidden rounded-xl border border-dashed border-slate-300 bg-slate-50 dark:border-slate-600">
                         <img src="{{ $currentImage }}" alt="" class="h-full w-full object-cover" data-image-preview @unless($currentImage) hidden @endunless>
                         <span class="flex flex-col items-center gap-2 px-4 text-center text-muted" data-image-placeholder @if($currentImage) hidden @endif>
                             <i class="fas fa-car-side text-3xl"></i>
@@ -195,7 +195,7 @@
                         <input type="file" name="image" class="sr-only" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" data-image-input>
                     </label>
 
-                    <p class="mt-2 truncate text-[11px] text-slate-500 dark:text-slate-400" data-image-filename></p>
+                    <p class="mt-2 truncate text-[11px] text-slate-500" data-image-filename></p>
                     @error('image')<p class="mt-1 text-[11px] font-semibold text-rose-600">{{ $message }}</p>@enderror
 
                     @if($currentImage)
@@ -207,7 +207,7 @@
                 </div>
             </section>
 
-            <section class="rounded-2xl border border-slate-200 bg-white p-5 dark:border-slate-700 dark:bg-slate-900">
+            <section class="rounded-2xl border border-slate-200 bg-white p-5">
                 <div class="flex flex-col gap-2">
                     <button class="vf-btn gold w-full">
                         <i class="fas fa-check text-[10px]"></i>

@@ -5,7 +5,7 @@
 @section('actions')
     <a
         href="{{ route('user.settings.edit') }}"
-        class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+        class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:bg-slate-900 dark:hover:bg-slate-800"
     >
         {{ __('Settings') }}
         <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -27,16 +27,16 @@
                 </x-ui.alert>
             @endif
 
-            <section class="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:p-8">
-                <div class="flex flex-col gap-5 border-b border-slate-200/80 pb-6 dark:border-slate-800 sm:flex-row sm:items-start sm:justify-between">
+            <section class="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-900/5 dark:bg-slate-900 dark:shadow-black/10 sm:p-8">
+                <div class="flex flex-col gap-5 border-b border-slate-200/80 pb-6 sm:flex-row sm:items-start sm:justify-between">
                     <div>
-                        <p class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ __('Section') }}</p>
-                        <h2 class="mt-1 text-2xl font-semibold tracking-[-0.03em] text-slate-950 dark:text-white">{{ __('Language') }}</h2>
-                        <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">{{ __('Pick the language used for labels, menus, and account messages.') }}</p>
+                        <p class="text-sm font-medium text-slate-500">{{ __('Section') }}</p>
+                        <h2 class="mt-1 text-2xl font-semibold tracking-[-0.03em] text-slate-950">{{ __('Language') }}</h2>
+                        <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">{{ __('Pick the language used for labels, menus, and account messages.') }}</p>
                     </div>
-                    <div class="rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-950">
-                        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Current Locale') }}</p>
-                        <p class="mt-1 text-sm font-semibold uppercase text-slate-950 dark:text-white">{{ old('locale_preference', $user->locale_preference ?? app()->getLocale()) }}</p>
+                    <div class="rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-3">
+                        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{{ __('Current Locale') }}</p>
+                        <p class="mt-1 text-sm font-semibold uppercase text-slate-950">{{ old('locale_preference', $user->locale_preference ?? app()->getLocale()) }}</p>
                     </div>
                 </div>
 
@@ -45,11 +45,11 @@
                     @method('PATCH')
 
                     <div>
-                        <label for="locale_preference" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Interface Language') }}</label>
+                        <label for="locale_preference" class="block text-sm font-medium text-slate-700">{{ __('Interface Language') }}</label>
                         <select
                             id="locale_preference"
                             name="locale_preference"
-                            class="mt-2 block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-accent/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                            class="mt-2 block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-accent/10 dark:bg-slate-950"
                         >
                             <option value="en" @selected(old('locale_preference', $user->locale_preference ?? 'en') === 'en')>{{ __('English') }}</option>
                             <option value="ar" @selected(old('locale_preference', $user->locale_preference ?? 'en') === 'ar')>{{ __('Arabic') }}</option>
@@ -60,9 +60,9 @@
                         @enderror
                     </div>
 
-                    <div class="rounded-2xl border border-slate-200/80 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950">
-                        <p class="text-sm font-medium text-slate-700 dark:text-slate-200">{{ __('Language scope') }}</p>
-                        <p class="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">{{ __('This updates interface language for your signed-in experience and related account notices.') }}</p>
+                    <div class="rounded-2xl border border-slate-200/80 bg-slate-50 p-4">
+                        <p class="text-sm font-medium text-slate-700">{{ __('Language scope') }}</p>
+                        <p class="mt-1 text-sm leading-6 text-slate-500">{{ __('This updates interface language for your signed-in experience and related account notices.') }}</p>
                     </div>
 
                     <div class="flex items-center justify-end">

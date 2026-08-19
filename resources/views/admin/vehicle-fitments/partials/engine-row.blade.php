@@ -10,7 +10,7 @@
     $hidesDisplacement = $fuel === 'electric';
 @endphp
 
-<div class="rounded-xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-700 dark:bg-slate-950/50" data-engine-row>
+<div class="rounded-xl border border-slate-200 bg-slate-50 p-3" data-engine-row>
     <div class="grid gap-3 sm:grid-cols-[minmax(0,1.1fr)_minmax(0,.8fr)_minmax(0,.9fr)_auto] sm:items-end">
         <div>
             <label class="vf-lbl">{{ __('Fuel Type') }}</label>
@@ -47,7 +47,7 @@
         </button>
     </div>
 
-    <p class="mt-2 text-[11px] text-slate-500 dark:text-slate-400" data-engine-electric-note @unless($hidesDisplacement) hidden @endunless>
+    <p class="mt-2 text-[11px] text-slate-500" data-engine-electric-note @unless($hidesDisplacement) hidden @endunless>
         {{ __('An electric variant is saved without an engine size.') }}
     </p>
 </div>

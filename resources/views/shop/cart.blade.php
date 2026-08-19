@@ -15,18 +15,18 @@
         @endif
 
         @if ($items->isEmpty())
-            <section class="rounded-3xl border border-slate-200/80 bg-white p-8 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:p-10">
-                <div class="rounded-3xl border border-slate-200/80 bg-slate-50 px-6 py-10 text-center dark:border-slate-800 dark:bg-slate-950">
-                    <p class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ __('Cart') }}</p>
-                    <h2 class="mt-2 text-2xl font-semibold tracking-[-0.03em] text-slate-950 dark:text-white">{{ __('Your cart is empty') }}</h2>
-                    <p class="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">
+            <section class="rounded-3xl border border-slate-200/80 bg-white p-8 shadow-sm shadow-slate-900/5 dark:bg-slate-900 dark:shadow-black/10 sm:p-10">
+                <div class="rounded-3xl border border-slate-200/80 bg-slate-50 px-6 py-10 text-center">
+                    <p class="text-sm font-medium text-slate-500">{{ __('Cart') }}</p>
+                    <h2 class="mt-2 text-2xl font-semibold tracking-[-0.03em] text-slate-950">{{ __('Your cart is empty') }}</h2>
+                    <p class="mt-3 text-sm leading-6 text-slate-600">
                         {{ __('Add products from the catalog to start building your order.') }}
                     </p>
 
                     <div class="mt-6 flex items-center justify-center">
                         <a
                             href="{{ route('shop.index') }}"
-                            class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+                            class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:bg-slate-900 dark:hover:bg-slate-800"
                         >
                             {{ __('Browse Products') }}
                             <svg class="h-4 w-4 rtl:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -42,7 +42,7 @@
             @php $totalSavings = 0.0; @endphp
 
             <section class="grid grid-cols-1 gap-4 xl:grid-cols-[minmax(0,1fr)_20rem] xl:items-start">
-                <div class="rounded-2xl border border-slate-200/80 bg-white px-4 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:rounded-3xl sm:px-6">
+                <div class="rounded-2xl border border-slate-200/80 bg-white px-4 shadow-sm shadow-slate-900/5 dark:bg-slate-900 dark:shadow-black/10 sm:rounded-3xl sm:px-6">
                     @foreach ($items as $item)
                         @php
                             $product = $item->product;
@@ -58,10 +58,10 @@
                         @endphp
 
                         <article
-                            class="cart-row-in flex flex-wrap items-center gap-3 border-b border-slate-100 py-4 last:border-b-0 dark:border-slate-800 sm:gap-4"
+                            class="cart-row-in flex flex-wrap items-center gap-3 border-b border-slate-100 py-4 last:border-b-0 sm:gap-4"
                             style="animation-delay: {{ min($loop->index * 70, 420) }}ms"
                         >
-                            <a href="{{ $product ? route('shop.show', $product) : '#' }}" class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50 transition duration-200 hover:border-primary/30 dark:border-slate-700 dark:bg-slate-950 sm:h-[4.5rem] sm:w-[4.5rem]">
+                            <a href="{{ $product ? route('shop.show', $product) : '#' }}" class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200 bg-slate-50 transition duration-200 hover:border-primary/30 sm:h-[4.5rem] sm:w-[4.5rem]">
                                 <img
                                     src="{{ $product?->image ? asset('storage/' . ltrim((string) $product->image, '/')) : '/images/placeholder-product.png' }}"
                                     alt="{{ $product?->name ?? __('Product image') }}"
@@ -70,14 +70,14 @@
                             </a>
 
                             <div class="min-w-0 flex-1 basis-52">
-                                <h2 class="truncate text-sm font-semibold tracking-[-0.01em] text-slate-950 dark:text-white sm:text-[0.95rem]">
+                                <h2 class="truncate text-sm font-semibold tracking-[-0.01em] text-slate-950 sm:text-[0.95rem]">
                                     {{ $product?->name ?? __('Deleted Product') }}
                                 </h2>
                                 <div class="mt-1.5 flex flex-wrap items-center gap-1.5">
-                                    <span class="inline-flex rounded-full border border-slate-200/80 bg-slate-100 px-2 py-0.5 text-[9.5px] font-semibold uppercase tracking-[0.1em] text-slate-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400">
+                                    <span class="inline-flex rounded-full border border-slate-200/80 bg-slate-100 px-2 py-0.5 text-[9.5px] font-semibold uppercase tracking-[0.1em] text-slate-500 dark:bg-slate-800">
                                         {{ $product?->sku ?: __('No SKU') }}
                                     </span>
-                                    <span class="text-xs text-slate-500 dark:text-slate-400">
+                                    <span class="text-xs text-slate-500">
                                         {{ number_format($unitPrice, 2) }} {{ $currencySymbol }}
                                         @if ($unitHasDiscount)
                                             <s class="text-muted dark:text-slate-600">{{ number_format($baseUnitPrice, 2) }}</s>
@@ -98,12 +98,12 @@
                                 @csrf
                                 @method('PATCH')
                                 <label for="quantity-{{ $item->id }}" class="sr-only">{{ __('Quantity') }}</label>
-                                <div class="inline-flex h-10 items-stretch overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-sm shadow-slate-900/5 dark:border-slate-700 dark:bg-slate-950 dark:shadow-black/10">
+                                <div class="inline-flex h-10 items-stretch overflow-hidden rounded-xl border border-slate-200/80 bg-white shadow-sm shadow-slate-900/5 dark:bg-slate-950 dark:shadow-black/10">
                                     <button
                                         type="button"
                                         data-quantity-step="down"
                                         data-quantity-target="quantity-{{ $item->id }}"
-                                        class="inline-flex w-9 items-center justify-center text-slate-500 transition duration-150 hover:bg-slate-50 hover:text-primary active:scale-90 focus:outline-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-accent dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white"
+                                        class="inline-flex w-9 items-center justify-center text-slate-500 transition duration-150 hover:bg-slate-50 hover:text-primary active:scale-90 focus:outline-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-accent dark:hover:bg-slate-800 dark:hover:text-white"
                                         aria-label="{{ __('Decrease quantity') }}"
                                     >
                                         &minus;
@@ -116,14 +116,14 @@
                                         max="{{ $maxQuantity }}"
                                         value="{{ $item->quantity }}"
                                         data-submit-on-change
-                                        class="block w-12 border-0 bg-white px-1 text-center text-sm font-semibold text-slate-900 outline-none [appearance:textfield] focus:ring-0 dark:bg-slate-950 dark:text-white [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                                        class="block w-12 border-0 bg-white px-1 text-center text-sm font-semibold text-slate-900 outline-none [appearance:textfield] focus:ring-0 dark:bg-slate-950 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
                                     >
                                     <button
                                         type="button"
                                         data-quantity-step="up"
                                         data-quantity-target="quantity-{{ $item->id }}"
                                         @disabled($item->quantity >= $maxQuantity)
-                                        class="inline-flex w-9 items-center justify-center text-slate-500 transition duration-150 hover:bg-slate-50 hover:text-primary active:scale-90 focus:outline-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-accent disabled:cursor-not-allowed disabled:text-slate-300 dark:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white dark:disabled:text-slate-600"
+                                        class="inline-flex w-9 items-center justify-center text-slate-500 transition duration-150 hover:bg-slate-50 hover:text-primary active:scale-90 focus:outline-none focus-visible:z-10 focus-visible:ring-2 focus-visible:ring-accent disabled:cursor-not-allowed disabled:text-slate-300 dark:hover:bg-slate-800 dark:hover:text-white dark:disabled:text-slate-600"
                                         aria-label="{{ __('Increase quantity') }}"
                                     >
                                         +
@@ -155,26 +155,26 @@
                     @endforeach
                 </div>
 
-                <section class="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:rounded-3xl xl:sticky xl:top-4">
-                    <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Order Summary') }}</p>
+                <section class="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-900/5 dark:bg-slate-900 dark:shadow-black/10 sm:rounded-3xl xl:sticky xl:top-4">
+                    <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{{ __('Order Summary') }}</p>
 
                     <dl class="mt-3">
-                        <div class="flex items-center justify-between border-b border-dashed border-slate-200/80 py-2.5 dark:border-slate-800">
-                            <dt class="text-sm text-slate-600 dark:text-slate-300">{{ __('Items') }}</dt>
-                            <dd class="text-sm font-semibold text-slate-950 dark:text-white">{{ $items->sum('quantity') }}</dd>
+                        <div class="flex items-center justify-between border-b border-dashed border-slate-200/80 py-2.5">
+                            <dt class="text-sm text-slate-600">{{ __('Items') }}</dt>
+                            <dd class="text-sm font-semibold text-slate-950">{{ $items->sum('quantity') }}</dd>
                         </div>
-                        <div class="flex items-center justify-between border-b border-dashed border-slate-200/80 py-2.5 dark:border-slate-800">
-                            <dt class="text-sm text-slate-600 dark:text-slate-300">{{ __('Product Lines') }}</dt>
-                            <dd class="text-sm font-semibold text-slate-950 dark:text-white">{{ $items->count() }}</dd>
+                        <div class="flex items-center justify-between border-b border-dashed border-slate-200/80 py-2.5">
+                            <dt class="text-sm text-slate-600">{{ __('Product Lines') }}</dt>
+                            <dd class="text-sm font-semibold text-slate-950">{{ $items->count() }}</dd>
                         </div>
                         @if ($totalSavings > 0)
-                            <div class="flex items-center justify-between border-b border-dashed border-slate-200/80 py-2.5 dark:border-slate-800">
-                                <dt class="text-sm text-slate-600 dark:text-slate-300">{{ __('You save') }}</dt>
+                            <div class="flex items-center justify-between border-b border-dashed border-slate-200/80 py-2.5">
+                                <dt class="text-sm text-slate-600">{{ __('You save') }}</dt>
                                 <dd class="text-sm font-bold text-accent-ink dark:text-accent">-{{ number_format($totalSavings, 2) }} {{ $currencySymbol }}</dd>
                             </div>
                         @endif
                         <div class="flex items-end justify-between pt-3">
-                            <dt class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Subtotal') }}</dt>
+                            <dt class="text-sm font-semibold text-slate-700">{{ __('Subtotal') }}</dt>
                             <dd class="break-all text-xl font-bold tracking-[-0.02em] text-primary dark:text-white">
                                 {{ number_format($subtotal, 2) }}
                                 <span class="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">{{ $currencySymbol }}</span>
@@ -182,7 +182,7 @@
                         </div>
                     </dl>
 
-                    <p class="mt-4 border-t border-slate-100 pt-3 text-xs leading-5 text-muted dark:border-slate-800 dark:text-slate-500">
+                    <p class="mt-4 border-t border-slate-100 pt-3 text-xs leading-5 text-muted dark:text-slate-500">
                         {{ __('Address, notes and coupon are on the next step.') }}
                     </p>
                 </section>

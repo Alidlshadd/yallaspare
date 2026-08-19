@@ -20,12 +20,12 @@
 <x-app-layout>
     <div class="mx-auto max-w-7xl space-y-5">
         @if ($errors->any())
-            <div class="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/20 dark:text-rose-300">
+            <div class="rounded-lg border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700">
                 {{ $errors->first() }}
             </div>
         @endif
 
-        <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
             <div class="bg-navy-deep px-5 py-5 text-white sm:px-6">
                 <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                     <div class="flex min-w-0 items-center gap-4">
@@ -75,46 +75,46 @@
             <div class="grid divide-y divide-slate-200 dark:divide-slate-800 md:grid-cols-4 md:divide-x md:divide-y-0">
                 <div class="px-5 py-4">
                     <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-muted">{{ __('Role') }}</p>
-                    <p class="mt-1 text-sm font-bold text-slate-900 dark:text-white">{{ $roleLabel }}</p>
+                    <p class="mt-1 text-sm font-bold text-slate-900">{{ $roleLabel }}</p>
                 </div>
                 <div class="px-5 py-4">
                     <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-muted">{{ __('Permissions') }}</p>
-                    <p class="mt-1 text-sm font-bold text-slate-900 dark:text-white">{{ number_format($permissionLabels->count()) }}</p>
+                    <p class="mt-1 text-sm font-bold text-slate-900">{{ number_format($permissionLabels->count()) }}</p>
                 </div>
                 <div class="px-5 py-4">
                     <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-muted">{{ __('Account Age') }}</p>
-                    <p class="mt-1 text-sm font-bold text-slate-900 dark:text-white">{{ $accountAgeLabel }}</p>
+                    <p class="mt-1 text-sm font-bold text-slate-900">{{ $accountAgeLabel }}</p>
                 </div>
                 <div class="px-5 py-4">
                     <p class="text-[11px] font-bold uppercase tracking-[0.14em] text-muted">{{ __('Last Updated') }}</p>
-                    <p class="mt-1 text-sm font-bold text-slate-900 dark:text-white">{{ $updatedLabel }}</p>
+                    <p class="mt-1 text-sm font-bold text-slate-900">{{ $updatedLabel }}</p>
                 </div>
             </div>
         </section>
 
         <div class="grid gap-5 xl:grid-cols-[22rem_minmax(0,1fr)]">
             <aside class="space-y-5">
-                <section class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <div class="border-b border-slate-200 px-5 py-4 dark:border-slate-800">
-                        <p class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Account Status') }}</p>
+                <section class="rounded-xl border border-slate-200 bg-white shadow-sm">
+                    <div class="border-b border-slate-200 px-5 py-4">
+                        <p class="text-sm font-bold text-slate-900">{{ __('Account Status') }}</p>
                     </div>
                     <div class="divide-y divide-slate-100 dark:divide-slate-800">
                         <div class="flex items-center justify-between gap-3 px-5 py-3">
-                            <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">{{ __('Email') }}</span>
+                            <span class="text-sm font-semibold text-slate-500">{{ __('Email') }}</span>
                             <span class="inline-flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs font-bold {{ $isVerified ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300' : 'bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-300' }}">
                                 <i class="fas {{ $isVerified ? 'fa-check' : 'fa-clock' }} text-[10px]"></i>
                                 {{ $isVerified ? __('Verified') : __('Pending') }}
                             </span>
                         </div>
                         <div class="flex items-center justify-between gap-3 px-5 py-3">
-                            <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">{{ __('Admin 2FA') }}</span>
+                            <span class="text-sm font-semibold text-slate-500">{{ __('Admin 2FA') }}</span>
                             <span class="inline-flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs font-bold {{ $adminTwoFactorRequired ? 'bg-info text-info dark:bg-info/30 dark:text-info' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300' }}">
                                 <i class="fas fa-key text-[10px]"></i>
                                 {{ $adminTwoFactorRequired ? __('Required') : __('Optional') }}
                             </span>
                         </div>
                         <div class="flex items-center justify-between gap-3 px-5 py-3">
-                            <span class="text-sm font-semibold text-slate-500 dark:text-slate-400">{{ __('Profile Photo') }}</span>
+                            <span class="text-sm font-semibold text-slate-500">{{ __('Profile Photo') }}</span>
                             <span class="inline-flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs font-bold {{ $profilePhotoUrl ? 'bg-info text-info dark:bg-info/30 dark:text-info' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300' }}">
                                 <i class="fas fa-image text-[10px]"></i>
                                 {{ $profilePhotoUrl ? __('Set') : __('Initials') }}
@@ -123,25 +123,25 @@
                     </div>
                 </section>
 
-                <section class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <div class="border-b border-slate-200 px-5 py-4 dark:border-slate-800">
-                        <p class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Access Scope') }}</p>
+                <section class="rounded-xl border border-slate-200 bg-white shadow-sm">
+                    <div class="border-b border-slate-200 px-5 py-4">
+                        <p class="text-sm font-bold text-slate-900">{{ __('Access Scope') }}</p>
                     </div>
                     <div class="px-5 py-4">
                         @if ($permissionLabels->isEmpty())
-                            <p class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-500 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400">
+                            <p class="rounded-lg border border-slate-200 bg-slate-50 px-3 py-3 text-sm font-semibold text-slate-500">
                                 {{ __('No admin permissions assigned.') }}
                             </p>
                         @else
                             <div class="flex flex-wrap gap-2">
                                 @foreach ($visiblePermissions as $permission)
-                                    <span class="inline-flex max-w-full items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-bold text-slate-700 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200">
+                                    <span class="inline-flex max-w-full items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-bold text-slate-700">
                                         <i class="fas fa-check text-[10px] text-emerald-500"></i>
                                         <span class="truncate">{{ $permission['label'] }}</span>
                                     </span>
                                 @endforeach
                                 @if ($remainingPermissionCount > 0)
-                                    <span class="inline-flex items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-bold text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                                    <span class="inline-flex items-center rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-bold text-slate-600">
                                         +{{ number_format($remainingPermissionCount) }}
                                     </span>
                                 @endif
@@ -152,14 +152,14 @@
             </aside>
 
             <div class="space-y-5">
-                <section id="profile-details" class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-5 py-4 dark:border-slate-800">
+                <section id="profile-details" class="rounded-xl border border-slate-200 bg-white shadow-sm">
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-5 py-4">
                         <div>
-                            <p class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Profile Information') }}</p>
-                            <p class="mt-1 text-xs font-semibold text-slate-500 dark:text-slate-400">{{ __('Identity, contact, and account photo') }}</p>
+                            <p class="text-sm font-bold text-slate-900">{{ __('Profile Information') }}</p>
+                            <p class="mt-1 text-xs font-semibold text-slate-500">{{ __('Identity, contact, and account photo') }}</p>
                         </div>
                         @if (session('status') === 'profile-updated')
-                            <p x-data="reveal" x-show="show" x-transition x-init="autoHide()" class="inline-flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300">
+                            <p x-data="reveal" x-show="show" x-transition x-init="autoHide()" class="inline-flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700">
                                 <i class="fas fa-check"></i>
                                 {{ __('Saved') }}
                             </p>
@@ -173,7 +173,7 @@
                         <div class="grid gap-5 lg:grid-cols-[13rem_minmax(0,1fr)]">
                             <div class="space-y-3">
                                 <label for="profile_photo" class="group block cursor-pointer">
-                                    <span class="relative block h-40 overflow-hidden rounded-xl border border-slate-200 bg-slate-100 dark:border-slate-700 dark:bg-slate-950">
+                                    <span class="relative block h-40 overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
                                         @if ($profilePhotoUrl)
                                             <img src="{{ $profilePhotoUrl }}" alt="{{ __('Current profile photo') }}" class="h-full w-full object-cover">
                                         @else
@@ -188,9 +188,9 @@
                                 </label>
 
                                 <div class="space-y-2">
-                                    <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">{{ __('JPG, PNG, or WebP up to 2 MB') }}</p>
+                                    <p class="text-xs font-semibold text-slate-500">{{ __('JPG, PNG, or WebP up to 2 MB') }}</p>
                                     @if ($profilePhotoUrl)
-                                        <label class="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300">
+                                        <label class="inline-flex items-center gap-2 text-sm font-semibold text-slate-600">
                                             <input type="checkbox" name="remove_profile_photo" value="1" class="rounded border-slate-300 text-muted focus:ring-accent dark:border-slate-700 dark:bg-slate-950 dark:text-slate-500">
                                             <span>{{ __('Remove photo') }}</span>
                                         </label>
@@ -201,28 +201,28 @@
 
                             <div class="grid gap-4 md:grid-cols-2">
                                 <div class="md:col-span-2">
-                                    <x-input-label for="name" :value="__('Full Name')" class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400" />
-                                    <x-text-input id="name" name="name" type="text" class="mt-1.5 block w-full rounded-lg border-slate-300 bg-white text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" :value="old('name', $user->name)" required autofocus autocomplete="name" />
+                                    <x-input-label for="name" :value="__('Full Name')" class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500" />
+                                    <x-text-input id="name" name="name" type="text" class="mt-1.5 block w-full rounded-lg border-slate-300 bg-white text-sm dark:border-slate-700 dark:text-slate-100" :value="old('name', $user->name)" required autofocus autocomplete="name" />
                                     <x-input-error class="mt-2" :messages="$errors->get('name')" />
                                 </div>
 
                                 <div>
-                                    <x-input-label for="email" :value="__('Email')" class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400" />
-                                    <x-text-input id="email" name="email" type="email" class="mt-1.5 block w-full rounded-lg border-slate-300 bg-white text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" :value="old('email', $user->email)" required autocomplete="username" />
+                                    <x-input-label for="email" :value="__('Email')" class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500" />
+                                    <x-text-input id="email" name="email" type="email" class="mt-1.5 block w-full rounded-lg border-slate-300 bg-white text-sm dark:border-slate-700 dark:text-slate-100" :value="old('email', $user->email)" required autocomplete="username" />
                                     <x-input-error class="mt-2" :messages="$errors->get('email')" />
                                 </div>
 
                                 <div>
-                                    <x-input-label for="phone" :value="__('Phone')" class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400" />
-                                    <x-text-input id="phone" name="phone" type="text" class="mt-1.5 block w-full rounded-lg border-slate-300 bg-white text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" :value="old('phone', $user->phone)" autocomplete="tel" placeholder="+964..." />
+                                    <x-input-label for="phone" :value="__('Phone')" class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500" />
+                                    <x-text-input id="phone" name="phone" type="text" class="mt-1.5 block w-full rounded-lg border-slate-300 bg-white text-sm dark:border-slate-700 dark:text-slate-100" :value="old('phone', $user->phone)" autocomplete="tel" placeholder="+964..." />
                                     <x-input-error class="mt-2" :messages="$errors->get('phone')" />
                                 </div>
 
                                 <div class="md:col-span-2">
-                                    <div class="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-950/60">
+                                    <div class="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-slate-200 bg-slate-50 px-4 py-3">
                                         <div>
                                             <p class="text-xs font-bold uppercase tracking-[0.12em] text-muted">{{ __('Email Verification') }}</p>
-                                            <p class="mt-1 text-sm font-bold text-slate-700 dark:text-slate-200">{{ $isVerified ? __('Verified address') : __('Verification required after email changes') }}</p>
+                                            <p class="mt-1 text-sm font-bold text-slate-700">{{ $isVerified ? __('Verified address') : __('Verification required after email changes') }}</p>
                                         </div>
                                         <span class="inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold {{ $isVerified ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300' : 'bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300' }}">
                                             <i class="fas {{ $isVerified ? 'fa-circle-check' : 'fa-triangle-exclamation' }}"></i>
@@ -233,7 +233,7 @@
                             </div>
                         </div>
 
-                        <div class="mt-5 flex flex-wrap items-center justify-end gap-3 border-t border-slate-200 pt-5 dark:border-slate-800">
+                        <div class="mt-5 flex flex-wrap items-center justify-end gap-3 border-t border-slate-200 pt-5">
                             <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-bold text-slate-900 shadow-sm transition hover:bg-accent focus:outline-none focus:ring-4 focus:ring-accent/20">
                                 <i class="fas fa-floppy-disk"></i>
                                 {{ __('Save Profile') }}
@@ -242,14 +242,14 @@
                     </form>
                 </section>
 
-                <section id="security" class="rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-5 py-4 dark:border-slate-800">
+                <section id="security" class="rounded-xl border border-slate-200 bg-white shadow-sm">
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-5 py-4">
                         <div>
-                            <p class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Password & Security') }}</p>
-                            <p class="mt-1 text-xs font-semibold text-slate-500 dark:text-slate-400">{{ __('Password changes apply to this admin account') }}</p>
+                            <p class="text-sm font-bold text-slate-900">{{ __('Password & Security') }}</p>
+                            <p class="mt-1 text-xs font-semibold text-slate-500">{{ __('Password changes apply to this admin account') }}</p>
                         </div>
                         @if (session('status') === 'password-updated')
-                            <p x-data="reveal" x-show="show" x-transition x-init="autoHide()" class="inline-flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300">
+                            <p x-data="reveal" x-show="show" x-transition x-init="autoHide()" class="inline-flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700">
                                 <i class="fas fa-check"></i>
                                 {{ __('Saved') }}
                             </p>
@@ -262,30 +262,30 @@
 
                         <div class="grid gap-4 md:grid-cols-3">
                             <div>
-                                <x-input-label for="update_password_current_password" :value="__('Current Password')" class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400" />
-                                <x-password-input id="update_password_current_password" name="current_password" container-class="mt-1.5" class="block w-full rounded-lg border-slate-300 bg-white text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" autocomplete="current-password" />
+                                <x-input-label for="update_password_current_password" :value="__('Current Password')" class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500" />
+                                <x-password-input id="update_password_current_password" name="current_password" container-class="mt-1.5" class="block w-full rounded-lg border-slate-300 bg-white text-sm dark:border-slate-700 dark:text-slate-100" autocomplete="current-password" />
                                 <x-input-error :messages="$errors->updatePassword->get('current_password')" class="mt-2" />
                             </div>
 
                             <div>
-                                <x-input-label for="update_password_password" :value="__('New Password')" class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400" />
-                                <x-password-input id="update_password_password" name="password" container-class="mt-1.5" class="block w-full rounded-lg border-slate-300 bg-white text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" autocomplete="new-password" />
+                                <x-input-label for="update_password_password" :value="__('New Password')" class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500" />
+                                <x-password-input id="update_password_password" name="password" container-class="mt-1.5" class="block w-full rounded-lg border-slate-300 bg-white text-sm dark:border-slate-700 dark:text-slate-100" autocomplete="new-password" />
                                 <x-input-error :messages="$errors->updatePassword->get('password')" class="mt-2" />
                             </div>
 
                             <div>
-                                <x-input-label for="update_password_password_confirmation" :value="__('Confirm Password')" class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400" />
-                                <x-password-input id="update_password_password_confirmation" name="password_confirmation" container-class="mt-1.5" class="block w-full rounded-lg border-slate-300 bg-white text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" autocomplete="new-password" />
+                                <x-input-label for="update_password_password_confirmation" :value="__('Confirm Password')" class="text-xs font-bold uppercase tracking-[0.12em] text-slate-500" />
+                                <x-password-input id="update_password_password_confirmation" name="password_confirmation" container-class="mt-1.5" class="block w-full rounded-lg border-slate-300 bg-white text-sm dark:border-slate-700 dark:text-slate-100" autocomplete="new-password" />
                                 <x-input-error :messages="$errors->updatePassword->get('password_confirmation')" class="mt-2" />
                             </div>
                         </div>
 
-                        <div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-5 dark:border-slate-800">
-                            <div class="flex items-center gap-2 text-xs font-semibold text-slate-500 dark:text-slate-400">
+                        <div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-5">
+                            <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
                                 <i class="fas fa-shield-halved text-emerald-500"></i>
                                 <span>{{ __('Strong password rules are enforced.') }}</span>
                             </div>
-                            <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-700 focus:outline-none focus:ring-4 focus:ring-accent/20 dark:bg-slate-100 dark:text-slate-950 dark:hover:bg-white">
+                            <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-700 focus:outline-none focus:ring-4 focus:ring-accent/20 dark:text-slate-950 dark:hover:bg-white">
                                 <i class="fas fa-key"></i>
                                 {{ __('Update Password') }}
                             </button>

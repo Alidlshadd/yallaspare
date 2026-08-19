@@ -2,10 +2,10 @@
     <x-slot name="header">
         <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
             <div>
-                <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">{{ __('Add Product') }}</h2>
-                <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Create a new product listing with pricing and inventory details.') }}</p>
+                <h2 class="text-2xl font-semibold text-slate-900">{{ __('Add Product') }}</h2>
+                <p class="text-sm text-slate-500">{{ __('Create a new product listing with pricing and inventory details.') }}</p>
             </div>
-            <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600 shadow-sm dark:border-slate-800 dark:bg-slate-900 dark:text-slate-300">
+            <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600 shadow-sm">
                 <i class="fas fa-circle-info text-info"></i>
                 {{ __('Required fields are marked') }}
             </span>
@@ -20,7 +20,7 @@
     <div class="py-8">
         <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
             @if($errors->any())
-                <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-900/50 dark:bg-rose-900/20 dark:text-rose-200">
+                <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
                     {{ $errors->first() }}
                 </div>
             @endif
@@ -31,63 +31,63 @@
 
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                     <div class="lg:col-span-2 space-y-6">
-                        <section class="bg-white rounded-2xl border border-slate-200 shadow-sm dark:bg-slate-900 dark:border-slate-800">
-                            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800">
-                                <h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100">{{ __('Basic Information') }}</h3>
-                                <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Product naming, categorization, and descriptions.') }}</p>
+                        <section class="bg-white rounded-2xl border border-slate-200 shadow-sm">
+                            <div class="px-6 py-4 border-b border-slate-200">
+                                <h3 class="text-sm font-semibold text-slate-900">{{ __('Basic Information') }}</h3>
+                                <p class="text-xs text-slate-500">{{ __('Product naming, categorization, and descriptions.') }}</p>
                             </div>
                             <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Product Name (EN)') }} <span class="text-rose-500">*</span></label>
+                                    <label class="block text-sm font-medium text-slate-700">{{ __('Product Name (EN)') }} <span class="text-rose-500">*</span></label>
                                     <input type="text" name="name_en" value="{{ old('name_en', (string) request('name', '')) }}" class="{{ $inputBase }} @error('name_en') {{ $inputError }} @enderror" required @error('name_en') aria-invalid="true" @enderror>
                                     @error('name_en')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Product Name (AR)') }} <span class="text-rose-500">*</span></label>
+                                    <label class="block text-sm font-medium text-slate-700">{{ __('Product Name (AR)') }} <span class="text-rose-500">*</span></label>
                                     <input type="text" name="name_ar" value="{{ old('name_ar') }}" class="{{ $inputBase }} @error('name_ar') {{ $inputError }} @enderror" required @error('name_ar') aria-invalid="true" @enderror>
                                     @error('name_ar')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Product Name (KU)') }} <span class="text-rose-500">*</span></label>
+                                    <label class="block text-sm font-medium text-slate-700">{{ __('Product Name (KU)') }} <span class="text-rose-500">*</span></label>
                                     <input type="text" name="name_ku" value="{{ old('name_ku') }}" class="{{ $inputBase }} @error('name_ku') {{ $inputError }} @enderror" required @error('name_ku') aria-invalid="true" @enderror>
                                     @error('name_ku')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('SKU') }}</label>
+                                    <label class="block text-sm font-medium text-slate-700">{{ __('SKU') }}</label>
                                     <input type="text" name="sku" value="{{ old('sku') }}" class="{{ $inputBase }} @error('sku') {{ $inputError }} @enderror" placeholder="{{ __('Auto-generate if empty') }}" @error('sku') aria-invalid="true" @enderror>
                                     @error('sku')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('OEM Number') }}</label>
+                                    <label class="block text-sm font-medium text-slate-700">{{ __('OEM Number') }}</label>
                                     <input type="text" name="oem_number" value="{{ old('oem_number') }}" class="{{ $inputBase }} @error('oem_number') {{ $inputError }} @enderror" placeholder="{{ __('e.g., 17801-0M040') }}" @error('oem_number') aria-invalid="true" @enderror>
                                     @error('oem_number')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Part Number') }}</label>
+                                    <label class="block text-sm font-medium text-slate-700">{{ __('Part Number') }}</label>
                                     <input type="text" name="part_number" value="{{ old('part_number') }}" class="{{ $inputBase }} @error('part_number') {{ $inputError }} @enderror" placeholder="{{ __('Manufacturer part number') }}" @error('part_number') aria-invalid="true" @enderror>
                                     @error('part_number')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Warranty') }}</label>
+                                    <label class="block text-sm font-medium text-slate-700">{{ __('Warranty') }}</label>
                                     <input type="text" name="warranty" value="{{ old('warranty') }}" class="{{ $inputBase }} @error('warranty') {{ $inputError }} @enderror" placeholder="{{ __('e.g., 6 months') }}" @error('warranty') aria-invalid="true" @enderror>
                                     @error('warranty')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Brand') }}</label>
+                                    <label class="block text-sm font-medium text-slate-700">{{ __('Brand') }}</label>
                                     <select name="product_brand_id" class="{{ $inputBase }} @error('product_brand_id') {{ $inputError }} @enderror" @error('product_brand_id') aria-invalid="true" @enderror>
                                         <option value="">{{ __('No brand') }}</option>
                                         @foreach($brands as $brand)
@@ -102,7 +102,7 @@
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Category') }} <span class="text-rose-500">*</span></label>
+                                    <label class="block text-sm font-medium text-slate-700">{{ __('Category') }} <span class="text-rose-500">*</span></label>
                                     <select name="category_id" class="{{ $inputBase }} @error('category_id') {{ $inputError }} @enderror" required @error('category_id') aria-invalid="true" @enderror>
                                         @foreach($categories as $category)
                                             <option value="{{ $category->id }}" {{ old('category_id') == $category->id ? 'selected' : '' }}>
@@ -115,28 +115,28 @@
                                     @enderror
                                 </div>
                                 <div class="md:col-span-2">
-                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Description (EN)') }}</label>
+                                    <label class="block text-sm font-medium text-slate-700">{{ __('Description (EN)') }}</label>
                                     <textarea name="description_en" rows="3" class="{{ $inputBase }} @error('description_en') {{ $inputError }} @enderror" @error('description_en') aria-invalid="true" @enderror>{{ old('description_en') }}</textarea>
                                     @error('description_en')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Description (AR)') }}</label>
+                                    <label class="block text-sm font-medium text-slate-700">{{ __('Description (AR)') }}</label>
                                     <textarea name="description_ar" rows="3" class="{{ $inputBase }} @error('description_ar') {{ $inputError }} @enderror" @error('description_ar') aria-invalid="true" @enderror>{{ old('description_ar') }}</textarea>
                                     @error('description_ar')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Description (KU)') }}</label>
+                                    <label class="block text-sm font-medium text-slate-700">{{ __('Description (KU)') }}</label>
                                     <textarea name="description_ku" rows="3" class="{{ $inputBase }} @error('description_ku') {{ $inputError }} @enderror" @error('description_ku') aria-invalid="true" @enderror>{{ old('description_ku') }}</textarea>
                                     @error('description_ku')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div class="md:col-span-2">
-                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Compatible Models') }}</label>
+                                    <label class="block text-sm font-medium text-slate-700">{{ __('Compatible Models') }}</label>
                                     <textarea name="compatible_models" rows="2" class="{{ $inputBase }} @error('compatible_models') {{ $inputError }} @enderror" placeholder="{{ __('Comma or new line separated') }}" @error('compatible_models') aria-invalid="true" @enderror>{{ old('compatible_models') }}</textarea>
                                     @error('compatible_models')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
@@ -145,29 +145,29 @@
                             </div>
                         </section>
 
-                        <section class="bg-white rounded-2xl border border-slate-200 shadow-sm dark:bg-slate-900 dark:border-slate-800">
-                            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800">
-                                <h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100">{{ __('Pricing') }}</h3>
-                                <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Set pricing and dealer visibility.') }}</p>
+                        <section class="bg-white rounded-2xl border border-slate-200 shadow-sm">
+                            <div class="px-6 py-4 border-b border-slate-200">
+                                <h3 class="text-sm font-semibold text-slate-900">{{ __('Pricing') }}</h3>
+                                <p class="text-xs text-slate-500">{{ __('Set pricing and dealer visibility.') }}</p>
                             </div>
                             <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Price') }} <span class="text-rose-500">*</span></label>
+                                    <label class="block text-sm font-medium text-slate-700">{{ __('Price') }} <span class="text-rose-500">*</span></label>
                                     <div class="relative">
                                         <input type="number" step="0.01" name="price" value="{{ old('price') }}" class="{{ $inputBase }} pr-16 @error('price') {{ $inputError }} @enderror" required @error('price') aria-invalid="true" @enderror>
-                                        <span class="absolute inset-y-0 right-3 flex items-center text-xs text-slate-500 dark:text-slate-400">{{ $currencyLabel }}</span>
+                                        <span class="absolute inset-y-0 right-3 flex items-center text-xs text-slate-500">{{ $currencyLabel }}</span>
                                     </div>
                                     @error('price')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Dealer Price') }}</label>
+                                    <label class="block text-sm font-medium text-slate-700">{{ __('Dealer Price') }}</label>
                                     <div class="relative">
                                         <input type="number" step="0.01" name="dealer_price" value="{{ old('dealer_price') }}" class="{{ $inputBase }} pr-16 @error('dealer_price') {{ $inputError }} @enderror" placeholder="{{ __('Optional') }}" @error('dealer_price') aria-invalid="true" @enderror>
-                                        <span class="absolute inset-y-0 right-3 flex items-center text-xs text-slate-500 dark:text-slate-400">{{ $currencyLabel }}</span>
+                                        <span class="absolute inset-y-0 right-3 flex items-center text-xs text-slate-500">{{ $currencyLabel }}</span>
                                     </div>
-                                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">{{ __('Leave empty to use dealer discount rules.') }}</p>
+                                    <p class="text-xs text-slate-500 mt-1">{{ __('Leave empty to use dealer discount rules.') }}</p>
                                     @error('dealer_price')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
@@ -175,81 +175,81 @@
                             </div>
                         </section>
 
-                        <section class="bg-white rounded-2xl border border-slate-200 shadow-sm dark:bg-slate-900 dark:border-slate-800">
-                            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800">
-                                <h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100">{{ __('Inventory') }}</h3>
-                                <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Track stock levels and alert thresholds.') }}</p>
+                        <section class="bg-white rounded-2xl border border-slate-200 shadow-sm">
+                            <div class="px-6 py-4 border-b border-slate-200">
+                                <h3 class="text-sm font-semibold text-slate-900">{{ __('Inventory') }}</h3>
+                                <p class="text-xs text-slate-500">{{ __('Track stock levels and alert thresholds.') }}</p>
                             </div>
                             <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Stock Quantity') }} <span class="text-rose-500">*</span></label>
+                                    <label class="block text-sm font-medium text-slate-700">{{ __('Stock Quantity') }} <span class="text-rose-500">*</span></label>
                                     <input type="number" name="stock_quantity" value="{{ old('stock_quantity') }}" class="{{ $inputBase }} @error('stock_quantity') {{ $inputError }} @enderror" required @error('stock_quantity') aria-invalid="true" @enderror>
                                     @error('stock_quantity')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
-                                <div class="flex items-center gap-3 rounded-lg border border-dashed border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400">
+                                <div class="flex items-center gap-3 rounded-lg border border-dashed border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
                                     <i class="fas fa-triangle-exclamation text-accent"></i>
                                     {{ __('Low stock alerts trigger at :count units.', ['count' => $lowStockThreshold]) }}
                                 </div>
                             </div>
                         </section>
 
-                        <section class="bg-white rounded-2xl border border-slate-200 shadow-sm dark:bg-slate-900 dark:border-slate-800">
-                            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800">
-                                <h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100">{{ __('Media') }}</h3>
-                                <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Upload a product image for the storefront.') }}</p>
+                        <section class="bg-white rounded-2xl border border-slate-200 shadow-sm">
+                            <div class="px-6 py-4 border-b border-slate-200">
+                                <h3 class="text-sm font-semibold text-slate-900">{{ __('Media') }}</h3>
+                                <p class="text-xs text-slate-500">{{ __('Upload a product image for the storefront.') }}</p>
                             </div>
                             <div class="p-6">
-                                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">{{ __('Product Image') }}</label>
+                                <label class="block text-sm font-medium text-slate-700 mb-2">{{ __('Product Image') }}</label>
                                 <div class="flex flex-col gap-4">
-                                    <label class="group flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 px-6 py-6 text-center text-sm text-slate-500 transition hover:border-info hover:text-info dark:border-slate-700 dark:bg-slate-950 dark:text-slate-400 dark:hover:border-info">
+                                    <label class="group flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 px-6 py-6 text-center text-sm text-slate-500 transition hover:border-info hover:text-info dark:border-slate-700 dark:hover:border-info">
                                         <input id="productImage" type="file" name="image" accept="image/*" class="hidden">
                                         <div class="flex flex-col items-center gap-2">
-                                            <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-white text-slate-600 shadow-sm dark:bg-slate-900 dark:text-slate-300">
+                                            <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-white text-slate-600 shadow-sm">
                                                 <i class="fas fa-cloud-upload-alt text-lg"></i>
                                             </span>
                                             <span class="font-medium">{{ __('Drag & drop or click to upload') }}</span>
                                             <span class="text-xs text-muted">{{ __('PNG, JPG up to 2MB') }}</span>
                                         </div>
                                     </label>
-                                    <div id="productImagePreview" class="hidden items-center gap-4 rounded-xl border border-slate-200 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
+                                    <div id="productImagePreview" class="hidden items-center gap-4 rounded-xl border border-slate-200 bg-white p-4">
                                         <img id="productImagePreviewImg" src="" alt="{{ __('Preview') }}" class="h-20 w-20 rounded-lg object-cover">
                                         <div>
-                                            <p class="text-sm font-medium text-slate-900 dark:text-slate-100">{{ __('Preview') }}</p>
-                                            <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Image ready for upload.') }}</p>
+                                            <p class="text-sm font-medium text-slate-900">{{ __('Preview') }}</p>
+                                            <p class="text-xs text-slate-500">{{ __('Image ready for upload.') }}</p>
                                         </div>
                                     </div>
-                                    <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950">
-                                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Gallery Images') }}</label>
-                                        <input type="file" name="gallery_images[]" accept="image/*" multiple class="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
-                                        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Upload multiple images. The main product image stays primary by default.') }}</p>
+                                    <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                                        <label class="block text-sm font-medium text-slate-700">{{ __('Gallery Images') }}</label>
+                                        <input type="file" name="gallery_images[]" accept="image/*" multiple class="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">
+                                        <p class="mt-1 text-xs text-slate-500">{{ __('Upload multiple images. The main product image stays primary by default.') }}</p>
                                     </div>
                                 </div>
                             </div>
                         </section>
 
-                        <section class="bg-white rounded-2xl border border-slate-200 shadow-sm dark:bg-slate-900 dark:border-slate-800">
-                            <div class="px-6 py-4 border-b border-slate-200 dark:border-slate-800">
-                                <h3 class="text-sm font-semibold text-slate-900 dark:text-slate-100">{{ __('Status') }}</h3>
-                                <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Control product visibility.') }}</p>
+                        <section class="bg-white rounded-2xl border border-slate-200 shadow-sm">
+                            <div class="px-6 py-4 border-b border-slate-200">
+                                <h3 class="text-sm font-semibold text-slate-900">{{ __('Status') }}</h3>
+                                <p class="text-xs text-slate-500">{{ __('Control product visibility.') }}</p>
                             </div>
                             <div class="p-6">
                                 <label class="inline-flex items-center gap-4">
                                     <input type="checkbox" name="is_active" value="1" class="sr-only peer" {{ old('is_active', true) ? 'checked' : '' }}>
-                                    <span class="relative h-6 w-11 rounded-full bg-slate-200 transition peer-checked:bg-info peer-focus:ring-2 peer-focus:ring-accent/40 dark:bg-slate-800">
+                                    <span class="relative h-6 w-11 rounded-full bg-slate-200 transition peer-checked:bg-info peer-focus:ring-2 peer-focus:ring-accent/40">
                                         <span class="absolute left-1 top-1 h-4 w-4 rounded-full bg-white transition peer-checked:translate-x-5"></span>
                                     </span>
-                                    <span class="text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Active') }}</span>
+                                    <span class="text-sm font-medium text-slate-700">{{ __('Active') }}</span>
                                 </label>
                             </div>
                         </section>
                     </div>
 
                     <aside class="space-y-6">
-                        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                            <h3 class="text-sm font-semibold text-slate-700 dark:text-slate-300 uppercase tracking-wide">{{ __('Quick Tips') }}</h3>
-                            <ul class="mt-4 space-y-3 text-sm text-slate-500 dark:text-slate-400">
+                        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                            <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wide">{{ __('Quick Tips') }}</h3>
+                            <ul class="mt-4 space-y-3 text-sm text-slate-500">
                                 <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5"></i>{{ __('Use clear product names for easier search.') }}</li>
                                 <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5"></i>{{ __('Set dealer pricing to override discount rules.') }}</li>
                                 <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5"></i>{{ __('Upload square images for the best fit.') }}</li>
@@ -258,12 +258,12 @@
                     </aside>
                 </div>
 
-                <div class="sticky bottom-0 z-10 -mx-4 sm:-mx-6 lg:-mx-8 border-t border-slate-200 bg-white/90 px-4 py-4 backdrop-blur dark:border-slate-800 dark:bg-slate-900/80">
+                <div class="sticky bottom-0 z-10 -mx-4 sm:-mx-6 lg:-mx-8 border-t border-slate-200 bg-white/90 px-4 py-4 backdrop-blur dark:bg-slate-900/80">
                     <div class="max-w-6xl mx-auto flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                        <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Make sure all required fields are completed before saving.') }}</p>
+                        <p class="text-xs text-slate-500">{{ __('Make sure all required fields are completed before saving.') }}</p>
                         <div class="flex items-center gap-3">
-                            <a href="{{ $returnTo }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Cancel') }}</a>
-                            <button id="productSubmit" type="submit" class="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-100">
+                            <a href="{{ $returnTo }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 dark:hover:bg-slate-800">{{ __('Cancel') }}</a>
+                            <button id="productSubmit" type="submit" class="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 dark:text-slate-900 dark:hover:bg-slate-100">
                                 <span class="hidden h-4 w-4 animate-spin rounded-full border-2 border-white/60 border-t-white dark:border-slate-900/60 dark:border-t-slate-900" data-spinner></span>
                                 <span data-label>{{ __('Save Product') }}</span>
                             </button>

@@ -7,10 +7,10 @@
                     <span class="h-1 w-1 rounded-full bg-slate-300 dark:bg-slate-600"></span>
                     <span>OTPIQ</span>
                 </div>
-                <h2 class="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{{ $whatsappVisible ? __('SMS & WhatsApp Center') : __('SMS Center') }}</h2>
-                <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('Monitor verification delivery, provider readiness and phone coverage') }}</p>
+                <h2 class="mt-1 text-2xl font-bold text-slate-900">{{ $whatsappVisible ? __('SMS & WhatsApp Center') : __('SMS Center') }}</h2>
+                <p class="mt-1 text-sm text-slate-500">{{ __('Monitor verification delivery, provider readiness and phone coverage') }}</p>
             </div>
-            <a href="{{ route('admin.email.index') }}" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:border-primary/30 hover:text-primary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-info/40 dark:hover:text-white">
+            <a href="{{ route('admin.email.index') }}" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:border-primary/30 hover:text-primary dark:hover:border-info/40 dark:hover:text-white">
                 <i class="fas fa-envelope-open-text text-xs" aria-hidden="true"></i>
                 {{ __('Email Center') }}
             </a>
@@ -20,13 +20,13 @@
     <div class="py-8">
         <div class="mx-auto max-w-7xl space-y-5 px-4 sm:px-6 lg:px-8">
             @if (session('success'))
-                <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-300">
+                <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-700">
                     <i class="fas fa-circle-check mr-1.5" aria-hidden="true"></i>{{ session('success') }}
                 </div>
             @endif
 
             @if ($errors->any())
-                <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700 dark:border-rose-900/60 dark:bg-rose-950/30 dark:text-rose-300">
+                <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700">
                     <i class="fas fa-triangle-exclamation mr-1.5" aria-hidden="true"></i>{{ $errors->first() }}
                 </div>
             @endif
@@ -54,24 +54,24 @@
                             default => 'bg-info text-info dark:bg-info/10 dark:text-info',
                         };
                     @endphp
-                    <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                    <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                         <div class="flex items-center justify-between gap-3">
                             <span class="inline-flex h-9 w-9 items-center justify-center rounded-xl {{ $tone }}">
                                 <i class="{{ $card['icon'] }} text-sm" aria-hidden="true"></i>
                             </span>
-                            <span class="font-mono text-2xl font-bold tabular-nums text-slate-900 dark:text-white">{{ number_format($card['value']) }}</span>
+                            <span class="font-mono text-2xl font-bold tabular-nums text-slate-900">{{ number_format($card['value']) }}</span>
                         </div>
-                        <p class="mt-3 text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ $card['label'] }}</p>
+                        <p class="mt-3 text-xs font-bold uppercase tracking-wider text-slate-500">{{ $card['label'] }}</p>
                     </div>
                 @endforeach
             </section>
 
             <div class="grid gap-5 xl:grid-cols-[minmax(0,1.35fr)_minmax(340px,.65fr)]">
                 <div class="space-y-5">
-                    <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                        <div class="border-b border-slate-200 px-5 py-4 dark:border-slate-800">
+                    <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                        <div class="border-b border-slate-200 px-5 py-4">
                             <p class="text-xs font-bold uppercase tracking-[0.2em] text-muted">{{ __('Delivery channels') }}</p>
-                            <h3 class="mt-1 text-lg font-bold text-slate-900 dark:text-white">{{ __('Provider health') }}</h3>
+                            <h3 class="mt-1 text-lg font-bold text-slate-900">{{ __('Provider health') }}</h3>
                         </div>
                         <div class="grid gap-4 p-5 {{ $whatsappVisible ? 'md:grid-cols-2' : '' }}">
                             @foreach ($channels as $key => $channel)
@@ -103,14 +103,14 @@
                                             {{ $channel['status'] }}
                                         </span>
                                     </div>
-                                    <h4 class="mt-5 text-xl font-bold text-slate-900 dark:text-white">{{ $channel['label'] }}</h4>
-                                    <p class="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">
+                                    <h4 class="mt-5 text-xl font-bold text-slate-900">{{ $channel['label'] }}</h4>
+                                    <p class="mt-1 text-sm leading-6 text-slate-500">
                                         {{ $key === 'whatsapp' ? __('Approved template verification through the configured WhatsApp Business account') : __('Transactional verification codes delivered through the OTPIQ SMS API') }}
                                     </p>
                                     @if ($key === 'whatsapp' && $configuration['template_name'] !== '')
                                         <div class="mt-4 rounded-xl border border-white/70 bg-white/70 px-3 py-2 dark:border-white/5 dark:bg-slate-900/60">
                                             <p class="text-[10px] font-bold uppercase tracking-widest text-muted">{{ __('Template') }}</p>
-                                            <p class="mt-0.5 truncate font-mono text-xs font-semibold text-slate-700 dark:text-slate-200">
+                                            <p class="mt-0.5 truncate font-mono text-xs font-semibold text-slate-700">
                                                 {{ $configuration['template_name'] }}
                                                 <span class="ml-1 font-sans text-[10px] font-bold uppercase text-muted">{{ $configuration['template_language'] }}</span>
                                             </p>
@@ -123,7 +123,7 @@
                                         </p>
                                     @endif
                                     @if ($state !== 'ready' && $channel['missing'] !== [])
-                                        <p class="mt-3 text-xs leading-5 text-slate-500 dark:text-slate-400">
+                                        <p class="mt-3 text-xs leading-5 text-slate-500">
                                             {{ __('Missing') }}: {{ implode(' · ', $channel['missing']) }}
                                         </p>
                                     @endif
@@ -132,10 +132,10 @@
                         </div>
                     </section>
 
-                    <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                        <div class="border-b border-slate-200 px-5 py-4 dark:border-slate-800">
+                    <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+                        <div class="border-b border-slate-200 px-5 py-4">
                             <p class="text-xs font-bold uppercase tracking-[0.2em] text-muted">{{ __('Configuration') }}</p>
-                            <h3 class="mt-1 text-lg font-bold text-slate-900 dark:text-white">{{ __('Readiness checks') }}</h3>
+                            <h3 class="mt-1 text-lg font-bold text-slate-900">{{ __('Readiness checks') }}</h3>
                         </div>
                         <div class="grid gap-x-6 p-5 sm:grid-cols-2">
                             @php
@@ -155,11 +155,11 @@
                                 }
                             @endphp
                             @foreach ($configurationChecks as $label => $ready)
-                                <div class="flex items-center gap-3 border-b border-slate-100 py-3 last:border-0 dark:border-slate-800">
+                                <div class="flex items-center gap-3 border-b border-slate-100 py-3 last:border-0">
                                     <span class="inline-flex h-7 w-7 items-center justify-center rounded-full {{ $ready ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-300' : 'bg-slate-100 text-muted dark:bg-white/5 dark:text-slate-500' }}">
                                         <i class="fas {{ $ready ? 'fa-check' : 'fa-minus' }} text-[10px]" aria-hidden="true"></i>
                                     </span>
-                                    <span class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                                    <span class="text-sm font-semibold text-slate-700">
                                         {{ $label }}@if ($label === __('Template language') && $ready) <span class="font-mono text-xs text-muted">({{ $configuration['template_language'] }})</span>@endif
                                     </span>
                                     <span class="ml-auto text-[10px] font-bold uppercase tracking-wider {{ $ready ? 'text-emerald-600 dark:text-emerald-300' : 'text-muted' }}">{{ $ready ? __('Ready') : __('Missing') }}</span>
@@ -175,11 +175,11 @@
                                         default => 'missing',
                                     };
                                 @endphp
-                                <div class="flex items-center gap-3 border-b border-slate-100 py-3 last:border-0 dark:border-slate-800 sm:col-span-2">
+                                <div class="flex items-center gap-3 border-b border-slate-100 py-3 last:border-0 sm:col-span-2">
                                     <span class="inline-flex h-7 w-7 items-center justify-center rounded-full {{ $templateCheckState === 'ready' ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-300' : ($templateCheckState === 'missing' ? 'bg-amber-100 text-amber-600 dark:bg-amber-500/10 dark:text-amber-300' : 'bg-slate-100 text-muted dark:bg-white/5 dark:text-slate-500') }}">
                                         <i class="fas {{ $templateCheckState === 'ready' ? 'fa-check' : ($templateCheckState === 'missing' ? 'fa-triangle-exclamation' : 'fa-question') }} text-[10px]" aria-hidden="true"></i>
                                     </span>
-                                    <span class="text-sm font-semibold text-slate-700 dark:text-slate-200">
+                                    <span class="text-sm font-semibold text-slate-700">
                                         {{ __('Template approved on OTPiQ') }}
                                         @if ($templateCheckState === 'ready' && $templateStatus['language_matches'] === false)
                                             <span class="text-xs font-medium text-accent dark:text-accent">— {{ __('template language differs from the configured value') }}</span>
@@ -194,23 +194,23 @@
                     </section>
                 </div>
 
-                <aside class="h-fit rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <div class="border-b border-slate-200 px-5 py-4 dark:border-slate-800">
+                <aside class="h-fit rounded-2xl border border-slate-200 bg-white shadow-sm">
+                    <div class="border-b border-slate-200 px-5 py-4">
                         <div class="flex items-center gap-3">
                             <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary dark:bg-info/10 dark:text-info">
                                 <i class="fas fa-flask" aria-hidden="true"></i>
                             </span>
                             <div>
                                 <p class="text-xs font-bold uppercase tracking-[0.2em] text-muted">{{ __('Diagnostics') }}</p>
-                                <h3 class="text-lg font-bold text-slate-900 dark:text-white">{{ __('Send test OTP') }}</h3>
+                                <h3 class="text-lg font-bold text-slate-900">{{ __('Send test OTP') }}</h3>
                             </div>
                         </div>
                     </div>
                     <form method="POST" action="{{ route('admin.messaging.test') }}" class="space-y-5 p-5" data-loading-form data-loading-button-text="{{ __('Sending') }}">
                         @csrf
                         <div>
-                            <label for="channel" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ __('Channel') }}</label>
-                            <select id="channel" name="channel" class="w-full rounded-xl border-slate-300 bg-white text-sm font-semibold text-slate-900 focus:border-primary focus:ring-accent dark:border-slate-700 dark:bg-slate-950 dark:text-white">
+                            <label for="channel" class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">{{ __('Channel') }}</label>
+                            <select id="channel" name="channel" class="w-full rounded-xl border-slate-300 bg-white text-sm font-semibold text-slate-900 focus:border-primary focus:ring-accent dark:border-slate-700">
                                 <option value="sms" @selected(old('channel', 'sms') === 'sms') @disabled(! $channels['sms']['available'])>SMS · {{ $channels['sms']['status'] }}</option>
                                 @if ($whatsappVisible)
                                     <option value="whatsapp" @selected(old('channel') === 'whatsapp' && $channels['whatsapp']['available']) @disabled(! $channels['whatsapp']['available'])>WhatsApp · {{ $channels['whatsapp']['status'] }}</option>
@@ -221,16 +221,16 @@
                                     {{ __('WhatsApp needs') }}: {{ implode(' · ', $channels['whatsapp']['missing']) }}
                                 </p>
                             @endif
-                            @error('channel')<p class="mt-1.5 text-xs font-semibold text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
+                            @error('channel')<p class="mt-1.5 text-xs font-semibold text-rose-600">{{ $message }}</p>@enderror
                         </div>
 
                         <div>
-                            <p class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ __('Iraq phone number') }}</p>
-                            <div class="rounded-xl border border-slate-300 bg-slate-50 px-3.5 py-3 font-mono text-sm font-bold text-slate-700 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200" dir="ltr">
+                            <p class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-500">{{ __('Iraq phone number') }}</p>
+                            <div class="rounded-xl border border-slate-300 bg-slate-50 px-3.5 py-3 font-mono text-sm font-bold text-slate-700 dark:border-slate-700" dir="ltr">
                                 {{ $testPhone }}
                             </div>
                             <p class="mt-1.5 text-xs leading-5 text-muted">{{ __('A random verification code will be generated and sent once') }}</p>
-                            @error('test_delivery')<p class="mt-1.5 text-xs font-semibold text-rose-600 dark:text-rose-400">{{ $message }}</p>@enderror
+                            @error('test_delivery')<p class="mt-1.5 text-xs font-semibold text-rose-600">{{ $message }}</p>@enderror
                         </div>
 
                         <button type="submit" @disabled(! $testPhoneAvailable) class="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-primary px-4 text-sm font-bold text-white shadow-lg shadow-primary/20 transition hover:bg-primary-hover disabled:cursor-not-allowed disabled:opacity-60" data-loading-button>
@@ -238,7 +238,7 @@
                             <span data-loading-label>{{ __('Send test code') }}</span>
                         </button>
 
-                        <div class="rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-3 text-xs leading-5 text-amber-800 dark:border-amber-900/60 dark:bg-amber-950/20 dark:text-amber-200">
+                        <div class="rounded-xl border border-amber-200 bg-amber-50 px-3.5 py-3 text-xs leading-5 text-amber-800 dark:text-amber-200">
                             <i class="fas fa-shield-halved mr-1" aria-hidden="true"></i>
                             {{ __('Test codes are not stored, displayed or written to application logs') }}
                         </div>

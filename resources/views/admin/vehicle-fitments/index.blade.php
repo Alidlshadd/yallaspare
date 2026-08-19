@@ -258,17 +258,17 @@
 
         {{-- ─────────────── Flash + errors ─────────────── --}}
         @if(session('success'))
-            <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300">
+            <div class="rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
                 {{ session('success') }}
             </div>
         @endif
         @if(session('error'))
-            <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300">
+            <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
                 {{ session('error') }}
             </div>
         @endif
         @if($errors->any())
-            <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300">
+            <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
                 {{ $errors->first() }}
             </div>
         @endif
@@ -313,33 +313,33 @@
             </div>
 
             {{-- Mini stats + brand distribution --}}
-            <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-5 bento-shadow flex flex-col justify-between gap-4">
+            <div class="bg-white border border-slate-200/70 rounded-2xl p-5 bento-shadow flex flex-col justify-between gap-4">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="flex items-center gap-3">
                         <span class="w-10 h-10 rounded-xl grid place-items-center bg-navy-deep text-accent shrink-0">
                             <i class="fas fa-car-side text-sm"></i>
                         </span>
                         <div>
-                            <div class="text-xl font-bold text-slate-900 dark:text-white leading-none">{{ number_format((int) $stats['brands']) }}</div>
-                            <div class="text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mt-1">{{ __('Brands') }}</div>
+                            <div class="text-xl font-bold text-slate-900 leading-none">{{ number_format((int) $stats['brands']) }}</div>
+                            <div class="text-[10.5px] font-bold uppercase tracking-widest text-slate-500 mt-1">{{ __('Brands') }}</div>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-xl grid place-items-center bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-400 shrink-0">
+                        <span class="w-10 h-10 rounded-xl grid place-items-center bg-emerald-50 text-emerald-600 shrink-0">
                             <i class="fas fa-layer-group text-sm"></i>
                         </span>
                         <div>
-                            <div class="text-xl font-bold text-slate-900 dark:text-white leading-none">{{ number_format((int) $stats['models']) }}</div>
-                            <div class="text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mt-1">{{ __('Models') }}</div>
+                            <div class="text-xl font-bold text-slate-900 leading-none">{{ number_format((int) $stats['models']) }}</div>
+                            <div class="text-[10.5px] font-bold uppercase tracking-widest text-slate-500 mt-1">{{ __('Models') }}</div>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-xl grid place-items-center bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-400 shrink-0">
+                        <span class="w-10 h-10 rounded-xl grid place-items-center bg-amber-50 text-amber-600 shrink-0">
                             <i class="fas fa-link text-sm"></i>
                         </span>
                         <div>
-                            <div class="text-xl font-bold text-slate-900 dark:text-white leading-none">{{ number_format((int) $stats['fitments']) }}</div>
-                            <div class="text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mt-1">{{ __('Fitment Rules') }}</div>
+                            <div class="text-xl font-bold text-slate-900 leading-none">{{ number_format((int) $stats['fitments']) }}</div>
+                            <div class="text-[10.5px] font-bold uppercase tracking-widest text-slate-500 mt-1">{{ __('Fitment Rules') }}</div>
                         </div>
                     </div>
                 </div>
@@ -363,18 +363,18 @@
         </div>
 
         {{-- ═════════════ Vehicle data (brand → family → variant) ═════════════ --}}
-        <div class="overflow-hidden rounded-2xl border border-slate-200/70 bg-white bento-shadow dark:border-slate-800 dark:bg-slate-900">
-            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-5 py-4 dark:border-slate-800">
+        <div class="overflow-hidden rounded-2xl border border-slate-200/70 bg-white bento-shadow">
+            <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 px-5 py-4">
                 <div>
-                    <h2 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Vehicle Data') }}</h2>
-                    <p class="mt-0.5 text-[11.5px] text-slate-500 dark:text-slate-400">{{ __('Organize compatibility as brand, model family, and variant.') }}</p>
+                    <h2 class="text-sm font-bold text-slate-900">{{ __('Vehicle Data') }}</h2>
+                    <p class="mt-0.5 text-[11.5px] text-slate-500">{{ __('Organize compatibility as brand, model family, and variant.') }}</p>
                 </div>
                 <span class="vf-pill good">{{ number_format((int) $stats['brands']) }} {{ __('brands') }} · {{ number_format((int) $stats['families']) }} {{ __('families') }} · {{ number_format((int) $stats['models']) }} {{ __('variants') }}</span>
             </div>
 
             <div class="grid gap-5 p-5 xl:grid-cols-[350px_minmax(0,1fr)]">
                 <div class="space-y-4">
-                    <form method="POST" action="{{ route('admin.vehicle-fitments.brands.store') }}" class="space-y-2 rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-950/60">
+                    <form method="POST" action="{{ route('admin.vehicle-fitments.brands.store') }}" class="space-y-2 rounded-2xl border border-slate-200 bg-slate-50 p-4">
                         @csrf
                         <label class="vf-lbl" for="vf-new-brand">{{ __('Add Vehicle Brand') }}</label>
                         <input id="vf-new-brand" name="name" required maxlength="120" placeholder="{{ __('SSANGYONG / KGM') }}" class="vf-inp">
@@ -384,7 +384,7 @@
                     <div class="space-y-3 rounded-2xl border border-amber-200/70 bg-amber-50/40 p-4 dark:border-amber-500/20 dark:bg-amber-500/5">
                         <div>
                             <p class="vf-lbl">{{ __('Add Vehicle Variant') }}</p>
-                            <p class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('Names, production years, engines and an image are set on the variant page.') }}</p>
+                            <p class="text-[11px] text-slate-500">{{ __('Names, production years, engines and an image are set on the variant page.') }}</p>
                         </div>
                         <a href="{{ route('admin.vehicle-fitments.models.create') }}" class="vf-btn gold w-full">
                             <i class="fas fa-plus text-[10px]"></i> {{ __('Create Variant') }}
@@ -394,7 +394,7 @@
 
                 <div class="max-h-[760px] space-y-4 overflow-y-auto pe-1">
                     @forelse($brands as $brand)
-                        <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-950/40">
+                        <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
                             <div class="flex items-center justify-between gap-3 bg-navy-deep px-4 py-3 text-white dark:bg-slate-950">
                                 <span class="flex items-center gap-2.5 text-sm font-bold tracking-wide"><i class="fas fa-car-side text-accent"></i>{{ $brand->name }}</span>
                                 <span class="font-mono text-[10px] text-slate-300">{{ $brand->modelFamilies->count() }} {{ __('families') }}</span>
@@ -404,16 +404,16 @@
                                     @php
                                         $familyFitments = $family->variants->sum('fitments_count');
                                     @endphp
-                                    <details class="group overflow-hidden rounded-xl border border-slate-200 bg-slate-50 open:bg-white dark:border-slate-700 dark:bg-slate-900/70 dark:open:bg-slate-900" @if($loop->first) open @endif>
+                                    <details class="group overflow-hidden rounded-xl border border-slate-200 bg-slate-50 open:bg-white dark:open:bg-slate-900" @if($loop->first) open @endif>
                                         <summary class="flex cursor-pointer list-none items-center justify-between gap-3 px-4 py-3 transition hover:bg-white dark:hover:bg-slate-800/70">
                                             <span>
-                                                <span class="block text-[12px] font-bold uppercase tracking-[.12em] text-slate-900 dark:text-white">{{ $family->localizedName() }}</span>
-                                                <span class="mt-1 block font-mono text-[10px] text-slate-500 dark:text-slate-400">{{ $family->variants->count() }} {{ __('variants') }} · {{ $familyFitments }} {{ __('fitment rules') }}</span>
+                                                <span class="block text-[12px] font-bold uppercase tracking-[.12em] text-slate-900">{{ $family->localizedName() }}</span>
+                                                <span class="mt-1 block font-mono text-[10px] text-slate-500">{{ $family->variants->count() }} {{ __('variants') }} · {{ $familyFitments }} {{ __('fitment rules') }}</span>
                                             </span>
                                             <i class="fas fa-chevron-down text-[10px] text-accent transition duration-200 group-open:rotate-180"></i>
                                         </summary>
-                                        <div class="grid gap-3 border-t border-slate-200 p-3 dark:border-slate-700 md:grid-cols-2 2xl:grid-cols-3">
-                                            <form method="POST" action="{{ route('admin.vehicle-fitments.families.update', $family) }}" class="grid gap-2 rounded-xl border border-dashed border-amber-300 bg-amber-50/60 p-3 dark:border-amber-500/30 dark:bg-amber-500/5 md:col-span-2 2xl:col-span-3 sm:grid-cols-[1fr_1fr_1fr_auto] sm:items-end">
+                                        <div class="grid gap-3 border-t border-slate-200 p-3 md:grid-cols-2 2xl:grid-cols-3">
+                                            <form method="POST" action="{{ route('admin.vehicle-fitments.families.update', $family) }}" class="grid gap-2 rounded-xl border border-dashed border-amber-300 bg-amber-50/60 p-3 dark:bg-amber-500/5 md:col-span-2 2xl:col-span-3 sm:grid-cols-[1fr_1fr_1fr_auto] sm:items-end">
                                                 @csrf @method('PATCH')
                                                 <label class="block"><span class="vf-lbl">{{ __('Family Name — English') }}</span><input name="name_en" value="{{ $family->name_en ?: $family->name }}" required maxlength="120" class="vf-inp"></label>
                                                 <label class="block"><span class="vf-lbl">{{ __('Family Name — Arabic') }}</span><input name="name_ar" value="{{ $family->name_ar }}" maxlength="120" dir="rtl" class="vf-inp"></label>
@@ -421,16 +421,16 @@
                                                 <button class="vf-btn primary sm">{{ __('Save Family') }}</button>
                                             </form>
                                             @forelse($family->variants as $model)
-                                                <article class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-950">
+                                                <article class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm">
                                                     <div>
                                                         <div class="flex gap-3">
                                                             @if($model->image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($model->image_path))
-                                                                <img src="{{ asset('storage/'.ltrim($model->image_path, '/')) }}" alt="{{ $model->localizedName() }}" class="h-16 w-20 rounded-lg border border-slate-200 bg-slate-50 object-cover dark:border-slate-700 dark:bg-slate-900">
+                                                                <img src="{{ asset('storage/'.ltrim($model->image_path, '/')) }}" alt="{{ $model->localizedName() }}" class="h-16 w-20 rounded-lg border border-slate-200 bg-slate-50 object-cover">
                                                             @else
-                                                                <span class="grid h-16 w-20 shrink-0 place-items-center rounded-lg border border-dashed border-slate-300 bg-slate-50 text-muted dark:border-slate-700 dark:bg-slate-900"><i class="fas fa-car-side text-xl"></i></span>
+                                                                <span class="grid h-16 w-20 shrink-0 place-items-center rounded-lg border border-dashed border-slate-300 bg-slate-50 text-muted dark:border-slate-700"><i class="fas fa-car-side text-xl"></i></span>
                                                             @endif
                                                             <div class="min-w-0 flex-1">
-                                                                <h4 class="truncate text-sm font-bold text-slate-900 dark:text-white">{{ $model->localizedName() }}</h4>
+                                                                <h4 class="truncate text-sm font-bold text-slate-900">{{ $model->localizedName() }}</h4>
                                                                 <p class="mt-1 font-mono text-[10px] text-slate-500">{{ $model->production_start_year || $model->production_end_year ? (($model->production_start_year ?: '…').'–'.($model->production_end_year ?: __('Present'))) : __('Years not specified') }}</p>
                                                                 <div class="mt-2 flex flex-wrap gap-1">
                                                                     @forelse($model->engineTypes as $engineType)
@@ -441,7 +441,7 @@
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                        <div class="mt-3 flex justify-end gap-1.5 border-t border-slate-100 pt-2.5 dark:border-slate-800">
+                                                        <div class="mt-3 flex justify-end gap-1.5 border-t border-slate-100 pt-2.5">
                                                             <a href="{{ route('admin.vehicle-fitments.models.edit', $model) }}" class="vf-btn sm"><i class="fas fa-pen text-[9px]"></i> {{ __('Edit') }}</a>
                                                             <form method="POST" action="{{ route('admin.vehicle-fitments.models.destroy', $model) }}" data-danger-confirm data-danger-title="{{ __('Delete Vehicle Variant') }}" data-danger-description="{{ __('Variants used by product fitments cannot be deleted.') }}">
                                                                 @csrf @method('DELETE')
@@ -461,7 +461,7 @@
                             </div>
                         </section>
                     @empty
-                        <div class="rounded-xl border border-dashed border-slate-200 px-4 py-8 text-center text-sm text-slate-500 dark:border-slate-700">{{ __('No vehicle brands yet.') }}</div>
+                        <div class="rounded-xl border border-dashed border-slate-200 px-4 py-8 text-center text-sm text-slate-500">{{ __('No vehicle brands yet.') }}</div>
                     @endforelse
                 </div>
             </div>
@@ -469,15 +469,15 @@
 
         {{-- ═════════════ Add fitment panel (collapsible) ═════════════ --}}
         <div id="vf-fitment-panel" @if(!$openFitmentPanel) hidden @endif
-             class="bg-white dark:bg-slate-900 border border-accent/60 dark:border-accent/30 rounded-2xl bento-shadow overflow-hidden">
-            <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-slate-100 dark:border-slate-800 bg-gradient-to-b from-accent/60 to-white dark:from-accent/5 dark:to-slate-900">
+             class="bg-white border border-accent/60 dark:border-accent/30 rounded-2xl bento-shadow overflow-hidden">
+            <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-slate-100 bg-gradient-to-b from-accent/60 to-white dark:from-accent/5 dark:to-slate-900">
                 <div class="flex items-center gap-3">
                     <span class="w-9 h-9 rounded-xl bg-navy-deep text-accent grid place-items-center dark:bg-accent dark:text-navy-deep">
                         <i class="fas fa-link text-xs"></i>
                     </span>
                     <div>
-                        <h2 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Add Product Fitment') }}</h2>
-                        <p class="text-[11.5px] text-slate-500 dark:text-slate-400 mt-0.5">{{ __('Connect one product to multiple vehicles and save every fitment at once.') }}</p>
+                        <h2 class="text-sm font-bold text-slate-900">{{ __('Add Product Fitment') }}</h2>
+                        <p class="text-[11.5px] text-slate-500 mt-0.5">{{ __('Connect one product to multiple vehicles and save every fitment at once.') }}</p>
                     </div>
                 </div>
                 <button type="button" data-vf-close-fitment class="vf-btn sm" aria-label="{{ __('Close') }}">
@@ -486,7 +486,7 @@
             </div>
 
             @if($products->isEmpty())
-                <div class="m-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-200">
+                <div class="m-5 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800 dark:text-amber-200">
                     {{ __('No active products are available for new fitments.') }}
                 </div>
             @endif
@@ -561,27 +561,27 @@
                 </div>
 
                 {{-- Live preview plate --}}
-                <aside class="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 lg:sticky lg:top-24 lg:self-start bento-shadow">
+                <aside class="rounded-2xl overflow-hidden border border-slate-200 lg:sticky lg:top-24 lg:self-start bento-shadow">
                     <div class="flex items-center justify-between px-4 py-3 text-white" style="background: linear-gradient(135deg, #04041f, #070740);">
                         <span class="font-mono text-[10px] font-bold uppercase tracking-[0.22em] text-accent">{{ __('Fitment Preview') }}</span>
                         <span class="text-[10px] font-bold text-emerald-300" data-admin-preview-count>{{ count($fitmentRows) }} {{ __('vehicles') }}</span>
                     </div>
-                    <div class="p-4 space-y-3 bg-white dark:bg-slate-900">
+                    <div class="p-4 space-y-3 bg-white">
                         <div class="flex gap-3">
                             <span class="w-[74px] shrink-0 text-[10px] font-bold uppercase tracking-widest text-muted pt-0.5">{{ __('Product') }}</span>
-                            <span class="text-[13px] font-bold text-slate-900 dark:text-slate-100" data-admin-preview-product>{{ __('Select product') }}</span>
+                            <span class="text-[13px] font-bold text-slate-900" data-admin-preview-product>{{ __('Select product') }}</span>
                         </div>
                         <div class="flex gap-3">
                             <span class="w-[74px] shrink-0 text-[10px] font-bold uppercase tracking-widest text-muted pt-0.5">{{ __('Vehicle') }}</span>
-                            <span class="text-[13px] font-bold text-slate-900 dark:text-slate-100" data-admin-preview-vehicle>{{ __('Select brand') }} / {{ __('Any model') }}</span>
+                            <span class="text-[13px] font-bold text-slate-900" data-admin-preview-vehicle>{{ __('Select brand') }} / {{ __('Any model') }}</span>
                         </div>
                         <div class="flex gap-3">
                             <span class="w-[74px] shrink-0 text-[10px] font-bold uppercase tracking-widest text-muted pt-0.5">{{ __('Years') }}</span>
-                            <span class="text-[13px] font-bold font-mono text-slate-900 dark:text-slate-100" data-admin-preview-years>{{ __('Any year') }}</span>
+                            <span class="text-[13px] font-bold font-mono text-slate-900" data-admin-preview-years>{{ __('Any year') }}</span>
                         </div>
                         <div class="flex gap-3">
                             <span class="w-[74px] shrink-0 text-[10px] font-bold uppercase tracking-widest text-muted pt-0.5">{{ __('Engine') }}</span>
-                            <span class="text-[13px] font-bold text-slate-900 dark:text-slate-100" data-admin-preview-engine>{{ __('Any engine') }}</span>
+                            <span class="text-[13px] font-bold text-slate-900" data-admin-preview-engine>{{ __('Any engine') }}</span>
                         </div>
                     </div>
                 </aside>
@@ -589,11 +589,11 @@
         </div>
 
         {{-- ═════════════ Fitment rules list ═════════════ --}}
-        <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl bento-shadow overflow-hidden">
-            <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-slate-100 dark:border-slate-800">
+        <div class="bg-white border border-slate-200/70 rounded-2xl bento-shadow overflow-hidden">
+            <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-slate-100">
                 <div>
-                    <h2 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Fitment Rules') }}</h2>
-                    <p class="text-[11.5px] text-slate-500 dark:text-slate-400 mt-0.5">
+                    <h2 class="text-sm font-bold text-slate-900">{{ __('Fitment Rules') }}</h2>
+                    <p class="text-[11.5px] text-slate-500 mt-0.5">
                         {{ __('Year coverage is drawn as a timeline — narrow and catch-all rules read at a glance.') }}
                     </p>
                 </div>
@@ -640,8 +640,8 @@
                             @endif
                         </div>
                         <div class="min-w-0">
-                            <p class="truncate text-[13px] font-bold text-slate-900 dark:text-slate-100">{{ $fitment->product?->name ?? '-' }}</p>
-                            <p class="truncate font-mono text-[10.5px] text-slate-500 dark:text-slate-400 mt-0.5">
+                            <p class="truncate text-[13px] font-bold text-slate-900">{{ $fitment->product?->name ?? '-' }}</p>
+                            <p class="truncate font-mono text-[10.5px] text-slate-500 mt-0.5">
                                 {{ $fitment->product?->sku ?: __('No SKU') }}@if($fitment->product?->brand) · {{ $fitment->product->brand }}@endif
                             </p>
                         </div>
@@ -668,7 +668,7 @@
                             <div class="vf-fill {{ $isAllYears ? 'full' : '' }}" style="inset-inline-start: {{ $barStartPct }}%; width: {{ $barWidthPct }}%;"></div>
                         </div>
                         @if($fitment->notes)
-                            <p class="text-[11px] text-slate-500 dark:text-slate-400 truncate" title="{{ $fitment->notes }}">{{ Str::limit($fitment->notes, 80) }}</p>
+                            <p class="text-[11px] text-slate-500 truncate" title="{{ $fitment->notes }}">{{ Str::limit($fitment->notes, 80) }}</p>
                         @endif
                     </div>
 
@@ -685,11 +685,11 @@
                 </div>
             @empty
                 <div class="px-6 py-14 text-center">
-                    <div class="mx-auto mb-4 w-14 h-14 rounded-2xl bg-slate-50 border border-slate-200 grid place-items-center text-muted dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500">
+                    <div class="mx-auto mb-4 w-14 h-14 rounded-2xl bg-slate-50 border border-slate-200 grid place-items-center text-muted dark:text-slate-500">
                         <i class="fas fa-link"></i>
                     </div>
-                    <p class="text-base font-bold text-slate-900 dark:text-white">{{ __('No fitments found.') }}</p>
-                    <p class="text-[13px] text-slate-500 dark:text-slate-400 mt-1.5">{{ __('Create a product fitment or adjust your search.') }}</p>
+                    <p class="text-base font-bold text-slate-900">{{ __('No fitments found.') }}</p>
+                    <p class="text-[13px] text-slate-500 mt-1.5">{{ __('Create a product fitment or adjust your search.') }}</p>
                     @if($search !== '' || $brandFilter > 0)
                         <a href="{{ route('admin.vehicle-fitments.index') }}"
                            class="vf-btn primary mt-4 inline-flex">{{ __('Reset filters') }}</a>
@@ -698,8 +698,8 @@
             @endforelse
 
             @if($fitments->hasPages())
-                <div class="flex flex-wrap justify-between items-center gap-3 border-t border-slate-100 dark:border-slate-800 px-5 py-3.5">
-                    <span class="text-[12px] text-slate-500 dark:text-slate-400">
+                <div class="flex flex-wrap justify-between items-center gap-3 border-t border-slate-100 px-5 py-3.5">
+                    <span class="text-[12px] text-slate-500">
                         {{ __('Showing :from–:to of :total fitments', [
                             'from'  => $fitments->firstItem() ?? 0,
                             'to'    => $fitments->lastItem() ?? 0,

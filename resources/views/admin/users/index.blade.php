@@ -1,8 +1,8 @@
 <x-app-layout>
     <x-slot name="header">
         <div class="flex items-center justify-between">
-            <h2 class="font-bold text-2xl text-slate-800 dark:text-slate-100">{{ __('Users Management') }}</h2>
-            <div class="text-sm text-slate-500 dark:text-slate-400">
+            <h2 class="font-bold text-2xl text-slate-800">{{ __('Users Management') }}</h2>
+            <div class="text-sm text-slate-500">
                 {{ __('Showing') }} <span class="font-semibold">{{ $users->count() }}</span> {{ __('of') }}
                 <span class="font-semibold">{{ $users->total() }}</span>
             </div>
@@ -165,7 +165,7 @@
     <div class="py-10">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-5">
             @if(session('success'))
-                <div class="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-900/60 dark:bg-emerald-950/20 dark:text-emerald-300">
+                <div class="rounded-lg border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
                     {{ session('success') }}
                 </div>
             @endif
@@ -201,9 +201,9 @@
             </div>
 
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                <p class="text-sm text-slate-500 dark:text-slate-400">
-                    {{ __('Showing') }} <span class="font-semibold text-slate-800 dark:text-slate-100">{{ $users->count() }}</span>
-                    {{ __('of') }} <span class="font-semibold text-slate-800 dark:text-slate-100">{{ number_format($users->total()) }}</span>
+                <p class="text-sm text-slate-500">
+                    {{ __('Showing') }} <span class="font-semibold text-slate-800">{{ $users->count() }}</span>
+                    {{ __('of') }} <span class="font-semibold text-slate-800">{{ number_format($users->total()) }}</span>
                     @if($activeFilterLabel)
                         · <span class="font-semibold text-accent dark:text-accent">{{ $activeFilterLabel }}</span>
                     @endif
@@ -225,7 +225,7 @@
 
             <div class="grid gap-4 lg:grid-cols-[240px_minmax(0,1fr)] items-start">
                 {{-- Filter rail --}}
-                <aside class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-slate-900 lg:sticky lg:top-4">
+                <aside class="rounded-xl border border-slate-200 bg-white p-3 shadow-sm lg:sticky lg:top-4">
                     <form method="GET" action="{{ route('admin.users.index') }}" class="mb-3">
                         @if($filter !== 'all')
                             <input type="hidden" name="filter" value="{{ $filter }}">
@@ -242,7 +242,7 @@
                                 name="search"
                                 value="{{ $search }}"
                                 placeholder="{{ __('Search by name, email, phone, id, or role...') }}"
-                                class="w-full rounded-lg border-slate-300 bg-white ps-9 text-sm text-slate-900 placeholder-muted focus:border-accent focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                                class="w-full rounded-lg border-slate-300 bg-white ps-9 text-sm text-slate-900 placeholder-muted focus:border-accent focus:ring-2 focus:ring-accent/30 dark:border-slate-700"
                             >
                         </div>
                         @if($search !== '')
@@ -271,7 +271,7 @@
                         @endforeach
                     </nav>
 
-                    <hr class="my-3 border-slate-200 dark:border-slate-800">
+                    <hr class="my-3 border-slate-200">
 
                     <nav class="space-y-0.5" aria-label="{{ __('Email') }}">
                         @foreach($verifyFilters as $key => $item)
@@ -285,7 +285,7 @@
                             >
                                 <span class="flex items-center gap-2.5 min-w-0">
                                     @if($key === 'verified')
-                                        <svg class="h-3.5 w-3.5 shrink-0 text-emerald-500 dark:text-emerald-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" /></svg>
+                                        <svg class="h-3.5 w-3.5 shrink-0 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" /></svg>
                                     @else
                                         <svg class="h-3.5 w-3.5 shrink-0 text-muted dark:text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="9" /><path stroke-linecap="round" d="M12 7.5V12l2.5 2.5" /></svg>
                                     @endif
@@ -296,7 +296,7 @@
                         @endforeach
                     </nav>
 
-                    <hr class="my-3 border-slate-200 dark:border-slate-800">
+                    <hr class="my-3 border-slate-200">
 
                     <div class="mb-1.5 px-3 text-[10px] font-bold uppercase tracking-[0.16em] text-muted dark:text-slate-500">
                         {{ __('Access Status') }}
@@ -330,7 +330,7 @@
                             $isSelf = $currentUserId === (int) $user->id;
                             $isLastSuperAdmin = $role === \App\Models\User::ROLE_SUPER_ADMIN && $superAdminUsers <= 1;
                         @endphp
-                        <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700">
+                        <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:border-slate-300 dark:hover:border-slate-700">
                             <div class="flex flex-wrap items-center gap-3">
                                 <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-sm font-bold {{ $meta['avatar'] }}">
                                     {{ strtoupper(substr($user->name, 0, 1)) }}
@@ -338,7 +338,7 @@
 
                                 <div class="min-w-0 flex-1">
                                     <div class="flex flex-wrap items-center gap-x-2 gap-y-1">
-                                        <span class="font-semibold text-slate-800 dark:text-slate-100">{{ $user->name }}</span>
+                                        <span class="font-semibold text-slate-800">{{ $user->name }}</span>
                                         <span class="text-xs tabular-nums text-muted dark:text-slate-500">#{{ $user->id }}</span>
                                         <span class="inline-flex items-center gap-1.5 rounded-full border px-2.5 py-0.5 text-[11px] font-bold {{ $meta['chip'] }}">
                                             <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
@@ -351,12 +351,12 @@
                                             </span>
                                         @endif
                                         @if($user->email_verified_at)
-                                            <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400" title="{{ __('Verified email') }}">
+                                            <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600" title="{{ __('Verified email') }}">
                                                 <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" /></svg>
                                             </span>
                                         @endif
                                     </div>
-                                    <div class="mt-1 flex flex-wrap gap-x-4 gap-y-0.5 text-xs text-slate-500 dark:text-slate-400">
+                                    <div class="mt-1 flex flex-wrap gap-x-4 gap-y-0.5 text-xs text-slate-500">
                                         <span class="truncate">{{ $user->email }}</span>
                                         @if($user->phone)
                                             <span dir="ltr">{{ $user->phone }}</span>
@@ -372,7 +372,7 @@
                                             @method('PATCH')
                                             <select
                                                 name="role"
-                                                class="rounded-lg border-slate-300 bg-white py-1.5 text-xs text-slate-900 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
+                                                class="rounded-lg border-slate-300 bg-white py-1.5 text-xs text-slate-900 dark:border-slate-700"
                                                 @disabled($isSelf)
                                             >
                                                 @foreach($roleOptions as $option)
@@ -383,7 +383,7 @@
                                             </select>
                                             <button
                                                 type="submit"
-                                                class="rounded-lg bg-slate-900 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50 dark:bg-slate-700 dark:hover:bg-slate-600"
+                                                class="rounded-lg bg-slate-900 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50 dark:hover:bg-slate-600"
                                                 @disabled($isSelf || $isLastSuperAdmin)
                                             >
                                                 {{ __('Update') }}
@@ -392,7 +392,7 @@
 
                                         <a
                                             href="{{ route('admin.users.show', $user) }}"
-                                            class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+                                            class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
                                         >
                                             {{ __('View Details') }}
                                         </a>
@@ -411,7 +411,7 @@
                                                 @method('DELETE')
                                                 <button
                                                     type="submit"
-                                                    class="rounded-lg border border-rose-300 bg-rose-50 px-3 py-1.5 text-sm font-semibold text-rose-700 transition hover:bg-rose-100 dark:border-rose-400/40 dark:bg-rose-400/10 dark:text-rose-300 dark:hover:bg-rose-400/20"
+                                                    class="rounded-lg border border-rose-300 bg-rose-50 px-3 py-1.5 text-sm font-semibold text-rose-700 transition hover:bg-rose-100 dark:border-rose-400/40 dark:hover:bg-rose-400/20"
                                                 >
                                                     {{ __('Delete') }}
                                                 </button>
@@ -421,7 +421,7 @@
                                 @else
                                     <a
                                         href="{{ route('admin.users.show', $user) }}"
-                                        class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+                                        class="rounded-lg border border-slate-300 px-3 py-1.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800"
                                     >
                                         {{ __('View Details') }}
                                     </a>
@@ -429,16 +429,16 @@
                             </div>
                         </div>
                     @empty
-                        <div class="rounded-xl border border-slate-200 bg-white p-12 text-center shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                            <p class="text-lg font-semibold text-slate-700 dark:text-slate-200">{{ __('No users found') }}</p>
+                        <div class="rounded-xl border border-slate-200 bg-white p-12 text-center shadow-sm">
+                            <p class="text-lg font-semibold text-slate-700">{{ __('No users found') }}</p>
                             @if($search !== '')
-                                <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ __('No results for ":search".', ['search' => $search]) }}</p>
+                                <p class="mt-1 text-sm text-slate-500">{{ __('No results for ":search".', ['search' => $search]) }}</p>
                             @endif
                         </div>
                     @endforelse
 
                     @if($users->hasPages())
-                        <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                        <div class="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
                             {{ $users->links() }}
                         </div>
                     @endif

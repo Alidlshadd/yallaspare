@@ -5,7 +5,7 @@
 @section('actions')
     <a
         href="{{ route('user.settings.edit') }}"
-        class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800"
+        class="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 transition duration-200 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 dark:bg-slate-900 dark:hover:bg-slate-800"
     >
         {{ __('Settings') }}
         <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -32,16 +32,16 @@
                 </x-ui.alert>
             @endif
 
-            <section class="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:p-8" x-data="appearanceForm" data-theme="{{ $selectedThemePreference }}">
-                <div class="flex flex-col gap-5 border-b border-slate-200/80 pb-6 dark:border-slate-800 sm:flex-row sm:items-start sm:justify-between">
+            <section class="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-900/5 dark:bg-slate-900 dark:shadow-black/10 sm:p-8" x-data="appearanceForm" data-theme="{{ $selectedThemePreference }}">
+                <div class="flex flex-col gap-5 border-b border-slate-200/80 pb-6 sm:flex-row sm:items-start sm:justify-between">
                     <div>
-                        <p class="text-sm font-medium text-slate-500 dark:text-slate-400">{{ __('Section') }}</p>
-                        <h2 class="mt-1 text-2xl font-semibold tracking-[-0.03em] text-slate-950 dark:text-white">{{ __('Appearance') }}</h2>
-                        <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600 dark:text-slate-300">{{ __('Choose a theme that stays consistent across your account hub and store pages.') }}</p>
+                        <p class="text-sm font-medium text-slate-500">{{ __('Section') }}</p>
+                        <h2 class="mt-1 text-2xl font-semibold tracking-[-0.03em] text-slate-950">{{ __('Appearance') }}</h2>
+                        <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">{{ __('Choose a theme that stays consistent across your account hub and store pages.') }}</p>
                     </div>
-                    <div class="rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-3 dark:border-slate-800 dark:bg-slate-950">
-                        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Current Theme') }}</p>
-                        <p class="mt-1 text-sm font-semibold capitalize text-slate-950 dark:text-white" x-text="themePreference"></p>
+                    <div class="rounded-2xl border border-slate-200/80 bg-slate-50 px-4 py-3">
+                        <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">{{ __('Current Theme') }}</p>
+                        <p class="mt-1 text-sm font-semibold capitalize text-slate-950" x-text="themePreference"></p>
                     </div>
                 </div>
 
@@ -50,13 +50,13 @@
                     @method('PATCH')
 
                     <div>
-                        <label for="theme_preference" class="block text-sm font-medium text-slate-700 dark:text-slate-300">{{ __('Theme Mode') }}</label>
+                        <label for="theme_preference" class="block text-sm font-medium text-slate-700">{{ __('Theme Mode') }}</label>
                         <select
                             id="theme_preference"
                             name="theme_preference"
                             x-model="themePreference"
                             @change="applyTheme($event.target.value)"
-                            class="mt-2 block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-accent/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white"
+                            class="mt-2 block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-accent/10 dark:bg-slate-950"
                         >
                             <option value="light">{{ __('Light mode') }}</option>
                             <option value="dark">{{ __('Dark mode') }}</option>
@@ -66,9 +66,9 @@
                         @enderror
                     </div>
 
-                    <div class="rounded-2xl border border-slate-200/80 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-950">
-                        <p class="text-sm font-medium text-slate-700 dark:text-slate-200">{{ __('Preview behavior') }}</p>
-                        <p class="mt-1 text-sm leading-6 text-slate-500 dark:text-slate-400">{{ __('Changing the selection updates the theme immediately and saves your preference when you submit.') }}</p>
+                    <div class="rounded-2xl border border-slate-200/80 bg-slate-50 p-4">
+                        <p class="text-sm font-medium text-slate-700">{{ __('Preview behavior') }}</p>
+                        <p class="mt-1 text-sm leading-6 text-slate-500">{{ __('Changing the selection updates the theme immediately and saves your preference when you submit.') }}</p>
                     </div>
 
                     <div class="flex items-center justify-end">

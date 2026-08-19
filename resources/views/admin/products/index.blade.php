@@ -289,22 +289,22 @@
 
         {{-- ─────────────── Flash + errors ─────────────── --}}
         @if(session('success'))
-            <div class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300">
+            <div class="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-medium text-emerald-700">
                 {{ session('success') }}
             </div>
         @endif
         @if(session('error'))
-            <div class="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300">
+            <div class="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
                 {{ session('error') }}
             </div>
         @endif
         @if(session('warning'))
-            <div class="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/10 dark:text-amber-300">
+            <div class="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800 dark:text-amber-300">
                 {{ session('warning') }}
             </div>
         @endif
         @if($errors->any())
-            <div class="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300">
+            <div class="mb-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">
                 {{ $errors->first() }}
             </div>
         @endif
@@ -357,15 +357,15 @@
                              @click.self="close()"
                              @keydown.escape.window="close()">
                             <div x-show="open" x-transition
-                                 class="w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-2xl overflow-hidden text-slate-900 dark:text-slate-100">
-                                <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-slate-200 dark:border-slate-800 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900/60 dark:to-slate-900">
+                                 class="w-full max-w-lg rounded-2xl bg-white border border-slate-200 shadow-2xl overflow-hidden text-slate-900">
+                                <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-slate-200 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900/60 dark:to-slate-900">
                                     <div class="flex items-center gap-2.5">
                                         <div class="h-9 w-9 rounded-xl bg-navy-deep text-accent grid place-items-center">
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
                                         </div>
                                         <div>
                                             <div class="text-sm font-bold">{{ __('Bulk Import') }}</div>
-                                            <div class="text-[11px] text-slate-500 dark:text-slate-400">{{ __('Upload CSV / XLSX to update or create products') }}</div>
+                                            <div class="text-[11px] text-slate-500">{{ __('Upload CSV / XLSX to update or create products') }}</div>
                                         </div>
                                     </div>
                                     <button type="button" @click="close()"
@@ -383,13 +383,13 @@
                                     <input type="hidden" name="return_to" value="{{ $currentProductsUrl }}">
 
                                     <div>
-                                        <label for="import-file" class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('File') }}</label>
+                                        <label for="import-file" class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 mb-1.5">{{ __('File') }}</label>
                                         <input id="import-file" type="file" name="import_file" accept=".csv,.txt,.xls,.xlsx" required
-                                               class="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 file:mr-3 file:rounded-md file:border-0 file:bg-slate-200 file:px-3 file:py-1 file:text-xs file:font-bold dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100">
+                                               class="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 file:mr-3 file:rounded-md file:border-0 file:bg-slate-200 file:px-3 file:py-1 file:text-xs file:font-bold">
                                     </div>
 
-                                    <div class="rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 p-3 text-[11px] leading-relaxed text-slate-600 dark:text-slate-300">
-                                        <div class="font-bold uppercase text-[10px] tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Requirements') }}</div>
+                                    <div class="rounded-lg bg-slate-50 border border-slate-200 p-3 text-[11px] leading-relaxed text-slate-600">
+                                        <div class="font-bold uppercase text-[10px] tracking-widest text-slate-500 mb-1.5">{{ __('Requirements') }}</div>
                                         <p>
                                             {{ __('Supported files: CSV, TXT, XLS, XLSX.') }}
                                         </p>
@@ -405,7 +405,7 @@
 
                                     <div class="flex justify-end gap-2 pt-2">
                                         <button type="button" @click="close()"
-                                                class="inline-flex items-center gap-2 h-10 px-4 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700 transition">
+                                                class="inline-flex items-center gap-2 h-10 px-4 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition">
                                             {{ __('Cancel') }}
                                         </button>
                                         <button type="submit"
@@ -487,14 +487,14 @@
 
         {{-- ═════════════ Import error report ═════════════ --}}
         @if(count($importErrors) > 0)
-            <div class="mb-4 bg-white dark:bg-slate-900 border border-rose-200 dark:border-rose-500/30 rounded-2xl overflow-hidden bento-shadow">
-                <div class="flex items-center gap-2 px-5 py-3 bg-rose-50 dark:bg-rose-500/10 border-b border-rose-200 dark:border-rose-500/30 text-sm font-bold text-rose-700 dark:text-rose-300">
+            <div class="mb-4 bg-white border border-rose-200 rounded-2xl overflow-hidden bento-shadow">
+                <div class="flex items-center gap-2 px-5 py-3 bg-rose-50 border-b border-rose-200 text-sm font-bold text-rose-700">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                     {{ __('Import Error Report') }} ({{ count($importErrors) }} {{ __('rows') }})
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-sm text-left">
-                        <thead class="bg-slate-50 text-slate-600 dark:bg-slate-800/70 dark:text-slate-300">
+                        <thead class="bg-slate-50 text-slate-600">
                             <tr>
                                 <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest">{{ __('Row') }}</th>
                                 <th class="px-4 py-3 text-[10px] font-bold uppercase tracking-widest">{{ __('SKU') }}</th>
@@ -503,10 +503,10 @@
                         </thead>
                         <tbody>
                             @foreach($importErrors as $errorRow)
-                                <tr class="border-t border-slate-100 dark:border-slate-800">
-                                    <td class="px-4 py-3 font-mono text-slate-700 dark:text-slate-200">{{ $errorRow['row'] ?? '-' }}</td>
-                                    <td class="px-4 py-3 font-mono text-slate-600 dark:text-slate-300">{{ $errorRow['sku'] ?? '-' }}</td>
-                                    <td class="px-4 py-3 text-rose-700 dark:text-rose-300">{{ $errorRow['message'] ?? __('Unknown error') }}</td>
+                                <tr class="border-t border-slate-100">
+                                    <td class="px-4 py-3 font-mono text-slate-700">{{ $errorRow['row'] ?? '-' }}</td>
+                                    <td class="px-4 py-3 font-mono text-slate-600">{{ $errorRow['sku'] ?? '-' }}</td>
+                                    <td class="px-4 py-3 text-rose-700">{{ $errorRow['message'] ?? __('Unknown error') }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -516,33 +516,33 @@
         @endif
 
         {{-- ═════════════ Filter card ═════════════ --}}
-        <form method="GET" action="{{ route('admin.products.index') }}" class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-5 bento-shadow mb-4">
+        <form method="GET" action="{{ route('admin.products.index') }}" class="bg-white border border-slate-200/70 rounded-2xl p-5 bento-shadow mb-4">
             <input type="hidden" name="status" value="{{ $currentStatus }}">
 
             <div class="flex items-center gap-2.5 mb-4">
                 <div class="h-9 w-9 rounded-xl bg-navy-deep text-accent grid place-items-center">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
                 </div>
-                <h3 class="text-sm font-bold text-slate-900 dark:text-white">{{ __('Filter Products') }}</h3>
+                <h3 class="text-sm font-bold text-slate-900">{{ __('Filter Products') }}</h3>
             </div>
 
             <div class="grid gap-3 md:grid-cols-2 lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)_minmax(0,1fr)_auto] items-end">
                 <div>
-                    <label for="filter-search" class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Search') }}</label>
+                    <label for="filter-search" class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 mb-1.5">{{ __('Search') }}</label>
                     <div class="relative">
                         <span class="absolute inset-y-0 start-0 flex items-center ps-3 text-muted">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 100-15 7.5 7.5 0 000 15z"/></svg>
                         </span>
                         <input id="filter-search" name="search" value="{{ request('search') }}"
                                placeholder="{{ __('Product name, SKU, brand...') }}"
-                               class="h-11 w-full ps-10 pe-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 placeholder-muted transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-900">
+                               class="h-11 w-full ps-10 pe-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 placeholder-muted transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:focus:bg-slate-900">
                     </div>
                 </div>
 
                 <div>
-                    <label for="filter-category" class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Category') }}</label>
+                    <label for="filter-category" class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 mb-1.5">{{ __('Category') }}</label>
                     <select id="filter-category" name="category_id"
-                            class="y-select h-11 w-full px-3 rounded-xl border border-slate-200 bg-slate-50 text-sm font-semibold text-slate-900 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-900">
+                            class="y-select h-11 w-full px-3 rounded-xl border border-slate-200 bg-slate-50 text-sm font-semibold text-slate-900 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:focus:bg-slate-900">
                         <option value="">{{ __('All Categories') }}</option>
                         @foreach($categories as $category)
                             <option value="{{ $category->id }}" @selected((string) request('category_id') === (string) $category->id)>
@@ -553,9 +553,9 @@
                 </div>
 
                 <div>
-                    <label for="filter-brand" class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Brand') }}</label>
+                    <label for="filter-brand" class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 mb-1.5">{{ __('Brand') }}</label>
                     <select id="filter-brand" name="product_brand_id"
-                            class="y-select h-11 w-full px-3 rounded-xl border border-slate-200 bg-slate-50 text-sm font-semibold text-slate-900 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-900">
+                            class="y-select h-11 w-full px-3 rounded-xl border border-slate-200 bg-slate-50 text-sm font-semibold text-slate-900 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:focus:bg-slate-900">
                         <option value="">{{ __('All Brands') }}</option>
                         @foreach($brands as $brand)
                             <option value="{{ $brand->id }}" @selected((string) request('product_brand_id') === (string) $brand->id || (string) request('brand') === (string) $brand->name)>
@@ -568,7 +568,7 @@
                 <div class="flex gap-2 justify-end">
                     @if($hasActiveFilters)
                         <a href="{{ $statusUrl($currentStatus) }}"
-                           class="inline-flex items-center gap-2 h-11 px-4 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700 transition">
+                           class="inline-flex items-center gap-2 h-11 px-4 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 dark:hover:bg-slate-700 transition">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                             {{ __('Reset') }}
                         </a>
@@ -582,8 +582,8 @@
         </form>
 
         {{-- ═════════════ Status quick-filter band ═════════════ --}}
-        <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl px-5 py-4 mb-4 bento-shadow flex flex-wrap items-center gap-4">
-            <span class="inline-flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400 shrink-0">
+        <div class="bg-white border border-slate-200/70 rounded-2xl px-5 py-4 mb-4 bento-shadow flex flex-wrap items-center gap-4">
+            <span class="inline-flex items-center gap-2 font-mono text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500 shrink-0">
                 <span class="relative inline-flex h-1.5 w-1.5">
                     <span class="absolute inset-0 rounded-full bg-accent ys-pulse-dot"></span>
                     <span class="relative h-1.5 w-1.5 rounded-full bg-accent"></span>
@@ -606,7 +606,7 @@
 
         {{-- ═════════════ Sort + Result count ═════════════ --}}
         <div class="flex flex-wrap items-center justify-between gap-3 mb-4 px-2">
-            <div class="text-[12.5px] text-slate-600 dark:text-slate-300">
+            <div class="text-[12.5px] text-slate-600">
                 {{ $statusTabs[$currentStatus]['label'] ?? __('All Products') }}
                 <span class="text-muted dark:text-slate-500 ms-1">
                     ({{ __('showing :from–:to of :total', [
@@ -617,7 +617,7 @@
                 </span>
             </div>
             <div class="flex items-center gap-2">
-                <span class="font-mono text-[10px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ __('Sort') }}</span>
+                <span class="font-mono text-[10px] font-bold uppercase tracking-widest text-slate-500">{{ __('Sort') }}</span>
                 <a href="{{ $sortUrl('id') }}" class="ychip {{ $currentSort === 'id' ? 'on' : '' }}">ID @if($currentSort === 'id') <i class="text-[9px]">{{ $currentDir === 'asc' ? '↑' : '↓' }}</i> @endif</a>
                 <a href="{{ $sortUrl('name_en') }}" class="ychip {{ $currentSort === 'name_en' ? 'on' : '' }}">{{ __('Name') }} @if($currentSort === 'name_en') <i class="text-[9px]">{{ $currentDir === 'asc' ? '↑' : '↓' }}</i> @endif</a>
                 <a href="{{ $sortUrl('price') }}" class="ychip {{ $currentSort === 'price' ? 'on' : '' }}">{{ __('Price') }} @if($currentSort === 'price') <i class="text-[9px]">{{ $currentDir === 'asc' ? '↑' : '↓' }}</i> @endif</a>
@@ -627,12 +627,12 @@
 
         {{-- ═════════════ Product card grid ═════════════ --}}
         @if($products->count() === 0)
-            <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl py-14 px-4 text-center bento-shadow">
-                <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-slate-50 border border-slate-200 grid place-items-center text-muted dark:bg-slate-800 dark:border-slate-700 dark:text-slate-500">
+            <div class="bg-white border border-slate-200/70 rounded-2xl py-14 px-4 text-center bento-shadow">
+                <div class="w-14 h-14 mx-auto mb-4 rounded-2xl bg-slate-50 border border-slate-200 grid place-items-center text-muted dark:text-slate-500">
                     <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                 </div>
-                <div class="text-base font-bold text-slate-900 dark:text-white">{{ $statusTabs[$currentStatus]['empty'] ?? __('No products found.') }}</div>
-                <div class="text-[13px] text-slate-500 dark:text-slate-400 mt-1.5">{{ __('Try changing the filters or status above.') }}</div>
+                <div class="text-base font-bold text-slate-900">{{ $statusTabs[$currentStatus]['empty'] ?? __('No products found.') }}</div>
+                <div class="text-[13px] text-slate-500 mt-1.5">{{ __('Try changing the filters or status above.') }}</div>
                 @if($hasActiveFilters)
                     <a href="{{ $statusUrl($currentStatus) }}"
                        class="font-display inline-flex items-center gap-2 h-10 px-4 mt-4 rounded-xl text-sm font-bold text-accent bg-navy-deep hover:bg-navy transition">
@@ -672,7 +672,7 @@
                             @endif
                             {{ $product->brand ?? '—' }}<span class="pid">· #{{ $product->id }}</span>
                         </div>
-                        <div class="mt-2 flex items-center justify-between gap-2 rounded-lg border border-slate-100 bg-slate-50 px-2.5 py-2 text-[11px] font-semibold text-slate-500 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400">
+                        <div class="mt-2 flex items-center justify-between gap-2 rounded-lg border border-slate-100 bg-slate-50 px-2.5 py-2 text-[11px] font-semibold text-slate-500">
                             <span class="inline-flex items-center gap-1.5">
                                 <i class="fas fa-eye text-accent"></i>
                                 {{ __(':count views', ['count' => number_format($viewsCount)]) }}
@@ -725,8 +725,8 @@
 
         {{-- ═════════════ Pagination ═════════════ --}}
         @if($products->hasPages())
-            <div class="mt-6 flex flex-wrap justify-between items-center gap-3 bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl px-5 py-3.5 bento-shadow">
-                <span class="text-[12px] text-slate-500 dark:text-slate-400">
+            <div class="mt-6 flex flex-wrap justify-between items-center gap-3 bg-white border border-slate-200/70 rounded-2xl px-5 py-3.5 bento-shadow">
+                <span class="text-[12px] text-slate-500">
                     {{ __('Showing :from–:to of :total products', [
                         'from'  => $products->firstItem() ?? 0,
                         'to'    => $products->lastItem() ?? 0,
