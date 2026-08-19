@@ -130,7 +130,7 @@
             <div class="flex flex-wrap items-center gap-2">
                 <form method="POST" action="{{ route('account.orders.reorder', $order) }}">
                     @csrf
-                    <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#10105c]">
+                    <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#12124a]">
                         {{ __('Reorder') }}
                     </button>
                 </form>
@@ -299,7 +299,7 @@
                     @error('reason')
                         <p class="text-sm font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>
                     @enderror
-                    <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#10105c]">
+                    <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#12124a]">
                         {{ __('Submit Request') }}
                     </button>
                 </form>
@@ -430,7 +430,7 @@
                                             <p class="text-sm font-semibold text-emerald-800 dark:text-emerald-300">{{ __('Review submitted') }}</p>
                                             <div class="mt-2 flex items-center gap-1">
                                                 @for ($rating = 1; $rating <= 5; $rating++)
-                                                    <svg class="h-4 w-4 {{ $rating <= (int) $existingReview->rating ? 'text-amber-500' : 'text-slate-300 dark:text-slate-700' }}" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                                    <svg class="h-4 w-4 {{ $rating <= (int) $existingReview->rating ? 'text-accent' : 'text-slate-300 dark:text-slate-700' }}" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                                         <path d="M9.1 2.3c.3-.9 1.5-.9 1.8 0l1.4 4.2h4.4c.9 0 1.3 1.2.6 1.8l-3.6 2.6 1.4 4.2c.3.9-.7 1.6-1.5 1.1L10 13.6l-3.6 2.6c-.8.5-1.8-.2-1.5-1.1l1.4-4.2-3.6-2.6c-.7-.6-.3-1.8.6-1.8h4.4l1.4-4.2Z" />
                                                     </svg>
                                                 @endfor
@@ -503,7 +503,7 @@
                                         @endif
                                     </div>
 
-                                    <button type="submit" class="inline-flex w-full items-center justify-center rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#10105c]">
+                                    <button type="submit" class="inline-flex w-full items-center justify-center rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#12124a]">
                                         <svg class="mr-2 h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                             <path d="M17.8 2.2a.8.8 0 0 1 .2.8l-4.3 13.8a.8.8 0 0 1-1.4.2l-3-4.5-4.5-3a.8.8 0 0 1 .2-1.4L18 2a.8.8 0 0 1-.2.2ZM7 9l3.1 2.1L13.8 6 7 9Z" />
                                         </svg>

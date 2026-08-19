@@ -17,7 +17,7 @@
     <style>
         /* Dealers Management (dl-) */
         .dl-hero {
-            background: linear-gradient(135deg, #04042a, #10104a);
+            background: linear-gradient(135deg, #04041f, #12124a);
             position: relative; overflow: hidden;
         }
         .dl-hero::after {
@@ -31,7 +31,7 @@
         .dl-avatar {
             width: 38px; height: 38px; border-radius: 11px; flex: none;
             display: inline-flex; align-items: center; justify-content: center;
-            background: #04042a; color: #fbbf24; font-weight: 900; font-size: 15px;
+            background: #04041f; color: #ff8a3d; font-weight: 900; font-size: 15px;
         }
     </style>
 
@@ -53,11 +53,11 @@
             <section class="dl-hero rounded-3xl p-6 text-white shadow-sm sm:p-7">
                 <div class="flex flex-wrap items-start justify-between gap-4">
                     <div class="min-w-0">
-                        <p class="text-[11px] font-black uppercase tracking-[0.16em] text-amber-400">{{ __('Dealer Operations') }}</p>
+                        <p class="text-[11px] font-black uppercase tracking-[0.16em] text-accent">{{ __('Dealer Operations') }}</p>
                         <h1 class="mt-1.5 text-2xl font-black tracking-tight sm:text-3xl">
                             <span class="dl-num">{{ number_format($totalDealers) }}</span> {{ __('dealers') }}
                             <span class="text-white/40">·</span>
-                            <span class="dl-num text-amber-400">{{ $money($dealerRevenue) }}</span>
+                            <span class="dl-num text-accent">{{ $money($dealerRevenue) }}</span>
                             <span class="text-base font-bold text-white/60">{{ __('dealer revenue') }}</span>
                         </h1>
                         <p class="mt-1.5 max-w-2xl text-sm text-white/60">{{ __('Review dealers, filter the roster, and update status or discount from the quick-edit drawer.') }}</p>
@@ -81,7 +81,7 @@
                     </div>
                     <div>
                         <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/45">{{ __('Average Discount') }}</p>
-                        <p class="dl-num mt-0.5 text-xl font-black text-amber-400">{{ number_format($averageDiscount, 2) }}%</p>
+                        <p class="dl-num mt-0.5 text-xl font-black text-accent">{{ number_format($averageDiscount, 2) }}%</p>
                     </div>
                     <div>
                         <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/45">{{ __('Dealer Orders') }}</p>
@@ -108,7 +108,7 @@
                         <option value="suspended" @selected($status === 'suspended')>{{ __('Suspended') }}</option>
                     </select>
                     <a href="{{ route('admin.dealers.index') }}" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Reset') }}</a>
-                    <button type="submit" class="rounded-xl bg-[#04042a] px-4 py-2 text-sm font-semibold text-white hover:bg-[#10104a]">{{ __('Apply') }}</button>
+                    <button type="submit" class="rounded-xl bg-[#04041f] px-4 py-2 text-sm font-semibold text-white hover:bg-[#12124a]">{{ __('Apply') }}</button>
                 </div>
             </form>
 
@@ -164,7 +164,7 @@
                                             <div class="min-w-0">
                                                 <div class="truncate font-semibold text-slate-900 dark:text-slate-100">
                                                     @if ($canViewUsers)
-                                                        <a href="{{ route('admin.users.show', $dealer) }}" class="hover:text-amber-700 dark:hover:text-amber-400">{{ $dealer->name }}</a>
+                                                        <a href="{{ route('admin.users.show', $dealer) }}" class="hover:text-accent dark:hover:text-accent">{{ $dealer->name }}</a>
                                                     @else
                                                         {{ $dealer->name }}
                                                     @endif
@@ -194,7 +194,7 @@
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                             @endif
-                                            <button type="button" class="rounded-lg bg-[#04042a] px-3 py-1.5 text-[11px] font-bold text-white hover:bg-[#10104a]" @click="openDrawer">
+                                            <button type="button" class="rounded-lg bg-[#04041f] px-3 py-1.5 text-[11px] font-bold text-white hover:bg-[#12124a]" @click="openDrawer">
                                                 {{ __('Manage') }}
                                             </button>
                                         </div>
@@ -209,7 +209,7 @@
                                         <div class="mt-4 flex justify-center gap-2">
                                             <a href="{{ route('admin.dealers.index') }}" class="rounded-xl border border-slate-200 px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Reset filters') }}</a>
                                             @if (Route::has('admin.users.index') && auth()->user()?->can('manage-users'))
-                                                <a href="{{ route('admin.users.index') }}" class="rounded-xl bg-[#04042a] px-4 py-2 text-xs font-bold text-white hover:bg-[#10104a]">{{ __('Go to Users') }}</a>
+                                                <a href="{{ route('admin.users.index') }}" class="rounded-xl bg-[#04041f] px-4 py-2 text-xs font-bold text-white hover:bg-[#12124a]">{{ __('Go to Users') }}</a>
                                             @endif
                                         </div>
                                     </td>
@@ -236,11 +236,11 @@
                     <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         <div class="flex items-start justify-between gap-2">
                             <p class="text-[10px] font-extrabold uppercase tracking-[0.13em] text-slate-400">{{ $tile['label'] }}</p>
-                            <i class="fas {{ $tile['icon'] }} text-amber-500"></i>
+                            <i class="fas {{ $tile['icon'] }} text-accent"></i>
                         </div>
                         @if ($tile['dealer'])
                             <p class="mt-2 truncate text-sm font-extrabold text-slate-900 dark:text-slate-100">{{ $tile['dealer']->name }}</p>
-                            <p class="dl-num mt-0.5 text-sm font-black text-amber-700 dark:text-amber-400">{{ $tile['value'] }}</p>
+                            <p class="dl-num mt-0.5 text-sm font-black text-accent dark:text-accent">{{ $tile['value'] }}</p>
                         @else
                             <p class="mt-2 text-sm font-semibold text-slate-400">{{ __('No dealer data yet') }}</p>
                         @endif
@@ -249,11 +249,11 @@
             </section>
 
             {{-- ============ quick-edit drawer ============ --}}
-            <div class="fixed inset-0 z-50 bg-[#04042a]/55" x-show="drawerOpen" x-cloak @click.self="closeDrawer" role="dialog" aria-modal="true">
+            <div class="fixed inset-0 z-50 bg-[#04041f]/55" x-show="drawerOpen" x-cloak @click.self="closeDrawer" role="dialog" aria-modal="true">
                 <aside class="absolute end-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl dark:bg-slate-900">
                     <div class="dl-hero flex items-start justify-between gap-3 px-5 py-4 text-white">
                         <div class="flex min-w-0 items-center gap-3">
-                            <span class="dl-avatar" style="background: rgba(251,191,36,0.15);" x-text="drawerInitial"></span>
+                            <span class="dl-avatar" style="background: rgb(255 138 61 / 0.15);" x-text="drawerInitial"></span>
                             <div class="min-w-0">
                                 <h3 class="truncate text-[15px] font-extrabold" x-text="drawerName"></h3>
                                 <p class="text-[11px] text-white/60" x-text="drawerMeta"></p>
@@ -278,7 +278,7 @@
                             </div>
                             <div class="rounded-xl border border-slate-200 p-3.5 dark:border-slate-700">
                                 <p class="text-[10px] font-extrabold uppercase tracking-[0.13em] text-slate-400">{{ __('Revenue') }}</p>
-                                <p class="dl-num mt-1 truncate text-lg font-black text-amber-700 dark:text-amber-400" x-text="drawerRevenueLabel"></p>
+                                <p class="dl-num mt-1 truncate text-lg font-black text-accent dark:text-accent" x-text="drawerRevenueLabel"></p>
                             </div>
                         </div>
 
@@ -292,7 +292,7 @@
                             </div>
                             <label class="block">
                                 <span class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Status') }}</span>
-                                <select name="dealer_status" x-model="form.status" class="w-full rounded-xl border-slate-300 text-sm focus:border-amber-400 focus:ring-2 focus:ring-amber-400/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                <select name="dealer_status" x-model="form.status" class="w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                     <option value="active">{{ __('Active') }}</option>
                                     <option value="inactive">{{ __('Inactive') }}</option>
                                     <option value="suspended">{{ __('Suspended') }}</option>
@@ -300,7 +300,7 @@
                             </label>
                             <label class="block">
                                 <span class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Discount') }} (%)</span>
-                                <input type="number" name="dealer_discount" x-model="form.discount" min="0" max="100" step="0.01" class="dl-num w-full rounded-xl border-slate-300 text-sm focus:border-amber-400 focus:ring-2 focus:ring-amber-400/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                <input type="number" name="dealer_discount" x-model="form.discount" min="0" max="100" step="0.01" class="dl-num w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             </label>
                             <button type="submit" class="w-full rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-extrabold text-white hover:bg-emerald-500">
                                 {{ __('Save Changes') }}

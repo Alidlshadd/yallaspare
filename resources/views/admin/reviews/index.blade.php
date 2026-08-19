@@ -41,8 +41,8 @@
             text-decoration: none;
             transition: all .15s ease;
         }
-        .ychip:hover { background: #f8fafc; border-color: #cbd5e1; color: #04042a; }
-        .ychip .star { color: #f59e0b; font-size: 12px; line-height: 1; }
+        .ychip:hover { background: #f8fafc; border-color: #cbd5e1; color: #04041f; }
+        .ychip .star { color: #e65c00; font-size: 12px; line-height: 1; }
         .ychip .cnt {
             background: rgba(15,23,42,0.06);
             padding: 1px 7px; border-radius: 999px;
@@ -50,17 +50,17 @@
             color: #475569; font-weight: 800;
         }
         .ychip.on {
-            background: #04042a; color: #fcd34d; border-color: #04042a;
+            background: #04041f; color: #ffb27a; border-color: #04041f;
             box-shadow: 0 6px 14px -8px rgba(4,4,42,0.40);
         }
-        .ychip.on .star { color: #fcd34d; }
-        .ychip.on .cnt { background: rgba(252,211,77,0.18); color: #fcd34d; }
+        .ychip.on .star { color: #ffb27a; }
+        .ychip.on .cnt { background: rgba(252,211,77,0.18); color: #ffb27a; }
         .dark .ychip { background: #1e293b; border-color: #334155; color: #cbd5e1; }
         .dark .ychip .cnt { background: rgba(255,255,255,0.06); color: #cbd5e1; }
         .dark .ychip:hover { background: #334155; color: #fff; }
-        .dark .ychip.on { background: #fbbf24; color: #04042a; border-color: #fbbf24; }
-        .dark .ychip.on .star { color: #04042a; }
-        .dark .ychip.on .cnt { background: rgba(4,4,42,0.18); color: #04042a; }
+        .dark .ychip.on { background: #ff8a3d; color: #04041f; border-color: #ff8a3d; }
+        .dark .ychip.on .star { color: #04041f; }
+        .dark .ychip.on .cnt { background: rgba(4,4,42,0.18); color: #04041f; }
 
         /* Buttons */
         .rv-btn {
@@ -70,15 +70,15 @@
             text-decoration: none; transition: all .15s ease;
         }
         .rv-btn:hover { transform: translateY(-1px); }
-        .rv-btn.primary { background: #04042a; color: #fcd34d; border-color: #04042a; }
-        .rv-btn.primary:hover { background: #07073a; }
+        .rv-btn.primary { background: #04041f; color: #ffb27a; border-color: #04041f; }
+        .rv-btn.primary:hover { background: #070740; }
         .rv-btn.danger { background: #fef2f2; color: #b91c1c; border-color: #fca5a5; }
         .rv-btn.danger:hover { background: #fee2e2; }
         .rv-btn.sm { height: 30px; padding: 0 11px; font-size: 11px; border-radius: 8px; }
         .dark .rv-btn { background: #1e293b; border-color: #334155; color: #cbd5e1; }
         .dark .rv-btn:hover { background: #334155; }
-        .dark .rv-btn.primary { background: #fbbf24; color: #04042a; border-color: #fbbf24; }
-        .dark .rv-btn.primary:hover { background: #f59e0b; }
+        .dark .rv-btn.primary { background: #ff8a3d; color: #04041f; border-color: #ff8a3d; }
+        .dark .rv-btn.primary:hover { background: #e65c00; }
         .dark .rv-btn.danger { background: rgba(239,68,68,0.10); color: #fca5a5; border-color: rgba(239,68,68,0.30); }
 
         /* Inputs */
@@ -88,8 +88,8 @@
             background: #f8fafc; color: #0f172a;
         }
         .rv-inp:focus {
-            outline: none; border-color: #fbbf24; background: #fff;
-            box-shadow: 0 0 0 3px rgba(251,191,36,0.25);
+            outline: none; border-color: #ff8a3d; background: #fff;
+            box-shadow: 0 0 0 3px rgb(255 138 61 / 0.25);
         }
         .dark .rv-inp { background: #1e293b; border-color: #334155; color: #f1f5f9; }
         .dark .rv-inp:focus { background: #0f172a; }
@@ -104,16 +104,16 @@
         .rv-dist:hover { background: #f8fafc; }
         .dark .rv-dist:hover { background: #1e293b; }
         .rv-dist.on { background: #fef3c7; }
-        .dark .rv-dist.on { background: rgba(251,191,36,0.12); }
+        .dark .rv-dist.on { background: rgb(255 138 61 / 0.12); }
         .rv-dist .lab {
             font-family: ui-monospace, monospace; font-size: 11px; font-weight: 800; color: #64748b;
             display: flex; align-items: center; gap: 3px;
         }
-        .rv-dist .lab .star { color: #f59e0b; }
+        .rv-dist .lab .star { color: #e65c00; }
         .dark .rv-dist .lab { color: #94a3b8; }
         .rv-dist .track { position: relative; height: 8px; border-radius: 999px; background: #f1f5f9; border: 1px solid #e3e9f1; overflow: hidden; }
         .dark .rv-dist .track { background: #1e293b; border-color: #334155; }
-        .rv-dist .fill { position: absolute; inset-block: 0; inset-inline-start: 0; border-radius: 999px; background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+        .rv-dist .fill { position: absolute; inset-block: 0; inset-inline-start: 0; border-radius: 999px; background: linear-gradient(90deg, #ff8a3d, #e65c00); }
         .rv-dist .fill.low { background: linear-gradient(90deg, #fb7185, #f43f5e); }
         .rv-dist .cnt { font-family: ui-monospace, monospace; font-size: 11px; font-weight: 800; color: #475569; text-align: end; font-variant-numeric: tabular-nums; }
         .dark .rv-dist .cnt { color: #cbd5e1; }
@@ -127,15 +127,15 @@
             transition: all .2s ease;
             display: flex; flex-direction: column; gap: 10px;
         }
-        .rv-card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(7,7,64,0.10); border-color: #fcd34d; }
+        .rv-card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(7,7,64,0.10); border-color: #ffb27a; }
         .dark .rv-card { background: #0f172a; border-color: #1e293b; }
-        .dark .rv-card:hover { border-color: #fbbf24; }
+        .dark .rv-card:hover { border-color: #ff8a3d; }
         .rv-card.low::before {
             content: ""; position: absolute; top: 0; bottom: 0; inset-inline-start: 0; width: 3px;
             background: linear-gradient(180deg, #fb7185, #f43f5e);
         }
         .rv-stars { font-size: 14px; letter-spacing: 2px; line-height: 1; }
-        .rv-stars .f { color: #f59e0b; }
+        .rv-stars .f { color: #e65c00; }
         .rv-stars .e { color: #cbd5e1; }
         .dark .rv-stars .e { color: #475569; }
 
@@ -144,7 +144,7 @@
         .rv-avg-stars .base { color: rgba(255,255,255,0.25); }
         .rv-avg-stars .over {
             position: absolute; top: 0; inset-inline-start: 0;
-            overflow: hidden; white-space: nowrap; color: #fbbf24;
+            overflow: hidden; white-space: nowrap; color: #ff8a3d;
         }
 
         /* Expandable comments */
@@ -154,7 +154,7 @@
             font-size: 11.5px; font-weight: 800; color: #b45309;
         }
         .rv-more:hover { text-decoration: underline; }
-        .dark .rv-more { color: #fbbf24; }
+        .dark .rv-more { color: #ff8a3d; }
 
         /* Card entrance */
         .rv-card { animation: rv-rise .35s ease both; animation-delay: calc(var(--i, 0) * 35ms); }
@@ -170,11 +170,11 @@
         .dark .rv-thumb { background: linear-gradient(135deg, #1e293b, #0f172a); border-color: #334155; }
         .rv-avatar {
             width: 30px; height: 30px; border-radius: 50%; flex-shrink: 0;
-            background: #04042a; color: #fcd34d;
+            background: #04041f; color: #ffb27a;
             display: grid; place-items: center;
             font-size: 12px; font-weight: 800;
         }
-        .dark .rv-avatar { background: #fbbf24; color: #04042a; }
+        .dark .rv-avatar { background: #ff8a3d; color: #04041f; }
         .rv-mono {
             font-family: ui-monospace, monospace; font-size: 10.5px; font-weight: 600; color: #64748b;
             background: #f8fafc; border: 1px solid #e3e9f1; padding: 2px 7px; border-radius: 7px;
@@ -196,14 +196,14 @@
         }
         .y-pagination a:hover { color: #0f172a; border-color: #cbd5e1; background: #f8fafc; }
         .y-pagination .active span,
-        .y-pagination span[aria-current="page"] { background: #04042a; color: #fcd34d; border-color: #04042a; }
+        .y-pagination span[aria-current="page"] { background: #04041f; color: #ffb27a; border-color: #04041f; }
         .y-pagination .disabled span,
         .y-pagination span[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
         .dark .y-pagination a,
         .dark .y-pagination span { background: #0f172a; border-color: #334155; color: #cbd5e1; }
         .dark .y-pagination a:hover { background: #1e293b; color: #fff; border-color: #475569; }
         .dark .y-pagination .active span,
-        .dark .y-pagination span[aria-current="page"] { background: #fbbf24; color: #04042a; border-color: #fbbf24; }
+        .dark .y-pagination span[aria-current="page"] { background: #ff8a3d; color: #04041f; border-color: #ff8a3d; }
     </style>
 
     <div class="bg-[#f3f4f7] dark:bg-slate-950 min-h-screen">
@@ -227,12 +227,12 @@
 
             {{-- Average rating --}}
             <div class="relative overflow-hidden rounded-2xl p-5 text-white flex flex-col gap-3"
-                 style="background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);">
+                 style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
                 <div class="absolute inset-0 bento-stripes pointer-events-none opacity-50"></div>
-                <div class="absolute top-0 bottom-0 start-0 w-[3px]" style="background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);"></div>
-                <div class="absolute -top-16 -end-16 h-52 w-52 rounded-full bg-amber-400/10 blur-[60px] pointer-events-none"></div>
+                <div class="absolute top-0 bottom-0 start-0 w-[3px]" style="background: linear-gradient(180deg, #ff8a3d 0%, #e65c00 100%);"></div>
+                <div class="absolute -top-16 -end-16 h-52 w-52 rounded-full bg-accent/10 blur-[60px] pointer-events-none"></div>
 
-                <div class="relative font-mono text-[10px] font-extrabold uppercase tracking-[0.28em] text-amber-300">{{ __('Catalog · Feedback') }}</div>
+                <div class="relative font-mono text-[10px] font-extrabold uppercase tracking-[0.28em] text-accent">{{ __('Catalog · Feedback') }}</div>
                 <h1 class="relative text-2xl font-black leading-tight -mt-1">{{ __('Customer Reviews') }}</h1>
 
                 <div class="relative flex items-end gap-3 mt-1">
@@ -259,7 +259,7 @@
                     <a href="{{ $ratingUrl($lowOnly ? 0 : 'low') }}"
                        class="relative inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-xs font-bold transition mt-auto border
                               {{ $lowOnly
-                                    ? 'bg-rose-400/90 text-[#04042a] border-rose-300 hover:bg-rose-300'
+                                    ? 'bg-rose-400/90 text-[#04041f] border-rose-300 hover:bg-rose-300'
                                     : 'bg-rose-500/15 text-rose-200 border-rose-400/30 hover:bg-rose-500/25' }}">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
                         {{ $lowOnly
@@ -406,7 +406,7 @@
                                     </div>
                                     <div class="min-w-0 flex-1">
                                         <a href="{{ route('admin.products.edit', $review->product) }}"
-                                           class="block truncate text-[12.5px] font-bold text-slate-900 hover:text-amber-600 dark:text-slate-100 dark:hover:text-amber-400 transition">
+                                           class="block truncate text-[12.5px] font-bold text-slate-900 hover:text-accent dark:text-slate-100 dark:hover:text-accent transition">
                                             {{ $review->product->name }}
                                         </a>
                                         <span class="rv-mono">{{ $review->product->sku ?: __('No SKU') }}</span>
@@ -422,7 +422,7 @@
                                     <div class="min-w-0">
                                         @if($review->user && Route::has('admin.users.show'))
                                             <a href="{{ route('admin.users.show', $review->user) }}"
-                                               class="block truncate text-[12px] font-bold text-slate-900 hover:text-amber-600 dark:text-slate-100 dark:hover:text-amber-400 transition">
+                                               class="block truncate text-[12px] font-bold text-slate-900 hover:text-accent dark:text-slate-100 dark:hover:text-accent transition">
                                                 {{ $review->user->name }}
                                             </a>
                                         @else

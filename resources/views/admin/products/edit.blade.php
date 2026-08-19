@@ -202,7 +202,7 @@
                                     @enderror
                                 </div>
                                 <div class="flex items-center gap-3 rounded-lg border border-dashed border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-400">
-                                    <i class="fas fa-triangle-exclamation text-amber-500"></i>
+                                    <i class="fas fa-triangle-exclamation text-accent"></i>
                                     {{ __('Low stock alerts trigger at :count units.', ['count' => $lowStockThreshold]) }}
                                 </div>
                             </div>

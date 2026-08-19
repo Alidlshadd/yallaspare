@@ -97,7 +97,7 @@
 
     <div class="relative rounded-2xl border border-slate-200/70 bg-white overflow-hidden bento-shadow-em dark:bg-slate-900 dark:border-slate-800">
         {{-- Top accent stripe --}}
-        <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-indigo-500 to-amber-400 z-10"></div>
+        <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-indigo-500 to-accent z-10"></div>
 
         <div class="grid grid-cols-1 lg:grid-cols-[260px_1fr]">
 
@@ -159,7 +159,7 @@
                                 <span class="ml-auto font-mono text-[10px] text-slate-400">{{ number_format($audienceCounts['customers']) }}</span>
                             </div>
                             <div class="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm text-slate-600 dark:text-slate-300">
-                                <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span> {{ __('Dealers') }}
+                                <span class="h-1.5 w-1.5 rounded-full bg-accent"></span> {{ __('Dealers') }}
                                 <span class="ml-auto font-mono text-[10px] text-slate-400">{{ number_format($audienceCounts['dealers']) }}</span>
                             </div>
                             <div class="flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-sm text-slate-600 dark:text-slate-300">
@@ -186,7 +186,7 @@
                     <div class="mt-3 rounded-xl border border-slate-200 bg-white p-3 dark:border-slate-800 dark:bg-slate-900">
                         <div class="flex items-center justify-between">
                             <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">{{ __('Readiness') }}</p>
-                            <span class="text-[10px] font-mono font-bold {{ $health['tone'] === 'green' ? 'text-emerald-600' : ($health['tone'] === 'amber' ? 'text-amber-600' : 'text-rose-600') }}">{{ $health['score'] }}/100</span>
+                            <span class="text-[10px] font-mono font-bold {{ $health['tone'] === 'green' ? 'text-emerald-600' : ($health['tone'] === 'amber' ? 'text-accent' : 'text-rose-600') }}">{{ $health['score'] }}/100</span>
                         </div>
                         <div class="mt-2 h-1 rounded-full bg-slate-100 overflow-hidden dark:bg-slate-800">
                             <div class="h-full rounded-full {{ $healthClasses['bar'] }}" style="width: {{ $health['score'] }}%"></div>
@@ -262,10 +262,10 @@
                         </div>
 
                         {{-- Pending --}}
-                        <div class="relative rounded-2xl border border-amber-200/70 bg-gradient-to-br from-amber-50/60 to-white p-5 bento-shadow-em overflow-hidden dark:from-amber-950/20 dark:to-slate-900 dark:border-amber-900/50">
-                            <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-amber-400 to-amber-500"></div>
+                        <div class="relative rounded-2xl border border-accent/70 bg-gradient-to-br from-accent/60 to-white p-5 bento-shadow-em overflow-hidden dark:from-accent/20 dark:to-slate-900 dark:border-accent/50">
+                            <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-accent to-accent"></div>
                             <div class="flex items-start justify-between">
-                                <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-amber-700 dark:text-amber-300">{{ __('Pending') }}</p>
+                                <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-accent dark:text-accent">{{ __('Pending') }}</p>
                                 <div class="h-7 w-7 rounded-lg bg-amber-100 text-amber-700 grid place-items-center dark:bg-amber-900/60 dark:text-amber-200">
                                     <i class="fas fa-clock text-[10px]"></i>
                                 </div>
@@ -273,17 +273,17 @@
                             <p class="mt-3 num-display text-3xl font-black text-primary flex items-center gap-2 dark:text-white">
                                 {{ number_format($queuedCount) }}
                                 @if($queuedCount > 0)
-                                    <span class="inline-flex h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                    <span class="inline-flex h-1.5 w-1.5 rounded-full bg-accent animate-pulse"></span>
                                 @endif
                             </p>
                             <div class="mt-2 flex items-center justify-between">
-                                <span class="text-[10px] text-amber-700 font-mono font-bold">{{ __('in queue') }}</span>
+                                <span class="text-[10px] text-accent font-mono font-bold">{{ __('in queue') }}</span>
                                 @if($broadcastAll > 0)
-                                    <span class="text-[10px] font-mono text-amber-700">{{ $pendingShare }}%</span>
+                                    <span class="text-[10px] font-mono text-accent">{{ $pendingShare }}%</span>
                                 @endif
                             </div>
                             <div class="mt-2 h-1 rounded-full bg-amber-100 overflow-hidden dark:bg-amber-950/60">
-                                <div class="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-500 @if($queuedCount > 0) animate-pulse @endif" style="width: {{ $pendingShare }}%"></div>
+                                <div class="h-full rounded-full bg-gradient-to-r from-accent to-accent @if($queuedCount > 0) animate-pulse @endif" style="width: {{ $pendingShare }}%"></div>
                             </div>
                         </div>
                     </div>
@@ -377,7 +377,7 @@
                                 <li class="group flex items-center gap-4 px-5 py-3 hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition {{ $rowAccent }}">
                                     <span class="h-9 w-9 shrink-0 rounded-lg {{ $statusStyle['cls'] }} border grid place-items-center">
                                         @if(in_array($statusKey, ['queued','sending']))
-                                            <span class="inline-flex h-1.5 w-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                            <span class="inline-flex h-1.5 w-1.5 rounded-full bg-accent animate-pulse"></span>
                                         @else
                                             <i class="fas {{ $statusStyle['icon'] }} text-xs"></i>
                                         @endif
@@ -401,7 +401,7 @@
                                             <span class="text-[10px] font-mono text-slate-400">{{ __('sent') }}</span>
                                         @endif
                                     </div>
-                                    <span class="text-[10px] font-mono font-bold uppercase tracking-wider w-16 text-right {{ $statusKey === 'sent' ? 'text-emerald-600' : ($statusKey === 'failed' ? 'text-rose-600' : ($statusKey === 'queued' || $statusKey === 'sending' ? 'text-amber-600' : 'text-slate-500')) }}">
+                                    <span class="text-[10px] font-mono font-bold uppercase tracking-wider w-16 text-right {{ $statusKey === 'sent' ? 'text-emerald-600' : ($statusKey === 'failed' ? 'text-rose-600' : ($statusKey === 'queued' || $statusKey === 'sending' ? 'text-accent' : 'text-slate-500')) }}">
                                         {{ __(ucfirst($statusKey)) }}
                                     </span>
                                 </li>
@@ -489,7 +489,7 @@
                     <form method="POST" action="{{ route('admin.email.broadcast') }}" id="inline-compose"
                           class="relative rounded-2xl border border-slate-200/70 bg-white bento-shadow-em overflow-hidden dark:bg-slate-900 dark:border-slate-800">
                         @csrf
-                        <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-indigo-500 to-amber-400"></div>
+                        <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-indigo-500 to-accent"></div>
 
                         {{-- Header with CREATE button --}}
                         <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
@@ -578,7 +578,7 @@
                             </button>
 
                             @if(! $broadcastsAvailable)
-                                <p class="text-[11px] text-amber-700 font-mono">
+                                <p class="text-[11px] text-accent font-mono">
                                     <i class="fas fa-triangle-exclamation"></i> {{ __('Email broadcast table is not installed yet. Run the pending migrations before sending broadcasts.') }}
                                 </p>
                             @endif
@@ -587,7 +587,7 @@
 
                     {{-- Readiness Checks --}}
                     <div class="relative rounded-2xl border border-slate-200/70 bg-white bento-shadow-em overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-                        <div class="absolute top-0 left-0 right-0 h-[2px] {{ $health['tone'] === 'green' ? 'bg-gradient-to-r from-emerald-400 via-emerald-500 to-teal-500' : ($health['tone'] === 'amber' ? 'bg-gradient-to-r from-amber-400 via-amber-500 to-orange-500' : 'bg-gradient-to-r from-rose-400 via-rose-500 to-pink-500') }}"></div>
+                        <div class="absolute top-0 left-0 right-0 h-[2px] {{ $health['tone'] === 'green' ? 'bg-gradient-to-r from-emerald-400 via-emerald-500 to-teal-500' : ($health['tone'] === 'amber' ? 'bg-gradient-to-r from-accent via-accent to-orange-500' : 'bg-gradient-to-r from-rose-400 via-rose-500 to-pink-500') }}"></div>
                         <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:border-slate-800 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
                             <div class="flex items-center gap-2.5">
                                 <div class="h-8 w-8 rounded-lg {{ $health['tone'] === 'green' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-200' : ($health['tone'] === 'amber' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-200' : 'bg-rose-100 text-rose-700 dark:bg-rose-900/50 dark:text-rose-200') }} grid place-items-center">

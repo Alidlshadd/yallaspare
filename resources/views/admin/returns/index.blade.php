@@ -11,8 +11,8 @@
             'requested' => [
                 'label' => __('Requested'),
                 'pill'  => 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/30',
-                'dot'   => 'bg-amber-500',
-                'hex'   => '#f59e0b',
+                'dot'   => 'bg-accent',
+                'hex'   => '#e65c00',
             ],
             'approved' => [
                 'label' => __('Approved'),
@@ -73,8 +73,8 @@
         .corner-brackets::after { bottom: 14px; right: 14px; border-bottom-width: 1.5px; border-right-width: 1.5px; }
 
         @keyframes ys-pulse {
-            0%   { box-shadow: 0 0 0 0 rgba(251,191,36,0.55); }
-            100% { box-shadow: 0 0 0 8px rgba(251,191,36,0); }
+            0%   { box-shadow: 0 0 0 0 rgb(255 138 61 / 0.55); }
+            100% { box-shadow: 0 0 0 8px rgb(255 138 61 / 0); }
         }
         .ys-pulse-dot { animation: ys-pulse 1.6s ease-out infinite; }
 
@@ -87,7 +87,7 @@
             text-decoration: none;
             transition: all .15s ease;
         }
-        .ret-chip:hover { background: var(--chip-hover-bg, #f8fafc); border-color: var(--chip-hover-bd, #cbd5e1); color: var(--chip-hover-fg, #04042a); }
+        .ret-chip:hover { background: var(--chip-hover-bg, #f8fafc); border-color: var(--chip-hover-bd, #cbd5e1); color: var(--chip-hover-fg, #04041f); }
         .ret-chip .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
         .ret-chip .cnt {
             background: rgba(15,23,42,0.06);
@@ -95,23 +95,23 @@
             font-size: 10.5px; font-family: ui-monospace, 'JetBrains Mono', monospace;
             color: #475569; font-weight: 800; letter-spacing: -0.01em;
         }
-        .ret-chip.c-all { --chip-hover-bg: #f8fafc; --chip-hover-bd: #cbd5e1; --chip-hover-fg: #04042a; }
-        .ret-chip.c-req { --chip-hover-bg: #fffbeb; --chip-hover-bd: #fbbf24; --chip-hover-fg: #92400e; }
+        .ret-chip.c-all { --chip-hover-bg: #f8fafc; --chip-hover-bd: #cbd5e1; --chip-hover-fg: #04041f; }
+        .ret-chip.c-req { --chip-hover-bg: #fffbeb; --chip-hover-bd: #ff8a3d; --chip-hover-fg: #92400e; }
         .ret-chip.c-app { --chip-hover-bg: #eff6ff; --chip-hover-bd: #93c5fd; --chip-hover-fg: #1e3a8a; }
         .ret-chip.c-rej { --chip-hover-bg: #fef2f2; --chip-hover-bd: #fca5a5; --chip-hover-fg: #7f1d1d; }
         .ret-chip.c-rcv { --chip-hover-bg: #ecfeff; --chip-hover-bd: #67e8f9; --chip-hover-fg: #155e75; }
         .ret-chip.c-rfd { --chip-hover-bg: #f0fdf4; --chip-hover-bd: #86efac; --chip-hover-fg: #14532d; }
         .ret-chip.c-cls { --chip-hover-bg: #f8fafc; --chip-hover-bd: #cbd5e1; --chip-hover-fg: #1e293b; }
         .ret-chip.on {
-            background: #04042a; color: #fcd34d; border-color: #04042a;
+            background: #04041f; color: #ffb27a; border-color: #04041f;
             box-shadow: 0 6px 14px -8px rgba(4,4,42,0.40);
         }
-        .ret-chip.on .cnt { background: rgba(252,211,77,0.18); color: #fcd34d; }
+        .ret-chip.on .cnt { background: rgba(252,211,77,0.18); color: #ffb27a; }
         .dark .ret-chip { background: #1e293b; border-color: #334155; color: #cbd5e1; }
         .dark .ret-chip .cnt { background: rgba(255,255,255,0.06); color: #cbd5e1; }
         .dark .ret-chip:hover { background: #334155; color: #fff; }
-        .dark .ret-chip.on { background: #fbbf24; color: #04042a; border-color: #fbbf24; }
-        .dark .ret-chip.on .cnt { background: rgba(4,4,42,0.18); color: #04042a; }
+        .dark .ret-chip.on { background: #ff8a3d; color: #04041f; border-color: #ff8a3d; }
+        .dark .ret-chip.on .cnt { background: rgba(4,4,42,0.18); color: #04041f; }
 
         /* Custom select chevron (amber) */
         .ret-select {
@@ -140,7 +140,7 @@
         .ret-pagination a:hover { color: #0f172a; border-color: #cbd5e1; background: #f8fafc; }
         .ret-pagination .active span,
         .ret-pagination span[aria-current="page"] {
-            background: #04042a; color: #fcd34d; border-color: #04042a;
+            background: #04041f; color: #ffb27a; border-color: #04041f;
         }
         .ret-pagination .disabled span,
         .ret-pagination span[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
@@ -149,7 +149,7 @@
         .dark .ret-pagination a:hover { background: #1e293b; color: #fff; border-color: #475569; }
         .dark .ret-pagination .active span,
         .dark .ret-pagination span[aria-current="page"] {
-            background: #fbbf24; color: #04042a; border-color: #fbbf24;
+            background: #ff8a3d; color: #04041f; border-color: #ff8a3d;
         }
     </style>
 
@@ -177,20 +177,20 @@
 
             {{-- ═══ HERO 2x2 — Total Refund Value ═══ --}}
             <div class="relative sm:col-span-2 lg:col-span-2 lg:row-span-2 rounded-3xl text-white p-7 overflow-hidden bento-shadow-lg corner-brackets"
-                 style="background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);">
+                 style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
                 <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
-                <div class="absolute -top-24 -right-24 h-80 w-80 rounded-full bg-amber-400/20 blur-[80px] pointer-events-none"></div>
+                <div class="absolute -top-24 -right-24 h-80 w-80 rounded-full bg-accent/20 blur-[80px] pointer-events-none"></div>
                 <div class="absolute -bottom-24 -left-12 h-64 w-64 rounded-full bg-cyan-400/15 blur-[80px] pointer-events-none"></div>
-                <div class="absolute top-0 left-0 right-0 h-[2px]" style="background: linear-gradient(90deg, #22d3ee, #fbbf24, #f59e0b);"></div>
+                <div class="absolute top-0 left-0 right-0 h-[2px]" style="background: linear-gradient(90deg, #22d3ee, #ff8a3d, #e65c00);"></div>
 
                 <div class="relative flex items-start justify-between gap-4">
                     <div>
                         <div class="flex items-center gap-2">
                             <span class="text-[10px] uppercase tracking-widest font-mono text-white/55 font-bold">{{ __('Refund Value') }}</span>
-                            <span class="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold text-amber-300 px-1.5 py-0.5 rounded bg-amber-400/10 border border-amber-400/20">
+                            <span class="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold text-accent px-1.5 py-0.5 rounded bg-accent/10 border border-accent/20">
                                 <span class="relative inline-flex h-1.5 w-1.5">
-                                    <span class="absolute inset-0 rounded-full bg-amber-300 ys-pulse-dot"></span>
-                                    <span class="relative h-1.5 w-1.5 rounded-full bg-amber-300"></span>
+                                    <span class="absolute inset-0 rounded-full bg-accent ys-pulse-dot"></span>
+                                    <span class="relative h-1.5 w-1.5 rounded-full bg-accent"></span>
                                 </span>
                                 LIVE
                             </span>
@@ -198,7 +198,7 @@
                         <h2 class="mt-2 text-[13px] font-bold uppercase tracking-[0.15em] text-white/55">{{ __('Total Refund Value') }}</h2>
                     </div>
                     <div class="h-12 w-12 rounded-2xl bg-white/10 border border-white/15 grid place-items-center backdrop-blur-sm shadow-inner">
-                        <svg class="w-5 h-5 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg class="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                         </svg>
                     </div>
@@ -206,7 +206,7 @@
 
                 <div class="relative mt-7">
                     <div class="flex items-baseline gap-2 flex-wrap">
-                        <span class="text-sm font-bold text-amber-300">{{ $currencyLabel }}</span>
+                        <span class="text-sm font-bold text-accent">{{ $currencyLabel }}</span>
                         <span class="num-display text-5xl md:text-6xl font-black leading-none">{{ number_format((float) ($stats['refund_total'] ?? 0), $currencyDecimals) }}</span>
                     </div>
                     <p class="mt-3 text-xs text-white/55">{{ __('Sum of approved refunds') }}</p>
@@ -219,7 +219,7 @@
                     </div>
                     <div>
                         <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-white/50">{{ __('Open Workflow') }}</div>
-                        <div class="num-display text-xl font-black mt-1 text-amber-300">{{ number_format((int) ($stats['open'] ?? 0)) }}</div>
+                        <div class="num-display text-xl font-black mt-1 text-accent">{{ number_format((int) ($stats['open'] ?? 0)) }}</div>
                     </div>
                     <div>
                         <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-white/50">{{ __('Closed') }}</div>
@@ -234,10 +234,10 @@
                     [
                         'label' => __('Requested'),
                         'value' => $statusCounts->get('requested', 0),
-                        'stripe' => 'from-amber-400 to-amber-500',
+                        'stripe' => 'from-accent to-accent',
                         'ic_bg' => 'bg-amber-100 dark:bg-amber-500/10',
-                        'ic_fg' => 'text-amber-700 dark:text-amber-300',
-                        'dot' => 'bg-amber-500',
+                        'ic_fg' => 'text-accent dark:text-accent',
+                        'dot' => 'bg-accent',
                         'foot' => __('Awaits decision'),
                         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>',
                     ],
@@ -336,7 +336,7 @@
         {{-- ═════════════ Filter card ═════════════ --}}
         <form method="GET" action="{{ route('admin.returns.index') }}" class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-5 bento-shadow mb-4">
             <div class="flex items-center gap-2.5 mb-4">
-                <div class="h-9 w-9 rounded-xl bg-[#04042a] text-amber-300 grid place-items-center">
+                <div class="h-9 w-9 rounded-xl bg-[#04041f] text-accent grid place-items-center">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
                 </div>
                 <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Filter Requests') }}</h3>
@@ -351,13 +351,13 @@
                         </span>
                         <input id="filter-search" name="search" value="{{ $currentSearch }}"
                                placeholder="{{ __('Search order, customer, email, or reason...') }}"
-                               class="h-11 w-full ps-10 pe-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 placeholder:text-slate-400 transition focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-900">
+                               class="h-11 w-full ps-10 pe-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 placeholder:text-slate-400 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-900">
                     </div>
                 </div>
                 <div>
                     <label for="filter-status" class="block text-[10.5px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5">{{ __('Status') }}</label>
                     <select id="filter-status" name="status"
-                            class="ret-select h-11 w-full px-3 rounded-xl border border-slate-200 bg-slate-50 text-sm font-semibold text-slate-900 transition focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-900">
+                            class="ret-select h-11 w-full px-3 rounded-xl border border-slate-200 bg-slate-50 text-sm font-semibold text-slate-900 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-900">
                         <option value="">{{ __('All Statuses') }}</option>
                         @foreach($statuses as $status)
                             <option value="{{ $status }}" @selected($currentStatus === $status)>
@@ -374,7 +374,7 @@
                             {{ __('Reset') }}
                         </a>
                     @endif
-                    <button type="submit" class="inline-flex items-center gap-2 h-11 px-5 rounded-xl text-xs font-bold text-amber-300 bg-[#04042a] hover:bg-[#07073a] transition">
+                    <button type="submit" class="inline-flex items-center gap-2 h-11 px-5 rounded-xl text-xs font-bold text-accent bg-[#04041f] hover:bg-[#070740] transition">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
                         {{ __('Apply Filters') }}
                     </button>
@@ -389,8 +389,8 @@
             <div class="flex flex-wrap items-center gap-4 px-5 py-4 border-b border-slate-200/70 dark:border-slate-800 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900/60 dark:to-slate-900">
                 <span class="inline-flex items-center gap-2 font-mono text-[10px] font-extrabold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400 shrink-0">
                     <span class="relative inline-flex h-1.5 w-1.5">
-                        <span class="absolute inset-0 rounded-full bg-amber-500 ys-pulse-dot"></span>
-                        <span class="relative h-1.5 w-1.5 rounded-full bg-amber-500"></span>
+                        <span class="absolute inset-0 rounded-full bg-accent ys-pulse-dot"></span>
+                        <span class="relative h-1.5 w-1.5 rounded-full bg-accent"></span>
                     </span>
                     {{ __('Quick Filter · Status') }}
                 </span>
@@ -425,7 +425,7 @@
             {{-- List card head --}}
             <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-slate-200/70 dark:border-slate-800">
                 <div class="text-sm font-extrabold text-slate-900 dark:text-white flex items-center gap-2.5">
-                    <span class="inline-block w-1 h-4 rounded-full" style="background: linear-gradient(180deg, #fbbf24, #f59e0b);"></span>
+                    <span class="inline-block w-1 h-4 rounded-full" style="background: linear-gradient(180deg, #ff8a3d, #e65c00);"></span>
                     {{ __('Requests') }}
                     <span class="text-xs font-medium text-slate-500 dark:text-slate-400">
                         ({{ __('showing :from–:to of :total', [
@@ -570,7 +570,7 @@
                                 <div>
                                     <label class="block text-[10px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">{{ __('Status') }}</label>
                                     <select name="status"
-                                            class="ret-select h-10 w-full px-2.5 rounded-lg border border-slate-200 bg-white text-[12.5px] font-semibold text-slate-900 transition focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100">
+                                            class="ret-select h-10 w-full px-2.5 rounded-lg border border-slate-200 bg-white text-[12.5px] font-semibold text-slate-900 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100">
                                         @foreach($statuses as $status)
                                             <option value="{{ $status }}" @selected($requestRow->status === $status)>
                                                 {{ $statusMeta[$status]['label'] ?? __(ucfirst(str_replace('_', ' ', (string) $status))) }}
@@ -582,19 +582,19 @@
                                     <label class="block text-[10px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">{{ __('Refund') }}</label>
                                     <input name="refund_amount" type="number" step="0.01" min="0"
                                            value="{{ $requestRow->refund_amount }}" placeholder="0"
-                                           class="h-10 w-full px-2.5 rounded-lg border border-slate-200 bg-white text-[12.5px] font-semibold text-slate-900 transition focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100">
+                                           class="h-10 w-full px-2.5 rounded-lg border border-slate-200 bg-white text-[12.5px] font-semibold text-slate-900 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100">
                                 </div>
                             </div>
 
                             <div>
                                 <label class="block text-[10px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1">{{ __('Internal note') }}</label>
                                 <textarea name="admin_note" rows="2" placeholder="{{ __('Add handling note for the team') }}"
-                                          class="w-full p-2.5 rounded-lg border border-slate-200 bg-white text-[12.5px] text-slate-900 transition focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 resize-none">{{ $requestRow->admin_note }}</textarea>
+                                          class="w-full p-2.5 rounded-lg border border-slate-200 bg-white text-[12.5px] text-slate-900 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 resize-none">{{ $requestRow->admin_note }}</textarea>
                             </div>
 
                             <button type="submit"
-                                    class="inline-flex items-center justify-center gap-2 w-full h-10 rounded-lg text-[12.5px] font-extrabold text-[#04042a] border border-amber-500/20 shadow-md shadow-amber-500/30 transition hover:brightness-105"
-                                    style="background: linear-gradient(180deg, #fbbf24, #f59e0b);">
+                                    class="inline-flex items-center justify-center gap-2 w-full h-10 rounded-lg text-[12.5px] font-extrabold text-[#04041f] border border-accent/20 shadow-md shadow-accent/30 transition hover:brightness-105"
+                                    style="background: linear-gradient(180deg, #ff8a3d, #e65c00);">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
                                 {{ __('Save Workflow') }}
                             </button>
@@ -611,7 +611,7 @@
                     <div class="text-[13px] text-slate-500 dark:text-slate-400 mt-1.5">{{ __('Try changing the search or status filter.') }}</div>
                     @if($hasActiveFilters)
                         <a href="{{ route('admin.returns.index') }}"
-                           class="inline-flex items-center gap-2 h-10 px-4 mt-4 rounded-xl text-xs font-bold text-amber-300 bg-[#04042a] hover:bg-[#07073a] transition">
+                           class="inline-flex items-center gap-2 h-10 px-4 mt-4 rounded-xl text-xs font-bold text-accent bg-[#04041f] hover:bg-[#070740] transition">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                             {{ __('Reset filters') }}
                         </a>

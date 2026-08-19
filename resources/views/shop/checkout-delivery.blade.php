@@ -168,7 +168,7 @@
                             <dt class="text-sm font-semibold text-slate-700 dark:text-slate-200">{{ __('Subtotal') }}</dt>
                             <dd class="break-all text-xl font-bold tracking-[-0.02em] text-primary dark:text-white">
                                 {{ number_format($subtotal, 2) }}
-                                <span class="text-[11px] font-semibold uppercase tracking-[0.08em] text-amber-600 dark:text-amber-300">{{ $currencySymbol }}</span>
+                                <span class="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted">{{ $currencySymbol }}</span>
                             </dd>
                         </div>
                     </dl>
@@ -204,11 +204,11 @@
                 <div class="flex items-center gap-4">
                     <p class="break-all text-lg font-bold tracking-[-0.02em]">
                         {{ number_format($subtotal, 2) }}
-                        <span class="text-[11px] font-semibold uppercase tracking-[0.08em] text-amber-300">{{ $currencySymbol }}</span>
+                        <span class="text-[11px] font-semibold uppercase tracking-[0.08em] text-white/60">{{ $currencySymbol }}</span>
                     </p>
                     <button
                         type="submit"
-                        class="group inline-flex items-center gap-2 rounded-xl bg-amber-400 px-5 py-2.5 text-sm font-bold text-slate-950 transition duration-200 hover:-translate-y-0.5 hover:bg-amber-300 hover:shadow-lg hover:shadow-black/20 active:translate-y-0 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+                        class="group inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-navy transition duration-200 hover:-translate-y-0.5 hover:bg-accent-hover hover:shadow-lg hover:shadow-black/20 active:translate-y-0 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
                     >
                         {{ __('Continue to Review') }}
                         <svg class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">

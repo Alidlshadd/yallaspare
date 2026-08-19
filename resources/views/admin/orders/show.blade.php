@@ -133,14 +133,14 @@
                 <div class="space-y-6">
                     @if($order->cancellation_requested_at)
                         <section class="rounded-2xl border border-amber-200 bg-amber-50 p-5 shadow-sm dark:border-amber-900/50 dark:bg-amber-900/20">
-                            <h3 class="text-sm font-semibold text-amber-900 dark:text-amber-200">{{ __('Cancellation Requested') }}</h3>
-                            <p class="mt-2 text-sm text-amber-800 dark:text-amber-300">
+                            <h3 class="text-sm font-semibold text-accent dark:text-accent">{{ __('Cancellation Requested') }}</h3>
+                            <p class="mt-2 text-sm text-accent dark:text-accent">
                                 {{ __('Requested on') }} {{ $order->cancellation_requested_at->format('M d, Y H:i') }}
                             </p>
                             @if($order->cancellation_reason)
-                                <p class="mt-3 rounded-xl bg-white/70 p-3 text-sm text-amber-900 dark:bg-slate-950/40 dark:text-amber-200">{{ $order->cancellation_reason }}</p>
+                                <p class="mt-3 rounded-xl bg-white/70 p-3 text-sm text-accent dark:bg-slate-950/40 dark:text-accent">{{ $order->cancellation_reason }}</p>
                             @endif
-                            <p class="mt-3 text-xs text-amber-700 dark:text-amber-300">{{ __('Use Status Management to approve by moving the order to Cancelled, or keep processing if the request is rejected.') }}</p>
+                            <p class="mt-3 text-xs text-accent dark:text-accent">{{ __('Use Status Management to approve by moving the order to Cancelled, or keep processing if the request is rejected.') }}</p>
                         </section>
                     @endif
 

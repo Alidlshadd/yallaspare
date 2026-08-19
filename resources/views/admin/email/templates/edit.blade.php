@@ -140,9 +140,9 @@
                         <div class="mx-auto max-w-md overflow-hidden rounded-lg border border-slate-300 bg-white shadow-sm dark:border-slate-700">
                             <div class="flex items-center justify-between bg-primary px-4 py-3 text-white">
                                 <span class="text-xs font-bold tracking-wide">YALLASPARE</span>
-                                <span class="font-mono text-[9px] uppercase tracking-[0.16em] text-amber-300">{{ strtoupper($templateKey) }}</span>
+                                <span class="font-mono text-[9px] uppercase tracking-[0.16em] text-accent">{{ strtoupper($templateKey) }}</span>
                             </div>
-                            <div class="h-0.5 bg-amber-500"></div>
+                            <div class="h-0.5 bg-accent"></div>
                             <div class="p-4 space-y-3">
                                 <p class="font-black text-slate-900 text-base leading-snug" id="preview-subject">{{ $subject }}</p>
                                 <div class="prose prose-sm max-w-none text-slate-700 leading-relaxed" id="preview-body">

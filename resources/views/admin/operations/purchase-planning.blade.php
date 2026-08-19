@@ -43,7 +43,7 @@
         /* Purchase Planning — Purchase List Builder (pp-) */
         .pp-add {
             width: 32px; height: 32px; border-radius: 9px;
-            background: #fbbf24; color: #422006;
+            background: #ff8a3d; color: #422006;
             font-weight: 900; font-size: 16px; line-height: 1;
             display: inline-flex; align-items: center; justify-content: center;
             box-shadow: 0 3px 8px -3px rgba(180, 83, 9, 0.5);
@@ -64,20 +64,20 @@
             font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace;
         }
         .dark .pp-tab .pp-tab-cnt { background: rgba(255,255,255,0.06); color: #94a3b8; }
-        .pp-tab.pp-tab-on { background: #04042a; color: #fff; }
-        .pp-tab.pp-tab-on .pp-tab-cnt { background: rgba(251,191,36,0.2); color: #fbbf24; }
+        .pp-tab.pp-tab-on { background: #04041f; color: #fff; }
+        .pp-tab.pp-tab-on .pp-tab-cnt { background: rgb(255 138 61 / 0.2); color: #ff8a3d; }
         .pp-tab-new { color: #b45309; }
-        .dark .pp-tab-new { color: #fbbf24; }
+        .dark .pp-tab-new { color: #ff8a3d; }
 
-        .pp-chip-draft { background: rgba(251,191,36,0.16); color: #b45309; }
-        .dark .pp-chip-draft { color: #fbbf24; }
+        .pp-chip-draft { background: rgb(255 138 61 / 0.16); color: #b45309; }
+        .dark .pp-chip-draft { color: #ff8a3d; }
         .pp-chip-saved { background: rgba(5,150,105,0.12); color: #059669; }
         .dark .pp-chip-saved { color: #34d399; }
         .pp-chip-ordered { background: rgba(3,105,161,0.12); color: #0369a1; }
         .dark .pp-chip-ordered { color: #38bdf8; }
 
         .pp-dock-head {
-            background: linear-gradient(135deg, #04042a, #10104a);
+            background: linear-gradient(135deg, #04041f, #12124a);
             position: relative; overflow: hidden;
         }
         .pp-dock-head::after {
@@ -87,7 +87,7 @@
         .pp-dock-head > * { position: relative; z-index: 1; }
 
         .pp-hero {
-            background: linear-gradient(135deg, #04042a, #10104a);
+            background: linear-gradient(135deg, #04041f, #12124a);
             position: relative; overflow: hidden;
         }
         .pp-hero::after {
@@ -125,7 +125,7 @@
                 <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-start justify-between gap-3">
                         <p class="text-xs font-bold uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500">{{ __('Low Stock') }}</p>
-                        <i class="fas fa-arrow-trend-down text-amber-500"></i>
+                        <i class="fas fa-arrow-trend-down text-accent"></i>
                     </div>
                     <p class="pp-num mt-3 text-2xl font-black text-slate-900 dark:text-slate-100">{{ number_format($summary['low_stock']) }}</p>
                 </article>
@@ -139,9 +139,9 @@
                 <article class="pp-hero rounded-2xl border border-transparent p-5 shadow-sm">
                     <div class="flex items-start justify-between gap-3">
                         <p class="text-xs font-bold uppercase tracking-[0.14em] text-white/55">{{ __('Page Budget') }}</p>
-                        <i class="fas fa-coins text-amber-400"></i>
+                        <i class="fas fa-coins text-accent"></i>
                     </div>
-                    <p class="pp-num mt-3 text-2xl font-black text-amber-400">{{ $money($summary['estimated_budget']) }}</p>
+                    <p class="pp-num mt-3 text-2xl font-black text-accent">{{ $money($summary['estimated_budget']) }}</p>
                 </article>
             </section>
 
@@ -165,7 +165,7 @@
                         @endforeach
                     </select>
                     <a href="{{ route('admin.purchase-planning.index') }}" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Reset') }}</a>
-                    <button class="rounded-xl bg-[#04042a] px-4 py-2 text-sm font-semibold text-white hover:bg-[#10104a]">{{ __('Apply') }}</button>
+                    <button class="rounded-xl bg-[#04041f] px-4 py-2 text-sm font-semibold text-white hover:bg-[#12124a]">{{ __('Apply') }}</button>
                 </div>
             </form>
 
@@ -248,7 +248,7 @@
                                         <span class="rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wide" :class="entry.statusClass" x-text="entry.statusLabel"></span>
                                     </div>
                                     <p class="mt-1 text-xs text-slate-400" x-text="entry.meta"></p>
-                                    <p class="pp-num mt-2 text-sm font-extrabold text-amber-700 dark:text-amber-400" x-text="entry.totalLabel"></p>
+                                    <p class="pp-num mt-2 text-sm font-extrabold text-accent dark:text-accent" x-text="entry.totalLabel"></p>
                                     <button type="button" class="mt-2 w-full rounded-lg border border-slate-200 bg-white py-1.5 text-xs font-bold text-slate-600 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300" @click="openView(entry)">
                                         {{ __('View items') }}
                                     </button>
@@ -281,7 +281,7 @@
                             <div class="flex items-center gap-2">
                                 <input
                                     type="text"
-                                    class="min-w-0 flex-1 border-0 border-b border-dashed border-white/25 bg-transparent p-0 pb-0.5 text-[15px] font-extrabold text-white focus:border-amber-400 focus:ring-0"
+                                    class="min-w-0 flex-1 border-0 border-b border-dashed border-white/25 bg-transparent p-0 pb-0.5 text-[15px] font-extrabold text-white focus:border-accent focus:ring-0"
                                     :value="activeName"
                                     @input="onNameInput"
                                     aria-label="{{ __('List name') }}"
@@ -299,7 +299,7 @@
                                 </div>
                                 <div class="min-w-0">
                                     <p class="text-[10px] font-extrabold uppercase tracking-[0.12em] text-white/50">{{ __('Est. Cost') }}</p>
-                                    <p class="pp-num truncate text-[15px] font-black text-amber-400" x-text="grandTotalLabel"></p>
+                                    <p class="pp-num truncate text-[15px] font-black text-accent" x-text="grandTotalLabel"></p>
                                 </div>
                             </div>
                         </div>
@@ -325,12 +325,12 @@
                                     <div class="mt-2 grid grid-cols-[84px_110px_1fr] items-center gap-1.5">
                                         <div>
                                             <label class="mb-0.5 block text-[9px] font-extrabold uppercase tracking-[0.09em] text-slate-400">{{ __('Qty') }}</label>
-                                            <input type="number" min="1" step="1" class="pp-num h-[30px] w-full rounded-lg border-slate-300 bg-slate-50 px-2 py-0 text-right text-[13px] focus:border-amber-400 focus:bg-white focus:ring-2 focus:ring-amber-400/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:bg-slate-900"
+                                            <input type="number" min="1" step="1" class="pp-num h-[30px] w-full rounded-lg border-slate-300 bg-slate-50 px-2 py-0 text-right text-[13px] focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:bg-slate-900"
                                                 :value="item.qty" :data-key="item.key" @input="onQtyInput" @change="onQtyChange">
                                         </div>
                                         <div>
                                             <label class="mb-0.5 block text-[9px] font-extrabold uppercase tracking-[0.09em] text-slate-400">{{ __('Unit cost') }}</label>
-                                            <input type="number" min="0" step="any" class="pp-num h-[30px] w-full rounded-lg border-slate-300 bg-slate-50 px-2 py-0 text-right text-[13px] focus:border-amber-400 focus:bg-white focus:ring-2 focus:ring-amber-400/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:bg-slate-900"
+                                            <input type="number" min="0" step="any" class="pp-num h-[30px] w-full rounded-lg border-slate-300 bg-slate-50 px-2 py-0 text-right text-[13px] focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:bg-slate-900"
                                                 :value="item.cost" :data-key="item.key" @input="onCostInput" @change="onCostChange">
                                         </div>
                                         <div class="text-right">
@@ -338,7 +338,7 @@
                                             <p class="pp-num text-[13px] font-extrabold text-slate-900 dark:text-slate-100" x-text="rowTotalLabel(item)"></p>
                                         </div>
                                     </div>
-                                    <input type="text" placeholder="✎ {{ __('note…') }}" class="mt-1.5 h-[26px] w-full border-0 border-b border-dashed border-slate-200 bg-transparent p-0 px-0.5 text-[11.5px] text-slate-500 focus:border-amber-400 focus:ring-0 dark:border-slate-700 dark:text-slate-400"
+                                    <input type="text" placeholder="✎ {{ __('note…') }}" class="mt-1.5 h-[26px] w-full border-0 border-b border-dashed border-slate-200 bg-transparent p-0 px-0.5 text-[11.5px] text-slate-500 focus:border-accent focus:ring-0 dark:border-slate-700 dark:text-slate-400"
                                         :value="item.note" :data-key="item.key" @input="onNoteInput">
                                 </div>
                             </template>
@@ -351,16 +351,16 @@
                         </button>
                         <div class="space-y-1.5 px-4 pb-3" x-show="abcOpen" x-cloak>
                             <div class="grid grid-cols-2 gap-1.5">
-                                <input type="text" x-model="abc.code" placeholder="{{ __('Code / SKU / part no. *') }}" class="h-8 rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-amber-400 focus:ring-2 focus:ring-amber-400/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                                <input type="text" x-model="abc.name" placeholder="{{ __('Product name (optional)') }}" class="h-8 rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-amber-400 focus:ring-2 focus:ring-amber-400/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                <input type="text" x-model="abc.code" placeholder="{{ __('Code / SKU / part no. *') }}" class="h-8 rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                <input type="text" x-model="abc.name" placeholder="{{ __('Product name (optional)') }}" class="h-8 rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             </div>
                             <div class="grid grid-cols-2 gap-1.5">
-                                <input type="number" min="1" step="1" x-model="abc.qty" placeholder="{{ __('Quantity *') }}" class="pp-num h-8 rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-amber-400 focus:ring-2 focus:ring-amber-400/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                                <input type="number" min="0" step="any" x-model="abc.cost" placeholder="{{ __('Unit cost') }}" class="pp-num h-8 rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-amber-400 focus:ring-2 focus:ring-amber-400/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                <input type="number" min="1" step="1" x-model="abc.qty" placeholder="{{ __('Quantity *') }}" class="pp-num h-8 rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                <input type="number" min="0" step="any" x-model="abc.cost" placeholder="{{ __('Unit cost') }}" class="pp-num h-8 rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             </div>
-                            <input type="text" x-model="abc.note" placeholder="{{ __('Notes') }}" class="h-8 w-full rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-amber-400 focus:ring-2 focus:ring-amber-400/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                            <input type="text" x-model="abc.note" placeholder="{{ __('Notes') }}" class="h-8 w-full rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             <p class="text-[10.5px] leading-snug text-slate-400">{{ __('Not in the product database? It is added to this list only, flagged Manual. No product record is created.') }}</p>
-                            <button type="button" class="w-full rounded-lg bg-[#04042a] py-2 text-xs font-extrabold text-white hover:bg-[#10104a]" @click="addManual">{{ __('Add to current list') }}</button>
+                            <button type="button" class="w-full rounded-lg bg-[#04041f] py-2 text-xs font-extrabold text-white hover:bg-[#12124a]" @click="addManual">{{ __('Add to current list') }}</button>
                         </div>
 
                         {{-- budget warning --}}
@@ -369,10 +369,10 @@
                         </p>
 
                         {{-- grand total --}}
-                        <div class="border-t-2 border-amber-400 bg-slate-50 px-4 py-2.5 dark:bg-slate-950/40">
+                        <div class="border-t-2 border-accent bg-slate-50 px-4 py-2.5 dark:bg-slate-950/40">
                             <div class="flex items-baseline justify-between">
                                 <span class="text-[10.5px] font-black uppercase tracking-[0.12em] text-slate-400">{{ __('Grand Total') }}</span>
-                                <span class="pp-num text-lg font-black text-amber-700 dark:text-amber-400" x-text="grandTotalLabel"></span>
+                                <span class="pp-num text-lg font-black text-accent dark:text-accent" x-text="grandTotalLabel"></span>
                             </div>
                             <p class="mt-0.5 text-right text-[11px] font-semibold text-slate-400" x-show="hasBudget" x-text="budgetRemainingLabel"></p>
                         </div>
@@ -393,7 +393,7 @@
             </div>
 
             {{-- ============ view saved list modal ============ --}}
-            <div class="fixed inset-0 z-50 flex items-center justify-center bg-[#04042a]/55 p-4" x-show="viewOpen" x-cloak @click.self="closeView" role="dialog" aria-modal="true">
+            <div class="fixed inset-0 z-50 flex items-center justify-center bg-[#04041f]/55 p-4" x-show="viewOpen" x-cloak @click.self="closeView" role="dialog" aria-modal="true">
                 <div class="max-h-[82vh] w-full max-w-xl overflow-auto rounded-2xl bg-white shadow-2xl dark:bg-slate-900">
                     <div class="pp-dock-head flex items-center justify-between px-5 py-3.5 text-white">
                         <div class="min-w-0">
@@ -428,9 +428,9 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="flex items-baseline justify-between border-t-2 border-amber-400 px-5 py-3">
+                    <div class="flex items-baseline justify-between border-t-2 border-accent px-5 py-3">
                         <span class="text-[10.5px] font-black uppercase tracking-[0.12em] text-slate-400">{{ __('Total') }}</span>
-                        <span class="pp-num text-lg font-black text-amber-700 dark:text-amber-400" x-text="viewTotalLabel"></span>
+                        <span class="pp-num text-lg font-black text-accent dark:text-accent" x-text="viewTotalLabel"></span>
                     </div>
                     <div class="flex flex-wrap items-center gap-1.5 px-5 pb-4">
                         <button type="button" class="rounded-lg border border-sky-300 px-3 py-1.5 text-xs font-extrabold text-sky-700 hover:bg-sky-50 dark:border-sky-800 dark:text-sky-300 dark:hover:bg-sky-950/30" @click="markOrdered">{{ __('Mark as Ordered') }}</button>
@@ -441,20 +441,20 @@
 
             {{-- ============ print-only purchase order ============ --}}
             <section class="pp-print">
-                <div style="border-bottom: 3px solid #04042a; padding-bottom: 12px; margin-bottom: 16px;">
+                <div style="border-bottom: 3px solid #04041f; padding-bottom: 12px; margin-bottom: 16px;">
                     <p style="margin: 0; font-size: 11px; font-weight: 900; letter-spacing: 0.15em; color: #b45309;">YALLA SPARE</p>
-                    <h1 style="margin: 2px 0 0; font-size: 22px; font-weight: 900; color: #04042a;">{{ __('Purchase Order') }} — <span x-text="activeName"></span></h1>
+                    <h1 style="margin: 2px 0 0; font-size: 22px; font-weight: 900; color: #04041f;">{{ __('Purchase Order') }} — <span x-text="activeName"></span></h1>
                     <p style="margin: 4px 0 0; font-size: 12px; color: #64748b;"><span x-text="printDateLabel"></span> · <span x-text="activeStatusLabel"></span></p>
                 </div>
                 <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
                     <thead>
                         <tr>
-                            <th style="text-align: left; border-bottom: 2px solid #04042a; padding: 6px 8px;">{{ __('Item') }}</th>
-                            <th style="text-align: left; border-bottom: 2px solid #04042a; padding: 6px 8px;">{{ __('SKU') }}</th>
-                            <th style="text-align: right; border-bottom: 2px solid #04042a; padding: 6px 8px;">{{ __('Qty') }}</th>
-                            <th style="text-align: right; border-bottom: 2px solid #04042a; padding: 6px 8px;">{{ __('Unit Cost') }}</th>
-                            <th style="text-align: right; border-bottom: 2px solid #04042a; padding: 6px 8px;">{{ __('Total') }}</th>
-                            <th style="text-align: left; border-bottom: 2px solid #04042a; padding: 6px 8px;">{{ __('Notes') }}</th>
+                            <th style="text-align: left; border-bottom: 2px solid #04041f; padding: 6px 8px;">{{ __('Item') }}</th>
+                            <th style="text-align: left; border-bottom: 2px solid #04041f; padding: 6px 8px;">{{ __('SKU') }}</th>
+                            <th style="text-align: right; border-bottom: 2px solid #04041f; padding: 6px 8px;">{{ __('Qty') }}</th>
+                            <th style="text-align: right; border-bottom: 2px solid #04041f; padding: 6px 8px;">{{ __('Unit Cost') }}</th>
+                            <th style="text-align: right; border-bottom: 2px solid #04041f; padding: 6px 8px;">{{ __('Total') }}</th>
+                            <th style="text-align: left; border-bottom: 2px solid #04041f; padding: 6px 8px;">{{ __('Notes') }}</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -470,7 +470,7 @@
                         </template>
                     </tbody>
                 </table>
-                <p style="margin-top: 14px; text-align: right; font-size: 16px; font-weight: 900; color: #04042a;">
+                <p style="margin-top: 14px; text-align: right; font-size: 16px; font-weight: 900; color: #04041f;">
                     {{ __('Grand Total') }}: <span x-text="grandTotalLabel"></span>
                 </p>
             </section>

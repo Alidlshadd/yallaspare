@@ -138,7 +138,7 @@
 
         @php $d = $deltaTone((float) $kpi['wishlist_clicks_delta']); @endphp
         <div class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 bento-shadow">
-            <div class="strip bg-gradient-to-b from-amber-400 to-amber-600"></div>
+            <div class="strip bg-gradient-to-b from-accent to-accent"></div>
             <div class="flex items-start justify-between pl-2">
                 <div>
                     <p class="kicker">{{ __('Wishlist Clicks') }}</p>
@@ -158,14 +158,14 @@
 
     {{-- Funnel + chart --}}
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#04042a] via-[#070740] to-[#0a0d3f] p-6 bento-shadow-lg lg:col-span-2">
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#04041f] via-[#070740] to-[#070740] p-6 bento-shadow-lg lg:col-span-2">
             <div class="absolute inset-0 bento-stripes-soft opacity-20 pointer-events-none"></div>
             <div class="relative flex items-start justify-between gap-4 flex-wrap">
                 <div>
                     <span class="kicker kicker-w">{{ __('Activity over time') }}</span>
                     <h3 class="mt-1 text-xl font-extrabold tracking-tight text-white">{{ __('Daily event volume') }}</h3>
                 </div>
-                <span class="rounded-md border border-amber-300/30 bg-amber-300/10 px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-amber-200">
+                <span class="rounded-md border border-accent/30 bg-accent/10 px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-accent">
                     {{ count($dailySeries['labels']) }} {{ __('days') }}
                 </span>
             </div>
@@ -193,7 +193,7 @@
                     ['label' => __('Page views'), 'value' => $kpi['page_views'], 'color' => 'bg-indigo-500'],
                     ['label' => __('Product views'), 'value' => $kpi['product_views'], 'color' => 'bg-cyan-500'],
                     ['label' => __('Add to cart'), 'value' => $kpi['cart_adds'], 'color' => 'bg-rose-500'],
-                    ['label' => __('Checkout started'), 'value' => $kpi['checkout_starts'], 'color' => 'bg-amber-500'],
+                    ['label' => __('Checkout started'), 'value' => $kpi['checkout_starts'], 'color' => 'bg-accent'],
                     ['label' => __('Orders completed'), 'value' => $kpi['orders_completed'], 'color' => 'bg-emerald-500'],
                 ];
                 $funnelMax = max(1, max(array_column($funnel, 'value')));
@@ -233,7 +233,7 @@
             $tables = [
                 ['title' => __('Top viewed'), 'icon' => 'far fa-eye', 'iconColor' => 'text-indigo-600', 'rows' => $topViewed, 'empty' => __('No product views yet.')],
                 ['title' => __('Top cart adds'), 'icon' => 'fas fa-cart-plus', 'iconColor' => 'text-rose-600', 'rows' => $topCartAdds, 'empty' => __('No add-to-cart events yet.')],
-                ['title' => __('Top wishlisted'), 'icon' => 'far fa-heart', 'iconColor' => 'text-amber-600', 'rows' => $topWishlisted, 'empty' => __('No wishlist activity yet.')],
+                ['title' => __('Top wishlisted'), 'icon' => 'far fa-heart', 'iconColor' => 'text-accent', 'rows' => $topWishlisted, 'empty' => __('No wishlist activity yet.')],
             ];
         @endphp
         @foreach($tables as $table)

@@ -4,13 +4,17 @@
     $formOrder = $isFormLeft ? 'lg:order-1' : 'lg:order-2';
     $panelEnterClass = $enterDirection === 'left' ? 'auth-enter-left' : 'auth-enter-right';
     $asideEnterClass = $enterDirection === 'left' ? 'auth-enter-right' : 'auth-enter-left';
+    // Login and register used to be told apart by hue — sky versus amber —
+    // neither of which is a brand colour. They are the same brand now; the
+    // panel that is *not* the current page is the one wearing the accent,
+    // since its button is the way across.
     $isRegisterTheme = $panelTheme === 'register';
     $tagClasses = $isRegisterTheme
-        ? 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-300/30 dark:bg-amber-300/10 dark:text-amber-100'
-        : 'border-sky-200 bg-sky-50 text-sky-700 dark:border-sky-300/30 dark:bg-sky-300/10 dark:text-sky-100';
+        ? 'border-accent/35 bg-accent/10 text-accent-ink dark:border-accent/30 dark:bg-accent/10 dark:text-accent'
+        : 'border-slate-200 bg-slate-50 text-slate-600 dark:border-white/10 dark:bg-white/5 dark:text-slate-300';
     $buttonClasses = $isRegisterTheme
-        ? 'border-amber-200 bg-amber-50 text-amber-700 hover:border-amber-300 hover:bg-amber-100 dark:border-amber-400/40 dark:bg-amber-300/10 dark:text-amber-100 dark:hover:border-amber-300/70 dark:hover:bg-amber-300/20'
-        : 'border-sky-200 bg-sky-50 text-sky-700 hover:border-sky-300 hover:bg-sky-100 dark:border-sky-400/40 dark:bg-sky-300/10 dark:text-sky-100 dark:hover:border-sky-300/70 dark:hover:bg-sky-300/20';
+        ? 'border-accent/35 bg-accent/10 text-accent-ink hover:border-accent/60 hover:bg-accent/15 dark:border-accent/40 dark:bg-accent/10 dark:text-accent dark:hover:border-accent/70 dark:hover:bg-accent/20'
+        : 'border-slate-200 bg-white text-slate-700 hover:border-slate-300 hover:bg-slate-50 dark:border-white/10 dark:bg-white/5 dark:text-slate-200 dark:hover:border-white/20 dark:hover:bg-white/10';
 @endphp
 
 <!DOCTYPE html>
@@ -89,12 +93,12 @@
         }
 
         html:not(.dark) #auth-panel a:hover {
-            color: #dc2626 !important;
-            text-decoration-color: #f87171 !important;
+            color: var(--brand-orange-ink) !important;
+            text-decoration-color: var(--brand-orange) !important;
         }
     </style>
 </head>
-<body class="min-h-screen bg-slate-50 text-slate-950 antialiased selection:bg-red-600 selection:text-white dark:bg-slate-950 dark:text-white">
+<body class="min-h-screen bg-slate-50 text-slate-950 antialiased selection:bg-accent selection:text-navy dark:bg-slate-950 dark:text-white">
     <x-loading-overlay message="{{ __('Processing, please wait...') }}" variant="full" />
 
     <div class="fixed right-4 top-4 z-50">
@@ -102,12 +106,12 @@
     </div>
 
     <main class="relative flex min-h-screen items-center justify-center overflow-hidden px-4 py-8 sm:px-6 lg:px-8">
-        <div class="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top,_rgba(37,99,235,0.10),_transparent_42%),radial-gradient(circle_at_75%_80%,_rgba(220,38,38,0.08),_transparent_30%)] dark:bg-[radial-gradient(circle_at_top,_rgba(37,99,235,0.22),_transparent_42%),radial-gradient(circle_at_75%_80%,_rgba(220,38,38,0.14),_transparent_30%)]"></div>
+        <div class="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top,_rgba(7,7,64,0.09),_transparent_42%),radial-gradient(circle_at_75%_80%,_rgba(255,106,0,0.07),_transparent_30%)] dark:bg-[radial-gradient(circle_at_top,_rgba(43,43,143,0.30),_transparent_42%),radial-gradient(circle_at_75%_80%,_rgba(255,138,61,0.10),_transparent_30%)]"></div>
 
         <section class="grid w-full max-w-6xl grid-cols-1 overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-2xl shadow-slate-900/10 backdrop-blur dark:border-white/10 dark:bg-slate-900/50 dark:shadow-black/50 lg:grid-cols-2">
             <aside id="auth-aside" class="relative overflow-hidden bg-gradient-to-br from-white via-slate-50 to-slate-100 p-8 text-slate-950 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 dark:text-white sm:p-10 lg:p-12 {{ $asideOrder }} {{ $asideEnterClass }}">
                 <div class="pointer-events-none absolute -left-10 top-10 h-40 w-40 rounded-full border border-slate-200 dark:border-white/10"></div>
-                <div class="pointer-events-none absolute right-12 top-20 h-24 w-24 rotate-12 rounded-lg border border-red-200 dark:border-red-400/20"></div>
+                <div class="pointer-events-none absolute right-12 top-20 h-24 w-24 rotate-12 rounded-lg border border-accent/25 dark:border-accent/25"></div>
                 <div class="pointer-events-none absolute -bottom-10 right-0 h-52 w-52 rounded-full bg-slate-200/70 blur-2xl dark:bg-white/5"></div>
 
                 <div class="relative z-10">

@@ -51,7 +51,7 @@
                 </p>
                 <a
                     href="{{ route('admin.activity-logs.export-excel', array_filter(['model' => $model])) }}"
-                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-amber-400 px-4 py-2 text-sm font-bold text-slate-900 shadow-sm transition hover:bg-amber-300"
+                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-bold text-slate-900 shadow-sm transition hover:bg-accent"
                 >
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v11m0 0 4-4m-4 4-4-4" />
@@ -99,7 +99,7 @@
                                 type="text"
                                 value="{{ $search ?? '' }}"
                                 placeholder="{{ __('Search logs...') }}"
-                                class="w-full rounded-lg border-gray-300 bg-white ps-9 text-sm text-slate-900 placeholder:text-gray-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500"
+                                class="w-full rounded-lg border-gray-300 bg-white ps-9 text-sm text-slate-900 placeholder:text-gray-400 focus:border-accent focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500"
                                 autocomplete="off"
                             />
                         </div>
@@ -208,7 +208,7 @@
                                                 </span>
                                                 <div class="min-w-0">
                                                     @if($target['url'])
-                                                        <a href="{{ $target['url'] }}" class="block truncate font-semibold text-gray-800 hover:text-amber-700 dark:text-slate-100 dark:hover:text-amber-300">{{ $target['name'] }}</a>
+                                                        <a href="{{ $target['url'] }}" class="block truncate font-semibold text-gray-800 hover:text-accent dark:text-slate-100 dark:hover:text-accent">{{ $target['name'] }}</a>
                                                     @else
                                                         <div class="truncate font-semibold text-gray-800 dark:text-slate-100">{{ $target['name'] }}</div>
                                                     @endif
@@ -234,7 +234,7 @@
                                                         <div class="truncate text-[11px] text-gray-500 dark:text-slate-400">{{ $actorRole }}@if($log->causer?->email) · {{ $log->causer->email }}@endif</div>
                                                     </div>
                                                     <div class="rounded-lg border border-amber-200 bg-amber-50/60 px-3 py-2.5 dark:border-amber-400/20 dark:bg-amber-400/5">
-                                                        <div class="text-[10px] font-bold uppercase tracking-widest text-amber-700/70 dark:text-amber-300/70">{{ __('Affected record') }}</div>
+                                                        <div class="text-[10px] font-bold uppercase tracking-widest text-accent/70 dark:text-accent/70">{{ __('Affected record') }}</div>
                                                         <div class="mt-1 truncate text-sm font-bold text-gray-800 dark:text-slate-100">{{ $target['name'] }}</div>
                                                         <div class="truncate text-[11px] text-gray-500 dark:text-slate-400">{{ $target['type'] }} #{{ $target['id'] ?? '-' }}@if($target['secondary']) · {{ $target['secondary'] }}@endif</div>
                                                     </div>
@@ -256,7 +256,7 @@
                                                         <div class="text-[11px] text-gray-400 dark:text-slate-500">{{ __('Previous and new values recorded for this action.') }}</div>
                                                     </div>
                                                     @if($target['url'])
-                                                        <a href="{{ $target['url'] }}" class="shrink-0 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[11px] font-bold text-gray-600 hover:border-amber-300 hover:text-amber-700 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-amber-400/40 dark:hover:text-amber-300">{{ __('Open target') }}</a>
+                                                        <a href="{{ $target['url'] }}" class="shrink-0 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[11px] font-bold text-gray-600 hover:border-accent hover:text-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-accent/40 dark:hover:text-accent">{{ __('Open target') }}</a>
                                                     @endif
                                                 </div>
 

@@ -11,7 +11,7 @@
     <style>
         .otp-grid { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: .5rem; }
         .otp-box { height: 3.5rem; border-radius: .875rem; border: 1px solid #cbd5e1; background: #fff; color: #0f172a; text-align: center; font-size: 1.35rem; font-weight: 700; line-height: 1; outline: none; transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease, background-color 160ms ease; }
-        .otp-box:focus { border-color: #dc2626; box-shadow: 0 0 0 4px rgba(239, 68, 68, .18); transform: translateY(-1px); }
+        .otp-box:focus { border-color: var(--brand-orange); box-shadow: 0 0 0 4px var(--focus); transform: translateY(-1px); }
         .otp-box:not(:placeholder-shown) { border-color: #94a3b8; background: #f8fafc; }
         .dark .otp-box { border-color: #334155; background: rgba(30, 41, 59, .9); color: #f8fafc; }
         .dark .otp-box:focus { border-color: #ef4444; box-shadow: 0 0 0 4px rgba(239, 68, 68, .2); }
@@ -61,7 +61,7 @@
 
         <button
             type="submit"
-            class="pointer-events-auto touch-manipulation mt-5 inline-flex h-12 w-full items-center justify-center rounded-lg bg-red-600 px-4 text-sm font-semibold text-white shadow-lg shadow-red-950/40 transition hover:bg-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 disabled:cursor-not-allowed disabled:opacity-60"
+            class="pointer-events-auto touch-manipulation mt-5 inline-flex h-12 w-full items-center justify-center rounded-lg bg-accent px-4 text-sm font-semibold text-navy shadow-lg shadow-navy/25 transition hover:bg-accent-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:cursor-not-allowed disabled:opacity-60"
             data-loading-button
             data-loading-text="{{ __('Verifying...') }}"
         >

@@ -11,14 +11,14 @@
 
         {{-- ═════════════ Hero ═════════════ --}}
         <div class="relative overflow-hidden rounded-2xl mb-4 p-6 text-white"
-             style="background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);">
+             style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
             <div class="absolute inset-0 bento-stripes pointer-events-none opacity-50"></div>
-            <div class="absolute top-0 bottom-0 left-0 w-[3px]" style="background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);"></div>
-            <div class="absolute -top-16 -right-16 h-64 w-64 rounded-full bg-amber-400/10 blur-[60px] pointer-events-none"></div>
+            <div class="absolute top-0 bottom-0 left-0 w-[3px]" style="background: linear-gradient(180deg, #ff8a3d 0%, #e65c00 100%);"></div>
+            <div class="absolute -top-16 -right-16 h-64 w-64 rounded-full bg-accent/10 blur-[60px] pointer-events-none"></div>
 
             <div class="relative flex flex-wrap items-center justify-between gap-4">
                 <div>
-                    <div class="font-mono text-[10px] font-extrabold uppercase tracking-[0.28em] text-amber-300">{{ __('Marketing · Announcements') }}</div>
+                    <div class="font-mono text-[10px] font-extrabold uppercase tracking-[0.28em] text-accent">{{ __('Marketing · Announcements') }}</div>
                     <h1 class="text-2xl font-black mt-2 leading-tight">{{ __('Create Popup') }}</h1>
                     <p class="text-sm text-white/65 mt-1.5">{{ __('Publish a promotional or informational popup on the storefront.') }}</p>
                 </div>

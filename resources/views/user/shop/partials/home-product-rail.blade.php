@@ -158,19 +158,19 @@
                                     @if ((int) data_get($product, 'stock_quantity', 0) > 0)
                                         <form method="POST" action="{{ route('cart.add', (int) data_get($product, 'id')) }}" class="js-add-cart-form h-full">
                                             @csrf
-                                            <button type="submit" class="js-add-cart-button inline-flex h-full w-full items-center justify-center rounded-xl bg-primary px-3 py-2.5 text-xs font-medium text-white transition duration-200 hover:bg-[#0a0a55] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
+                                            <button type="submit" class="js-add-cart-button inline-flex h-full w-full items-center justify-center rounded-xl bg-primary px-3 py-2.5 text-xs font-medium text-white transition duration-200 hover:bg-[#12124a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
                                                 {{ __('Add to Cart') }}
                                             </button>
                                         </form>
                                     @elseif ($isCustomerAuthenticated)
                                         <form method="POST" action="{{ route('shop.back-in-stock.store', (int) data_get($product, 'id')) }}" class="h-full">
                                             @csrf
-                                            <button type="submit" class="inline-flex h-full w-full items-center justify-center rounded-xl bg-primary px-3 py-2.5 text-xs font-medium text-white transition duration-200 hover:bg-[#0a0a55] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
+                                            <button type="submit" class="inline-flex h-full w-full items-center justify-center rounded-xl bg-primary px-3 py-2.5 text-xs font-medium text-white transition duration-200 hover:bg-[#12124a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
                                                 {{ __('Send Request') }}
                                             </button>
                                         </form>
                                     @else
-                                        <a href="{{ route('login') }}" class="inline-flex h-full w-full items-center justify-center rounded-xl bg-primary px-3 py-2.5 text-center text-xs font-medium text-white transition duration-200 hover:bg-[#0a0a55] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
+                                        <a href="{{ route('login') }}" class="inline-flex h-full w-full items-center justify-center rounded-xl bg-primary px-3 py-2.5 text-center text-xs font-medium text-white transition duration-200 hover:bg-[#12124a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
                                             {{ __('Send Request') }}
                                         </a>
                                     @endif

@@ -20,7 +20,7 @@
             <x-password-input
                 id="password"
                 container-class="mt-2"
-                class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition duration-200 focus:border-red-500 focus:ring-red-500 dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100 dark:placeholder:text-slate-500"
+                class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 shadow-sm transition duration-200 focus:border-accent focus:ring-accent dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100 dark:placeholder:text-slate-500"
                 name="password"
                 required
                 autofocus
@@ -32,7 +32,7 @@
 
         <button
             type="submit"
-            class="pointer-events-auto touch-manipulation mt-2 inline-flex h-12 w-full items-center justify-center rounded-lg bg-red-600 px-4 text-sm font-semibold text-white shadow-lg shadow-red-950/40 transition duration-200 hover:bg-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
+            class="pointer-events-auto touch-manipulation mt-2 inline-flex h-12 w-full items-center justify-center rounded-lg bg-accent px-4 text-sm font-semibold text-navy shadow-lg shadow-navy/25 transition duration-200 hover:bg-accent-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-900"
             data-loading-button
             data-loading-text="{{ __('Confirming...') }}"
         >

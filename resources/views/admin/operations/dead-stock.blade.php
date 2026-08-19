@@ -25,7 +25,7 @@
     <style>
         .ds-hero {
             position: relative; overflow: hidden;
-            background: linear-gradient(135deg, #04042a, #10104a);
+            background: linear-gradient(135deg, #04041f, #12124a);
             border-radius: 16px; padding: 18px 20px; color: #fff;
         }
         .ds-hero::after {
@@ -35,7 +35,7 @@
         .ds-hero > * { position: relative; z-index: 1; }
         .ds-hero .ds-lbl { color: rgba(255,255,255,0.55); }
         .ds-hero-big {
-            margin-top: 6px; font-size: 28px; font-weight: 900; line-height: 1.1; color: #fbbf24;
+            margin-top: 6px; font-size: 28px; font-weight: 900; line-height: 1.1; color: #ff8a3d;
             font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace; font-variant-numeric: tabular-nums;
         }
         .ds-hero-sub { margin-top: 4px; font-size: 12px; color: rgba(255,255,255,0.65); }
@@ -65,22 +65,22 @@
             border: 1px solid #e2e8f0; background: #fff; color: #475569;
             text-decoration: none; transition: all .15s ease;
         }
-        .ds-chip:hover { background: #f8fafc; border-color: #cbd5e1; color: #04042a; }
+        .ds-chip:hover { background: #f8fafc; border-color: #cbd5e1; color: #04041f; }
         .ds-chip .cnt {
             background: rgba(15,23,42,0.06); padding: 1px 7px; border-radius: 999px;
             font-size: 10.5px; font-weight: 800; color: #475569;
             font-family: ui-monospace, 'JetBrains Mono', Consolas, monospace;
         }
         .ds-chip.on {
-            background: #04042a; color: #fcd34d; border-color: #04042a;
+            background: #04041f; color: #ffb27a; border-color: #04041f;
             box-shadow: 0 6px 14px -8px rgba(4,4,42,0.40);
         }
-        .ds-chip.on .cnt { background: rgba(252,211,77,0.18); color: #fcd34d; }
+        .ds-chip.on .cnt { background: rgba(252,211,77,0.18); color: #ffb27a; }
         .dark .ds-chip { background: #1e293b; border-color: #334155; color: #cbd5e1; }
         .dark .ds-chip .cnt { background: rgba(255,255,255,0.06); color: #cbd5e1; }
         .dark .ds-chip:hover { background: #334155; color: #fff; }
-        .dark .ds-chip.on { background: #fbbf24; color: #04042a; border-color: #fbbf24; }
-        .dark .ds-chip.on .cnt { background: rgba(4,4,42,0.18); color: #04042a; }
+        .dark .ds-chip.on { background: #ff8a3d; color: #04041f; border-color: #ff8a3d; }
+        .dark .ds-chip.on .cnt { background: rgba(4,4,42,0.18); color: #04041f; }
         .ds-chip.rose.on { background: #f43f5e; color: #fff; border-color: #f43f5e; box-shadow: 0 6px 14px -8px rgba(244,63,94,0.45); }
         .dark .ds-chip.rose.on { background: #f43f5e; color: #fff; border-color: #f43f5e; }
 
@@ -90,21 +90,21 @@
             background: #f8fafc; color: #0f172a;
         }
         .ds-inp:focus {
-            outline: none; border-color: #fbbf24; background: #fff;
-            box-shadow: 0 0 0 3px rgba(251,191,36,0.25);
+            outline: none; border-color: #ff8a3d; background: #fff;
+            box-shadow: 0 0 0 3px rgb(255 138 61 / 0.25);
         }
         .dark .ds-inp { background: #1e293b; border-color: #334155; color: #f1f5f9; }
         .dark .ds-inp:focus { background: #0f172a; }
 
         .ds-btn {
             display: inline-flex; align-items: center; justify-content: center;
-            height: 38px; padding: 0 18px; border-radius: 10px; border: 1px solid #04042a;
-            background: #04042a; color: #fcd34d; font-size: 12px; font-weight: 800; cursor: pointer;
+            height: 38px; padding: 0 18px; border-radius: 10px; border: 1px solid #04041f;
+            background: #04041f; color: #ffb27a; font-size: 12px; font-weight: 800; cursor: pointer;
             transition: all .15s ease;
         }
-        .ds-btn:hover { background: #07073a; transform: translateY(-1px); }
-        .dark .ds-btn { background: #fbbf24; color: #04042a; border-color: #fbbf24; }
-        .dark .ds-btn:hover { background: #f59e0b; }
+        .ds-btn:hover { background: #070740; transform: translateY(-1px); }
+        .dark .ds-btn { background: #ff8a3d; color: #04041f; border-color: #ff8a3d; }
+        .dark .ds-btn:hover { background: #e65c00; }
 
         /* Age pills */
         .ds-pill {
@@ -113,7 +113,7 @@
             white-space: nowrap;
         }
         .ds-pill.idle { background: #fef3c7; color: #b45309; }
-        .dark .ds-pill.idle { background: rgba(251,191,36,0.14); color: #fcd34d; }
+        .dark .ds-pill.idle { background: rgb(255 138 61 / 0.14); color: #ffb27a; }
         .ds-pill.old { background: #ffe4e6; color: #be123c; }
         .dark .ds-pill.old { background: rgba(244,63,94,0.14); color: #fda4af; }
         .ds-pill.never { background: #f43f5e; color: #fff; font-family: inherit; letter-spacing: 0.04em; }
@@ -126,7 +126,7 @@
         .dark .ds-vbar { background: #1e293b; }
         .ds-vbar i {
             position: absolute; inset-block: 0; inset-inline-start: 0; border-radius: 7px;
-            background: linear-gradient(90deg, #fbbf24, #f59e0b); opacity: 0.8;
+            background: linear-gradient(90deg, #ff8a3d, #e65c00); opacity: 0.8;
         }
         .ds-vbar b {
             position: absolute; inset: 0; display: flex; align-items: center; justify-content: flex-end;
@@ -140,7 +140,7 @@
             font-size: 11px; font-weight: 700; color: #475569; text-decoration: none;
             transition: all .15s ease;
         }
-        .ds-edit:hover { background: #f8fafc; border-color: #cbd5e1; color: #04042a; }
+        .ds-edit:hover { background: #f8fafc; border-color: #cbd5e1; color: #04041f; }
         .dark .ds-edit { border-color: #334155; color: #cbd5e1; }
         .dark .ds-edit:hover { background: #334155; color: #fff; }
     </style>

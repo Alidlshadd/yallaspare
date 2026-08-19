@@ -34,7 +34,19 @@
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}?v={{ $iconVersion }}">
 @endif
 <link rel="manifest" href="{{ route('brand.manifest') }}">
-<meta name="theme-color" content="#0f172a">
+{{-- The webfont lives here, not in the layouts. Only layouts/app and
+     layouts/guest ever linked it, so the whole storefront — layouts/user,
+     user-account, auth-split, legal — fell back to the OS font while
+     tailwind.config.js still asked for Figtree. Every layout includes this
+     partial, so one link covers the system.
+
+     Weight 700 is loaded because it is used: font-bold appears 688 times,
+     and without the file the browser was synthesising every heading and
+     price. 800 and 900 are deliberately absent — they should be edited out
+     of the markup rather than downloaded. --}}
+<link rel="preconnect" href="https://fonts.bunny.net">
+<link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
+<meta name="theme-color" content="#070740">
 <meta property="og:site_name" content="{{ $siteName }}">
 <meta property="og:type" content="website">
 <meta property="og:title" content="{{ $metaTitle }}">

@@ -24,7 +24,7 @@
     $showSocialLogin = $showGoogle || $showApple;
 
     $buttonBase = 'group inline-flex min-h-11 items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-700 shadow-sm shadow-slate-900/5 dark:border-slate-700 dark:bg-slate-800/80 dark:text-slate-100 dark:shadow-black/20';
-    $buttonActive = 'transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md hover:shadow-slate-900/10 active:translate-y-0 active:scale-[0.98] motion-reduce:transform-none motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:hover:shadow-black/30 dark:focus-visible:ring-offset-slate-900';
+    $buttonActive = 'transition-all duration-200 ease-out hover:-translate-y-0.5 hover:shadow-md hover:shadow-slate-900/10 active:translate-y-0 active:scale-[0.98] motion-reduce:transform-none motion-reduce:transition-none focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:hover:shadow-black/30 dark:focus-visible:ring-offset-slate-900';
 @endphp
 
 @if ($showSocialLogin)
@@ -39,7 +39,7 @@
             @if ($showGoogle)
                 <a
                     href="{{ route('auth.google.redirect') }}"
-                    class="{{ $buttonBase }} {{ $buttonActive }} hover:border-red-200 hover:bg-red-50 dark:hover:border-slate-500 dark:hover:bg-slate-800"
+                    class="{{ $buttonBase }} {{ $buttonActive }} hover:border-accent/40 hover:bg-accent/5 dark:hover:border-slate-500 dark:hover:bg-slate-800"
                     aria-label="{{ __('Continue with Google') }}"
                 >
                     <span class="inline-flex h-5 w-5 shrink-0 items-center justify-center transition-transform duration-200 ease-out group-hover:scale-110 motion-reduce:transform-none" aria-hidden="true">

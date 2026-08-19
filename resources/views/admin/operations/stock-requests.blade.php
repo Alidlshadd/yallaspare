@@ -39,7 +39,7 @@
     <style>
         /* Stock Requests board (sr-) */
         .sr-hero {
-            background: linear-gradient(135deg, #04042a, #10104a);
+            background: linear-gradient(135deg, #04041f, #12124a);
             position: relative; overflow: hidden;
         }
         .sr-hero::after {
@@ -56,16 +56,16 @@
             font-size: 12px; border: 1px solid #e2e8f0; color: #64748b; background: #fff;
             transition: transform .12s ease, background .15s ease, color .15s ease;
         }
-        .sr-icon-btn:hover { transform: scale(1.06); color: #04042a; border-color: #cbd5e1; }
+        .sr-icon-btn:hover { transform: scale(1.06); color: #04041f; border-color: #cbd5e1; }
         .dark .sr-icon-btn { background: #0f172a; border-color: #334155; color: #94a3b8; }
         .dark .sr-icon-btn:hover { color: #f1f5f9; }
 
         .sr-add {
-            background: #fbbf24; border-color: #fbbf24; color: #422006;
+            background: #ff8a3d; border-color: #ff8a3d; color: #422006;
             box-shadow: 0 3px 8px -3px rgba(180, 83, 9, 0.5);
         }
-        .sr-add:hover { color: #422006; border-color: #f59e0b; }
-        .dark .sr-add { background: #fbbf24; border-color: #fbbf24; color: #422006; }
+        .sr-add:hover { color: #422006; border-color: #e65c00; }
+        .dark .sr-add { background: #ff8a3d; border-color: #ff8a3d; color: #422006; }
         .dark .sr-add:hover { color: #422006; }
         .sr-add .sr-ic-added { display: none; }
         .sr-add.sr-added { background: #059669; border-color: #059669; color: #fff; box-shadow: none; }
@@ -74,8 +74,8 @@
         .sr-add.sr-added .sr-ic-add { display: none; }
         .sr-add.sr-added .sr-ic-added { display: inline; }
 
-        .sr-chip-waiting { background: rgba(251,191,36,0.16); color: #b45309; }
-        .dark .sr-chip-waiting { color: #fbbf24; }
+        .sr-chip-waiting { background: rgb(255 138 61 / 0.16); color: #b45309; }
+        .dark .sr-chip-waiting { color: #ff8a3d; }
         .sr-chip-notified { background: rgba(5,150,105,0.12); color: #059669; }
         .dark .sr-chip-notified { color: #34d399; }
     </style>
@@ -91,7 +91,7 @@
 
             <section class="sr-hero flex flex-col gap-3 rounded-2xl px-5 py-4 text-white shadow-sm sm:flex-row sm:items-center sm:justify-between">
                 <div>
-                    <p class="text-xs font-black uppercase tracking-[0.14em] text-amber-400">{{ __('Automatic restock notifications') }}</p>
+                    <p class="text-xs font-black uppercase tracking-[0.14em] text-accent">{{ __('Automatic restock notifications') }}</p>
                     <p class="mt-1 text-sm text-white/75">{{ __('When stock changes from zero to available, waiting customers are notified automatically.') }}</p>
                 </div>
                 <span class="inline-flex w-fit items-center gap-2 rounded-full bg-emerald-400/15 px-3 py-1.5 text-xs font-extrabold text-emerald-300 ring-1 ring-inset ring-emerald-300/25">
@@ -104,9 +104,9 @@
                 <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-start justify-between gap-2">
                         <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400 dark:text-slate-500">{{ __('Pending') }}</p>
-                        <i class="fas fa-hourglass-half text-amber-500"></i>
+                        <i class="fas fa-hourglass-half text-accent"></i>
                     </div>
-                    <p class="sr-num mt-2 text-2xl font-black text-amber-700 dark:text-amber-400">{{ number_format($summary['pending']) }}</p>
+                    <p class="sr-num mt-2 text-2xl font-black text-accent dark:text-accent">{{ number_format($summary['pending']) }}</p>
                 </article>
                 <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-start justify-between gap-2">
@@ -139,9 +139,9 @@
                 <article class="sr-hero rounded-2xl border border-transparent p-4 shadow-sm">
                     <div class="flex items-start justify-between gap-2">
                         <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-white/55">{{ __('In Purchase List') }}</p>
-                        <i class="fas fa-cart-shopping text-amber-400"></i>
+                        <i class="fas fa-cart-shopping text-accent"></i>
                     </div>
-                    <p class="sr-num mt-2 text-2xl font-black text-amber-400" x-text="inListCountLabel">0</p>
+                    <p class="sr-num mt-2 text-2xl font-black text-accent" x-text="inListCountLabel">0</p>
                     <p class="text-[10px] text-white/45">{{ __('on this page') }}</p>
                 </article>
             </section>
@@ -156,7 +156,7 @@
                         @endforeach
                     </select>
                     <a href="{{ route('admin.stock-requests.index') }}" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Reset') }}</a>
-                    <button class="rounded-xl bg-[#04042a] px-4 py-2 text-sm font-semibold text-white hover:bg-[#10104a]">{{ __('Filter') }}</button>
+                    <button class="rounded-xl bg-[#04041f] px-4 py-2 text-sm font-semibold text-white hover:bg-[#12124a]">{{ __('Filter') }}</button>
                 </div>
             </form>
 
@@ -222,7 +222,7 @@
                                             <span class="mt-1 block"><span class="inline-flex rounded-full px-2 py-0.5 text-[10px] font-black uppercase tracking-wide {{ $stockBadge['class'] }}">{{ $stockBadge['label'] }}</span></span>
                                         </td>
                                         <td class="sr-num px-4 py-3 text-right text-slate-600 dark:text-slate-300">{{ number_format((int) $product->request_count) }}</td>
-                                        <td class="sr-num px-4 py-3 text-right text-lg font-black {{ $pending > 0 ? 'text-amber-700 dark:text-amber-400' : 'text-slate-300 dark:text-slate-600' }}">{{ number_format($pending) }}</td>
+                                        <td class="sr-num px-4 py-3 text-right text-lg font-black {{ $pending > 0 ? 'text-accent dark:text-accent' : 'text-slate-300 dark:text-slate-600' }}">{{ number_format($pending) }}</td>
                                         <td class="px-4 py-3 text-right text-xs text-slate-500">{{ optional($product->latest_requested_at ? \Carbon\Carbon::parse($product->latest_requested_at) : null)->diffForHumans() ?? __('N/A') }}</td>
                                         <td class="px-4 py-3">
                                             <span class="inline-flex rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-wide {{ $priority['class'] }}">{{ $priority['label'] }}</span>
@@ -243,7 +243,7 @@
                                                     <form method="POST" action="{{ route('admin.stock-requests.notify', $product) }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button class="rounded-lg bg-[#04042a] px-2.5 py-1.5 text-[11px] font-bold text-white hover:bg-[#10104a]">{{ __('Send Notifications') }}</button>
+                                                        <button class="rounded-lg bg-[#04041f] px-2.5 py-1.5 text-[11px] font-bold text-white hover:bg-[#12124a]">{{ __('Send Notifications') }}</button>
                                                     </form>
                                                 @elseif($pending > 0)
                                                     <span class="rounded-lg bg-amber-50 px-2.5 py-1.5 text-[11px] font-bold text-amber-700 dark:bg-amber-950/40 dark:text-amber-300">{{ __('Awaiting stock') }}</span>
@@ -261,7 +261,7 @@
                                             <p class="mt-1 text-xs text-slate-400">{{ __('Requests will appear here when customers ask for unavailable products.') }}</p>
                                             <div class="mt-4 flex justify-center gap-2">
                                                 <a href="{{ route('admin.products.index') }}" class="rounded-xl border border-slate-200 px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Go to Products') }}</a>
-                                                <a href="{{ route('admin.purchase-planning.index') }}" class="rounded-xl bg-[#04042a] px-4 py-2 text-xs font-bold text-white hover:bg-[#10104a]">{{ __('Purchase Planning') }}</a>
+                                                <a href="{{ route('admin.purchase-planning.index') }}" class="rounded-xl bg-[#04041f] px-4 py-2 text-xs font-bold text-white hover:bg-[#12124a]">{{ __('Purchase Planning') }}</a>
                                             </div>
                                         </td>
                                     </tr>
@@ -310,11 +310,11 @@
             @endunless
 
             {{-- ============ waiting customers drawer ============ --}}
-            <div class="fixed inset-0 z-50 bg-[#04042a]/55" x-show="drawerOpen" x-cloak @click.self="closeDrawer" role="dialog" aria-modal="true">
+            <div class="fixed inset-0 z-50 bg-[#04041f]/55" x-show="drawerOpen" x-cloak @click.self="closeDrawer" role="dialog" aria-modal="true">
                 <aside class="absolute end-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl dark:bg-slate-900">
                     <div class="sr-hero flex items-start justify-between gap-3 px-5 py-4 text-white">
                         <div class="min-w-0">
-                            <p class="text-[10px] font-black uppercase tracking-[0.14em] text-amber-400">{{ __('Waiting customers') }}</p>
+                            <p class="text-[10px] font-black uppercase tracking-[0.14em] text-accent">{{ __('Waiting customers') }}</p>
                             <h3 class="mt-0.5 truncate text-[15px] font-extrabold" x-text="drawerName"></h3>
                             <p class="text-[11px] text-white/60" x-text="drawerMeta"></p>
                         </div>
@@ -343,10 +343,10 @@
                         <form method="POST" :action="drawerNotifyUrl" x-show="drawerCanNotify">
                             @csrf
                             @method('PATCH')
-                            <button class="rounded-lg bg-[#04042a] px-3.5 py-2 text-xs font-extrabold text-white hover:bg-[#10104a]">{{ __('Send Notifications') }}</button>
+                            <button class="rounded-lg bg-[#04041f] px-3.5 py-2 text-xs font-extrabold text-white hover:bg-[#12124a]">{{ __('Send Notifications') }}</button>
                         </form>
                         <span class="rounded-lg bg-amber-50 px-3.5 py-2 text-xs font-extrabold text-amber-700 dark:bg-amber-950/40 dark:text-amber-300" x-show="drawerHasPending && !drawerCanNotify">{{ __('Awaiting stock') }}</span>
-                        <button type="button" class="rounded-lg bg-amber-400 px-3.5 py-2 text-xs font-extrabold text-[#422006] hover:bg-amber-300" @click="addFromDrawer">
+                        <button type="button" class="rounded-lg bg-accent px-3.5 py-2 text-xs font-extrabold text-[#422006] hover:bg-accent" @click="addFromDrawer">
                             <i class="fas fa-cart-plus me-1"></i>{{ __('Add to Purchase List') }}
                         </button>
                         <button type="button" class="ms-auto rounded-lg border border-slate-200 px-3.5 py-2 text-xs font-extrabold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="closeDrawer">{{ __('Close') }}</button>

@@ -7,7 +7,7 @@
         margin-inline: auto;
         max-width: 24rem;
         border-radius: 0.875rem;
-        background: #070b1f;
+        background: #070740;
         color: #ffffff;
         padding: 0.875rem 1rem;
         font-size: 0.875rem;

@@ -39,7 +39,7 @@
 
         $dotColor = function (?string $key) {
             return match ((string) $key) {
-                'pending', 'pending_payment', 'pending-payment' => 'bg-amber-500',
+                'pending', 'pending_payment', 'pending-payment' => 'bg-accent',
                 'processing'                                    => 'bg-violet-500',
                 'shipped'                                       => 'bg-sky-500',
                 'delivered', 'paid'                             => 'bg-emerald-500',
@@ -107,12 +107,12 @@
             background: #0f172a; border-color: #334155; color: #f8fafc; color-scheme: dark;
         }
         .op-menu button[type="submit"] {
-            background: #04042a; color: #fcd34d;
+            background: #04041f; color: #ffb27a;
             height: 38px; padding: 0 14px; border-radius: 8px;
             font-size: 12.5px; font-weight: 800;
-            border: 1px solid #04042a; cursor: pointer;
+            border: 1px solid #04041f; cursor: pointer;
         }
-        .op-menu button[type="submit"]:hover { background: #07073a; }
+        .op-menu button[type="submit"]:hover { background: #070740; }
         .op-menu hr { border: 0; border-top: 1px solid #e2e8f0; margin: 4px 0; }
         .dark .op-menu hr { border-top-color: #334155; }
         .op-menu .danger {
@@ -136,19 +136,19 @@
             text-decoration: none;
         }
         .dark .op-invoice-menu .invoice-lang { color: #f8fafc; }
-        .op-invoice-menu .invoice-lang:hover { background: #fffbeb; color: #04042a; }
-        .dark .op-invoice-menu .invoice-lang:hover { background: rgba(251,191,36,0.12); color: #fcd34d; }
+        .op-invoice-menu .invoice-lang:hover { background: #fffbeb; color: #04041f; }
+        .dark .op-invoice-menu .invoice-lang:hover { background: rgb(255 138 61 / 0.12); color: #ffb27a; }
         .op-invoice-menu .invoice-code {
             display: inline-flex; align-items: center; justify-content: center;
             width: 34px; height: 24px; border-radius: 999px;
             background: #fef3c7; color: #b45309; font-size: 11px; letter-spacing: .04em;
             font-weight: 800;
         }
-        .dark .op-invoice-menu .invoice-code { background: rgba(251,191,36,0.16); color: #fcd34d; }
+        .dark .op-invoice-menu .invoice-code { background: rgb(255 138 61 / 0.16); color: #ffb27a; }
 
         @keyframes ys-pulse {
-            0%   { box-shadow: 0 0 0 0   rgba(251,191,36,0.55); }
-            100% { box-shadow: 0 0 0 12px rgba(251,191,36,0);   }
+            0%   { box-shadow: 0 0 0 0   rgb(255 138 61 / 0.55); }
+            100% { box-shadow: 0 0 0 12px rgb(255 138 61 / 0);   }
         }
         .ys-pulse-dot { animation: ys-pulse 1.6s ease-out infinite; }
     </style>
@@ -176,20 +176,20 @@
 
             {{-- ═══ HERO 2x2 — Today's Revenue ═══ --}}
             <div class="relative sm:col-span-2 lg:col-span-2 lg:row-span-2 rounded-3xl text-white p-7 overflow-hidden bento-shadow-lg corner-brackets"
-                 style="background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);">
+                 style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
                 <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
-                <div class="absolute -top-24 -right-24 h-80 w-80 rounded-full bg-amber-400/20 blur-[80px] pointer-events-none"></div>
+                <div class="absolute -top-24 -right-24 h-80 w-80 rounded-full bg-accent/20 blur-[80px] pointer-events-none"></div>
                 <div class="absolute -bottom-24 -left-12 h-64 w-64 rounded-full bg-cyan-400/15 blur-[80px] pointer-events-none"></div>
-                <div class="absolute top-0 left-0 right-0 h-[2px]" style="background: linear-gradient(90deg, #22d3ee, #fbbf24, #f59e0b);"></div>
+                <div class="absolute top-0 left-0 right-0 h-[2px]" style="background: linear-gradient(90deg, #22d3ee, #ff8a3d, #e65c00);"></div>
 
                 <div class="relative flex items-start justify-between gap-4">
                     <div>
                         <div class="flex items-center gap-2">
                             <span class="text-[10px] uppercase tracking-widest font-mono text-white/55 font-bold">{{ __('Today') }}</span>
-                            <span class="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold text-amber-300 px-1.5 py-0.5 rounded bg-amber-400/10 border border-amber-400/20">
+                            <span class="inline-flex items-center gap-1.5 text-[10px] font-mono font-bold text-accent px-1.5 py-0.5 rounded bg-accent/10 border border-accent/20">
                                 <span class="relative inline-flex h-1.5 w-1.5">
-                                    <span class="absolute inset-0 rounded-full bg-amber-300 ys-pulse-dot"></span>
-                                    <span class="relative h-1.5 w-1.5 rounded-full bg-amber-300"></span>
+                                    <span class="absolute inset-0 rounded-full bg-accent ys-pulse-dot"></span>
+                                    <span class="relative h-1.5 w-1.5 rounded-full bg-accent"></span>
                                 </span>
                                 LIVE
                             </span>
@@ -197,7 +197,7 @@
                         <h2 class="mt-2 text-[13px] font-bold uppercase tracking-[0.15em] text-white/55">{{ __("Today's Revenue") }}</h2>
                     </div>
                     <div class="h-12 w-12 rounded-2xl bg-white/10 border border-white/15 grid place-items-center backdrop-blur-sm shadow-inner">
-                        <svg class="w-5 h-5 text-amber-300" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <svg class="w-5 h-5 text-accent" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
                         </svg>
                     </div>
@@ -206,7 +206,7 @@
                 <div class="relative mt-7">
                     @if($todayRevenue !== null)
                         <div class="flex items-baseline gap-2 flex-wrap">
-                            <span class="text-sm font-bold text-amber-300">{{ $currencyLabel }}</span>
+                            <span class="text-sm font-bold text-accent">{{ $currencyLabel }}</span>
                             <span class="num-display text-5xl md:text-6xl font-black leading-none">{{ number_format($todayRevenue, $currencyDecimals) }}</span>
                         </div>
                     @else
@@ -228,7 +228,7 @@
                     </div>
                     <div>
                         <div class="text-[10px] font-bold uppercase tracking-[0.15em] text-white/50">{{ __('Attention') }}</div>
-                        <div class="num-display text-xl font-black mt-1 text-amber-300">{{ number_format($needAttention) }}</div>
+                        <div class="num-display text-xl font-black mt-1 text-accent">{{ number_format($needAttention) }}</div>
                     </div>
                 </div>
 
@@ -256,10 +256,10 @@
                     [
                         'label' => __('Pending'),
                         'value' => $stats['pending'] ?? 0,
-                        'stripe' => 'from-amber-400 to-amber-500',
+                        'stripe' => 'from-accent to-accent',
                         'ic_bg' => 'bg-amber-100 dark:bg-amber-500/10',
-                        'ic_fg' => 'text-amber-700 dark:text-amber-300',
-                        'dot' => 'bg-amber-500',
+                        'ic_fg' => 'text-accent dark:text-accent',
+                        'dot' => 'bg-accent',
                         'foot' => __('Awaits review'),
                         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>',
                     ],
@@ -375,12 +375,12 @@
                 <a href="{{ request()->fullUrlWithQuery(['attention' => $value === '' ? null : $value, 'page' => null]) }}"
                    class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full text-[11.5px] font-bold transition border
                           {{ $isActive
-                              ? 'bg-[#04042a] text-amber-300 border-[#04042a] dark:bg-amber-400 dark:text-[#04042a] dark:border-amber-400'
+                              ? 'bg-[#04041f] text-accent border-[#04041f] dark:bg-accent dark:text-[#04041f] dark:border-accent'
                               : 'bg-white text-slate-600 border-slate-200 hover:border-amber-300 hover:bg-amber-50 hover:text-slate-900 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-800' }}">
                     @if($isActive)
                         <span class="relative inline-flex h-1.5 w-1.5">
-                            <span class="absolute inset-0 rounded-full bg-amber-300 ys-pulse-dot opacity-70"></span>
-                            <span class="relative h-1.5 w-1.5 rounded-full bg-amber-300"></span>
+                            <span class="absolute inset-0 rounded-full bg-accent ys-pulse-dot opacity-70"></span>
+                            <span class="relative h-1.5 w-1.5 rounded-full bg-accent"></span>
                         </span>
                     @endif
                     {{ $label }}
@@ -409,7 +409,7 @@
                     <input id="filter-search" type="text" name="search" value="{{ request('search') }}"
                            placeholder="{{ __('Search order #, city, phone, user...') }}"
                            class="w-full h-11 ps-10 pe-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 placeholder:text-slate-400
-                                  focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 focus:bg-white
+                                  focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white
                                   dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-900">
                 </div>
             </div>
@@ -418,7 +418,7 @@
                 <label class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5" for="filter-status">{{ __('Status') }}</label>
                 <select id="filter-status" name="status"
                         class="w-full h-11 px-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900
-                               focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 focus:bg-white
+                               focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white
                                dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-900">
                     <option value="">{{ __('All Statuses') }}</option>
                     @foreach($statusOptions as $status)
@@ -433,7 +433,7 @@
                 <label class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5" for="filter-assoc">{{ __('User Type') }}</label>
                 <select id="filter-assoc" name="association"
                         class="w-full h-11 px-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900
-                               focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 focus:bg-white
+                               focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white
                                dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-900">
                     <option value="">{{ __('All Users') }}</option>
                     <option value="user" @selected(($association ?? '') === 'user')>{{ __('Retail Users') }}</option>
@@ -445,7 +445,7 @@
                 <label class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5" for="filter-from">{{ __('From') }}</label>
                 <input id="filter-from" type="date" name="from" value="{{ request('from') }}"
                        class="w-full h-11 px-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900
-                              focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 focus:bg-white
+                              focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white
                               dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-900"
                        style="color-scheme: light dark;">
             </div>
@@ -454,7 +454,7 @@
                 <label class="block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5" for="filter-to">{{ __('To') }}</label>
                 <input id="filter-to" type="date" name="to" value="{{ request('to') }}"
                        class="w-full h-11 px-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900
-                              focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 focus:bg-white
+                              focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white
                               dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-900"
                        style="color-scheme: light dark;">
             </div>
@@ -468,8 +468,8 @@
                     </a>
                 @endif
                 <button type="submit"
-                        class="inline-flex items-center gap-2 h-10 px-5 rounded-xl text-xs font-bold text-[#04042a] border border-amber-500/20 transition shadow-md shadow-amber-500/30 hover:brightness-105"
-                        style="background: linear-gradient(180deg, #fbbf24, #f59e0b);">
+                        class="inline-flex items-center gap-2 h-10 px-5 rounded-xl text-xs font-bold text-[#04041f] border border-accent/20 transition shadow-md shadow-accent/30 hover:brightness-105"
+                        style="background: linear-gradient(180deg, #ff8a3d, #e65c00);">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
                     {{ __('Apply Filters') }}
                 </button>
@@ -485,7 +485,7 @@
             {{-- List header --}}
             <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-slate-200/70 dark:border-slate-800">
                 <div class="flex items-center gap-3">
-                    <div class="h-9 w-9 rounded-xl bg-[#04042a] text-amber-300 grid place-items-center">
+                    <div class="h-9 w-9 rounded-xl bg-[#04041f] text-accent grid place-items-center">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
                         </svg>
@@ -506,7 +506,7 @@
             {{-- Bulk action bar --}}
             <div x-show="selected.length > 0" x-cloak x-transition.opacity
                  class="flex flex-wrap items-center gap-3 px-5 py-3 border-b border-amber-200/70 bg-amber-50/80 dark:border-amber-500/30 dark:bg-amber-500/10">
-                <span class="inline-flex items-center px-3 h-8 rounded-full bg-[#04042a] text-amber-300 text-xs font-bold border border-[#04042a] dark:bg-amber-400 dark:text-[#04042a] dark:border-amber-400">
+                <span class="inline-flex items-center px-3 h-8 rounded-full bg-[#04041f] text-accent text-xs font-bold border border-[#04041f] dark:bg-accent dark:text-[#04041f] dark:border-accent">
                     <span x-text="selected.length"></span>&nbsp;{{ __('selected') }}
                 </span>
                 <form method="POST" action="{{ route('admin.orders.bulk-status') }}"
@@ -519,9 +519,9 @@
                         <input type="hidden" name="order_ids[]" :value="id">
                     </template>
                     <div class="grid gap-1 min-w-[220px]">
-                        <label for="bulk-status-select" class="text-[10px] font-bold uppercase tracking-widest text-amber-800 dark:text-amber-300">{{ __('Bulk status') }}</label>
+                        <label for="bulk-status-select" class="text-[10px] font-bold uppercase tracking-widest text-accent dark:text-accent">{{ __('Bulk status') }}</label>
                         <select id="bulk-status-select" name="status" required
-                                class="h-10 px-3 rounded-lg border border-amber-300 bg-white text-sm font-semibold text-slate-900 dark:bg-slate-800 dark:border-amber-500/30 dark:text-slate-100">
+                                class="h-10 px-3 rounded-lg border border-accent bg-white text-sm font-semibold text-slate-900 dark:bg-slate-800 dark:border-accent/30 dark:text-slate-100">
                             <option value="">{{ __('Choose status') }}</option>
                             @foreach($statusOptions as $status)
                                 <option value="{{ $status }}">{{ \App\Models\Order::statusMeta((string) $status)['label'] }}</option>
@@ -529,8 +529,8 @@
                         </select>
                     </div>
                     <button type="submit"
-                            class="inline-flex items-center gap-2 h-10 px-4 rounded-lg text-xs font-bold text-[#04042a] border border-amber-500/20 shadow-md shadow-amber-500/30"
-                            style="background: linear-gradient(180deg, #fbbf24, #f59e0b);">
+                            class="inline-flex items-center gap-2 h-10 px-4 rounded-lg text-xs font-bold text-[#04041f] border border-accent/20 shadow-md shadow-accent/30"
+                            style="background: linear-gradient(180deg, #ff8a3d, #e65c00);">
                         {{ __('Apply') }}
                     </button>
                     <button type="button" @click="clearSelection()"
@@ -557,7 +557,7 @@
                         <tr class="bg-slate-50 dark:bg-slate-800/60 border-b border-slate-200/70 dark:border-slate-800">
                             <th class="text-start px-3 py-3">
                                 <input type="checkbox"
-                                       class="w-4 h-4 rounded accent-amber-500"
+                                       class="w-4 h-4 rounded accent-accent"
                                        @change="toggleAll($event)"
                                        :checked="allSelected()"
                                        aria-label="{{ __('Select all') }}">
@@ -588,7 +588,7 @@
                                     <input type="checkbox"
                                            value="{{ $order->id }}"
                                            x-model.number="selected"
-                                           class="w-4 h-4 rounded accent-amber-500"
+                                           class="w-4 h-4 rounded accent-accent"
                                            aria-label="{{ __('Select order #:order', ['order' => $order->order_number]) }}">
                                 </td>
                                 <td class="px-3 py-4 align-middle">
@@ -607,8 +607,8 @@
                                 </td>
                                 <td class="px-3 py-4 align-middle">
                                     <div class="flex items-center gap-2.5 min-w-0">
-                                        <div class="h-9 w-9 rounded-xl grid place-items-center text-amber-300 font-black text-[12px] shrink-0"
-                                             style="background: linear-gradient(135deg, #04042a, #0a0d3f);">
+                                        <div class="h-9 w-9 rounded-xl grid place-items-center text-accent font-black text-[12px] shrink-0"
+                                             style="background: linear-gradient(135deg, #04041f, #070740);">
                                             {{ \Illuminate\Support\Str::upper(\Illuminate\Support\Str::substr($order->user?->name ?? __('G'), 0, 2)) }}
                                         </div>
                                         <div class="min-w-0 flex-1">
@@ -757,7 +757,7 @@
                                         <div class="text-[13px] text-slate-500 dark:text-slate-400 mt-1.5">{{ __('Try adjusting your filters or clearing them to see all orders.') }}</div>
                                         @if($hasActiveFilters)
                                             <a href="{{ route('admin.orders.index', $currentAttention !== '' ? ['attention' => $currentAttention] : []) }}"
-                                               class="inline-flex items-center gap-2 h-10 px-4 mt-4 rounded-xl text-xs font-bold text-amber-300 bg-[#04042a] hover:bg-[#07073a] transition">
+                                               class="inline-flex items-center gap-2 h-10 px-4 mt-4 rounded-xl text-xs font-bold text-accent bg-[#04041f] hover:bg-[#070740] transition">
                                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                                                 {{ __('Clear') }}
                                             </a>
@@ -810,7 +810,7 @@
         .orders-pagination a:hover { color: #0f172a; border-color: #cbd5e1; background: #f8fafc; }
         .orders-pagination .active span,
         .orders-pagination span[aria-current="page"] {
-            background: #04042a; color: #fcd34d; border-color: #04042a;
+            background: #04041f; color: #ffb27a; border-color: #04041f;
         }
         .orders-pagination .disabled span,
         .orders-pagination span[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
@@ -821,7 +821,7 @@
         .dark .orders-pagination a:hover { background: #1e293b; color: #fff; border-color: #475569; }
         .dark .orders-pagination .active span,
         .dark .orders-pagination span[aria-current="page"] {
-            background: #fbbf24; color: #04042a; border-color: #fbbf24;
+            background: #ff8a3d; color: #04041f; border-color: #ff8a3d;
         }
     </style>
 </x-app-layout>

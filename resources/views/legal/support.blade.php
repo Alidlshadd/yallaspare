@@ -9,7 +9,7 @@
 
 @section('content')
     <section class="sup-in mx-auto w-full max-w-5xl">
-        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-amber-600 dark:text-amber-400">{{ __('Support Center') }}</p>
+        <p class="text-xs font-semibold uppercase tracking-[0.22em] text-accent dark:text-accent">{{ __('Support Center') }}</p>
         <h1 class="mt-5 text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl dark:text-slate-100">{{ __('What do you need help with today?') }}</h1>
         <p class="mt-6 max-w-3xl text-base leading-relaxed text-slate-600 dark:text-slate-300">
             {{ __('Pick your topic below and your request goes straight to the right team. Most requests get a same-day reply.') }}
@@ -19,7 +19,7 @@
     <section class="mx-auto mt-10 grid w-full max-w-5xl grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4">
         <a
             href="{{ route('legal.contact', ['topic' => 'order']) }}"
-            class="sup-in group relative rounded-2xl border-2 border-amber-400/80 bg-white p-6 shadow-sm ring-4 ring-amber-400/15 transition duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:ring-amber-400/30 dark:border-amber-400/60 dark:bg-slate-900"
+            class="sup-in group relative rounded-2xl border-2 border-accent/80 bg-white p-6 shadow-sm ring-4 ring-accent/15 transition duration-300 hover:-translate-y-1.5 hover:shadow-xl hover:ring-accent/30 dark:border-accent/60 dark:bg-slate-900"
             style="animation-delay: .08s"
         >
             <span class="absolute end-4 top-4 rounded-full bg-amber-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-700 dark:bg-amber-400/15 dark:text-amber-300">{{ __('Most asked') }}</span>
@@ -101,7 +101,7 @@
                 <details class="group py-5">
                     <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-sm font-medium text-slate-700 transition-colors hover:text-primary focus:outline-none dark:text-slate-300 dark:hover:text-white">
                         <span>{{ __('How do I reset my account password?') }}</span>
-                        <svg class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180 group-open:text-amber-500" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                        <svg class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180 group-open:text-accent" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                             <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </summary>
@@ -117,7 +117,7 @@
                 <details class="group py-5">
                     <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-sm font-medium text-slate-700 transition-colors hover:text-primary focus:outline-none dark:text-slate-300 dark:hover:text-white">
                         <span>{{ __('Can you help with billing and invoice questions?') }}</span>
-                        <svg class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180 group-open:text-amber-500" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                        <svg class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180 group-open:text-accent" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                             <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </summary>
@@ -133,7 +133,7 @@
                 <details class="group py-5">
                     <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-sm font-medium text-slate-700 transition-colors hover:text-primary focus:outline-none dark:text-slate-300 dark:hover:text-white">
                         <span>{{ __('Where can I report a technical issue?') }}</span>
-                        <svg class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180 group-open:text-amber-500" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                        <svg class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180 group-open:text-accent" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                             <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </summary>
@@ -149,7 +149,7 @@
                 <details class="group py-5">
                     <summary class="flex cursor-pointer list-none items-center justify-between gap-6 text-sm font-medium text-slate-700 transition-colors hover:text-primary focus:outline-none dark:text-slate-300 dark:hover:text-white">
                         <span>{{ __('What should I include in a support request?') }}</span>
-                        <svg class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180 group-open:text-amber-500" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+                        <svg class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 group-open:rotate-180 group-open:text-accent" viewBox="0 0 20 20" fill="none" aria-hidden="true">
                             <path d="M5 7.5L10 12.5L15 7.5" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
                         </svg>
                     </summary>
@@ -182,7 +182,7 @@
                 </a>
                 <a
                     href="{{ route('legal.contact', ['topic' => 'general']) }}"
-                    class="inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-[#0d1156] hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-950"
+                    class="inline-flex items-center justify-center rounded-xl bg-primary px-6 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-[#070740] hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-950"
                 >
                     {{ __('General Support') }}
                 </a>

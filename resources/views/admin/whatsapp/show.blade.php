@@ -63,7 +63,7 @@
                     <form method="POST" action="{{ route('admin.whatsapp.events.read', $event) }}">@csrf @method('PATCH')<button class="inline-flex h-10 items-center gap-2 rounded-xl border border-slate-200 px-4 text-sm font-bold text-slate-700 dark:border-slate-700 dark:text-slate-200"><i class="fas fa-envelope-open" aria-hidden="true"></i>{{ __('Mark read') }}</button></form>
                 @endif
                 @if($event->processing_status === \App\Models\OtpiqWebhookEvent::STATUS_FAILED)
-                    <form method="POST" action="{{ route('admin.whatsapp.events.retry', $event) }}">@csrf<button class="inline-flex h-10 items-center gap-2 rounded-xl bg-amber-500 px-4 text-sm font-bold text-white hover:bg-amber-600"><i class="fas fa-rotate" aria-hidden="true"></i>{{ __('Retry Processing') }}</button></form>
+                    <form method="POST" action="{{ route('admin.whatsapp.events.retry', $event) }}">@csrf<button class="inline-flex h-10 items-center gap-2 rounded-xl bg-accent px-4 text-sm font-bold text-white hover:bg-accent"><i class="fas fa-rotate" aria-hidden="true"></i>{{ __('Retry Processing') }}</button></form>
                 @endif
                 @unless($event->archived_at)
                     <form method="POST" action="{{ route('admin.whatsapp.events.archive', $event) }}">@csrf @method('PATCH')<button class="inline-flex h-10 items-center gap-2 rounded-xl bg-slate-800 px-4 text-sm font-bold text-white hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600"><i class="fas fa-box-archive" aria-hidden="true"></i>{{ __('Archive') }}</button></form>

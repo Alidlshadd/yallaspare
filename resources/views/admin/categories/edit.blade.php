@@ -15,21 +15,21 @@
 
         {{-- ═════════════ Hero ═════════════ --}}
         <div class="relative overflow-hidden rounded-2xl mb-4 p-6 text-white"
-             style="background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);">
+             style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
             <div class="absolute inset-0 bento-stripes pointer-events-none opacity-50"></div>
-            <div class="absolute top-0 bottom-0 left-0 w-[3px]" style="background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);"></div>
-            <div class="absolute -top-16 -right-16 h-64 w-64 rounded-full bg-amber-400/10 blur-[60px] pointer-events-none"></div>
+            <div class="absolute top-0 bottom-0 left-0 w-[3px]" style="background: linear-gradient(180deg, #ff8a3d 0%, #e65c00 100%);"></div>
+            <div class="absolute -top-16 -right-16 h-64 w-64 rounded-full bg-accent/10 blur-[60px] pointer-events-none"></div>
 
             <div class="relative flex flex-wrap items-center justify-between gap-4">
                 <div>
-                    <div class="font-mono text-[10px] font-extrabold uppercase tracking-[0.28em] text-amber-300">{{ __('Catalog · Taxonomy') }}</div>
+                    <div class="font-mono text-[10px] font-extrabold uppercase tracking-[0.28em] text-accent">{{ __('Catalog · Taxonomy') }}</div>
                     <h1 class="text-2xl font-black mt-2 leading-tight">{{ __('Edit Category') }}</h1>
                     <p class="text-sm text-white/65 mt-1.5">
                         {{ $category->name }}
                         <span class="text-white/35 mx-1">·</span>
                         @if($linkedProducts > 0)
                             <a href="{{ route('admin.products.index', ['category_id' => $category->id]) }}"
-                               class="font-bold text-amber-300 hover:text-amber-200 underline decoration-amber-300/40 underline-offset-2 transition">
+                               class="font-bold text-accent hover:text-accent underline decoration-accent/40 underline-offset-2 transition">
                                 {{ trans_choice(':count product|:count products', $linkedProducts, ['count' => number_format($linkedProducts)]) }}
                             </a>
                             {{ __('linked') }}

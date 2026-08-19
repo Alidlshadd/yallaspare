@@ -10,7 +10,7 @@
             <span class="abt-blob abt-b1" aria-hidden="true"></span>
             <span class="abt-blob abt-b2" aria-hidden="true"></span>
             <span class="sup-in relative inline-flex items-center gap-2 rounded-full border border-slate-200/80 bg-white px-4 py-1.5 text-xs font-bold text-slate-700 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
-                <span class="inline-block h-2 w-2 rounded-full bg-amber-400" aria-hidden="true"></span>
+                <span class="inline-block h-2 w-2 rounded-full bg-accent" aria-hidden="true"></span>
                 {{ __('Modern auto spare parts store') }}
             </span>
             <h1 class="sup-in relative mx-auto mt-6 max-w-3xl text-5xl font-extrabold leading-[1.05] tracking-tighter text-primary sm:text-6xl dark:text-white" style="animation-delay: .12s">
@@ -21,7 +21,7 @@
                 {{ __('We are an online auto spare parts store dedicated to providing reliable and high-quality automotive parts for different vehicle brands and models.') }}
             </p>
             <div class="sup-in relative mt-8 flex flex-wrap items-center justify-center gap-3" style="animation-delay: .36s">
-                <a href="{{ route('shop.index') }}" class="inline-flex items-center rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-lg shadow-primary/25 transition hover:-translate-y-0.5 hover:bg-[#0d1156] hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 dark:bg-amber-400 dark:text-[#070740] dark:shadow-amber-400/20 dark:hover:bg-amber-300">
+                <a href="{{ route('shop.index') }}" class="inline-flex items-center rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-lg shadow-primary/25 transition hover:-translate-y-0.5 hover:bg-[#070740] hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:bg-accent dark:text-[#070740] dark:shadow-accent/20 dark:hover:bg-accent">
                     {{ __('Find your part') }}
                 </a>
                 <a href="{{ route('legal.vision') }}" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-primary transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:hover:border-slate-600">
@@ -55,7 +55,7 @@
             </aside>
             <div class="space-y-8">
                 <article data-vision-reveal data-about-panel="why" class="rounded-3xl border border-slate-200/80 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-amber-600 md:hidden dark:text-amber-400">{{ __('Why we exist') }}</p>
+                    <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-accent md:hidden dark:text-accent">{{ __('Why we exist') }}</p>
                     <h2 class="mt-2 text-2xl font-extrabold tracking-tight text-primary md:mt-0 dark:text-white">{{ __('Because the wrong part is lost time.') }}</h2>
                     <p class="mt-4 max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-slate-300">
                         {{ __('Shop after shop, wrong parts, days of waiting — YallaSpare was founded to break that loop.') }}
@@ -63,7 +63,7 @@
                     </p>
                 </article>
                 <article data-vision-reveal data-about-panel="how" class="rounded-3xl border border-slate-200/80 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-amber-600 md:hidden dark:text-amber-400">{{ __('How we work') }}</p>
+                    <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-accent md:hidden dark:text-accent">{{ __('How we work') }}</p>
                     <h2 class="mt-2 text-2xl font-extrabold tracking-tight text-primary md:mt-0 dark:text-white">{{ __('A simple promise, kept every day.') }}</h2>
                     <p class="mt-4 max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-slate-300">
                         {{ __('Our mission is to provide high-quality auto spare parts, competitive prices, and fast delivery while maintaining excellent customer service.') }}
@@ -71,7 +71,7 @@
                     </p>
                 </article>
                 <article data-vision-reveal data-about-panel="next" class="rounded-3xl border border-slate-200/80 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-amber-600 md:hidden dark:text-amber-400">{{ __("Where we're going") }}</p>
+                    <p class="text-[11px] font-extrabold uppercase tracking-[0.18em] text-accent md:hidden dark:text-accent">{{ __("Where we're going") }}</p>
                     <h2 class="mt-2 text-2xl font-extrabold tracking-tight text-primary md:mt-0 dark:text-white">{{ __('This is only the beginning.') }}</h2>
                     <p class="mt-4 max-w-2xl text-sm leading-relaxed text-slate-600 dark:text-slate-300">
                         {{ __('A mobile app, VIN matching, same-day delivery, and more are on the road ahead — see the full journey on Our Vision.') }}
@@ -128,7 +128,7 @@
                 <p class="relative mt-1.5 max-w-xl text-sm leading-relaxed text-slate-300">
                     {{ __('A mobile app, VIN matching, same-day delivery, and more are on the road ahead — see the full journey on Our Vision.') }}
                 </p>
-                <a href="{{ route('legal.vision') }}" class="relative mt-5 inline-flex items-center gap-1.5 rounded-xl bg-amber-400 px-5 py-2.5 text-sm font-bold text-primary transition hover:-translate-y-0.5 hover:bg-amber-300 hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-white dark:text-[#070740]">
+                <a href="{{ route('legal.vision') }}" class="relative mt-5 inline-flex items-center gap-1.5 rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-primary transition hover:-translate-y-0.5 hover:bg-accent hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-white dark:text-[#070740]">
                     {{ __('Our Vision') }} <span aria-hidden="true">&rarr;</span>
                 </a>
             </div>

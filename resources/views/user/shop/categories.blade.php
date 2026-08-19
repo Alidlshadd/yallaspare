@@ -6,10 +6,10 @@
 @section('content')
     <div class="space-y-7">
         <section class="relative overflow-hidden rounded-3xl bg-primary p-6 text-white sm:p-8 lg:p-10">
-            <div class="pointer-events-none absolute -top-16 end-[-4rem] h-56 w-56 rounded-full bg-amber-400/20 blur-3xl" aria-hidden="true"></div>
+            <div class="pointer-events-none absolute -top-16 end-[-4rem] h-56 w-56 rounded-full bg-accent/15 blur-3xl" aria-hidden="true"></div>
 
             <div class="relative">
-                <p class="text-xs font-bold uppercase tracking-[0.16em] text-amber-400">{{ __('Catalog') }}</p>
+                <p class="text-xs font-bold uppercase tracking-[0.16em] text-accent">{{ __('Catalog') }}</p>
                 <h1 class="mt-2 max-w-xl text-2xl font-bold tracking-[-0.02em] sm:text-3xl lg:text-[34px]">
                     {{ __('Browse every category') }}
                 </h1>

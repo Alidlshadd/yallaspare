@@ -48,7 +48,7 @@
             ];
         }
 
-        $inputClasses = 'w-full rounded-lg border-gray-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100';
+        $inputClasses = 'w-full rounded-lg border-gray-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100';
         $labelClasses = 'mb-1.5 block text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-slate-400';
 
         $orderStatusChip = function (string $status) {
@@ -167,9 +167,9 @@
                     <p class="text-[11px] font-bold uppercase tracking-widest text-blue-600 dark:text-blue-300">{{ __('Total Spent') }}</p>
                     <p class="mt-2 text-2xl font-extrabold tabular-nums text-blue-700 dark:text-blue-300">{{ number_format($stats['spent_total'], $currencyDecimals) }} <span class="text-sm font-bold">{{ $currencyLabel }}</span></p>
                 </div>
-                <div class="rounded-xl border border-amber-300/70 bg-white p-4 shadow-sm dark:border-amber-400/35 dark:bg-slate-900">
-                    <p class="text-[11px] font-bold uppercase tracking-widest text-amber-600 dark:text-amber-300">{{ __('Customer Reviews') }}</p>
-                    <p class="mt-2 text-2xl font-extrabold tabular-nums text-amber-700 dark:text-amber-300">{{ $reviewAverage ? number_format((float) $reviewAverage, 1) : '0.0' }}<span class="text-sm font-bold text-gray-400 dark:text-slate-500"> / 5 · {{ number_format($userReviews->count()) }}</span></p>
+                <div class="rounded-xl border border-accent/70 bg-white p-4 shadow-sm dark:border-accent/35 dark:bg-slate-900">
+                    <p class="text-[11px] font-bold uppercase tracking-widest text-accent dark:text-accent">{{ __('Customer Reviews') }}</p>
+                    <p class="mt-2 text-2xl font-extrabold tabular-nums text-accent dark:text-accent">{{ $reviewAverage ? number_format((float) $reviewAverage, 1) : '0.0' }}<span class="text-sm font-bold text-gray-400 dark:text-slate-500"> / 5 · {{ number_format($userReviews->count()) }}</span></p>
                 </div>
             </div>
 
@@ -180,7 +180,7 @@
                     @method('PATCH')
 
                     <div>
-                        <p class="text-[11px] font-bold uppercase tracking-widest text-amber-600 dark:text-amber-300">{{ __('Admin Controls') }}</p>
+                        <p class="text-[11px] font-bold uppercase tracking-widest text-accent dark:text-accent">{{ __('Admin Controls') }}</p>
                         <h3 class="mt-1 text-lg font-bold text-gray-900 dark:text-white">{{ __('Editable user profile') }}</h3>
                         <p class="mt-1 text-sm text-gray-500 dark:text-slate-400">{{ __('Change account identity, role posture, dealer settings, and verification state from one section.') }}</p>
                     </div>
@@ -225,7 +225,7 @@
                     </div>
 
                     <label class="flex items-center gap-3 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3 text-sm text-gray-700 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-200">
-                        <input type="checkbox" name="email_verified" value="1" class="h-4 w-4 rounded border-gray-300 text-amber-500 focus:ring-amber-400" @checked(old('email_verified', $user->email_verified_at !== null))>
+                        <input type="checkbox" name="email_verified" value="1" class="h-4 w-4 rounded border-gray-300 text-accent focus:ring-accent" @checked(old('email_verified', $user->email_verified_at !== null))>
                         <span>{{ __('Mark this account as email verified') }}</span>
                     </label>
 
@@ -254,7 +254,7 @@
                                                     type="checkbox"
                                                     name="permissions[]"
                                                     value="{{ $permission }}"
-                                                    class="mt-0.5 h-4 w-4 rounded border-gray-300 text-amber-500 focus:ring-amber-400"
+                                                    class="mt-0.5 h-4 w-4 rounded border-gray-300 text-accent focus:ring-accent"
                                                     @checked(in_array($permission, $selectedPermissions, true) || $user->role === \App\Models\User::ROLE_SUPER_ADMIN)
                                                     @disabled($user->role === \App\Models\User::ROLE_SUPER_ADMIN)
                                                 >
@@ -269,7 +269,7 @@
 
                     <div class="flex flex-wrap items-center justify-between gap-3">
                         <p class="text-xs text-gray-500 dark:text-slate-400">{{ __('If the selected role is not `Dealer`, dealer status and discount will be reset automatically.') }}</p>
-                        <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-amber-400 px-5 py-2.5 text-sm font-bold text-slate-900 shadow-sm transition hover:bg-amber-300">
+                        <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-accent px-5 py-2.5 text-sm font-bold text-slate-900 shadow-sm transition hover:bg-accent">
                             {{ __('Save User Details') }}
                         </button>
                     </div>
@@ -317,7 +317,7 @@
 
                                 <div class="grid grid-cols-2 gap-3">
                                     <div class="rounded-xl border border-amber-200 bg-amber-50/70 p-3 dark:border-amber-400/25 dark:bg-amber-400/5">
-                                        <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-400 text-slate-950 shadow-sm">
+                                        <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-slate-950 shadow-sm">
                                             <i class="fas fa-clock" aria-hidden="true"></i>
                                         </div>
                                         <p class="mt-3 text-sm font-black text-slate-900 dark:text-white">{{ __('Temporary Ban') }}</p>
@@ -355,11 +355,11 @@
                                         value="temporary"
                                         data-danger-title="{{ __('Temporary Ban') }}"
                                         data-danger-description="{{ __('The account will be locked for the selected duration and signed out from all devices.') }}"
-                                        class="group inline-flex min-h-12 items-center justify-between gap-3 rounded-xl bg-amber-400 px-4 py-3 text-start text-slate-950 shadow-sm transition hover:bg-amber-300 focus:outline-none focus:ring-4 focus:ring-amber-400/25"
+                                        class="group inline-flex min-h-12 items-center justify-between gap-3 rounded-xl bg-accent px-4 py-3 text-start text-slate-950 shadow-sm transition hover:bg-accent focus:outline-none focus:ring-4 focus:ring-accent/25"
                                     >
                                         <span>
                                             <span class="block text-sm font-black">{{ __('Apply Temporary Ban') }}</span>
-                                            <span class="block text-[11px] font-semibold text-amber-950/65">{{ __('Uses selected duration') }}</span>
+                                            <span class="block text-[11px] font-semibold text-accent/65">{{ __('Uses selected duration') }}</span>
                                         </span>
                                         <i class="fas fa-arrow-right text-xs transition-transform group-hover:translate-x-0.5" aria-hidden="true"></i>
                                     </button>
@@ -391,7 +391,7 @@
                         @method('PATCH')
 
                         <div>
-                            <p class="text-[11px] font-bold uppercase tracking-widest text-amber-600 dark:text-amber-300">{{ __('Password Reset') }}</p>
+                            <p class="text-[11px] font-bold uppercase tracking-widest text-accent dark:text-accent">{{ __('Password Reset') }}</p>
                             <h4 class="mt-1 text-base font-bold text-gray-900 dark:text-white">{{ __('Set a new password') }}</h4>
                             <p class="mt-1 text-sm text-gray-500 dark:text-slate-400">{{ __('Existing passwords are encrypted and cannot be viewed. Super admins can replace the password from here.') }}</p>
                         </div>
@@ -409,7 +409,7 @@
                             <x-password-input id="password_confirmation" name="password_confirmation" autocomplete="new-password" class="{{ $inputClasses }}" />
                         </div>
 
-                        <button type="submit" class="inline-flex w-full items-center justify-center rounded-lg bg-amber-400 px-5 py-2.5 text-sm font-bold text-slate-900 shadow-sm transition hover:bg-amber-300">
+                        <button type="submit" class="inline-flex w-full items-center justify-center rounded-lg bg-accent px-5 py-2.5 text-sm font-bold text-slate-900 shadow-sm transition hover:bg-accent">
                             {{ __('Update Password') }}
                         </button>
                     </form>
@@ -439,9 +439,9 @@
                     <div class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         <p class="text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-slate-400">{{ __('Admin Notes') }}</p>
                         <ul class="mt-3 space-y-2 text-sm text-gray-600 dark:text-slate-300">
-                            <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400"></span>{{ __('Role changes respect the existing super admin safety rules.') }}</li>
-                            <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400"></span>{{ __('Dealer status and discount are only meaningful when the role is set to `Dealer`.') }}</li>
-                            <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-amber-400"></span>{{ __('Email verification can be toggled directly without opening another workflow.') }}</li>
+                            <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"></span>{{ __('Role changes respect the existing super admin safety rules.') }}</li>
+                            <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"></span>{{ __('Dealer status and discount are only meaningful when the role is set to `Dealer`.') }}</li>
+                            <li class="flex gap-2"><span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-accent"></span>{{ __('Email verification can be toggled directly without opening another workflow.') }}</li>
                         </ul>
                     </div>
                 </div>
@@ -513,7 +513,7 @@
                         @can(\App\Models\User::PERMISSION_PRODUCTS_MANAGE)
                             <a
                                 href="{{ route('admin.reviews.index', ['search' => $user->email]) }}"
-                                class="inline-flex items-center rounded-lg bg-amber-400 px-3 py-1.5 text-xs font-bold text-slate-900 transition hover:bg-amber-300"
+                                class="inline-flex items-center rounded-lg bg-accent px-3 py-1.5 text-xs font-bold text-slate-900 transition hover:bg-accent"
                             >
                                 {{ __('Open Review Manager') }}
                             </a>
@@ -540,7 +540,7 @@
                                 <div class="min-w-0">
                                     @if($review->product)
                                         @can(\App\Models\User::PERMISSION_PRODUCTS_MANAGE)
-                                            <a href="{{ route('admin.products.edit', $review->product) }}" class="block truncate text-sm font-semibold text-amber-700 hover:text-amber-600 dark:text-amber-300 dark:hover:text-amber-200">
+                                            <a href="{{ route('admin.products.edit', $review->product) }}" class="block truncate text-sm font-semibold text-accent hover:text-accent dark:text-accent dark:hover:text-accent">
                                                 {{ $review->product->name }}
                                             </a>
                                         @else

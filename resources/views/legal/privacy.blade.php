@@ -219,7 +219,7 @@
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v9a2.5 2.5 0 0 1-2.5 2.5H9l-5 4v-4.8a2.5 2.5 0 0 1-1-2V5.5Z" /></svg>
                     </span>
                     <div>
-                        <p class="text-[11px] font-extrabold uppercase tracking-[0.2em] text-amber-400">{{ __('Questions?') }}</p>
+                        <p class="text-[11px] font-extrabold uppercase tracking-[0.2em] text-accent">{{ __('Questions?') }}</p>
                         <h2 class="mt-1 text-2xl font-black text-white sm:text-3xl">{{ __('11. Contact Us') }}</h2>
                         <p class="mt-2 max-w-xl text-sm leading-relaxed text-slate-300">{{ __('If you have any questions or suggestions regarding this Privacy Policy, please contact us through our Contact Page or customer support channels.') }}</p>
                     </div>

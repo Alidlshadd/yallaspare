@@ -19,14 +19,12 @@
         <title>{{ __('Admin Verification') }} | {{ $systemSettings['site_name'] ?? config('app.name', 'YallaSpare') }}</title>
         @include('partials.brand-head')
 
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600,700&display=swap" rel="stylesheet" />
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
 
         <style>
             :root {
-                --admin-auth-bg: #04042a;
+                --admin-auth-bg: #04041f;
                 --admin-auth-card: rgba(8, 8, 46, 0.88);
                 --admin-auth-card-strong: rgba(13, 13, 58, 0.78);
                 --admin-auth-input: #0c0c3d;
@@ -40,7 +38,7 @@
                 --admin-auth-accent-text: #e9c464;
                 --admin-auth-accent-soft: rgba(223, 169, 46, 0.08);
                 --admin-auth-danger: #ef4444;
-                --admin-auth-warning: #f59e0b;
+                --admin-auth-warning: #e65c00;
                 --admin-auth-success: #22c55e;
             }
 
@@ -48,7 +46,7 @@
                 min-height: 100vh;
                 background:
                     radial-gradient(circle at 78% 8%, rgba(223, 169, 46, 0.03), transparent 26rem),
-                    linear-gradient(160deg, #030322 0%, var(--admin-auth-bg) 52%, #08083a 100%);
+                    linear-gradient(160deg, #030322 0%, var(--admin-auth-bg) 52%, #070740 100%);
                 color: var(--admin-auth-text);
             }
 
@@ -256,7 +254,7 @@
         <main class="admin-verify-shell">
             <div class="relative z-10 flex min-h-screen flex-col px-4 py-4 sm:px-6 lg:px-8">
                 <header class="flex items-center justify-between gap-4">
-                    <a href="{{ url('/') }}" class="inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-2 text-white shadow-sm backdrop-blur transition hover:bg-white/[0.07] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300/30">
+                    <a href="{{ url('/') }}" class="inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.04] px-3 py-2 text-white shadow-sm backdrop-blur transition hover:bg-white/[0.07] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30">
                         <x-brand-mark
                             :logo-url="$systemSettings['site_logo_url'] ?? null"
                             :brand="$systemSettings['site_name'] ?? 'YallaSpare'"
@@ -279,7 +277,7 @@
                         <aside class="admin-security-panel admin-auth-reveal hidden rounded-[2rem] p-7 lg:flex lg:flex-col lg:justify-between">
                             <div>
                                 <div class="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-3 py-1 text-xs font-semibold text-slate-200">
-                                    <span class="h-1.5 w-1.5 rounded-full bg-amber-300/60"></span>
+                                    <span class="h-1.5 w-1.5 rounded-full bg-accent/60"></span>
                                     {{ __('Privileged admin session') }}
                                 </div>
 
@@ -328,7 +326,7 @@
                         <section class="admin-auth-card admin-auth-reveal rounded-[1.75rem] p-5 sm:p-7 lg:p-8" style="animation-delay: 80ms">
                             <div class="mx-auto max-w-md">
                                 <div class="flex items-start justify-between gap-4">
-                                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl border border-amber-300/10 bg-amber-300/[0.05] text-amber-200/70">
+                                    <div class="flex h-12 w-12 items-center justify-center rounded-2xl border border-accent/10 bg-accent/[0.05] text-accent/70">
                                         <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M8 11V8a4 4 0 0 1 8 0v3" />
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 11h10.5A1.75 1.75 0 0 1 19 12.75v5.5A1.75 1.75 0 0 1 17.25 20H6.75A1.75 1.75 0 0 1 5 18.25v-5.5A1.75 1.75 0 0 1 6.75 11Z" />
@@ -340,7 +338,7 @@
                                 </div>
 
                                 <div class="mt-7">
-                                    <p class="text-sm font-semibold text-amber-200/60">{{ __('YallaSpare admin security') }}</p>
+                                    <p class="text-sm font-semibold text-accent/60">{{ __('YallaSpare admin security') }}</p>
                                     <h1 class="mt-2 text-3xl font-semibold tracking-tight text-white sm:text-4xl">
                                         {{ __('Verification required') }}
                                     </h1>
@@ -352,7 +350,7 @@
                                 <x-auth-session-status class="mt-6 rounded-2xl border border-emerald-400/25 bg-emerald-400/10 px-4 py-3 text-sm font-medium text-emerald-100" :status="session('status')" />
 
                                 @if (($mailAvailable ?? true) === false)
-                                    <div class="mt-6 rounded-2xl border border-amber-400/25 bg-amber-400/10 px-4 py-3 text-sm font-medium text-amber-100">
+                                    <div class="mt-6 rounded-2xl border border-accent/25 bg-accent/10 px-4 py-3 text-sm font-medium text-accent">
                                         {{ __('We could not send a verification email. Please try again or contact support if the problem continues.') }}
                                     </div>
                                 @endif
@@ -397,7 +395,7 @@
 
                                     <button
                                         type="submit"
-                                        class="admin-auth-button mt-7 inline-flex h-12 w-full items-center justify-center rounded-2xl px-5 text-sm font-bold text-slate-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-300/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#04042a]"
+                                        class="admin-auth-button mt-7 inline-flex h-12 w-full items-center justify-center rounded-2xl px-5 text-sm font-bold text-slate-950 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60 focus-visible:ring-offset-2 focus-visible:ring-offset-[#04041f]"
                                         data-loading-button
                                         data-loading-text="{{ __('Verifying...') }}"
                                     >
@@ -410,7 +408,7 @@
                                         @csrf
                                         <button
                                             type="submit"
-                                            class="inline-flex items-center justify-center rounded-xl px-2 py-1.5 text-sm font-semibold text-amber-200/70 transition hover:bg-amber-300/[0.06] hover:text-amber-100/90 disabled:cursor-not-allowed disabled:text-slate-500 disabled:hover:bg-transparent"
+                                            class="inline-flex items-center justify-center rounded-xl px-2 py-1.5 text-sm font-semibold text-accent/70 transition hover:bg-accent/[0.06] hover:text-accent/90 disabled:cursor-not-allowed disabled:text-slate-500 disabled:hover:bg-transparent"
                                             data-resend-button
                                             @disabled(((int) ($resendCooldownSeconds ?? 0)) > 0)
                                         >

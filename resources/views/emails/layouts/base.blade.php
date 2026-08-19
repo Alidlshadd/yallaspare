@@ -59,7 +59,7 @@
         /* ─── DARK MODE ──────────────────────────────────────────── */
         @media (prefers-color-scheme:dark) {
             body,
-            .em-page-bg       { background-color:#070b1f!important; }
+            .em-page-bg       { background-color:#070740!important; }
             .em-card          { background-color:#10112e!important; border-color:rgba(255,255,255,0.06)!important; }
             .em-body-bg       { background-color:#10112e!important; }
             .em-rbar          { background-color:#0f1135!important; border-bottom-color:#1e2060!important; }
@@ -72,7 +72,7 @@
             .em-copy          { color:#cbd5e1!important; }
             .em-strong        { color:#e2e8f0!important; }
             .em-muted         { color:#94a3b8!important; }
-            .em-meta-row      { border-color:#1e2462!important; }
+            .em-meta-row      { border-color:#12124a!important; }
             .em-meta-bg       { background-color:#141550!important; }
             .em-meta-label    { color:#8a8ea3!important; }
             .em-meta-val      { color:#e2e8f0!important; }
@@ -80,20 +80,20 @@
             .em-alert-warn    { background-color:#1c1400!important; border-color:#92400e!important; color:#fcd34d!important; }
             .em-alert-danger  { background-color:#1a0808!important; border-color:#9f1239!important; color:#fca5a5!important; }
             .em-alert-success { background-color:#041c10!important; border-color:#065f46!important; color:#6ee7b7!important; }
-            .em-code-bg       { background-color:#0a0b38!important; border-color:#1e2462!important; }
+            .em-code-bg       { background-color:#070740!important; border-color:#12124a!important; }
             .em-code-text     { color:#a5b4fc!important; }
             .em-order-hdr     { background-color:#141550!important; color:#e2e8f0!important; }
-            .em-order-row     { border-color:#1e2462!important; color:#cbd5e1!important; }
+            .em-order-row     { border-color:#12124a!important; color:#cbd5e1!important; }
             .em-order-sku     { color:#94a3b8!important; }
-            .em-totals-row    { border-color:#1e2462!important; }
+            .em-totals-row    { border-color:#12124a!important; }
             .em-totals-label  { color:#94a3b8!important; }
             .em-totals-val    { color:#e2e8f0!important; }
-            .em-sec-notice    { background-color:#0a0b38!important; border-color:#1e2462!important; }
+            .em-sec-notice    { background-color:#070740!important; border-color:#12124a!important; }
             .em-sec-title     { color:#e2e8f0!important; }
             .em-sec-text      { color:#94a3b8!important; }
             .em-footer-bg     { background-color:#0a0b2a!important; border-top-color:#1e2060!important; }
             .em-footer-text   { color:#94a3b8!important; }
-            .em-footer-link   { color:#60a5fa!important; border-bottom-color:#1e2462!important; }
+            .em-footer-link   { color:#60a5fa!important; border-bottom-color:#12124a!important; }
             .em-footer-dim    { color:#64748b!important; }
             .em-card-legal    { color:#475569!important; }
         }

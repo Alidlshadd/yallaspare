@@ -24,7 +24,7 @@
     <style>
         .si-hero {
             position: relative; overflow: hidden;
-            background: linear-gradient(135deg, #04042a, #10104a);
+            background: linear-gradient(135deg, #04041f, #12124a);
             border-radius: 16px; color: #fff;
         }
         .si-hero::after {
@@ -41,7 +41,7 @@
             {{-- ===== Navy hero: terminal bar + ticker ===== --}}
             <section class="si-hero">
                 <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/55">
-                    <span><span class="text-amber-400">&#9679;</span> Yalla Spare &mdash; <span class="text-white">{{ __('Search Terminal') }}</span></span>
+                    <span><span class="text-accent">&#9679;</span> Yalla Spare &mdash; <span class="text-white">{{ __('Search Terminal') }}</span></span>
                     <span>{{ __('Sort') }}: <span class="text-white">{{ $sortLabels[$sort] ?? $sort }} {{ $direction === 'desc' ? '↓' : '↑' }}</span> &middot; <span class="text-white si-mono">{{ now()->format('H:i') }}</span></span>
                 </div>
                 <div class="flex gap-9 overflow-x-auto whitespace-nowrap px-5 py-4">
@@ -67,7 +67,7 @@
                     </div>
                     <div class="min-w-0">
                         <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-white/50">{{ __('Top Keyword') }}</p>
-                        <p class="max-w-[220px] truncate text-xl font-black text-amber-400">{{ $summary['top_keyword'] ?: __('N/A') }}</p>
+                        <p class="max-w-[220px] truncate text-xl font-black text-accent">{{ $summary['top_keyword'] ?: __('N/A') }}</p>
                     </div>
                 </div>
             </section>
@@ -75,9 +75,9 @@
             {{-- ===== Chips + search/sort form ===== --}}
             <section class="flex flex-wrap items-center gap-2">
                 <a href="{{ $chipUrl(['window' => null, 'zero_hit' => null]) }}"
-                   class="inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-bold transition {{ (!$zeroHitOnly && $window === 'all') ? 'border-[#04042a] bg-[#04042a] text-amber-400' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">
+                   class="inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-bold transition {{ (!$zeroHitOnly && $window === 'all') ? 'border-[#04041f] bg-[#04041f] text-accent' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">
                     {{ __('All') }}
-                    <span class="rounded-full px-2 py-px text-[10px] {{ (!$zeroHitOnly && $window === 'all') ? 'bg-amber-400/20' : 'bg-slate-900/5 dark:bg-white/10' }}">{{ number_format($windowCounts['all']) }}</span>
+                    <span class="rounded-full px-2 py-px text-[10px] {{ (!$zeroHitOnly && $window === 'all') ? 'bg-accent/20' : 'bg-slate-900/5 dark:bg-white/10' }}">{{ number_format($windowCounts['all']) }}</span>
                 </a>
                 <a href="{{ $chipUrl(['zero_hit' => $zeroHitOnly ? null : 1]) }}"
                    class="inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-bold transition {{ $zeroHitOnly ? 'border-rose-700 bg-rose-700 text-white' : 'border-rose-200 bg-rose-50 text-rose-700 hover:border-rose-300 dark:border-rose-900/60 dark:bg-rose-950/30 dark:text-rose-300' }}">
@@ -87,14 +87,14 @@
                     @endif
                 </a>
                 <a href="{{ $chipUrl(['window' => $window === '7' ? null : '7']) }}"
-                   class="inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-bold transition {{ $window === '7' ? 'border-[#04042a] bg-[#04042a] text-amber-400' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">
+                   class="inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-bold transition {{ $window === '7' ? 'border-[#04041f] bg-[#04041f] text-accent' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">
                     {{ __('Last 7 days') }}
-                    <span class="rounded-full px-2 py-px text-[10px] {{ $window === '7' ? 'bg-amber-400/20' : 'bg-slate-900/5 dark:bg-white/10' }}">{{ number_format($windowCounts['7']) }}</span>
+                    <span class="rounded-full px-2 py-px text-[10px] {{ $window === '7' ? 'bg-accent/20' : 'bg-slate-900/5 dark:bg-white/10' }}">{{ number_format($windowCounts['7']) }}</span>
                 </a>
                 <a href="{{ $chipUrl(['window' => $window === '30' ? null : '30']) }}"
-                   class="inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-bold transition {{ $window === '30' ? 'border-[#04042a] bg-[#04042a] text-amber-400' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">
+                   class="inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-bold transition {{ $window === '30' ? 'border-[#04041f] bg-[#04041f] text-accent' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">
                     {{ __('Last 30 days') }}
-                    <span class="rounded-full px-2 py-px text-[10px] {{ $window === '30' ? 'bg-amber-400/20' : 'bg-slate-900/5 dark:bg-white/10' }}">{{ number_format($windowCounts['30']) }}</span>
+                    <span class="rounded-full px-2 py-px text-[10px] {{ $window === '30' ? 'bg-accent/20' : 'bg-slate-900/5 dark:bg-white/10' }}">{{ number_format($windowCounts['30']) }}</span>
                 </a>
 
                 <form method="GET" action="{{ route('admin.search-insights.index') }}" class="ml-auto flex flex-wrap items-center gap-2">
@@ -111,7 +111,7 @@
                         <option value="desc" @selected($direction === 'desc')>{{ __('Descending') }}</option>
                         <option value="asc" @selected($direction === 'asc')>{{ __('Ascending') }}</option>
                     </select>
-                    <button class="h-9 rounded-xl bg-[#04042a] px-4 text-sm font-semibold text-amber-400 transition hover:bg-[#10104a]">{{ __('Filter') }}</button>
+                    <button class="h-9 rounded-xl bg-[#04041f] px-4 text-sm font-semibold text-accent transition hover:bg-[#12124a]">{{ __('Filter') }}</button>
                 </form>
             </section>
 
@@ -119,7 +119,7 @@
             <section class="grid gap-5 xl:grid-cols-[1.65fr_1fr]">
                 <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex flex-wrap items-baseline justify-between gap-2 px-5 pt-4 pb-2">
-                        <p class="text-[11px] font-extrabold uppercase tracking-[0.16em] text-slate-400">{{ __('Keyword Register') }} <span class="text-amber-600">&mdash; {{ __('by demand') }}</span></p>
+                        <p class="text-[11px] font-extrabold uppercase tracking-[0.16em] text-slate-400">{{ __('Keyword Register') }} <span class="text-accent">&mdash; {{ __('by demand') }}</span></p>
                         <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-slate-400">{{ number_format($keywords->total()) }} {{ __('records') }}</p>
                     </div>
                     <div class="overflow-x-auto">
@@ -143,7 +143,7 @@
                                         <td class="si-mono px-5 py-3 text-xs text-slate-400">{{ str_pad($keywords->firstItem() + $index, 2, '0', STR_PAD_LEFT) }}</td>
                                         <td class="px-5 py-3">
                                             <span class="block font-bold text-slate-900 dark:text-slate-100">{{ $keyword->keyword }}</span>
-                                            <span class="mt-1.5 block h-1 max-w-[260px] rounded-full {{ $isZero ? 'bg-gradient-to-r from-rose-600 to-rose-400' : 'bg-gradient-to-r from-amber-500 to-amber-300' }}" style="width: {{ $demandShare }}%"></span>
+                                            <span class="mt-1.5 block h-1 max-w-[260px] rounded-full {{ $isZero ? 'bg-gradient-to-r from-rose-600 to-rose-400' : 'bg-gradient-to-r from-accent to-accent' }}" style="width: {{ $demandShare }}%"></span>
                                         </td>
                                         <td class="si-mono px-5 py-3 text-right font-bold text-slate-800 dark:text-slate-200">{{ number_format((int) $keyword->search_count) }}</td>
                                         <td class="px-5 py-3 text-right">
@@ -176,7 +176,7 @@
                                     <span class="si-mono shrink-0 text-sm font-extrabold text-rose-600 dark:text-rose-300">{{ number_format((int) $gap->search_count) }}</span>
                                     @if ($canManageProducts)
                                         <a href="{{ route('admin.products.create', ['name' => $gap->keyword]) }}"
-                                           class="shrink-0 rounded-lg bg-[#04042a] px-2.5 py-1.5 text-[11px] font-extrabold text-amber-400 transition hover:bg-[#10104a]">{{ __('Add Product') }}</a>
+                                           class="shrink-0 rounded-lg bg-[#04041f] px-2.5 py-1.5 text-[11px] font-extrabold text-accent transition hover:bg-[#12124a]">{{ __('Add Product') }}</a>
                                     @endif
                                 </div>
                             @empty
@@ -199,7 +199,7 @@
                     {{-- Demand pulse --}}
                     <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         <div class="flex items-baseline justify-between gap-3">
-                            <p class="text-[11px] font-extrabold uppercase tracking-[0.16em] text-slate-400">{{ __('Demand Pulse') }} <span class="text-amber-600">&mdash; {{ __('7 days') }}</span></p>
+                            <p class="text-[11px] font-extrabold uppercase tracking-[0.16em] text-slate-400">{{ __('Demand Pulse') }} <span class="text-accent">&mdash; {{ __('7 days') }}</span></p>
                             <p class="text-[10px] font-bold uppercase tracking-[0.1em] text-slate-400">{{ __('Active keywords / day') }}</p>
                         </div>
                         <div class="mt-4 flex h-24 items-end gap-1.5">
@@ -210,7 +210,7 @@
                                 @endphp
                                 <div class="flex flex-1 flex-col items-center gap-1.5">
                                     <div class="flex h-20 w-full items-end">
-                                        <div class="w-full rounded-t-md {{ $isToday ? 'bg-gradient-to-t from-[#04042a] to-[#2a2a7a]' : 'bg-gradient-to-t from-amber-500 to-amber-300' }}"
+                                        <div class="w-full rounded-t-md {{ $isToday ? 'bg-gradient-to-t from-[#04041f] to-[#2a2a7a]' : 'bg-gradient-to-t from-accent to-accent' }}"
                                              style="height: {{ $pulseHeight }}%"
                                              title="{{ $pulse['date'] }} &mdash; {{ number_format($pulse['count']) }} {{ __('keywords') }}"></div>
                                     </div>

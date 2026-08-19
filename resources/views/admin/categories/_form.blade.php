@@ -2,7 +2,7 @@
     $isEdit = isset($category);
     $formAction = $isEdit ? route('admin.categories.update', $category) : route('admin.categories.store');
 
-    $inputBase = 'h-11 w-full px-3 rounded-xl border bg-slate-50 text-sm text-slate-900 placeholder:text-slate-400 transition focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 focus:bg-white dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-900';
+    $inputBase = 'h-11 w-full px-3 rounded-xl border bg-slate-50 text-sm text-slate-900 placeholder:text-slate-400 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:bg-slate-800 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-900';
     $inputOk = 'border-slate-200 dark:border-slate-700';
     $inputErr = 'border-rose-300 dark:border-rose-500/50';
     $labelClass = 'block text-[10.5px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5';
@@ -21,7 +21,7 @@
     {{-- ═════════════ Category details ═════════════ --}}
     <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-5 sm:p-6 bento-shadow">
         <div class="flex items-center gap-2.5 mb-5">
-            <div class="h-9 w-9 rounded-xl bg-[#04042a] text-amber-300 grid place-items-center">
+            <div class="h-9 w-9 rounded-xl bg-[#04041f] text-accent grid place-items-center">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
             </div>
             <div>
@@ -72,7 +72,7 @@
     {{-- ═════════════ Image ═════════════ --}}
     <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-5 sm:p-6 bento-shadow">
         <div class="flex items-center gap-2.5 mb-5">
-            <div class="h-9 w-9 rounded-xl bg-[#04042a] text-amber-300 grid place-items-center">
+            <div class="h-9 w-9 rounded-xl bg-[#04041f] text-accent grid place-items-center">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             </div>
             <div>
@@ -97,7 +97,7 @@
                     <div>
                         <div class="text-[10.5px] font-extrabold uppercase tracking-widest text-slate-500 dark:text-slate-400">{{ __('Current Image') }}</div>
                         <label class="mt-1.5 flex items-center gap-2 text-xs font-bold text-slate-600 dark:text-slate-300 cursor-pointer">
-                            <input type="checkbox" name="remove_image" value="1" class="rounded border-slate-300 text-amber-500 focus:ring-amber-400 dark:border-slate-600 dark:bg-slate-800">
+                            <input type="checkbox" name="remove_image" value="1" class="rounded border-slate-300 text-accent focus:ring-accent dark:border-slate-600 dark:bg-slate-800">
                             {{ __('Remove') }}
                         </label>
                     </div>
@@ -113,8 +113,8 @@
             {{ __('Cancel') }}
         </a>
         <button type="submit"
-                class="inline-flex items-center gap-2 h-11 px-6 rounded-xl text-xs font-bold text-[#04042a] shadow-md shadow-amber-500/30 transition hover:brightness-105"
-                style="background: linear-gradient(180deg, #fbbf24, #f59e0b);">
+                class="inline-flex items-center gap-2 h-11 px-6 rounded-xl text-xs font-bold text-[#04041f] shadow-md shadow-accent/30 transition hover:brightness-105"
+                style="background: linear-gradient(180deg, #ff8a3d, #e65c00);">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
             {{ $isEdit ? __('Update Category') : __('Create Category') }}
         </button>

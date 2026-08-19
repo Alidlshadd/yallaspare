@@ -33,14 +33,14 @@
                         {{ __('We are here to help you with any questions about our products, orders, or delivery services. If you need assistance, feel free to contact our customer support team.') }}
                     </p>
                     <div class="sup-in mt-8 flex flex-wrap items-center gap-3" style="animation-delay: .3s">
-                        <a href="#contact-form" class="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-amber-400 px-6 text-sm font-extrabold text-primary shadow-lg shadow-amber-400/20 transition hover:-translate-y-0.5 hover:bg-amber-300 hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white">
+                        <a href="#contact-form" class="inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-accent px-6 text-sm font-extrabold text-primary shadow-lg shadow-accent/20 transition hover:-translate-y-0.5 hover:bg-accent hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-white">
                             {{ __('Send a Support Request') }}
                             <svg class="ct-arrow h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                         </a>
                         <span class="inline-flex h-12 items-center gap-2 rounded-xl border border-white/15 bg-white/5 px-4 text-sm font-bold text-slate-200 backdrop-blur-sm">
-                            <svg class="h-4 w-4 text-amber-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                            <svg class="h-4 w-4 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                                 <circle cx="12" cy="12" r="8" /><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
                             09:00 - 18:00
@@ -134,13 +134,13 @@
             <article id="contact-form" data-vision-reveal class="ct-form-card scroll-mt-28 overflow-hidden rounded-[2rem] border border-slate-200/80 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <header class="flex flex-wrap items-start justify-between gap-4 border-b border-slate-200/80 px-6 py-7 sm:px-8 dark:border-slate-800">
                     <div class="flex items-start gap-4">
-                        <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20 dark:bg-amber-400 dark:text-[#070740]">
+                        <span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary text-white shadow-lg shadow-primary/20 dark:bg-accent dark:text-[#070740]">
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                                 <path d="M4 5.5A2.5 2.5 0 0 1 6.5 3h11A2.5 2.5 0 0 1 20 5.5v9a2.5 2.5 0 0 1-2.5 2.5H9l-5 4v-4.8a2.5 2.5 0 0 1-1-2V5.5Z" stroke-linecap="round" stroke-linejoin="round" /><path d="M8 8h8M8 12h5" stroke-linecap="round" />
                             </svg>
                         </span>
                         <div>
-                            <p class="text-[11px] font-extrabold uppercase tracking-[0.2em] text-amber-600 dark:text-amber-400">{{ __('Customer Service') }}</p>
+                            <p class="text-[11px] font-extrabold uppercase tracking-[0.2em] text-accent dark:text-accent">{{ __('Customer Service') }}</p>
                             <h2 class="mt-1 text-2xl font-black tracking-tight text-primary sm:text-3xl dark:text-white">{{ __('Send a Support Request') }}</h2>
                         </div>
                     </div>
@@ -198,7 +198,7 @@
 
                     <div class="flex flex-col gap-4 border-t border-slate-200/80 pt-7 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800">
                         <p class="max-w-sm text-xs leading-5 text-slate-500 dark:text-slate-400">{{ __('Our team will help you find the correct spare part.') }}</p>
-                        <button type="submit" class="ct-submit inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-sm font-extrabold text-white shadow-lg shadow-primary/20 transition hover:-translate-y-0.5 hover:bg-[#10105f] hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-amber-400 dark:bg-amber-400 dark:text-[#070740] dark:shadow-amber-400/10 dark:hover:bg-amber-300">
+                        <button type="submit" class="ct-submit inline-flex h-12 items-center justify-center gap-2 rounded-xl bg-primary px-6 text-sm font-extrabold text-white shadow-lg shadow-primary/20 transition hover:-translate-y-0.5 hover:bg-[#10105f] hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:bg-accent dark:text-[#070740] dark:shadow-accent/10 dark:hover:bg-accent">
                             {{ __('Send Message') }}
                             <svg class="ct-arrow h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path d="M5 12h14M13 6l6 6-6 6" stroke-linecap="round" stroke-linejoin="round" />
@@ -211,7 +211,7 @@
             <aside class="space-y-5 lg:sticky lg:top-28">
                 <article data-vision-reveal class="ct-side-card ct-hours-card rounded-3xl p-6 text-white">
                     <div class="flex items-center justify-between gap-4">
-                        <span class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-amber-300">
+                        <span class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-white/10 text-accent">
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                                 <circle cx="12" cy="12" r="8" /><path d="M12 7v5l3 2" stroke-linecap="round" stroke-linejoin="round" />
                             </svg>
@@ -238,7 +238,7 @@
                     <ul class="mt-4 space-y-3 text-sm text-slate-600 dark:text-slate-300">
                         @foreach ([__('Car brand and model'), __('Year of manufacture'), __('Engine type (if available)'), __('Part name or photo')] as $item)
                             <li class="flex items-start gap-3">
-                                <span class="mt-1 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-amber-400 text-[9px] font-black text-primary">✓</span>
+                                <span class="mt-1 inline-flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-accent text-[9px] font-black text-primary">✓</span>
                                 <span>{{ $item }}</span>
                             </li>
                         @endforeach

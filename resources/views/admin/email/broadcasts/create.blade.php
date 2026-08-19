@@ -201,9 +201,9 @@
                                 <div class="mx-auto max-w-sm rounded-xl overflow-hidden border border-slate-200 bg-white shadow-sm dark:border-slate-700">
                                     <div class="flex items-center justify-between bg-primary px-4 py-3 text-white">
                                         <span class="text-xs font-bold tracking-wide">YALLASPARE</span>
-                                        <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-amber-300">{{ __('BROADCAST') }}</span>
+                                        <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-accent">{{ __('BROADCAST') }}</span>
                                     </div>
-                                    <div class="h-0.5 bg-amber-500"></div>
+                                    <div class="h-0.5 bg-accent"></div>
                                     <div class="p-4 space-y-3 text-[12px] leading-relaxed">
                                         <p class="font-black text-slate-900 text-base" id="preview-subject">{{ __('Your subject will appear here') }}</p>
                                         <div class="text-slate-700 whitespace-pre-wrap" id="preview-body">{{ __('Your message body will appear here once you start typing.') }}</div>

@@ -34,11 +34,11 @@
 <section data-product-compatibility class="rounded-2xl border border-app bg-surface-2 p-5">
     <div class="flex items-start justify-between gap-3">
         <div>
-            <p class="text-[10.5px] font-semibold uppercase tracking-[0.17em] text-amber-600 dark:text-amber-400">{{ __('Verified fitment') }}</p>
+            <p class="text-[10.5px] font-semibold uppercase tracking-[0.17em] text-accent-ink dark:text-accent">{{ __('Verified fitment') }}</p>
             <h2 class="mt-1.5 text-[17px] font-semibold tracking-[-0.022em] text-app">{{ __('Fits these vehicles') }}</h2>
             <p class="mt-1 font-mono text-[11px] text-muted">{{ $families->count() }} {{ __('families') }} · {{ $variantCount }} {{ __('variants') }}@if($brandName !== '') · {{ $brandName }}@endif</p>
         </div>
-        <span class="grid h-9 w-9 place-items-center rounded-xl bg-[#04042a] text-amber-300 dark:bg-amber-400 dark:text-[#04042a]"><i class="fas fa-car-side text-xs"></i></span>
+        <span class="grid h-9 w-9 place-items-center rounded-xl bg-navy text-accent dark:bg-accent dark:text-navy"><i class="fas fa-car-side text-xs"></i></span>
     </div>
 
     <div class="mt-4 space-y-3">

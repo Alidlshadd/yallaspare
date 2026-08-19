@@ -166,8 +166,8 @@ Route::get('/brand/manifest.webmanifest', function () {
         'name' => $name,
         'short_name' => $name,
         'icons' => $icons,
-        'theme_color' => '#0f172a',
-        'background_color' => '#0f172a',
+        'theme_color' => '#070740',
+        'background_color' => '#070740',
         'display' => 'standalone',
     ], 200, ['Content-Type' => 'application/manifest+json']);
 })->name('brand.manifest');

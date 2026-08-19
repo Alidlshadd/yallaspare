@@ -85,12 +85,12 @@
                                     $badgeClasses = match ($state) {
                                         'ready' => 'border-emerald-200 bg-white text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300',
                                         'disabled' => 'border-slate-200 bg-white text-slate-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-400',
-                                        default => 'border-amber-200 bg-white text-amber-700 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-300',
+                                        default => 'border-accent bg-white text-accent dark:border-accent dark:bg-accent dark:text-accent',
                                     };
                                     $dotClasses = match ($state) {
                                         'ready' => 'bg-emerald-500',
                                         'disabled' => 'bg-slate-400',
-                                        default => 'bg-amber-500',
+                                        default => 'bg-accent',
                                     };
                                 @endphp
                                 <article class="relative overflow-hidden rounded-2xl border p-5 {{ $cardClasses }}">
@@ -117,7 +117,7 @@
                                         </div>
                                     @endif
                                     @if ($key === 'whatsapp' && ($channel['template_alert'] ?? false))
-                                        <p class="mt-3 rounded-xl border border-amber-200 bg-white/80 px-3 py-2 text-xs font-semibold text-amber-800 dark:border-amber-900/60 dark:bg-slate-900/60 dark:text-amber-200">
+                                        <p class="mt-3 rounded-xl border border-accent bg-white/80 px-3 py-2 text-xs font-semibold text-accent dark:border-accent/60 dark:bg-slate-900/60 dark:text-accent">
                                             <i class="fas fa-triangle-exclamation mr-1" aria-hidden="true"></i>
                                             {{ __('An approved WhatsApp verification template is required.') }}
                                         </p>
@@ -182,10 +182,10 @@
                                     <span class="text-sm font-semibold text-slate-700 dark:text-slate-200">
                                         {{ __('Template approved on OTPiQ') }}
                                         @if ($templateCheckState === 'ready' && $templateStatus['language_matches'] === false)
-                                            <span class="text-xs font-medium text-amber-600 dark:text-amber-300">— {{ __('template language differs from the configured value') }}</span>
+                                            <span class="text-xs font-medium text-accent dark:text-accent">— {{ __('template language differs from the configured value') }}</span>
                                         @endif
                                     </span>
-                                    <span class="ml-auto text-[10px] font-bold uppercase tracking-wider {{ $templateCheckState === 'ready' ? 'text-emerald-600 dark:text-emerald-300' : ($templateCheckState === 'missing' ? 'text-amber-600 dark:text-amber-300' : 'text-slate-400') }}">
+                                    <span class="ml-auto text-[10px] font-bold uppercase tracking-wider {{ $templateCheckState === 'ready' ? 'text-emerald-600 dark:text-emerald-300' : ($templateCheckState === 'missing' ? 'text-accent dark:text-accent' : 'text-slate-400') }}">
                                         {{ $templateCheckState === 'ready' ? __('Ready') : ($templateCheckState === 'missing' ? __('Missing') : __('Not verified')) }}
                                     </span>
                                 </div>

@@ -60,7 +60,7 @@
             'super_admin' => ['label' => __('Super Admins'), 'count' => $superAdminUsers, 'swatch' => 'bg-violet-500'],
             'admin' => ['label' => __('Admins'), 'count' => $adminUsers, 'swatch' => 'bg-rose-500'],
             'manager' => ['label' => __('Managers'), 'count' => $managerUsers, 'swatch' => 'bg-cyan-500'],
-            'dealer' => ['label' => __('Dealers'), 'count' => $dealerUsers, 'swatch' => 'bg-amber-400'],
+            'dealer' => ['label' => __('Dealers'), 'count' => $dealerUsers, 'swatch' => 'bg-accent'],
             'user' => ['label' => __('Users'), 'count' => $regularUsers, 'swatch' => 'bg-blue-500'],
         ];
 
@@ -85,7 +85,7 @@
             'temporarily_banned' => [
                 'label' => __('Temporary Ban'),
                 'count' => $temporarilyBannedUsers,
-                'swatch' => 'bg-amber-400',
+                'swatch' => 'bg-accent',
                 'selected' => 'border-s-2 border-amber-400 bg-amber-50 text-amber-950 dark:bg-amber-400/10 dark:text-amber-200',
             ],
             'permanently_banned' => [
@@ -145,9 +145,9 @@
                 'label' => __('Dealers'),
                 'count' => $dealerUsers,
                 'caption' => __(':percent% of all accounts', ['percent' => $sharePercent($dealerUsers)]),
-                'card' => 'border-amber-300/70 dark:border-amber-400/35',
-                'accent' => 'text-amber-600 dark:text-amber-300',
-                'number' => 'text-amber-700 dark:text-amber-300',
+                'card' => 'border-accent/70 dark:border-accent/35',
+                'accent' => 'text-accent dark:text-accent',
+                'number' => 'text-accent dark:text-accent',
             ],
             'user' => [
                 'label' => __('Users'),
@@ -190,7 +190,7 @@
                         @class([
                             'rounded-xl border bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow dark:bg-slate-900',
                             $card['card'],
-                            'ring-2 ring-amber-400/60' => $filter === $key,
+                            'ring-2 ring-accent/60' => $filter === $key,
                         ])
                     >
                         <p class="text-[11px] font-bold uppercase tracking-widest {{ $card['accent'] }}">{{ $card['label'] }}</p>
@@ -205,7 +205,7 @@
                     {{ __('Showing') }} <span class="font-semibold text-gray-800 dark:text-slate-100">{{ $users->count() }}</span>
                     {{ __('of') }} <span class="font-semibold text-gray-800 dark:text-slate-100">{{ number_format($users->total()) }}</span>
                     @if($activeFilterLabel)
-                        · <span class="font-semibold text-amber-600 dark:text-amber-300">{{ $activeFilterLabel }}</span>
+                        · <span class="font-semibold text-accent dark:text-accent">{{ $activeFilterLabel }}</span>
                     @endif
                     @if($search !== '')
                         · "{{ $search }}"
@@ -213,7 +213,7 @@
                 </p>
                 <a
                     href="{{ route('admin.users.export-excel', $exportParams) }}"
-                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-amber-400 px-4 py-2 text-sm font-bold text-slate-900 shadow-sm transition hover:bg-amber-300"
+                    class="inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2 text-sm font-bold text-slate-900 shadow-sm transition hover:bg-accent"
                 >
                     <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v11m0 0 4-4m-4 4-4-4" />
@@ -242,11 +242,11 @@
                                 name="search"
                                 value="{{ $search }}"
                                 placeholder="{{ __('Search by name, email, phone, id, or role...') }}"
-                                class="w-full rounded-lg border-gray-300 bg-white ps-9 text-sm text-slate-900 placeholder:text-gray-400 focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500"
+                                class="w-full rounded-lg border-gray-300 bg-white ps-9 text-sm text-slate-900 placeholder:text-gray-400 focus:border-accent focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500"
                             >
                         </div>
                         @if($search !== '')
-                            <a href="{{ route('admin.users.index', array_filter(['filter' => $filter === 'all' ? null : $filter])) }}" class="mt-2 inline-block text-xs font-semibold text-amber-600 hover:text-amber-500 dark:text-amber-300 dark:hover:text-amber-200">
+                            <a href="{{ route('admin.users.index', array_filter(['filter' => $filter === 'all' ? null : $filter])) }}" class="mt-2 inline-block text-xs font-semibold text-accent hover:text-accent dark:text-accent dark:hover:text-accent">
                                 {{ __('Clear') }} ✕
                             </a>
                         @endif

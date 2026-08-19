@@ -8,9 +8,6 @@
         <title>{{ $systemSettings['site_name'] ?? config('app.name', 'Laravel') }}</title>
         @include('partials.brand-head')
 
-        <!-- Fonts -->
-        <link rel="preconnect" href="https://fonts.bunny.net">
-        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
         <link rel="stylesheet"
               href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
               integrity="sha384-iw3OoTErCYJJB9mCa8LNS2hbsQ7M3C0EpIsO/H5+EGAkPGc6rk+V8i04oW/K5xq0"
@@ -40,7 +37,7 @@
             <style>
                 /* HYBRID A+C ADMIN TOPBAR */
                 .admin-topbar {
-                    background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%) !important;
+                    background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%) !important;
                     border-bottom: 0 !important;
                     backdrop-filter: none !important;
                     position: sticky; top: 0; z-index: 40;
@@ -54,7 +51,7 @@
                 }
                 .admin-topbar::after {
                     content: ""; position: absolute; top: 0; bottom: 0; left: 0; width: 3px;
-                    background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);
+                    background: linear-gradient(180deg, #ff8a3d 0%, #e65c00 100%);
                 }
                 /* Clip-only wrapper for decorations that extend past the header bounds.
                    Header itself must stay overflow:visible so dropdowns can escape. */
@@ -63,17 +60,17 @@
                 }
                 .admin-topbar-hairline {
                     position: absolute; top: 0; left: 0; right: 0; height: 1px;
-                    background: linear-gradient(90deg, transparent, rgba(251,191,36,0.45), transparent);
+                    background: linear-gradient(90deg, transparent, rgb(255 138 61 / 0.45), transparent);
                     z-index: 1;
                 }
                 .admin-topbar-glow {
                     position: absolute; top: -72px; right: -72px; height: 168px; width: 168px;
-                    border-radius: 9999px; background: rgba(251,191,36,0.07); filter: blur(60px); pointer-events: none;
+                    border-radius: 9999px; background: rgb(255 138 61 / 0.07); filter: blur(60px); pointer-events: none;
                 }
                 .emboss-badge {
                     background:
                         radial-gradient(circle at 30% 25%, rgba(255,255,255,0.22), transparent 60%),
-                        linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+                        linear-gradient(135deg, #ff8a3d 0%, #e65c00 100%);
                     box-shadow:
                         inset 0 1px 0 rgba(255,255,255,0.45),
                         inset 0 -2px 4px rgba(120,53,15,0.4),
@@ -114,14 +111,14 @@
                 }
                 /* Profile — amber (focal premium action) */
                 .topbar-profile {
-                    border: 1px solid rgba(251,191,36,0.40);
-                    background: rgba(251,191,36,0.07);
+                    border: 1px solid rgb(255 138 61 / 0.40);
+                    background: rgb(255 138 61 / 0.07);
                     color: #fff;
                     transition: all .15s ease;
                 }
                 .topbar-profile:hover {
-                    background: rgba(251,191,36,0.14);
-                    border-color: rgba(251,191,36,0.65);
+                    background: rgb(255 138 61 / 0.14);
+                    border-color: rgb(255 138 61 / 0.65);
                 }
                 .topbar-pulse-ring { position: relative; }
                 .topbar-pulse-ring::after {
@@ -133,14 +130,14 @@
                 /* ─────── ADMIN SIDEBAR — INSTRUMENT STACK ─────── */
                 .admin-shell .admin-sidebar {
                     background:
-                        linear-gradient(180deg, #04042a 0%, #06063a 50%, #08084a 100%) !important;
+                        linear-gradient(180deg, #04041f 0%, #06063a 50%, #08084a 100%) !important;
                     display: flex;
                     flex-direction: column;
                 }
                 /* Thin amber hairline on the trailing edge — matches topbar's left amber bar */
                 .admin-shell .admin-sidebar::after {
                     content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 1px;
-                    background: linear-gradient(180deg, transparent, rgba(251,191,36,0.35), transparent);
+                    background: linear-gradient(180deg, transparent, rgb(255 138 61 / 0.35), transparent);
                     pointer-events: none;
                 }
                 [dir='rtl'] .admin-shell .admin-sidebar::after {
@@ -150,12 +147,12 @@
                     border-bottom-color: rgba(255,255,255,0.06) !important;
                 }
                 .admin-shell .admin-sidebar-meta {
-                    color: #fcd34d !important;
+                    color: #ffb27a !important;
                     font-family: ui-monospace, 'JetBrains Mono', monospace;
                     letter-spacing: 0.22em !important;
                 }
                 .admin-shell .admin-sidebar-logo:hover {
-                    background-color: rgba(251,191,36,0.06) !important;
+                    background-color: rgb(255 138 61 / 0.06) !important;
                 }
 
                 /* Nav layout — let footer be pushed to the bottom */
@@ -166,32 +163,32 @@
                     display: flex; align-items: center; gap: 8px;
                     padding: 16px 18px 8px;
                     font-size: 9px; font-weight: 900; letter-spacing: 0.28em;
-                    text-transform: uppercase; color: #fcd34d;
+                    text-transform: uppercase; color: #ffb27a;
                     font-family: ui-monospace, 'JetBrains Mono', monospace;
                     user-select: none;
                 }
                 .admin-nav-section::after {
                     content: ""; flex: 1; height: 1px;
-                    background: linear-gradient(90deg, rgba(251,191,36,0.35), transparent);
+                    background: linear-gradient(90deg, rgb(255 138 61 / 0.35), transparent);
                 }
                 [dir='rtl'] .admin-nav-section::after {
-                    background: linear-gradient(270deg, rgba(251,191,36,0.35), transparent);
+                    background: linear-gradient(270deg, rgb(255 138 61 / 0.35), transparent);
                 }
                 .admin-nav > .admin-nav-section:first-child { padding-top: 6px; }
 
                 /* Override existing cyan active state → amber instrument bar + soft halo */
                 .admin-shell .admin-nav-link.is-active {
-                    background: linear-gradient(90deg, rgba(251,191,36,0.18), rgba(251,191,36,0.04)) !important;
+                    background: linear-gradient(90deg, rgb(255 138 61 / 0.18), rgb(255 138 61 / 0.04)) !important;
                     color: #fff !important;
                     box-shadow:
                         inset 0 1px 0 rgba(255,255,255,0.06),
-                        0 6px 20px -8px rgba(251,191,36,0.35);
+                        0 6px 20px -8px rgb(255 138 61 / 0.35);
                 }
                 .admin-shell .admin-nav-link.is-active::before {
-                    background: linear-gradient(180deg, #fbbf24, #f59e0b) !important;
+                    background: linear-gradient(180deg, #ff8a3d, #e65c00) !important;
                     width: 3px !important;
                     inset-block: 0.5rem !important;
-                    box-shadow: 0 0 10px rgba(251,191,36,0.65);
+                    box-shadow: 0 0 10px rgb(255 138 61 / 0.65);
                     border-radius: 0 2px 2px 0 !important;
                 }
                 /* Simpler icon treatment — no cyan tile, just amber-cream icon */
@@ -203,7 +200,7 @@
                 .admin-shell .admin-nav-link:hover .admin-nav-icon,
                 .admin-shell .admin-nav-link.is-active .admin-nav-icon {
                     background-color: transparent !important;
-                    color: #fcd34d !important;
+                    color: #ffb27a !important;
                 }
                 .admin-shell .admin-nav-link:hover {
                     background-color: rgba(255,255,255,0.05) !important;
@@ -217,7 +214,7 @@
                 }
                 .admin-nav-sweep {
                     position: absolute; top: 0; left: -60%; width: 60%; height: 100%;
-                    background: linear-gradient(90deg, transparent, rgba(251,191,36,0.32), transparent);
+                    background: linear-gradient(90deg, transparent, rgb(255 138 61 / 0.32), transparent);
                     opacity: 0;
                     will-change: left, opacity;
                 }
@@ -777,7 +774,7 @@
                                     <h2 class="text-lg md:text-xl lg:text-2xl font-black text-white tracking-tight whitespace-nowrap truncate max-w-full">{{ $adminPageTitle }}</h2>
                                     <div class="mt-1 inline-flex items-center gap-2 text-[10px] lg:text-[11px] uppercase tracking-[0.2em] text-white/55 font-bold whitespace-nowrap truncate max-w-full" style="font-family: 'JetBrains Mono', ui-monospace, monospace;">
                                         <span class="topbar-pulse-ring text-emerald-400 inline-flex h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
-                                        <span class="text-amber-300">{{ __('ADMIN · LIVE') }}</span>
+                                        <span class="text-accent">{{ __('ADMIN · LIVE') }}</span>
                                         <span class="text-white/25" aria-hidden="true">·</span>
                                         <span>{{ now()->format('l, F d · Y') }}</span>
                                     </div>
@@ -869,7 +866,7 @@
                                     @if ($adminProfilePhotoUrl)
                                         <img src="{{ $adminProfilePhotoUrl }}" alt="{{ __(':name profile photo', ['name' => $adminUser->name]) }}" class="h-7 w-7 rounded-md object-cover">
                                     @else
-                                        <span class="h-7 w-7 rounded-md grid place-items-center emboss-badge text-[#04042a] text-[11px] font-black" style="font-family: 'JetBrains Mono', ui-monospace, monospace;">
+                                        <span class="h-7 w-7 rounded-md grid place-items-center emboss-badge text-[#04041f] text-[11px] font-black" style="font-family: 'JetBrains Mono', ui-monospace, monospace;">
                                             {{ $adminAvatarInitial }}
                                         </span>
                                     @endif

@@ -17,7 +17,7 @@
 @endphp
 
 <header class="sticky top-0 z-40">
-    <div class="bg-[linear-gradient(180deg,#070740_0%,#0a0d3f_100%)] text-white shadow-sm">
+    <div class="bg-[linear-gradient(180deg,#070740_0%,#070740_100%)] text-white shadow-sm">
         <div class="mx-auto grid h-16 max-w-6xl grid-cols-[1fr_auto_1fr] items-center gap-4 px-4 sm:px-6 lg:px-8">
             <div></div>
 

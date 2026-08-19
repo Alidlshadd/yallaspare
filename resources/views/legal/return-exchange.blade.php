@@ -6,14 +6,14 @@
 @section('content')
     <div data-vision-page class="mx-auto w-full max-w-6xl">
         <section class="sup-in">
-            <p class="text-xs font-semibold uppercase tracking-[0.22em] text-amber-600 dark:text-amber-400">{{ __('Customer Service') }}</p>
+            <p class="text-xs font-semibold uppercase tracking-[0.22em] text-accent dark:text-accent">{{ __('Customer Service') }}</p>
             <h1 class="mt-5 text-4xl font-semibold tracking-tight text-slate-900 sm:text-5xl dark:text-slate-100">{{ __('Return & Exchange Policy') }}</h1>
             <p class="mt-6 max-w-3xl text-base leading-relaxed text-slate-600 dark:text-slate-300">
                 {{ __('Customer satisfaction is very important to us. We try to handle all return and exchange requests fairly and transparently. Please read the following conditions before requesting a return or exchange.') }}
             </p>
             <a
                 href="{{ route('legal.contact', ['topic' => 'order']) }}"
-                class="mt-6 inline-flex items-center gap-2 rounded-xl bg-amber-400 px-5 py-3 text-sm font-bold text-primary dark:text-[#070740] shadow-sm transition hover:-translate-y-0.5 hover:bg-amber-300 hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:hidden"
+                class="mt-6 inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-bold text-primary dark:text-[#070740] shadow-sm transition hover:-translate-y-0.5 hover:bg-accent hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:hidden"
             >
                 {{ __('Open a return request') }} <span aria-hidden="true">&rarr;</span>
             </a>
@@ -33,7 +33,7 @@
                     <div class="mt-3 border-t border-slate-200/80 pt-3 dark:border-slate-800">
                         <a
                             href="{{ route('legal.contact', ['topic' => 'order']) }}"
-                            class="block rounded-xl bg-amber-400 px-3 py-2.5 text-center text-sm font-bold text-primary dark:text-[#070740] transition hover:-translate-y-0.5 hover:bg-amber-300 hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                            class="block rounded-xl bg-accent px-3 py-2.5 text-center text-sm font-bold text-primary dark:text-[#070740] transition hover:-translate-y-0.5 hover:bg-accent hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                         >
                             {{ __('Open a return request') }} <span aria-hidden="true">&rarr;</span>
                         </a>
@@ -44,7 +44,7 @@
             <div class="space-y-5">
                 <section id="period" data-vision-reveal class="grid scroll-mt-28 grid-cols-[104px,1fr] overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <aside class="flex flex-col items-center justify-center gap-0.5 bg-primary px-3 py-6 text-center">
-                        <span class="text-3xl font-bold tracking-tight text-amber-400"><span data-vision-count="7">0</span></span>
+                        <span class="text-3xl font-bold tracking-tight text-accent"><span data-vision-count="7">0</span></span>
                         <span class="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/60">{{ __('days') }}</span>
                     </aside>
                     <div class="p-6">
@@ -60,7 +60,7 @@
 
                 <section id="conditions" data-vision-reveal class="grid scroll-mt-28 grid-cols-[104px,1fr] overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <aside class="flex flex-col items-center justify-center gap-0.5 bg-primary px-3 py-6 text-center">
-                        <span class="text-3xl font-bold tracking-tight text-amber-400"><span data-vision-count="4">0</span></span>
+                        <span class="text-3xl font-bold tracking-tight text-accent"><span data-vision-count="4">0</span></span>
                         <span class="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/60">{{ __('conditions') }}</span>
                     </aside>
                     <div class="p-6">
@@ -74,7 +74,7 @@
                                 __('The product must not be damaged due to improper installation or misuse'),
                             ] as $condition)
                                 <li class="flex items-start gap-2.5 text-sm leading-relaxed text-slate-600 dark:text-slate-300">
-                                    <svg class="mt-1 h-3.5 w-3.5 shrink-0 text-amber-500" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m4.5 10.5 3.5 3.5 7.5-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+                                    <svg class="mt-1 h-3.5 w-3.5 shrink-0 text-accent" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="m4.5 10.5 3.5 3.5 7.5-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
                                     {{ $condition }}
                                 </li>
                             @endforeach
@@ -85,9 +85,9 @@
                     </div>
                 </section>
 
-                <section id="damaged" data-vision-reveal class="grid scroll-mt-28 grid-cols-[104px,1fr] overflow-hidden rounded-2xl border border-amber-300/70 bg-white shadow-sm ring-2 ring-amber-400/15 dark:border-amber-400/30 dark:bg-slate-900">
+                <section id="damaged" data-vision-reveal class="grid scroll-mt-28 grid-cols-[104px,1fr] overflow-hidden rounded-2xl border border-accent/70 bg-white shadow-sm ring-2 ring-accent/15 dark:border-accent/30 dark:bg-slate-900">
                     <aside class="flex flex-col items-center justify-center gap-0.5 bg-primary px-3 py-6 text-center">
-                        <span class="text-3xl font-bold tracking-tight text-amber-400"><span data-vision-count="24">0</span></span>
+                        <span class="text-3xl font-bold tracking-tight text-accent"><span data-vision-count="24">0</span></span>
                         <span class="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/60">{{ __('hours') }}</span>
                     </aside>
                     <div class="p-6">
@@ -108,7 +108,7 @@
                 </section>
 
                 <section id="shipping" data-vision-reveal class="grid scroll-mt-28 grid-cols-[104px,1fr] overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <aside class="flex flex-col items-center justify-center bg-primary px-3 py-6 text-amber-400">
+                    <aside class="flex flex-col items-center justify-center bg-primary px-3 py-6 text-accent">
                         <svg class="h-9 w-9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                             <path d="M3 7h12v9H3zM15 10h3l3 3v3h-6z" /><circle cx="7" cy="18" r="1.5" /><circle cx="17" cy="18" r="1.5" />
                         </svg>
@@ -126,7 +126,7 @@
 
                 <section id="refund" data-vision-reveal class="grid scroll-mt-28 grid-cols-[104px,1fr] overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <aside class="flex flex-col items-center justify-center gap-0.5 bg-primary px-3 py-6 text-center">
-                        <span class="text-3xl font-bold tracking-tight text-amber-400">%<span data-vision-count="100">0</span></span>
+                        <span class="text-3xl font-bold tracking-tight text-accent">%<span data-vision-count="100">0</span></span>
                         <span class="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/60">{{ __('refund') }}</span>
                     </aside>
                     <div class="p-6">
@@ -142,7 +142,7 @@
 
                 <section id="exchange" data-vision-reveal class="grid scroll-mt-28 grid-cols-[104px,1fr] overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <aside class="flex flex-col items-center justify-center gap-0.5 bg-primary px-3 py-6 text-center">
-                        <span class="text-3xl font-bold tracking-tight text-amber-400">1:1</span>
+                        <span class="text-3xl font-bold tracking-tight text-accent">1:1</span>
                         <span class="text-[10px] font-semibold uppercase tracking-[0.14em] text-white/60">{{ __('exchange') }}</span>
                     </aside>
                     <div class="p-6">
@@ -157,7 +157,7 @@
                 </section>
 
                 <section id="nonreturnable" data-vision-reveal class="grid scroll-mt-28 grid-cols-[104px,1fr] overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-                    <aside class="flex flex-col items-center justify-center bg-primary px-3 py-6 text-amber-400">
+                    <aside class="flex flex-col items-center justify-center bg-primary px-3 py-6 text-accent">
                         <svg class="h-9 w-9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true">
                             <circle cx="12" cy="12" r="9" /><path d="M7.5 7.5l9 9M16.5 7.5l-9 9" />
                         </svg>
@@ -192,7 +192,7 @@
                         </div>
                         <a
                             href="{{ route('legal.contact', ['topic' => 'order']) }}"
-                            class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-amber-400 px-5 py-3 text-sm font-bold text-primary dark:text-[#070740] shadow-sm transition hover:-translate-y-0.5 hover:bg-amber-300 hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-950"
+                            class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-bold text-primary dark:text-[#070740] shadow-sm transition hover:-translate-y-0.5 hover:bg-accent hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-950"
                         >
                             {{ __('Open a return request') }} <span aria-hidden="true">&rarr;</span>
                         </a>

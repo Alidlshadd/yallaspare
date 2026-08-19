@@ -145,7 +145,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4" data-animate-stagger>
 
         {{-- ============ TOTAL REVENUE — HERO 2x2 ============ --}}
-        <div id="admin-revenue-section" class="relative sm:col-span-2 lg:col-span-2 lg:row-span-2 rounded-3xl bg-primary text-white p-7 overflow-hidden bento-shadow-lg corner-brackets scroll-mt-24" style="background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);">
+        <div id="admin-revenue-section" class="relative sm:col-span-2 lg:col-span-2 lg:row-span-2 rounded-3xl bg-primary text-white p-7 overflow-hidden bento-shadow-lg corner-brackets scroll-mt-24" style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
             <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
             <div class="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-indigo-500/25 blur-[100px]"></div>
             <div class="absolute -bottom-32 -left-20 h-80 w-80 rounded-full bg-cyan-500/15 blur-[100px]"></div>
@@ -225,7 +225,7 @@
                     <p class="mt-1 text-base font-bold text-white/95 flex items-center gap-2">
                         {{ number_format($pendingOrders) }}
                         @if($pendingOrders > 0)
-                            <span class="pulse-dot inline-flex h-2 w-2 rounded-full bg-amber-400 text-amber-400"></span>
+                            <span class="pulse-dot inline-flex h-2 w-2 rounded-full bg-accent text-accent"></span>
                         @endif
                     </p>
                 </div>
@@ -354,7 +354,7 @@
 
         {{-- ============ PENDING ORDERS ============ --}}
         <div class="relative rounded-3xl bg-white p-6 bento-shadow transition-shadow border border-slate-200/70 overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-            <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-amber-400 to-orange-500"></div>
+            <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-accent to-orange-500"></div>
             <div class="flex items-start justify-between">
                 <div>
                     <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold dark:text-slate-400">{{ __('Pending Orders') }}</p>
@@ -366,9 +366,9 @@
             </div>
             <p class="mt-6 num-display text-4xl font-black text-primary dark:text-slate-100">{{ number_format($pendingOrders) }}</p>
             <div class="mt-3 flex items-center justify-between">
-                <p class="text-xs text-amber-700 font-bold inline-flex items-center gap-1.5 dark:text-amber-300">
+                <p class="text-xs text-accent font-bold inline-flex items-center gap-1.5 dark:text-accent">
                     @if($pendingOrders > 0)
-                        <span class="pulse-dot text-amber-500 inline-flex h-1.5 w-1.5 rounded-full bg-amber-500"></span>
+                        <span class="pulse-dot text-accent inline-flex h-1.5 w-1.5 rounded-full bg-accent"></span>
                     @else
                         <span class="inline-flex h-1.5 w-1.5 rounded-full bg-slate-300"></span>
                     @endif
@@ -437,13 +437,13 @@
         </div>
 
         {{-- Low Stock with BIG gauge --}}
-        <div class="relative rounded-3xl bg-white p-5 bento-shadow border border-amber-200 lg:col-span-2 overflow-hidden transition-shadow dark:bg-slate-900 dark:border-amber-900/50 corner-brackets-dark">
+        <div class="relative rounded-3xl bg-white p-5 bento-shadow border border-accent lg:col-span-2 overflow-hidden transition-shadow dark:bg-slate-900 dark:border-accent/50 corner-brackets-dark">
             <div class="absolute inset-0 bento-stripes-soft pointer-events-none"></div>
             <div class="relative flex items-center justify-between">
-                <p class="text-[10px] uppercase tracking-[0.22em] font-bold inline-flex items-center gap-1.5 {{ $gaugeTone === 'rose' ? 'text-rose-700 dark:text-rose-300' : ($gaugeTone === 'amber' ? 'text-amber-700 dark:text-amber-300' : 'text-emerald-700 dark:text-emerald-300') }}">
+                <p class="text-[10px] uppercase tracking-[0.22em] font-bold inline-flex items-center gap-1.5 {{ $gaugeTone === 'rose' ? 'text-rose-700 dark:text-rose-300' : ($gaugeTone === 'amber' ? 'text-accent dark:text-accent' : 'text-emerald-700 dark:text-emerald-300') }}">
                     <i class="fas fa-triangle-exclamation"></i> {{ __('Stock Alert') }}
                 </p>
-                <span class="text-[10px] uppercase tracking-widest font-bold {{ $gaugeTone === 'rose' ? 'text-rose-600' : ($gaugeTone === 'amber' ? 'text-amber-600' : 'text-emerald-600') }}">{{ __('Threshold :count', ['count' => $lowStockThreshold]) }}</span>
+                <span class="text-[10px] uppercase tracking-widest font-bold {{ $gaugeTone === 'rose' ? 'text-rose-600' : ($gaugeTone === 'amber' ? 'text-accent' : 'text-emerald-600') }}">{{ __('Threshold :count', ['count' => $lowStockThreshold]) }}</span>
             </div>
             <div class="relative mt-3 flex items-center gap-5">
                 <div class="relative h-24 w-24 shrink-0">
@@ -454,7 +454,7 @@
                          style="background: conic-gradient({{ $gaugeColor }} 0% {{ $lowStockPct }}%, #e5e7eb {{ $lowStockPct }}% 100%);">
                         <div class="absolute inset-2 rounded-full bg-white grid place-items-center dark:bg-slate-900">
                             <div class="text-center leading-tight">
-                                <p class="num-display text-2xl font-black {{ $gaugeTone === 'rose' ? 'text-rose-700 dark:text-rose-300' : ($gaugeTone === 'amber' ? 'text-amber-700 dark:text-amber-300' : 'text-emerald-700 dark:text-emerald-300') }}">{{ number_format($lowStockCount) }}</p>
+                                <p class="num-display text-2xl font-black {{ $gaugeTone === 'rose' ? 'text-rose-700 dark:text-rose-300' : ($gaugeTone === 'amber' ? 'text-accent dark:text-accent' : 'text-emerald-700 dark:text-emerald-300') }}">{{ number_format($lowStockCount) }}</p>
                                 <p class="text-[8px] uppercase tracking-widest text-slate-400 font-bold dark:text-slate-500">{{ __('SKUs') }}</p>
                             </div>
                         </div>
@@ -462,12 +462,12 @@
                 </div>
                 <div class="min-w-0">
                     <p class="text-[10px] uppercase tracking-widest text-slate-400 font-bold dark:text-slate-500">{{ __('Inventory health') }}</p>
-                    <p class="mt-1 text-sm font-bold truncate {{ $gaugeTone === 'rose' ? 'text-rose-800 dark:text-rose-300' : ($gaugeTone === 'amber' ? 'text-amber-800 dark:text-amber-300' : 'text-emerald-800 dark:text-emerald-300') }}">{{ __(':count parts below threshold', ['count' => $lowStockCount]) }}</p>
+                    <p class="mt-1 text-sm font-bold truncate {{ $gaugeTone === 'rose' ? 'text-rose-800 dark:text-rose-300' : ($gaugeTone === 'amber' ? 'text-accent dark:text-accent' : 'text-emerald-800 dark:text-emerald-300') }}">{{ __(':count parts below threshold', ['count' => $lowStockCount]) }}</p>
                     @if($outOfStockCount > 0)
                         <p class="mt-1 text-xs text-rose-600 font-bold dark:text-rose-400">+ {{ $outOfStockCount }} {{ __('out of stock') }}</p>
                     @endif
                     @if(Route::has('admin.products.index'))
-                        <a href="{{ route('admin.products.index', ['low_stock' => 1]) }}" class="mt-2 inline-flex items-center gap-1 text-xs font-bold {{ $gaugeTone === 'rose' ? 'text-rose-700 hover:text-rose-900 dark:text-rose-300' : ($gaugeTone === 'amber' ? 'text-amber-700 hover:text-amber-900 dark:text-amber-300' : 'text-emerald-700 hover:text-emerald-900 dark:text-emerald-300') }}">
+                        <a href="{{ route('admin.products.index', ['low_stock' => 1]) }}" class="mt-2 inline-flex items-center gap-1 text-xs font-bold {{ $gaugeTone === 'rose' ? 'text-rose-700 hover:text-rose-900 dark:text-rose-300' : ($gaugeTone === 'amber' ? 'text-accent hover:text-accent dark:text-accent' : 'text-emerald-700 hover:text-emerald-900 dark:text-emerald-300') }}">
                             {{ __('View low stock') }} <i class="fas fa-arrow-right text-[10px]"></i>
                         </a>
                     @endif
@@ -581,19 +581,19 @@
         $opMax = max(collect($operationsQueue)->pluck('count')->map(fn($x) => (int) $x)->all() ?: [1]);
         $opMax = $opMax > 0 ? $opMax : 1;
     @endphp
-    <div class="mb-8 relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5 sm:p-7" style="background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);">
+    <div class="mb-8 relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5 sm:p-7" style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
         <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
-        <div class="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-amber-500/15 blur-[100px]"></div>
+        <div class="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-accent/15 blur-[100px]"></div>
         <div class="absolute -bottom-24 -left-20 h-80 w-80 rounded-full bg-indigo-500/15 blur-[100px]"></div>
-        <div class="absolute top-0 left-0 right-0 h-[2px]" style="background: linear-gradient(90deg, #f59e0b, #f43f5e, #818cf8, #22d3ee);"></div>
+        <div class="absolute top-0 left-0 right-0 h-[2px]" style="background: linear-gradient(90deg, #e65c00, #f43f5e, #818cf8, #22d3ee);"></div>
 
         {{-- Header --}}
         <div class="relative flex items-center justify-between gap-4 flex-wrap text-white mb-6">
             <div class="min-w-0">
                 <div class="text-[10px] uppercase tracking-widest text-white/60 font-bold inline-flex items-center gap-2">
-                    <span class="pulse-dot text-amber-400 inline-flex h-1.5 w-1.5 rounded-full bg-amber-400"></span>
+                    <span class="pulse-dot text-accent inline-flex h-1.5 w-1.5 rounded-full bg-accent"></span>
                     {{ __('Operations · Mission Control') }}
-                    <span class="font-mono text-amber-300/80 px-1.5 py-0.5 rounded bg-amber-400/10 border border-amber-400/20">{{ $opTotal }} {{ __('OPEN') }}</span>
+                    <span class="font-mono text-accent/80 px-1.5 py-0.5 rounded bg-accent/10 border border-accent/20">{{ $opTotal }} {{ __('OPEN') }}</span>
                 </div>
                 <h3 class="mt-1 text-xl sm:text-2xl font-bold tracking-tight">{{ __('Work that needs attention') }}</h3>
             </div>
@@ -613,14 +613,14 @@
                     $opPct = $opMax > 0 ? max(0, min(100, round(($count / $opMax) * 100))) : 0;
                     $hasItems = $count > 0;
                     $toneHex = match ($tone) {
-                        'amber' => '#f59e0b',
+                        'amber' => '#e65c00',
                         'blue' => '#3b82f6',
                         'rose' => '#f43f5e',
                         'indigo' => '#818cf8',
                         default => '#94a3b8',
                     };
                     $toneGlow = match ($tone) {
-                        'amber' => 'rgba(251,191,36,0.25)',
+                        'amber' => 'rgb(255 138 61 / 0.25)',
                         'blue' => 'rgba(59,130,246,0.25)',
                         'rose' => 'rgba(244,63,94,0.25)',
                         'indigo' => 'rgba(129,140,248,0.25)',
@@ -646,7 +646,7 @@
                     <div class="relative flex items-center gap-3.5">
                         <div class="relative h-16 w-16 shrink-0 rounded-full grid place-items-center"
                              style="background: conic-gradient({{ $toneHex }} 0deg {{ $opPct * 3.6 }}deg, rgba(255,255,255,0.06) {{ $opPct * 3.6 }}deg 360deg);">
-                            <div class="absolute inset-1.5 rounded-full grid place-items-center" style="background: linear-gradient(135deg, #04042a, #0a0d3f);">
+                            <div class="absolute inset-1.5 rounded-full grid place-items-center" style="background: linear-gradient(135deg, #04041f, #070740);">
                                 <span class="num-display text-2xl font-black {{ $hasItems ? '' : 'text-white/40' }}" style="{{ $hasItems ? 'color: ' . $toneHex . ';' : '' }}">{{ number_format($count) }}</span>
                             </div>
                         </div>
@@ -672,8 +672,8 @@
             <div class="relative mt-6 rounded-2xl border border-white/10 bg-white/[0.04] backdrop-blur-sm overflow-hidden">
                 <div class="flex items-center justify-between border-b border-white/10 px-4 py-3">
                     <p class="text-xs font-bold text-white inline-flex items-center gap-2">
-                        <span class="pulse-dot inline-flex h-1.5 w-1.5 rounded-full bg-amber-400 text-amber-400"></span>
-                        <span class="font-mono text-[10px] text-amber-300">⌖</span>
+                        <span class="pulse-dot inline-flex h-1.5 w-1.5 rounded-full bg-accent text-accent"></span>
+                        <span class="font-mono text-[10px] text-accent">⌖</span>
                         {{ __('Priority orders') }}
                         <span class="ml-1 text-[10px] font-mono text-white/60 bg-white/10 px-1.5 py-0.5 rounded">{{ $operationOrders->count() }}</span>
                     </p>
@@ -688,7 +688,7 @@
                                 ? 'background: rgba(244,63,94,0.15); color: #fda4af; border: 1px solid rgba(244,63,94,0.3);'
                                 : ((string) $order->status === \App\Models\Order::STATUS_PROCESSING
                                     ? 'background: rgba(59,130,246,0.15); color: #93c5fd; border: 1px solid rgba(59,130,246,0.3);'
-                                    : 'background: rgba(251,191,36,0.15); color: #fcd34d; border: 1px solid rgba(251,191,36,0.3);');
+                                    : 'background: rgb(255 138 61 / 0.15); color: #ffb27a; border: 1px solid rgb(255 138 61 / 0.3);');
                         @endphp
                         <a href="{{ route('admin.orders.show', $order) }}" class="flex flex-col gap-2 px-4 py-3 transition hover:bg-white/[0.04] sm:flex-row sm:items-center sm:justify-between">
                             <div class="flex items-center gap-3">
@@ -727,7 +727,7 @@
 
         $catTotal = array_sum($categoryCounts ?? []);
         $catCount = count($categoryNames ?? []);
-        $catPalette = ['#4f46e5', '#06b6d4', '#a855f7', '#f59e0b', '#10b981', '#ec4899', '#14b8a6', '#f97316'];
+        $catPalette = ['#4f46e5', '#06b6d4', '#a855f7', '#e65c00', '#10b981', '#ec4899', '#14b8a6', '#f97316'];
         // Sort categories by count desc for ranking
         $sortedCats = [];
         if ($catCount > 0) {
@@ -742,7 +742,7 @@
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-8" data-animate="fade-up">
 
         {{-- ============ MONTHLY ORDERS TREND — COMPACT ============ --}}
-        <div class="xl:col-span-2 relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5" style="background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);">
+        <div class="xl:col-span-2 relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5" style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
             <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
             <div class="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-indigo-500/20 blur-[100px]"></div>
             <div class="absolute -bottom-16 -left-12 h-56 w-56 rounded-full bg-cyan-500/15 blur-[80px]"></div>
@@ -805,7 +805,7 @@
         </div>
 
         {{-- ============ PRODUCTS DISTRIBUTION — COMPACT TOP 5 ============ --}}
-        <div class="relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5" style="background: linear-gradient(135deg, #04042a 0%, #070740 60%, #0a0d3f 100%);">
+        <div class="relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5" style="background: linear-gradient(135deg, #04041f 0%, #070740 60%, #070740 100%);">
             <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
             <div class="absolute -top-16 -right-16 h-48 w-48 rounded-full bg-fuchsia-500/20 blur-[70px]"></div>
             <div class="absolute -bottom-16 -left-10 h-48 w-48 rounded-full bg-violet-500/15 blur-[70px]"></div>
@@ -955,12 +955,12 @@
     <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8" data-animate-stagger>
 
         <div class="relative rounded-3xl bg-white p-5 bento-shadow border border-slate-200/70 overflow-hidden dark:bg-slate-900 dark:border-slate-800">
-            <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-amber-400 to-orange-500"></div>
+            <div class="absolute top-0 left-0 bottom-0 w-1 bg-gradient-to-b from-accent to-orange-500"></div>
             <div class="flex items-center justify-between">
-                <p class="text-[10px] uppercase tracking-[0.22em] text-amber-700 font-bold dark:text-amber-300">{{ __('Low Stock') }}</p>
+                <p class="text-[10px] uppercase tracking-[0.22em] text-accent font-bold dark:text-accent">{{ __('Low Stock') }}</p>
                 <span class="inline-flex items-center px-2 py-1 text-[10px] rounded-full bg-amber-100 text-amber-700 font-bold dark:bg-amber-900/30 dark:text-amber-300">{{ __('Threshold :count', ['count' => $lowStockThreshold]) }}</span>
             </div>
-            <p class="mt-4 num-display text-3xl font-black text-amber-800 dark:text-amber-300">{{ number_format($lowStockCount) }}</p>
+            <p class="mt-4 num-display text-3xl font-black text-accent dark:text-accent">{{ number_format($lowStockCount) }}</p>
             <p class="mt-2 text-xs {{ $lowStockTrendPercent > 0 ? 'text-rose-600' : ($lowStockTrendPercent < 0 ? 'text-emerald-600' : 'text-slate-500') }} font-bold">
                 <i class="fas fa-arrow-{{ $lowStockTrendPercent > 0 ? 'up' : ($lowStockTrendPercent < 0 ? 'down' : 'right') }} mr-1"></i>
                 {{ __(':percent% vs previous month', ['percent' => number_format(abs($lowStockTrendPercent), 1)]) }}
@@ -1084,7 +1084,7 @@
         <div class="relative p-6 text-white overflow-hidden" style="background: linear-gradient(135deg, #2a0510 0%, #4c0519 50%, #2a0510 100%);">
             <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
             <div class="absolute -top-12 -right-12 h-48 w-48 rounded-full bg-rose-500/25 blur-3xl"></div>
-            <div class="absolute top-0 left-0 right-0 h-[2px]" style="background: linear-gradient(90deg, #f43f5e, #f97316, #f59e0b);"></div>
+            <div class="absolute top-0 left-0 right-0 h-[2px]" style="background: linear-gradient(90deg, #f43f5e, #f97316, #e65c00);"></div>
 
             <div class="relative flex items-center justify-between">
                 <div>
@@ -1113,10 +1113,10 @@
                         @php
                             $stockPct = $lowStockThreshold > 0 ? min(100, max(4, ($product->stock_quantity / max($lowStockThreshold, 1)) * 100)) : 4;
                             $severity = $product->stock_quantity <= 1 ? 'critical' : ($product->stock_quantity <= ceil($lowStockThreshold / 2) ? 'high' : 'medium');
-                            $sevColor = $severity === 'critical' ? '#ef4444' : ($severity === 'high' ? '#f97316' : '#f59e0b');
+                            $sevColor = $severity === 'critical' ? '#ef4444' : ($severity === 'high' ? '#f97316' : '#e65c00');
                             $sevText = $severity === 'critical' ? 'CRITICAL' : ($severity === 'high' ? 'HIGH' : 'MEDIUM');
                             $sevBg = $severity === 'critical' ? 'bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/30' : ($severity === 'high' ? 'bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/30' : 'bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/30');
-                            $sevBorder = $severity === 'critical' ? 'border-rose-200 dark:border-rose-800/50' : ($severity === 'high' ? 'border-orange-200 dark:border-orange-800/50' : 'border-amber-200 dark:border-amber-800/50');
+                            $sevBorder = $severity === 'critical' ? 'border-rose-200 dark:border-rose-800/50' : ($severity === 'high' ? 'border-orange-200 dark:border-orange-800/50' : 'border-accent dark:border-accent/50');
                         @endphp
                         <div class="rounded-2xl border {{ $sevBorder }} {{ $sevBg }} p-4 transition">
                             <div class="flex items-center gap-3">
@@ -1155,7 +1155,7 @@
     </div>
 
     {{-- ================= RECENT PRODUCTS — FULL HERO ================= --}}
-    <div class="relative mb-8 rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5 sm:p-6" style="background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);">
+    <div class="relative mb-8 rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5 sm:p-6" style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
         <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
         <div class="absolute -top-24 -right-24 h-80 w-80 rounded-full bg-emerald-500/15 blur-[100px]"></div>
         <div class="absolute -bottom-20 -left-16 h-64 w-64 rounded-full bg-cyan-500/10 blur-[80px]"></div>
@@ -1209,7 +1209,7 @@
                                         <i class="fas fa-box text-white text-base"></i>
                                     </div>
                                     @if($isFresh)
-                                        <span class="absolute -bottom-1 -right-1 inline-flex items-center text-[7px] uppercase tracking-widest font-bold font-mono px-1 py-px rounded ring-2 ring-[#0a0d3f]" style="background: #fbbf24; color: #422006;">{{ __('New') }}</span>
+                                        <span class="absolute -bottom-1 -right-1 inline-flex items-center text-[7px] uppercase tracking-widest font-bold font-mono px-1 py-px rounded ring-2 ring-[#070740]" style="background: #ff8a3d; color: #422006;">{{ __('New') }}</span>
                                     @endif
                                 </div>
 
@@ -1241,7 +1241,7 @@
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-4" data-animate="fade-up">
 
         {{-- ============ RECENT ORDERS — FULL HERO ============ --}}
-        <div class="relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5 sm:p-6" style="background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);">
+        <div class="relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5 sm:p-6" style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
             <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
             <div class="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-purple-500/15 blur-[100px]"></div>
             <div class="absolute -bottom-20 -left-16 h-56 w-56 rounded-full bg-indigo-500/10 blur-[80px]"></div>
@@ -1272,19 +1272,19 @@
                             @php
                                 $statusColor = match($order->status) {
                                     'completed' => '#34d399',
-                                    'pending' => '#fbbf24',
+                                    'pending' => '#ff8a3d',
                                     'processing' => '#60a5fa',
                                     default => '#f43f5e',
                                 };
                                 $statusBg = match($order->status) {
                                     'completed' => 'rgba(52,211,153,0.15)',
-                                    'pending' => 'rgba(251,191,36,0.15)',
+                                    'pending' => 'rgb(255 138 61 / 0.15)',
                                     'processing' => 'rgba(96,165,250,0.15)',
                                     default => 'rgba(244,63,94,0.15)',
                                 };
                                 $statusBorder = match($order->status) {
                                     'completed' => 'rgba(52,211,153,0.3)',
-                                    'pending' => 'rgba(251,191,36,0.3)',
+                                    'pending' => 'rgb(255 138 61 / 0.3)',
                                     'processing' => 'rgba(96,165,250,0.3)',
                                     default => 'rgba(244,63,94,0.3)',
                                 };
@@ -1294,7 +1294,7 @@
                                 {{-- Customer avatar with status color ring --}}
                                 <div class="relative w-11 h-11 shrink-0">
                                     <div class="absolute inset-0 rounded-xl" style="background: linear-gradient(135deg, {{ $statusColor }}, {{ $statusColor }}88);"></div>
-                                    <div class="absolute inset-0.5 rounded-[10px] grid place-items-center bg-[#0a0d3f]">
+                                    <div class="absolute inset-0.5 rounded-[10px] grid place-items-center bg-[#070740]">
                                         <span class="text-sm font-bold text-white">{{ $customerInitial }}</span>
                                     </div>
                                 </div>
@@ -1332,22 +1332,22 @@
         </div>
 
         {{-- ============ TOP SELLING PRODUCTS — HALL OF FAME ============ --}}
-        <div class="relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5 sm:p-6" style="background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);">
+        <div class="relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5 sm:p-6" style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
             <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
-            <div class="absolute -top-24 -right-24 h-80 w-80 rounded-full bg-amber-500/15 blur-[100px]"></div>
+            <div class="absolute -top-24 -right-24 h-80 w-80 rounded-full bg-accent/15 blur-[100px]"></div>
             <div class="absolute -bottom-24 -left-16 h-64 w-64 rounded-full bg-orange-500/10 blur-[80px]"></div>
-            <div class="absolute top-0 left-0 right-0 h-[2px]" style="background: linear-gradient(90deg, #fbbf24, #fb923c, #f43f5e);"></div>
+            <div class="absolute top-0 left-0 right-0 h-[2px]" style="background: linear-gradient(90deg, #ff8a3d, #fb923c, #f43f5e);"></div>
 
             <div class="relative text-white">
                 <div class="flex items-center justify-between gap-3 flex-wrap mb-5">
                     <div class="min-w-0">
                         <div class="text-[10px] uppercase tracking-widest text-white/60 font-bold inline-flex items-center gap-2">
-                            <span class="pulse-dot text-amber-400 inline-flex h-1.5 w-1.5 rounded-full bg-amber-400"></span>
+                            <span class="pulse-dot text-accent inline-flex h-1.5 w-1.5 rounded-full bg-accent"></span>
                             {{ __('Catalog · Bestsellers') }}
-                            <span class="font-mono text-amber-300/80 px-1.5 py-0.5 rounded bg-amber-400/10 border border-amber-400/20">TOP {{ $topProducts->count() }}</span>
+                            <span class="font-mono text-accent/80 px-1.5 py-0.5 rounded bg-accent/10 border border-accent/20">TOP {{ $topProducts->count() }}</span>
                         </div>
                         <h3 class="mt-1 text-xl sm:text-2xl font-bold tracking-tight">
-                            <i class="fas fa-trophy mr-1 text-amber-400"></i> {{ __('Top Selling Products') }}
+                            <i class="fas fa-trophy mr-1 text-accent"></i> {{ __('Top Selling Products') }}
                         </h3>
                     </div>
                     @if(Route::has('admin.products.index'))
@@ -1367,15 +1367,15 @@
                     @endphp
 
                     {{-- ============ #1 CHAMPION CARD ============ --}}
-                    <div class="relative rounded-2xl overflow-hidden p-5 mb-3 group" style="background: linear-gradient(135deg, rgba(251,191,36,0.10) 0%, rgba(244,63,94,0.05) 100%); border: 1px solid rgba(251,191,36,0.25);">
+                    <div class="relative rounded-2xl overflow-hidden p-5 mb-3 group" style="background: linear-gradient(135deg, rgb(255 138 61 / 0.10) 0%, rgba(244,63,94,0.05) 100%); border: 1px solid rgb(255 138 61 / 0.25);">
                         {{-- Crown corner badge --}}
-                        <div class="absolute top-3 right-3 inline-flex items-center gap-1 text-[9px] uppercase tracking-widest font-bold font-mono px-2 py-1 rounded-md" style="background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #422006;">
+                        <div class="absolute top-3 right-3 inline-flex items-center gap-1 text-[9px] uppercase tracking-widest font-bold font-mono px-2 py-1 rounded-md" style="background: linear-gradient(135deg, #ff8a3d, #e65c00); color: #422006;">
                             <i class="fas fa-crown text-[10px]"></i> #1 CHAMPION
                         </div>
 
                         <div class="flex items-start gap-4">
                             {{-- Big image/icon --}}
-                            <div class="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-2xl overflow-hidden ring-2 ring-amber-400/40" style="background: linear-gradient(135deg, #fbbf24, #fb923c);">
+                            <div class="relative w-20 h-20 sm:w-24 sm:h-24 shrink-0 rounded-2xl overflow-hidden ring-2 ring-accent/40" style="background: linear-gradient(135deg, #ff8a3d, #fb923c);">
                                 @if($hasImage)
                                     <img src="{{ asset('storage/' . $champion->image) }}" alt="{{ $champion->name ?? __('Product') }}" class="w-full h-full object-cover">
                                 @else
@@ -1384,17 +1384,17 @@
                                     </div>
                                 @endif
                                 {{-- Rank glow ring --}}
-                                <div class="absolute inset-0 rounded-2xl ring-2 ring-amber-400 ring-offset-2 ring-offset-[#0a0d3f] opacity-0 group-hover:opacity-60 transition"></div>
+                                <div class="absolute inset-0 rounded-2xl ring-2 ring-accent ring-offset-2 ring-offset-[#070740] opacity-0 group-hover:opacity-60 transition"></div>
                             </div>
 
                             <div class="min-w-0 flex-1">
-                                <p class="text-[10px] uppercase tracking-widest text-amber-300 font-bold">{{ __('Best Selling') }}</p>
+                                <p class="text-[10px] uppercase tracking-widest text-accent font-bold">{{ __('Best Selling') }}</p>
                                 <p class="mt-0.5 text-base sm:text-lg font-bold text-white truncate">{{ $champion->name ?? __('Product') }}</p>
 
                                 <div class="mt-3 grid grid-cols-2 gap-3">
                                     <div>
                                         <p class="text-[9px] uppercase tracking-widest text-white/45 font-bold">{{ __('Total Sales') }}</p>
-                                        <p class="mt-0.5 num-display text-2xl font-black text-amber-300 leading-none">{{ number_format($champion->total_sold ?? 0) }}</p>
+                                        <p class="mt-0.5 num-display text-2xl font-black text-accent leading-none">{{ number_format($champion->total_sold ?? 0) }}</p>
                                     </div>
                                     <div>
                                         <p class="text-[9px] uppercase tracking-widest text-white/45 font-bold">{{ __('Revenue') }}</p>
@@ -1426,7 +1426,7 @@
                                         </span>
 
                                         {{-- Image --}}
-                                        <div class="w-10 h-10 shrink-0 rounded-lg overflow-hidden" style="background: linear-gradient(135deg, rgba(251,191,36,0.5), rgba(244,63,94,0.5));">
+                                        <div class="w-10 h-10 shrink-0 rounded-lg overflow-hidden" style="background: linear-gradient(135deg, rgb(255 138 61 / 0.5), rgba(244,63,94,0.5));">
                                             @if($pImg)
                                                 <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name ?? __('Product') }}" class="w-full h-full object-cover">
                                             @else
@@ -1439,7 +1439,7 @@
                                             <p class="text-sm font-bold text-white/95 truncate">{{ \Illuminate\Support\Str::limit($product->name ?? __('Product'), 28) }}</p>
                                             <div class="mt-1.5 flex items-center gap-2">
                                                 <div class="h-1 flex-1 bg-white/10 rounded-full overflow-hidden">
-                                                    <div class="h-full rounded-full" style="width: {{ $percentage }}%; background: linear-gradient(90deg, #fbbf24, #fb923c);"></div>
+                                                    <div class="h-full rounded-full" style="width: {{ $percentage }}%; background: linear-gradient(90deg, #ff8a3d, #fb923c);"></div>
                                                 </div>
                                                 <span class="num-display text-[11px] font-bold text-white/70 whitespace-nowrap">{{ $product->total_sold ?? 0 }}</span>
                                             </div>
@@ -1508,7 +1508,7 @@ new Chart(categoryCtx, {
         labels: @json($categoryNames),
         datasets: [{
             data: @json($categoryCounts),
-            backgroundColor: ['#818cf8', '#22d3ee', '#c084fc', '#fbbf24', '#34d399', '#f472b6', '#2dd4bf', '#fb923c'],
+            backgroundColor: ['#818cf8', '#22d3ee', '#c084fc', '#ff8a3d', '#34d399', '#f472b6', '#2dd4bf', '#fb923c'],
             borderWidth: 3,
             borderColor: '#070740',
             hoverOffset: 10,
@@ -1520,7 +1520,7 @@ new Chart(categoryCtx, {
         plugins: {
             legend: { display: false },
             tooltip: {
-                backgroundColor: '#0a0d3f', titleColor: '#ffffff', bodyColor: '#cbd5e1', borderColor: 'rgba(255,255,255,0.15)', borderWidth: 1,
+                backgroundColor: '#070740', titleColor: '#ffffff', bodyColor: '#cbd5e1', borderColor: 'rgba(255,255,255,0.15)', borderWidth: 1,
                 padding: 12, boxPadding: 6, usePointStyle: true,
                 callbacks: {
                     label: function(context) {
@@ -1570,7 +1570,7 @@ new Chart(ordersCtx, {
         plugins: {
             legend: { display: false },
             tooltip: {
-                backgroundColor: '#0a0d3f', titleColor: '#ffffff', bodyColor: '#cbd5e1', borderColor: 'rgba(255,255,255,0.15)', borderWidth: 1,
+                backgroundColor: '#070740', titleColor: '#ffffff', bodyColor: '#cbd5e1', borderColor: 'rgba(255,255,255,0.15)', borderWidth: 1,
                 padding: 14, displayColors: false, boxPadding: 6,
                 callbacks: {
                     title: function(context) { return `${context[0].label} {{ date('Y') }}`; },

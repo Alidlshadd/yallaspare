@@ -22,7 +22,7 @@
                 <select
                     id="country_code"
                     name="country_code"
-                    class="rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-900 focus:border-red-500 focus:ring-red-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white"
+                    class="rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm font-semibold text-slate-900 focus:border-accent focus:ring-accent dark:border-slate-700 dark:bg-slate-800 dark:text-white"
                 >
                     <option value="+964" selected>🇮🇶 +964</option>
                 </select>
@@ -35,7 +35,7 @@
                     value="{{ old('phone') }}"
                     required
                     placeholder="0770 000 0000"
-                    class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-red-500 focus:ring-red-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500"
+                    class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder:text-slate-400 focus:border-accent focus:ring-accent dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder:text-slate-500"
                 >
             </div>
             <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">{{ __('Accepted: 07700000000, 7700000000, or +9647700000000.') }}</p>
@@ -45,7 +45,7 @@
 
         <button
             type="submit"
-            class="inline-flex h-12 w-full items-center justify-center rounded-lg bg-red-600 px-4 text-sm font-semibold text-white shadow-lg shadow-red-950/30 transition hover:bg-red-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-400 disabled:cursor-not-allowed disabled:opacity-60"
+            class="inline-flex h-12 w-full items-center justify-center rounded-lg bg-accent px-4 text-sm font-semibold text-navy shadow-lg shadow-navy/25 transition hover:bg-accent-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:cursor-not-allowed disabled:opacity-60"
             data-loading-button
             data-loading-text="{{ __('Saving...') }}"
         >

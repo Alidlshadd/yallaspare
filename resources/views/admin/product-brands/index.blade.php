@@ -5,14 +5,14 @@
                 <h2 class="text-2xl font-semibold text-slate-900 dark:text-slate-100">{{ __('Product Brands') }}</h2>
                 <p class="text-sm text-slate-500 dark:text-slate-400">{{ __('Create brands with logos and assign products to them.') }}</p>
             </div>
-            <a href="{{ route('admin.products.index') }}" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:border-amber-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+            <a href="{{ route('admin.products.index') }}" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:border-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
                 <i class="fas fa-box"></i> {{ __('View Products') }}
             </a>
         </div>
     </x-slot>
 
     @php
-        $inputClass = 'h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-900 transition focus:border-amber-400 focus:bg-white focus:ring-2 focus:ring-amber-400/30 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-900';
+        $inputClass = 'h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-900 transition focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-900';
         $assignmentUrl = function (string $value) {
             $params = request()->except('page', 'assignment');
             if ($value !== '') {
@@ -46,14 +46,14 @@
                 </div>
                 <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                     <p class="text-xs font-extrabold uppercase tracking-widest text-slate-400">{{ __('Assigned Products') }}</p>
-                    <p class="mt-2 text-3xl font-black text-amber-500">{{ number_format($totalAssignedProducts) }}</p>
+                    <p class="mt-2 text-3xl font-black text-accent">{{ number_format($totalAssignedProducts) }}</p>
                 </div>
             </div>
 
             <div class="grid gap-5 lg:grid-cols-[340px_minmax(0,1fr)]">
                 <aside class="h-fit rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 lg:sticky lg:top-5">
                     <div class="mb-5 flex items-center gap-3">
-                        <span class="grid h-10 w-10 place-items-center rounded-xl bg-[#04042a] text-amber-300"><i class="fas fa-plus"></i></span>
+                        <span class="grid h-10 w-10 place-items-center rounded-xl bg-[#04041f] text-accent"><i class="fas fa-plus"></i></span>
                         <div>
                             <h3 class="font-extrabold text-slate-900 dark:text-white">{{ __('Add Product Brand') }}</h3>
                             <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Name and logo can be changed later.') }}</p>
@@ -68,10 +68,10 @@
                         </div>
                         <div>
                             <label for="brand-logo" class="mb-1.5 block text-xs font-extrabold uppercase tracking-wider text-slate-500">{{ __('Brand Logo') }}</label>
-                            <input id="brand-logo" type="file" name="logo" accept="image/png,image/jpeg,image/webp" class="block w-full rounded-xl border border-dashed border-slate-300 bg-slate-50 p-3 text-xs text-slate-600 file:me-3 file:rounded-lg file:border-0 file:bg-[#04042a] file:px-3 file:py-2 file:font-bold file:text-amber-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                            <input id="brand-logo" type="file" name="logo" accept="image/png,image/jpeg,image/webp" class="block w-full rounded-xl border border-dashed border-slate-300 bg-slate-50 p-3 text-xs text-slate-600 file:me-3 file:rounded-lg file:border-0 file:bg-[#04041f] file:px-3 file:py-2 file:font-bold file:text-accent dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
                             <p class="mt-1.5 text-xs text-slate-400">{{ __('PNG, JPG or WebP up to 2MB.') }}</p>
                         </div>
-                        <button type="submit" class="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#04042a] px-4 text-sm font-extrabold text-amber-300 transition hover:bg-[#090946]">
+                        <button type="submit" class="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#04041f] px-4 text-sm font-extrabold text-accent transition hover:bg-[#090946]">
                             <i class="fas fa-plus"></i> {{ __('Create Brand') }}
                         </button>
                     </form>
@@ -86,14 +86,14 @@
                                 <option value="assigned" @selected($assignment === 'assigned')>{{ __('With Products') }}</option>
                                 <option value="empty" @selected($assignment === 'empty')>{{ __('Without Products') }}</option>
                             </select>
-                            <button class="h-11 rounded-xl bg-amber-400 px-5 text-sm font-extrabold text-[#04042a] hover:bg-amber-300">{{ __('Filter') }}</button>
+                            <button class="h-11 rounded-xl bg-accent px-5 text-sm font-extrabold text-[#04041f] hover:bg-accent">{{ __('Filter') }}</button>
                         </div>
                     </form>
 
                     <div class="flex flex-wrap gap-2">
-                        <a href="{{ $assignmentUrl('') }}" class="rounded-full border px-3 py-1.5 text-xs font-bold {{ $assignment === '' ? 'border-[#04042a] bg-[#04042a] text-amber-300 dark:border-amber-400 dark:bg-amber-400 dark:text-[#04042a]' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">{{ __('All') }}</a>
-                        <a href="{{ $assignmentUrl('assigned') }}" class="rounded-full border px-3 py-1.5 text-xs font-bold {{ $assignment === 'assigned' ? 'border-[#04042a] bg-[#04042a] text-amber-300 dark:border-amber-400 dark:bg-amber-400 dark:text-[#04042a]' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">{{ __('With Products') }}</a>
-                        <a href="{{ $assignmentUrl('empty') }}" class="rounded-full border px-3 py-1.5 text-xs font-bold {{ $assignment === 'empty' ? 'border-[#04042a] bg-[#04042a] text-amber-300 dark:border-amber-400 dark:bg-amber-400 dark:text-[#04042a]' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">{{ __('Without Products') }}</a>
+                        <a href="{{ $assignmentUrl('') }}" class="rounded-full border px-3 py-1.5 text-xs font-bold {{ $assignment === '' ? 'border-[#04041f] bg-[#04041f] text-accent dark:border-accent dark:bg-accent dark:text-[#04041f]' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">{{ __('All') }}</a>
+                        <a href="{{ $assignmentUrl('assigned') }}" class="rounded-full border px-3 py-1.5 text-xs font-bold {{ $assignment === 'assigned' ? 'border-[#04041f] bg-[#04041f] text-accent dark:border-accent dark:bg-accent dark:text-[#04041f]' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">{{ __('With Products') }}</a>
+                        <a href="{{ $assignmentUrl('empty') }}" class="rounded-full border px-3 py-1.5 text-xs font-bold {{ $assignment === 'empty' ? 'border-[#04041f] bg-[#04041f] text-accent dark:border-accent dark:bg-accent dark:text-[#04041f]' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">{{ __('Without Products') }}</a>
                     </div>
 
                     @if($brands->isEmpty())
@@ -105,12 +105,12 @@
                     @else
                         <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
                             @foreach($brands as $brand)
-                                <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-amber-400 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+                                <article class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm transition hover:-translate-y-0.5 hover:border-accent hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
                                     <div class="grid h-32 place-items-center border-b border-slate-100 bg-gradient-to-br from-slate-50 to-white p-5 dark:border-slate-800 dark:from-slate-800 dark:to-slate-900">
                                         @if($brand->logo_path)
                                             <img src="{{ asset('storage/' . ltrim((string) $brand->logo_path, '/')) }}" alt="{{ $brand->name }}" class="max-h-20 max-w-[75%] object-contain">
                                         @else
-                                            <span class="grid h-16 w-16 place-items-center rounded-2xl bg-[#04042a] text-2xl font-black text-amber-300">{{ mb_strtoupper(mb_substr($brand->name, 0, 1)) }}</span>
+                                            <span class="grid h-16 w-16 place-items-center rounded-2xl bg-[#04041f] text-2xl font-black text-accent">{{ mb_strtoupper(mb_substr($brand->name, 0, 1)) }}</span>
                                         @endif
                                     </div>
                                     <div class="p-4">
@@ -136,7 +136,7 @@
                                                         <input type="checkbox" name="remove_logo" value="1" class="rounded border-slate-300 text-rose-600 focus:ring-rose-500"> {{ __('Remove current logo') }}
                                                     </label>
                                                 @endif
-                                                <button class="h-9 w-full rounded-lg bg-[#04042a] text-xs font-extrabold text-amber-300 dark:bg-amber-400 dark:text-[#04042a]">{{ __('Save Changes') }}</button>
+                                                <button class="h-9 w-full rounded-lg bg-[#04041f] text-xs font-extrabold text-accent dark:bg-accent dark:text-[#04041f]">{{ __('Save Changes') }}</button>
                                             </form>
                                         </details>
 

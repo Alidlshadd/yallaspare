@@ -61,7 +61,7 @@
     <style>
         .inv-hero {
             position: relative; overflow: hidden;
-            background: linear-gradient(135deg, #04042a, #10104a);
+            background: linear-gradient(135deg, #04041f, #12124a);
             border-radius: 16px; color: #fff;
         }
         .inv-hero::after {
@@ -95,9 +95,9 @@
             {{-- ===== Dock hero: IN gate / net / OUT gate ===== --}}
             <section class="inv-hero">
                 <div class="grid items-center gap-4 px-5 py-5 sm:px-6 md:grid-cols-[1fr_auto_1fr]">
-                    <a href="{{ $gateUrl('in') }}" class="block rounded-xl border-2 px-4 py-3 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-300 {{ $type === 'in' ? 'border-amber-300 bg-amber-400/15' : 'border-amber-400/60 bg-white/5' }}">
+                    <a href="{{ $gateUrl('in') }}" class="block rounded-xl border-2 px-4 py-3 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent {{ $type === 'in' ? 'border-accent bg-accent/15' : 'border-accent/60 bg-white/5' }}">
                         <p class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-white/55">{{ __('Stock In') }} &mdash; {{ __('Gate A') }}</p>
-                        <p class="inv-mono mt-1 text-2xl font-black text-amber-400">+{{ number_format($totalStockIn) }} <span class="float-right">&#8594;</span></p>
+                        <p class="inv-mono mt-1 text-2xl font-black text-accent">+{{ number_format($totalStockIn) }} <span class="float-right">&#8594;</span></p>
                         <p class="text-[11px] text-white/60">{{ __('Units added') }} &middot; {{ $type === 'in' ? __('Filter active — click to clear') : __('Click to filter') }}</p>
                     </a>
                     <div class="text-center md:px-6">
@@ -144,7 +144,7 @@
                             <div class="relative" @click.outside="closeList()">
                                 <label class="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">{{ __('Product') }}</label>
                                 <input type="hidden" name="product_id" x-model="productId">
-                                <div class="flex rounded-lg border border-gray-300 bg-white focus-within:ring-2 focus-within:ring-amber-400 dark:border-slate-700 dark:bg-slate-950">
+                                <div class="flex rounded-lg border border-gray-300 bg-white focus-within:ring-2 focus-within:ring-accent dark:border-slate-700 dark:bg-slate-950">
                                     <input
                                         type="text"
                                         x-ref="productSearch"
@@ -199,7 +199,7 @@
                             @if($hasWarehouseSupport)
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">{{ __('Warehouse') }}</label>
-                                    <select name="warehouse_id" class="w-full rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-amber-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                    <select name="warehouse_id" class="w-full rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                         <option value="">{{ __('General stock only') }}</option>
                                         @foreach($warehouses as $warehouse)
                                             <option value="{{ $warehouse->id }}" @selected((int) old('warehouse_id') === (int) $warehouse->id)>
@@ -228,14 +228,14 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">{{ __('Quantity') }}</label>
-                                <input type="number" name="quantity" min="1" x-model.number="quantity" value="{{ old('quantity', 1) }}" class="w-full rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-amber-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" required>
+                                <input type="number" name="quantity" min="1" x-model.number="quantity" value="{{ old('quantity', 1) }}" class="w-full rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" required>
                             </div>
 
                             <div x-show="selectedProduct" x-cloak class="rounded-xl border border-amber-200/70 bg-amber-50/60 px-4 py-3 text-sm dark:border-amber-900/40 dark:bg-amber-950/15">
-                                <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-amber-700/80 dark:text-amber-300/80">{{ __('Manifest') }}</p>
+                                <p class="text-[10px] font-extrabold uppercase tracking-[0.14em] text-accent/80 dark:text-accent/80">{{ __('Manifest') }}</p>
                                 <div class="mt-1.5 flex items-center justify-center gap-3">
                                     <span class="inv-mono text-lg font-bold text-slate-700 dark:text-slate-200" x-text="selectedStockText"></span>
-                                    <span class="text-amber-500">&#8594;</span>
+                                    <span class="text-accent">&#8594;</span>
                                     <span class="inv-mono text-lg" :class="projectedStockClass" x-text="projectedStockText"></span>
                                 </div>
                                 <div class="mt-1 flex items-center justify-center gap-3 text-[10px] uppercase tracking-[0.1em] text-slate-500 dark:text-slate-400">
@@ -246,15 +246,15 @@
 
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">{{ __('Reference') }}</label>
-                                <input type="text" name="reference" value="{{ old('reference') }}" placeholder="{{ __('PO-1001, Return-22...') }}" class="w-full rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-amber-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                <input type="text" name="reference" value="{{ old('reference') }}" placeholder="{{ __('PO-1001, Return-22...') }}" class="w-full rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             </div>
 
                             <div>
                                 <label class="block text-sm font-medium text-slate-700 mb-1 dark:text-slate-300">{{ __('Note') }}</label>
-                                <textarea name="note" rows="3" class="w-full rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-amber-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" placeholder="{{ __('Optional note...') }}">{{ old('note') }}</textarea>
+                                <textarea name="note" rows="3" class="w-full rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" placeholder="{{ __('Optional note...') }}">{{ old('note') }}</textarea>
                             </div>
 
-                            <button type="submit" class="w-full rounded-lg bg-[#04042a] px-4 py-2.5 text-sm font-bold text-amber-400 transition hover:bg-[#10104a]">
+                            <button type="submit" class="w-full rounded-lg bg-[#04041f] px-4 py-2.5 text-sm font-bold text-accent transition hover:bg-[#12124a]">
                                 {{ __('Save Movement') }}
                             </button>
                         </form>
@@ -274,7 +274,7 @@
                         <form method="POST" action="{{ route('admin.inventory.import') }}" enctype="multipart/form-data" class="mt-4 space-y-3">
                             @csrf
                             <input type="file" name="import_file" accept=".csv,.txt" required
-                                   class="block w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-[#04042a] file:px-4 file:py-2 file:text-sm file:font-bold file:text-amber-400 hover:file:bg-[#10104a] dark:text-slate-300">
+                                   class="block w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-[#04041f] file:px-4 file:py-2 file:text-sm file:font-bold file:text-accent hover:file:bg-[#12124a] dark:text-slate-300">
                             <button type="submit" class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-slate-800">
                                 {{ __('Upload & Import') }}
                             </button>
@@ -282,7 +282,7 @@
                                 {{ __('Required columns:') }} <code class="inv-mono">product_sku, type, quantity</code><br>
                                 {{ __('Optional:') }} <code class="inv-mono">warehouse_code, reference, note, performed_at</code>
                             </p>
-                            <a href="{{ $csvTemplateHref }}" download="inventory-import-template.csv" class="inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 underline decoration-amber-300 underline-offset-2 transition hover:text-amber-800 dark:text-amber-300 dark:hover:text-amber-200">
+                            <a href="{{ $csvTemplateHref }}" download="inventory-import-template.csv" class="inline-flex items-center gap-1.5 text-xs font-bold text-accent underline decoration-accent underline-offset-2 transition hover:text-accent dark:text-accent dark:hover:text-accent">
                                 &#8681; {{ __('Download template CSV') }}
                             </a>
                         </form>
@@ -293,32 +293,32 @@
                 <section class="xl:col-span-2 space-y-4">
                     <div class="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                         <form method="GET" action="{{ route('admin.inventory.index') }}" class="grid grid-cols-1 gap-3 lg:grid-cols-12">
-                            <input type="text" name="search" value="{{ $search }}" placeholder="{{ __('Search product, user, reference...') }}" class="lg:col-span-4 rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-amber-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                            <select name="type" class="lg:col-span-2 rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-amber-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                            <input type="text" name="search" value="{{ $search }}" placeholder="{{ __('Search product, user, reference...') }}" class="lg:col-span-4 rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                            <select name="type" class="lg:col-span-2 rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                 <option value="">{{ __('All types') }}</option>
                                 <option value="in" @selected($type === 'in')>{{ __('Stock In') }}</option>
                                 <option value="out" @selected($type === 'out')>{{ __('Stock Out') }}</option>
                             </select>
-                            <select name="product_id" class="lg:col-span-3 rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-amber-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                            <select name="product_id" class="lg:col-span-3 rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                 <option value="0">{{ __('All products') }}</option>
                                 @foreach($products as $product)
                                     <option value="{{ $product->id }}" @selected((int) $productId === (int) $product->id)>{{ $product->name }}</option>
                                 @endforeach
                             </select>
                             @if($hasWarehouseSupport)
-                                <select name="warehouse_id" class="lg:col-span-3 rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-amber-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                <select name="warehouse_id" class="lg:col-span-3 rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                     <option value="0">{{ __('All warehouses') }}</option>
                                     @foreach($warehouses as $warehouse)
                                         <option value="{{ $warehouse->id }}" @selected((int) $warehouseId === (int) $warehouse->id)>{{ $warehouse->name }}</option>
                                     @endforeach
                                 </select>
                             @endif
-                            <input type="date" name="from" value="{{ $from }}" class="lg:col-span-3 rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-amber-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                            <input type="date" name="to" value="{{ $to }}" class="lg:col-span-3 rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-amber-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                            <input type="date" name="from" value="{{ $from }}" class="lg:col-span-3 rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                            <input type="date" name="to" value="{{ $to }}" class="lg:col-span-3 rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             <div class="lg:col-span-6 flex flex-wrap gap-2">
-                                <button type="submit" class="rounded-lg bg-[#04042a] px-4 py-2 text-sm font-bold text-amber-400 transition hover:bg-[#10104a]">{{ __('Filter') }}</button>
+                                <button type="submit" class="rounded-lg bg-[#04041f] px-4 py-2 text-sm font-bold text-accent transition hover:bg-[#12124a]">{{ __('Filter') }}</button>
                                 <a href="{{ route('admin.inventory.index') }}" class="rounded-lg bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">{{ __('Reset') }}</a>
-                                <a href="{{ route('admin.inventory.export', request()->query()) }}" class="ml-auto rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-amber-400 hover:text-amber-700 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:text-amber-300">&#8681; {{ __('Export CSV') }}</a>
+                                <a href="{{ route('admin.inventory.export', request()->query()) }}" class="ml-auto rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-accent hover:text-accent dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:text-accent">&#8681; {{ __('Export CSV') }}</a>
                             </div>
                         </form>
                     </div>
@@ -327,14 +327,14 @@
                         @if(!$singleLane || $type === 'in')
                             <article class="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                                 <header class="flex items-baseline justify-between gap-3 border-b border-amber-100 bg-amber-50/80 px-4 py-3 dark:border-amber-900/40 dark:bg-amber-950/20">
-                                    <h4 class="text-xs font-extrabold uppercase tracking-[0.16em] text-amber-700 dark:text-amber-300">&#8595; {{ __('Inbound') }}</h4>
-                                    <p class="text-[11px] font-bold text-amber-700/80 dark:text-amber-300/80">{{ number_format($inboundMovements->count()) }} {{ __('on page') }} &middot; <span class="inv-mono">+{{ number_format($inboundPageQty) }}</span></p>
+                                    <h4 class="text-xs font-extrabold uppercase tracking-[0.16em] text-accent dark:text-accent">&#8595; {{ __('Inbound') }}</h4>
+                                    <p class="text-[11px] font-bold text-accent/80 dark:text-accent/80">{{ number_format($inboundMovements->count()) }} {{ __('on page') }} &middot; <span class="inv-mono">+{{ number_format($inboundPageQty) }}</span></p>
                                 </header>
                                 <div class="divide-y divide-slate-100 dark:divide-slate-800">
                                     @forelse($inboundMovements as $movement)
                                         @php $movementDate = $movement->performed_at ?? $movement->created_at; @endphp
                                         <div class="flex items-start gap-3 px-4 py-3 transition hover:bg-amber-50/50 dark:hover:bg-slate-800/60">
-                                            <span class="inv-mono w-14 shrink-0 pt-0.5 text-base font-black text-amber-600 dark:text-amber-400">+{{ number_format($movement->quantity) }}</span>
+                                            <span class="inv-mono w-14 shrink-0 pt-0.5 text-base font-black text-accent dark:text-accent">+{{ number_format($movement->quantity) }}</span>
                                             <div class="min-w-0 flex-1">
                                                 <p class="truncate text-sm font-semibold text-slate-800 dark:text-slate-100">{{ $movement->product->name ?? __('Deleted Product') }}</p>
                                                 <p class="mt-0.5 truncate text-xs text-slate-500 dark:text-slate-400">
@@ -347,7 +347,7 @@
                                                 @endif
                                             </div>
                                             <div class="shrink-0 text-right">
-                                                <p class="inv-mono text-xs text-slate-600 dark:text-slate-300">{{ $movement->stock_before }} <span class="text-amber-500">&#8594;</span> <b class="text-slate-900 dark:text-slate-100">{{ $movement->stock_after }}</b></p>
+                                                <p class="inv-mono text-xs text-slate-600 dark:text-slate-300">{{ $movement->stock_before }} <span class="text-accent">&#8594;</span> <b class="text-slate-900 dark:text-slate-100">{{ $movement->stock_after }}</b></p>
                                                 <p class="mt-0.5 text-[11px] text-slate-400 dark:text-slate-500">{{ $movement->user->name ?? __('Unknown') }} &middot; {{ $movementDate?->format('d M H:i') }}</p>
                                             </div>
                                         </div>

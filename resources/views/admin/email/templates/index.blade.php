@@ -38,7 +38,7 @@
 
         {{-- Header card --}}
         <div class="relative rounded-2xl border border-slate-200/70 bg-white overflow-hidden shadow-sm dark:bg-slate-900 dark:border-slate-800">
-            <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-indigo-500 to-amber-400"></div>
+            <div class="absolute top-0 left-0 right-0 h-[2px] bg-gradient-to-r from-primary via-indigo-500 to-accent"></div>
             <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
                 <div class="flex items-center gap-3">
                     <div class="h-11 w-11 rounded-2xl bg-gradient-to-br from-primary to-indigo-700 text-white grid place-items-center shadow-lg shadow-primary/20">

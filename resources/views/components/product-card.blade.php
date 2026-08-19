@@ -129,7 +129,7 @@
         <div class="mt-3 flex flex-wrap items-end gap-x-2 gap-y-0.5">
             <p class="break-all text-lg font-semibold leading-none tracking-[-0.03em] text-primary dark:text-white">
                 {{ number_format($price, 2) }}
-                <span class="text-[10px] font-semibold uppercase tracking-[0.1em] text-amber-600 dark:text-amber-300">{{ $currencySymbol }}</span>
+                <span class="text-[10px] font-semibold uppercase tracking-[0.1em] text-muted">{{ $currencySymbol }}</span>
             </p>
             @if ($hasDiscount)
                 <p class="text-xs font-semibold text-slate-400 line-through dark:text-slate-500">
@@ -280,7 +280,7 @@
             <div class="mt-1 flex flex-wrap items-end gap-2">
                 <p class="break-all text-xl font-semibold leading-none tracking-[-0.03em] text-primary dark:text-white sm:text-[1.45rem]">
                     {{ number_format($price, 2) }}
-                    <span class="text-xs font-semibold uppercase tracking-[0.12em] text-amber-600 dark:text-amber-300">{{ $currencySymbol }}</span>
+                    <span class="text-xs font-semibold uppercase tracking-[0.12em] text-muted">{{ $currencySymbol }}</span>
                 </p>
                 @if ($hasDiscount)
                     <p class="text-sm font-semibold text-slate-400 line-through dark:text-slate-500">

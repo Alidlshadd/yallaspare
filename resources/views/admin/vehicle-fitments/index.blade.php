@@ -97,7 +97,7 @@
             text-decoration: none;
             transition: all .15s ease;
         }
-        .ychip:hover { background: #f8fafc; border-color: #cbd5e1; color: #04042a; }
+        .ychip:hover { background: #f8fafc; border-color: #cbd5e1; color: #04041f; }
         .ychip .cnt {
             background: rgba(15,23,42,0.06);
             padding: 1px 7px; border-radius: 999px;
@@ -105,15 +105,15 @@
             color: #475569; font-weight: 800;
         }
         .ychip.on {
-            background: #04042a; color: #fcd34d; border-color: #04042a;
+            background: #04041f; color: #ffb27a; border-color: #04041f;
             box-shadow: 0 6px 14px -8px rgba(4,4,42,0.40);
         }
-        .ychip.on .cnt { background: rgba(252,211,77,0.18); color: #fcd34d; }
+        .ychip.on .cnt { background: rgba(252,211,77,0.18); color: #ffb27a; }
         .dark .ychip { background: #1e293b; border-color: #334155; color: #cbd5e1; }
         .dark .ychip .cnt { background: rgba(255,255,255,0.06); color: #cbd5e1; }
         .dark .ychip:hover { background: #334155; color: #fff; }
-        .dark .ychip.on { background: #fbbf24; color: #04042a; border-color: #fbbf24; }
-        .dark .ychip.on .cnt { background: rgba(4,4,42,0.18); color: #04042a; }
+        .dark .ychip.on { background: #ff8a3d; color: #04041f; border-color: #ff8a3d; }
+        .dark .ychip.on .cnt { background: rgba(4,4,42,0.18); color: #04041f; }
 
         /* Status pills */
         .vf-pill {
@@ -123,9 +123,9 @@
         }
         .vf-pill::before { content: ""; width: 5px; height: 5px; border-radius: 50%; background: currentColor; }
         .vf-pill.good { background: #dcfce7; color: #15803d; border-color: #86efac; }
-        .vf-pill.warn { background: #fef3c7; color: #b45309; border-color: #fde68a; }
+        .vf-pill.warn { background: #fef3c7; color: #b45309; border-color: #ffc9a3; }
         .dark .vf-pill.good { background: rgba(34,197,94,0.12); color: #4ade80; border-color: rgba(74,222,128,0.35); }
-        .dark .vf-pill.warn { background: rgba(245,158,11,0.12); color: #fbbf24; border-color: rgba(251,191,36,0.35); }
+        .dark .vf-pill.warn { background: rgba(245,158,11,0.12); color: #ff8a3d; border-color: rgb(255 138 61 / 0.35); }
 
         .vf-mono-chip {
             display: inline-block; font-family: ui-monospace, monospace; font-size: 10.5px; font-weight: 600;
@@ -142,13 +142,13 @@
         }
         .vf-range .years .mid { font-weight: 800; color: #b45309; }
         .vf-range .years .mid.full { color: #15803d; }
-        .dark .vf-range .years .mid { color: #fbbf24; }
+        .dark .vf-range .years .mid { color: #ff8a3d; }
         .dark .vf-range .years .mid.full { color: #4ade80; }
         .vf-track { position: relative; height: 6px; border-radius: 999px; background: #f1f5f9; border: 1px solid #e3e9f1; }
         .dark .vf-track { background: #1e293b; border-color: #334155; }
         .vf-fill {
             position: absolute; top: -1px; bottom: -1px; border-radius: 999px;
-            background: linear-gradient(90deg, #fbbf24, #f59e0b);
+            background: linear-gradient(90deg, #ff8a3d, #e65c00);
         }
         .vf-fill.full { background: linear-gradient(90deg, #34d399, #10b981); }
 
@@ -169,7 +169,7 @@
         .vf-model button[type="submit"] { color: #b91c1c; font-weight: 800; line-height: 1; }
         .dark .vf-model button[type="submit"] { color: #fca5a5; }
         .vf-model .edit { color: #94a3b8; line-height: 1; transition: color .15s ease; }
-        .vf-model .edit:hover { color: #f59e0b; }
+        .vf-model .edit:hover { color: #e65c00; }
         .vf-edit-inline { display: inline-flex; align-items: center; gap: 4px; }
         .vf-edit-inline .vf-inp { height: 30px; font-size: 11.5px; padding: 0 9px; width: 140px; }
         .vf-edit-inline .vf-engine-edit { width: 230px; }
@@ -188,11 +188,11 @@
         }
         .vf-fitment-number {
             display: grid; place-items: center; width: 24px; height: 24px; border-radius: 8px;
-            background: #04042a; color: #fcd34d; font: 800 11px/1 ui-monospace, monospace;
+            background: #04041f; color: #ffb27a; font: 800 11px/1 ui-monospace, monospace;
         }
         .dark .vf-fitment-card { background: linear-gradient(180deg, #0f172a, #111c2e); border-color: #334155; }
         .dark .vf-fitment-card-head { border-color: #334155; }
-        .dark .vf-fitment-number { background: #fbbf24; color: #04042a; }
+        .dark .vf-fitment-number { background: #ff8a3d; color: #04041f; }
         /* Fitment rule row */
         .vf-row {
             display: grid; grid-template-columns: minmax(210px, 1.2fr) minmax(150px, .8fr) minmax(220px, 1.2fr) auto;
@@ -219,13 +219,13 @@
             position: sticky; bottom: 18px; z-index: 30;
             margin-inline-start: auto; width: fit-content;
             display: flex; align-items: center; gap: 8px; padding: 12px 20px; border-radius: 999px;
-            background: #04042a; color: #fcd34d; font-weight: 800; font-size: 13px;
+            background: #04041f; color: #ffb27a; font-weight: 800; font-size: 13px;
             box-shadow: 0 10px 28px rgba(4,4,42,0.35); cursor: pointer;
             border: 1px solid rgba(252,211,77,0.25);
             transition: all .15s ease;
         }
         .vf-fab:hover { transform: translateY(-2px); }
-        .dark .vf-fab { background: #fbbf24; color: #04042a; border-color: #fbbf24; }
+        .dark .vf-fab { background: #ff8a3d; color: #04041f; border-color: #ff8a3d; }
 
         /* Pagination — same dialect as Products/Categories */
         .y-pagination nav { display: flex; }
@@ -242,14 +242,14 @@
         }
         .y-pagination a:hover { color: #0f172a; border-color: #cbd5e1; background: #f8fafc; }
         .y-pagination .active span,
-        .y-pagination span[aria-current="page"] { background: #04042a; color: #fcd34d; border-color: #04042a; }
+        .y-pagination span[aria-current="page"] { background: #04041f; color: #ffb27a; border-color: #04041f; }
         .y-pagination .disabled span,
         .y-pagination span[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
         .dark .y-pagination a,
         .dark .y-pagination span { background: #0f172a; border-color: #334155; color: #cbd5e1; }
         .dark .y-pagination a:hover { background: #1e293b; color: #fff; border-color: #475569; }
         .dark .y-pagination .active span,
-        .dark .y-pagination span[aria-current="page"] { background: #fbbf24; color: #04042a; border-color: #fbbf24; }
+        .dark .y-pagination span[aria-current="page"] { background: #ff8a3d; color: #04041f; border-color: #ff8a3d; }
     </style>
 
     <div class="bg-[#f3f4f7] dark:bg-slate-950 min-h-screen">
@@ -278,24 +278,24 @@
 
             {{-- Coverage ring --}}
             <div class="relative overflow-hidden rounded-2xl p-5 text-white flex flex-col gap-3"
-                 style="background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);">
+                 style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
                 <div class="absolute inset-0 bento-stripes pointer-events-none opacity-50"></div>
-                <div class="absolute top-0 bottom-0 start-0 w-[3px]" style="background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);"></div>
-                <div class="absolute -top-16 -end-16 h-52 w-52 rounded-full bg-amber-400/10 blur-[60px] pointer-events-none"></div>
+                <div class="absolute top-0 bottom-0 start-0 w-[3px]" style="background: linear-gradient(180deg, #ff8a3d 0%, #e65c00 100%);"></div>
+                <div class="absolute -top-16 -end-16 h-52 w-52 rounded-full bg-accent/10 blur-[60px] pointer-events-none"></div>
 
-                <div class="relative font-mono text-[10px] font-extrabold uppercase tracking-[0.28em] text-amber-300">{{ __('Catalog · Compatibility') }}</div>
+                <div class="relative font-mono text-[10px] font-extrabold uppercase tracking-[0.28em] text-accent">{{ __('Catalog · Compatibility') }}</div>
                 <h1 class="relative text-2xl font-black leading-tight -mt-1">{{ __('Vehicle Finder') }}</h1>
 
                 <div class="relative flex items-center gap-4">
                     <svg width="92" height="92" viewBox="0 0 92 92" class="shrink-0" role="img" aria-label="{{ __('Coverage: :pct%', ['pct' => $coveragePct]) }}">
                         <circle cx="46" cy="46" r="38" fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="9"/>
-                        <circle cx="46" cy="46" r="38" fill="none" stroke="#fbbf24" stroke-width="9" stroke-linecap="round"
+                        <circle cx="46" cy="46" r="38" fill="none" stroke="#ff8a3d" stroke-width="9" stroke-linecap="round"
                                 stroke-dasharray="{{ $ringDash }} {{ $ringCircumference }}" transform="rotate(-90 46 46)"/>
                         <text x="46" y="52" text-anchor="middle" fill="#fff" font-size="18" font-weight="900">{{ $coveragePct }}%</text>
                     </svg>
                     <div>
                         <div class="text-[26px] font-black leading-none">
-                            {{ number_format($coveredProducts) }} <span class="text-[13px] font-bold text-amber-300">/ {{ number_format($totalProducts) }}</span>
+                            {{ number_format($coveredProducts) }} <span class="text-[13px] font-bold text-accent">/ {{ number_format($totalProducts) }}</span>
                         </div>
                         <p class="text-[11.5px] text-white/60 mt-1.5 leading-snug">
                             {{ __(':n products have vehicle matches.', ['n' => number_format($coveredProducts)]) }}<br>
@@ -305,8 +305,8 @@
                 </div>
 
                 <button type="button" data-vf-open-fitment
-                        class="relative inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-xs font-bold text-[#04042a] transition hover:brightness-105 mt-auto"
-                        style="background: linear-gradient(180deg, #fbbf24, #f59e0b);">
+                        class="relative inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-xs font-bold text-[#04041f] transition hover:brightness-105 mt-auto"
+                        style="background: linear-gradient(180deg, #ff8a3d, #e65c00);">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                     {{ __('Add Fitment') }}
                 </button>
@@ -316,7 +316,7 @@
             <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-5 bento-shadow flex flex-col justify-between gap-4">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-xl grid place-items-center bg-[#04042a] text-amber-300 shrink-0">
+                        <span class="w-10 h-10 rounded-xl grid place-items-center bg-[#04041f] text-accent shrink-0">
                             <i class="fas fa-car-side text-sm"></i>
                         </span>
                         <div>
@@ -395,8 +395,8 @@
                 <div class="max-h-[760px] space-y-4 overflow-y-auto pe-1">
                     @forelse($brands as $brand)
                         <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-950/40">
-                            <div class="flex items-center justify-between gap-3 bg-[#04042a] px-4 py-3 text-white dark:bg-slate-950">
-                                <span class="flex items-center gap-2.5 text-sm font-black tracking-wide"><i class="fas fa-car-side text-amber-300"></i>{{ $brand->name }}</span>
+                            <div class="flex items-center justify-between gap-3 bg-[#04041f] px-4 py-3 text-white dark:bg-slate-950">
+                                <span class="flex items-center gap-2.5 text-sm font-black tracking-wide"><i class="fas fa-car-side text-accent"></i>{{ $brand->name }}</span>
                                 <span class="font-mono text-[10px] text-slate-300">{{ $brand->modelFamilies->count() }} {{ __('families') }}</span>
                             </div>
                             <div class="space-y-2.5 p-3">
@@ -410,7 +410,7 @@
                                                 <span class="block text-[12px] font-black uppercase tracking-[.12em] text-slate-900 dark:text-white">{{ $family->localizedName() }}</span>
                                                 <span class="mt-1 block font-mono text-[10px] text-slate-500 dark:text-slate-400">{{ $family->variants->count() }} {{ __('variants') }} · {{ $familyFitments }} {{ __('fitment rules') }}</span>
                                             </span>
-                                            <i class="fas fa-chevron-down text-[10px] text-amber-500 transition duration-200 group-open:rotate-180"></i>
+                                            <i class="fas fa-chevron-down text-[10px] text-accent transition duration-200 group-open:rotate-180"></i>
                                         </summary>
                                         <div class="grid gap-3 border-t border-slate-200 p-3 dark:border-slate-700 md:grid-cols-2 2xl:grid-cols-3">
                                             <form method="POST" action="{{ route('admin.vehicle-fitments.families.update', $family) }}" class="grid gap-2 rounded-xl border border-dashed border-amber-300 bg-amber-50/60 p-3 dark:border-amber-500/30 dark:bg-amber-500/5 md:col-span-2 2xl:col-span-3 sm:grid-cols-[1fr_1fr_1fr_auto] sm:items-end">
@@ -469,10 +469,10 @@
 
         {{-- ═════════════ Add fitment panel (collapsible) ═════════════ --}}
         <div id="vf-fitment-panel" @if(!$openFitmentPanel) hidden @endif
-             class="bg-white dark:bg-slate-900 border border-amber-300/60 dark:border-amber-500/30 rounded-2xl bento-shadow overflow-hidden">
-            <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-slate-100 dark:border-slate-800 bg-gradient-to-b from-amber-50/60 to-white dark:from-amber-500/5 dark:to-slate-900">
+             class="bg-white dark:bg-slate-900 border border-accent/60 dark:border-accent/30 rounded-2xl bento-shadow overflow-hidden">
+            <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-slate-100 dark:border-slate-800 bg-gradient-to-b from-accent/60 to-white dark:from-accent/5 dark:to-slate-900">
                 <div class="flex items-center gap-3">
-                    <span class="w-9 h-9 rounded-xl bg-[#04042a] text-amber-300 grid place-items-center dark:bg-amber-400 dark:text-[#04042a]">
+                    <span class="w-9 h-9 rounded-xl bg-[#04041f] text-accent grid place-items-center dark:bg-accent dark:text-[#04041f]">
                         <i class="fas fa-link text-xs"></i>
                     </span>
                     <div>
@@ -562,8 +562,8 @@
 
                 {{-- Live preview plate --}}
                 <aside class="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 lg:sticky lg:top-24 lg:self-start bento-shadow">
-                    <div class="flex items-center justify-between px-4 py-3 text-white" style="background: linear-gradient(135deg, #04042a, #0a0d3f);">
-                        <span class="font-mono text-[10px] font-extrabold uppercase tracking-[0.22em] text-amber-300">{{ __('Fitment Preview') }}</span>
+                    <div class="flex items-center justify-between px-4 py-3 text-white" style="background: linear-gradient(135deg, #04041f, #070740);">
+                        <span class="font-mono text-[10px] font-extrabold uppercase tracking-[0.22em] text-accent">{{ __('Fitment Preview') }}</span>
                         <span class="text-[10px] font-extrabold text-emerald-300" data-admin-preview-count>{{ count($fitmentRows) }} {{ __('vehicles') }}</span>
                     </div>
                     <div class="p-4 space-y-3 bg-white dark:bg-slate-900">

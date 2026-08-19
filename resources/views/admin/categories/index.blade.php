@@ -26,7 +26,7 @@
             text-decoration: none;
             transition: all .15s ease;
         }
-        .ychip:hover { background: #f8fafc; border-color: #cbd5e1; color: #04042a; }
+        .ychip:hover { background: #f8fafc; border-color: #cbd5e1; color: #04041f; }
         .ychip .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
         .ychip .cnt {
             background: rgba(15,23,42,0.06);
@@ -35,15 +35,15 @@
             color: #475569; font-weight: 800;
         }
         .ychip.on {
-            background: #04042a; color: #fcd34d; border-color: #04042a;
+            background: #04041f; color: #ffb27a; border-color: #04041f;
             box-shadow: 0 6px 14px -8px rgba(4,4,42,0.40);
         }
-        .ychip.on .cnt { background: rgba(252,211,77,0.18); color: #fcd34d; }
+        .ychip.on .cnt { background: rgba(252,211,77,0.18); color: #ffb27a; }
         .dark .ychip { background: #1e293b; border-color: #334155; color: #cbd5e1; }
         .dark .ychip .cnt { background: rgba(255,255,255,0.06); color: #cbd5e1; }
         .dark .ychip:hover { background: #334155; color: #fff; }
-        .dark .ychip.on { background: #fbbf24; color: #04042a; border-color: #fbbf24; }
-        .dark .ychip.on .cnt { background: rgba(4,4,42,0.18); color: #04042a; }
+        .dark .ychip.on { background: #ff8a3d; color: #04041f; border-color: #ff8a3d; }
+        .dark .ychip.on .cnt { background: rgba(4,4,42,0.18); color: #04041f; }
 
         /* Category card — sibling of Products' prod-card */
         .cat-card {
@@ -54,9 +54,9 @@
             transition: all .2s ease;
             display: flex; flex-direction: column;
         }
-        .cat-card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(7,7,64,0.10); border-color: #fcd34d; }
+        .cat-card:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(7,7,64,0.10); border-color: #ffb27a; }
         .dark .cat-card { background: #0f172a; border-color: #1e293b; }
-        .dark .cat-card:hover { border-color: #fbbf24; }
+        .dark .cat-card:hover { border-color: #ff8a3d; }
         .cat-card .img-wrap {
             position: relative;
             height: 120px; border-radius: 12px;
@@ -78,7 +78,7 @@
         .cat-card .img-wrap .placeholder { color: #94a3b8; font-size: 28px; }
         .cat-card .badge-tr { position: absolute; top: 8px; right: 8px; }
         [dir='rtl'] .cat-card .badge-tr { right: auto; left: 8px; }
-        .cat-card .cname { font-weight: 800; color: #04042a; font-size: 14px; line-height: 1.3; }
+        .cat-card .cname { font-weight: 800; color: #04041f; font-size: 14px; line-height: 1.3; }
         .dark .cat-card .cname { color: #f8fafc; }
         .cat-card .langs { font-size: 11.5px; color: #64748b; margin-top: 2px; }
         .dark .cat-card .langs { color: #94a3b8; }
@@ -106,16 +106,16 @@
             transition: all .15s ease;
         }
         .cat-card .acts .btn:hover { transform: translateY(-1px); }
-        .cat-card .acts .btn.primary { background: #04042a; color: #fcd34d; border-color: #04042a; }
-        .cat-card .acts .btn.primary:hover { background: #07073a; }
+        .cat-card .acts .btn.primary { background: #04041f; color: #ffb27a; border-color: #04041f; }
+        .cat-card .acts .btn.primary:hover { background: #070740; }
         .cat-card .acts .btn.danger { color: #b91c1c; border-color: #fca5a5; background: #fef2f2; }
         .cat-card .acts .btn.danger:hover { background: #fee2e2; }
         .cat-card .acts .btn.locked { color: #94a3b8; background: #f8fafc; border-color: #e2e8f0; cursor: not-allowed; }
         .cat-card .acts .btn.locked:hover { transform: none; }
         .dark .cat-card .acts .btn { background: #1e293b; border-color: #334155; color: #cbd5e1; }
         .dark .cat-card .acts .btn:hover { background: #334155; }
-        .dark .cat-card .acts .btn.primary { background: #fbbf24; color: #04042a; border-color: #fbbf24; }
-        .dark .cat-card .acts .btn.primary:hover { background: #f59e0b; }
+        .dark .cat-card .acts .btn.primary { background: #ff8a3d; color: #04041f; border-color: #ff8a3d; }
+        .dark .cat-card .acts .btn.primary:hover { background: #e65c00; }
         .dark .cat-card .acts .btn.danger { color: #fca5a5; border-color: rgba(239,68,68,0.30); background: rgba(239,68,68,0.10); }
         .dark .cat-card .acts .btn.locked { color: #64748b; background: #0f172a; border-color: #1e293b; }
 
@@ -151,7 +151,7 @@
         .y-pagination a:hover { color: #0f172a; border-color: #cbd5e1; background: #f8fafc; }
         .y-pagination .active span,
         .y-pagination span[aria-current="page"] {
-            background: #04042a; color: #fcd34d; border-color: #04042a;
+            background: #04041f; color: #ffb27a; border-color: #04041f;
         }
         .y-pagination .disabled span,
         .y-pagination span[aria-disabled="true"] { opacity: 0.45; cursor: not-allowed; }
@@ -160,7 +160,7 @@
         .dark .y-pagination a:hover { background: #1e293b; color: #fff; border-color: #475569; }
         .dark .y-pagination .active span,
         .dark .y-pagination span[aria-current="page"] {
-            background: #fbbf24; color: #04042a; border-color: #fbbf24;
+            background: #ff8a3d; color: #04041f; border-color: #ff8a3d;
         }
     </style>
 
@@ -187,20 +187,20 @@
 
         {{-- ═════════════ Hero ═════════════ --}}
         <div class="relative overflow-hidden rounded-2xl mb-4 p-6 text-white"
-             style="background: linear-gradient(135deg, #04042a 0%, #070740 50%, #0a0d3f 100%);">
+             style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
             <div class="absolute inset-0 bento-stripes pointer-events-none opacity-50"></div>
-            <div class="absolute top-0 bottom-0 left-0 w-[3px]" style="background: linear-gradient(180deg, #fbbf24 0%, #f59e0b 100%);"></div>
-            <div class="absolute -top-16 -right-16 h-64 w-64 rounded-full bg-amber-400/10 blur-[60px] pointer-events-none"></div>
+            <div class="absolute top-0 bottom-0 left-0 w-[3px]" style="background: linear-gradient(180deg, #ff8a3d 0%, #e65c00 100%);"></div>
+            <div class="absolute -top-16 -right-16 h-64 w-64 rounded-full bg-accent/10 blur-[60px] pointer-events-none"></div>
 
             <div class="relative flex flex-wrap items-center justify-between gap-4">
                 <div>
-                    <div class="font-mono text-[10px] font-extrabold uppercase tracking-[0.28em] text-amber-300">{{ __('Catalog · Taxonomy') }}</div>
+                    <div class="font-mono text-[10px] font-extrabold uppercase tracking-[0.28em] text-accent">{{ __('Catalog · Taxonomy') }}</div>
                     <h1 class="text-3xl font-black mt-2 leading-tight">{{ __('Categories') }}</h1>
                     <p class="text-sm text-white/65 mt-2">
                         {{ __(':total categories', ['total' => number_format($totalCategories)]) }}
                         @if($emptyCategories > 0)
                             <span class="text-white/35 mx-1">·</span>
-                            <b class="text-amber-300">{{ __(':n empty', ['n' => number_format($emptyCategories)]) }}</b>
+                            <b class="text-accent">{{ __(':n empty', ['n' => number_format($emptyCategories)]) }}</b>
                         @endif
                     </p>
                 </div>
@@ -216,8 +216,8 @@
                         {{ __('Export Excel') }}
                     </a>
                     <a href="{{ route('admin.categories.create') }}"
-                       class="inline-flex items-center gap-2 h-10 px-5 rounded-xl text-xs font-bold text-[#04042a] shadow-md shadow-amber-500/30 transition hover:brightness-105"
-                       style="background: linear-gradient(180deg, #fbbf24, #f59e0b);">
+                       class="inline-flex items-center gap-2 h-10 px-5 rounded-xl text-xs font-bold text-[#04041f] shadow-md shadow-accent/30 transition hover:brightness-105"
+                       style="background: linear-gradient(180deg, #ff8a3d, #e65c00);">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                         {{ __('Add Category') }}
                     </a>
@@ -232,7 +232,7 @@
                                  class="w-full max-w-lg rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-2xl overflow-hidden text-slate-900 dark:text-slate-100">
                                 <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-slate-200 dark:border-slate-800 bg-gradient-to-b from-slate-50 to-white dark:from-slate-900/60 dark:to-slate-900">
                                     <div class="flex items-center gap-2.5">
-                                        <div class="h-9 w-9 rounded-xl bg-[#04042a] text-amber-300 grid place-items-center">
+                                        <div class="h-9 w-9 rounded-xl bg-[#04041f] text-accent grid place-items-center">
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"/></svg>
                                         </div>
                                         <div>
@@ -280,7 +280,7 @@
                                             {{ __('Cancel') }}
                                         </button>
                                         <button type="submit"
-                                                class="inline-flex items-center gap-2 h-10 px-5 rounded-xl text-xs font-bold text-amber-300 bg-[#04042a] hover:bg-[#07073a] transition">
+                                                class="inline-flex items-center gap-2 h-10 px-5 rounded-xl text-xs font-bold text-accent bg-[#04041f] hover:bg-[#070740] transition">
                                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M17 8l-5-5-5 5M12 3v12"/></svg>
                                             {{ __('Upload & Import') }}
                                         </button>
@@ -335,9 +335,9 @@
                     </span>
                     <input name="search" value="{{ $search }}"
                            placeholder="{{ __('Search by name, slug, or description...') }}"
-                           class="h-10 w-full ps-10 pe-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 placeholder:text-slate-400 transition focus:outline-none focus:border-amber-400 focus:ring-2 focus:ring-amber-400/30 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-900">
+                           class="h-10 w-full ps-10 pe-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 placeholder:text-slate-400 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:bg-slate-800 dark:border-slate-700 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:bg-slate-900">
                 </div>
-                <button type="submit" class="inline-flex items-center gap-2 h-10 px-4 rounded-xl text-xs font-bold text-amber-300 bg-[#04042a] hover:bg-[#07073a] transition shrink-0">
+                <button type="submit" class="inline-flex items-center gap-2 h-10 px-4 rounded-xl text-xs font-bold text-accent bg-[#04041f] hover:bg-[#070740] transition shrink-0">
                     {{ __('Search') }}
                 </button>
                 @if($search !== '')
@@ -349,7 +349,7 @@
             </form>
             <div class="flex flex-wrap gap-1.5">
                 <a href="{{ $stockUrl('') }}" class="ychip {{ $stockFilter === '' ? 'on' : '' }}">
-                    <span class="dot" style="background: #04042a;"></span>
+                    <span class="dot" style="background: #04041f;"></span>
                     {{ __('All') }} <span class="cnt">{{ number_format($totalCategories) }}</span>
                 </a>
                 <a href="{{ $stockUrl('has_products') }}" class="ychip {{ $stockFilter === 'has_products' ? 'on' : '' }}">
@@ -357,7 +357,7 @@
                     {{ __('With products') }} <span class="cnt">{{ number_format($withProductsCount) }}</span>
                 </a>
                 <a href="{{ $stockUrl('empty') }}" class="ychip {{ $stockFilter === 'empty' ? 'on' : '' }}">
-                    <span class="dot" style="background: #f59e0b;"></span>
+                    <span class="dot" style="background: #e65c00;"></span>
                     {{ __('Empty') }} <span class="cnt">{{ number_format($emptyCategories) }}</span>
                 </a>
             </div>
@@ -373,7 +373,7 @@
                 @if($search !== '')
                     <div class="text-[13px] text-slate-500 dark:text-slate-400 mt-1.5">{{ __('No results for ":search".', ['search' => $search]) }}</div>
                     <a href="{{ $stockUrl($stockFilter) }}"
-                       class="inline-flex items-center gap-2 h-10 px-4 mt-4 rounded-xl text-xs font-bold text-amber-300 bg-[#04042a] hover:bg-[#07073a] transition">
+                       class="inline-flex items-center gap-2 h-10 px-4 mt-4 rounded-xl text-xs font-bold text-accent bg-[#04041f] hover:bg-[#070740] transition">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                         {{ __('Reset filters') }}
                     </a>

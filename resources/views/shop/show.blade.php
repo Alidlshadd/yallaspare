@@ -278,7 +278,7 @@
                                     <form action="{{ route('cart.add', $product) }}" method="POST" id="purchase-form" class="js-add-cart-form space-y-2.5">
                                         @csrf
                                         <input type="hidden" name="quantity" id="purchase-qty-hidden" value="1">
-                                        <button type="submit" class="js-add-cart-button inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-[#0a0d55] hover:shadow-lg hover:shadow-primary/25 active:translate-y-0 active:scale-[0.98] disabled:cursor-wait disabled:opacity-80">
+                                        <button type="submit" class="js-add-cart-button inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-[#12124a] hover:shadow-lg hover:shadow-primary/25 active:translate-y-0 active:scale-[0.98] disabled:cursor-wait disabled:opacity-80">
                                             {{ __('Add to Cart') }}
                                         </button>
                                         <button
@@ -336,7 +336,7 @@
                                 @if ($inStock)
                                     <form action="{{ route('checkout.options', $product) }}" method="GET" class="space-y-2.5">
                                         <input type="hidden" name="quantity" id="purchase-qty-hidden-guest" value="1">
-                                        <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-[#0a0d55] hover:shadow-lg hover:shadow-primary/25 active:translate-y-0 active:scale-[0.98]">
+                                        <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-[#12124a] hover:shadow-lg hover:shadow-primary/25 active:translate-y-0 active:scale-[0.98]">
                                             {{ __('Login or Register to Order') }}
                                         </button>
                                     </form>
@@ -413,7 +413,7 @@
                     <div class="flex items-center gap-2 pb-0.5">
                         <div class="flex items-center gap-0.5" aria-hidden="true">
                             @for ($rating = 1; $rating <= 5; $rating++)
-                                <svg class="h-4 w-4 {{ $rating <= (int) round((float) ($averageRating ?? 0)) ? 'text-amber-500' : 'text-amber-200 dark:text-slate-700' }}" viewBox="0 0 20 20" fill="currentColor">
+                                <svg class="h-4 w-4 {{ $rating <= (int) round((float) ($averageRating ?? 0)) ? 'text-accent' : 'text-slate-300 dark:text-slate-700' }}" viewBox="0 0 20 20" fill="currentColor">
                                     <path d="M9.1 2.3c.3-.9 1.5-.9 1.8 0l1.4 4.2h4.4c.9 0 1.3 1.2.6 1.8l-3.6 2.6 1.4 4.2c.3.9-.7 1.6-1.5 1.1L10 13.6l-3.6 2.6c-.8.5-1.8-.2-1.5-1.1l1.4-4.2-3.6-2.6c-.7-.6-.3-1.8.6-1.8h4.4l1.4-4.2Z" />
                                 </svg>
                             @endfor
@@ -437,7 +437,7 @@
 
                         <div class="flex items-center gap-0.5" aria-label="{{ __(':rating out of 5', ['rating' => (int) $review->rating]) }}">
                             @for ($rating = 1; $rating <= 5; $rating++)
-                                <svg class="h-3.5 w-3.5 {{ $rating <= (int) $review->rating ? 'text-amber-500' : 'text-slate-300 dark:text-slate-700' }}" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <svg class="h-3.5 w-3.5 {{ $rating <= (int) $review->rating ? 'text-accent' : 'text-slate-300 dark:text-slate-700' }}" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                     <path d="M9.1 2.3c.3-.9 1.5-.9 1.8 0l1.4 4.2h4.4c.9 0 1.3 1.2.6 1.8l-3.6 2.6 1.4 4.2c.3.9-.7 1.6-1.5 1.1L10 13.6l-3.6 2.6c-.8.5-1.8-.2-1.5-1.1l1.4-4.2-3.6-2.6c-.7-.6-.3-1.8.6-1.8h4.4l1.4-4.2Z" />
                                 </svg>
                             @endfor
@@ -480,7 +480,7 @@
                         <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Recently viewed') }}</p>
                         <h2 class="mt-1 text-xl font-semibold tracking-[-0.02em] text-slate-950 dark:text-white">{{ __('Your product history') }}</h2>
                     </div>
-                    <a href="{{ route('shop.index') }}" class="text-sm font-semibold text-primary transition hover:text-[#10105c] dark:text-slate-200 dark:hover:text-white">
+                    <a href="{{ route('shop.index') }}" class="text-sm font-semibold text-primary transition hover:text-[#12124a] dark:text-slate-200 dark:hover:text-white">
                         {{ __('Shop') }}
                     </a>
                 </div>

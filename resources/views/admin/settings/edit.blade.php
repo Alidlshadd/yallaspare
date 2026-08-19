@@ -9,7 +9,7 @@
     $checksPassed = collect($checks)->where('ok', true)->count();
     $checksAction = count($checks) - $checksPassed;
 
-    $inputClasses = 'w-full rounded-lg border-gray-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-amber-400 focus:outline-none focus:ring-2 focus:ring-amber-400/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100';
+    $inputClasses = 'w-full rounded-lg border-gray-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100';
     $labelClasses = 'mb-1.5 block text-[11px] font-bold uppercase tracking-widest text-gray-500 dark:text-slate-400';
     $hintClasses = 'mt-1 text-xs text-gray-500 dark:text-slate-400';
     $whatsappAdminVisible = (bool) config('services.otpiq.whatsapp.admin_visible', true);
@@ -160,7 +160,7 @@
                                     @enderror
                                     @if(!empty($settings['site_logo']))
                                         <label class="mt-2 inline-flex items-center gap-2 text-xs text-gray-600 dark:text-slate-400">
-                                            <input type="checkbox" name="remove_logo" value="1" class="rounded border-gray-300 text-gray-400 focus:ring-amber-400 dark:border-slate-700 dark:text-slate-500">
+                                            <input type="checkbox" name="remove_logo" value="1" class="rounded border-gray-300 text-gray-400 focus:ring-accent dark:border-slate-700 dark:text-slate-500">
                                             {{ __('Remove current logo') }}
                                         </label>
                                     @endif
@@ -181,7 +181,7 @@
                                     <source src="{{ $storefrontHeroVideoUrl }}" type="video/mp4">
                                 </video>
                                 <label class="mt-2 inline-flex items-center gap-2 text-xs text-gray-600 dark:text-slate-400">
-                                    <input type="checkbox" name="remove_storefront_hero_video" value="1" class="rounded border-gray-300 text-gray-400 focus:ring-amber-400 dark:border-slate-700 dark:text-slate-500">
+                                    <input type="checkbox" name="remove_storefront_hero_video" value="1" class="rounded border-gray-300 text-gray-400 focus:ring-accent dark:border-slate-700 dark:text-slate-500">
                                     {{ __('Remove current hero video') }}
                                 </label>
                             @endif
@@ -286,7 +286,7 @@
                         </div>
 
                         <div class="mt-8 flex items-center justify-end gap-3 border-t border-gray-200 pt-5 dark:border-slate-800">
-                            <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-amber-400 px-5 py-2.5 text-sm font-bold text-slate-900 shadow-sm transition hover:bg-amber-300 disabled:cursor-not-allowed disabled:opacity-70" data-settings-submit>
+                            <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-accent px-5 py-2.5 text-sm font-bold text-slate-900 shadow-sm transition hover:bg-accent disabled:cursor-not-allowed disabled:opacity-70" data-settings-submit>
                                 <span data-settings-submit-label>{{ __('Save Settings') }}</span>
                                 <span class="hidden" data-settings-submit-loading>{{ __('Uploading...') }}</span>
                             </button>

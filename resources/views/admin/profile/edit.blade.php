@@ -26,18 +26,18 @@
         @endif
 
         <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <div class="bg-[#04042a] px-5 py-5 text-white sm:px-6">
+            <div class="bg-[#04041f] px-5 py-5 text-white sm:px-6">
                 <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                     <div class="flex min-w-0 items-center gap-4">
                         <div class="relative shrink-0">
                             @if ($profilePhotoUrl)
                                 <img src="{{ $profilePhotoUrl }}" alt="{{ __(':name profile photo', ['name' => $user->name]) }}" class="h-20 w-20 rounded-xl border border-white/15 object-cover">
                             @else
-                                <div class="flex h-20 w-20 items-center justify-center rounded-xl border border-white/15 bg-[#04042a] text-2xl font-black text-amber-300">
+                                <div class="flex h-20 w-20 items-center justify-center rounded-xl border border-white/15 bg-[#04041f] text-2xl font-black text-accent">
                                     {{ $avatarInitial }}
                                 </div>
                             @endif
-                            <span class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-lg border border-[#04042a] {{ $isVerified ? 'bg-emerald-400 text-emerald-950' : 'bg-rose-400 text-rose-950' }}">
+                            <span class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-lg border border-[#04041f] {{ $isVerified ? 'bg-emerald-400 text-emerald-950' : 'bg-rose-400 text-rose-950' }}">
                                 <i class="fas {{ $isVerified ? 'fa-check' : 'fa-exclamation' }} text-[10px]"></i>
                             </span>
                         </div>
@@ -177,7 +177,7 @@
                                         @if ($profilePhotoUrl)
                                             <img src="{{ $profilePhotoUrl }}" alt="{{ __('Current profile photo') }}" class="h-full w-full object-cover">
                                         @else
-                                            <span class="flex h-full w-full items-center justify-center bg-[#04042a] text-4xl font-black text-amber-300">{{ $avatarInitial }}</span>
+                                            <span class="flex h-full w-full items-center justify-center bg-[#04041f] text-4xl font-black text-accent">{{ $avatarInitial }}</span>
                                         @endif
                                         <span class="absolute inset-x-3 bottom-3 inline-flex items-center justify-center gap-2 rounded-lg bg-slate-950/80 px-3 py-2 text-xs font-black text-white opacity-0 shadow-sm transition group-hover:opacity-100">
                                             <i class="fas fa-camera"></i>
@@ -191,7 +191,7 @@
                                     <p class="text-xs font-semibold text-slate-500 dark:text-slate-400">{{ __('JPG, PNG, or WebP up to 2 MB') }}</p>
                                     @if ($profilePhotoUrl)
                                         <label class="inline-flex items-center gap-2 text-sm font-semibold text-slate-600 dark:text-slate-300">
-                                            <input type="checkbox" name="remove_profile_photo" value="1" class="rounded border-slate-300 text-slate-400 focus:ring-amber-400 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-500">
+                                            <input type="checkbox" name="remove_profile_photo" value="1" class="rounded border-slate-300 text-slate-400 focus:ring-accent dark:border-slate-700 dark:bg-slate-950 dark:text-slate-500">
                                             <span>{{ __('Remove photo') }}</span>
                                         </label>
                                     @endif
@@ -234,7 +234,7 @@
                         </div>
 
                         <div class="mt-5 flex flex-wrap items-center justify-end gap-3 border-t border-slate-200 pt-5 dark:border-slate-800">
-                            <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-lg bg-amber-400 px-4 py-2.5 text-sm font-black text-slate-900 shadow-sm transition hover:bg-amber-300 focus:outline-none focus:ring-4 focus:ring-amber-400/20">
+                            <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-black text-slate-900 shadow-sm transition hover:bg-accent focus:outline-none focus:ring-4 focus:ring-accent/20">
                                 <i class="fas fa-floppy-disk"></i>
                                 {{ __('Save Profile') }}
                             </button>

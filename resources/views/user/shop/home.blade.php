@@ -33,7 +33,7 @@
                         >
                     @else
                         <div
-                            class="absolute inset-0 h-full w-full bg-[linear-gradient(135deg,#070740_0%,#111827_52%,#1f2937_100%)]"
+                            class="absolute inset-0 h-full w-full bg-[linear-gradient(135deg,#070740_0%,#070740_52%,#04041f_100%)]"
                             data-hero-video-fallback
                         ></div>
                     @endif
@@ -59,15 +59,15 @@
                 @elseif ($heroImageUrl)
                     <img src="{{ $heroImageUrl }}" alt="{{ __('Auto parts banner') }}" class="absolute inset-0 h-full w-full object-cover">
                 @else
-                    <div class="absolute inset-0 h-full w-full bg-[linear-gradient(135deg,#070740_0%,#111827_52%,#1f2937_100%)]"></div>
+                    <div class="absolute inset-0 h-full w-full bg-[linear-gradient(135deg,#070740_0%,#070740_52%,#04041f_100%)]"></div>
                 @endif
 
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-slate-950/15"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-[rgba(7,7,64,0.92)] via-[rgba(7,7,64,0.45)] to-[rgba(7,7,64,0.15)]"></div>
             </div>
 
-            <div class="relative grid grid-cols-1 items-end gap-5 p-4 pt-48 sm:p-6 sm:pt-56 lg:min-h-[470px] lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end lg:gap-8 lg:p-11 lg:pt-28">
+            <div class="relative grid grid-cols-1 items-end gap-5 p-4 pt-32 sm:p-6 sm:pt-40 lg:min-h-[470px] lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end lg:gap-8 lg:p-11 lg:pt-28">
                 <div>
-                    <span class="inline-block rounded-full border border-white/30 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-slate-100">
+                    <span class="inline-block rounded-full border border-white/30 px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.16em] text-white/90">
                         {{ __('Genuine & OEM parts') }}
                     </span>
                     <h1 class="mt-3 max-w-xl text-2xl font-bold leading-tight tracking-[-0.03em] text-white sm:mt-4 sm:text-3xl lg:text-[44px] lg:leading-[1.06]">
@@ -78,7 +78,7 @@
                     </p>
                     <a
                         href="{{ $heroButtonUrl }}"
-                        class="mt-4 inline-flex items-center justify-center rounded-xl border border-white/35 px-4 py-2 text-xs font-semibold text-white transition duration-200 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50 sm:mt-5 sm:rounded-2xl sm:py-2.5 sm:text-sm"
+                        class="mt-4 inline-flex items-center justify-center rounded-xl bg-accent px-5 py-2.5 text-xs font-semibold text-navy transition duration-200 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:mt-5 sm:rounded-2xl sm:text-sm"
                     >
                         {{ $heroButtonLabel }}
                     </a>
@@ -106,7 +106,7 @@
                     <select
                         name="brand"
                         data-vehicle-brand
-                        class="w-full rounded-xl border-0 bg-white/95 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:ring-4 focus:ring-white/30"
+                        class="w-full rounded-xl border-0 bg-white/95 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:ring-4 focus:ring-accent/45"
                     >
                         <option value="">{{ __('Brand') }}</option>
                         @foreach ($brandOptions as $option)
@@ -117,7 +117,7 @@
                     <select
                         name="model"
                         data-vehicle-model
-                        class="w-full rounded-xl border-0 bg-white/95 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:ring-4 focus:ring-white/30"
+                        class="w-full rounded-xl border-0 bg-white/95 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:ring-4 focus:ring-accent/45"
                     >
                         <option value="">{{ __('Model') }}</option>
                         @foreach ($modelOptions as $option)
@@ -129,7 +129,7 @@
                         name="engine"
                         data-vehicle-engine
                         @disabled($vehicleOptionsByModel !== [])
-                        class="w-full rounded-xl border-0 bg-white/95 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:ring-4 focus:ring-white/30 disabled:cursor-not-allowed disabled:opacity-60"
+                        class="w-full rounded-xl border-0 bg-white/95 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:ring-4 focus:ring-accent/45 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                         <option value="">{{ __('Any engine') }}</option>
                         @if($vehicleOptionsByModel === [])
@@ -143,14 +143,14 @@
                         name="year"
                         data-vehicle-year
                         disabled
-                        class="w-full rounded-xl border-0 bg-white/95 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:ring-4 focus:ring-white/30 disabled:cursor-not-allowed disabled:opacity-60"
+                        class="w-full rounded-xl border-0 bg-white/95 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:ring-4 focus:ring-accent/45 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                         <option value="">{{ __('Any year') }}</option>
                     </select>
 
                     <button
                         type="submit"
-                        class="mt-1 inline-flex items-center justify-center rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-primary transition duration-200 hover:bg-slate-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+                        class="mt-1 inline-flex items-center justify-center rounded-xl bg-white px-4 py-2.5 text-sm font-semibold text-navy transition duration-200 hover:bg-white/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
                     >
                         {{ __('Find parts') }}
                     </button>
