@@ -117,7 +117,7 @@
                 </div>
                 <div class="flex shrink-0 items-center gap-2">
                     <span class="rounded-full px-3 py-1 text-xs font-black uppercase tracking-wide" :class="settingsStateClass" x-text="settingsStateLabel"></span>
-                    <a href="{{ route('admin.discounts.coupons.create') }}" class="rounded-xl bg-accent px-4 py-2 text-sm font-extrabold text-[#422006] hover:bg-accent">+ {{ __('New Coupon') }}</a>
+                    <a href="{{ route('admin.discounts.coupons.create') }}" class="font-display rounded-xl bg-accent px-4 py-2 text-sm font-extrabold text-[#422006] hover:bg-accent">+ {{ __('New Coupon') }}</a>
                 </div>
             </div>
             <div class="mt-5 grid grid-cols-2 gap-x-8 gap-y-4 sm:grid-cols-3 lg:flex lg:flex-wrap lg:gap-10">
@@ -205,7 +205,7 @@
                     <i class="fas fa-ticket mb-3 block text-2xl text-slate-300 dark:text-slate-600"></i>
                     <p class="text-sm font-bold text-slate-600 dark:text-slate-300">{{ __('No coupons yet') }}</p>
                     <p class="mt-1 text-xs text-slate-400">{{ __('Create your first coupon campaign to start tracking redemptions here.') }}</p>
-                    <a href="{{ route('admin.discounts.coupons.create') }}" class="mt-4 inline-flex rounded-xl bg-[#04041f] px-4 py-2 text-xs font-bold text-white hover:bg-[#12124a]">{{ __('Create Coupon') }}</a>
+                    <a href="{{ route('admin.discounts.coupons.create') }}" class="font-display mt-4 inline-flex rounded-xl bg-navy-deep px-4 py-2 text-sm font-bold text-white hover:bg-navy-raised">{{ __('Create Coupon') }}</a>
                 </div>
             @else
                 <div class="overflow-x-auto">
@@ -255,18 +255,18 @@
                                     <td class="px-4 py-3">
                                         @if ($couponRow['id'] > 0)
                                             <div class="flex items-center justify-end gap-1.5">
-                                                <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-[11px] font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="openEdit">{{ __('Edit') }}</button>
+                                                <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="openEdit">{{ __('Edit') }}</button>
                                                 <form method="POST" action="{{ route('admin.discounts.coupons.toggle', $couponRow['id']) }}">
                                                     @csrf
                                                     @method('PATCH')
-                                                    <button class="rounded-lg bg-[#04041f] px-3 py-1.5 text-[11px] font-bold text-white hover:bg-[#12124a]">
+                                                    <button class="rounded-lg bg-navy-deep px-3 py-1.5 text-sm font-bold text-white hover:bg-navy-raised">
                                                         {{ $couponRow['status'] === 'active' || $couponRow['status'] === 'scheduled' ? __('Pause') : __('Activate') }}
                                                     </button>
                                                 </form>
                                                 <form method="POST" action="{{ route('admin.discounts.coupons.destroy', $couponRow['id']) }}" data-confirm="{{ __('Delete coupon :code? This cannot be undone.', ['code' => $couponRow['code']]) }}">
                                                     @csrf
                                                     @method('DELETE')
-                                                    <button class="rounded-lg px-3 py-1.5 text-[11px] font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30">{{ __('Delete') }}</button>
+                                                    <button class="rounded-lg px-3 py-1.5 text-sm font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30">{{ __('Delete') }}</button>
                                                 </form>
                                             </div>
                                         @else
@@ -328,7 +328,7 @@
                             <label for="coupon_code" class="mb-1 block text-[11px] font-bold text-slate-500 dark:text-slate-400">{{ __('Coupon Code') }}</label>
                             <div class="flex gap-2">
                                 <input type="text" name="coupon_code" id="coupon_code" :value="settingsCode" @input="onSettingsCodeInput" placeholder="SAVE10" class="cp-num w-full rounded-xl border-slate-300 text-sm uppercase focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                                <button type="button" class="shrink-0 rounded-xl border border-slate-200 px-3 text-xs font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="generateCode">{{ __('Generate') }}</button>
+                                <button type="button" class="shrink-0 rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="generateCode">{{ __('Generate') }}</button>
                             </div>
                             @error('coupon_code')
                                 <span class="mt-1 block text-xs font-medium text-rose-600">{{ $message }}</span>
@@ -369,20 +369,20 @@
                                     <span class="mt-1 block text-xs font-medium text-rose-600">{{ $message }}</span>
                                 @enderror
                             </div>
-                            <button type="button" class="h-[38px] rounded-xl border border-slate-200 px-3 text-xs font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="clearDates">{{ __('Clear') }}</button>
+                            <button type="button" class="h-[38px] rounded-xl border border-slate-200 px-3 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="clearDates">{{ __('Clear') }}</button>
                         </div>
                     </div>
 
                     <div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-4 dark:border-slate-800">
                         <p class="text-xs text-slate-400">{{ __('Saving publishes the site coupon configuration. Discount rule settings are preserved.') }}</p>
-                        <button type="submit" class="rounded-xl bg-[#04041f] px-5 py-2.5 text-sm font-extrabold text-white hover:bg-[#12124a]">{{ __('Save Coupon Configuration') }}</button>
+                        <button type="submit" class="rounded-xl bg-navy-deep px-5 py-2.5 text-sm font-extrabold text-white hover:bg-navy-raised">{{ __('Save Coupon Configuration') }}</button>
                     </div>
                 </form>
             </div>
         </section>
 
         {{-- ============ edit coupon drawer ============ --}}
-        <div class="fixed inset-0 z-50 bg-[#04041f]/55" x-show="editOpen" x-cloak @click.self="closeEdit" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 z-50 bg-navy-deep/55" x-show="editOpen" x-cloak @click.self="closeEdit" role="dialog" aria-modal="true">
             <aside class="absolute end-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl dark:bg-slate-900">
                 <div class="cp-hero flex items-start justify-between gap-3 px-5 py-4 text-white">
                     <div class="min-w-0">

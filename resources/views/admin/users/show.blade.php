@@ -480,7 +480,7 @@
                                     <td class="p-4 text-right">
                                         <a
                                             href="{{ route('admin.orders.show', $order) }}"
-                                            class="rounded-lg border border-gray-300 px-3 py-1.5 text-xs font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
+                                            class="rounded-lg border border-gray-300 px-3 py-1.5 text-sm font-semibold text-gray-700 transition hover:bg-gray-50 dark:border-slate-700 dark:text-slate-200 dark:hover:bg-slate-800"
                                         >
                                             {{ __('Open Order') }}
                                         </a>
@@ -575,7 +575,7 @@
                                 <form method="POST" action="{{ route('admin.reviews.destroy', $review) }}" data-confirm="{{ __('Delete this review?') }}" class="lg:text-right">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="rounded-lg border border-rose-300 bg-rose-50 px-3 py-1.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-100 dark:border-rose-400/40 dark:bg-rose-400/10 dark:text-rose-300 dark:hover:bg-rose-400/20">
+                                    <button type="submit" class="rounded-lg border border-rose-300 bg-rose-50 px-3 py-1.5 text-sm font-semibold text-rose-700 transition hover:bg-rose-100 dark:border-rose-400/40 dark:bg-rose-400/10 dark:text-rose-300 dark:hover:bg-rose-400/20">
                                         {{ __('Delete') }}
                                     </button>
                                 </form>

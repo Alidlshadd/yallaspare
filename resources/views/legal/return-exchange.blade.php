@@ -13,7 +13,7 @@
             </p>
             <a
                 href="{{ route('legal.contact', ['topic' => 'order']) }}"
-                class="mt-6 inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-bold text-primary dark:text-[#070740] shadow-sm transition hover:-translate-y-0.5 hover:bg-accent hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:hidden"
+                class="mt-6 inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-bold text-primary dark:text-navy shadow-sm transition hover:-translate-y-0.5 hover:bg-accent hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 md:hidden"
             >
                 {{ __('Open a return request') }} <span aria-hidden="true">&rarr;</span>
             </a>
@@ -33,7 +33,7 @@
                     <div class="mt-3 border-t border-slate-200/80 pt-3 dark:border-slate-800">
                         <a
                             href="{{ route('legal.contact', ['topic' => 'order']) }}"
-                            class="block rounded-xl bg-accent px-3 py-2.5 text-center text-sm font-bold text-primary dark:text-[#070740] transition hover:-translate-y-0.5 hover:bg-accent hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+                            class="block rounded-xl bg-accent px-3 py-2.5 text-center text-sm font-bold text-primary dark:text-navy transition hover:-translate-y-0.5 hover:bg-accent hover:shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-primary"
                         >
                             {{ __('Open a return request') }} <span aria-hidden="true">&rarr;</span>
                         </a>
@@ -192,7 +192,7 @@
                         </div>
                         <a
                             href="{{ route('legal.contact', ['topic' => 'order']) }}"
-                            class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-bold text-primary dark:text-[#070740] shadow-sm transition hover:-translate-y-0.5 hover:bg-accent hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-950"
+                            class="inline-flex shrink-0 items-center gap-2 rounded-xl bg-accent px-5 py-3 text-sm font-bold text-primary dark:text-navy shadow-sm transition hover:-translate-y-0.5 hover:bg-accent hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-slate-950"
                         >
                             {{ __('Open a return request') }} <span aria-hidden="true">&rarr;</span>
                         </a>

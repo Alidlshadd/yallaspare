@@ -134,7 +134,7 @@
                 </a>
             @endforeach
             @if(request()->has('analytics_days'))
-                <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center gap-1.5 ml-1 px-3 py-2 rounded-xl text-xs font-bold text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition dark:text-slate-400 dark:hover:bg-slate-800">
+                <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center gap-1.5 ml-1 px-3 py-2 rounded-xl text-sm font-bold text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition dark:text-slate-400 dark:hover:bg-slate-800">
                     <i class="fas fa-rotate-left text-[10px]"></i> {{ __('Reset') }}
                 </a>
             @endif
@@ -486,7 +486,7 @@
                 <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Last :n days', ['n' => $siteAnalyticsDays]) }}</p>
             </div>
             @if(Route::has('admin.analytics.index'))
-                <a href="{{ route('admin.analytics.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-xs font-bold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">
+                <a href="{{ route('admin.analytics.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">
                     {{ __('Open analytics') }} <i class="fas fa-arrow-right text-[10px]"></i>
                 </a>
             @endif
@@ -598,7 +598,7 @@
                 <h3 class="mt-1 text-xl sm:text-2xl font-bold tracking-tight">{{ __('Work that needs attention') }}</h3>
             </div>
             @if(Route::has('admin.orders.index'))
-                <a href="{{ route('admin.orders.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.06] backdrop-blur-sm px-4 py-2 text-xs font-bold text-white hover:bg-white/15 transition">
+                <a href="{{ route('admin.orders.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.06] backdrop-blur-sm px-4 py-2 text-sm font-bold text-white hover:bg-white/15 transition">
                     {{ __('Open orders') }} <i class="fas fa-arrow-right text-[10px]"></i>
                 </a>
             @endif
@@ -1174,7 +1174,7 @@
                     </h3>
                 </div>
                 @if(Route::has('admin.products.index'))
-                    <a href="{{ route('admin.products.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.06] backdrop-blur-sm px-3 py-2 text-xs font-bold text-white hover:bg-white/15 transition">
+                    <a href="{{ route('admin.products.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.06] backdrop-blur-sm px-3 py-2 text-sm font-bold text-white hover:bg-white/15 transition">
                         {{ __('View All') }} <i class="fas fa-arrow-right text-[10px]"></i>
                     </a>
                 @endif
@@ -1209,7 +1209,7 @@
                                         <i class="fas fa-box text-white text-base"></i>
                                     </div>
                                     @if($isFresh)
-                                        <span class="absolute -bottom-1 -right-1 inline-flex items-center text-[7px] uppercase tracking-widest font-bold font-mono px-1 py-px rounded ring-2 ring-[#070740]" style="background: #ff8a3d; color: #422006;">{{ __('New') }}</span>
+                                        <span class="absolute -bottom-1 -right-1 inline-flex items-center text-[7px] uppercase tracking-widest font-bold font-mono px-1 py-px rounded ring-2 ring-navy" style="background: #ff8a3d; color: #422006;">{{ __('New') }}</span>
                                     @endif
                                 </div>
 
@@ -1260,7 +1260,7 @@
                         </h3>
                     </div>
                     @if(Route::has('admin.orders.index'))
-                        <a href="{{ route('admin.orders.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.06] backdrop-blur-sm px-3 py-2 text-xs font-bold text-white hover:bg-white/15 transition">
+                        <a href="{{ route('admin.orders.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.06] backdrop-blur-sm px-3 py-2 text-sm font-bold text-white hover:bg-white/15 transition">
                             {{ __('View All') }} <i class="fas fa-arrow-right text-[10px]"></i>
                         </a>
                     @endif
@@ -1294,7 +1294,7 @@
                                 {{-- Customer avatar with status color ring --}}
                                 <div class="relative w-11 h-11 shrink-0">
                                     <div class="absolute inset-0 rounded-xl" style="background: linear-gradient(135deg, {{ $statusColor }}, {{ $statusColor }}88);"></div>
-                                    <div class="absolute inset-0.5 rounded-[10px] grid place-items-center bg-[#070740]">
+                                    <div class="absolute inset-0.5 rounded-[10px] grid place-items-center bg-navy">
                                         <span class="text-sm font-bold text-white">{{ $customerInitial }}</span>
                                     </div>
                                 </div>
@@ -1351,7 +1351,7 @@
                         </h3>
                     </div>
                     @if(Route::has('admin.products.index'))
-                        <a href="{{ route('admin.products.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.06] backdrop-blur-sm px-3 py-2 text-xs font-bold text-white hover:bg-white/15 transition">
+                        <a href="{{ route('admin.products.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.06] backdrop-blur-sm px-3 py-2 text-sm font-bold text-white hover:bg-white/15 transition">
                             {{ __('View All') }} <i class="fas fa-arrow-right text-[10px]"></i>
                         </a>
                     @endif

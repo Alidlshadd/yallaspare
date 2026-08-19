@@ -165,7 +165,7 @@
                         @endforeach
                     </select>
                     <a href="{{ route('admin.purchase-planning.index') }}" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Reset') }}</a>
-                    <button class="rounded-xl bg-[#04041f] px-4 py-2 text-sm font-semibold text-white hover:bg-[#12124a]">{{ __('Apply') }}</button>
+                    <button class="rounded-xl bg-navy-deep px-4 py-2 text-sm font-semibold text-white hover:bg-navy-raised">{{ __('Apply') }}</button>
                 </div>
             </form>
 
@@ -249,7 +249,7 @@
                                     </div>
                                     <p class="mt-1 text-xs text-slate-400" x-text="entry.meta"></p>
                                     <p class="pp-num mt-2 text-sm font-extrabold text-accent dark:text-accent" x-text="entry.totalLabel"></p>
-                                    <button type="button" class="mt-2 w-full rounded-lg border border-slate-200 bg-white py-1.5 text-xs font-bold text-slate-600 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300" @click="openView(entry)">
+                                    <button type="button" class="mt-2 w-full rounded-lg border border-slate-200 bg-white py-1.5 text-sm font-bold text-slate-600 hover:border-slate-400 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300" @click="openView(entry)">
                                         {{ __('View items') }}
                                     </button>
                                 </article>
@@ -345,7 +345,7 @@
                         </div>
 
                         {{-- add by code --}}
-                        <button type="button" class="flex w-full items-center justify-between border-t border-slate-100 px-4 py-2.5 text-xs font-extrabold text-amber-700 hover:bg-amber-50/50 dark:border-slate-800 dark:text-amber-400 dark:hover:bg-slate-800/40" @click="toggleAbc">
+                        <button type="button" class="flex w-full items-center justify-between border-t border-slate-100 px-4 py-2.5 text-sm font-extrabold text-amber-700 hover:bg-amber-50/50 dark:border-slate-800 dark:text-amber-400 dark:hover:bg-slate-800/40" @click="toggleAbc">
                             <span><i class="fas fa-barcode me-1.5"></i>{{ __('Add by code (manual item)') }}</span>
                             <span x-text="abcChevron"></span>
                         </button>
@@ -360,7 +360,7 @@
                             </div>
                             <input type="text" x-model="abc.note" placeholder="{{ __('Notes') }}" class="h-8 w-full rounded-lg border-slate-300 bg-slate-50 px-2.5 py-0 text-xs focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             <p class="text-[10.5px] leading-snug text-slate-400">{{ __('Not in the product database? It is added to this list only, flagged Manual. No product record is created.') }}</p>
-                            <button type="button" class="w-full rounded-lg bg-[#04041f] py-2 text-xs font-extrabold text-white hover:bg-[#12124a]" @click="addManual">{{ __('Add to current list') }}</button>
+                            <button type="button" class="w-full rounded-lg bg-navy-deep py-2 text-sm font-extrabold text-white hover:bg-navy-raised" @click="addManual">{{ __('Add to current list') }}</button>
                         </div>
 
                         {{-- budget warning --}}
@@ -381,11 +381,11 @@
 
                         {{-- actions --}}
                         <div class="flex flex-wrap gap-1.5 px-3.5 py-3">
-                            <button type="button" class="rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-extrabold text-white hover:bg-emerald-500" @click="saveList"><i class="fas fa-floppy-disk me-1"></i>{{ __('Save List') }}</button>
-                            <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-extrabold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="saveDraft">{{ __('Save Draft') }}</button>
-                            <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-extrabold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="printList"><i class="fas fa-print me-1"></i>{{ __('Print') }}</button>
-                            <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-extrabold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="exportCsv"><i class="fas fa-file-csv me-1"></i>{{ __('Export CSV') }}</button>
-                            <button type="button" class="rounded-lg px-3 py-1.5 text-xs font-extrabold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30" @click="clearList">✕ {{ __('Clear') }}</button>
+                            <button type="button" class="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-extrabold text-white hover:bg-emerald-500" @click="saveList"><i class="fas fa-floppy-disk me-1"></i>{{ __('Save List') }}</button>
+                            <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-extrabold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="saveDraft">{{ __('Save Draft') }}</button>
+                            <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-extrabold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="printList"><i class="fas fa-print me-1"></i>{{ __('Print') }}</button>
+                            <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-extrabold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="exportCsv"><i class="fas fa-file-csv me-1"></i>{{ __('Export CSV') }}</button>
+                            <button type="button" class="rounded-lg px-3 py-1.5 text-sm font-extrabold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30" @click="clearList">✕ {{ __('Clear') }}</button>
                         </div>
                         <p class="px-4 pb-3 text-[10.5px] text-slate-400">{{ __('Lists are stored in this browser only — they survive reloads and filters, but other admins cannot see them.') }}</p>
                     </div>
@@ -393,7 +393,7 @@
             </div>
 
             {{-- ============ view saved list modal ============ --}}
-            <div class="fixed inset-0 z-50 flex items-center justify-center bg-[#04041f]/55 p-4" x-show="viewOpen" x-cloak @click.self="closeView" role="dialog" aria-modal="true">
+            <div class="fixed inset-0 z-50 flex items-center justify-center bg-navy-deep/55 p-4" x-show="viewOpen" x-cloak @click.self="closeView" role="dialog" aria-modal="true">
                 <div class="max-h-[82vh] w-full max-w-xl overflow-auto rounded-2xl bg-white shadow-2xl dark:bg-slate-900">
                     <div class="pp-dock-head flex items-center justify-between px-5 py-3.5 text-white">
                         <div class="min-w-0">
@@ -433,8 +433,8 @@
                         <span class="pp-num text-lg font-black text-accent dark:text-accent" x-text="viewTotalLabel"></span>
                     </div>
                     <div class="flex flex-wrap items-center gap-1.5 px-5 pb-4">
-                        <button type="button" class="rounded-lg border border-sky-300 px-3 py-1.5 text-xs font-extrabold text-sky-700 hover:bg-sky-50 dark:border-sky-800 dark:text-sky-300 dark:hover:bg-sky-950/30" @click="markOrdered">{{ __('Mark as Ordered') }}</button>
-                        <button type="button" class="ms-auto rounded-lg px-3 py-1.5 text-xs font-extrabold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30" @click="deleteViewedList">{{ __('Delete list') }}</button>
+                        <button type="button" class="rounded-lg border border-sky-300 px-3 py-1.5 text-sm font-extrabold text-sky-700 hover:bg-sky-50 dark:border-sky-800 dark:text-sky-300 dark:hover:bg-sky-950/30" @click="markOrdered">{{ __('Mark as Ordered') }}</button>
+                        <button type="button" class="ms-auto rounded-lg px-3 py-1.5 text-sm font-extrabold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30" @click="deleteViewedList">{{ __('Delete list') }}</button>
                     </div>
                 </div>
             </div>

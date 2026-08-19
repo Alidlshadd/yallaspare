@@ -37,8 +37,14 @@ export default {
                     hover: 'var(--brand-orange-hover)',
                     ink: 'var(--brand-orange-ink)',
                 },
+                // The three sanctioned navy steps. Named here so the markup can
+                // stop writing bg-[#04041f] by hand — arbitrary values are
+                // invisible to any selector, which is how button-shaped links
+                // wearing a navy fill slipped past the display-face rule.
                 navy: {
                     DEFAULT: 'rgb(var(--brand-navy-rgb) / <alpha-value>)',
+                    deep: 'rgb(4 4 31 / <alpha-value>)',
+                    raised: 'rgb(18 18 74 / <alpha-value>)',
                 },
                 surface: {
                     DEFAULT: 'var(--surface)',

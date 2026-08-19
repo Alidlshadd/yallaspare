@@ -336,7 +336,7 @@
         {{-- ═════════════ Filter card ═════════════ --}}
         <form method="GET" action="{{ route('admin.returns.index') }}" class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-5 bento-shadow mb-4">
             <div class="flex items-center gap-2.5 mb-4">
-                <div class="h-9 w-9 rounded-xl bg-[#04041f] text-accent grid place-items-center">
+                <div class="h-9 w-9 rounded-xl bg-navy-deep text-accent grid place-items-center">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
                 </div>
                 <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('Filter Requests') }}</h3>
@@ -369,12 +369,12 @@
                 <div class="flex gap-2 justify-end">
                     @if($hasActiveFilters)
                         <a href="{{ route('admin.returns.index') }}"
-                           class="inline-flex items-center gap-2 h-11 px-4 rounded-xl text-xs font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700 transition">
+                           class="inline-flex items-center gap-2 h-11 px-4 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700 transition">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                             {{ __('Reset') }}
                         </a>
                     @endif
-                    <button type="submit" class="inline-flex items-center gap-2 h-11 px-5 rounded-xl text-xs font-bold text-accent bg-[#04041f] hover:bg-[#070740] transition">
+                    <button type="submit" class="inline-flex items-center gap-2 h-11 px-5 rounded-xl text-sm font-bold text-accent bg-navy-deep hover:bg-navy transition">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
                         {{ __('Apply Filters') }}
                     </button>
@@ -593,7 +593,7 @@
                             </div>
 
                             <button type="submit"
-                                    class="inline-flex items-center justify-center gap-2 w-full h-10 rounded-lg text-[12.5px] font-extrabold text-[#04041f] border border-accent/20 shadow-md shadow-accent/30 transition hover:brightness-105"
+                                    class="inline-flex items-center justify-center gap-2 w-full h-10 rounded-lg text-sm font-extrabold text-navy-deep border border-accent/20 shadow-md shadow-accent/30 transition hover:brightness-105"
                                     style="background: linear-gradient(180deg, #ff8a3d, #e65c00);">
                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
                                 {{ __('Save Workflow') }}
@@ -611,7 +611,7 @@
                     <div class="text-[13px] text-slate-500 dark:text-slate-400 mt-1.5">{{ __('Try changing the search or status filter.') }}</div>
                     @if($hasActiveFilters)
                         <a href="{{ route('admin.returns.index') }}"
-                           class="inline-flex items-center gap-2 h-10 px-4 mt-4 rounded-xl text-xs font-bold text-accent bg-[#04041f] hover:bg-[#070740] transition">
+                           class="font-display inline-flex items-center gap-2 h-10 px-4 mt-4 rounded-xl text-sm font-bold text-accent bg-navy-deep hover:bg-navy transition">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                             {{ __('Reset filters') }}
                         </a>

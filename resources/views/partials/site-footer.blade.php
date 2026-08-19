@@ -6,7 +6,7 @@
      mode it had no variant, so it stayed navy while everything around it was
      slate — the one mismatched island left between the rails and the footer.
      White text and white/5 cards read the same on either fill. --}}
-<section class="bg-[#070740] py-10 text-white dark:bg-slate-900">
+<section class="bg-navy py-10 text-white dark:bg-slate-900">
     <div class="mx-auto {{ $footerMaxWidth }} px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
             <article class="flex items-start gap-3 rounded-2xl border border-white/10 bg-white/5 p-4">

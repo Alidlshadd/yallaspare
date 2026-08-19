@@ -52,17 +52,17 @@
                                     <label class="block text-xs font-bold text-slate-700 mb-2 dark:text-slate-300">{{ __('Who should receive this?') }}</label>
                                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-2" id="audience-tiles">
                                         <button type="button" data-audience="all"
-                                                class="audience-tile rounded-xl border-2 border-primary bg-primary/5 px-3 py-3 text-xs font-bold text-primary text-center dark:bg-primary/10">
+                                                class="audience-tile rounded-xl border-2 border-primary bg-primary/5 px-3 py-3 text-sm font-bold text-primary text-center dark:bg-primary/10">
                                             <i class="fas fa-users block mb-1 text-base"></i>{{ __('All eligible') }}
                                             <p class="font-mono text-[10px] text-slate-400 mt-1">{{ __('Verified users') }}</p>
                                         </button>
                                         <button type="button" data-audience="role"
-                                                class="audience-tile rounded-xl border border-slate-200 px-3 py-3 text-xs font-bold text-slate-600 hover:bg-slate-50 text-center dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
+                                                class="audience-tile rounded-xl border border-slate-200 px-3 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 text-center dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
                                             <i class="fas fa-user-group block mb-1 text-base"></i>{{ __('Role group') }}
                                             <p class="font-mono text-[10px] text-slate-400 mt-1">{{ __('Customers / Dealers') }}</p>
                                         </button>
                                         <button type="button" data-audience="user"
-                                                class="audience-tile rounded-xl border border-slate-200 px-3 py-3 text-xs font-bold text-slate-600 hover:bg-slate-50 text-center dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
+                                                class="audience-tile rounded-xl border border-slate-200 px-3 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 text-center dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
                                             <i class="fas fa-user block mb-1 text-base"></i>{{ __('Single user') }}
                                             <p class="font-mono text-[10px] text-slate-400 mt-1">{{ __('By email') }}</p>
                                         </button>
@@ -91,9 +91,9 @@
                                     <label class="block text-xs font-bold text-slate-700 mb-2 dark:text-slate-300">{{ __('Purpose') }}</label>
                                     <div class="inline-flex w-full max-w-sm rounded-xl border border-slate-200 bg-slate-50 p-1 dark:border-slate-700 dark:bg-slate-950" id="purpose-toggle">
                                         <button type="button" data-purpose="promotional"
-                                                class="purpose-btn flex-1 rounded-lg bg-primary text-white px-3 py-1.5 text-xs font-bold">{{ __('Promotional') }}</button>
+                                                class="purpose-btn flex-1 rounded-lg bg-primary text-white px-3 py-1.5 text-sm font-bold">{{ __('Promotional') }}</button>
                                         <button type="button" data-purpose="operational"
-                                                class="purpose-btn flex-1 rounded-lg text-slate-600 px-3 py-1.5 text-xs font-bold dark:text-slate-300">{{ __('Operational') }}</button>
+                                                class="purpose-btn flex-1 rounded-lg text-slate-600 px-3 py-1.5 text-sm font-bold dark:text-slate-300">{{ __('Operational') }}</button>
                                     </div>
                                     <input type="hidden" name="purpose" id="purpose" value="{{ old('purpose', 'promotional') }}">
                                     <p class="mt-2 text-[11px] text-slate-500 dark:text-slate-400">{{ __('Promotional broadcasts only go to users who opted into marketing.') }}</p>
@@ -208,7 +208,7 @@
                                         <p class="font-black text-slate-900 text-base" id="preview-subject">{{ __('Your subject will appear here') }}</p>
                                         <div class="text-slate-700 whitespace-pre-wrap" id="preview-body">{{ __('Your message body will appear here once you start typing.') }}</div>
                                         <div id="preview-cta" style="display:none">
-                                            <a class="inline-block rounded-lg bg-primary px-4 py-2 text-white text-xs font-bold" id="preview-cta-text">{{ __('Shop now') }}</a>
+                                            <a class="font-display inline-block rounded-lg bg-primary px-4 py-2 text-white text-sm font-bold" id="preview-cta-text">{{ __('Shop now') }}</a>
                                         </div>
                                         <p class="text-[10px] text-slate-400 pt-2 border-t border-slate-100">YallaSpare · <a class="underline">{{ __('unsubscribe') }}</a></p>
                                     </div>

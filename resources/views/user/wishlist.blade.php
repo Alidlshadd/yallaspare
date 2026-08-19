@@ -50,7 +50,7 @@
                                 <form action="{{ route('user.wishlist.destroy', $wishlistProduct) }}" method="POST" class="absolute right-4 top-4 z-30">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="inline-flex items-center rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-rose-700 shadow-sm ring-1 ring-rose-200 transition hover:bg-rose-50 dark:bg-slate-900/95 dark:text-rose-300 dark:ring-rose-800">
+                                    <button type="submit" class="inline-flex items-center rounded-full bg-white/95 px-3 py-1.5 text-sm font-semibold text-rose-700 shadow-sm ring-1 ring-rose-200 transition hover:bg-rose-50 dark:bg-slate-900/95 dark:text-rose-300 dark:ring-rose-800">
                                         {{ __('Remove') }}
                                     </button>
                                 </form>

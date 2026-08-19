@@ -78,7 +78,7 @@
                     </p>
                     <a
                         href="{{ $heroButtonUrl }}"
-                        class="mt-4 inline-flex items-center justify-center rounded-xl bg-accent px-5 py-2.5 text-xs font-semibold text-navy transition duration-200 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:mt-5 sm:rounded-2xl sm:text-sm"
+                        class="font-display mt-4 inline-flex items-center justify-center rounded-xl bg-accent px-5 py-2.5 text-sm font-semibold text-navy transition duration-200 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-transparent sm:mt-5 sm:rounded-2xl"
                     >
                         {{ $heroButtonLabel }}
                     </a>

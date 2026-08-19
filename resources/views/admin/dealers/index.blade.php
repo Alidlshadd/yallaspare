@@ -108,7 +108,7 @@
                         <option value="suspended" @selected($status === 'suspended')>{{ __('Suspended') }}</option>
                     </select>
                     <a href="{{ route('admin.dealers.index') }}" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Reset') }}</a>
-                    <button type="submit" class="rounded-xl bg-[#04041f] px-4 py-2 text-sm font-semibold text-white hover:bg-[#12124a]">{{ __('Apply') }}</button>
+                    <button type="submit" class="rounded-xl bg-navy-deep px-4 py-2 text-sm font-semibold text-white hover:bg-navy-raised">{{ __('Apply') }}</button>
                 </div>
             </form>
 
@@ -194,7 +194,7 @@
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                             @endif
-                                            <button type="button" class="rounded-lg bg-[#04041f] px-3 py-1.5 text-[11px] font-bold text-white hover:bg-[#12124a]" @click="openDrawer">
+                                            <button type="button" class="rounded-lg bg-navy-deep px-3 py-1.5 text-sm font-bold text-white hover:bg-navy-raised" @click="openDrawer">
                                                 {{ __('Manage') }}
                                             </button>
                                         </div>
@@ -207,9 +207,9 @@
                                         <p class="text-sm font-bold text-slate-600 dark:text-slate-300">{{ __('No dealers found') }}</p>
                                         <p class="mt-1 text-xs text-slate-400">{{ __('Try adjusting the search query or switching the status filter. Dealers are promoted from user accounts.') }}</p>
                                         <div class="mt-4 flex justify-center gap-2">
-                                            <a href="{{ route('admin.dealers.index') }}" class="rounded-xl border border-slate-200 px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Reset filters') }}</a>
+                                            <a href="{{ route('admin.dealers.index') }}" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Reset filters') }}</a>
                                             @if (Route::has('admin.users.index') && auth()->user()?->can('manage-users'))
-                                                <a href="{{ route('admin.users.index') }}" class="rounded-xl bg-[#04041f] px-4 py-2 text-xs font-bold text-white hover:bg-[#12124a]">{{ __('Go to Users') }}</a>
+                                                <a href="{{ route('admin.users.index') }}" class="font-display rounded-xl bg-navy-deep px-4 py-2 text-sm font-bold text-white hover:bg-navy-raised">{{ __('Go to Users') }}</a>
                                             @endif
                                         </div>
                                     </td>
@@ -249,7 +249,7 @@
             </section>
 
             {{-- ============ quick-edit drawer ============ --}}
-            <div class="fixed inset-0 z-50 bg-[#04041f]/55" x-show="drawerOpen" x-cloak @click.self="closeDrawer" role="dialog" aria-modal="true">
+            <div class="fixed inset-0 z-50 bg-navy-deep/55" x-show="drawerOpen" x-cloak @click.self="closeDrawer" role="dialog" aria-modal="true">
                 <aside class="absolute end-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl dark:bg-slate-900">
                     <div class="dl-hero flex items-start justify-between gap-3 px-5 py-4 text-white">
                         <div class="flex min-w-0 items-center gap-3">
@@ -309,13 +309,13 @@
                     </div>
 
                     <div class="flex flex-wrap items-center gap-2 border-t border-slate-200 px-5 py-3.5 dark:border-slate-800">
-                        <a x-show="drawerHasView" :href="drawerViewUrl" class="rounded-lg border border-slate-200 px-3.5 py-2 text-xs font-extrabold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
+                        <a x-show="drawerHasView" :href="drawerViewUrl" class="rounded-lg border border-slate-200 px-3.5 py-2 text-sm font-extrabold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
                             <i class="fas fa-eye me-1"></i>{{ __('View profile') }}
                         </a>
                         <form method="POST" :action="drawerDemoteUrl" class="ms-auto" data-confirm="{{ __('Convert this dealer to regular user?') }}">
                             @csrf
                             @method('PATCH')
-                            <button type="submit" class="rounded-lg border border-rose-200 px-3.5 py-2 text-xs font-extrabold text-rose-600 hover:bg-rose-50 dark:border-rose-900/60 dark:text-rose-300 dark:hover:bg-rose-950/30">
+                            <button type="submit" class="rounded-lg border border-rose-200 px-3.5 py-2 text-sm font-extrabold text-rose-600 hover:bg-rose-50 dark:border-rose-900/60 dark:text-rose-300 dark:hover:bg-rose-950/30">
                                 {{ __('Convert To User') }}
                             </button>
                         </form>

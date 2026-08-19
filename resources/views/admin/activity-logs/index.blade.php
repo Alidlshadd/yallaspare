@@ -256,7 +256,7 @@
                                                         <div class="text-[11px] text-gray-400 dark:text-slate-500">{{ __('Previous and new values recorded for this action.') }}</div>
                                                     </div>
                                                     @if($target['url'])
-                                                        <a href="{{ $target['url'] }}" class="shrink-0 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-[11px] font-bold text-gray-600 hover:border-accent hover:text-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-accent/40 dark:hover:text-accent">{{ __('Open target') }}</a>
+                                                        <a href="{{ $target['url'] }}" class="shrink-0 rounded-lg border border-gray-200 bg-white px-3 py-1.5 text-sm font-bold text-gray-600 hover:border-accent hover:text-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-accent/40 dark:hover:text-accent">{{ __('Open target') }}</a>
                                                     @endif
                                                 </div>
 

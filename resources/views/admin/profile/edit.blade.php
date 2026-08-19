@@ -26,18 +26,18 @@
         @endif
 
         <section class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
-            <div class="bg-[#04041f] px-5 py-5 text-white sm:px-6">
+            <div class="bg-navy-deep px-5 py-5 text-white sm:px-6">
                 <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
                     <div class="flex min-w-0 items-center gap-4">
                         <div class="relative shrink-0">
                             @if ($profilePhotoUrl)
                                 <img src="{{ $profilePhotoUrl }}" alt="{{ __(':name profile photo', ['name' => $user->name]) }}" class="h-20 w-20 rounded-xl border border-white/15 object-cover">
                             @else
-                                <div class="flex h-20 w-20 items-center justify-center rounded-xl border border-white/15 bg-[#04041f] text-2xl font-black text-accent">
+                                <div class="flex h-20 w-20 items-center justify-center rounded-xl border border-white/15 bg-navy-deep text-2xl font-black text-accent">
                                     {{ $avatarInitial }}
                                 </div>
                             @endif
-                            <span class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-lg border border-[#04041f] {{ $isVerified ? 'bg-emerald-400 text-emerald-950' : 'bg-rose-400 text-rose-950' }}">
+                            <span class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-lg border border-navy-deep {{ $isVerified ? 'bg-emerald-400 text-emerald-950' : 'bg-rose-400 text-rose-950' }}">
                                 <i class="fas {{ $isVerified ? 'fa-check' : 'fa-exclamation' }} text-[10px]"></i>
                             </span>
                         </div>
@@ -177,7 +177,7 @@
                                         @if ($profilePhotoUrl)
                                             <img src="{{ $profilePhotoUrl }}" alt="{{ __('Current profile photo') }}" class="h-full w-full object-cover">
                                         @else
-                                            <span class="flex h-full w-full items-center justify-center bg-[#04041f] text-4xl font-black text-accent">{{ $avatarInitial }}</span>
+                                            <span class="flex h-full w-full items-center justify-center bg-navy-deep text-4xl font-black text-accent">{{ $avatarInitial }}</span>
                                         @endif
                                         <span class="absolute inset-x-3 bottom-3 inline-flex items-center justify-center gap-2 rounded-lg bg-slate-950/80 px-3 py-2 text-xs font-black text-white opacity-0 shadow-sm transition group-hover:opacity-100">
                                             <i class="fas fa-camera"></i>

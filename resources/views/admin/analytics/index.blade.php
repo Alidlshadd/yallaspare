@@ -158,7 +158,7 @@
 
     {{-- Funnel + chart --}}
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#04041f] via-[#070740] to-[#070740] p-6 bento-shadow-lg lg:col-span-2">
+        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-navy-deep via-navy to-navy p-6 bento-shadow-lg lg:col-span-2">
             <div class="absolute inset-0 bento-stripes-soft opacity-20 pointer-events-none"></div>
             <div class="relative flex items-start justify-between gap-4 flex-wrap">
                 <div>

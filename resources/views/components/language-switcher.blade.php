@@ -26,7 +26,7 @@
 >
     <button
         type="button"
-        class="inline-flex h-8 items-center gap-1.5 rounded-lg px-2 text-xs font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 sm:h-9 sm:gap-2 sm:rounded-xl sm:px-3 sm:text-sm {{ $triggerClasses }}"
+        class="inline-flex h-8 items-center gap-1.5 rounded-lg px-2 text-sm font-medium transition duration-200 focus-visible:outline-none focus-visible:ring-2 sm:h-9 sm:gap-2 sm:rounded-xl sm:px-3 {{ $triggerClasses }}"
         data-header-dropdown-trigger
         aria-expanded="false"
         aria-haspopup="menu"

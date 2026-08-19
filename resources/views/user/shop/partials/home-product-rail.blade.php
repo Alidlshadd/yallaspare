@@ -100,7 +100,7 @@
                                             @endif
                                             <button
                                                 type="submit"
-                                                class="js-wishlist-button inline-flex items-center justify-center rounded-full border bg-white/95 p-1.5 text-[11px] font-semibold shadow-sm transition focus:outline-none focus-visible:ring-2 dark:bg-slate-900/95 {{ $isWishlisted ? 'border-rose-200 text-rose-700 hover:bg-rose-50 focus-visible:ring-rose-300 dark:border-rose-900/60 dark:text-rose-300' : 'border-slate-200 text-slate-500 hover:border-primary/30 hover:text-primary focus-visible:ring-primary/20 dark:border-slate-700 dark:text-slate-400' }}"
+                                                class="js-wishlist-button inline-flex items-center justify-center rounded-full border bg-white/95 p-1.5 text-sm font-semibold shadow-sm transition focus:outline-none focus-visible:ring-2 dark:bg-slate-900/95 {{ $isWishlisted ? 'border-rose-200 text-rose-700 hover:bg-rose-50 focus-visible:ring-rose-300 dark:border-rose-900/60 dark:text-rose-300' : 'border-slate-200 text-slate-500 hover:border-primary/30 hover:text-primary focus-visible:ring-primary/20 dark:border-slate-700 dark:text-slate-400' }}"
                                                 aria-label="{{ $isWishlisted ? 'Remove from wishlist' : 'Add to wishlist' }}"
                                             >
                                                 <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
@@ -158,19 +158,19 @@
                                     @if ((int) data_get($product, 'stock_quantity', 0) > 0)
                                         <form method="POST" action="{{ route('cart.add', (int) data_get($product, 'id')) }}" class="js-add-cart-form h-full">
                                             @csrf
-                                            <button type="submit" class="js-add-cart-button inline-flex h-full w-full items-center justify-center rounded-xl bg-primary px-3 py-2.5 text-xs font-medium text-white transition duration-200 hover:bg-[#12124a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
+                                            <button type="submit" class="js-add-cart-button inline-flex h-full w-full items-center justify-center rounded-xl bg-primary px-3 py-2.5 text-sm font-medium text-white transition duration-200 hover:bg-navy-raised focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
                                                 {{ __('Add to Cart') }}
                                             </button>
                                         </form>
                                     @elseif ($isCustomerAuthenticated)
                                         <form method="POST" action="{{ route('shop.back-in-stock.store', (int) data_get($product, 'id')) }}" class="h-full">
                                             @csrf
-                                            <button type="submit" class="inline-flex h-full w-full items-center justify-center rounded-xl bg-primary px-3 py-2.5 text-xs font-medium text-white transition duration-200 hover:bg-[#12124a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
+                                            <button type="submit" class="inline-flex h-full w-full items-center justify-center rounded-xl bg-primary px-3 py-2.5 text-sm font-medium text-white transition duration-200 hover:bg-navy-raised focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
                                                 {{ __('Send Request') }}
                                             </button>
                                         </form>
                                     @else
-                                        <a href="{{ route('login') }}" class="inline-flex h-full w-full items-center justify-center rounded-xl bg-primary px-3 py-2.5 text-center text-xs font-medium text-white transition duration-200 hover:bg-[#12124a] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
+                                        <a href="{{ route('login') }}" class="font-display inline-flex h-full w-full items-center justify-center rounded-xl bg-primary px-3 py-2.5 text-center text-sm font-medium text-white transition duration-200 hover:bg-navy-raised focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20">
                                             {{ __('Send Request') }}
                                         </a>
                                     @endif

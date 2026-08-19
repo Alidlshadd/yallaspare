@@ -40,7 +40,7 @@
                     <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Promotion') }}</p>
                     <h1 class="mt-1 text-2xl font-semibold text-slate-900 dark:text-slate-100">{{ __('Create Coupon') }}</h1>
                 </div>
-                <a href="{{ route('admin.discounts.edit') }}" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">{{ __('Back') }}</a>
+                <a href="{{ route('admin.discounts.edit') }}" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">{{ __('Back') }}</a>
             </div>
 
             <form method="POST" action="{{ route('admin.discounts.update') }}" class="space-y-5">
@@ -76,7 +76,7 @@
                         <span class="mb-1 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{{ __('Coupon Code') }}</span>
                         <div class="flex gap-2">
                             <input type="text" name="coupon_code" id="coupon_code" value="{{ old('coupon_code', $couponCode) }}" placeholder="{{ __('SAVE10') }}" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm uppercase text-slate-700 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-cyan-500 dark:focus:ring-cyan-900/40">
-                            <button type="button" id="coupon-generate-btn" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">{{ __('Generate') }}</button>
+                            <button type="button" id="coupon-generate-btn" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">{{ __('Generate') }}</button>
                         </div>
                         @error('coupon_code')
                             <span class="mt-1 block text-xs font-medium text-rose-600 dark:text-rose-300">{{ $message }}</span>
@@ -119,7 +119,7 @@
                         <span class="mb-1 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{{ __('Ends At') }}</span>
                         <div class="flex gap-2">
                             <input type="date" name="coupon_ends_at" id="coupon_ends_at" value="{{ $couponEndsAt }}" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none transition focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:focus:border-cyan-500 dark:focus:ring-cyan-900/40">
-                            <button type="button" id="coupon-clear-dates" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">{{ __('Clear') }}</button>
+                            <button type="button" id="coupon-clear-dates" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">{{ __('Clear') }}</button>
                         </div>
                         @error('coupon_ends_at')
                             <span class="mt-1 block text-xs font-medium text-rose-600 dark:text-rose-300">{{ $message }}</span>

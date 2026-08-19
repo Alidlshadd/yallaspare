@@ -21,7 +21,7 @@
                 {{ __('We are an online auto spare parts store dedicated to providing reliable and high-quality automotive parts for different vehicle brands and models.') }}
             </p>
             <div class="sup-in relative mt-8 flex flex-wrap items-center justify-center gap-3" style="animation-delay: .36s">
-                <a href="{{ route('shop.index') }}" class="inline-flex items-center rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-lg shadow-primary/25 transition hover:-translate-y-0.5 hover:bg-[#070740] hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:bg-accent dark:text-[#070740] dark:shadow-accent/20 dark:hover:bg-accent">
+                <a href="{{ route('shop.index') }}" class="font-display inline-flex items-center rounded-xl bg-primary px-6 py-3 text-sm font-bold text-white shadow-lg shadow-primary/25 transition hover:-translate-y-0.5 hover:bg-navy hover:shadow-xl focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:bg-accent dark:text-navy dark:shadow-accent/20 dark:hover:bg-accent">
                     {{ __('Find your part') }}
                 </a>
                 <a href="{{ route('legal.vision') }}" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-bold text-primary transition hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-md dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:hover:border-slate-600">
@@ -128,7 +128,7 @@
                 <p class="relative mt-1.5 max-w-xl text-sm leading-relaxed text-slate-300">
                     {{ __('A mobile app, VIN matching, same-day delivery, and more are on the road ahead — see the full journey on Our Vision.') }}
                 </p>
-                <a href="{{ route('legal.vision') }}" class="relative mt-5 inline-flex items-center gap-1.5 rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-primary transition hover:-translate-y-0.5 hover:bg-accent hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-white dark:text-[#070740]">
+                <a href="{{ route('legal.vision') }}" class="font-display relative mt-5 inline-flex items-center gap-1.5 rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-primary transition hover:-translate-y-0.5 hover:bg-accent hover:shadow-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-white dark:text-navy">
                     {{ __('Our Vision') }} <span aria-hidden="true">&rarr;</span>
                 </a>
             </div>

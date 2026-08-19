@@ -189,7 +189,7 @@
                 </div>
                 <div class="flex shrink-0 items-center gap-2">
                     <a href="{{ route('admin.discounts.edit') }}" class="rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm font-bold text-white/80 hover:bg-white/10">{{ __('Coupon Management') }}</a>
-                    <a href="{{ route('admin.discounts.rules') }}#discount-rule-form" class="rounded-xl bg-accent px-4 py-2 text-sm font-extrabold text-[#422006] hover:bg-accent">+ {{ __('New Rule') }}</a>
+                    <a href="{{ route('admin.discounts.rules') }}#discount-rule-form" class="font-display rounded-xl bg-accent px-4 py-2 text-sm font-extrabold text-[#422006] hover:bg-accent">+ {{ __('New Rule') }}</a>
                 </div>
             </div>
         </section>
@@ -228,7 +228,7 @@
                     <i class="fas fa-tag mb-3 block text-2xl text-slate-300 dark:text-slate-600"></i>
                     <p class="text-sm font-bold text-slate-600 dark:text-slate-300">{{ __('No saved discount rules yet') }}</p>
                     <p class="mt-1 text-xs text-slate-400">{{ __('Press your first tag in the builder below — it will hang here.') }}</p>
-                    <a href="#discount-rule-form" class="mt-4 inline-flex rounded-xl bg-[#04041f] px-4 py-2 text-xs font-bold text-white hover:bg-[#12124a]">{{ __('Create Discount Rule') }}</a>
+                    <a href="#discount-rule-form" class="font-display mt-4 inline-flex rounded-xl bg-navy-deep px-4 py-2 text-sm font-bold text-white hover:bg-navy-raised">{{ __('Create Discount Rule') }}</a>
                 </div>
             @else
                 <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3" x-ref="wall">
@@ -265,24 +265,24 @@
                             @endif
 
                             <div class="mt-2.5 flex flex-wrap items-center gap-1.5">
-                                <a href="{{ $row['editUrl'] }}" class="rounded-lg bg-[#04041f] px-2.5 py-1.5 text-[10.5px] font-extrabold text-white hover:bg-[#12124a]">{{ __('Edit') }}</a>
+                                <a href="{{ $row['editUrl'] }}" class="font-display rounded-lg bg-navy-deep px-2.5 py-1.5 text-sm font-extrabold text-white hover:bg-navy-raised">{{ __('Edit') }}</a>
                                 <form action="{{ route('admin.discounts.update-rule-status', $row['id']) }}" method="POST">
                                     @csrf
                                     @method('PATCH')
                                     <input type="hidden" name="is_active" value="{{ $row['isActive'] ? 0 : 1 }}">
-                                    <button type="submit" class="rounded-lg border border-slate-200 px-2.5 py-1.5 text-[10.5px] font-extrabold text-slate-600 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800">
+                                    <button type="submit" class="rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm font-extrabold text-slate-600 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800">
                                         {{ $row['isActive'] ? __('Pause') : __('Activate') }}
                                     </button>
                                 </form>
-                                <button type="button" class="rounded-lg border border-slate-200 px-2.5 py-1.5 text-[10.5px] font-extrabold text-slate-600 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800" @click="duplicateRule">{{ __('Duplicate') }}</button>
-                                <button type="button" class="rounded-lg border border-slate-200 px-2.5 py-1.5 text-[10.5px] font-extrabold text-slate-600 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800" @click="toggle">
+                                <button type="button" class="rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm font-extrabold text-slate-600 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800" @click="duplicateRule">{{ __('Duplicate') }}</button>
+                                <button type="button" class="rounded-lg border border-slate-200 px-2.5 py-1.5 text-sm font-extrabold text-slate-600 hover:bg-slate-50 dark:border-slate-600 dark:text-slate-300 dark:hover:bg-slate-800" @click="toggle">
                                     <span x-show="closed">{{ __('Details') }}</span>
                                     <span x-show="open" x-cloak>{{ __('Hide') }}</span>
                                 </button>
                                 <form action="{{ route('admin.discounts.destroy-rule', $row['id']) }}" method="POST" data-danger-confirm data-danger-title="{{ __('Delete Discount Rule') }}" data-danger-description="{{ __('This will permanently delete the selected discount rule.') }}">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="rounded-lg px-2 py-1.5 text-[10.5px] font-extrabold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30">✕</button>
+                                    <button type="submit" class="rounded-lg px-2 py-1.5 text-sm font-extrabold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30">✕</button>
                                 </form>
                             </div>
 
@@ -380,25 +380,25 @@
                         <div class="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-4">
                             <label class="cursor-pointer rounded-xl border-[1.5px] p-3 transition" :class="scopeAllCardClass">
                                 <input type="radio" name="discount_scope" value="all" x-model="scope" class="sr-only">
-                                <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-[#04041f] text-accent"><i class="fas fa-globe text-xs"></i></span>
+                                <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-navy-deep text-accent"><i class="fas fa-globe text-xs"></i></span>
                                 <span class="block text-sm font-extrabold text-slate-900 dark:text-slate-100">{{ __('All Products') }}</span>
                                 <span class="block text-[11px] text-slate-400">{{ __('Full catalog') }}</span>
                             </label>
                             <label class="cursor-pointer rounded-xl border-[1.5px] p-3 transition" :class="scopeProductsCardClass">
                                 <input type="radio" name="discount_scope" value="products" x-model="scope" class="sr-only">
-                                <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-[#04041f] text-accent"><i class="fas fa-box text-xs"></i></span>
+                                <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-navy-deep text-accent"><i class="fas fa-box text-xs"></i></span>
                                 <span class="block text-sm font-extrabold text-slate-900 dark:text-slate-100">{{ __('Specific Products') }}</span>
                                 <span class="block text-[11px] text-slate-400">{{ __('Pick exact items') }}</span>
                             </label>
                             <label class="cursor-pointer rounded-xl border-[1.5px] p-3 transition" :class="scopeCategoriesCardClass">
                                 <input type="radio" name="discount_scope" value="categories" x-model="scope" class="sr-only">
-                                <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-[#04041f] text-accent"><i class="fas fa-layer-group text-xs"></i></span>
+                                <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-navy-deep text-accent"><i class="fas fa-layer-group text-xs"></i></span>
                                 <span class="block text-sm font-extrabold text-slate-900 dark:text-slate-100">{{ __('Specific Categories') }}</span>
                                 <span class="block text-[11px] text-slate-400">{{ __('Product families') }}</span>
                             </label>
                             <label class="cursor-pointer rounded-xl border-[1.5px] p-3 transition" :class="scopeBrandsCardClass">
                                 <input type="radio" name="discount_scope" value="brands" x-model="scope" class="sr-only">
-                                <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-[#04041f] text-accent"><i class="fas fa-tags text-xs"></i></span>
+                                <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-navy-deep text-accent"><i class="fas fa-tags text-xs"></i></span>
                                 <span class="block text-sm font-extrabold text-slate-900 dark:text-slate-100">{{ __('Specific Brands') }}</span>
                                 <span class="block text-[11px] text-slate-400">{{ __('Brand-led rules') }}</span>
                             </label>
@@ -438,7 +438,7 @@
                                     <option value="low_stock">{{ __('Low stock') }}</option>
                                     <option value="out_of_stock">{{ __('Out of stock') }}</option>
                                 </select>
-                                <button type="button" @click="resetFilters" class="rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Reset Filters') }}</button>
+                                <button type="button" @click="resetFilters" class="rounded-xl border border-slate-200 bg-white px-3 text-sm font-bold text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Reset Filters') }}</button>
                             </div>
 
                             <div class="mt-3 min-h-[10rem]">
@@ -467,8 +467,8 @@
                             <div class="mt-3 flex flex-wrap items-center justify-between gap-2">
                                 <p class="text-xs text-slate-400">{{ __('Page') }} <span x-text="meta.currentPage"></span> / <span x-text="meta.lastPage"></span></p>
                                 <div class="flex gap-2">
-                                    <button type="button" x-show="meta.hasMore" x-cloak @click="loadMoreProducts" class="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Load More Products') }}</button>
-                                    <button type="button" @click="clearSelectedProducts" :disabled="selectionEmpty" class="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Clear All') }}</button>
+                                    <button type="button" x-show="meta.hasMore" x-cloak @click="loadMoreProducts" class="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Load More Products') }}</button>
+                                    <button type="button" @click="clearSelectedProducts" :disabled="selectionEmpty" class="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-bold text-slate-600 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Clear All') }}</button>
                                 </div>
                             </div>
 
@@ -481,7 +481,7 @@
                                                 <p class="truncate text-[12.5px] font-bold text-slate-800 dark:text-slate-100" x-text="product.name"></p>
                                                 <p class="text-[10px] text-slate-400" x-text="productSku(product)"></p>
                                             </div>
-                                            <button type="button" @click="removeProduct(product)" class="shrink-0 rounded-lg px-2 py-1 text-xs font-black text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30">✕</button>
+                                            <button type="button" @click="removeProduct(product)" class="shrink-0 rounded-lg px-2 py-1 text-sm font-black text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30">✕</button>
                                         </div>
                                     </template>
                                 </div>

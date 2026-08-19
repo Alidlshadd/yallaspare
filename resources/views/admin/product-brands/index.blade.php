@@ -53,7 +53,7 @@
             <div class="grid gap-5 lg:grid-cols-[340px_minmax(0,1fr)]">
                 <aside class="h-fit rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900 lg:sticky lg:top-5">
                     <div class="mb-5 flex items-center gap-3">
-                        <span class="grid h-10 w-10 place-items-center rounded-xl bg-[#04041f] text-accent"><i class="fas fa-plus"></i></span>
+                        <span class="grid h-10 w-10 place-items-center rounded-xl bg-navy-deep text-accent"><i class="fas fa-plus"></i></span>
                         <div>
                             <h3 class="font-extrabold text-slate-900 dark:text-white">{{ __('Add Product Brand') }}</h3>
                             <p class="text-xs text-slate-500 dark:text-slate-400">{{ __('Name and logo can be changed later.') }}</p>
@@ -68,10 +68,10 @@
                         </div>
                         <div>
                             <label for="brand-logo" class="mb-1.5 block text-xs font-extrabold uppercase tracking-wider text-slate-500">{{ __('Brand Logo') }}</label>
-                            <input id="brand-logo" type="file" name="logo" accept="image/png,image/jpeg,image/webp" class="block w-full rounded-xl border border-dashed border-slate-300 bg-slate-50 p-3 text-xs text-slate-600 file:me-3 file:rounded-lg file:border-0 file:bg-[#04041f] file:px-3 file:py-2 file:font-bold file:text-accent dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                            <input id="brand-logo" type="file" name="logo" accept="image/png,image/jpeg,image/webp" class="block w-full rounded-xl border border-dashed border-slate-300 bg-slate-50 p-3 text-xs text-slate-600 file:me-3 file:rounded-lg file:border-0 file:bg-navy-deep file:px-3 file:py-2 file:font-bold file:text-accent dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
                             <p class="mt-1.5 text-xs text-slate-400">{{ __('PNG, JPG or WebP up to 2MB.') }}</p>
                         </div>
-                        <button type="submit" class="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#04041f] px-4 text-sm font-extrabold text-accent transition hover:bg-[#090946]">
+                        <button type="submit" class="inline-flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-navy-deep px-4 text-sm font-extrabold text-accent transition hover:bg-[#090946]">
                             <i class="fas fa-plus"></i> {{ __('Create Brand') }}
                         </button>
                     </form>
@@ -86,14 +86,14 @@
                                 <option value="assigned" @selected($assignment === 'assigned')>{{ __('With Products') }}</option>
                                 <option value="empty" @selected($assignment === 'empty')>{{ __('Without Products') }}</option>
                             </select>
-                            <button class="h-11 rounded-xl bg-accent px-5 text-sm font-extrabold text-[#04041f] hover:bg-accent">{{ __('Filter') }}</button>
+                            <button class="h-11 rounded-xl bg-accent px-5 text-sm font-extrabold text-navy-deep hover:bg-accent">{{ __('Filter') }}</button>
                         </div>
                     </form>
 
                     <div class="flex flex-wrap gap-2">
-                        <a href="{{ $assignmentUrl('') }}" class="rounded-full border px-3 py-1.5 text-xs font-bold {{ $assignment === '' ? 'border-[#04041f] bg-[#04041f] text-accent dark:border-accent dark:bg-accent dark:text-[#04041f]' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">{{ __('All') }}</a>
-                        <a href="{{ $assignmentUrl('assigned') }}" class="rounded-full border px-3 py-1.5 text-xs font-bold {{ $assignment === 'assigned' ? 'border-[#04041f] bg-[#04041f] text-accent dark:border-accent dark:bg-accent dark:text-[#04041f]' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">{{ __('With Products') }}</a>
-                        <a href="{{ $assignmentUrl('empty') }}" class="rounded-full border px-3 py-1.5 text-xs font-bold {{ $assignment === 'empty' ? 'border-[#04041f] bg-[#04041f] text-accent dark:border-accent dark:bg-accent dark:text-[#04041f]' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">{{ __('Without Products') }}</a>
+                        <a href="{{ $assignmentUrl('') }}" class="font-display rounded-full border px-3 py-1.5 text-sm font-bold {{ $assignment === '' ? 'border-navy-deep bg-navy-deep text-accent dark:border-accent dark:bg-accent dark:text-navy-deep' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">{{ __('All') }}</a>
+                        <a href="{{ $assignmentUrl('assigned') }}" class="font-display rounded-full border px-3 py-1.5 text-sm font-bold {{ $assignment === 'assigned' ? 'border-navy-deep bg-navy-deep text-accent dark:border-accent dark:bg-accent dark:text-navy-deep' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">{{ __('With Products') }}</a>
+                        <a href="{{ $assignmentUrl('empty') }}" class="font-display rounded-full border px-3 py-1.5 text-sm font-bold {{ $assignment === 'empty' ? 'border-navy-deep bg-navy-deep text-accent dark:border-accent dark:bg-accent dark:text-navy-deep' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">{{ __('Without Products') }}</a>
                     </div>
 
                     @if($brands->isEmpty())
@@ -110,7 +110,7 @@
                                         @if($brand->logo_path)
                                             <img src="{{ asset('storage/' . ltrim((string) $brand->logo_path, '/')) }}" alt="{{ $brand->name }}" class="max-h-20 max-w-[75%] object-contain">
                                         @else
-                                            <span class="grid h-16 w-16 place-items-center rounded-2xl bg-[#04041f] text-2xl font-black text-accent">{{ mb_strtoupper(mb_substr($brand->name, 0, 1)) }}</span>
+                                            <span class="grid h-16 w-16 place-items-center rounded-2xl bg-navy-deep text-2xl font-black text-accent">{{ mb_strtoupper(mb_substr($brand->name, 0, 1)) }}</span>
                                         @endif
                                     </div>
                                     <div class="p-4">
@@ -136,14 +136,14 @@
                                                         <input type="checkbox" name="remove_logo" value="1" class="rounded border-slate-300 text-rose-600 focus:ring-rose-500"> {{ __('Remove current logo') }}
                                                     </label>
                                                 @endif
-                                                <button class="h-9 w-full rounded-lg bg-[#04041f] text-xs font-extrabold text-accent dark:bg-accent dark:text-[#04041f]">{{ __('Save Changes') }}</button>
+                                                <button class="h-9 w-full rounded-lg bg-navy-deep text-sm font-extrabold text-accent dark:bg-accent dark:text-navy-deep">{{ __('Save Changes') }}</button>
                                             </form>
                                         </details>
 
                                         <form method="POST" action="{{ route('admin.product-brands.destroy', $brand) }}" class="mt-2" data-danger-form data-danger-title="{{ __('Delete Brand') }}" data-danger-description="{{ __('This brand will be removed permanently.') }}">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="h-9 w-full rounded-lg border border-rose-200 text-xs font-bold text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-45 dark:border-rose-500/30 dark:text-rose-300 dark:hover:bg-rose-500/10" @disabled($brand->products_count > 0) title="{{ $brand->products_count > 0 ? __('Remove product assignments before deleting this brand.') : __('Delete Brand') }}">
+                                            <button type="submit" class="h-9 w-full rounded-lg border border-rose-200 text-sm font-bold text-rose-600 transition hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-45 dark:border-rose-500/30 dark:text-rose-300 dark:hover:bg-rose-500/10" @disabled($brand->products_count > 0) title="{{ $brand->products_count > 0 ? __('Remove product assignments before deleting this brand.') : __('Delete Brand') }}">
                                                 <i class="fas fa-trash me-1"></i> {{ __('Delete Brand') }}
                                             </button>
                                         </form>

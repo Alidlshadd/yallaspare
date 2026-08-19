@@ -95,7 +95,7 @@
             {{-- ===== Dock hero: IN gate / net / OUT gate ===== --}}
             <section class="inv-hero">
                 <div class="grid items-center gap-4 px-5 py-5 sm:px-6 md:grid-cols-[1fr_auto_1fr]">
-                    <a href="{{ $gateUrl('in') }}" class="block rounded-xl border-2 px-4 py-3 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent {{ $type === 'in' ? 'border-accent bg-accent/15' : 'border-accent/60 bg-white/5' }}">
+                    <a href="{{ $gateUrl('in') }}" class="font-display block rounded-xl border-2 px-4 py-3 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent {{ $type === 'in' ? 'border-accent bg-accent/15' : 'border-accent/60 bg-white/5' }}">
                         <p class="text-[10px] font-extrabold uppercase tracking-[0.16em] text-white/55">{{ __('Stock In') }} &mdash; {{ __('Gate A') }}</p>
                         <p class="inv-mono mt-1 text-2xl font-black text-accent">+{{ number_format($totalStockIn) }} <span class="float-right">&#8594;</span></p>
                         <p class="text-[11px] text-white/60">{{ __('Units added') }} &middot; {{ $type === 'in' ? __('Filter active — click to clear') : __('Click to filter') }}</p>
@@ -254,7 +254,7 @@
                                 <textarea name="note" rows="3" class="w-full rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" placeholder="{{ __('Optional note...') }}">{{ old('note') }}</textarea>
                             </div>
 
-                            <button type="submit" class="w-full rounded-lg bg-[#04041f] px-4 py-2.5 text-sm font-bold text-accent transition hover:bg-[#12124a]">
+                            <button type="submit" class="w-full rounded-lg bg-navy-deep px-4 py-2.5 text-sm font-bold text-accent transition hover:bg-navy-raised">
                                 {{ __('Save Movement') }}
                             </button>
                         </form>
@@ -274,7 +274,7 @@
                         <form method="POST" action="{{ route('admin.inventory.import') }}" enctype="multipart/form-data" class="mt-4 space-y-3">
                             @csrf
                             <input type="file" name="import_file" accept=".csv,.txt" required
-                                   class="block w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-[#04041f] file:px-4 file:py-2 file:text-sm file:font-bold file:text-accent hover:file:bg-[#12124a] dark:text-slate-300">
+                                   class="block w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-navy-deep file:px-4 file:py-2 file:text-sm file:font-bold file:text-accent hover:file:bg-navy-raised dark:text-slate-300">
                             <button type="submit" class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-slate-800">
                                 {{ __('Upload & Import') }}
                             </button>
@@ -316,7 +316,7 @@
                             <input type="date" name="from" value="{{ $from }}" class="lg:col-span-3 rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             <input type="date" name="to" value="{{ $to }}" class="lg:col-span-3 rounded-lg border-gray-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             <div class="lg:col-span-6 flex flex-wrap gap-2">
-                                <button type="submit" class="rounded-lg bg-[#04041f] px-4 py-2 text-sm font-bold text-accent transition hover:bg-[#12124a]">{{ __('Filter') }}</button>
+                                <button type="submit" class="rounded-lg bg-navy-deep px-4 py-2 text-sm font-bold text-accent transition hover:bg-navy-raised">{{ __('Filter') }}</button>
                                 <a href="{{ route('admin.inventory.index') }}" class="rounded-lg bg-gray-100 px-4 py-2 text-sm font-semibold text-gray-700 transition hover:bg-gray-200 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">{{ __('Reset') }}</a>
                                 <a href="{{ route('admin.inventory.export', request()->query()) }}" class="ml-auto rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:border-accent hover:text-accent dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:text-accent">&#8681; {{ __('Export CSV') }}</a>
                             </div>

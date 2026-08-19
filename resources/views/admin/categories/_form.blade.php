@@ -21,7 +21,7 @@
     {{-- ═════════════ Category details ═════════════ --}}
     <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-5 sm:p-6 bento-shadow">
         <div class="flex items-center gap-2.5 mb-5">
-            <div class="h-9 w-9 rounded-xl bg-[#04041f] text-accent grid place-items-center">
+            <div class="h-9 w-9 rounded-xl bg-navy-deep text-accent grid place-items-center">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
             </div>
             <div>
@@ -72,7 +72,7 @@
     {{-- ═════════════ Image ═════════════ --}}
     <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-5 sm:p-6 bento-shadow">
         <div class="flex items-center gap-2.5 mb-5">
-            <div class="h-9 w-9 rounded-xl bg-[#04041f] text-accent grid place-items-center">
+            <div class="h-9 w-9 rounded-xl bg-navy-deep text-accent grid place-items-center">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
             </div>
             <div>
@@ -109,11 +109,11 @@
     {{-- ═════════════ Actions ═════════════ --}}
     <div class="flex items-center justify-end gap-2">
         <a href="{{ route('admin.categories.index') }}"
-           class="inline-flex items-center gap-2 h-11 px-4 rounded-xl text-xs font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700 transition">
+           class="inline-flex items-center gap-2 h-11 px-4 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700 transition">
             {{ __('Cancel') }}
         </a>
         <button type="submit"
-                class="inline-flex items-center gap-2 h-11 px-6 rounded-xl text-xs font-bold text-[#04041f] shadow-md shadow-accent/30 transition hover:brightness-105"
+                class="inline-flex items-center gap-2 h-11 px-6 rounded-xl text-sm font-bold text-navy-deep shadow-md shadow-accent/30 transition hover:brightness-105"
                 style="background: linear-gradient(180deg, #ff8a3d, #e65c00);">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
             {{ $isEdit ? __('Update Category') : __('Create Category') }}

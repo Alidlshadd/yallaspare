@@ -82,7 +82,7 @@
             <button
                 type="button"
                 @click="refreshSuggestions"
-                class="rounded px-1 py-0.5 text-xs transition duration-200 hover:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 dark:hover:text-red-400 {{ $mutedClass }}"
+                class="rounded px-1 py-0.5 text-sm transition duration-200 hover:text-red-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 dark:hover:text-red-400 {{ $mutedClass }}"
             >
                 {{ __('New suggestions') }}
             </button>
@@ -93,7 +93,7 @@
                 <button
                     type="button"
                     @click="applySuggestion(suggestion)"
-                    class="rounded-md border border-slate-300 bg-slate-100 px-2.5 py-1.5 font-mono text-[13px] tracking-wide text-slate-700 transition duration-200 hover:border-red-400 hover:bg-red-50 hover:text-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 dark:border-slate-600 dark:bg-slate-500/15 dark:text-slate-200 dark:hover:border-red-400/60 dark:hover:bg-red-500/15 dark:hover:text-red-200"
+                    class="rounded-md border border-slate-300 bg-slate-100 px-2.5 py-1.5 font-mono text-sm tracking-wide text-slate-700 transition duration-200 hover:border-red-400 hover:bg-red-50 hover:text-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-red-500 dark:border-slate-600 dark:bg-slate-500/15 dark:text-slate-200 dark:hover:border-red-400/60 dark:hover:bg-red-500/15 dark:hover:text-red-200"
                     :aria-label="suggestionLabel(suggestion)"
                     x-text="suggestion"
                 ></button>

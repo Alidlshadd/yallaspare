@@ -75,7 +75,7 @@
             {{-- ===== Chips + search/sort form ===== --}}
             <section class="flex flex-wrap items-center gap-2">
                 <a href="{{ $chipUrl(['window' => null, 'zero_hit' => null]) }}"
-                   class="inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-bold transition {{ (!$zeroHitOnly && $window === 'all') ? 'border-[#04041f] bg-[#04041f] text-accent' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">
+                   class="inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-bold transition {{ (!$zeroHitOnly && $window === 'all') ? 'border-navy-deep bg-navy-deep text-accent' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">
                     {{ __('All') }}
                     <span class="rounded-full px-2 py-px text-[10px] {{ (!$zeroHitOnly && $window === 'all') ? 'bg-accent/20' : 'bg-slate-900/5 dark:bg-white/10' }}">{{ number_format($windowCounts['all']) }}</span>
                 </a>
@@ -87,12 +87,12 @@
                     @endif
                 </a>
                 <a href="{{ $chipUrl(['window' => $window === '7' ? null : '7']) }}"
-                   class="inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-bold transition {{ $window === '7' ? 'border-[#04041f] bg-[#04041f] text-accent' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">
+                   class="inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-bold transition {{ $window === '7' ? 'border-navy-deep bg-navy-deep text-accent' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">
                     {{ __('Last 7 days') }}
                     <span class="rounded-full px-2 py-px text-[10px] {{ $window === '7' ? 'bg-accent/20' : 'bg-slate-900/5 dark:bg-white/10' }}">{{ number_format($windowCounts['7']) }}</span>
                 </a>
                 <a href="{{ $chipUrl(['window' => $window === '30' ? null : '30']) }}"
-                   class="inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-bold transition {{ $window === '30' ? 'border-[#04041f] bg-[#04041f] text-accent' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">
+                   class="inline-flex items-center gap-2 rounded-full border px-3.5 py-1.5 text-xs font-bold transition {{ $window === '30' ? 'border-navy-deep bg-navy-deep text-accent' : 'border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }}">
                     {{ __('Last 30 days') }}
                     <span class="rounded-full px-2 py-px text-[10px] {{ $window === '30' ? 'bg-accent/20' : 'bg-slate-900/5 dark:bg-white/10' }}">{{ number_format($windowCounts['30']) }}</span>
                 </a>
@@ -111,7 +111,7 @@
                         <option value="desc" @selected($direction === 'desc')>{{ __('Descending') }}</option>
                         <option value="asc" @selected($direction === 'asc')>{{ __('Ascending') }}</option>
                     </select>
-                    <button class="h-9 rounded-xl bg-[#04041f] px-4 text-sm font-semibold text-accent transition hover:bg-[#12124a]">{{ __('Filter') }}</button>
+                    <button class="h-9 rounded-xl bg-navy-deep px-4 text-sm font-semibold text-accent transition hover:bg-navy-raised">{{ __('Filter') }}</button>
                 </form>
             </section>
 
@@ -176,7 +176,7 @@
                                     <span class="si-mono shrink-0 text-sm font-extrabold text-rose-600 dark:text-rose-300">{{ number_format((int) $gap->search_count) }}</span>
                                     @if ($canManageProducts)
                                         <a href="{{ route('admin.products.create', ['name' => $gap->keyword]) }}"
-                                           class="shrink-0 rounded-lg bg-[#04041f] px-2.5 py-1.5 text-[11px] font-extrabold text-accent transition hover:bg-[#12124a]">{{ __('Add Product') }}</a>
+                                           class="shrink-0 rounded-lg bg-navy-deep px-2.5 py-1.5 text-[11px] font-extrabold text-accent transition hover:bg-navy-raised">{{ __('Add Product') }}</a>
                                     @endif
                                 </div>
                             @empty
@@ -210,7 +210,7 @@
                                 @endphp
                                 <div class="flex flex-1 flex-col items-center gap-1.5">
                                     <div class="flex h-20 w-full items-end">
-                                        <div class="w-full rounded-t-md {{ $isToday ? 'bg-gradient-to-t from-[#04041f] to-[#2a2a7a]' : 'bg-gradient-to-t from-accent to-accent' }}"
+                                        <div class="w-full rounded-t-md {{ $isToday ? 'bg-gradient-to-t from-navy-deep to-[#2a2a7a]' : 'bg-gradient-to-t from-accent to-accent' }}"
                                              style="height: {{ $pulseHeight }}%"
                                              title="{{ $pulse['date'] }} &mdash; {{ number_format($pulse['count']) }} {{ __('keywords') }}"></div>
                                     </div>

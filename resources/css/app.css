@@ -156,13 +156,13 @@
         font-family: theme('fontFamily.display');
     }
 
-    /* Links wearing a brand fill are buttons in everything but tag name, so
-       they get the same treatment. Matched on the fill rather than on <a>
-       broadly, which would have pulled ordinary text links off the reading
-       face along with them. */
-    a:is(.bg-accent, .bg-primary, .bg-navy) {
-        font-family: theme('fontFamily.display');
-    }
+    /* Links that act as buttons carry font-display in the markup instead of
+       being matched here. Selecting them by their fill class looked tidier
+       but was not safe: those same classes carry selection: and file:
+       variants, and Tailwind folds this rule into those, emitting selectors
+       like `.selection\:bg-accent *a::-moz-selection` that lightningcss then
+       rejects outright. A base-layer rule must not reach for utility class
+       names. */
 
     .user-theme body,
     body.user-theme {

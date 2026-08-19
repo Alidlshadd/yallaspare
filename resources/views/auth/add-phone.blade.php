@@ -55,7 +55,7 @@
 
     <form method="POST" action="{{ route('logout') }}" class="mt-4 text-center">
         @csrf
-        <button type="submit" class="text-xs font-medium text-slate-500 underline underline-offset-4 hover:text-slate-700 dark:hover:text-slate-300">
+        <button type="submit" class="text-sm font-medium text-slate-500 underline underline-offset-4 hover:text-slate-700 dark:hover:text-slate-300">
             {{ __('Sign out instead') }}
         </button>
     </form>

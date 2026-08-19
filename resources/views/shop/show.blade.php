@@ -278,7 +278,7 @@
                                     <form action="{{ route('cart.add', $product) }}" method="POST" id="purchase-form" class="js-add-cart-form space-y-2.5">
                                         @csrf
                                         <input type="hidden" name="quantity" id="purchase-qty-hidden" value="1">
-                                        <button type="submit" class="js-add-cart-button inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-[#12124a] hover:shadow-lg hover:shadow-primary/25 active:translate-y-0 active:scale-[0.98] disabled:cursor-wait disabled:opacity-80">
+                                        <button type="submit" class="js-add-cart-button inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-navy-raised hover:shadow-lg hover:shadow-primary/25 active:translate-y-0 active:scale-[0.98] disabled:cursor-wait disabled:opacity-80">
                                             {{ __('Add to Cart') }}
                                         </button>
                                         <button
@@ -336,7 +336,7 @@
                                 @if ($inStock)
                                     <form action="{{ route('checkout.options', $product) }}" method="GET" class="space-y-2.5">
                                         <input type="hidden" name="quantity" id="purchase-qty-hidden-guest" value="1">
-                                        <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-[#12124a] hover:shadow-lg hover:shadow-primary/25 active:translate-y-0 active:scale-[0.98]">
+                                        <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-navy-raised hover:shadow-lg hover:shadow-primary/25 active:translate-y-0 active:scale-[0.98]">
                                             {{ __('Login or Register to Order') }}
                                         </button>
                                     </form>
@@ -480,7 +480,7 @@
                         <p class="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 dark:text-slate-400">{{ __('Recently viewed') }}</p>
                         <h2 class="mt-1 text-xl font-semibold tracking-[-0.02em] text-slate-950 dark:text-white">{{ __('Your product history') }}</h2>
                     </div>
-                    <a href="{{ route('shop.index') }}" class="text-sm font-semibold text-primary transition hover:text-[#12124a] dark:text-slate-200 dark:hover:text-white">
+                    <a href="{{ route('shop.index') }}" class="text-sm font-semibold text-primary transition hover:text-navy-raised dark:text-slate-200 dark:hover:text-white">
                         {{ __('Shop') }}
                     </a>
                 </div>

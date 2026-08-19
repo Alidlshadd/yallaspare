@@ -821,7 +821,7 @@
                                                 <button
                                                     id="adminNotificationsMarkAll"
                                                     type="button"
-                                                    class="text-[11px] font-semibold text-indigo-600 hover:text-indigo-700"
+                                                    class="text-sm font-semibold text-indigo-600 hover:text-indigo-700"
                                                 >
                                                     {{ __('Mark all read') }}
                                                 </button>
@@ -866,7 +866,7 @@
                                     @if ($adminProfilePhotoUrl)
                                         <img src="{{ $adminProfilePhotoUrl }}" alt="{{ __(':name profile photo', ['name' => $adminUser->name]) }}" class="h-7 w-7 rounded-md object-cover">
                                     @else
-                                        <span class="h-7 w-7 rounded-md grid place-items-center emboss-badge text-[#04041f] text-[11px] font-black" style="font-family: 'JetBrains Mono', ui-monospace, monospace;">
+                                        <span class="h-7 w-7 rounded-md grid place-items-center emboss-badge text-navy-deep text-[11px] font-black" style="font-family: 'JetBrains Mono', ui-monospace, monospace;">
                                             {{ $adminAvatarInitial }}
                                         </span>
                                     @endif

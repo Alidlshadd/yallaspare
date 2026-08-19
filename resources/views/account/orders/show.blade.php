@@ -130,7 +130,7 @@
             <div class="flex flex-wrap items-center gap-2">
                 <form method="POST" action="{{ route('account.orders.reorder', $order) }}">
                     @csrf
-                    <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#12124a]">
+                    <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-navy-raised">
                         {{ __('Reorder') }}
                     </button>
                 </form>
@@ -299,7 +299,7 @@
                     @error('reason')
                         <p class="text-sm font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>
                     @enderror
-                    <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#12124a]">
+                    <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-navy-raised">
                         {{ __('Submit Request') }}
                     </button>
                 </form>
@@ -503,7 +503,7 @@
                                         @endif
                                     </div>
 
-                                    <button type="submit" class="inline-flex w-full items-center justify-center rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-[#12124a]">
+                                    <button type="submit" class="inline-flex w-full items-center justify-center rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-white transition hover:bg-navy-raised">
                                         <svg class="mr-2 h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                                             <path d="M17.8 2.2a.8.8 0 0 1 .2.8l-4.3 13.8a.8.8 0 0 1-1.4.2l-3-4.5-4.5-3a.8.8 0 0 1 .2-1.4L18 2a.8.8 0 0 1-.2.2ZM7 9l3.1 2.1L13.8 6 7 9Z" />
                                         </svg>

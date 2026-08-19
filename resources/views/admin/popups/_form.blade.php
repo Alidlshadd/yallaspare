@@ -63,7 +63,7 @@
             {{-- ═════════════ Content ═════════════ --}}
             <div data-animate="fade-up" class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-5 sm:p-6 bento-shadow">
                 <div class="flex items-center gap-2.5 mb-5">
-                    <div class="h-9 w-9 rounded-xl bg-[#04041f] text-accent grid place-items-center">
+                    <div class="h-9 w-9 rounded-xl bg-navy-deep text-accent grid place-items-center">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
                     </div>
                     <div>
@@ -116,7 +116,7 @@
             {{-- ═════════════ Button ═════════════ --}}
             <div data-animate="fade-up" class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-5 sm:p-6 bento-shadow">
                 <div class="flex items-center gap-2.5 mb-5">
-                    <div class="h-9 w-9 rounded-xl bg-[#04041f] text-accent grid place-items-center">
+                    <div class="h-9 w-9 rounded-xl bg-navy-deep text-accent grid place-items-center">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
                     </div>
                     <div>
@@ -158,7 +158,7 @@
             {{-- ═════════════ Image ═════════════ --}}
             <div data-animate="fade-up" class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-5 sm:p-6 bento-shadow">
                 <div class="flex items-center gap-2.5 mb-5">
-                    <div class="h-9 w-9 rounded-xl bg-[#04041f] text-accent grid place-items-center">
+                    <div class="h-9 w-9 rounded-xl bg-navy-deep text-accent grid place-items-center">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                     </div>
                     <div>
@@ -195,7 +195,7 @@
             {{-- ═════════════ Schedule & Targeting ═════════════ --}}
             <div data-animate="fade-up" class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-5 sm:p-6 bento-shadow">
                 <div class="flex items-center gap-2.5 mb-5">
-                    <div class="h-9 w-9 rounded-xl bg-[#04041f] text-accent grid place-items-center">
+                    <div class="h-9 w-9 rounded-xl bg-navy-deep text-accent grid place-items-center">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
                     </div>
                     <div>
@@ -276,11 +276,11 @@
     {{-- ═════════════ Actions ═════════════ --}}
     <div class="flex items-center justify-end gap-2">
         <a href="{{ route('admin.popups.index') }}"
-           class="inline-flex items-center gap-2 h-11 px-4 rounded-xl text-xs font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700 transition">
+           class="inline-flex items-center gap-2 h-11 px-4 rounded-xl text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700 transition">
             {{ __('Cancel') }}
         </a>
         <button type="submit"
-                class="inline-flex items-center gap-2 h-11 px-6 rounded-xl text-xs font-bold text-[#04041f] shadow-md shadow-accent/30 transition hover:brightness-105"
+                class="inline-flex items-center gap-2 h-11 px-6 rounded-xl text-sm font-bold text-navy-deep shadow-md shadow-accent/30 transition hover:brightness-105"
                 style="background: linear-gradient(180deg, #ff8a3d, #e65c00);">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
             {{ $isEdit ? __('Update Popup') : __('Create Popup') }}

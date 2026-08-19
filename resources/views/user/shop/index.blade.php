@@ -16,7 +16,7 @@
                         <a href="{{ route('login') }}" class="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-200 dark:hover:bg-slate-800 sm:rounded-2xl sm:px-4 sm:py-2.5">
                             {{ __('Login') }}
                         </a>
-                        <a href="{{ route('register') }}" class="inline-flex items-center justify-center rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-white transition hover:bg-[#12124a] sm:rounded-2xl sm:px-4 sm:py-2.5">
+                        <a href="{{ route('register') }}" class="font-display inline-flex items-center justify-center rounded-xl bg-primary px-3 py-2 text-sm font-semibold text-white transition hover:bg-navy-raised sm:rounded-2xl sm:px-4 sm:py-2.5">
                             {{ __('Create Account') }}
                         </a>
                     </div>
@@ -172,7 +172,7 @@
                     <div class="mt-1 grid grid-cols-2 gap-2 sm:col-span-2 lg:col-span-1 lg:mt-0 lg:flex">
                         <button
                             type="submit"
-                            class="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition duration-200 hover:bg-[#12124a] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
+                            class="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition duration-200 hover:bg-navy-raised focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/20"
                         >
                             {{ __('Apply filters') }}
                         </button>
@@ -216,7 +216,7 @@
                         <a
                             href="{{ $categoryUrl(null) }}"
                             @class([
-                                'inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition duration-200',
+                                'inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-semibold transition duration-200',
                                 'border-primary bg-primary text-white' => ! $activeCategory,
                                 'border-slate-200/80 bg-white text-slate-600 hover:border-primary/30 hover:text-primary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-white' => (bool) $activeCategory,
                             ])
@@ -258,20 +258,20 @@
             @if ($activeFilterCount > 0)
                 <div class="flex flex-wrap items-center gap-2 border-t border-slate-200/80 p-3 dark:border-slate-800 sm:p-3.5">
                     @if ($search !== '')
-                        <a href="{{ $clearFilterUrl(['search', 'q']) }}" class="inline-flex max-w-full items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700 transition hover:bg-blue-100 dark:border-blue-900/50 dark:bg-blue-950/30 dark:text-blue-300">
+                        <a href="{{ $clearFilterUrl(['search', 'q']) }}" class="inline-flex max-w-full items-center gap-1 rounded-full border border-blue-200 bg-blue-50 px-3 py-1 text-sm font-semibold text-blue-700 transition hover:bg-blue-100 dark:border-blue-900/50 dark:bg-blue-950/30 dark:text-blue-300">
                             <span class="truncate">{{ __('Search') }}: {{ $search }}</span>
                             <span aria-hidden="true">&times;</span>
                         </a>
                     @endif
                     @if ($activeCategoryModel)
-                        <a href="{{ $clearFilterUrl(['category']) }}" class="inline-flex max-w-full items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-xs font-semibold text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-300">
+                        <a href="{{ $clearFilterUrl(['category']) }}" class="inline-flex max-w-full items-center gap-1 rounded-full border border-emerald-200 bg-emerald-50 px-3 py-1 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-300">
                             <span class="truncate">{{ $activeCategoryModel->name }}</span>
                             <span aria-hidden="true">&times;</span>
                         </a>
                     @endif
                     @foreach ($vehicleActiveFilters as $filter)
                         @if (filled($filter['value']))
-                            <a href="{{ $clearFilterUrl([$filter['key']]) }}" class="inline-flex max-w-full items-center gap-1 rounded-full border border-app bg-surface-1 px-3 py-1 text-xs font-semibold text-app transition hover:border-accent/50 hover:text-accent-ink dark:hover:text-accent">
+                            <a href="{{ $clearFilterUrl([$filter['key']]) }}" class="inline-flex max-w-full items-center gap-1 rounded-full border border-app bg-surface-1 px-3 py-1 text-sm font-semibold text-app transition hover:border-accent/50 hover:text-accent-ink dark:hover:text-accent">
                                 <span class="truncate">{{ $filter['label'] }}: {{ $filter['value'] }}</span>
                                 <span aria-hidden="true">&times;</span>
                             </a>

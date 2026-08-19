@@ -119,7 +119,7 @@
                         <p class="px-2 text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">{{ __('Workspace') }}</p>
                         <nav class="mt-1 space-y-0.5">
                             <a href="#overview"
-                               class="flex items-center gap-2.5 rounded-lg bg-primary/10 px-2.5 py-2 text-sm font-bold text-primary dark:bg-primary/20 dark:text-indigo-200">
+                               class="font-display flex items-center gap-2.5 rounded-lg bg-primary/10 px-2.5 py-2 text-sm font-bold text-primary dark:bg-primary/20 dark:text-indigo-200">
                                 <i class="fas fa-house w-4 text-primary text-xs dark:text-indigo-200"></i> {{ __('Overview') }}
                                 <span class="ml-auto font-mono text-[10px] text-primary/70 dark:text-indigo-300">{{ number_format($totalSent7d) }}</span>
                             </a>
@@ -356,7 +356,7 @@
                                         <i class="fas fa-xmark"></i> {{ __('Clear') }}
                                     </a>
                                 @endif
-                                <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg bg-primary px-3 py-1 text-[11px] font-bold text-white hover:bg-primary-hover">
+                                <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg bg-primary px-3 py-1 text-sm font-bold text-white hover:bg-primary-hover">
                                     {{ __('Search') }}
                                 </button>
                             </div>
@@ -413,13 +413,13 @@
                                     @if($activeStatus !== '' || $searchTerm !== '')
                                         <p class="mt-3 text-sm font-semibold text-primary dark:text-slate-100">{{ __('No broadcasts match this filter') }}</p>
                                         <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Try a different status or clear the search.') }}</p>
-                                        <a href="{{ route('admin.email.index') }}#broadcasts" class="mt-4 inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+                                        <a href="{{ route('admin.email.index') }}#broadcasts" class="mt-4 inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
                                             <i class="fas fa-rotate-left text-[10px]"></i> {{ __('Reset filters') }}
                                         </a>
                                     @else
                                         <p class="mt-3 text-sm font-semibold text-primary dark:text-slate-100">{{ __('No broadcasts yet') }}</p>
                                         <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ __('Use Create Broadcast to send your first one.') }}</p>
-                                        <a href="{{ route('admin.email.broadcasts.create') }}" class="mt-4 inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 py-2 text-xs font-bold text-white hover:bg-primary-hover">
+                                        <a href="{{ route('admin.email.broadcasts.create') }}" class="font-display mt-4 inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 py-2 text-sm font-bold text-white hover:bg-primary-hover">
                                             <i class="fas fa-plus text-[10px]"></i> {{ __('Create Broadcast') }}
                                         </a>
                                     @endif
@@ -442,7 +442,7 @@
                                     <p class="font-mono text-[10px] uppercase tracking-widest text-slate-400 mt-1">{{ __('mail log') }} · {{ __(':n records', ['n' => $recentLogs->count()]) }}</p>
                                 </div>
                             </div>
-                            <a href="{{ route('admin.email.outbox') }}" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
+                            <a href="{{ route('admin.email.outbox') }}" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
                                 <i class="fas fa-arrow-up-right-from-square text-[10px]"></i> {{ __('View all') }}
                             </a>
                         </div>
@@ -503,7 +503,7 @@
                                 </div>
                             </div>
                             <a href="{{ route('admin.email.broadcasts.create') }}"
-                               class="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-[10px] font-bold text-slate-600 hover:bg-primary hover:text-white hover:border-primary transition dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+                               class="font-display inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-sm font-bold text-slate-600 hover:bg-primary hover:text-white hover:border-primary transition dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
                                 <i class="fas fa-expand text-[9px]"></i> {{ __('Full editor') }}
                             </a>
                         </div>
@@ -514,7 +514,7 @@
                                 <label class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5 dark:text-slate-400">{{ __('Recipients') }}</label>
                                 <div class="grid grid-cols-2 gap-2" id="ic-audience-tiles">
                                     <button type="button" data-audience="all"
-                                            class="ic-tile rounded-xl border-2 border-primary bg-primary/5 text-primary px-3 py-3 text-xs font-bold text-left transition dark:bg-primary/10">
+                                            class="ic-tile rounded-xl border-2 border-primary bg-primary/5 text-primary px-3 py-3 text-sm font-bold text-left transition dark:bg-primary/10">
                                         <div class="flex items-center gap-2">
                                             <i class="fas fa-users text-base"></i>
                                             <span>{{ __('All users') }}</span>
@@ -522,7 +522,7 @@
                                         <p class="font-mono text-[9px] text-slate-400 mt-1 truncate">{{ number_format($audienceCounts['total']) }} {{ __('verified') }}</p>
                                     </button>
                                     <button type="button" data-audience="user"
-                                            class="ic-tile rounded-xl border border-slate-200 px-3 py-3 text-xs font-bold text-slate-600 text-left hover:bg-slate-50 transition dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
+                                            class="ic-tile rounded-xl border border-slate-200 px-3 py-3 text-sm font-bold text-slate-600 text-left hover:bg-slate-50 transition dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">
                                         <div class="flex items-center gap-2">
                                             <i class="fas fa-user text-base"></i>
                                             <span>{{ __('Specific person') }}</span>
@@ -547,9 +547,9 @@
                                 <label class="block text-[10px] font-bold uppercase tracking-[0.14em] text-slate-500 mb-1.5 dark:text-slate-400">{{ __('Purpose') }}</label>
                                 <div class="inline-flex rounded-xl border border-slate-200 bg-slate-50 p-1 dark:border-slate-700 dark:bg-slate-950" id="ic-purpose-toggle">
                                     <button type="button" data-purpose="promotional"
-                                            class="ic-purpose-btn rounded-lg bg-primary text-white px-3 py-1.5 text-xs font-bold transition">{{ __('Promotional') }}</button>
+                                            class="ic-purpose-btn rounded-lg bg-primary text-white px-3 py-1.5 text-sm font-bold transition">{{ __('Promotional') }}</button>
                                     <button type="button" data-purpose="operational"
-                                            class="ic-purpose-btn rounded-lg text-slate-600 px-3 py-1.5 text-xs font-bold transition dark:text-slate-300">{{ __('Operational') }}</button>
+                                            class="ic-purpose-btn rounded-lg text-slate-600 px-3 py-1.5 text-sm font-bold transition dark:text-slate-300">{{ __('Operational') }}</button>
                                 </div>
                                 <input type="hidden" name="purpose" id="ic-purpose" value="{{ old('purpose', 'promotional') }}">
                                 <p class="mt-1.5 text-[10px] font-mono text-slate-400">{{ __('Promotional broadcasts only go to users who opted into marketing.') }}</p>

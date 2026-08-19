@@ -156,7 +156,7 @@
                         @endforeach
                     </select>
                     <a href="{{ route('admin.stock-requests.index') }}" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Reset') }}</a>
-                    <button class="rounded-xl bg-[#04041f] px-4 py-2 text-sm font-semibold text-white hover:bg-[#12124a]">{{ __('Filter') }}</button>
+                    <button class="rounded-xl bg-navy-deep px-4 py-2 text-sm font-semibold text-white hover:bg-navy-raised">{{ __('Filter') }}</button>
                 </div>
             </form>
 
@@ -243,7 +243,7 @@
                                                     <form method="POST" action="{{ route('admin.stock-requests.notify', $product) }}">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <button class="rounded-lg bg-[#04041f] px-2.5 py-1.5 text-[11px] font-bold text-white hover:bg-[#12124a]">{{ __('Send Notifications') }}</button>
+                                                        <button class="rounded-lg bg-navy-deep px-2.5 py-1.5 text-sm font-bold text-white hover:bg-navy-raised">{{ __('Send Notifications') }}</button>
                                                     </form>
                                                 @elseif($pending > 0)
                                                     <span class="rounded-lg bg-amber-50 px-2.5 py-1.5 text-[11px] font-bold text-amber-700 dark:bg-amber-950/40 dark:text-amber-300">{{ __('Awaiting stock') }}</span>
@@ -260,8 +260,8 @@
                                             <p class="text-sm font-bold text-slate-600 dark:text-slate-300">{{ __('No stock requests matched the filters.') }}</p>
                                             <p class="mt-1 text-xs text-slate-400">{{ __('Requests will appear here when customers ask for unavailable products.') }}</p>
                                             <div class="mt-4 flex justify-center gap-2">
-                                                <a href="{{ route('admin.products.index') }}" class="rounded-xl border border-slate-200 px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Go to Products') }}</a>
-                                                <a href="{{ route('admin.purchase-planning.index') }}" class="rounded-xl bg-[#04041f] px-4 py-2 text-xs font-bold text-white hover:bg-[#12124a]">{{ __('Purchase Planning') }}</a>
+                                                <a href="{{ route('admin.products.index') }}" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800">{{ __('Go to Products') }}</a>
+                                                <a href="{{ route('admin.purchase-planning.index') }}" class="font-display rounded-xl bg-navy-deep px-4 py-2 text-sm font-bold text-white hover:bg-navy-raised">{{ __('Purchase Planning') }}</a>
                                             </div>
                                         </td>
                                     </tr>
@@ -310,7 +310,7 @@
             @endunless
 
             {{-- ============ waiting customers drawer ============ --}}
-            <div class="fixed inset-0 z-50 bg-[#04041f]/55" x-show="drawerOpen" x-cloak @click.self="closeDrawer" role="dialog" aria-modal="true">
+            <div class="fixed inset-0 z-50 bg-navy-deep/55" x-show="drawerOpen" x-cloak @click.self="closeDrawer" role="dialog" aria-modal="true">
                 <aside class="absolute end-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl dark:bg-slate-900">
                     <div class="sr-hero flex items-start justify-between gap-3 px-5 py-4 text-white">
                         <div class="min-w-0">
@@ -343,13 +343,13 @@
                         <form method="POST" :action="drawerNotifyUrl" x-show="drawerCanNotify">
                             @csrf
                             @method('PATCH')
-                            <button class="rounded-lg bg-[#04041f] px-3.5 py-2 text-xs font-extrabold text-white hover:bg-[#12124a]">{{ __('Send Notifications') }}</button>
+                            <button class="rounded-lg bg-navy-deep px-3.5 py-2 text-sm font-extrabold text-white hover:bg-navy-raised">{{ __('Send Notifications') }}</button>
                         </form>
                         <span class="rounded-lg bg-amber-50 px-3.5 py-2 text-xs font-extrabold text-amber-700 dark:bg-amber-950/40 dark:text-amber-300" x-show="drawerHasPending && !drawerCanNotify">{{ __('Awaiting stock') }}</span>
-                        <button type="button" class="rounded-lg bg-accent px-3.5 py-2 text-xs font-extrabold text-[#422006] hover:bg-accent" @click="addFromDrawer">
+                        <button type="button" class="rounded-lg bg-accent px-3.5 py-2 text-sm font-extrabold text-[#422006] hover:bg-accent" @click="addFromDrawer">
                             <i class="fas fa-cart-plus me-1"></i>{{ __('Add to Purchase List') }}
                         </button>
-                        <button type="button" class="ms-auto rounded-lg border border-slate-200 px-3.5 py-2 text-xs font-extrabold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="closeDrawer">{{ __('Close') }}</button>
+                        <button type="button" class="ms-auto rounded-lg border border-slate-200 px-3.5 py-2 text-sm font-extrabold text-slate-600 hover:bg-slate-50 dark:border-slate-700 dark:text-slate-300 dark:hover:bg-slate-800" @click="closeDrawer">{{ __('Close') }}</button>
                     </div>
                 </aside>
             </div>

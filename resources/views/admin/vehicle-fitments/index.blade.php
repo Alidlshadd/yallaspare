@@ -305,7 +305,7 @@
                 </div>
 
                 <button type="button" data-vf-open-fitment
-                        class="relative inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-xs font-bold text-[#04041f] transition hover:brightness-105 mt-auto"
+                        class="relative inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl text-sm font-bold text-navy-deep transition hover:brightness-105 mt-auto"
                         style="background: linear-gradient(180deg, #ff8a3d, #e65c00);">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                     {{ __('Add Fitment') }}
@@ -316,7 +316,7 @@
             <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-5 bento-shadow flex flex-col justify-between gap-4">
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="flex items-center gap-3">
-                        <span class="w-10 h-10 rounded-xl grid place-items-center bg-[#04041f] text-accent shrink-0">
+                        <span class="w-10 h-10 rounded-xl grid place-items-center bg-navy-deep text-accent shrink-0">
                             <i class="fas fa-car-side text-sm"></i>
                         </span>
                         <div>
@@ -395,7 +395,7 @@
                 <div class="max-h-[760px] space-y-4 overflow-y-auto pe-1">
                     @forelse($brands as $brand)
                         <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-950/40">
-                            <div class="flex items-center justify-between gap-3 bg-[#04041f] px-4 py-3 text-white dark:bg-slate-950">
+                            <div class="flex items-center justify-between gap-3 bg-navy-deep px-4 py-3 text-white dark:bg-slate-950">
                                 <span class="flex items-center gap-2.5 text-sm font-black tracking-wide"><i class="fas fa-car-side text-accent"></i>{{ $brand->name }}</span>
                                 <span class="font-mono text-[10px] text-slate-300">{{ $brand->modelFamilies->count() }} {{ __('families') }}</span>
                             </div>
@@ -472,7 +472,7 @@
              class="bg-white dark:bg-slate-900 border border-accent/60 dark:border-accent/30 rounded-2xl bento-shadow overflow-hidden">
             <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-slate-100 dark:border-slate-800 bg-gradient-to-b from-accent/60 to-white dark:from-accent/5 dark:to-slate-900">
                 <div class="flex items-center gap-3">
-                    <span class="w-9 h-9 rounded-xl bg-[#04041f] text-accent grid place-items-center dark:bg-accent dark:text-[#04041f]">
+                    <span class="w-9 h-9 rounded-xl bg-navy-deep text-accent grid place-items-center dark:bg-accent dark:text-navy-deep">
                         <i class="fas fa-link text-xs"></i>
                     </span>
                     <div>

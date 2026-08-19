@@ -375,7 +375,7 @@
                 <a href="{{ request()->fullUrlWithQuery(['attention' => $value === '' ? null : $value, 'page' => null]) }}"
                    class="inline-flex items-center gap-2 px-3.5 py-2 rounded-full text-[11.5px] font-bold transition border
                           {{ $isActive
-                              ? 'bg-[#04041f] text-accent border-[#04041f] dark:bg-accent dark:text-[#04041f] dark:border-accent'
+                              ? 'bg-navy-deep text-accent border-navy-deep dark:bg-accent dark:text-navy-deep dark:border-accent'
                               : 'bg-white text-slate-600 border-slate-200 hover:border-amber-300 hover:bg-amber-50 hover:text-slate-900 dark:bg-slate-900 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-800' }}">
                     @if($isActive)
                         <span class="relative inline-flex h-1.5 w-1.5">
@@ -468,7 +468,7 @@
                     </a>
                 @endif
                 <button type="submit"
-                        class="inline-flex items-center gap-2 h-10 px-5 rounded-xl text-xs font-bold text-[#04041f] border border-accent/20 transition shadow-md shadow-accent/30 hover:brightness-105"
+                        class="inline-flex items-center gap-2 h-10 px-5 rounded-xl text-sm font-bold text-navy-deep border border-accent/20 transition shadow-md shadow-accent/30 hover:brightness-105"
                         style="background: linear-gradient(180deg, #ff8a3d, #e65c00);">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
                     {{ __('Apply Filters') }}
@@ -485,7 +485,7 @@
             {{-- List header --}}
             <div class="flex items-center justify-between gap-3 px-5 py-4 border-b border-slate-200/70 dark:border-slate-800">
                 <div class="flex items-center gap-3">
-                    <div class="h-9 w-9 rounded-xl bg-[#04041f] text-accent grid place-items-center">
+                    <div class="h-9 w-9 rounded-xl bg-navy-deep text-accent grid place-items-center">
                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
                         </svg>
@@ -506,7 +506,7 @@
             {{-- Bulk action bar --}}
             <div x-show="selected.length > 0" x-cloak x-transition.opacity
                  class="flex flex-wrap items-center gap-3 px-5 py-3 border-b border-amber-200/70 bg-amber-50/80 dark:border-amber-500/30 dark:bg-amber-500/10">
-                <span class="inline-flex items-center px-3 h-8 rounded-full bg-[#04041f] text-accent text-xs font-bold border border-[#04041f] dark:bg-accent dark:text-[#04041f] dark:border-accent">
+                <span class="inline-flex items-center px-3 h-8 rounded-full bg-navy-deep text-accent text-xs font-bold border border-navy-deep dark:bg-accent dark:text-navy-deep dark:border-accent">
                     <span x-text="selected.length"></span>&nbsp;{{ __('selected') }}
                 </span>
                 <form method="POST" action="{{ route('admin.orders.bulk-status') }}"
@@ -529,12 +529,12 @@
                         </select>
                     </div>
                     <button type="submit"
-                            class="inline-flex items-center gap-2 h-10 px-4 rounded-lg text-xs font-bold text-[#04041f] border border-accent/20 shadow-md shadow-accent/30"
+                            class="inline-flex items-center gap-2 h-10 px-4 rounded-lg text-sm font-bold text-navy-deep border border-accent/20 shadow-md shadow-accent/30"
                             style="background: linear-gradient(180deg, #ff8a3d, #e65c00);">
                         {{ __('Apply') }}
                     </button>
                     <button type="button" @click="clearSelection()"
-                            class="inline-flex items-center gap-2 h-10 px-4 rounded-lg text-xs font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700">
+                            class="inline-flex items-center gap-2 h-10 px-4 rounded-lg text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 dark:bg-slate-800 dark:text-slate-300 dark:border-slate-700 dark:hover:bg-slate-700">
                         {{ __('Clear') }}
                     </button>
                 </form>
@@ -757,7 +757,7 @@
                                         <div class="text-[13px] text-slate-500 dark:text-slate-400 mt-1.5">{{ __('Try adjusting your filters or clearing them to see all orders.') }}</div>
                                         @if($hasActiveFilters)
                                             <a href="{{ route('admin.orders.index', $currentAttention !== '' ? ['attention' => $currentAttention] : []) }}"
-                                               class="inline-flex items-center gap-2 h-10 px-4 mt-4 rounded-xl text-xs font-bold text-accent bg-[#04041f] hover:bg-[#070740] transition">
+                                               class="inline-flex items-center gap-2 h-10 px-4 mt-4 rounded-xl text-xs font-bold text-accent bg-navy-deep hover:bg-navy transition">
                                                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
                                                 {{ __('Clear') }}
                                             </a>

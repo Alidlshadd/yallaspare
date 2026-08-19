@@ -217,7 +217,7 @@
                                     <a href="{{ route('login') }}" class="inline-flex h-9 items-center rounded-xl border border-white/10 bg-white/10 px-3 text-sm font-medium text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25">
                                         {{ __('Login') }}
                                     </a>
-                                    <a href="{{ route('register') }}" class="inline-flex h-9 items-center rounded-xl bg-accent px-3 text-sm font-semibold text-navy transition duration-200 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60">
+                                    <a href="{{ route('register') }}" class="font-display inline-flex h-9 items-center rounded-xl bg-accent px-3 text-sm font-semibold text-navy transition duration-200 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60">
                                         {{ __('Register') }}
                                     </a>
                                 </div>
@@ -253,7 +253,7 @@
                             <div class="relative" data-header-account>
                                 <button
                                     type="button"
-                                    class="inline-flex h-8 items-center gap-1.5 rounded-lg border border-white/10 bg-white/10 px-2 text-xs font-medium text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25 sm:h-9 sm:rounded-xl sm:px-3 sm:text-sm"
+                                    class="inline-flex h-8 items-center gap-1.5 rounded-lg border border-white/10 bg-white/10 px-2 text-sm font-medium text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/25 sm:h-9 sm:rounded-xl sm:px-3"
                                     data-header-account-trigger
                                     aria-expanded="false"
                                     aria-haspopup="menu"
@@ -338,7 +338,7 @@
                                 />
                                 <button
                                     type="submit"
-                                    class="absolute {{ $isRtl ? 'left-1' : 'right-1' }} top-1 inline-flex h-7 items-center justify-center rounded-full bg-accent px-3 text-xs font-semibold text-navy transition duration-200 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:h-8 sm:px-4 sm:text-sm"
+                                    class="absolute {{ $isRtl ? 'left-1' : 'right-1' }} top-1 inline-flex h-7 items-center justify-center rounded-full bg-accent px-3 text-sm font-semibold text-navy transition duration-200 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:h-8 sm:px-4"
                                 >
                                     {{ __('Search') }}
                                 </button>
@@ -376,7 +376,7 @@
                             @else
                                 <a
                                     href="{{ route('register') }}"
-                                    class="inline-flex h-9 items-center rounded-lg bg-accent px-3 text-xs font-semibold text-navy transition duration-200 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:h-10 sm:rounded-xl sm:text-sm"
+                                    class="font-display inline-flex h-9 items-center rounded-lg bg-accent px-3 text-sm font-semibold text-navy transition duration-200 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:h-10 sm:rounded-xl"
                                 >
                                     {{ __('Register') }}
                                 </a>
@@ -556,7 +556,7 @@
                                     <p class="text-xs font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
                                         {{ __('Browse Categories') }}
                                     </p>
-                                    <a href="{{ route('categories.index') }}" class="text-sm font-semibold text-primary transition hover:text-[#12124a] dark:text-slate-200 dark:hover:text-white">
+                                    <a href="{{ route('categories.index') }}" class="text-sm font-semibold text-primary transition hover:text-navy-raised dark:text-slate-200 dark:hover:text-white">
                                         {{ __('View all') }}
                                     </a>
                                 </div>

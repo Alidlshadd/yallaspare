@@ -28,7 +28,7 @@
                     <p class="text-sm text-white/65 mt-1.5">{{ __('Promotional and informational popups shown on the storefront.') }}</p>
                 </div>
                 <a href="{{ route('admin.popups.create') }}"
-                   class="inline-flex items-center gap-2 h-10 px-5 rounded-xl text-xs font-bold text-[#04041f] shadow-md shadow-accent/30 transition hover:brightness-105"
+                   class="inline-flex items-center gap-2 h-10 px-5 rounded-xl text-xs font-bold text-navy-deep shadow-md shadow-accent/30 transition hover:brightness-105"
                    style="background: linear-gradient(180deg, #ff8a3d, #e65c00);">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
                     {{ __('New Popup') }}
@@ -44,7 +44,7 @@
 
         @if($popups->isEmpty())
             <div class="bg-white dark:bg-slate-900 border border-slate-200/70 dark:border-slate-800 rounded-2xl p-10 text-center bento-shadow">
-                <div class="mx-auto h-12 w-12 rounded-2xl bg-[#04041f] text-accent grid place-items-center mb-4">
+                <div class="mx-auto h-12 w-12 rounded-2xl bg-navy-deep text-accent grid place-items-center mb-4">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5.882V19.24a1.76 1.76 0 01-3.417.592l-2.147-6.15M18 13a3 3 0 100-6M5.436 13.683A4.001 4.001 0 017 6h1.832c4.1 0 7.625-1.234 9.168-3v14c-1.543-1.766-5.067-3-9.168-3H7a3.988 3.988 0 01-1.564-.317z"/></svg>
                 </div>
                 <h3 class="text-sm font-extrabold text-slate-900 dark:text-white">{{ __('No popups yet') }}</h3>

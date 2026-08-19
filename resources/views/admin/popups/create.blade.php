@@ -23,7 +23,7 @@
                     <p class="text-sm text-white/65 mt-1.5">{{ __('Publish a promotional or informational popup on the storefront.') }}</p>
                 </div>
                 <a href="{{ route('admin.popups.index') }}"
-                   class="inline-flex items-center gap-2 h-10 px-4 rounded-xl text-xs font-bold text-white bg-white/10 border border-white/15 hover:bg-white/15 backdrop-blur-sm transition">
+                   class="inline-flex items-center gap-2 h-10 px-4 rounded-xl text-sm font-bold text-white bg-white/10 border border-white/15 hover:bg-white/15 backdrop-blur-sm transition">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
                     {{ __('Back to popups') }}
                 </a>
