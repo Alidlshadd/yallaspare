@@ -59,4 +59,16 @@ class GovernorateSeeder extends Seeder
     {
         return count(self::GOVERNORATES);
     }
+
+    /**
+     * The codes this seeder owns. A row with one of these is part of the
+     * standard list: the seeder keeps its name in step, and the panel does not
+     * offer to rename or remove it, because the next deploy would put it back.
+     *
+     * @return array<int, string>
+     */
+    public static function codes(): array
+    {
+        return array_column(self::GOVERNORATES, 'code');
+    }
 }

@@ -3224,5 +3224,19 @@
     "rows changed": "صفوف معدّلة",
     "Shipping settings saved.": "تم حفظ إعدادات الشحن.",
     "Delivery time (days)": "مدة التوصيل (أيام)",
-    "Shipping fee (IQD)": "رسوم الشحن (د.ع)"
+    "Shipping fee (IQD)": "رسوم الشحن (د.ع)",
+    "free": "مجاني",
+    "average": "المتوسط",
+    "highest": "الأعلى",
+    "Add a governorate": "إضافة محافظة",
+    "For a destination that is not on the standard list.": "لوجهة غير موجودة في القائمة القياسية.",
+    "New governorate": "محافظة جديدة",
+    "Apply to selected": "تطبيق على المحدد",
+    "Apply to all": "تطبيق على الكل",
+    "Make free": "اجعلها مجانية",
+    "Revert": "تراجع",
+    "Select": "تحديد",
+    "The governorate is removed from the shipping table.": "تُحذف المحافظة من جدول الشحن.",
+    "Governorate added.": "تمت إضافة المحافظة.",
+    "Governorate removed.": "تم حذف المحافظة."
 }

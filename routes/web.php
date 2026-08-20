@@ -589,6 +589,12 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::put('/shipping/governorates', [GovernorateShippingController::class, 'update'])
             ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
             ->name('shipping.governorates.update');
+        Route::post('/shipping/governorates', [GovernorateShippingController::class, 'store'])
+            ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
+            ->name('shipping.governorates.store');
+        Route::delete('/shipping/governorates/{governorate}', [GovernorateShippingController::class, 'destroy'])
+            ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
+            ->name('shipping.governorates.destroy');
         Route::get('/email', [EmailController::class, 'index'])
             ->middleware('can:'.User::PERMISSION_SETTINGS_MANAGE)
             ->name('email.index');

@@ -308,10 +308,17 @@ Alpine.data('settingsConsole', () => ({
     },
 }));
 
-// Shipping by governorate: nineteen rows saved in one go, so the submit button
-// stays out of the way until something actually differs from what was loaded.
+// Shipping by governorate. The table is saved in one go, so the submit button
+// stays out of the way until something differs from what was loaded, and the
+// bulk controls write into the inputs rather than to the server — nothing
+// reaches the database until Save.
 Alpine.data('governorateShipping', () => ({
     dirty: {},
+    selected: {},
+    search: '',
+    adding: false,
+    bulkDays: '',
+    bulkFee: '',
 
     // Typing a value back to what it started as is not a change, so the key is
     // dropped rather than left flagged.
@@ -330,6 +337,83 @@ Alpine.data('governorateShipping', () => ({
     // Both inputs on a row count as one changed row.
     get changedRows() {
         return new Set(Object.keys(this.dirty).map((key) => key.split('-')[0])).size;
+    },
+
+    matches(haystack) {
+        const needle = this.search.trim().toLocaleLowerCase();
+        return needle === '' || haystack.toLocaleLowerCase().includes(needle);
+    },
+
+    rowElements() {
+        return Array.from(this.$el.querySelectorAll('[data-governorate-row]'));
+    },
+
+    visibleRows() {
+        return this.rowElements().filter((row) => this.matches(row.dataset.governorateSearch));
+    },
+
+    // Ticking rows narrows the target; otherwise whatever the search has left
+    // on screen is the target, which is what makes "find, then set" work.
+    targetRows() {
+        const ticked = this.visibleRows().filter((row) => this.selected[row.dataset.governorateRow]);
+        return ticked.length > 0 ? ticked : this.visibleRows();
+    },
+
+    get selectedCount() {
+        return this.visibleRows().filter((row) => this.selected[row.dataset.governorateRow]).length;
+    },
+
+    get targetCount() {
+        return this.targetRows().length;
+    },
+
+    get allVisibleSelected() {
+        const visible = this.visibleRows();
+        return visible.length > 0 && visible.every((row) => this.selected[row.dataset.governorateRow]);
+    },
+
+    toggleAll() {
+        const select = ! this.allVisibleSelected;
+        this.visibleRows().forEach((row) => {
+            this.selected[row.dataset.governorateRow] = select;
+        });
+    },
+
+    write(input, value) {
+        input.value = value;
+        input.dispatchEvent(new Event('input', { bubbles: true }));
+    },
+
+    applyToTarget(days, fee) {
+        this.targetRows().forEach((row) => {
+            if (days !== null && days !== '') {
+                this.write(row.querySelector('[data-days-input]'), days);
+            }
+            if (fee !== null && fee !== '') {
+                this.write(row.querySelector('[data-fee-input]'), fee);
+            }
+        });
+    },
+
+    applyBulk() {
+        this.applyToTarget(this.bulkDays, this.bulkFee);
+        this.bulkDays = '';
+        this.bulkFee = '';
+    },
+
+    makeFree() {
+        this.applyToTarget(null, 0);
+    },
+
+    // The safety net for a bulk apply that went to the wrong rows.
+    revert() {
+        this.rowElements().forEach((row) => {
+            const days = row.querySelector('[data-days-input]');
+            const fee = row.querySelector('[data-fee-input]');
+            this.write(days, days.dataset.original);
+            this.write(fee, fee.dataset.original);
+        });
+        this.dirty = {};
     },
 }));
 

@@ -182,4 +182,96 @@ class GovernorateShippingTest extends TestCase
             ->put(route('admin.shipping.governorates.update'), ['rows' => $rows])
             ->assertSessionHasErrors('rows');
     }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function newGovernorate(array $overrides = []): array
+    {
+        return array_merge([
+            'name_en' => 'Zakho',
+            'name_ar' => 'زاخو',
+            'name_ku' => 'زاخۆ',
+            'delivery_days' => 4,
+            'shipping_fee' => 6000,
+        ], $overrides);
+    }
+
+    public function test_a_governorate_can_be_added_in_all_three_languages(): void
+    {
+        $this->actingAs($this->makeAdmin())
+            ->post(route('admin.shipping.governorates.store'), $this->newGovernorate())
+            ->assertRedirect()
+            ->assertSessionHasNoErrors()
+            ->assertSessionHas('success');
+
+        $added = Governorate::query()->where('name_en', 'Zakho')->firstOrFail();
+
+        $this->assertSame('zakho', $added->code, 'The code is derived from the English name.');
+        $this->assertSame('زاخو', $added->name_ar);
+        $this->assertSame('زاخۆ', $added->name_ku);
+        $this->assertSame(6000, $added->shipping_fee);
+        $this->assertSame(20, $added->sort_order, 'A new governorate goes to the end of the list.');
+    }
+
+    public function test_every_language_is_required_when_adding(): void
+    {
+        $this->actingAs($this->makeAdmin())
+            ->post(route('admin.shipping.governorates.store'), $this->newGovernorate(['name_ku' => '']))
+            ->assertSessionHasErrors('name_ku');
+
+        $this->assertSame(19, Governorate::query()->count());
+    }
+
+    public function test_a_second_governorate_with_the_same_name_is_rejected(): void
+    {
+        $this->actingAs($this->makeAdmin())
+            ->post(route('admin.shipping.governorates.store'), $this->newGovernorate(['name_en' => 'Erbil']))
+            ->assertSessionHasErrors('name_en');
+
+        $this->assertSame(19, Governorate::query()->count());
+    }
+
+    public function test_an_added_governorate_can_be_removed(): void
+    {
+        $admin = $this->makeAdmin();
+
+        $this->actingAs($admin)->post(route('admin.shipping.governorates.store'), $this->newGovernorate());
+        $added = Governorate::query()->where('name_en', 'Zakho')->firstOrFail();
+
+        $this->actingAs($admin)
+            ->delete(route('admin.shipping.governorates.destroy', $added))
+            ->assertRedirect()
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseMissing('governorates', ['id' => $added->id]);
+    }
+
+    public function test_a_standard_governorate_cannot_be_removed(): void
+    {
+        $erbil = Governorate::query()->where('code', 'erbil')->firstOrFail();
+
+        $this->actingAs($this->makeAdmin())
+            ->delete(route('admin.shipping.governorates.destroy', $erbil))
+            ->assertForbidden();
+
+        $this->assertDatabaseHas('governorates', ['code' => 'erbil']);
+    }
+
+    public function test_an_added_governorate_saves_alongside_the_standard_ones(): void
+    {
+        $admin = $this->makeAdmin();
+        $this->actingAs($admin)->post(route('admin.shipping.governorates.store'), $this->newGovernorate());
+
+        $rows = $this->payloadFromCurrent();
+        $this->assertCount(20, $rows, 'The table now has twenty rows to post.');
+
+        $rows[19]['shipping_fee'] = 9000;
+
+        $this->actingAs($admin)
+            ->put(route('admin.shipping.governorates.update'), ['rows' => $rows])
+            ->assertSessionHasNoErrors();
+
+        $this->assertDatabaseHas('governorates', ['name_en' => 'Zakho', 'shipping_fee' => 9000]);
+    }
 }

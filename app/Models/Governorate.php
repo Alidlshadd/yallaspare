@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Support\LocalizedText;
+use Database\Seeders\GovernorateSeeder;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -64,6 +65,16 @@ class Governorate extends Model
     public function getNameAttribute(): string
     {
         return $this->localizedName();
+    }
+
+    /**
+     * True for the governorates that ship with the application. Their names
+     * come from the seeder and a deploy puts them back, so the panel neither
+     * renames nor removes them — only the days and the fee are the operator's.
+     */
+    public function isStandard(): bool
+    {
+        return in_array($this->code, GovernorateSeeder::codes(), true);
     }
 
     /**

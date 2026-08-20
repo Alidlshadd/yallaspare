@@ -3224,5 +3224,19 @@
     "rows changed": "rows changed",
     "Shipping settings saved.": "Shipping settings saved.",
     "Delivery time (days)": "Delivery time (days)",
-    "Shipping fee (IQD)": "Shipping fee (IQD)"
+    "Shipping fee (IQD)": "Shipping fee (IQD)",
+    "free": "free",
+    "average": "average",
+    "highest": "highest",
+    "Add a governorate": "Add a governorate",
+    "For a destination that is not on the standard list.": "For a destination that is not on the standard list.",
+    "New governorate": "New governorate",
+    "Apply to selected": "Apply to selected",
+    "Apply to all": "Apply to all",
+    "Make free": "Make free",
+    "Revert": "Revert",
+    "Select": "Select",
+    "The governorate is removed from the shipping table.": "The governorate is removed from the shipping table.",
+    "Governorate added.": "Governorate added.",
+    "Governorate removed.": "Governorate removed."
 }

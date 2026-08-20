@@ -3224,5 +3224,19 @@
     "rows changed": "ڕیز گۆڕدرا",
     "Shipping settings saved.": "ڕێکخستنەکانی ناردن پاشەکەوت کران.",
     "Delivery time (days)": "ماوەی گەیاندن (ڕۆژ)",
-    "Shipping fee (IQD)": "کرێی ناردن (د.ع)"
+    "Shipping fee (IQD)": "کرێی ناردن (د.ع)",
+    "free": "بێبەرامبەر",
+    "average": "ناوەند",
+    "highest": "بەرزترین",
+    "Add a governorate": "زیادکردنی پارێزگا",
+    "For a destination that is not on the standard list.": "بۆ شوێنێک کە لە لیستە ستانداردەکەدا نییە.",
+    "New governorate": "پارێزگای نوێ",
+    "Apply to selected": "جێبەجێکردن بۆ هەڵبژێردراوەکان",
+    "Apply to all": "جێبەجێکردن بۆ هەموو",
+    "Make free": "بیکە بێبەرامبەر",
+    "Revert": "گەڕاندنەوە",
+    "Select": "هەڵبژاردن",
+    "The governorate is removed from the shipping table.": "پارێزگاکە لە خشتەی ناردن لادەبرێت.",
+    "Governorate added.": "پارێزگا زیادکرا.",
+    "Governorate removed.": "پارێزگا لابرا."
 }
