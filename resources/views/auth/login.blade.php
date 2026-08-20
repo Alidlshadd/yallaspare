@@ -1,32 +1,29 @@
-<x-auth-split-layout
+<x-auth-portal
     :heading="__('Sign In')"
-    form-position="right"
-    enter-direction="right"
-    :panel-title="__('Welcome Back')"
+    :form-subtitle="__('Access the YallaSpare Management System using your email, phone, and password.')"
+    :panel-title="__('Inventory. Orders. Dealers. Full Control.')"
     :panel-subtitle="__('Access the YallaSpare Management System using your email, phone, and password.')"
     :panel-tag="__('Authorized Users')"
-    panel-theme="login"
     :panel-button-text="__('Create Account')"
-    panel-button-action="navigate"
     :panel-button-href="route('register')"
-    panel-exit-direction="left"
+    mode="login"
 >
-    <x-auth-session-status class="mt-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300" :status="session('status')" />
+    <x-auth-session-status class="ys-auth-alert ys-auth-alert-success mt-5" :status="session('status')" />
 
     @if (session('auth_error'))
-        <div class="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-200" role="alert">
+        <div class="ys-auth-alert ys-auth-alert-error mt-5" role="alert">
             {{ session('auth_error') }}
         </div>
     @endif
 
-    <form method="POST" action="{{ route('login') }}" class="mt-5 space-y-4" data-auth-form data-loading-button-text="Signing in...">
+    <form method="POST" action="{{ route('login') }}" class="mt-7 space-y-5" data-auth-form data-loading-button-text="{{ __('Signing in...') }}">
         @csrf
 
         <div>
-            <x-input-label for="email" :value="__('Email or phone')" class="text-sm font-medium text-slate-300" />
+            <x-input-label for="email" :value="__('Email or phone')" class="ys-auth-label" />
             <input
                 id="email"
-                class="auth-login-input mt-2 block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder-muted shadow-sm transition duration-200 focus:border-accent focus:ring-accent dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100"
+                class="auth-login-input mt-2 block w-full"
                 type="text"
                 name="email"
                 value="{{ old('email') }}"
@@ -35,38 +32,38 @@
                 autocomplete="username"
                 placeholder="{{ __('you@example.com or +964...') }}"
             >
-            <x-input-error :messages="$errors->get('email')" class="mt-2 text-sm text-red-400" />
+            <x-input-error :messages="$errors->get('email')" class="ys-auth-error mt-2" />
         </div>
 
         <div>
-            <x-input-label for="password" :value="__('Password')" class="text-sm font-medium text-slate-300" />
+            <x-input-label for="password" :value="__('Password')" class="ys-auth-label" />
             <x-password-input
                 id="password"
                 container-class="mt-2"
-                class="block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder-muted shadow-sm transition duration-200 focus:border-accent focus:ring-accent dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100"
+                class="block w-full"
                 name="password"
                 required
                 autocomplete="current-password"
                 placeholder="{{ __('Enter your password') }}"
             />
-            <x-input-error :messages="$errors->get('password')" class="mt-2 text-sm text-red-400" />
+            <x-input-error :messages="$errors->get('password')" class="ys-auth-error mt-2" />
         </div>
 
         <div class="flex items-center justify-between gap-4">
-            <label for="remember_me" class="inline-flex cursor-pointer items-center gap-2 text-sm text-slate-300">
+            <label for="remember_me" class="ys-auth-remember">
                 <input
                     id="remember_me"
                     type="checkbox"
                     name="remember"
                     value="1"
                     @checked(old('remember'))
-                    class="h-4 w-4 cursor-pointer rounded border-slate-300 bg-white text-red-600 focus:ring-2 focus:ring-accent focus:ring-offset-0 dark:border-slate-600 dark:bg-slate-800"
+                    class="ys-auth-checkbox"
                 >
                 <span>{{ __('Remember me') }}</span>
             </label>
 
             @if (Route::has('password.request'))
-                <a href="{{ route('password.request') }}" class="rounded-sm text-sm text-muted underline decoration-slate-600 underline-offset-4 transition hover:text-red-300 hover:decoration-red-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent">
+                <a href="{{ route('password.request') }}" class="ys-auth-text-link">
                     {{ __('Forgot password?') }}
                 </a>
             @endif
@@ -74,12 +71,13 @@
 
         <button
             type="submit"
-            class="pointer-events-auto touch-manipulation inline-flex w-full items-center justify-center rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-navy shadow-lg shadow-navy/25 transition duration-200 hover:bg-accent-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
+            class="ys-auth-primary-action"
         >
-            {{ __('Sign In') }}
+            <span>{{ __('Sign In') }}</span>
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5" /></svg>
         </button>
     </form>
 
     @include('auth.partials.social-login')
 
-</x-auth-split-layout>
+</x-auth-portal>

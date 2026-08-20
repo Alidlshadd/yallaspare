@@ -226,6 +226,1039 @@
     }
 }
 
+/* ========================================================================
+   Premium authentication portal
+
+   Login and registration intentionally share this isolated surface. Other
+   verification and recovery views continue to use the compact auth layout.
+   ======================================================================== */
+.ys-auth-page {
+    min-height: 100vh;
+    min-height: 100svh;
+    overflow-x: hidden;
+    background:
+        radial-gradient(circle at 8% 12%, rgb(var(--accent-rgb) / 0.09), transparent 26rem),
+        radial-gradient(circle at 86% 82%, rgb(var(--brand-navy-rgb) / 0.10), transparent 32rem),
+        linear-gradient(145deg, var(--bg), var(--surface-sunk));
+    color: var(--text);
+}
+
+.ys-auth-stage {
+    position: relative;
+    display: grid;
+    min-height: 100vh;
+    min-height: 100svh;
+    place-items: center;
+    padding: clamp(1rem, 2.5vw, 2.5rem);
+    isolation: isolate;
+}
+
+.ys-auth-orbit {
+    pointer-events: none;
+    position: fixed;
+    z-index: -1;
+    border: 1px solid rgb(var(--brand-navy-rgb) / 0.07);
+    border-radius: 999px;
+}
+
+.ys-auth-orbit::after {
+    content: '';
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    border-radius: 999px;
+    background: rgb(var(--accent-rgb) / 0.65);
+    box-shadow: 0 0 0 7px rgb(var(--accent-rgb) / 0.08);
+}
+
+.ys-auth-orbit-one {
+    width: 24rem;
+    height: 24rem;
+    inset-inline-start: -9rem;
+    top: -8rem;
+}
+
+.ys-auth-orbit-one::after {
+    inset-inline-end: 3.5rem;
+    bottom: 2rem;
+}
+
+.ys-auth-orbit-two {
+    width: 31rem;
+    height: 31rem;
+    inset-inline-end: -12rem;
+    bottom: -13rem;
+}
+
+.ys-auth-orbit-two::after {
+    inset-inline-start: 3rem;
+    top: 6rem;
+}
+
+.ys-auth-shell {
+    direction: ltr;
+    display: grid;
+    grid-template-columns: minmax(0, 1.06fr) minmax(0, 0.94fr);
+    width: min(100%, 90rem);
+    min-height: min(52rem, calc(100svh - clamp(2rem, 5vw, 5rem)));
+    overflow: hidden;
+    border: 1px solid rgb(var(--border-rgb) / 0.82);
+    border-radius: 2rem;
+    background: var(--surface);
+    box-shadow:
+        0 2px 3px rgb(var(--brand-navy-rgb) / 0.05),
+        0 28px 90px -36px rgb(var(--brand-navy-rgb) / 0.38);
+    animation: ysAuthPortalEnter 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+    transition: opacity 180ms ease, transform 180ms ease;
+}
+
+.ys-auth-is-leaving {
+    opacity: 0;
+    transform: translateY(8px) scale(0.992);
+}
+
+.ys-auth-aside,
+.ys-auth-main {
+    min-width: 0;
+}
+
+.ys-auth-aside {
+    position: relative;
+    display: flex;
+    min-height: 100%;
+    flex-direction: column;
+    overflow: hidden;
+    padding: clamp(2rem, 4.1vw, 4.75rem);
+    color: white;
+    background:
+        linear-gradient(145deg, rgb(var(--brand-navy-rgb) / 0.98), rgb(4 4 31 / 1) 72%),
+        var(--brand-navy);
+}
+
+.ys-auth-aside::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background:
+        linear-gradient(115deg, transparent 0 44%, rgb(255 255 255 / 0.025) 44% 44.2%, transparent 44.2% 100%),
+        linear-gradient(25deg, transparent 0 70%, rgb(var(--accent-rgb) / 0.045) 70% 100%);
+}
+
+.ys-auth-grid {
+    position: absolute;
+    inset: 0;
+    opacity: 0.42;
+    background-image:
+        linear-gradient(rgb(255 255 255 / 0.045) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(255 255 255 / 0.045) 1px, transparent 1px);
+    background-size: 42px 42px;
+    mask-image: linear-gradient(to bottom right, black, transparent 72%);
+}
+
+.ys-auth-glow {
+    position: absolute;
+    width: 29rem;
+    height: 29rem;
+    inset-inline-end: -12rem;
+    top: 4rem;
+    border-radius: 999px;
+    background: rgb(var(--accent-rgb) / 0.13);
+    filter: blur(90px);
+}
+
+.ys-auth-aside-top,
+.ys-auth-story,
+.ys-auth-aside-footer {
+    position: relative;
+    z-index: 2;
+}
+
+.ys-auth-aside-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+}
+
+.ys-auth-brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-radius: 0.875rem;
+}
+
+.ys-auth-brand-mark {
+    display: grid;
+    width: 2.75rem;
+    height: 2.75rem;
+    flex: 0 0 auto;
+    place-items: center;
+    overflow: hidden;
+    border: 1px solid rgb(255 255 255 / 0.14);
+    border-radius: 0.875rem;
+    background: rgb(255 255 255 / 0.08);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.12);
+}
+
+.ys-auth-brand-image {
+    width: 100%;
+    height: 100%;
+    padding: 0.26rem;
+    border-radius: 0.72rem;
+    background: rgb(255 255 255 / 0.94);
+    object-fit: contain;
+}
+
+.ys-auth-brand-fallback {
+    display: inline-flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(145deg, rgb(var(--accent-rgb) / 0.95), rgb(var(--accent-rgb) / 0.72));
+}
+
+.ys-auth-brand-initials {
+    font-family: theme('fontFamily.display');
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--brand-navy);
+}
+
+.ys-auth-wordmark {
+    font-family: theme('fontFamily.display');
+    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    color: white;
+}
+
+.ys-auth-wordmark span {
+    color: var(--brand-orange);
+}
+
+.ys-auth-series {
+    font-family: theme('fontFamily.sans');
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.19em;
+    color: rgb(255 255 255 / 0.42);
+}
+
+.ys-auth-technical {
+    pointer-events: none;
+    position: absolute;
+    z-index: 1;
+    width: min(87%, 39rem);
+    inset-inline-end: -3.5rem;
+    top: 5.5rem;
+    opacity: 0.82;
+}
+
+.ys-auth-technical svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.ys-auth-drawing-soft {
+    stroke: rgb(255 255 255 / 0.10);
+    stroke-width: 1;
+}
+
+.ys-auth-drawing-strong {
+    stroke: rgb(255 255 255 / 0.24);
+    stroke-width: 1.2;
+}
+
+.ys-auth-drawing-accent {
+    stroke: rgb(var(--accent-rgb) / 0.86);
+    stroke-width: 1.7;
+}
+
+.ys-auth-spec {
+    position: absolute;
+    font-family: theme('fontFamily.sans');
+    font-size: 0.56rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: rgb(255 255 255 / 0.35);
+}
+
+.ys-auth-spec-a {
+    inset-inline-end: 7%;
+    top: 18%;
+}
+
+.ys-auth-spec-b {
+    inset-inline-start: 27%;
+    bottom: 13%;
+}
+
+.ys-auth-story {
+    width: min(100%, 39rem);
+    margin-top: auto;
+    padding-top: clamp(13rem, 28vh, 20rem);
+}
+
+.ys-auth-eyebrow,
+.ys-auth-form-heading {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: theme('fontFamily.display');
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+}
+
+.ys-auth-eyebrow {
+    color: rgb(255 255 255 / 0.66);
+}
+
+.ys-auth-live-dot {
+    position: relative;
+    width: 0.48rem;
+    height: 0.48rem;
+    border-radius: 999px;
+    background: var(--brand-orange);
+    box-shadow: 0 0 0 5px rgb(var(--accent-rgb) / 0.13);
+}
+
+.ys-auth-story h1 {
+    max-width: 38rem;
+    margin-top: 1.15rem;
+    font-family: theme('fontFamily.display');
+    font-size: clamp(2.45rem, 4.8vw, 4.75rem);
+    font-weight: 600;
+    line-height: 1.02;
+    letter-spacing: -0.055em;
+    color: white;
+}
+
+[dir='rtl'] .ys-auth-story h1 {
+    letter-spacing: 0;
+}
+
+.ys-auth-story h1::after {
+    content: '';
+    display: block;
+    width: 4.25rem;
+    height: 3px;
+    margin-top: 1.45rem;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--brand-orange), rgb(var(--accent-rgb) / 0));
+}
+
+[dir='rtl'] .ys-auth-story h1::after {
+    background: linear-gradient(-90deg, var(--brand-orange), rgb(var(--accent-rgb) / 0));
+}
+
+.ys-auth-story > p {
+    max-width: 34rem;
+    margin-top: 1.2rem;
+    font-size: 0.96rem;
+    line-height: 1.8;
+    color: rgb(255 255 255 / 0.64);
+}
+
+.ys-auth-capabilities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    margin-top: 1.65rem;
+}
+
+.ys-auth-capabilities > span {
+    display: inline-flex;
+    min-height: 2.45rem;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.55rem 0.75rem;
+    border: 1px solid rgb(255 255 255 / 0.10);
+    border-radius: 0.75rem;
+    background: rgb(255 255 255 / 0.055);
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: rgb(255 255 255 / 0.75);
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.035);
+    backdrop-filter: blur(8px);
+}
+
+.ys-auth-capabilities svg {
+    width: 1rem;
+    height: 1rem;
+    stroke: var(--brand-orange);
+    stroke-width: 1.45;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.ys-auth-aside-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+    margin-top: 2.4rem;
+    padding-top: 1.45rem;
+    border-top: 1px solid rgb(255 255 255 / 0.09);
+}
+
+.ys-auth-secure-note {
+    display: flex;
+    min-width: 0;
+    align-items: center;
+    gap: 0.65rem;
+}
+
+.ys-auth-shield {
+    display: grid;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 1px solid rgb(255 255 255 / 0.09);
+    border-radius: 0.65rem;
+    background: rgb(255 255 255 / 0.055);
+}
+
+.ys-auth-shield svg {
+    width: 1.15rem;
+    height: 1.15rem;
+    stroke: rgb(255 255 255 / 0.72);
+    stroke-width: 1.45;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.ys-auth-secure-note strong,
+.ys-auth-secure-note small {
+    display: block;
+}
+
+.ys-auth-secure-note strong {
+    font-family: theme('fontFamily.display');
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: rgb(255 255 255 / 0.84);
+}
+
+.ys-auth-secure-note small {
+    margin-top: 0.12rem;
+    font-size: 0.64rem;
+    color: rgb(255 255 255 / 0.38);
+}
+
+.ys-auth-secondary-action {
+    display: inline-flex;
+    min-height: 2.75rem;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    gap: 0.65rem;
+    padding: 0.65rem 0.9rem 0.65rem 1rem;
+    border: 1px solid rgb(var(--accent-rgb) / 0.32);
+    border-radius: 0.8rem;
+    background: rgb(var(--accent-rgb) / 0.09);
+    font-family: theme('fontFamily.display');
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--brand-orange);
+    transition: border-color 180ms ease, background-color 180ms ease, transform 180ms ease;
+}
+
+.ys-auth-secondary-action:hover {
+    border-color: rgb(var(--accent-rgb) / 0.58);
+    background: rgb(var(--accent-rgb) / 0.15);
+    transform: translateY(-1px);
+}
+
+.ys-auth-secondary-action:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / 0.28);
+}
+
+.ys-auth-secondary-action svg,
+.ys-auth-primary-action svg {
+    width: 1rem;
+    height: 1rem;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.ys-auth-main {
+    display: flex;
+    min-height: 100%;
+    flex-direction: column;
+    background:
+        radial-gradient(circle at 100% 0%, rgb(var(--brand-navy-rgb) / 0.055), transparent 21rem),
+        linear-gradient(155deg, rgb(var(--surface-rgb) / 1), rgb(var(--surface-sunk-rgb) / 0.42));
+}
+
+.ys-auth-toolbar {
+    display: flex;
+    min-height: 5.5rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.4rem clamp(1.5rem, 3.5vw, 3.75rem);
+}
+
+.ys-auth-toolbar-label {
+    font-family: theme('fontFamily.sans');
+    font-size: 0.64rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.ys-auth-language [data-header-dropdown-trigger] {
+    min-width: 7.4rem;
+    height: 2.65rem;
+    justify-content: center;
+    border-color: rgb(var(--border-rgb) / 0.9);
+    border-radius: 0.8rem;
+    background: rgb(var(--surface-rgb) / 0.74);
+    box-shadow: 0 6px 18px -14px rgb(var(--brand-navy-rgb) / 0.45);
+}
+
+.ys-auth-language [data-header-dropdown-trigger]:hover {
+    border-color: rgb(var(--accent-rgb) / 0.35);
+    background: var(--surface);
+}
+
+.ys-auth-form-wrap {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+    padding: clamp(1rem, 2.5vw, 2.5rem) clamp(1.5rem, 4vw, 4.75rem) 2rem;
+}
+
+.ys-auth-surface {
+    width: min(100%, 32.5rem);
+    padding: clamp(1.6rem, 3.25vw, 2.75rem);
+    border: 1px solid rgb(var(--border-rgb) / 0.78);
+    border-radius: 1.5rem;
+    background: rgb(var(--surface-rgb) / 0.92);
+    box-shadow:
+        0 1px 0 rgb(255 255 255 / 0.85) inset,
+        0 24px 65px -42px rgb(var(--brand-navy-rgb) / 0.5);
+    backdrop-filter: blur(18px);
+}
+
+.ys-auth-form-heading {
+    color: var(--brand-orange-ink);
+}
+
+.ys-auth-form-icon {
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+    border: 1px solid rgb(var(--accent-rgb) / 0.22);
+    border-radius: 0.65rem;
+    background: rgb(var(--accent-rgb) / 0.075);
+}
+
+.ys-auth-form-icon svg {
+    width: 1.05rem;
+    height: 1.05rem;
+    stroke: currentColor;
+    stroke-width: 1.55;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.ys-auth-surface > h2 {
+    margin-top: 1.2rem;
+    font-family: theme('fontFamily.display');
+    font-size: clamp(1.9rem, 3.5vw, 2.55rem);
+    font-weight: 600;
+    line-height: 1.12;
+    letter-spacing: -0.045em;
+    color: var(--text);
+}
+
+[dir='rtl'] .ys-auth-surface > h2 {
+    letter-spacing: 0;
+}
+
+.ys-auth-form-subtitle {
+    max-width: 27rem;
+    margin-top: 0.7rem;
+    font-size: 0.87rem;
+    line-height: 1.7;
+    color: var(--text-muted);
+}
+
+.ys-auth-form .ys-auth-label,
+.ys-auth-form label:not(.sr-only) {
+    font-size: 0.78rem;
+    font-weight: 650;
+    color: var(--text-secondary);
+}
+
+.ys-auth-form :is(input:not([type='checkbox']):not([type='radio']), select, textarea) {
+    width: 100%;
+    min-height: 3.5rem;
+    padding-inline: 1rem;
+    border: 1px solid rgb(var(--border-rgb) / 1);
+    border-radius: 0.9rem;
+    background-color: rgb(var(--surface-sunk-rgb) / 0.45);
+    color: var(--text);
+    font-size: 0.9rem;
+    box-shadow: inset 0 1px 1px rgb(var(--brand-navy-rgb) / 0.025);
+    transition: border-color 170ms ease, box-shadow 170ms ease, background-color 170ms ease, transform 170ms ease;
+}
+
+.ys-auth-form :is(input:not([type='checkbox']):not([type='radio']), select, textarea):hover {
+    border-color: rgb(var(--brand-navy-rgb) / 0.23);
+    background-color: var(--surface);
+}
+
+.ys-auth-form :is(input:not([type='checkbox']):not([type='radio']), select, textarea):focus {
+    border-color: rgb(var(--accent-rgb) / 0.85);
+    outline: none;
+    background-color: var(--surface);
+    box-shadow:
+        0 0 0 4px rgb(var(--accent-rgb) / 0.12),
+        0 12px 24px -20px rgb(var(--brand-navy-rgb) / 0.38);
+}
+
+.ys-auth-form :is(input, textarea)::placeholder {
+    color: var(--text-muted);
+    opacity: 0.72;
+}
+
+.ys-auth-form .password-input-control {
+    padding-inline-end: 3.5rem !important;
+}
+
+.ys-auth-form .password-input-toggle {
+    inset-inline-end: 0.65rem;
+    width: 2.4rem;
+    height: 2.4rem;
+    inset-block: 0;
+    margin-block: auto;
+    border-radius: 0.7rem;
+}
+
+.ys-auth-form .password-input-toggle:hover {
+    background: rgb(var(--accent-rgb) / 0.08);
+    color: var(--brand-orange-ink);
+}
+
+.ys-auth-form #password-rules {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+    gap: 0.45rem;
+    margin-top: 0.7rem;
+}
+
+.ys-auth-form #password-rules li {
+    min-width: 0;
+    padding: 0.4rem 0.5rem;
+    border: 1px solid rgb(var(--border-rgb) / 0.68);
+    border-radius: 0.65rem;
+    background: rgb(var(--surface-sunk-rgb) / 0.32);
+    font-size: 0.66rem;
+    line-height: 1.35;
+}
+
+.ys-auth-form .ys-auth-hint {
+    font-size: 0.7rem;
+    line-height: 1.55;
+    color: var(--text-muted);
+}
+
+.ys-auth-error {
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--danger);
+}
+
+.ys-auth-alert {
+    border: 1px solid;
+    border-radius: 0.8rem;
+    padding: 0.75rem 0.9rem;
+    font-size: 0.78rem;
+    line-height: 1.55;
+}
+
+.ys-auth-alert-success {
+    border-color: rgb(14 124 85 / 0.22);
+    background: rgb(14 124 85 / 0.075);
+    color: var(--success);
+}
+
+.ys-auth-alert-error {
+    border-color: rgb(180 35 24 / 0.22);
+    background: rgb(180 35 24 / 0.07);
+    color: var(--danger);
+}
+
+.ys-auth-remember {
+    display: inline-flex;
+    cursor: pointer;
+    align-items: center;
+    gap: 0.6rem;
+    color: var(--text-secondary);
+}
+
+.ys-auth-checkbox {
+    width: 1.1rem;
+    height: 1.1rem;
+    cursor: pointer;
+    border: 1px solid rgb(var(--border-rgb) / 1);
+    border-radius: 0.35rem;
+    color: var(--brand-navy);
+}
+
+.ys-auth-checkbox:checked {
+    border-color: var(--brand-navy);
+    background-color: var(--brand-navy);
+}
+
+.ys-auth-checkbox:focus {
+    box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / 0.19);
+}
+
+.ys-auth-text-link {
+    border-radius: 0.4rem;
+    font-family: theme('fontFamily.display');
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    text-decoration-line: underline;
+    text-decoration-color: rgb(var(--accent-rgb) / 0.35);
+    text-underline-offset: 0.28rem;
+    transition: color 160ms ease, text-decoration-color 160ms ease;
+}
+
+.ys-auth-text-link:hover {
+    color: var(--brand-orange-ink);
+    text-decoration-color: var(--brand-orange);
+}
+
+.ys-auth-text-link:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / 0.18);
+}
+
+.ys-auth-primary-action {
+    position: relative;
+    display: inline-flex;
+    width: 100%;
+    min-height: 3.5rem;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    overflow: hidden;
+    border: 1px solid rgb(var(--brand-navy-rgb) / 0.98);
+    border-radius: 0.9rem;
+    background: linear-gradient(115deg, var(--brand-navy), rgb(18 18 74 / 1));
+    padding: 0.85rem 1.15rem;
+    font-family: theme('fontFamily.display');
+    font-size: 0.84rem;
+    font-weight: 600;
+    color: white;
+    box-shadow: 0 14px 28px -16px rgb(var(--brand-navy-rgb) / 0.68);
+    transition: transform 170ms ease, box-shadow 170ms ease, filter 170ms ease;
+}
+
+.ys-auth-primary-action::before {
+    content: '';
+    position: absolute;
+    width: 5rem;
+    height: 5rem;
+    inset-inline-end: -2rem;
+    top: -2.5rem;
+    border-radius: 999px;
+    background: rgb(var(--accent-rgb) / 0.18);
+    transition: transform 220ms ease, background-color 220ms ease;
+}
+
+.ys-auth-primary-action > * {
+    position: relative;
+    z-index: 1;
+}
+
+.ys-auth-primary-action:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.08);
+    box-shadow: 0 18px 32px -15px rgb(var(--brand-navy-rgb) / 0.76);
+}
+
+.ys-auth-primary-action:hover::before {
+    transform: scale(1.28);
+    background: rgb(var(--accent-rgb) / 0.26);
+}
+
+.ys-auth-primary-action:active {
+    transform: translateY(0);
+}
+
+.ys-auth-primary-action:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 4px rgb(var(--accent-rgb) / 0.24), 0 14px 28px -16px rgb(var(--brand-navy-rgb) / 0.68);
+}
+
+.ys-auth-form > .mt-5 > .relative.flex.items-center > div {
+    background-color: rgb(var(--border-rgb) / 0.8);
+}
+
+.ys-auth-form > .mt-5 > .relative.flex.items-center > span {
+    color: var(--text-muted);
+}
+
+.ys-auth-legal {
+    padding: 0.8rem 2rem 1.4rem;
+    text-align: center;
+    font-size: 0.64rem;
+    color: var(--text-muted);
+}
+
+.dark .ys-auth-page {
+    background:
+        radial-gradient(circle at 8% 12%, rgb(var(--accent-rgb) / 0.08), transparent 26rem),
+        radial-gradient(circle at 86% 82%, rgb(43 43 143 / 0.2), transparent 32rem),
+        var(--bg);
+}
+
+.dark .ys-auth-shell {
+    border-color: rgb(255 255 255 / 0.08);
+    box-shadow: 0 32px 90px -38px rgb(0 0 0 / 0.82);
+}
+
+.dark .ys-auth-main {
+    background:
+        radial-gradient(circle at 100% 0%, rgb(var(--accent-rgb) / 0.045), transparent 22rem),
+        linear-gradient(155deg, var(--surface), var(--bg));
+}
+
+.dark .ys-auth-surface {
+    border-color: rgb(255 255 255 / 0.075);
+    background: rgb(var(--surface-rgb) / 0.86);
+    box-shadow: 0 1px 0 rgb(255 255 255 / 0.035) inset, 0 28px 70px -44px rgb(0 0 0 / 0.9);
+}
+
+.dark .ys-auth-language [data-header-dropdown-trigger] {
+    border-color: rgb(255 255 255 / 0.09);
+    background: rgb(255 255 255 / 0.045);
+    color: var(--text-secondary);
+}
+
+.dark .ys-auth-form :is(input:not([type='checkbox']):not([type='radio']), select, textarea) {
+    border-color: var(--border);
+    background-color: rgb(var(--surface-sunk-rgb) / 0.62);
+}
+
+.dark .ys-auth-form :is(input:not([type='checkbox']):not([type='radio']), select, textarea):hover,
+.dark .ys-auth-form :is(input:not([type='checkbox']):not([type='radio']), select, textarea):focus {
+    background-color: var(--surface-sunk);
+}
+
+.dark .ys-auth-primary-action {
+    border-color: rgb(var(--accent-rgb) / 0.28);
+    background: linear-gradient(115deg, rgb(43 43 143 / 1), rgb(18 18 74 / 1));
+}
+
+[dir='rtl'] .ys-auth-aside,
+[dir='rtl'] .ys-auth-main {
+    direction: rtl;
+    text-align: right;
+}
+
+[dir='rtl'] .ys-auth-secondary-action svg,
+[dir='rtl'] .ys-auth-primary-action svg {
+    transform: scaleX(-1);
+}
+
+@keyframes ysAuthPortalEnter {
+    from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.985);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+@media (max-width: 1023px) {
+    .ys-auth-stage {
+        padding: 1.25rem;
+    }
+
+    .ys-auth-shell {
+        grid-template-columns: minmax(0, 1fr);
+        max-width: 48rem;
+    }
+
+    .ys-auth-aside {
+        min-height: 31rem;
+        padding: 2rem clamp(1.5rem, 6vw, 3rem);
+    }
+
+    .ys-auth-technical {
+        width: min(67%, 30rem);
+        inset-inline-end: -2rem;
+        top: 3.5rem;
+    }
+
+    .ys-auth-story {
+        padding-top: 8.5rem;
+    }
+
+    .ys-auth-story h1 {
+        max-width: 31rem;
+        font-size: clamp(2.3rem, 7vw, 3.8rem);
+    }
+
+    .ys-auth-toolbar {
+        min-height: 4.75rem;
+    }
+
+    .ys-auth-form-wrap {
+        padding-top: 1.25rem;
+        padding-bottom: 2.75rem;
+    }
+}
+
+@media (max-width: 639px) {
+    .ys-auth-stage {
+        display: block;
+        padding: 0;
+    }
+
+    .ys-auth-orbit {
+        display: none;
+    }
+
+    .ys-auth-shell {
+        min-height: 100svh;
+        border: 0;
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .ys-auth-aside {
+        min-height: auto;
+        padding: 1.4rem 1.35rem 1.6rem;
+    }
+
+    .ys-auth-series,
+    .ys-auth-secure-note,
+    .ys-auth-technical,
+    .ys-auth-capabilities {
+        display: none;
+    }
+
+    .ys-auth-story {
+        padding-top: 3.7rem;
+    }
+
+    .ys-auth-eyebrow {
+        font-size: 0.62rem;
+    }
+
+    .ys-auth-story h1 {
+        margin-top: 0.9rem;
+        font-size: clamp(2rem, 11vw, 3rem);
+        line-height: 1.06;
+    }
+
+    .ys-auth-story h1::after {
+        width: 3.2rem;
+        margin-top: 1rem;
+    }
+
+    .ys-auth-story > p {
+        display: -webkit-box;
+        margin-top: 0.8rem;
+        overflow: hidden;
+        font-size: 0.82rem;
+        line-height: 1.65;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+    }
+
+    .ys-auth-aside-footer {
+        justify-content: flex-end;
+        margin-top: 1.3rem;
+        padding-top: 1rem;
+    }
+
+    .ys-auth-secondary-action {
+        min-height: 2.5rem;
+        font-size: 0.7rem;
+    }
+
+    .ys-auth-toolbar {
+        min-height: 4.25rem;
+        padding: 0.85rem 1.25rem;
+    }
+
+    .ys-auth-toolbar-label {
+        display: none;
+    }
+
+    .ys-auth-language {
+        margin-inline-start: auto;
+    }
+
+    .ys-auth-language [data-header-dropdown-trigger] {
+        min-width: auto;
+    }
+
+    .ys-auth-form-wrap {
+        align-items: flex-start;
+        padding: 0.5rem 1rem 2.25rem;
+    }
+
+    .ys-auth-surface {
+        padding: 1.35rem 1.15rem;
+        border-radius: 1.15rem;
+    }
+
+    .ys-auth-surface > h2 {
+        font-size: 1.85rem;
+    }
+
+    .ys-auth-form-subtitle {
+        font-size: 0.8rem;
+    }
+
+    .ys-auth-form :is(input:not([type='checkbox']):not([type='radio']), select, textarea),
+    .ys-auth-primary-action {
+        min-height: 3.35rem;
+    }
+
+    .ys-auth-form #password-rules {
+        grid-template-columns: 1fr;
+    }
+
+    .ys-auth-legal {
+        padding-bottom: 1rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ys-auth-shell,
+    .ys-auth-is-leaving,
+    .ys-auth-primary-action,
+    .ys-auth-secondary-action {
+        animation: none;
+        transition: none;
+    }
+}
+
 @layer components {
     .header-logo-area {
         display: flex;
