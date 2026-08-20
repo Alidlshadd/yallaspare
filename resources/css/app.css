@@ -87,8 +87,7 @@
         --radius: var(--radius-md);
     }
 
-    .dark,
-    .user-theme-dark {
+    .dark {
         /* Orange lifts on a dark ground: #ff8a3d measures 8.2:1 on the
            dark page against 6.6:1 for the base orange, and stays in the
            brand family — this is where the old amber accent used to sit. */
@@ -400,40 +399,6 @@
         }
     }
 
-    .ui-shell {
-        min-height: 100vh;
-        background-color: var(--bg);
-        color: var(--text);
-    }
-
-    .ui-surface {
-        background-color: var(--surface-2);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        box-shadow: var(--shadow);
-    }
-
-    .ui-surface-muted {
-        background-color: var(--surface-1);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-    }
-
-    .ui-page-link {
-        color: var(--primary);
-        transition: color 160ms ease;
-    }
-
-    .ui-page-link:hover {
-        color: var(--primary-hover);
-    }
-
-    .ui-focus-ring {
-        outline: none;
-        border-color: var(--primary);
-        box-shadow: 0 0 0 4px var(--focus);
-    }
-
     .password-input-control {
         padding-inline-end: 3rem !important;
     }
@@ -475,39 +440,6 @@
     .password-input-toggle:disabled {
         cursor: not-allowed;
         opacity: 0.55;
-    }
-
-    .ui-nav-link {
-        position: relative;
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-        border-radius: calc(var(--radius) - 2px);
-        padding: 0.75rem 1rem;
-        font-size: 0.9375rem;
-        font-weight: 500;
-        color: var(--muted);
-        transition: background-color 160ms ease, color 160ms ease, border-color 160ms ease;
-    }
-
-    .ui-nav-link:hover {
-        background-color: rgba(7, 11, 31, 0.04);
-        color: var(--text);
-    }
-
-    .ui-nav-link-active {
-        background-color: rgba(7, 11, 31, 0.06);
-        color: var(--primary);
-    }
-
-    .ui-nav-link-active::before {
-        content: '';
-        position: absolute;
-        inset-block: 0.625rem;
-        inset-inline-start: 0;
-        width: 3px;
-        border-radius: 9999px;
-        background-color: var(--primary);
     }
 
     .user-shell {
@@ -1123,7 +1055,6 @@
 
     .admin-sidebar-brand-copy,
     .admin-sidebar-meta,
-    .admin-profile-details,
     .admin-nav-label {
         min-width: 0;
         overflow: hidden;
@@ -1142,7 +1073,6 @@
 
     [dir='rtl'] .admin-sidebar-brand-copy,
     [dir='rtl'] .admin-sidebar-meta,
-    [dir='rtl'] .admin-profile-details,
     [dir='rtl'] .admin-nav-label {
         transform: translateX(0);
     }
@@ -1184,12 +1114,10 @@
     .admin-mobile-sidebar-toggle:focus-visible,
     .admin-sidebar-top-expand:focus-visible,
     .admin-nav-link:focus-visible,
-    .admin-profile-link:focus-visible,
     .admin-sidebar-logo:focus-visible {
         box-shadow: 0 0 0 3px var(--focus);
     }
 
-    .admin-profile-link,
     .admin-nav-link {
         position: relative;
         display: flex;
@@ -1201,21 +1129,9 @@
         transition: background-color 160ms ease, color 160ms ease, padding 220ms ease, gap 220ms ease;
     }
 
-    .admin-profile-link {
-        margin: 0.75rem;
-        padding: 0.75rem;
-        border: 1px solid rgba(148, 163, 184, 0.14);
-        background-color: rgba(30, 41, 59, 0.34);
-    }
-
-    .admin-profile-link:hover,
     .admin-nav-link:hover {
         background-color: rgba(255, 255, 255, 0.04);
         color: #fff;
-    }
-
-    .admin-profile-link:hover {
-        background-color: rgba(30, 41, 59, 0.48);
     }
 
     .admin-nav {
@@ -1306,11 +1222,9 @@
 
         .admin-shell.admin-sidebar-collapsed .admin-sidebar-brand-copy,
         .admin-shell.admin-sidebar-collapsed .admin-sidebar-meta,
-        .admin-shell.admin-sidebar-collapsed .admin-profile-details,
         .admin-shell.admin-sidebar-collapsed .admin-nav-label,
         .admin-sidebar-precollapsed .admin-shell .admin-sidebar-brand-copy,
         .admin-sidebar-precollapsed .admin-shell .admin-sidebar-meta,
-        .admin-sidebar-precollapsed .admin-shell .admin-profile-details,
         .admin-sidebar-precollapsed .admin-shell .admin-nav-label {
             opacity: 0;
             max-width: 0;
@@ -1320,18 +1234,14 @@
 
         [dir='rtl'] .admin-shell.admin-sidebar-collapsed .admin-sidebar-brand-copy,
         [dir='rtl'] .admin-shell.admin-sidebar-collapsed .admin-sidebar-meta,
-        [dir='rtl'] .admin-shell.admin-sidebar-collapsed .admin-profile-details,
         [dir='rtl'] .admin-shell.admin-sidebar-collapsed .admin-nav-label,
         [dir='rtl'].admin-sidebar-precollapsed .admin-shell .admin-sidebar-brand-copy,
         [dir='rtl'].admin-sidebar-precollapsed .admin-shell .admin-sidebar-meta,
-        [dir='rtl'].admin-sidebar-precollapsed .admin-shell .admin-profile-details,
         [dir='rtl'].admin-sidebar-precollapsed .admin-shell .admin-nav-label {
             transform: translateX(0.25rem);
         }
 
-        .admin-shell.admin-sidebar-collapsed .admin-profile-link,
         .admin-shell.admin-sidebar-collapsed .admin-nav-link,
-        .admin-sidebar-precollapsed .admin-shell .admin-profile-link,
         .admin-sidebar-precollapsed .admin-shell .admin-nav-link {
             justify-content: center;
             gap: 0;
@@ -1343,20 +1253,13 @@
             padding-inline: 0.75rem;
         }
 
-        .admin-shell.admin-sidebar-collapsed .admin-profile-link,
-        .admin-sidebar-precollapsed .admin-shell .admin-profile-link {
-            margin-inline: 0.75rem;
-        }
-
         .admin-shell.admin-sidebar-collapsed .admin-sidebar-top-expand,
         .admin-sidebar-precollapsed .admin-shell .admin-sidebar-top-expand {
             display: inline-flex;
         }
 
         .admin-shell.admin-sidebar-collapsed .admin-nav-link[data-admin-sidebar-tooltip]::after,
-        .admin-shell.admin-sidebar-collapsed .admin-profile-link[data-admin-sidebar-tooltip]::after,
-        .admin-sidebar-precollapsed .admin-shell .admin-nav-link[data-admin-sidebar-tooltip]::after,
-        .admin-sidebar-precollapsed .admin-shell .admin-profile-link[data-admin-sidebar-tooltip]::after {
+        .admin-sidebar-precollapsed .admin-shell .admin-nav-link[data-admin-sidebar-tooltip]::after {
             content: attr(data-admin-sidebar-tooltip);
             position: absolute;
             z-index: 60;
@@ -1377,18 +1280,14 @@
         }
 
         [dir='rtl'] .admin-shell.admin-sidebar-collapsed .admin-nav-link[data-admin-sidebar-tooltip]::after,
-        [dir='rtl'] .admin-shell.admin-sidebar-collapsed .admin-profile-link[data-admin-sidebar-tooltip]::after,
-        [dir='rtl'].admin-sidebar-precollapsed .admin-shell .admin-nav-link[data-admin-sidebar-tooltip]::after,
-        [dir='rtl'].admin-sidebar-precollapsed .admin-shell .admin-profile-link[data-admin-sidebar-tooltip]::after {
+        [dir='rtl'].admin-sidebar-precollapsed .admin-shell .admin-nav-link[data-admin-sidebar-tooltip]::after {
             inset-inline-start: auto;
             inset-inline-end: calc(100% + 0.625rem);
             transform: translateY(-50%) translateX(0.25rem);
         }
 
         .admin-shell.admin-sidebar-collapsed .admin-nav-link[data-admin-sidebar-tooltip]:is(:hover, :focus-visible)::after,
-        .admin-shell.admin-sidebar-collapsed .admin-profile-link[data-admin-sidebar-tooltip]:is(:hover, :focus-visible)::after,
-        .admin-sidebar-precollapsed .admin-shell .admin-nav-link[data-admin-sidebar-tooltip]:is(:hover, :focus-visible)::after,
-        .admin-sidebar-precollapsed .admin-shell .admin-profile-link[data-admin-sidebar-tooltip]:is(:hover, :focus-visible)::after {
+        .admin-sidebar-precollapsed .admin-shell .admin-nav-link[data-admin-sidebar-tooltip]:is(:hover, :focus-visible)::after {
             opacity: 1;
             transform: translateY(-50%) translateX(0);
         }
@@ -1451,10 +1350,8 @@
         .admin-main,
         .admin-sidebar-brand-copy,
         .admin-sidebar-meta,
-        .admin-profile-details,
         .admin-nav-label,
         .admin-nav-link,
-        .admin-profile-link,
         .admin-sidebar-top-expand {
             transition: none !important;
         }
@@ -1608,8 +1505,7 @@
         background-color: var(--admin-bg);
     }
 
-    .dark .ys-loading-overlay,
-    .user-theme-dark .ys-loading-overlay {
+    .dark .ys-loading-overlay {
         --ys-loading-bg: rgba(5, 7, 38, 0.96);
         --ys-loading-card: rgba(7, 11, 31, 0.88);
         --ys-loading-border: rgba(148, 163, 184, 0.18);
@@ -1619,8 +1515,7 @@
         --ys-loading-ring: rgba(255, 255, 255, 0.14);
     }
 
-    .dark .ys-loading-logo,
-    .user-theme-dark .ys-loading-logo {
+    .dark .ys-loading-logo {
         background: rgba(255, 255, 255, 0.08);
     }
 
@@ -3440,32 +3335,6 @@
     border-top: 2px dotted rgba(255, 255, 255, 0.22);
 }
 
-/* ---------- sticky table of contents ---------- */
-.pv-toc { border-radius: 18px; border: 1px solid var(--border); background: var(--surface); padding: 0.75rem; }
-.dark .pv-toc { background: rgb(var(--surface-rgb) / 0.6); }
-.pv-toc a {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    border-radius: 10px;
-    padding: 0.55rem 0.7rem 0.55rem 0.85rem;
-    border-left: 2px solid transparent;
-    color: var(--muted);
-    font-size: 0.85rem;
-    transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
-}
-.pv-toc a:hover { color: var(--text); background: var(--hover-tint); }
-.pv-toc a .pv-toc-dot { width: 6px; height: 6px; border-radius: 999px; background: currentColor; opacity: 0.5; flex-shrink: 0; }
-.pv-toc a.pv-on {
-    border-left-color: var(--brand-orange);
-    background: rgb(var(--accent-rgb) / 0.08);
-    color: var(--text);
-    font-weight: 700;
-}
-.dark .pv-toc a.pv-on { background: rgb(255 138 61 / 0.08); color: #fff; }
-.pv-toc a.pv-on .pv-toc-dot { background: #ff8a3d; opacity: 1; }
-
 /* ---------- clause cards ---------- */
 .pv-card {
     position: relative;
@@ -3529,7 +3398,6 @@
 .pv-c8  { --pv-accent: #14b8a6; --pv-accent-bg: #ccfbf1; --pv-accent-ink: #0f766e; }
 .pv-c9  { --pv-accent: #ec4899; --pv-accent-bg: #fce7f3; --pv-accent-ink: #be185d; }
 .pv-c10 { --pv-accent: #06b6d4; --pv-accent-bg: #cffafe; --pv-accent-ink: #0e7490; }
-.pv-c11 { --pv-accent: #22c55e; --pv-accent-bg: #dcfce7; --pv-accent-ink: #15803d; }
 .dark .pv-card .pv-card-icon { filter: saturate(1.15) brightness(1.4); }
 
 /* ---------- bottom CTA ---------- */
@@ -3683,45 +3551,6 @@
     box-shadow: 0 18px 50px -16px rgba(0, 0, 0, 0.7), inset 0 0 24px rgb(255 138 61 / 0.08);
 }
 .tos-halo-core svg { width: 36%; height: 36%; color: #ff8a3d; }
-
-/* ---------- sticky sidebar ---------- */
-.tos-nav { border-radius: 20px; border: 1px solid var(--border); background: var(--surface); padding: 1.1rem 0.9rem; }
-.dark .tos-nav { background: rgb(var(--surface-rgb) / 0.6); }
-.tos-nav-list { position: relative; display: flex; flex-direction: column; gap: 2px; padding-left: 1.4rem; }
-.tos-nav-rail { position: absolute; left: 11px; top: 6px; bottom: 6px; width: 2px; background: var(--border); border-radius: 2px; }
-.tos-nav-fill { position: absolute; left: 11px; top: 6px; width: 2px; height: 0%; background: #ff8a3d; border-radius: 2px; transition: height 0.5s cubic-bezier(0.22, 1, 0.36, 1); box-shadow: 0 0 8px rgb(255 138 61 / 0.5); }
-
-.tos-nav a {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border-radius: 10px;
-    padding: 0.6rem 0.65rem;
-    color: var(--muted);
-    font-size: 0.85rem;
-    font-weight: 600;
-    transition: color 0.25s ease, background-color 0.25s ease;
-}
-.tos-nav a::before {
-    content: "";
-    position: absolute;
-    left: -1.4rem;
-    top: 50%;
-    width: 9px;
-    height: 9px;
-    border-radius: 999px;
-    background: var(--surface);
-    border: 2px solid var(--border);
-    transform: translateY(-50%);
-    transition: border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
-}
-.tos-nav a .n { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 0.68rem; color: var(--muted); width: 1.4rem; flex-shrink: 0; }
-.tos-nav a:hover { background: var(--hover-tint); color: var(--text); }
-/* The active row was amber-50 in light and an orange tint in dark; one tint
-   now covers both. */
-.tos-nav a.on { background: rgb(var(--accent-rgb) / 0.08); color: var(--text); font-weight: 700; }
-.tos-nav a.on::before { background: #ff8a3d; border-color: #ff8a3d; box-shadow: 0 0 0 4px rgb(255 138 61 / 0.18); }
 
 /* ---------- section cards ---------- */
 .tos-card {
