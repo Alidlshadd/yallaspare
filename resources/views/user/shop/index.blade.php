@@ -52,7 +52,7 @@
                 'price_desc' => __('Price: High to Low'),
                 'stock_desc' => __('Most in stock'),
             ];
-            $selectClasses = 'block w-full rounded-xl border border-slate-200/80 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/30 focus:bg-white focus:ring-4 focus:ring-accent/10 dark:border-slate-800 dark:bg-slate-950 dark:text-white dark:focus:bg-slate-900';
+            $selectClasses = 'block w-full rounded-xl border border-slate-200/80 bg-slate-50 px-3 py-2.5 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/30 focus:bg-white focus:ring-4 focus:ring-accent/10 dark:focus:bg-slate-900';
         @endphp
 
         <section
@@ -218,7 +218,7 @@
                             @class([
                                 'inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-sm font-semibold transition duration-200',
                                 'border-primary bg-primary text-white' => ! $activeCategory,
-                                'border-slate-200/80 bg-white text-slate-600 hover:border-primary/30 hover:text-primary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-white' => (bool) $activeCategory,
+                                'border-slate-200/80 bg-white text-slate-600 hover:border-primary/30 hover:text-primary dark:bg-slate-900 dark:hover:border-slate-500 dark:hover:text-white' => (bool) $activeCategory,
                             ])
                         >
                             {{ __('All parts') }}
@@ -231,7 +231,7 @@
                                 @class([
                                     'inline-flex shrink-0 items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-semibold transition duration-200',
                                     'border-primary bg-primary text-white' => (int) $activeCategory === (int) $category->id,
-                                    'border-slate-200/80 bg-white text-slate-600 hover:border-primary/30 hover:text-primary dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:border-slate-500 dark:hover:text-white' => (int) $activeCategory !== (int) $category->id,
+                                    'border-slate-200/80 bg-white text-slate-600 hover:border-primary/30 hover:text-primary dark:bg-slate-900 dark:hover:border-slate-500 dark:hover:text-white' => (int) $activeCategory !== (int) $category->id,
                                 ])
                             >
                                 {{ $category->name }}

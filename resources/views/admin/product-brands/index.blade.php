@@ -12,7 +12,7 @@
     </x-slot>
 
     @php
-        $inputClass = 'h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-900 transition focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-900';
+        $inputClass = 'h-11 w-full rounded-xl border border-slate-200 bg-slate-50 px-3 text-sm text-slate-900 transition focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/30 dark:focus:bg-slate-900';
         $assignmentUrl = function (string $value) {
             $params = request()->except('page', 'assignment');
             if ($value !== '') {

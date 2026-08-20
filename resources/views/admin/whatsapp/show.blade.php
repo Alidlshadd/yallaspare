@@ -4,11 +4,11 @@
     @php
         $prettyPayload = json_encode($event->raw_payload, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) ?: '{}';
         $statusClass = match($event->processing_status) {
-            'processed' => 'bg-emerald-50 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300',
-            'failed' => 'bg-rose-50 text-rose-700 dark:bg-rose-500/10 dark:text-rose-300',
-            'ignored' => 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300',
+            'processed' => 'bg-emerald-50 text-emerald-700',
+            'failed' => 'bg-rose-50 text-rose-700',
+            'ignored' => 'bg-slate-100 text-slate-600',
             'processing' => 'bg-info text-info dark:bg-info/10 dark:text-info',
-            default => 'bg-amber-50 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300',
+            default => 'bg-amber-50 text-amber-700',
         };
     @endphp
 

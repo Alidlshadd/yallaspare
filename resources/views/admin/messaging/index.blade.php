@@ -47,8 +47,8 @@
                 @foreach ($summaryCards as $card)
                     @php
                         $tone = match ($card['tone']) {
-                            'emerald' => 'bg-emerald-50 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-300',
-                            'amber' => 'bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-300',
+                            'emerald' => 'bg-emerald-50 text-emerald-600',
+                            'amber' => 'bg-amber-50 text-amber-600',
                             'sky' => 'bg-info text-info dark:bg-info/10 dark:text-info',
                             'green' => 'bg-green-50 text-green-600 dark:bg-green-500/10 dark:text-green-300',
                             default => 'bg-info text-info dark:bg-info/10 dark:text-info',
@@ -78,13 +78,13 @@
                                 @php
                                     $state = $channel['state'];
                                     $cardClasses = match ($state) {
-                                        'ready' => 'border-emerald-200 bg-emerald-50/50 dark:border-emerald-900/60 dark:bg-emerald-950/20',
-                                        'disabled' => 'border-slate-200 bg-slate-50/60 dark:border-slate-800 dark:bg-slate-900/40',
-                                        default => 'border-amber-200 bg-amber-50/50 dark:border-amber-900/60 dark:bg-amber-950/20',
+                                        'ready' => 'border-emerald-200 bg-emerald-50/50 dark:bg-emerald-950/20',
+                                        'disabled' => 'border-slate-200 bg-slate-50/60 dark:bg-slate-900/40',
+                                        default => 'border-amber-200 bg-amber-50/50 dark:bg-amber-950/20',
                                     };
                                     $badgeClasses = match ($state) {
-                                        'ready' => 'border-emerald-200 bg-white text-emerald-700 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-300',
-                                        'disabled' => 'border-slate-200 bg-white text-slate-500 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-400',
+                                        'ready' => 'border-emerald-200 bg-white text-emerald-700',
+                                        'disabled' => 'border-slate-200 bg-white text-slate-500',
                                         default => 'border-accent bg-white text-accent dark:border-accent dark:bg-accent dark:text-accent',
                                     };
                                     $dotClasses = match ($state) {

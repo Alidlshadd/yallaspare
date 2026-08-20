@@ -8,9 +8,9 @@
         $filtered = $search !== '' || $status !== '';
         $canViewUsers = Route::has('admin.users.show') && auth()->user()?->can('manage-users');
         $statusChip = fn (string $dealerStatus) => match ($dealerStatus) {
-            'active' => ['label' => __('Active'), 'class' => 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-300'],
-            'suspended' => ['label' => __('Suspended'), 'class' => 'bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-300'],
-            default => ['label' => __('Inactive'), 'class' => 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'],
+            'active' => ['label' => __('Active'), 'class' => 'bg-emerald-50 text-emerald-600'],
+            'suspended' => ['label' => __('Suspended'), 'class' => 'bg-rose-50 text-rose-600'],
+            default => ['label' => __('Inactive'), 'class' => 'bg-slate-100 text-slate-500'],
         };
     @endphp
 

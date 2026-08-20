@@ -10,7 +10,7 @@
         $statusMeta = [
             'requested' => [
                 'label' => __('Requested'),
-                'pill'  => 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/30',
+                'pill'  => 'bg-amber-100 text-amber-800 border-amber-200 dark:text-amber-300',
                 'dot'   => 'bg-accent',
                 'hex'   => '#e65c00',
             ],
@@ -22,7 +22,7 @@
             ],
             'rejected' => [
                 'label' => __('Rejected'),
-                'pill'  => 'bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-500/10 dark:text-rose-300 dark:border-rose-500/30',
+                'pill'  => 'bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-500/10',
                 'dot'   => 'bg-rose-500',
                 'hex'   => '#dc2626',
             ],
@@ -34,22 +34,22 @@
             ],
             'refunded' => [
                 'label' => __('Refunded'),
-                'pill'  => 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/30',
+                'pill'  => 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300',
                 'dot'   => 'bg-emerald-500',
                 'hex'   => '#16a34a',
             ],
             'closed' => [
                 'label' => __('Closed'),
-                'pill'  => 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-700/40 dark:text-slate-300 dark:border-slate-600',
+                'pill'  => 'bg-slate-100 text-slate-700 border-slate-200',
                 'dot'   => 'bg-slate-500',
                 'hex'   => '#64748b',
             ],
         ];
 
         $typeMeta = [
-            'return'   => ['label' => __('Return'),   'class' => 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-700/40 dark:text-slate-200'],
+            'return'   => ['label' => __('Return'),   'class' => 'bg-slate-100 text-slate-700 border-slate-200'],
             'exchange' => ['label' => __('Exchange'), 'class' => 'bg-info text-info border-info dark:bg-info/10 dark:text-info'],
-            'refund'   => ['label' => __('Refund'),   'class' => 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300'],
+            'refund'   => ['label' => __('Refund'),   'class' => 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10'],
         ];
 
         $hasActiveFilters = ($currentSearch !== '') || ($currentStatus !== '');
@@ -235,7 +235,7 @@
                         'label' => __('Requested'),
                         'value' => $statusCounts->get('requested', 0),
                         'stripe' => 'bg-accent',
-                        'ic_bg' => 'bg-amber-100 dark:bg-amber-500/10',
+                        'ic_bg' => 'bg-amber-100',
                         'ic_fg' => 'text-accent dark:text-accent',
                         'dot' => 'bg-accent',
                         'foot' => __('Awaits decision'),
@@ -266,7 +266,7 @@
                         'value' => $statusCounts->get('refunded', $stats['refunded'] ?? 0),
                         'stripe' => 'bg-[var(--success)]',
                         'ic_bg' => 'bg-emerald-100 dark:bg-emerald-500/10',
-                        'ic_fg' => 'text-emerald-700 dark:text-emerald-300',
+                        'ic_fg' => 'text-emerald-700',
                         'dot' => 'bg-emerald-500',
                         'foot' => __('Requests paid back'),
                         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>',
@@ -298,7 +298,7 @@
                         'value' => $statusCounts->get('rejected', 0),
                         'stripe' => 'bg-[var(--danger)]',
                         'ic_bg' => 'bg-rose-100 dark:bg-rose-500/10',
-                        'ic_fg' => 'text-rose-700 dark:text-rose-300',
+                        'ic_fg' => 'text-rose-700',
                         'dot' => 'bg-rose-500',
                         'foot' => __('Declined requests'),
                         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>',
@@ -307,8 +307,8 @@
                         'label' => __('Closed'),
                         'value' => $statusCounts->get('closed', 0),
                         'stripe' => 'bg-[var(--text-muted)]',
-                        'ic_bg' => 'bg-slate-100 dark:bg-slate-700/40',
-                        'ic_fg' => 'text-slate-600 dark:text-slate-300',
+                        'ic_bg' => 'bg-slate-100',
+                        'ic_fg' => 'text-slate-600',
                         'dot' => 'bg-slate-400',
                         'foot' => __('Archived workflow'),
                         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>',
@@ -445,13 +445,13 @@
                 @php
                     $rowStatusMeta = $statusMeta[$requestRow->status] ?? [
                         'label' => __(ucfirst(str_replace('_', ' ', (string) $requestRow->status))),
-                        'pill'  => 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-700/40 dark:text-slate-300 dark:border-slate-600',
+                        'pill'  => 'bg-slate-100 text-slate-700 border-slate-200',
                         'dot'   => 'bg-slate-500',
                         'hex'   => '#94a3b8',
                     ];
                     $rowTypeMeta = $typeMeta[$requestRow->type] ?? [
                         'label' => __(ucfirst(str_replace('_', ' ', (string) $requestRow->type))),
-                        'class' => 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-700/40 dark:text-slate-200',
+                        'class' => 'bg-slate-100 text-slate-700 border-slate-200',
                     ];
                     $order = $requestRow->order;
                     $customer = $requestRow->user;

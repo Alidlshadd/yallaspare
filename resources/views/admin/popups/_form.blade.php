@@ -2,11 +2,11 @@
     $isEdit = isset($popup);
     $formAction = $isEdit ? route('admin.popups.update', $popup) : route('admin.popups.store');
 
-    $inputBase = 'h-11 w-full px-3 rounded-xl border bg-slate-50 text-sm text-slate-900 placeholder-muted transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:bg-slate-800 dark:text-slate-100 dark:focus:bg-slate-900';
-    $inputOk = 'border-slate-200 dark:border-slate-700';
+    $inputBase = 'h-11 w-full px-3 rounded-xl border bg-slate-50 text-sm text-slate-900 placeholder-muted transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:focus:bg-slate-900';
+    $inputOk = 'border-slate-200';
     $inputErr = 'border-rose-300 dark:border-rose-500/50';
-    $labelClass = 'block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400 mb-1.5';
-    $checkLabel = 'flex items-center gap-2 text-xs font-bold text-slate-600 dark:text-slate-300 cursor-pointer';
+    $labelClass = 'block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 mb-1.5';
+    $checkLabel = 'flex items-center gap-2 text-xs font-bold text-slate-600 cursor-pointer';
     $checkBox = 'rounded border-slate-300 text-accent focus:ring-accent dark:border-slate-600 dark:bg-slate-800';
 
     $selectedPages = collect(old('pages', $popup->pages ?? ['all']))->all();

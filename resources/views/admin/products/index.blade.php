@@ -461,7 +461,7 @@
                         'lbl'   => __('Out of Stock'),
                         'val'   => $statusTabs['out_of_stock']['count'] ?? 0,
                         'foot'  => __('Restock urgently'),
-                        'foot_class' => 'text-rose-700 dark:text-rose-300 font-semibold',
+                        'foot_class' => 'text-rose-700 font-semibold',
                     ],
                 ];
             @endphp

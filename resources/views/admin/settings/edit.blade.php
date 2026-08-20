@@ -9,9 +9,9 @@
     $checksPassed = collect($checks)->where('ok', true)->count();
     $checksAction = count($checks) - $checksPassed;
 
-    $inputClasses = 'w-full rounded-lg border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100';
-    $labelClasses = 'mb-1.5 block text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400';
-    $hintClasses = 'mt-1 text-xs text-slate-500 dark:text-slate-400';
+    $inputClasses = 'w-full rounded-lg border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30 dark:border-slate-700';
+    $labelClasses = 'mb-1.5 block text-[11px] font-bold uppercase tracking-widest text-slate-500';
+    $hintClasses = 'mt-1 text-xs text-slate-500';
     $whatsappAdminVisible = (bool) config('services.otpiq.whatsapp.admin_visible', true);
 
     $sections = [

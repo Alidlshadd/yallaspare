@@ -257,10 +257,10 @@
                     const isActive = tile.dataset.audience === value;
                     if (isActive) {
                         tile.classList.add('border-2','border-primary','bg-primary/5','text-primary');
-                        tile.classList.remove('border','border-slate-200','text-slate-600','hover:bg-slate-50','dark:border-slate-700','dark:text-slate-300','dark:hover:bg-slate-800');
+                        tile.classList.remove('border','border-slate-200','text-slate-600','hover:bg-slate-50','dark:hover:bg-slate-800');
                     } else {
                         tile.classList.remove('border-2','border-primary','bg-primary/5','text-primary');
-                        tile.classList.add('border','border-slate-200','text-slate-600','hover:bg-slate-50','dark:border-slate-700','dark:text-slate-300','dark:hover:bg-slate-800');
+                        tile.classList.add('border','border-slate-200','text-slate-600','hover:bg-slate-50','dark:hover:bg-slate-800');
                     }
                 });
                 roleWrap.style.display = value === 'role' ? '' : 'none';
@@ -284,10 +284,10 @@
                     const isActive = b.dataset.purpose === value;
                     if (isActive) {
                         b.classList.add('bg-primary','text-white');
-                        b.classList.remove('text-slate-600','dark:text-slate-300');
+                        b.classList.remove('text-slate-600');
                     } else {
                         b.classList.remove('bg-primary','text-white');
-                        b.classList.add('text-slate-600','dark:text-slate-300');
+                        b.classList.add('text-slate-600');
                     }
                 });
             }

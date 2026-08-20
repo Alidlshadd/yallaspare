@@ -29,8 +29,8 @@
     ];
     $audienceAvatarClasses = [
         \App\Models\EmailBroadcast::AUDIENCE_ALL => 'bg-info text-info dark:bg-info/40 dark:text-info',
-        \App\Models\EmailBroadcast::AUDIENCE_ROLE => 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-200',
-        \App\Models\EmailBroadcast::AUDIENCE_USER => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-200',
+        \App\Models\EmailBroadcast::AUDIENCE_ROLE => 'bg-amber-100 text-amber-700',
+        \App\Models\EmailBroadcast::AUDIENCE_USER => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40',
     ];
     $broadcastStatusClasses = [
         'sent' => ['cls' => 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/40 dark:text-emerald-200 dark:border-emerald-900/60', 'icon' => 'fa-check'],
@@ -40,20 +40,20 @@
     ];
     $toneClasses = [
         'blue' => 'border-info bg-info text-info dark:border-info/50 dark:bg-info/30 dark:text-info',
-        'emerald' => 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-200',
-        'rose' => 'border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/30 dark:text-rose-200',
-        'amber' => 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-200',
+        'emerald' => 'border-emerald-200 bg-emerald-50 text-emerald-700',
+        'rose' => 'border-rose-200 bg-rose-50 text-rose-700',
+        'amber' => 'border-amber-200 bg-amber-50 text-amber-700',
         'violet' => 'border-info bg-info text-info dark:border-info/50 dark:bg-info/30 dark:text-info',
         'cyan' => 'border-info bg-info text-info dark:border-info/50 dark:bg-info/30 dark:text-info',
         'indigo' => 'border-info bg-info text-info dark:border-info/50 dark:bg-info/30 dark:text-info',
         'orange' => 'border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-900/50 dark:bg-orange-950/30 dark:text-orange-200',
-        'slate' => 'border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-800 dark:bg-slate-950 dark:text-slate-200',
+        'slate' => 'border-slate-200 bg-slate-50 text-slate-700',
     ];
     $healthClasses = [
-        'green' => ['badge' => 'border-emerald-200 bg-emerald-50 text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-200', 'bar' => 'bg-gradient-to-r from-emerald-500 to-emerald-600'],
-        'amber' => ['badge' => 'border-amber-200 bg-amber-50 text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/40 dark:text-amber-200', 'bar' => 'bg-gradient-to-r from-amber-400 to-amber-500'],
-        'rose' => ['badge' => 'border-rose-200 bg-rose-50 text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-200', 'bar' => 'bg-gradient-to-r from-rose-500 to-rose-600'],
-    ][$health['tone']] ?? ['badge' => 'border-slate-200 bg-slate-50 text-slate-700 dark:border-slate-800 dark:bg-slate-900 dark:text-slate-200', 'bar' => 'bg-slate-500'];
+        'green' => ['badge' => 'border-emerald-200 bg-emerald-50 text-emerald-700', 'bar' => 'bg-gradient-to-r from-emerald-500 to-emerald-600'],
+        'amber' => ['badge' => 'border-amber-200 bg-amber-50 text-amber-700', 'bar' => 'bg-gradient-to-r from-amber-400 to-amber-500'],
+        'rose' => ['badge' => 'border-rose-200 bg-rose-50 text-rose-700', 'bar' => 'bg-gradient-to-r from-rose-500 to-rose-600'],
+    ][$health['tone']] ?? ['badge' => 'border-slate-200 bg-slate-50 text-slate-700', 'bar' => 'bg-slate-500'];
 @endphp
 
 <style>
@@ -312,9 +312,9 @@
                                 @php
                                     $pillBase = 'inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-[11px] font-bold uppercase tracking-wider transition';
                                     $pillOn = 'bg-primary text-white shadow-sm';
-                                    $pillOff = 'text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800';
+                                    $pillOff = 'text-slate-600 hover:bg-slate-100 dark:hover:bg-slate-800';
                                     $countChipOn = 'ml-0.5 rounded-full bg-white/20 px-1 text-[9px]';
-                                    $countChipOff = 'ml-0.5 rounded-full bg-slate-100 dark:bg-slate-800 px-1 text-[9px]';
+                                    $countChipOff = 'ml-0.5 rounded-full bg-slate-100 px-1 text-[9px]';
                                 @endphp
                                 <nav class="inline-flex items-center gap-0.5 rounded-xl border border-slate-200 bg-white p-1 shadow-sm" aria-label="{{ __('Filter broadcasts by status') }}">
                                     <a href="{{ route('admin.email.index', array_filter(['q' => $searchTerm])) }}#broadcasts"
@@ -704,10 +704,10 @@
                 var isActive = tile.dataset.audience === value;
                 if (isActive) {
                     tile.classList.add('border-2','border-primary','bg-primary/5','text-primary','dark:bg-primary/10');
-                    tile.classList.remove('border','border-slate-200','text-slate-600','hover:bg-slate-50','dark:border-slate-700','dark:text-slate-300','dark:hover:bg-slate-800');
+                    tile.classList.remove('border','border-slate-200','text-slate-600','hover:bg-slate-50','dark:hover:bg-slate-800');
                 } else {
                     tile.classList.remove('border-2','border-primary','bg-primary/5','text-primary','dark:bg-primary/10');
-                    tile.classList.add('border','border-slate-200','text-slate-600','hover:bg-slate-50','dark:border-slate-700','dark:text-slate-300','dark:hover:bg-slate-800');
+                    tile.classList.add('border','border-slate-200','text-slate-600','hover:bg-slate-50','dark:hover:bg-slate-800');
                 }
             });
             userWrap.style.display = value === 'user' ? '' : 'none';
@@ -725,10 +725,10 @@
                 var isActive = btn.dataset.purpose === value;
                 if (isActive) {
                     btn.classList.add('bg-primary','text-white');
-                    btn.classList.remove('text-slate-600','dark:text-slate-300');
+                    btn.classList.remove('text-slate-600');
                 } else {
                     btn.classList.remove('bg-primary','text-white');
-                    btn.classList.add('text-slate-600','dark:text-slate-300');
+                    btn.classList.add('text-slate-600');
                 }
             });
         }

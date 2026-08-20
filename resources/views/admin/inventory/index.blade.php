@@ -28,11 +28,11 @@
         // Tailwind must see these class strings in the blade file, so they are
         // defined here and handed to the Alpine component via data-config.
         $formUiClasses = [
-            'typeInActive' => 'border-amber-400 bg-amber-50 text-amber-800 shadow-sm dark:border-amber-500/60 dark:bg-amber-950/40 dark:text-amber-300',
-            'typeOutActive' => 'border-rose-400 bg-rose-50 text-rose-800 shadow-sm dark:border-rose-500/60 dark:bg-rose-950/40 dark:text-rose-300',
-            'typeIdle' => 'border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-700 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-400 dark:hover:text-slate-200',
-            'projectedOk' => 'font-bold text-slate-900 dark:text-slate-100',
-            'projectedNegative' => 'font-bold text-rose-700 dark:text-rose-300',
+            'typeInActive' => 'border-amber-400 bg-amber-50 text-amber-800 shadow-sm dark:border-amber-500/60 dark:text-amber-300',
+            'typeOutActive' => 'border-rose-400 bg-rose-50 text-rose-800 shadow-sm dark:border-rose-500/60 dark:text-rose-300',
+            'typeIdle' => 'border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-700 dark:hover:text-slate-200',
+            'projectedOk' => 'font-bold text-slate-900',
+            'projectedNegative' => 'font-bold text-rose-700',
         ];
 
         $pageMovements = $movements->getCollection();

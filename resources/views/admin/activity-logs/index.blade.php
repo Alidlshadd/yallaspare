@@ -75,8 +75,8 @@
                                 href="{{ $filterUrl($filterKey) }}"
                                 @class([
                                     'flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition',
-                                    'border-s-2 border-amber-400 bg-amber-50 text-slate-900 dark:bg-amber-400/10 dark:text-white' => $isActive,
-                                    'text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800/60' => !$isActive,
+                                    'border-s-2 border-amber-400 bg-amber-50 text-slate-900' => $isActive,
+                                    'text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/60' => !$isActive,
                                 ])
                             >
                                 <span class="truncate">{{ __($filterKey) }}</span>

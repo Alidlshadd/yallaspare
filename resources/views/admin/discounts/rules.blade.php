@@ -88,14 +88,14 @@
         ],
         'ui' => [
             'scopeOn' => 'border-amber-400 bg-amber-50/70 shadow-sm dark:border-amber-500/60 dark:bg-amber-950/20',
-            'scopeOff' => 'border-slate-200 bg-white hover:border-amber-300 hover:bg-amber-50/30 dark:border-slate-700 dark:bg-slate-950 dark:hover:border-amber-900/50',
+            'scopeOff' => 'border-slate-200 bg-white hover:border-amber-300 hover:bg-amber-50/30 dark:hover:border-amber-900/50',
             'productOn' => 'border-amber-400 bg-amber-50/60 dark:border-amber-500/60 dark:bg-amber-950/20',
-            'productOff' => 'border-slate-200 bg-white hover:border-amber-300 hover:bg-amber-50/40 dark:border-slate-700 dark:bg-slate-950 dark:hover:border-amber-900/40',
+            'productOff' => 'border-slate-200 bg-white hover:border-amber-300 hover:bg-amber-50/40 dark:hover:border-amber-900/40',
             'tickOn' => 'border-accent bg-accent text-[#422006]',
-            'tickOff' => 'border-slate-300 bg-white text-muted dark:border-slate-600 dark:bg-slate-900 dark:text-slate-500',
-            'stockOut' => 'bg-rose-100 text-rose-700 dark:bg-rose-950/30 dark:text-rose-300',
-            'stockLow' => 'bg-amber-100 text-amber-700 dark:bg-amber-950/30 dark:text-amber-300',
-            'stockIn' => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300',
+            'tickOff' => 'border-slate-300 bg-white text-muted dark:border-slate-600 dark:text-slate-500',
+            'stockOut' => 'bg-rose-100 text-rose-700 dark:bg-rose-950/30',
+            'stockLow' => 'bg-amber-100 text-amber-700',
+            'stockIn' => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/30',
         ],
     ];
 @endphp

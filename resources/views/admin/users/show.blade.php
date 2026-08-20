@@ -25,14 +25,14 @@
         } elseif ($user->role === \App\Models\User::ROLE_ADMIN) {
             $roleMeta = [
                 'label' => __('Admin'),
-                'chip' => 'border-rose-300 bg-rose-50 text-rose-700 dark:border-rose-400/40 dark:bg-rose-400/10 dark:text-rose-300',
-                'avatar' => 'bg-rose-100 text-rose-700 dark:bg-rose-400/15 dark:text-rose-300',
+                'chip' => 'border-rose-300 bg-rose-50 text-rose-700 dark:border-rose-400/40',
+                'avatar' => 'bg-rose-100 text-rose-700 dark:bg-rose-400/15',
             ];
         } elseif ($user->role === \App\Models\User::ROLE_DEALER) {
             $roleMeta = [
                 'label' => __('Dealer'),
-                'chip' => 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300',
-                'avatar' => 'bg-amber-100 text-amber-700 dark:bg-amber-400/15 dark:text-amber-300',
+                'chip' => 'border-amber-300 bg-amber-50 text-amber-700',
+                'avatar' => 'bg-amber-100 text-amber-700',
             ];
         } elseif (in_array($user->role, $managerRoleList, true)) {
             $roleMeta = [
@@ -48,17 +48,17 @@
             ];
         }
 
-        $inputClasses = 'w-full rounded-lg border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100';
-        $labelClasses = 'mb-1.5 block text-[11px] font-bold uppercase tracking-widest text-slate-500 dark:text-slate-400';
+        $inputClasses = 'w-full rounded-lg border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30 dark:border-slate-700';
+        $labelClasses = 'mb-1.5 block text-[11px] font-bold uppercase tracking-widest text-slate-500';
 
         $orderStatusChip = function (string $status) {
             return match ($status) {
-                'delivered' => 'border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-400/40 dark:bg-emerald-400/10 dark:text-emerald-300',
-                'cancelled' => 'border-rose-300 bg-rose-50 text-rose-700 dark:border-rose-400/40 dark:bg-rose-400/10 dark:text-rose-300',
-                'pending' => 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300',
+                'delivered' => 'border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-400/40',
+                'cancelled' => 'border-rose-300 bg-rose-50 text-rose-700 dark:border-rose-400/40',
+                'pending' => 'border-amber-300 bg-amber-50 text-amber-700',
                 'processing' => 'border-info bg-info text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
                 'shipped' => 'border-info bg-info text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
-                default => 'border-slate-300 bg-slate-50 text-slate-600 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-300',
+                default => 'border-slate-300 bg-slate-50 text-slate-600 dark:border-slate-600',
             };
         };
     @endphp

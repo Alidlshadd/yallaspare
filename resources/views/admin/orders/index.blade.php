@@ -26,14 +26,14 @@
 
         $pillClass = function (?string $key) {
             return match ((string) $key) {
-                'pending'                              => 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/30',
+                'pending'                              => 'bg-amber-100 text-amber-800 border-amber-200 dark:text-amber-300',
                 'processing'                           => 'bg-info text-info border-info dark:bg-info/10 dark:text-info dark:border-info/30',
                 'shipped'                              => 'bg-info text-info border-info dark:bg-info/10 dark:text-info dark:border-info/30',
-                'delivered', 'paid'                    => 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300 dark:border-emerald-500/30',
-                'cancelled', 'failed'                  => 'bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-500/10 dark:text-rose-300 dark:border-rose-500/30',
-                'pending_payment', 'pending-payment'   => 'bg-amber-100 text-amber-800 border-amber-200 dark:bg-amber-500/10 dark:text-amber-300 dark:border-amber-500/30',
-                'refunded'                             => 'bg-slate-100 text-slate-600 border-slate-200 dark:bg-slate-700/40 dark:text-slate-300 dark:border-slate-600',
-                default                                => 'bg-slate-100 text-slate-700 border-slate-200 dark:bg-slate-700/40 dark:text-slate-200 dark:border-slate-600',
+                'delivered', 'paid'                    => 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300',
+                'cancelled', 'failed'                  => 'bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-500/10',
+                'pending_payment', 'pending-payment'   => 'bg-amber-100 text-amber-800 border-amber-200 dark:text-amber-300',
+                'refunded'                             => 'bg-slate-100 text-slate-600 border-slate-200',
+                default                                => 'bg-slate-100 text-slate-700 border-slate-200',
             };
         };
 
@@ -257,7 +257,7 @@
                         'label' => __('Pending'),
                         'value' => $stats['pending'] ?? 0,
                         'stripe' => 'bg-accent',
-                        'ic_bg' => 'bg-amber-100 dark:bg-amber-500/10',
+                        'ic_bg' => 'bg-amber-100',
                         'ic_fg' => 'text-accent dark:text-accent',
                         'dot' => 'bg-accent',
                         'foot' => __('Awaits review'),
@@ -288,11 +288,11 @@
                         'value' => $unpaidCount,
                         'stripe' => 'bg-[var(--danger)]',
                         'ic_bg' => 'bg-rose-100 dark:bg-rose-500/10',
-                        'ic_fg' => 'text-rose-700 dark:text-rose-300',
+                        'ic_fg' => 'text-rose-700',
                         'dot' => 'bg-rose-500',
                         'foot' => __('Action needed'),
                         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>',
-                        'foot_class' => 'text-rose-600 dark:text-rose-300 font-semibold',
+                        'foot_class' => 'text-rose-600 font-semibold',
                     ],
                 ];
             @endphp
@@ -323,7 +323,7 @@
                         'value' => $stats['delivered'] ?? 0,
                         'stripe' => 'bg-[var(--success)]',
                         'ic_bg' => 'bg-emerald-100 dark:bg-emerald-500/10',
-                        'ic_fg' => 'text-emerald-700 dark:text-emerald-300',
+                        'ic_fg' => 'text-emerald-700',
                         'dot' => 'bg-emerald-500',
                         'foot' => __('Completed orders'),
                         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/>',
@@ -332,8 +332,8 @@
                         'label' => __('Cancelled'),
                         'value' => $stats['cancelled'] ?? 0,
                         'stripe' => 'bg-[var(--text-muted)]',
-                        'ic_bg' => 'bg-slate-100 dark:bg-slate-700/40',
-                        'ic_fg' => 'text-slate-600 dark:text-slate-300',
+                        'ic_bg' => 'bg-slate-100',
+                        'ic_fg' => 'text-slate-600',
                         'dot' => 'bg-slate-400',
                         'foot' => __('Cancelled orders'),
                         'icon' => '<path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>',

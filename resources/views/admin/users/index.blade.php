@@ -29,15 +29,15 @@
             if ($role === \App\Models\User::ROLE_ADMIN) {
                 return [
                     'label' => __('Admin'),
-                    'chip' => 'border-rose-300 bg-rose-50 text-rose-700 dark:border-rose-400/40 dark:bg-rose-400/10 dark:text-rose-300',
-                    'avatar' => 'bg-rose-100 text-rose-700 dark:bg-rose-400/15 dark:text-rose-300',
+                    'chip' => 'border-rose-300 bg-rose-50 text-rose-700 dark:border-rose-400/40',
+                    'avatar' => 'bg-rose-100 text-rose-700 dark:bg-rose-400/15',
                 ];
             }
             if ($role === \App\Models\User::ROLE_DEALER) {
                 return [
                     'label' => __('Dealer'),
-                    'chip' => 'border-amber-300 bg-amber-50 text-amber-700 dark:border-amber-400/40 dark:bg-amber-400/10 dark:text-amber-300',
-                    'avatar' => 'bg-amber-100 text-amber-700 dark:bg-amber-400/15 dark:text-amber-300',
+                    'chip' => 'border-amber-300 bg-amber-50 text-amber-700',
+                    'avatar' => 'bg-amber-100 text-amber-700',
                 ];
             }
             if (in_array($role, $managerRoleList, true)) {
@@ -74,25 +74,25 @@
                 'label' => __('Active accounts'),
                 'count' => $activeUsers,
                 'swatch' => 'bg-emerald-500',
-                'selected' => 'border-s-2 border-emerald-500 bg-emerald-50 text-emerald-900 dark:bg-emerald-400/10 dark:text-emerald-200',
+                'selected' => 'border-s-2 border-emerald-500 bg-emerald-50 text-emerald-900 dark:text-emerald-200',
             ],
             'banned' => [
                 'label' => __('All banned'),
                 'count' => $bannedUsers,
                 'swatch' => 'bg-rose-500',
-                'selected' => 'border-s-2 border-rose-500 bg-rose-50 text-rose-900 dark:bg-rose-400/10 dark:text-rose-200',
+                'selected' => 'border-s-2 border-rose-500 bg-rose-50 text-rose-900 dark:text-rose-200',
             ],
             'temporarily_banned' => [
                 'label' => __('Temporary Ban'),
                 'count' => $temporarilyBannedUsers,
                 'swatch' => 'bg-accent',
-                'selected' => 'border-s-2 border-amber-400 bg-amber-50 text-amber-950 dark:bg-amber-400/10 dark:text-amber-200',
+                'selected' => 'border-s-2 border-amber-400 bg-amber-50 text-amber-950 dark:text-amber-200',
             ],
             'permanently_banned' => [
                 'label' => __('Permanent Ban'),
                 'count' => $permanentlyBannedUsers,
-                'swatch' => 'bg-slate-950 dark:bg-black',
-                'selected' => 'border-s-2 border-slate-950 bg-slate-100 text-slate-950 dark:border-white dark:bg-white/10 dark:text-white',
+                'swatch' => 'bg-slate-950',
+                'selected' => 'border-s-2 border-slate-950 bg-slate-100 text-slate-950 dark:border-white dark:text-white',
             ],
         ];
 
@@ -113,9 +113,9 @@
                 'label' => __('Total Users'),
                 'count' => $totalUsers,
                 'caption' => __('All accounts'),
-                'card' => 'border-slate-200 dark:border-slate-700/60',
-                'accent' => 'text-slate-500 dark:text-slate-400',
-                'number' => 'text-slate-900 dark:text-white',
+                'card' => 'border-slate-200',
+                'accent' => 'text-slate-500',
+                'number' => 'text-slate-900',
             ],
             'super_admin' => [
                 'label' => __('Super Admins'),
@@ -130,8 +130,8 @@
                 'count' => $adminUsers,
                 'caption' => __(':percent% of all accounts', ['percent' => $sharePercent($adminUsers)]),
                 'card' => 'border-rose-300/70 dark:border-rose-400/35',
-                'accent' => 'text-rose-600 dark:text-rose-300',
-                'number' => 'text-rose-700 dark:text-rose-300',
+                'accent' => 'text-rose-600',
+                'number' => 'text-rose-700',
             ],
             'manager' => [
                 'label' => __('Managers'),
@@ -188,7 +188,7 @@
                     <a
                         href="{{ $filterUrl($key) }}"
                         @class([
-                            'rounded-xl border bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow dark:bg-slate-900',
+                            'rounded-xl border bg-white p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow',
                             $card['card'],
                             'ring-2 ring-accent/60' => $filter === $key,
                         ])
@@ -258,8 +258,8 @@
                                 href="{{ $filterUrl($key) }}"
                                 @class([
                                     'flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition',
-                                    'border-s-2 border-amber-400 bg-amber-50 text-slate-900 dark:bg-amber-400/10 dark:text-white' => $filter === $key,
-                                    'text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800/60' => $filter !== $key,
+                                    'border-s-2 border-amber-400 bg-amber-50 text-slate-900' => $filter === $key,
+                                    'text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/60' => $filter !== $key,
                                 ])
                             >
                                 <span class="flex items-center gap-2.5 min-w-0">
@@ -279,8 +279,8 @@
                                 href="{{ $filterUrl($key) }}"
                                 @class([
                                     'flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition',
-                                    'border-s-2 border-amber-400 bg-amber-50 text-slate-900 dark:bg-amber-400/10 dark:text-white' => $filter === $key,
-                                    'text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800/60' => $filter !== $key,
+                                    'border-s-2 border-amber-400 bg-amber-50 text-slate-900' => $filter === $key,
+                                    'text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/60' => $filter !== $key,
                                 ])
                             >
                                 <span class="flex items-center gap-2.5 min-w-0">
@@ -308,7 +308,7 @@
                                 @class([
                                     'flex items-center justify-between gap-2 rounded-lg px-3 py-2 text-sm font-semibold transition',
                                     $item['selected'] => $filter === $key,
-                                    'text-slate-600 hover:bg-slate-50 dark:text-slate-300 dark:hover:bg-slate-800/60' => $filter !== $key,
+                                    'text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800/60' => $filter !== $key,
                                 ])
                             >
                                 <span class="flex min-w-0 items-center gap-2.5">

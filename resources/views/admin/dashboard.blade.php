@@ -511,9 +511,9 @@
                     // now tells the reader something instead of just varying.
                     // Flat fills, not gradients: a 4px bar has no room for one.
                     $toneClasses = match ($tone) {
-                        'rose' => ['bg-[var(--danger)]', 'bg-rose-50 text-rose-600 dark:bg-rose-900/30 dark:text-rose-300'],
-                        'amber' => ['bg-[var(--warning)]', 'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300'],
-                        'emerald' => ['bg-[var(--success)]', 'bg-emerald-50 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-300'],
+                        'rose' => ['bg-[var(--danger)]', 'bg-rose-50 text-rose-600'],
+                        'amber' => ['bg-[var(--warning)]', 'bg-amber-50 text-amber-700'],
+                        'emerald' => ['bg-[var(--success)]', 'bg-emerald-50 text-emerald-600'],
                         'indigo', 'cyan', 'blue', 'violet' => ['bg-info', 'bg-info/10 text-info'],
                         default => ['bg-[var(--text-muted)]', 'bg-surface-1 text-muted'],
                     };
@@ -1117,8 +1117,8 @@
                             $severity = $product->stock_quantity <= 1 ? 'critical' : ($product->stock_quantity <= ceil($lowStockThreshold / 2) ? 'high' : 'medium');
                             $sevColor = $severity === 'critical' ? '#ef4444' : ($severity === 'high' ? '#f97316' : '#e65c00');
                             $sevText = $severity === 'critical' ? 'CRITICAL' : ($severity === 'high' ? 'HIGH' : 'MEDIUM');
-                            $sevBg = $severity === 'critical' ? 'bg-rose-50 hover:bg-rose-100 dark:bg-rose-950/30' : ($severity === 'high' ? 'bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/30' : 'bg-amber-50 hover:bg-amber-100 dark:bg-amber-950/30');
-                            $sevBorder = $severity === 'critical' ? 'border-rose-200 dark:border-rose-800/50' : ($severity === 'high' ? 'border-orange-200 dark:border-orange-800/50' : 'border-accent dark:border-accent/50');
+                            $sevBg = $severity === 'critical' ? 'bg-rose-50 hover:bg-rose-100' : ($severity === 'high' ? 'bg-orange-50 hover:bg-orange-100 dark:bg-orange-950/30' : 'bg-amber-50 hover:bg-amber-100');
+                            $sevBorder = $severity === 'critical' ? 'border-rose-200' : ($severity === 'high' ? 'border-orange-200 dark:border-orange-800/50' : 'border-accent dark:border-accent/50');
                         @endphp
                         <div class="rounded-2xl border {{ $sevBorder }} {{ $sevBg }} p-4 transition">
                             <div class="flex items-center gap-3">

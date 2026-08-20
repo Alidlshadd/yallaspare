@@ -13,7 +13,7 @@
     </x-slot>
 
     @php
-        $inputBase = 'w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder-slate-400 shadow-sm transition focus:border-info focus:ring-2 focus:ring-accent/30 invalid:border-rose-500 invalid:ring-rose-500/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:placeholder-slate-500';
+        $inputBase = 'w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder-slate-400 shadow-sm transition focus:border-info focus:ring-2 focus:ring-accent/30 invalid:border-rose-500 invalid:ring-rose-500/30 dark:placeholder-slate-500';
         $inputError = 'border-rose-500 focus:border-rose-500 focus:ring-accent/30';
     @endphp
 

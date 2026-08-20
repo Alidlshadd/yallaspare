@@ -23,16 +23,16 @@
         ];
 
         $priorityChip = fn (int $pending) => match (true) {
-            $pending >= 3 => ['label' => __('High demand'), 'class' => 'bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-300'],
-            $pending === 2 => ['label' => __('Medium'), 'class' => 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300'],
-            $pending === 1 => ['label' => __('Low'), 'class' => 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'],
-            default => ['label' => __('Handled'), 'class' => 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-300'],
+            $pending >= 3 => ['label' => __('High demand'), 'class' => 'bg-rose-50 text-rose-600'],
+            $pending === 2 => ['label' => __('Medium'), 'class' => 'bg-amber-50 text-amber-700'],
+            $pending === 1 => ['label' => __('Low'), 'class' => 'bg-slate-100 text-slate-500'],
+            default => ['label' => __('Handled'), 'class' => 'bg-emerald-50 text-emerald-600'],
         };
 
         $stockChip = fn (int $stock) => match (true) {
-            $stock <= 0 => ['label' => __('Out of stock'), 'class' => 'bg-rose-50 text-rose-600 dark:bg-rose-950/40 dark:text-rose-300'],
-            $stock <= $lowStockThreshold => ['label' => __('Low stock'), 'class' => 'bg-amber-50 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300'],
-            default => ['label' => __('In stock'), 'class' => 'bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400'],
+            $stock <= 0 => ['label' => __('Out of stock'), 'class' => 'bg-rose-50 text-rose-600'],
+            $stock <= $lowStockThreshold => ['label' => __('Low stock'), 'class' => 'bg-amber-50 text-amber-700'],
+            default => ['label' => __('In stock'), 'class' => 'bg-slate-100 text-slate-500'],
         };
     @endphp
 
