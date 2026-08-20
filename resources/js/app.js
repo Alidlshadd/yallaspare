@@ -308,6 +308,31 @@ Alpine.data('settingsConsole', () => ({
     },
 }));
 
+// Shipping by governorate: nineteen rows saved in one go, so the submit button
+// stays out of the way until something actually differs from what was loaded.
+Alpine.data('governorateShipping', () => ({
+    dirty: {},
+
+    // Typing a value back to what it started as is not a change, so the key is
+    // dropped rather than left flagged.
+    mark(key, value, original) {
+        if (String(value) === String(original)) {
+            delete this.dirty[key];
+            return;
+        }
+        this.dirty[key] = true;
+    },
+
+    isDirty(key) {
+        return Boolean(this.dirty[key]);
+    },
+
+    // Both inputs on a row count as one changed row.
+    get changedRows() {
+        return new Set(Object.keys(this.dirty).map((key) => key.split('-')[0])).size;
+    },
+}));
+
 // Storefront primary nav: category mega-menu with hover-intent open/close.
 Alpine.data('storeNav', () => ({
     categoriesOpen: false,

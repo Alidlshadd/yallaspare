@@ -703,6 +703,15 @@
                                     <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-gear" aria-hidden="true"></i></span>
                                     <span class="admin-nav-label">{{ __('Settings') }}</span>
                                 </a>
+                                <a
+                                    href="{{ route('admin.shipping.governorates') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.shipping.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Shipping') }}"
+                                    @if(request()->routeIs('admin.shipping.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-truck-fast" aria-hidden="true"></i></span>
+                                    <span class="admin-nav-label">{{ __('Shipping') }}</span>
+                                </a>
                             @endcan
                             @can(\App\Models\User::PERMISSION_ACTIVITY_LOGS_VIEW)
                                 <a

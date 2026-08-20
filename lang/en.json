@@ -3215,5 +3215,14 @@
     "Select variant": "Select variant",
     "Select family": "Select family",
     "Vehicle Variant": "Vehicle Variant",
-    "Request type": "Request type"
+    "Request type": "Request type",
+    "Shipping by Governorate": "Shipping by Governorate",
+    "Set the delivery time and shipping fee for each governorate.": "Set the delivery time and shipping fee for each governorate.",
+    "Governorate": "Governorate",
+    "Days": "Days",
+    "Fee (IQD)": "Fee (IQD)",
+    "rows changed": "rows changed",
+    "Shipping settings saved.": "Shipping settings saved.",
+    "Delivery time (days)": "Delivery time (days)",
+    "Shipping fee (IQD)": "Shipping fee (IQD)"
 }

@@ -3215,5 +3215,14 @@
     "Select variant": "اختر الفئة",
     "Select family": "اختر العائلة",
     "Vehicle Variant": "فئة المركبة",
-    "Request type": "نوع الطلب"
+    "Request type": "نوع الطلب",
+    "Shipping by Governorate": "الشحن حسب المحافظة",
+    "Set the delivery time and shipping fee for each governorate.": "حدّد مدة التوصيل ورسوم الشحن لكل محافظة.",
+    "Governorate": "المحافظة",
+    "Days": "الأيام",
+    "Fee (IQD)": "الرسوم (د.ع)",
+    "rows changed": "صفوف معدّلة",
+    "Shipping settings saved.": "تم حفظ إعدادات الشحن.",
+    "Delivery time (days)": "مدة التوصيل (أيام)",
+    "Shipping fee (IQD)": "رسوم الشحن (د.ع)"
 }

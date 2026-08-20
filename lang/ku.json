@@ -3215,5 +3215,14 @@
     "Select variant": "جۆر هەڵبژێرە",
     "Select family": "خێزان هەڵبژێرە",
     "Vehicle Variant": "جۆری ئۆتۆمبێل",
-    "Request type": "جۆری داواکاری"
+    "Request type": "جۆری داواکاری",
+    "Shipping by Governorate": "ناردن بەپێی پارێزگا",
+    "Set the delivery time and shipping fee for each governorate.": "بۆ هەر پارێزگایەک ماوەی گەیاندن و کرێی ناردن دیاری بکە.",
+    "Governorate": "پارێزگا",
+    "Days": "ڕۆژ",
+    "Fee (IQD)": "کرێ (د.ع)",
+    "rows changed": "ڕیز گۆڕدرا",
+    "Shipping settings saved.": "ڕێکخستنەکانی ناردن پاشەکەوت کران.",
+    "Delivery time (days)": "ماوەی گەیاندن (ڕۆژ)",
+    "Shipping fee (IQD)": "کرێی ناردن (د.ع)"
 }

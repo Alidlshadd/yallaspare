@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\DealerController;
 use App\Http\Controllers\Admin\DiscountCouponController;
 use App\Http\Controllers\Admin\EmailController;
 use App\Http\Controllers\Admin\EmailTemplateController;
+use App\Http\Controllers\Admin\GovernorateShippingController;
 use App\Http\Controllers\Admin\InventoryMovementController;
 use App\Http\Controllers\Admin\LowStockController;
 use App\Http\Controllers\Admin\MessagingController;
@@ -580,6 +581,14 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::put('/settings', [SettingController::class, 'update'])
             ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'password.confirm', 'throttle:admin-write'])
             ->name('settings.update');
+
+        // Shipping — per governorate
+        Route::get('/shipping/governorates', [GovernorateShippingController::class, 'index'])
+            ->middleware('can:'.User::PERMISSION_SETTINGS_MANAGE)
+            ->name('shipping.governorates');
+        Route::put('/shipping/governorates', [GovernorateShippingController::class, 'update'])
+            ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
+            ->name('shipping.governorates.update');
         Route::get('/email', [EmailController::class, 'index'])
             ->middleware('can:'.User::PERMISSION_SETTINGS_MANAGE)
             ->name('email.index');
