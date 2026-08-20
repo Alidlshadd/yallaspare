@@ -33,8 +33,12 @@ class ProductFitmentDetailTest extends TestCase
         $this->get(route('shop.show', $product))
             ->assertOk()
             ->assertSeeText('Fits these vehicles')
-            ->assertSeeText('2 Families')
-            ->assertSeeText('4 Variants')
+            // Lower case on purpose: these read inside a counter line next to
+            // "brands", "results" and the rest, all of which are lower case.
+            // They used to render capitalised only because the keys were
+            // missing and the missing-key handler ucfirst()s what it returns.
+            ->assertSeeText('2 families')
+            ->assertSeeText('4 variants')
             ->assertSeeText('Rexton II')
             ->assertSeeText('Actyon Sports')
             ->assertSeeText('2007–2017')

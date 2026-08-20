@@ -290,12 +290,12 @@
                 @endif
                 <form method="POST" action="{{ route('account.orders.return-request', $order) }}" class="mt-4 space-y-3">
                     @csrf
-                    <select name="type" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm dark:text-white">
+                    <select name="type" aria-label="{{ __('Request type') }}" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm dark:text-white">
                         <option value="return">{{ __('Return') }}</option>
                         <option value="exchange">{{ __('Exchange') }}</option>
                         <option value="refund">{{ __('Refund') }}</option>
                     </select>
-                    <textarea name="reason" rows="3" required maxlength="1500" placeholder="{{ __('Describe the issue and preferred resolution') }}" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm dark:text-white">{{ old('reason') }}</textarea>
+                    <textarea name="reason" rows="3" required maxlength="1500" aria-label="{{ __('Reason') }}" placeholder="{{ __('Describe the issue and preferred resolution') }}" class="w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm dark:text-white">{{ old('reason') }}</textarea>
                     @error('reason')
                         <p class="text-sm font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>
                     @enderror

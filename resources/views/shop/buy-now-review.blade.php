@@ -67,6 +67,7 @@
                 <textarea
                     id="notes"
                     name="notes"
+                    aria-label="{{ __('Notes') }}"
                     rows="4"
                     class="mt-3 block w-full rounded-2xl border border-slate-200/80 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-200 focus:border-primary/20 focus:ring-4 focus:ring-accent/10 dark:bg-slate-950"
                 >{{ old('notes', $defaultDeliveryNote) }}</textarea>
