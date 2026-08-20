@@ -716,7 +716,7 @@
                                                     <form method="POST" action="{{ route('admin.orders.update-status', $order) }}" data-loading-form data-loading-button-text="Saving...">
                                                         @csrf
                                                         @method('PATCH')
-                                                        <select name="status">
+                                                        <select aria-label="{{ __('Order status') }}" name="status">
                                                             @foreach($statusOptions as $status)
                                                                 <option value="{{ $status }}"
                                                                         @selected($order->status === $status)

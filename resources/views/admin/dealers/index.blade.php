@@ -101,7 +101,7 @@
                         placeholder="{{ __('Search name, email, phone...') }}"
                         class="min-w-0 flex-[2_1_240px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100"
                     >
-                    <select id="status" name="status" class="min-w-0 flex-[1_1_150px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                    <select aria-label="{{ __('Status') }}" id="status" name="status" class="min-w-0 flex-[1_1_150px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                         <option value="">{{ __('All statuses') }}</option>
                         <option value="active" @selected($status === 'active')>{{ __('Active') }}</option>
                         <option value="inactive" @selected($status === 'inactive')>{{ __('Inactive') }}</option>
@@ -115,7 +115,7 @@
             {{-- ============ dealer roster ============ --}}
             <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
                 <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3">
-                    <i class="fas fa-handshake text-muted"></i>
+                    <i class="fas fa-handshake text-muted" aria-hidden="true"></i>
                     <h3 class="text-sm font-bold text-slate-800">{{ __('Dealer Directory') }}</h3>
                     <span class="ms-auto text-xs font-semibold text-muted">
                         {{ __(':from–:to of :total', ['from' => $dealers->firstItem() ?? 0, 'to' => $dealers->lastItem() ?? 0, 'total' => $dealers->total()]) }}
@@ -191,7 +191,7 @@
                                         <div class="flex items-center justify-end gap-1.5">
                                             @if ($canViewUsers)
                                                 <a href="{{ route('admin.users.show', $dealer) }}" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-xs text-slate-500 hover:border-slate-400 hover:text-slate-800 dark:hover:text-slate-100" title="{{ __('View dealer') }}" aria-label="{{ __('View dealer') }}">
-                                                    <i class="fas fa-eye"></i>
+                                                    <i class="fas fa-eye" aria-hidden="true"></i>
                                                 </a>
                                             @endif
                                             <button type="button" class="rounded-lg bg-navy-deep px-3 py-1.5 text-sm font-bold text-white hover:bg-navy-raised" @click="openDrawer">
@@ -203,7 +203,7 @@
                             @empty
                                 <tr>
                                     <td colspan="8" class="px-4 py-12 text-center">
-                                        <i class="fas fa-handshake-slash mb-3 block text-2xl text-slate-300"></i>
+                                        <i class="fas fa-handshake-slash mb-3 block text-2xl text-slate-300" aria-hidden="true"></i>
                                         <p class="text-sm font-bold text-slate-600">{{ __('No dealers found') }}</p>
                                         <p class="mt-1 text-xs text-muted">{{ __('Try adjusting the search query or switching the status filter. Dealers are promoted from user accounts.') }}</p>
                                         <div class="mt-4 flex justify-center gap-2">
@@ -236,7 +236,7 @@
                     <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                         <div class="flex items-start justify-between gap-2">
                             <p class="text-[10px] font-bold uppercase tracking-[0.13em] text-muted">{{ $tile['label'] }}</p>
-                            <i class="fas {{ $tile['icon'] }} text-accent"></i>
+                            <i class="fas {{ $tile['icon'] }} text-accent" aria-hidden="true"></i>
                         </div>
                         @if ($tile['dealer'])
                             <p class="mt-2 truncate text-sm font-bold text-slate-900">{{ $tile['dealer']->name }}</p>
@@ -310,7 +310,7 @@
 
                     <div class="flex flex-wrap items-center gap-2 border-t border-slate-200 px-5 py-3.5">
                         <a x-show="drawerHasView" :href="drawerViewUrl" class="rounded-lg border border-slate-200 px-3.5 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800">
-                            <i class="fas fa-eye me-1"></i>{{ __('View profile') }}
+                            <i class="fas fa-eye me-1" aria-hidden="true"></i>{{ __('View profile') }}
                         </a>
                         <form method="POST" :action="drawerDemoteUrl" class="ms-auto" data-confirm="{{ __('Convert this dealer to regular user?') }}">
                             @csrf

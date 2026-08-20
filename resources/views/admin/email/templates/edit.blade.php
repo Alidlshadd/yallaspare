@@ -5,7 +5,7 @@
                 <a href="{{ route('admin.email.templates.index') }}"
                    class="h-10 w-10 rounded-xl border border-slate-200 bg-white text-slate-600 grid place-items-center hover:bg-slate-50 dark:hover:bg-slate-800"
                    title="{{ __('Back to templates') }}">
-                    <i class="fas fa-arrow-left text-xs"></i>
+                    <i class="fas fa-arrow-left text-xs" aria-hidden="true"></i>
                 </a>
                 <div>
                     <p class="text-[10px] uppercase tracking-[0.22em] text-muted font-bold leading-none">
@@ -18,7 +18,7 @@
                     <h2 class="text-2xl font-semibold text-slate-900 mt-1">
                         {{ $meta['title'] }}
                         <span class="ml-2 inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2.5 py-1 text-xs font-bold border border-primary/20 dark:bg-primary/20 dark:text-info dark:border-primary/40">
-                            <i class="fas fa-globe text-[10px]"></i> {{ strtoupper($locale) }}
+                            <i class="fas fa-globe text-[10px]" aria-hidden="true"></i> {{ strtoupper($locale) }}
                         </span>
                     </h2>
                 </div>
@@ -38,7 +38,7 @@
 
         @if(! $tableExists)
             <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800 dark:text-amber-200">
-                <i class="fas fa-triangle-exclamation mr-1"></i>
+                <i class="fas fa-triangle-exclamation mr-1" aria-hidden="true"></i>
                 {{ __('Email templates table is not installed yet. Run the pending migrations to enable saving edits.') }}
             </div>
         @endif
@@ -78,21 +78,21 @@
                     <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
                         <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">{{ __('Body (HTML)') }}</p>
                         <div class="rt-toolbar flex items-center flex-wrap gap-0.5">
-                            <button type="button" data-md="bold" title="{{ __('Bold') }}" class="rt-btn"><i class="fas fa-bold text-xs"></i></button>
-                            <button type="button" data-md="italic" title="{{ __('Italic') }}" class="rt-btn"><i class="fas fa-italic text-xs"></i></button>
-                            <button type="button" data-md="strike" title="{{ __('Strike') }}" class="rt-btn"><i class="fas fa-strikethrough text-xs"></i></button>
+                            <button type="button" data-md="bold" title="{{ __('Bold') }}" class="rt-btn"><i class="fas fa-bold text-xs" aria-hidden="true"></i></button>
+                            <button type="button" data-md="italic" title="{{ __('Italic') }}" class="rt-btn"><i class="fas fa-italic text-xs" aria-hidden="true"></i></button>
+                            <button type="button" data-md="strike" title="{{ __('Strike') }}" class="rt-btn"><i class="fas fa-strikethrough text-xs" aria-hidden="true"></i></button>
                             <span class="rt-sep"></span>
-                            <button type="button" data-md="h1" title="{{ __('Heading') }}" class="rt-btn"><i class="fas fa-heading text-xs"></i></button>
+                            <button type="button" data-md="h1" title="{{ __('Heading') }}" class="rt-btn"><i class="fas fa-heading text-xs" aria-hidden="true"></i></button>
                             <span class="rt-sep"></span>
-                            <button type="button" data-md="ul" title="{{ __('Bullet list') }}" class="rt-btn"><i class="fas fa-list-ul text-xs"></i></button>
-                            <button type="button" data-md="ol" title="{{ __('Numbered list') }}" class="rt-btn"><i class="fas fa-list-ol text-xs"></i></button>
-                            <button type="button" data-md="link" title="{{ __('Link') }}" class="rt-btn"><i class="fas fa-link text-xs"></i></button>
+                            <button type="button" data-md="ul" title="{{ __('Bullet list') }}" class="rt-btn"><i class="fas fa-list-ul text-xs" aria-hidden="true"></i></button>
+                            <button type="button" data-md="ol" title="{{ __('Numbered list') }}" class="rt-btn"><i class="fas fa-list-ol text-xs" aria-hidden="true"></i></button>
+                            <button type="button" data-md="link" title="{{ __('Link') }}" class="rt-btn"><i class="fas fa-link text-xs" aria-hidden="true"></i></button>
                             <span class="rt-sep"></span>
-                            <button type="button" data-md="p" title="{{ __('Paragraph') }}" class="rt-btn"><i class="fas fa-paragraph text-xs"></i></button>
+                            <button type="button" data-md="p" title="{{ __('Paragraph') }}" class="rt-btn"><i class="fas fa-paragraph text-xs" aria-hidden="true"></i></button>
                         </div>
                     </div>
                     <div class="p-5">
-                        <textarea name="body_html" id="editor-body" rows="16" required maxlength="65000"
+                        <textarea aria-label="{{ __('Body (HTML)') }}" name="body_html" id="editor-body" rows="16" required maxlength="65000"
                                   class="w-full rounded-xl border border-slate-200 bg-slate-50 text-slate-900 font-mono text-[13px] leading-relaxed focus:border-primary focus:bg-white focus:ring-2 focus:ring-accent/20 transition resize-y">{{ $body_html }}</textarea>
                         @error('body_html')<p class="mt-1 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                         <p class="mt-2 text-[10px] font-mono text-muted">
@@ -103,7 +103,7 @@
                 </div>
 
                 <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs text-amber-800 dark:text-amber-200">
-                    <i class="fas fa-lightbulb"></i>
+                    <i class="fas fa-lightbulb" aria-hidden="true"></i>
                     {{ __('Only the subject and body are editable — the email chrome (logo, hero, footer) stays fixed. Variables in curly braces get substituted at send time.') }}
                 </div>
 
@@ -111,10 +111,10 @@
                 <div class="flex items-center gap-2">
                     <button type="submit" @disabled(! $tableExists)
                             class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-br from-primary to-navy-raised px-5 py-3 text-sm font-bold text-white shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition disabled:cursor-not-allowed disabled:from-slate-400 disabled:to-slate-500 disabled:shadow-none">
-                        <i class="fas fa-check"></i> {{ __('Save template') }}
+                        <i class="fas fa-check" aria-hidden="true"></i> {{ __('Save template') }}
                     </button>
                     <a href="{{ route('admin.email.templates.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800">
-                        <i class="fas fa-xmark"></i> {{ __('Cancel') }}
+                        <i class="fas fa-xmark" aria-hidden="true"></i> {{ __('Cancel') }}
                     </a>
                     @if($override)
                         <span class="ml-auto font-mono text-[10px] text-muted">
@@ -130,7 +130,7 @@
                     <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
                         <div class="flex items-center gap-2">
                             <div class="h-7 w-7 rounded-lg bg-emerald-100 text-emerald-700 grid place-items-center dark:bg-emerald-900/50">
-                                <i class="fas fa-eye text-[10px]"></i>
+                                <i class="fas fa-eye text-[10px]" aria-hidden="true"></i>
                             </div>
                             <p class="text-sm font-bold text-primary leading-none dark:text-white">{{ __('Live preview') }}</p>
                         </div>

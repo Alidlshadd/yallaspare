@@ -16,7 +16,7 @@
                 <h1 class="mt-1 text-xl font-bold text-slate-900">{{ __('Create Vehicle Variant') }}</h1>
             </div>
             <a href="{{ route('admin.vehicle-fitments.index') }}" class="vf-btn sm">
-                <i class="fas fa-arrow-left text-[9px]"></i> {{ __('Back to Vehicle Finder') }}
+                <i class="fas fa-arrow-left text-[9px]" aria-hidden="true"></i> {{ __('Back to Vehicle Finder') }}
             </a>
         </div>
 

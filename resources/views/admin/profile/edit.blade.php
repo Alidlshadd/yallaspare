@@ -38,7 +38,7 @@
                                 </div>
                             @endif
                             <span class="absolute -bottom-1 -right-1 flex h-6 w-6 items-center justify-center rounded-lg border border-navy-deep {{ $isVerified ? 'bg-emerald-400 text-emerald-950' : 'bg-rose-400 text-rose-950' }}">
-                                <i class="fas {{ $isVerified ? 'fa-check' : 'fa-exclamation' }} text-[10px]"></i>
+                                <i class="fas {{ $isVerified ? 'fa-check' : 'fa-exclamation' }} text-[10px]" aria-hidden="true"></i>
                             </span>
                         </div>
 
@@ -57,15 +57,15 @@
 
                     <div class="flex flex-wrap gap-2">
                         <span class="inline-flex items-center gap-2 rounded-lg border border-white/15 bg-white/10 px-3 py-2 text-xs font-bold text-white">
-                            <i class="fas fa-shield-halved text-white/70"></i>
+                            <i class="fas fa-shield-halved text-white/70" aria-hidden="true"></i>
                             {{ $roleLabel }}
                         </span>
                         <span class="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-bold {{ $isVerified ? 'border-emerald-300/30 bg-emerald-400/10 text-emerald-100' : 'border-rose-300/30 bg-rose-400/10 text-rose-100' }}">
-                            <i class="fas {{ $isVerified ? 'fa-circle-check' : 'fa-circle-exclamation' }}"></i>
+                            <i class="fas {{ $isVerified ? 'fa-circle-check' : 'fa-circle-exclamation' }}" aria-hidden="true"></i>
                             {{ $isVerified ? __('Verified Email') : __('Email Pending') }}
                         </span>
                         <span class="inline-flex items-center gap-2 rounded-lg border px-3 py-2 text-xs font-bold {{ $adminTwoFactorRequired ? 'border-info/30 bg-info/10 text-info' : 'border-slate-300/30 bg-white/10 text-slate-100' }}">
-                            <i class="fas fa-lock"></i>
+                            <i class="fas fa-lock" aria-hidden="true"></i>
                             {{ $adminTwoFactorRequired ? __('Admin 2FA') : __('2FA Optional') }}
                         </span>
                     </div>
@@ -102,21 +102,21 @@
                         <div class="flex items-center justify-between gap-3 px-5 py-3">
                             <span class="text-sm font-semibold text-slate-500">{{ __('Email') }}</span>
                             <span class="inline-flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs font-bold {{ $isVerified ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300' : 'bg-rose-50 text-rose-700 dark:bg-rose-950/30 dark:text-rose-300' }}">
-                                <i class="fas {{ $isVerified ? 'fa-check' : 'fa-clock' }} text-[10px]"></i>
+                                <i class="fas {{ $isVerified ? 'fa-check' : 'fa-clock' }} text-[10px]" aria-hidden="true"></i>
                                 {{ $isVerified ? __('Verified') : __('Pending') }}
                             </span>
                         </div>
                         <div class="flex items-center justify-between gap-3 px-5 py-3">
                             <span class="text-sm font-semibold text-slate-500">{{ __('Admin 2FA') }}</span>
                             <span class="inline-flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs font-bold {{ $adminTwoFactorRequired ? 'bg-info text-info dark:bg-info/30 dark:text-info' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300' }}">
-                                <i class="fas fa-key text-[10px]"></i>
+                                <i class="fas fa-key text-[10px]" aria-hidden="true"></i>
                                 {{ $adminTwoFactorRequired ? __('Required') : __('Optional') }}
                             </span>
                         </div>
                         <div class="flex items-center justify-between gap-3 px-5 py-3">
                             <span class="text-sm font-semibold text-slate-500">{{ __('Profile Photo') }}</span>
                             <span class="inline-flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs font-bold {{ $profilePhotoUrl ? 'bg-info text-info dark:bg-info/30 dark:text-info' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300' }}">
-                                <i class="fas fa-image text-[10px]"></i>
+                                <i class="fas fa-image text-[10px]" aria-hidden="true"></i>
                                 {{ $profilePhotoUrl ? __('Set') : __('Initials') }}
                             </span>
                         </div>
@@ -136,7 +136,7 @@
                             <div class="flex flex-wrap gap-2">
                                 @foreach ($visiblePermissions as $permission)
                                     <span class="inline-flex max-w-full items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-bold text-slate-700">
-                                        <i class="fas fa-check text-[10px] text-emerald-500"></i>
+                                        <i class="fas fa-check text-[10px] text-emerald-500" aria-hidden="true"></i>
                                         <span class="truncate">{{ $permission['label'] }}</span>
                                     </span>
                                 @endforeach
@@ -160,7 +160,7 @@
                         </div>
                         @if (session('status') === 'profile-updated')
                             <p x-data="reveal" x-show="show" x-transition x-init="autoHide()" class="inline-flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700">
-                                <i class="fas fa-check"></i>
+                                <i class="fas fa-check" aria-hidden="true"></i>
                                 {{ __('Saved') }}
                             </p>
                         @endif
@@ -180,7 +180,7 @@
                                             <span class="flex h-full w-full items-center justify-center bg-navy-deep text-4xl font-bold text-accent">{{ $avatarInitial }}</span>
                                         @endif
                                         <span class="absolute inset-x-3 bottom-3 inline-flex items-center justify-center gap-2 rounded-lg bg-slate-950/80 px-3 py-2 text-xs font-bold text-white opacity-0 shadow-sm transition group-hover:opacity-100">
-                                            <i class="fas fa-camera"></i>
+                                            <i class="fas fa-camera" aria-hidden="true"></i>
                                             {{ __('Change Photo') }}
                                         </span>
                                     </span>
@@ -225,7 +225,7 @@
                                             <p class="mt-1 text-sm font-bold text-slate-700">{{ $isVerified ? __('Verified address') : __('Verification required after email changes') }}</p>
                                         </div>
                                         <span class="inline-flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-bold {{ $isVerified ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300' : 'bg-rose-100 text-rose-700 dark:bg-rose-950/40 dark:text-rose-300' }}">
-                                            <i class="fas {{ $isVerified ? 'fa-circle-check' : 'fa-triangle-exclamation' }}"></i>
+                                            <i class="fas {{ $isVerified ? 'fa-circle-check' : 'fa-triangle-exclamation' }}" aria-hidden="true"></i>
                                             {{ $isVerified ? __('Verified') : __('Pending') }}
                                         </span>
                                     </div>
@@ -235,7 +235,7 @@
 
                         <div class="mt-5 flex flex-wrap items-center justify-end gap-3 border-t border-slate-200 pt-5">
                             <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-bold text-slate-900 shadow-sm transition hover:bg-accent focus:outline-none focus:ring-4 focus:ring-accent/20">
-                                <i class="fas fa-floppy-disk"></i>
+                                <i class="fas fa-floppy-disk" aria-hidden="true"></i>
                                 {{ __('Save Profile') }}
                             </button>
                         </div>
@@ -250,7 +250,7 @@
                         </div>
                         @if (session('status') === 'password-updated')
                             <p x-data="reveal" x-show="show" x-transition x-init="autoHide()" class="inline-flex items-center gap-2 rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-700">
-                                <i class="fas fa-check"></i>
+                                <i class="fas fa-check" aria-hidden="true"></i>
                                 {{ __('Saved') }}
                             </p>
                         @endif
@@ -282,11 +282,11 @@
 
                         <div class="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-slate-200 pt-5">
                             <div class="flex items-center gap-2 text-xs font-semibold text-slate-500">
-                                <i class="fas fa-shield-halved text-emerald-500"></i>
+                                <i class="fas fa-shield-halved text-emerald-500" aria-hidden="true"></i>
                                 <span>{{ __('Strong password rules are enforced.') }}</span>
                             </div>
                             <button type="submit" class="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-bold text-white transition hover:bg-slate-700 focus:outline-none focus:ring-4 focus:ring-accent/20 dark:text-slate-950 dark:hover:bg-white">
-                                <i class="fas fa-key"></i>
+                                <i class="fas fa-key" aria-hidden="true"></i>
                                 {{ __('Update Password') }}
                             </button>
                         </div>

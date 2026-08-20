@@ -13,14 +13,14 @@
             <span class="text-[11px] font-bold uppercase tracking-[.12em] text-slate-600">{{ __('Vehicle Fitment') }}</span>
         </span>
         <button type="button" class="vf-btn danger sm" data-remove-fitment-row>
-            <i class="fas fa-trash text-[9px]"></i> {{ __('Remove') }}
+            <i class="fas fa-trash text-[9px]" aria-hidden="true"></i> {{ __('Remove') }}
         </button>
     </div>
 
     <div class="grid gap-3 md:grid-cols-2">
         <div>
             <label class="vf-lbl">{{ __('Vehicle Brand') }}</label>
-            <select name="fitments[{{ $rowIndex }}][vehicle_brand_id]" required data-admin-vehicle-brand class="vf-sel">
+            <select aria-label="{{ __('Vehicle Brand') }}" name="fitments[{{ $rowIndex }}][vehicle_brand_id]" required data-admin-vehicle-brand class="vf-sel">
                 <option value="">{{ __('Select brand') }}</option>
                 @foreach($brands as $brand)
                     <option value="{{ $brand->id }}" @selected($selectedBrandId === (string) $brand->id)>{{ $brand->name }}</option>
@@ -29,7 +29,7 @@
         </div>
         <div>
             <label class="vf-lbl">{{ __('Model Family') }}</label>
-            <select name="fitments[{{ $rowIndex }}][vehicle_model_family_id]" required data-admin-vehicle-family class="vf-sel">
+            <select aria-label="{{ __('Model Family') }}" name="fitments[{{ $rowIndex }}][vehicle_model_family_id]" required data-admin-vehicle-family class="vf-sel">
                 <option value="">{{ __('Select family') }}</option>
                 @foreach($brands as $brand)
                     @foreach($brand->modelFamilies as $family)
@@ -40,7 +40,7 @@
         </div>
         <div>
             <label class="vf-lbl">{{ __('Vehicle Variant') }}</label>
-            <select name="fitments[{{ $rowIndex }}][vehicle_model_id]" required data-admin-vehicle-model class="vf-sel">
+            <select aria-label="{{ __('Vehicle Variant') }}" name="fitments[{{ $rowIndex }}][vehicle_model_id]" required data-admin-vehicle-model class="vf-sel">
                 <option value="">{{ __('Select variant') }}</option>
                 @foreach($brands as $brand)
                     @foreach($brand->models as $model)
@@ -55,7 +55,7 @@
         </div>
         <div>
             <label class="vf-lbl">{{ __('Engine') }}</label>
-            <select name="fitments[{{ $rowIndex }}][engine]" class="vf-sel" data-admin-engine>
+            <select aria-label="{{ __('Engine') }}" name="fitments[{{ $rowIndex }}][engine]" class="vf-sel" data-admin-engine>
                 <option value="">{{ __('Any configured petrol engine') }}</option>
                 @if(trim((string) ($row['engine'] ?? '')) !== '')
                     <option value="{{ $row['engine'] }}" selected>{{ $row['engine'] }}</option>

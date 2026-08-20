@@ -569,7 +569,7 @@
                             <div class="grid grid-cols-2 gap-2">
                                 <div>
                                     <label class="block text-[10px] font-bold uppercase tracking-widest text-slate-500 mb-1">{{ __('Status') }}</label>
-                                    <select name="status"
+                                    <select aria-label="{{ __('Status') }}" name="status"
                                             class="ret-select h-10 w-full px-2.5 rounded-lg border border-slate-200 bg-white text-[12.5px] font-semibold text-slate-900 transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30">
                                         @foreach($statuses as $status)
                                             <option value="{{ $status }}" @selected($requestRow->status === $status)>

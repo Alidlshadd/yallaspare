@@ -142,7 +142,7 @@
                         <p class="mt-0.5 text-[11.5px] text-slate-500">{{ __('Add one row per engine offered on this variant. Electric variants need no engine size.') }}</p>
                     </div>
                     <button type="button" class="vf-btn sm" data-engine-add>
-                        <i class="fas fa-plus text-[9px]"></i> {{ __('Add Engine') }}
+                        <i class="fas fa-plus text-[9px]" aria-hidden="true"></i> {{ __('Add Engine') }}
                     </button>
                 </div>
 
@@ -184,13 +184,13 @@
                     <div class="grid aspect-[4/3] w-full place-items-center overflow-hidden rounded-xl border border-dashed border-slate-300 bg-slate-50 dark:border-slate-600">
                         <img src="{{ $currentImage }}" alt="" class="h-full w-full object-cover" data-image-preview @unless($currentImage) hidden @endunless>
                         <span class="flex flex-col items-center gap-2 px-4 text-center text-muted" data-image-placeholder @if($currentImage) hidden @endif>
-                            <i class="fas fa-car-side text-3xl"></i>
+                            <i class="fas fa-car-side text-3xl" aria-hidden="true"></i>
                             <span class="text-[11px] font-semibold">{{ __('No image selected') }}</span>
                         </span>
                     </div>
 
                     <label class="vf-btn mt-3 w-full cursor-pointer">
-                        <i class="fas fa-arrow-up-from-bracket text-[10px]"></i>
+                        <i class="fas fa-arrow-up-from-bracket text-[10px]" aria-hidden="true"></i>
                         <span data-image-button-label>{{ $currentImage ? __('Replace Image') : __('Choose Image') }}</span>
                         <input type="file" name="image" class="sr-only" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp" data-image-input>
                     </label>
@@ -210,7 +210,7 @@
             <section class="rounded-2xl border border-slate-200 bg-white p-5">
                 <div class="flex flex-col gap-2">
                     <button class="vf-btn gold w-full">
-                        <i class="fas fa-check text-[10px]"></i>
+                        <i class="fas fa-check text-[10px]" aria-hidden="true"></i>
                         {{ $isEdit ? __('Save Changes') : __('Create Variant') }}
                     </button>
                     <a href="{{ route('admin.vehicle-fitments.index') }}" class="vf-btn w-full">{{ __('Cancel') }}</a>

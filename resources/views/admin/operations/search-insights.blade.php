@@ -102,12 +102,12 @@
                     @if ($zeroHitOnly)<input type="hidden" name="zero_hit" value="1">@endif
                     <input type="search" name="search" value="{{ $search }}" placeholder="{{ __('Search keyword') }}"
                            class="h-9 rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                    <select name="sort" class="h-9 rounded-xl border-slate-300 py-0 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                    <select aria-label="{{ __('Sort') }}" name="sort" class="h-9 rounded-xl border-slate-300 py-0 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                         @foreach($sortLabels as $value => $label)
                             <option value="{{ $value }}" @selected($sort === $value)>{{ $label }}</option>
                         @endforeach
                     </select>
-                    <select name="dir" class="h-9 rounded-xl border-slate-300 py-0 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                    <select aria-label="{{ __('Direction') }}" name="dir" class="h-9 rounded-xl border-slate-300 py-0 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                         <option value="desc" @selected($direction === 'desc')>{{ __('Descending') }}</option>
                         <option value="asc" @selected($direction === 'asc')>{{ __('Ascending') }}</option>
                     </select>

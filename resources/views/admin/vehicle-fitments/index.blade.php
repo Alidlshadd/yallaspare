@@ -317,7 +317,7 @@
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div class="flex items-center gap-3">
                         <span class="w-10 h-10 rounded-xl grid place-items-center bg-navy-deep text-accent shrink-0">
-                            <i class="fas fa-car-side text-sm"></i>
+                            <i class="fas fa-car-side text-sm" aria-hidden="true"></i>
                         </span>
                         <div>
                             <div class="text-xl font-bold text-slate-900 leading-none">{{ number_format((int) $stats['brands']) }}</div>
@@ -326,7 +326,7 @@
                     </div>
                     <div class="flex items-center gap-3">
                         <span class="w-10 h-10 rounded-xl grid place-items-center bg-emerald-50 text-emerald-600 shrink-0">
-                            <i class="fas fa-layer-group text-sm"></i>
+                            <i class="fas fa-layer-group text-sm" aria-hidden="true"></i>
                         </span>
                         <div>
                             <div class="text-xl font-bold text-slate-900 leading-none">{{ number_format((int) $stats['models']) }}</div>
@@ -335,7 +335,7 @@
                     </div>
                     <div class="flex items-center gap-3">
                         <span class="w-10 h-10 rounded-xl grid place-items-center bg-amber-50 text-amber-600 shrink-0">
-                            <i class="fas fa-link text-sm"></i>
+                            <i class="fas fa-link text-sm" aria-hidden="true"></i>
                         </span>
                         <div>
                             <div class="text-xl font-bold text-slate-900 leading-none">{{ number_format((int) $stats['fitments']) }}</div>
@@ -387,7 +387,7 @@
                             <p class="text-[11px] text-slate-500">{{ __('Names, production years, engines and an image are set on the variant page.') }}</p>
                         </div>
                         <a href="{{ route('admin.vehicle-fitments.models.create') }}" class="vf-btn gold w-full">
-                            <i class="fas fa-plus text-[10px]"></i> {{ __('Create Variant') }}
+                            <i class="fas fa-plus text-[10px]" aria-hidden="true"></i> {{ __('Create Variant') }}
                         </a>
                     </div>
                 </div>
@@ -396,7 +396,7 @@
                     @forelse($brands as $brand)
                         <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white">
                             <div class="flex items-center justify-between gap-3 bg-navy-deep px-4 py-3 text-white dark:bg-slate-950">
-                                <span class="flex items-center gap-2.5 text-sm font-bold tracking-wide"><i class="fas fa-car-side text-accent"></i>{{ $brand->name }}</span>
+                                <span class="flex items-center gap-2.5 text-sm font-bold tracking-wide"><i class="fas fa-car-side text-accent" aria-hidden="true"></i>{{ $brand->name }}</span>
                                 <span class="font-mono text-[10px] text-slate-300">{{ $brand->modelFamilies->count() }} {{ __('families') }}</span>
                             </div>
                             <div class="space-y-2.5 p-3">
@@ -410,7 +410,7 @@
                                                 <span class="block text-[12px] font-bold uppercase tracking-[.12em] text-slate-900">{{ $family->localizedName() }}</span>
                                                 <span class="mt-1 block font-mono text-[10px] text-slate-500">{{ $family->variants->count() }} {{ __('variants') }} · {{ $familyFitments }} {{ __('fitment rules') }}</span>
                                             </span>
-                                            <i class="fas fa-chevron-down text-[10px] text-accent transition duration-200 group-open:rotate-180"></i>
+                                            <i class="fas fa-chevron-down text-[10px] text-accent transition duration-200 group-open:rotate-180" aria-hidden="true"></i>
                                         </summary>
                                         <div class="grid gap-3 border-t border-slate-200 p-3 md:grid-cols-2 2xl:grid-cols-3">
                                             <form method="POST" action="{{ route('admin.vehicle-fitments.families.update', $family) }}" class="grid gap-2 rounded-xl border border-dashed border-amber-300 bg-amber-50/60 p-3 dark:bg-amber-500/5 md:col-span-2 2xl:col-span-3 sm:grid-cols-[1fr_1fr_1fr_auto] sm:items-end">
@@ -427,7 +427,7 @@
                                                             @if($model->image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($model->image_path))
                                                                 <img src="{{ asset('storage/'.ltrim($model->image_path, '/')) }}" alt="{{ $model->localizedName() }}" class="h-16 w-20 rounded-lg border border-slate-200 bg-slate-50 object-cover">
                                                             @else
-                                                                <span class="grid h-16 w-20 shrink-0 place-items-center rounded-lg border border-dashed border-slate-300 bg-slate-50 text-muted dark:border-slate-700"><i class="fas fa-car-side text-xl"></i></span>
+                                                                <span class="grid h-16 w-20 shrink-0 place-items-center rounded-lg border border-dashed border-slate-300 bg-slate-50 text-muted dark:border-slate-700"><i class="fas fa-car-side text-xl" aria-hidden="true"></i></span>
                                                             @endif
                                                             <div class="min-w-0 flex-1">
                                                                 <h4 class="truncate text-sm font-bold text-slate-900">{{ $model->localizedName() }}</h4>
@@ -442,10 +442,10 @@
                                                             </div>
                                                         </div>
                                                         <div class="mt-3 flex justify-end gap-1.5 border-t border-slate-100 pt-2.5">
-                                                            <a href="{{ route('admin.vehicle-fitments.models.edit', $model) }}" class="vf-btn sm"><i class="fas fa-pen text-[9px]"></i> {{ __('Edit') }}</a>
+                                                            <a href="{{ route('admin.vehicle-fitments.models.edit', $model) }}" class="vf-btn sm"><i class="fas fa-pen text-[9px]" aria-hidden="true"></i> {{ __('Edit') }}</a>
                                                             <form method="POST" action="{{ route('admin.vehicle-fitments.models.destroy', $model) }}" data-danger-confirm data-danger-title="{{ __('Delete Vehicle Variant') }}" data-danger-description="{{ __('Variants used by product fitments cannot be deleted.') }}">
                                                                 @csrf @method('DELETE')
-                                                                <button class="vf-btn danger sm"><i class="fas fa-trash text-[9px]"></i></button>
+                                                                <button class="vf-btn danger sm" aria-label="{{ __('Delete Vehicle Variant') }}"><i class="fas fa-trash text-[9px]" aria-hidden="true"></i></button>
                                                             </form>
                                                         </div>
                                                     </div>
@@ -473,7 +473,7 @@
             <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-slate-100 bg-gradient-to-b from-accent/60 to-white dark:from-accent/5 dark:to-slate-900">
                 <div class="flex items-center gap-3">
                     <span class="w-9 h-9 rounded-xl bg-navy-deep text-accent grid place-items-center dark:bg-accent dark:text-navy-deep">
-                        <i class="fas fa-link text-xs"></i>
+                        <i class="fas fa-link text-xs" aria-hidden="true"></i>
                     </span>
                     <div>
                         <h2 class="text-sm font-bold text-slate-900">{{ __('Add Product Fitment') }}</h2>
@@ -481,7 +481,7 @@
                     </div>
                 </div>
                 <button type="button" data-vf-close-fitment class="vf-btn sm" aria-label="{{ __('Close') }}">
-                    <i class="fas fa-times text-[10px]"></i> {{ __('Close') }}
+                    <i class="fas fa-times text-[10px]" aria-hidden="true"></i> {{ __('Close') }}
                 </button>
             </div>
 
@@ -519,7 +519,7 @@
                                 class="vf-inp"
                                 data-admin-product-filter
                             >
-                            <select name="product_id" required class="vf-sel" data-admin-product-select>
+                            <select aria-label="{{ __('Product') }}" name="product_id" required class="vf-sel" data-admin-product-select>
                                 <option value="">{{ __('Select product') }}</option>
                                 @foreach($products as $product)
                                     <option value="{{ $product->id }}" @selected(old('product_id') == $product->id) data-search="{{ Str::lower(trim($product->name . ' ' . $product->sku . ' ' . $product->brand)) }}">
@@ -548,14 +548,14 @@
 
                     <div class="flex flex-wrap items-center gap-2.5">
                         <button type="button" class="vf-btn" data-add-fitment-row>
-                            <i class="fas fa-plus text-[10px]"></i>
+                            <i class="fas fa-plus text-[10px]" aria-hidden="true"></i>
                             {{ __('Add Another Vehicle') }}
                         </button>
                         <span class="vf-mono-chip" data-fitment-count>{{ count($fitmentRows) }} {{ __('vehicles') }}</span>
                     </div>
 
                     <button class="vf-btn gold w-full sm:w-auto px-6">
-                        <i class="fas fa-link text-[10px]"></i>
+                        <i class="fas fa-link text-[10px]" aria-hidden="true"></i>
                         {{ __('Save All Fitments') }}
                     </button>
                 </div>
@@ -636,7 +636,7 @@
                             @if($fitmentProductImage)
                                 <img src="{{ $fitmentProductImage }}" alt="{{ $fitment->product?->name ?? __('Product') }}" loading="lazy">
                             @else
-                                <i class="fas fa-image text-sm"></i>
+                                <i class="fas fa-image text-sm" aria-hidden="true"></i>
                             @endif
                         </div>
                         <div class="min-w-0">
@@ -679,14 +679,14 @@
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="vf-btn danger sm" title="{{ __('Delete') }}">
-                            <i class="fas fa-trash text-[10px]"></i>
+                            <i class="fas fa-trash text-[10px]" aria-hidden="true"></i>
                         </button>
                     </form>
                 </div>
             @empty
                 <div class="px-6 py-14 text-center">
                     <div class="mx-auto mb-4 w-14 h-14 rounded-2xl bg-slate-50 border border-slate-200 grid place-items-center text-muted dark:text-slate-500">
-                        <i class="fas fa-link"></i>
+                        <i class="fas fa-link" aria-hidden="true"></i>
                     </div>
                     <p class="text-base font-bold text-slate-900">{{ __('No fitments found.') }}</p>
                     <p class="text-[13px] text-slate-500 mt-1.5">{{ __('Create a product fitment or adjust your search.') }}</p>

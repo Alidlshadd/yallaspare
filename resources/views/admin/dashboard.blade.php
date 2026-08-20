@@ -107,7 +107,7 @@
     <div class="mb-8 rounded-2xl bg-white border border-slate-200/70 px-4 py-3 bento-shadow flex flex-wrap items-center justify-between gap-3">
         <div class="flex items-center gap-2.5">
             <div class="h-9 w-9 rounded-xl bg-primary/10 text-primary dark:bg-primary/20 grid place-items-center">
-                <i class="far fa-calendar-days text-sm"></i>
+                <i class="far fa-calendar-days text-sm" aria-hidden="true"></i>
             </div>
             <div>
                 <p class="text-[10px] uppercase tracking-widest text-muted font-bold leading-none">{{ __('Time Range') }}</p>
@@ -135,7 +135,7 @@
             @endforeach
             @if(request()->has('analytics_days'))
                 <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center gap-1.5 ml-1 px-3 py-2 rounded-xl text-sm font-bold text-slate-500 hover:text-slate-700 hover:bg-slate-100 transition dark:hover:bg-slate-800">
-                    <i class="fas fa-rotate-left text-[10px]"></i> {{ __('Reset') }}
+                    <i class="fas fa-rotate-left text-[10px]" aria-hidden="true"></i> {{ __('Reset') }}
                 </a>
             @endif
         </div>
@@ -160,7 +160,7 @@
                     <p class="mt-1.5 text-xs text-white/50">{{ __('Completed orders · all time') }}</p>
                 </div>
                 <div class="h-12 w-12 rounded-2xl bg-white/10 border border-white/15 grid place-items-center backdrop-blur-sm shadow-inner">
-                    <i class="fas fa-coins text-white/95 text-lg"></i>
+                    <i class="fas fa-coins text-white/95 text-lg" aria-hidden="true"></i>
                 </div>
             </div>
 
@@ -172,15 +172,15 @@
                 <div class="mt-5 flex items-center gap-3 text-xs flex-wrap">
                     @if($revenueGrowth > 0)
                         <span class="inline-flex items-center gap-1.5 rounded-full bg-emerald-400/15 text-emerald-300 px-3 py-1.5 font-bold border border-emerald-400/20">
-                            <i class="fas fa-arrow-trend-up"></i> +{{ number_format(abs($revenueGrowth), 1) }}%
+                            <i class="fas fa-arrow-trend-up" aria-hidden="true"></i> +{{ number_format(abs($revenueGrowth), 1) }}%
                         </span>
                     @elseif($revenueGrowth < 0)
                         <span class="inline-flex items-center gap-1.5 rounded-full bg-rose-400/15 text-rose-300 px-3 py-1.5 font-bold border border-rose-400/20">
-                            <i class="fas fa-arrow-trend-down"></i> {{ number_format(abs($revenueGrowth), 1) }}%
+                            <i class="fas fa-arrow-trend-down" aria-hidden="true"></i> {{ number_format(abs($revenueGrowth), 1) }}%
                         </span>
                     @else
                         <span class="inline-flex items-center gap-1.5 rounded-full bg-white/10 text-white/85 px-3 py-1.5 font-bold">
-                            <i class="fas fa-minus"></i> 0%
+                            <i class="fas fa-minus" aria-hidden="true"></i> 0%
                         </span>
                     @endif
                     <span class="text-white/55">{{ __('vs previous month') }}</span>
@@ -242,18 +242,18 @@
                     <p class="mt-1 text-xs text-muted dark:text-slate-500">{{ __('All-time fulfilled') }}</p>
                 </div>
                 <div class="h-10 w-10 rounded-xl bg-info text-info grid place-items-center dark:bg-info/30 dark:text-info">
-                    <i class="fas fa-bag-shopping"></i>
+                    <i class="fas fa-bag-shopping" aria-hidden="true"></i>
                 </div>
             </div>
             <p class="mt-6 num-display text-4xl font-bold text-primary dark:text-slate-100">{{ number_format($totalOrders) }}</p>
             <div class="mt-2 flex items-center gap-2 text-xs">
                 @if($ordersGrowth > 0)
                     <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 px-2 py-0.5 font-bold border border-emerald-100">
-                        <i class="fas fa-arrow-up text-[10px]"></i> {{ number_format(abs($ordersGrowth), 1) }}%
+                        <i class="fas fa-arrow-up text-[10px]" aria-hidden="true"></i> {{ number_format(abs($ordersGrowth), 1) }}%
                     </span>
                 @elseif($ordersGrowth < 0)
                     <span class="inline-flex items-center gap-1 rounded-full bg-rose-50 text-rose-700 px-2 py-0.5 font-bold border border-rose-100">
-                        <i class="fas fa-arrow-down text-[10px]"></i> {{ number_format(abs($ordersGrowth), 1) }}%
+                        <i class="fas fa-arrow-down text-[10px]" aria-hidden="true"></i> {{ number_format(abs($ordersGrowth), 1) }}%
                     </span>
                 @else
                     <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-600 px-2 py-0.5 font-bold">0%</span>
@@ -286,18 +286,18 @@
                     <p class="mt-1 text-xs text-muted dark:text-slate-500">{{ __('Active catalog') }}</p>
                 </div>
                 <div class="h-10 w-10 rounded-xl bg-info text-info grid place-items-center dark:bg-info/30 dark:text-info">
-                    <i class="fas fa-screwdriver-wrench"></i>
+                    <i class="fas fa-screwdriver-wrench" aria-hidden="true"></i>
                 </div>
             </div>
             <p class="mt-6 num-display text-4xl font-bold text-primary dark:text-slate-100">{{ number_format($totalProducts) }}</p>
             <div class="mt-2 flex items-center gap-2 text-xs">
                 @if($productsTrendPercent > 0)
                     <span class="inline-flex items-center gap-1 rounded-full bg-emerald-50 text-emerald-700 px-2 py-0.5 font-bold border border-emerald-100">
-                        <i class="fas fa-arrow-up text-[10px]"></i> {{ number_format(abs($productsTrendPercent), 1) }}%
+                        <i class="fas fa-arrow-up text-[10px]" aria-hidden="true"></i> {{ number_format(abs($productsTrendPercent), 1) }}%
                     </span>
                 @elseif($productsTrendPercent < 0)
                     <span class="inline-flex items-center gap-1 rounded-full bg-rose-50 text-rose-700 px-2 py-0.5 font-bold border border-rose-100">
-                        <i class="fas fa-arrow-down text-[10px]"></i> {{ number_format(abs($productsTrendPercent), 1) }}%
+                        <i class="fas fa-arrow-down text-[10px]" aria-hidden="true"></i> {{ number_format(abs($productsTrendPercent), 1) }}%
                     </span>
                 @else
                     <span class="inline-flex items-center gap-1 rounded-full bg-slate-100 text-slate-600 px-2 py-0.5 font-bold">0%</span>
@@ -328,7 +328,7 @@
                     <p class="mt-1 text-xs text-muted dark:text-slate-500">{{ __('Since 00:00') }}</p>
                 </div>
                 <div class="h-10 w-10 rounded-xl bg-emerald-50 text-emerald-600 grid place-items-center">
-                    <i class="fas fa-chart-line"></i>
+                    <i class="fas fa-chart-line" aria-hidden="true"></i>
                 </div>
             </div>
             <p class="mt-6 num-display text-3xl font-bold text-primary dark:text-slate-100">
@@ -338,9 +338,9 @@
             <div class="mt-3">
                 <div class="flex items-center justify-between text-xs mb-1">
                     @if($salesChangePercent > 0)
-                        <span class="text-emerald-600 font-bold"><i class="fas fa-arrow-up text-[10px]"></i> {{ number_format(abs($salesChangePercent), 1) }}%</span>
+                        <span class="text-emerald-600 font-bold"><i class="fas fa-arrow-up text-[10px]" aria-hidden="true"></i> {{ number_format(abs($salesChangePercent), 1) }}%</span>
                     @elseif($salesChangePercent < 0)
-                        <span class="text-rose-600 font-bold"><i class="fas fa-arrow-down text-[10px]"></i> {{ number_format(abs($salesChangePercent), 1) }}%</span>
+                        <span class="text-rose-600 font-bold"><i class="fas fa-arrow-down text-[10px]" aria-hidden="true"></i> {{ number_format(abs($salesChangePercent), 1) }}%</span>
                     @else
                         <span class="text-slate-500 font-bold">0%</span>
                     @endif
@@ -361,7 +361,7 @@
                     <p class="mt-1 text-xs text-muted dark:text-slate-500">{{ __('Awaiting action') }}</p>
                 </div>
                 <div class="h-10 w-10 rounded-xl bg-amber-50 text-amber-600 grid place-items-center">
-                    <i class="far fa-hourglass-half"></i>
+                    <i class="far fa-hourglass-half" aria-hidden="true"></i>
                 </div>
             </div>
             <p class="mt-6 num-display text-4xl font-bold text-primary dark:text-slate-100">{{ number_format($pendingOrders) }}</p>
@@ -391,15 +391,15 @@
             <div class="flex items-center justify-between">
                 <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">{{ __('Total Users') }}</p>
                 <div class="h-9 w-9 rounded-xl bg-info text-info grid place-items-center dark:bg-info/30 dark:text-info">
-                    <i class="fas fa-users"></i>
+                    <i class="fas fa-users" aria-hidden="true"></i>
                 </div>
             </div>
             <p class="mt-3 num-display text-3xl font-bold text-primary dark:text-slate-100">{{ number_format($totalUsers) }}</p>
             <div class="mt-2 flex items-center gap-2 text-xs">
                 @if($usersGrowth > 0)
-                    <span class="text-emerald-600 font-bold"><i class="fas fa-arrow-up text-[10px]"></i> {{ number_format(abs($usersGrowth), 1) }}%</span>
+                    <span class="text-emerald-600 font-bold"><i class="fas fa-arrow-up text-[10px]" aria-hidden="true"></i> {{ number_format(abs($usersGrowth), 1) }}%</span>
                 @elseif($usersGrowth < 0)
-                    <span class="text-rose-600 font-bold"><i class="fas fa-arrow-down text-[10px]"></i> {{ number_format(abs($usersGrowth), 1) }}%</span>
+                    <span class="text-rose-600 font-bold"><i class="fas fa-arrow-down text-[10px]" aria-hidden="true"></i> {{ number_format(abs($usersGrowth), 1) }}%</span>
                 @endif
                 <span class="text-slate-500">{{ __('Registered accounts') }}</span>
             </div>
@@ -411,7 +411,7 @@
             <div class="flex items-center justify-between">
                 <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">{{ __('Unpaid') }}</p>
                 <div class="h-9 w-9 rounded-xl bg-rose-50 text-rose-600 grid place-items-center">
-                    <i class="far fa-credit-card"></i>
+                    <i class="far fa-credit-card" aria-hidden="true"></i>
                 </div>
             </div>
             <p class="mt-3 num-display text-3xl font-bold text-primary dark:text-slate-100">{{ number_format($unpaidOrders) }}</p>
@@ -429,7 +429,7 @@
             <div class="flex items-center justify-between">
                 <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">{{ __('New') }}</p>
                 <div class="h-9 w-9 rounded-xl bg-info text-info grid place-items-center dark:bg-info/30 dark:text-info">
-                    <i class="fas fa-user-plus"></i>
+                    <i class="fas fa-user-plus" aria-hidden="true"></i>
                 </div>
             </div>
             <p class="mt-3 num-display text-3xl font-bold text-primary dark:text-slate-100">{{ number_format($newCustomers) }}</p>
@@ -441,7 +441,7 @@
             <div class="absolute inset-0 bento-stripes-soft pointer-events-none"></div>
             <div class="relative flex items-center justify-between">
                 <p class="text-[10px] uppercase tracking-[0.22em] font-bold inline-flex items-center gap-1.5 {{ $gaugeTone === 'rose' ? 'text-rose-700 dark:text-rose-300' : ($gaugeTone === 'amber' ? 'text-accent dark:text-accent' : 'text-emerald-700 dark:text-emerald-300') }}">
-                    <i class="fas fa-triangle-exclamation"></i> {{ __('Stock Alert') }}
+                    <i class="fas fa-triangle-exclamation" aria-hidden="true"></i> {{ __('Stock Alert') }}
                 </p>
                 <span class="text-[10px] uppercase tracking-widest font-bold {{ $gaugeTone === 'rose' ? 'text-rose-600' : ($gaugeTone === 'amber' ? 'text-accent' : 'text-emerald-600') }}">{{ __('Threshold :count', ['count' => $lowStockThreshold]) }}</span>
             </div>
@@ -468,7 +468,7 @@
                     @endif
                     @if(Route::has('admin.products.index'))
                         <a href="{{ route('admin.products.index', ['low_stock' => 1]) }}" class="mt-2 inline-flex items-center gap-1 text-xs font-bold {{ $gaugeTone === 'rose' ? 'text-rose-700 hover:text-rose-900 dark:text-rose-300' : ($gaugeTone === 'amber' ? 'text-accent hover:text-accent dark:text-accent' : 'text-emerald-700 hover:text-emerald-900 dark:text-emerald-300') }}">
-                            {{ __('View low stock') }} <i class="fas fa-arrow-right text-[10px]"></i>
+                            {{ __('View low stock') }} <i class="fas fa-arrow-right text-[10px]" aria-hidden="true"></i>
                         </a>
                     @endif
                 </div>
@@ -487,7 +487,7 @@
             </div>
             @if(Route::has('admin.analytics.index'))
                 <a href="{{ route('admin.analytics.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-sm font-bold text-slate-700 transition hover:bg-slate-100 dark:hover:bg-slate-700">
-                    {{ __('Open analytics') }} <i class="fas fa-arrow-right text-[10px]"></i>
+                    {{ __('Open analytics') }} <i class="fas fa-arrow-right text-[10px]" aria-hidden="true"></i>
                 </a>
             @endif
         </div>
@@ -495,7 +495,7 @@
         @if(! $siteAnalyticsHasData)
             <div class="mb-5 rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-5 py-6 text-center dark:border-slate-700">
                 <div class="mx-auto grid h-11 w-11 place-items-center rounded-xl bg-white text-slate-500 shadow-sm">
-                    <i class="fas fa-chart-simple"></i>
+                    <i class="fas fa-chart-simple" aria-hidden="true"></i>
                 </div>
                 <p class="mt-3 text-sm font-bold text-slate-700">{{ __('No analytics data yet. Data will appear after visitors use the website.') }}</p>
             </div>
@@ -535,7 +535,7 @@
             <div class="rounded-2xl border border-slate-200/70 bg-slate-50">
                 <div class="flex items-center justify-between border-b border-slate-200/70 px-4 py-3">
                     <p class="text-xs font-bold uppercase tracking-[0.16em] text-slate-600">{{ __('Most viewed products') }}</p>
-                    <i class="far fa-eye text-info"></i>
+                    <i class="far fa-eye text-info" aria-hidden="true"></i>
                 </div>
                 @if($siteAnalyticsTopViewed->isEmpty())
                     <p class="px-4 py-6 text-center text-xs font-semibold text-muted">{{ __('No product views yet.') }}</p>
@@ -559,7 +559,7 @@
             <div class="rounded-2xl border border-slate-200/70 bg-slate-50">
                 <div class="flex items-center justify-between border-b border-slate-200/70 px-4 py-3">
                     <p class="text-xs font-bold uppercase tracking-[0.16em] text-slate-600">{{ __('Search keywords') }}</p>
-                    <i class="fas fa-magnifying-glass text-info"></i>
+                    <i class="fas fa-magnifying-glass text-info" aria-hidden="true"></i>
                 </div>
                 @if($siteAnalyticsTopSearches->isEmpty())
                     <p class="px-4 py-6 text-center text-xs font-semibold text-muted">{{ __('No searches recorded yet.') }}</p>
@@ -601,7 +601,7 @@
             </div>
             @if(Route::has('admin.orders.index'))
                 <a href="{{ route('admin.orders.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.06] backdrop-blur-sm px-4 py-2 text-sm font-bold text-white hover:bg-white/15 transition">
-                    {{ __('Open orders') }} <i class="fas fa-arrow-right text-[10px]"></i>
+                    {{ __('Open orders') }} <i class="fas fa-arrow-right text-[10px]" aria-hidden="true"></i>
                 </a>
             @endif
         </div>
@@ -653,7 +653,7 @@
                             </div>
                         </div>
                         <div class="min-w-0 flex-1">
-                            <i class="fas {{ $item['icon'] }} text-sm {{ $hasItems ? '' : 'text-white/40' }}" style="{{ $hasItems ? 'color: ' . $toneHex . ';' : '' }}"></i>
+                            <i class="fas {{ $item['icon'] }} text-sm {{ $hasItems ? '' : 'text-white/40' }}" style="{{ $hasItems ? 'color: ' . $toneHex . ';' : '' }}" aria-hidden="true"></i>
                             <p class="mt-1 text-sm font-bold text-white leading-snug">{{ __($item['label']) }}</p>
                         </div>
                     </div>
@@ -664,7 +664,7 @@
                         <span class="text-[10px] font-mono uppercase tracking-widest {{ $hasItems ? 'text-white/70' : 'text-white/30' }}">
                             {{ $hasItems ? __('Handle now') : __('Clear') }}
                         </span>
-                        <i class="fas fa-arrow-right text-[10px] text-white/40 group-hover:text-white group-hover:translate-x-0.5 transition"></i>
+                        <i class="fas fa-arrow-right text-[10px] text-white/40 group-hover:text-white group-hover:translate-x-0.5 transition" aria-hidden="true"></i>
                     </div>
                 </a>
             @endforeach
@@ -782,11 +782,11 @@
                             <span class="h-8 w-px bg-white/10"></span>
                             @if($monthChange > 0)
                                 <span class="inline-flex items-center gap-1 rounded-full bg-emerald-400/15 text-emerald-300 px-2 py-1 text-[11px] font-bold border border-emerald-400/20">
-                                    <i class="fas fa-arrow-up text-[9px]"></i> {{ $monthChange }}%
+                                    <i class="fas fa-arrow-up text-[9px]" aria-hidden="true"></i> {{ $monthChange }}%
                                 </span>
                             @else
                                 <span class="inline-flex items-center gap-1 rounded-full bg-rose-400/15 text-rose-300 px-2 py-1 text-[11px] font-bold border border-rose-400/20">
-                                    <i class="fas fa-arrow-down text-[9px]"></i> {{ abs($monthChange) }}%
+                                    <i class="fas fa-arrow-down text-[9px]" aria-hidden="true"></i> {{ abs($monthChange) }}%
                                 </span>
                             @endif
                         @endif
@@ -798,7 +798,7 @@
                     <div class="mt-4" style="height: 280px"><canvas id="ordersChart"></canvas></div>
                 @else
                     <div class="h-72 flex flex-col items-center justify-center text-white/40">
-                        <i class="fas fa-chart-line text-5xl mb-3 opacity-30"></i>
+                        <i class="fas fa-chart-line text-5xl mb-3 opacity-30" aria-hidden="true"></i>
                         <p class="text-sm font-bold">{{ __('No orders data available') }}</p>
                         <p class="text-[11px] mt-1 font-mono text-white/30">— {{ __('Awaiting first orders') }} —</p>
                     </div>
@@ -857,14 +857,14 @@
 
                         @if($catCount > 5 && Route::has('admin.categories.index'))
                             <a href="{{ route('admin.categories.index') }}" class="mt-3 inline-flex items-center gap-1.5 text-[11px] font-bold text-info hover:text-white transition">
-                                <i class="fas fa-arrow-right text-[9px]"></i>
+                                <i class="fas fa-arrow-right text-[9px]" aria-hidden="true"></i>
                                 {{ __('View all :n categories', ['n' => $catCount]) }}
                             </a>
                         @endif
                     </div>
                 @else
                     <div class="h-60 flex flex-col items-center justify-center text-white/40">
-                        <i class="fas fa-chart-pie text-5xl mb-3 opacity-30"></i>
+                        <i class="fas fa-chart-pie text-5xl mb-3 opacity-30" aria-hidden="true"></i>
                         <p class="text-base font-bold">{{ __('No categories') }}</p>
                     </div>
                 @endif
@@ -884,7 +884,7 @@
                     <p class="mt-1 text-xs text-muted dark:text-slate-500">{{ __('Quality indicator') }}</p>
                 </div>
                 <div class="h-10 w-10 rounded-xl bg-rose-50 text-rose-600 grid place-items-center">
-                    <i class="fas fa-rotate-left"></i>
+                    <i class="fas fa-rotate-left" aria-hidden="true"></i>
                 </div>
             </div>
             <p class="mt-4 num-display text-3xl font-bold text-primary dark:text-slate-100">{{ number_format($returnRatePercent, 1) }}%</p>
@@ -904,7 +904,7 @@
                     <p class="mt-1 text-xs text-muted dark:text-slate-500">{{ __('Processing → Shipped') }}</p>
                 </div>
                 <div class="h-10 w-10 rounded-xl bg-info text-info grid place-items-center dark:bg-info/30 dark:text-info">
-                    <i class="fas fa-truck-fast"></i>
+                    <i class="fas fa-truck-fast" aria-hidden="true"></i>
                 </div>
             </div>
             <p class="mt-4 num-display text-3xl font-bold text-primary dark:text-slate-100">
@@ -927,7 +927,7 @@
                     <p class="mt-1 text-xs text-muted dark:text-slate-500">{{ __('Highest profit') }}</p>
                 </div>
                 <div class="h-10 w-10 rounded-xl bg-emerald-50 text-emerald-600 grid place-items-center">
-                    <i class="fas fa-trophy"></i>
+                    <i class="fas fa-trophy" aria-hidden="true"></i>
                 </div>
             </div>
             @if($topProfitable->isEmpty())
@@ -964,7 +964,7 @@
             </div>
             <p class="mt-4 num-display text-3xl font-bold text-accent dark:text-accent">{{ number_format($lowStockCount) }}</p>
             <p class="mt-2 text-xs {{ $lowStockTrendPercent > 0 ? 'text-rose-600' : ($lowStockTrendPercent < 0 ? 'text-emerald-600' : 'text-slate-500') }} font-bold">
-                <i class="fas fa-arrow-{{ $lowStockTrendPercent > 0 ? 'up' : ($lowStockTrendPercent < 0 ? 'down' : 'right') }} mr-1"></i>
+                <i class="fas fa-arrow-{{ $lowStockTrendPercent > 0 ? 'up' : ($lowStockTrendPercent < 0 ? 'down' : 'right') }} mr-1" aria-hidden="true"></i>
                 {{ __(':percent% vs previous month', ['percent' => number_format(abs($lowStockTrendPercent), 1)]) }}
             </p>
         </div>
@@ -977,7 +977,7 @@
             </div>
             <p class="mt-4 num-display text-3xl font-bold text-rose-800 dark:text-rose-300">{{ number_format($outOfStockCount) }}</p>
             <p class="mt-2 text-xs {{ $outOfStockTrendPercent > 0 ? 'text-rose-600' : ($outOfStockTrendPercent < 0 ? 'text-emerald-600' : 'text-slate-500') }} font-bold">
-                <i class="fas fa-arrow-{{ $outOfStockTrendPercent > 0 ? 'up' : ($outOfStockTrendPercent < 0 ? 'down' : 'right') }} mr-1"></i>
+                <i class="fas fa-arrow-{{ $outOfStockTrendPercent > 0 ? 'up' : ($outOfStockTrendPercent < 0 ? 'down' : 'right') }} mr-1" aria-hidden="true"></i>
                 {{ __(':percent% vs previous month', ['percent' => number_format(abs($outOfStockTrendPercent), 1)]) }}
             </p>
         </div>
@@ -990,7 +990,7 @@
             </div>
             <p class="mt-4 num-display text-3xl font-bold text-emerald-800 dark:text-emerald-300">{{ number_format($recentProductsCount) }}</p>
             <p class="mt-2 text-xs {{ $recentProductsTrendPercent > 0 ? 'text-emerald-600' : ($recentProductsTrendPercent < 0 ? 'text-rose-600' : 'text-slate-500') }} font-bold">
-                <i class="fas fa-arrow-{{ $recentProductsTrendPercent > 0 ? 'up' : ($recentProductsTrendPercent < 0 ? 'down' : 'right') }} mr-1"></i>
+                <i class="fas fa-arrow-{{ $recentProductsTrendPercent > 0 ? 'up' : ($recentProductsTrendPercent < 0 ? 'down' : 'right') }} mr-1" aria-hidden="true"></i>
                 {{ __(':percent% vs previous month', ['percent' => number_format(abs($recentProductsTrendPercent), 1)]) }}
             </p>
         </div>
@@ -1014,7 +1014,7 @@
                         {{ __('Inventory · Live') }}
                     </div>
                     <h3 class="mt-1 text-lg font-bold text-primary dark:text-slate-100 tracking-tight">
-                        <i class="fas fa-wave-square mr-1 text-emerald-500"></i> {{ __('Stock Trend (Net Movement)') }}
+                        <i class="fas fa-wave-square mr-1 text-emerald-500" aria-hidden="true"></i> {{ __('Stock Trend (Net Movement)') }}
                     </h3>
                     <p class="text-xs text-slate-500 mt-1">{{ __('Last :n days (in minus out)', ['n' => $analyticsDays]) }}</p>
                 </div>
@@ -1028,7 +1028,7 @@
             @else
                 <div class="h-64 flex flex-col items-center justify-center text-muted dark:text-slate-500">
                     <div class="relative">
-                        <i class="fas fa-chart-line text-5xl opacity-20"></i>
+                        <i class="fas fa-chart-line text-5xl opacity-20" aria-hidden="true"></i>
                         <span class="absolute inset-0 grid place-items-center"><span class="h-2 w-2 rounded-full bg-emerald-500/40"></span></span>
                     </div>
                     <p class="mt-3 text-sm font-bold">{{ __('No stock movement trend data yet') }}</p>
@@ -1047,7 +1047,7 @@
                         {{ __('Inventory · Live') }}
                     </div>
                     <h3 class="mt-1 text-lg font-bold text-primary dark:text-slate-100 tracking-tight">
-                        <i class="fas fa-arrows-up-down mr-1 text-info"></i> {{ __('Recent Inventory Movements') }}
+                        <i class="fas fa-arrows-up-down mr-1 text-info" aria-hidden="true"></i> {{ __('Recent Inventory Movements') }}
                     </h3>
                     <p class="text-xs text-slate-500 mt-1">{{ __('Stock in vs stock out (last :n days)', ['n' => $analyticsDays]) }}</p>
                 </div>
@@ -1056,11 +1056,11 @@
             {{-- Mini In/Out summary --}}
             <div class="grid grid-cols-2 gap-2 mb-3">
                 <div class="rounded-xl bg-emerald-50 border border-emerald-200/60 dark:border-emerald-800/40 px-3 py-2 flex items-center justify-between">
-                    <span class="text-[10px] uppercase tracking-widest text-emerald-700 font-bold"><i class="fas fa-arrow-down"></i> {{ __('Stock In') }}</span>
+                    <span class="text-[10px] uppercase tracking-widest text-emerald-700 font-bold"><i class="fas fa-arrow-down" aria-hidden="true"></i> {{ __('Stock In') }}</span>
                     <span class="num-display text-base font-bold text-emerald-700">{{ number_format($stockIn) }}</span>
                 </div>
                 <div class="rounded-xl bg-rose-50 border border-rose-200/60 dark:border-rose-800/40 px-3 py-2 flex items-center justify-between">
-                    <span class="text-[10px] uppercase tracking-widest text-rose-700 font-bold"><i class="fas fa-arrow-up"></i> {{ __('Stock Out') }}</span>
+                    <span class="text-[10px] uppercase tracking-widest text-rose-700 font-bold"><i class="fas fa-arrow-up" aria-hidden="true"></i> {{ __('Stock Out') }}</span>
                     <span class="num-display text-base font-bold text-rose-700">{{ number_format($stockOut) }}</span>
                 </div>
             </div>
@@ -1070,7 +1070,7 @@
             @else
                 <div class="h-56 flex flex-col items-center justify-center text-muted dark:text-slate-500">
                     <div class="relative">
-                        <i class="fas fa-warehouse text-5xl opacity-20"></i>
+                        <i class="fas fa-warehouse text-5xl opacity-20" aria-hidden="true"></i>
                         <span class="absolute inset-0 grid place-items-center"><span class="h-2 w-2 rounded-full bg-info/40"></span></span>
                     </div>
                     <p class="mt-3 text-sm font-bold">{{ __('No recent inventory movement data') }}</p>
@@ -1096,13 +1096,13 @@
                         <span class="font-mono text-info/80 px-1.5 py-0.5 rounded bg-rose-400/10 border border-rose-400/20">{{ $lowStockProducts->count() }} {{ __('CRITICAL') }}</span>
                     </div>
                     <h3 class="mt-1 text-2xl font-bold tracking-tight">
-                        <i class="fas fa-triangle-exclamation mr-1 text-rose-400"></i> {{ __('Low Stock Alerts') }}
+                        <i class="fas fa-triangle-exclamation mr-1 text-rose-400" aria-hidden="true"></i> {{ __('Low Stock Alerts') }}
                     </h3>
                     <p class="mt-1 text-xs text-rose-200/70">{{ __('Inventory items below threshold of :n units', ['n' => $lowStockThreshold]) }}</p>
                 </div>
                 @if(Route::has('admin.products.index'))
                     <a href="{{ route('admin.products.index', ['low_stock' => 1]) }}" class="inline-flex items-center justify-center rounded-xl border border-rose-300/30 bg-white/10 backdrop-blur-sm px-4 py-2.5 text-sm font-bold text-white transition hover:bg-white/20">
-                        {{ __('View All') }} <i class="fas fa-arrow-right ml-2 text-xs"></i>
+                        {{ __('View All') }} <i class="fas fa-arrow-right ml-2 text-xs" aria-hidden="true"></i>
                     </a>
                 @endif
             </div>
@@ -1123,7 +1123,7 @@
                         <div class="rounded-2xl border {{ $sevBorder }} {{ $sevBg }} p-4 transition">
                             <div class="flex items-center gap-3">
                                 <div class="w-11 h-11 rounded-xl flex items-center justify-center text-white shrink-0" style="background: linear-gradient(135deg, {{ $sevColor }}, {{ $sevColor }}aa);">
-                                    <i class="fas fa-box"></i>
+                                    <i class="fas fa-box" aria-hidden="true"></i>
                                 </div>
                                 <div class="flex-1 min-w-0">
                                     <div class="flex items-center gap-2 flex-wrap">
@@ -1149,7 +1149,7 @@
                 </div>
             @else
                 <div class="h-24 flex flex-col items-center justify-center text-muted dark:text-slate-500">
-                    <i class="fas fa-check-circle text-3xl mb-2 text-emerald-500"></i>
+                    <i class="fas fa-check-circle text-3xl mb-2 text-emerald-500" aria-hidden="true"></i>
                     <p class="text-sm font-bold">{{ __('All products have healthy stock') }}</p>
                 </div>
             @endif
@@ -1172,12 +1172,12 @@
                         <span class="font-mono text-emerald-300/80 px-1.5 py-0.5 rounded bg-emerald-400/10 border border-emerald-400/20">{{ $recentProducts->count() }} {{ __('NEW') }}</span>
                     </div>
                     <h3 class="mt-1 text-xl sm:text-2xl font-bold tracking-tight">
-                        <i class="fas fa-box-open mr-1 text-emerald-400"></i> {{ __('Recent Products') }}
+                        <i class="fas fa-box-open mr-1 text-emerald-400" aria-hidden="true"></i> {{ __('Recent Products') }}
                     </h3>
                 </div>
                 @if(Route::has('admin.products.index'))
                     <a href="{{ route('admin.products.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.06] backdrop-blur-sm px-3 py-2 text-sm font-bold text-white hover:bg-white/15 transition">
-                        {{ __('View All') }} <i class="fas fa-arrow-right text-[10px]"></i>
+                        {{ __('View All') }} <i class="fas fa-arrow-right text-[10px]" aria-hidden="true"></i>
                     </a>
                 @endif
             </div>
@@ -1208,7 +1208,7 @@
                                 {{-- Image + NEW badge overlay --}}
                                 <div class="relative w-12 h-12 rounded-xl overflow-hidden mb-3" style="background: linear-gradient(135deg, {{ $stockColor }}, {{ $stockColor }}88);">
                                     <div class="absolute inset-0 grid place-items-center">
-                                        <i class="fas fa-box text-white text-base"></i>
+                                        <i class="fas fa-box text-white text-base" aria-hidden="true"></i>
                                     </div>
                                     @if($isFresh)
                                         <span class="absolute -bottom-1 -right-1 inline-flex items-center text-[7px] uppercase tracking-widest font-bold font-mono px-1 py-px rounded ring-2 ring-navy" style="background: #ff8a3d; color: #422006;">{{ __('New') }}</span>
@@ -1231,7 +1231,7 @@
                 </div>
             @else
                 <div class="h-32 flex flex-col items-center justify-center text-white/40">
-                    <i class="fas fa-box text-4xl mb-2 opacity-30"></i>
+                    <i class="fas fa-box text-4xl mb-2 opacity-30" aria-hidden="true"></i>
                     <p class="text-sm font-bold">{{ __('No recent products added yet') }}</p>
                     <p class="text-[11px] mt-1 font-mono text-white/30">— {{ __('Awaiting first product') }} —</p>
                 </div>
@@ -1258,12 +1258,12 @@
                             <span class="font-mono text-purple-300/80 px-1.5 py-0.5 rounded bg-purple-400/10 border border-purple-400/20">{{ $recentOrders->count() }} {{ __('LATEST') }}</span>
                         </div>
                         <h3 class="mt-1 text-xl sm:text-2xl font-bold tracking-tight">
-                            <i class="fas fa-clock mr-1 text-purple-400"></i> {{ __('Recent Orders') }}
+                            <i class="fas fa-clock mr-1 text-purple-400" aria-hidden="true"></i> {{ __('Recent Orders') }}
                         </h3>
                     </div>
                     @if(Route::has('admin.orders.index'))
                         <a href="{{ route('admin.orders.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.06] backdrop-blur-sm px-3 py-2 text-sm font-bold text-white hover:bg-white/15 transition">
-                            {{ __('View All') }} <i class="fas fa-arrow-right text-[10px]"></i>
+                            {{ __('View All') }} <i class="fas fa-arrow-right text-[10px]" aria-hidden="true"></i>
                         </a>
                     @endif
                 </div>
@@ -1325,7 +1325,7 @@
                     </div>
                 @else
                     <div class="h-56 flex flex-col items-center justify-center text-white/40">
-                        <i class="fas fa-shopping-cart text-5xl mb-3 opacity-30"></i>
+                        <i class="fas fa-shopping-cart text-5xl mb-3 opacity-30" aria-hidden="true"></i>
                         <p class="text-base font-bold">{{ __('No recent orders') }}</p>
                         <p class="text-[11px] mt-1 font-mono text-white/30">— {{ __('Awaiting first order') }} —</p>
                     </div>
@@ -1349,12 +1349,12 @@
                             <span class="font-mono text-accent/80 px-1.5 py-0.5 rounded bg-accent/10 border border-accent/20">TOP {{ $topProducts->count() }}</span>
                         </div>
                         <h3 class="mt-1 text-xl sm:text-2xl font-bold tracking-tight">
-                            <i class="fas fa-trophy mr-1 text-accent"></i> {{ __('Top Selling Products') }}
+                            <i class="fas fa-trophy mr-1 text-accent" aria-hidden="true"></i> {{ __('Top Selling Products') }}
                         </h3>
                     </div>
                     @if(Route::has('admin.products.index'))
                         <a href="{{ route('admin.products.index') }}" class="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/[0.06] backdrop-blur-sm px-3 py-2 text-sm font-bold text-white hover:bg-white/15 transition">
-                            {{ __('View All') }} <i class="fas fa-arrow-right text-[10px]"></i>
+                            {{ __('View All') }} <i class="fas fa-arrow-right text-[10px]" aria-hidden="true"></i>
                         </a>
                     @endif
                 </div>
@@ -1372,7 +1372,7 @@
                     <div class="relative rounded-2xl overflow-hidden p-5 mb-3 group" style="background: linear-gradient(135deg, rgb(255 138 61 / 0.10) 0%, rgba(244,63,94,0.05) 100%); border: 1px solid rgb(255 138 61 / 0.25);">
                         {{-- Crown corner badge --}}
                         <div class="absolute top-3 right-3 inline-flex items-center gap-1 text-[9px] uppercase tracking-widest font-bold font-mono px-2 py-1 rounded-md" style="background: linear-gradient(135deg, #ff8a3d, #e65c00); color: #422006;">
-                            <i class="fas fa-crown text-[10px]"></i> #1 CHAMPION
+                            <i class="fas fa-crown text-[10px]" aria-hidden="true"></i> #1 CHAMPION
                         </div>
 
                         <div class="flex items-start gap-4">
@@ -1382,7 +1382,7 @@
                                     <img src="{{ asset('storage/' . $champion->image) }}" alt="{{ $champion->name ?? __('Product') }}" class="w-full h-full object-cover">
                                 @else
                                     <div class="absolute inset-0 grid place-items-center">
-                                        <i class="fas fa-box text-3xl text-white drop-shadow"></i>
+                                        <i class="fas fa-box text-3xl text-white drop-shadow" aria-hidden="true"></i>
                                     </div>
                                 @endif
                                 {{-- Rank glow ring --}}
@@ -1432,7 +1432,7 @@
                                             @if($pImg)
                                                 <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name ?? __('Product') }}" class="w-full h-full object-cover">
                                             @else
-                                                <div class="w-full h-full grid place-items-center"><i class="fas fa-box text-white text-xs"></i></div>
+                                                <div class="w-full h-full grid place-items-center"><i class="fas fa-box text-white text-xs" aria-hidden="true"></i></div>
                                             @endif
                                         </div>
 
@@ -1461,7 +1461,7 @@
                     @endif
                 @else
                     <div class="h-56 flex flex-col items-center justify-center text-white/40">
-                        <i class="fas fa-trophy text-5xl mb-3 opacity-30"></i>
+                        <i class="fas fa-trophy text-5xl mb-3 opacity-30" aria-hidden="true"></i>
                         <p class="text-base font-bold">{{ __('No product sales yet') }}</p>
                         <p class="text-[11px] mt-1 font-mono text-white/30">— {{ __('Awaiting first sale') }} —</p>
                     </div>

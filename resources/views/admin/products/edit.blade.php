@@ -6,7 +6,7 @@
                 <p class="text-sm text-slate-500">{{ __('Update product information and inventory status.') }}</p>
             </div>
             <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600 shadow-sm">
-                <i class="fas fa-clock text-info"></i>
+                <i class="fas fa-clock text-info" aria-hidden="true"></i>
                 Last updated {{ optional($product->updated_at)->format('M d, Y - h:i A') }}
             </span>
         </div>
@@ -51,72 +51,72 @@
                             </div>
                             <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700">{{ __('Product Name (EN)') }} <span class="text-rose-500">*</span></label>
-                                    <input type="text" name="name_en" value="{{ old('name_en', $product->name_en) }}" class="{{ $inputBase }} @error('name_en') {{ $inputError }} @enderror" required @error('name_en') aria-invalid="true" @enderror>
+                                    <label for="name_en" class="block text-sm font-medium text-slate-700">{{ __('Product Name (EN)') }} <span class="text-rose-500">*</span></label>
+                                    <input id="name_en" type="text" name="name_en" value="{{ old('name_en', $product->name_en) }}" class="{{ $inputBase }} @error('name_en') {{ $inputError }} @enderror" required @error('name_en') aria-invalid="true" @enderror>
                                     @error('name_en')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700">{{ __('Product Name (AR)') }} <span class="text-rose-500">*</span></label>
-                                    <input type="text" name="name_ar" value="{{ old('name_ar', $product->name_ar) }}" class="{{ $inputBase }} @error('name_ar') {{ $inputError }} @enderror" required @error('name_ar') aria-invalid="true" @enderror>
+                                    <label for="name_ar" class="block text-sm font-medium text-slate-700">{{ __('Product Name (AR)') }} <span class="text-rose-500">*</span></label>
+                                    <input id="name_ar" type="text" name="name_ar" value="{{ old('name_ar', $product->name_ar) }}" class="{{ $inputBase }} @error('name_ar') {{ $inputError }} @enderror" required @error('name_ar') aria-invalid="true" @enderror>
                                     @error('name_ar')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700">{{ __('Product Name (KU)') }} <span class="text-rose-500">*</span></label>
-                                    <input type="text" name="name_ku" value="{{ old('name_ku', $product->name_ku) }}" class="{{ $inputBase }} @error('name_ku') {{ $inputError }} @enderror" required @error('name_ku') aria-invalid="true" @enderror>
+                                    <label for="name_ku" class="block text-sm font-medium text-slate-700">{{ __('Product Name (KU)') }} <span class="text-rose-500">*</span></label>
+                                    <input id="name_ku" type="text" name="name_ku" value="{{ old('name_ku', $product->name_ku) }}" class="{{ $inputBase }} @error('name_ku') {{ $inputError }} @enderror" required @error('name_ku') aria-invalid="true" @enderror>
                                     @error('name_ku')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700">{{ __('SKU') }}</label>
-                                    <input type="text" name="sku" value="{{ old('sku', $product->sku) }}" class="{{ $inputBase }} @error('sku') {{ $inputError }} @enderror" placeholder="{{ __('Auto-generate if empty') }}" @error('sku') aria-invalid="true" @enderror>
+                                    <label for="sku" class="block text-sm font-medium text-slate-700">{{ __('SKU') }}</label>
+                                    <input id="sku" type="text" name="sku" value="{{ old('sku', $product->sku) }}" class="{{ $inputBase }} @error('sku') {{ $inputError }} @enderror" placeholder="{{ __('Auto-generate if empty') }}" @error('sku') aria-invalid="true" @enderror>
                                     @error('sku')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700">{{ __('OEM Number') }}</label>
-                                    <input type="text" name="oem_number" value="{{ old('oem_number', $product->oem_number) }}" class="{{ $inputBase }} @error('oem_number') {{ $inputError }} @enderror" placeholder="{{ __('e.g., 17801-0M040') }}" @error('oem_number') aria-invalid="true" @enderror>
+                                    <label for="oem_number" class="block text-sm font-medium text-slate-700">{{ __('OEM Number') }}</label>
+                                    <input id="oem_number" type="text" name="oem_number" value="{{ old('oem_number', $product->oem_number) }}" class="{{ $inputBase }} @error('oem_number') {{ $inputError }} @enderror" placeholder="{{ __('e.g., 17801-0M040') }}" @error('oem_number') aria-invalid="true" @enderror>
                                     @error('oem_number')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700">{{ __('Part Number') }}</label>
-                                    <input type="text" name="part_number" value="{{ old('part_number', $product->part_number) }}" class="{{ $inputBase }} @error('part_number') {{ $inputError }} @enderror" placeholder="{{ __('Manufacturer part number') }}" @error('part_number') aria-invalid="true" @enderror>
+                                    <label for="part_number" class="block text-sm font-medium text-slate-700">{{ __('Part Number') }}</label>
+                                    <input id="part_number" type="text" name="part_number" value="{{ old('part_number', $product->part_number) }}" class="{{ $inputBase }} @error('part_number') {{ $inputError }} @enderror" placeholder="{{ __('Manufacturer part number') }}" @error('part_number') aria-invalid="true" @enderror>
                                     @error('part_number')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700">{{ __('Warranty') }}</label>
-                                    <input type="text" name="warranty" value="{{ old('warranty', $product->warranty) }}" class="{{ $inputBase }} @error('warranty') {{ $inputError }} @enderror" placeholder="{{ __('e.g., 6 months') }}" @error('warranty') aria-invalid="true" @enderror>
+                                    <label for="warranty" class="block text-sm font-medium text-slate-700">{{ __('Warranty') }}</label>
+                                    <input id="warranty" type="text" name="warranty" value="{{ old('warranty', $product->warranty) }}" class="{{ $inputBase }} @error('warranty') {{ $inputError }} @enderror" placeholder="{{ __('e.g., 6 months') }}" @error('warranty') aria-invalid="true" @enderror>
                                     @error('warranty')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700">{{ __('Brand') }}</label>
-                                    <select name="product_brand_id" class="{{ $inputBase }} @error('product_brand_id') {{ $inputError }} @enderror" @error('product_brand_id') aria-invalid="true" @enderror>
+                                    <label for="product_brand_id" class="block text-sm font-medium text-slate-700">{{ __('Brand') }}</label>
+                                    <select id="product_brand_id" name="product_brand_id" class="{{ $inputBase }} @error('product_brand_id') {{ $inputError }} @enderror" @error('product_brand_id') aria-invalid="true" @enderror>
                                         <option value="">{{ __('No brand') }}</option>
                                         @foreach($brands as $brand)
                                             <option value="{{ $brand->id }}" @selected((string) old('product_brand_id', $product->product_brand_id) === (string) $brand->id)>{{ $brand->name }}</option>
                                         @endforeach
                                     </select>
                                     <a href="{{ route('admin.product-brands.index') }}" class="mt-1.5 inline-flex items-center gap-1 text-xs font-semibold text-info hover:text-info dark:text-info dark:hover:text-info">
-                                        <i class="fas fa-tags"></i> {{ __('Manage product brands') }}
+                                        <i class="fas fa-tags" aria-hidden="true"></i> {{ __('Manage product brands') }}
                                     </a>
                                     @error('product_brand_id')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700">{{ __('Category') }} <span class="text-rose-500">*</span></label>
-                                    <select name="category_id" class="{{ $inputBase }} @error('category_id') {{ $inputError }} @enderror" required @error('category_id') aria-invalid="true" @enderror>
+                                    <label for="category_id" class="block text-sm font-medium text-slate-700">{{ __('Category') }} <span class="text-rose-500">*</span></label>
+                                    <select id="category_id" name="category_id" class="{{ $inputBase }} @error('category_id') {{ $inputError }} @enderror" required @error('category_id') aria-invalid="true" @enderror>
                                         @foreach($categories as $category)
                                             <option value="{{ $category->id }}" {{ old('category_id', $product->category_id) == $category->id ? 'selected' : '' }}>
                                                 {{ $category->name }}
@@ -128,29 +128,29 @@
                                     @enderror
                                 </div>
                                 <div class="md:col-span-2">
-                                    <label class="block text-sm font-medium text-slate-700">{{ __('Description (EN)') }}</label>
-                                    <textarea name="description_en" rows="3" class="{{ $inputBase }} @error('description_en') {{ $inputError }} @enderror" @error('description_en') aria-invalid="true" @enderror>{{ old('description_en', $product->description_en) }}</textarea>
+                                    <label for="description_en" class="block text-sm font-medium text-slate-700">{{ __('Description (EN)') }}</label>
+                                    <textarea id="description_en" name="description_en" rows="3" class="{{ $inputBase }} @error('description_en') {{ $inputError }} @enderror" @error('description_en') aria-invalid="true" @enderror>{{ old('description_en', $product->description_en) }}</textarea>
                                     @error('description_en')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700">{{ __('Description (AR)') }}</label>
-                                    <textarea name="description_ar" rows="3" class="{{ $inputBase }} @error('description_ar') {{ $inputError }} @enderror" @error('description_ar') aria-invalid="true" @enderror>{{ old('description_ar', $product->description_ar) }}</textarea>
+                                    <label for="description_ar" class="block text-sm font-medium text-slate-700">{{ __('Description (AR)') }}</label>
+                                    <textarea id="description_ar" name="description_ar" rows="3" class="{{ $inputBase }} @error('description_ar') {{ $inputError }} @enderror" @error('description_ar') aria-invalid="true" @enderror>{{ old('description_ar', $product->description_ar) }}</textarea>
                                     @error('description_ar')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700">{{ __('Description (KU)') }}</label>
-                                    <textarea name="description_ku" rows="3" class="{{ $inputBase }} @error('description_ku') {{ $inputError }} @enderror" @error('description_ku') aria-invalid="true" @enderror>{{ old('description_ku', $product->description_ku) }}</textarea>
+                                    <label for="description_ku" class="block text-sm font-medium text-slate-700">{{ __('Description (KU)') }}</label>
+                                    <textarea id="description_ku" name="description_ku" rows="3" class="{{ $inputBase }} @error('description_ku') {{ $inputError }} @enderror" @error('description_ku') aria-invalid="true" @enderror>{{ old('description_ku', $product->description_ku) }}</textarea>
                                     @error('description_ku')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div class="md:col-span-2">
-                                    <label class="block text-sm font-medium text-slate-700">{{ __('Compatible Models') }}</label>
-                                    <textarea name="compatible_models" rows="2" class="{{ $inputBase }} @error('compatible_models') {{ $inputError }} @enderror" placeholder="{{ __('Comma or new line separated') }}" @error('compatible_models') aria-invalid="true" @enderror>{{ old('compatible_models', $compatibleModelsValue) }}</textarea>
+                                    <label for="compatible_models" class="block text-sm font-medium text-slate-700">{{ __('Compatible Models') }}</label>
+                                    <textarea id="compatible_models" name="compatible_models" rows="2" class="{{ $inputBase }} @error('compatible_models') {{ $inputError }} @enderror" placeholder="{{ __('Comma or new line separated') }}" @error('compatible_models') aria-invalid="true" @enderror>{{ old('compatible_models', $compatibleModelsValue) }}</textarea>
                                     @error('compatible_models')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
@@ -165,9 +165,9 @@
                             </div>
                             <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700">{{ __('Price') }} <span class="text-rose-500">*</span></label>
+                                    <label for="stock_quantity" class="block text-sm font-medium text-slate-700">{{ __('Price') }} <span class="text-rose-500">*</span></label>
                                     <div class="relative">
-                                        <input type="number" step="0.01" name="price" value="{{ old('price', $product->price) }}" class="{{ $inputBase }} pr-16 @error('price') {{ $inputError }} @enderror" required @error('price') aria-invalid="true" @enderror>
+                                        <input aria-label="{{ __('Price') }}" type="number" step="0.01" name="price" value="{{ old('price', $product->price) }}" class="{{ $inputBase }} pr-16 @error('price') {{ $inputError }} @enderror" required @error('price') aria-invalid="true" @enderror>
                                         <span class="absolute inset-y-0 right-3 flex items-center text-xs text-slate-500">{{ $currencyLabel }}</span>
                                     </div>
                                     @error('price')
@@ -196,13 +196,13 @@
                             <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700">{{ __('Stock Quantity') }} <span class="text-rose-500">*</span></label>
-                                    <input type="number" name="stock_quantity" value="{{ old('stock_quantity', $product->stock_quantity) }}" class="{{ $inputBase }} @error('stock_quantity') {{ $inputError }} @enderror" required @error('stock_quantity') aria-invalid="true" @enderror>
+                                    <input id="stock_quantity" type="number" name="stock_quantity" value="{{ old('stock_quantity', $product->stock_quantity) }}" class="{{ $inputBase }} @error('stock_quantity') {{ $inputError }} @enderror" required @error('stock_quantity') aria-invalid="true" @enderror>
                                     @error('stock_quantity')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror
                                 </div>
                                 <div class="flex items-center gap-3 rounded-lg border border-dashed border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-600">
-                                    <i class="fas fa-triangle-exclamation text-accent"></i>
+                                    <i class="fas fa-triangle-exclamation text-accent" aria-hidden="true"></i>
                                     {{ __('Low stock alerts trigger at :count units.', ['count' => $lowStockThreshold]) }}
                                 </div>
                             </div>
@@ -214,12 +214,12 @@
                                 <p class="text-xs text-slate-500">{{ __('Replace the existing product image if needed.') }}</p>
                             </div>
                             <div class="p-6 space-y-4">
-                                <label class="block text-sm font-medium text-slate-700">{{ __('Product Image') }}</label>
+                                <label for="gallery_images" class="block text-sm font-medium text-slate-700">{{ __('Product Image') }}</label>
                                 <label class="group flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 px-6 py-6 text-center text-sm text-slate-500 transition hover:border-info hover:text-info dark:border-slate-700 dark:hover:border-info">
                                     <input id="productImage" type="file" name="image" accept="image/*" class="hidden">
                                     <div class="flex flex-col items-center gap-2">
                                         <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-white text-slate-600 shadow-sm">
-                                            <i class="fas fa-cloud-upload-alt text-lg"></i>
+                                            <i class="fas fa-cloud-upload-alt text-lg" aria-hidden="true"></i>
                                         </span>
                                         <span class="font-medium">{{ __('Drag & drop or click to upload') }}</span>
                                         <span class="text-xs text-muted">{{ __('PNG, JPG up to 2MB') }}</span>
@@ -242,7 +242,7 @@
                                 @endif
                                 <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
                                     <label class="block text-sm font-medium text-slate-700">{{ __('Add Gallery Images') }}</label>
-                                    <input type="file" name="gallery_images[]" accept="image/*" multiple class="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">
+                                    <input id="gallery_images" type="file" name="gallery_images[]" accept="image/*" multiple class="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">
                                 </div>
 
                                 @if($product->images->isNotEmpty())
@@ -299,7 +299,7 @@
                                     <h3 class="mt-1 text-2xl font-bold text-slate-900">{{ number_format($productViewsCount) }}</h3>
                                 </div>
                                 <span class="inline-flex h-11 w-11 items-center justify-center rounded-xl bg-amber-100 text-amber-700">
-                                    <i class="fas fa-eye"></i>
+                                    <i class="fas fa-eye" aria-hidden="true"></i>
                                 </span>
                             </div>
                             <p class="mt-2 text-sm font-medium text-slate-600">{{ __('Total product detail views') }}</p>
@@ -315,9 +315,9 @@
                         <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                             <h3 class="text-sm font-semibold text-slate-700 uppercase tracking-wide">{{ __('Quick Tips') }}</h3>
                             <ul class="mt-4 space-y-3 text-sm text-slate-500">
-                                <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5"></i>{{ __('Keep SKUs consistent for faster imports.') }}</li>
-                                <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5"></i>{{ __('Update stock after inventory audits.') }}</li>
-                                <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5"></i>{{ __('Replace images with high-resolution shots.') }}</li>
+                                <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5" aria-hidden="true"></i>{{ __('Keep SKUs consistent for faster imports.') }}</li>
+                                <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5" aria-hidden="true"></i>{{ __('Update stock after inventory audits.') }}</li>
+                                <li class="flex items-start gap-2"><i class="fas fa-check-circle text-emerald-500 mt-0.5" aria-hidden="true"></i>{{ __('Replace images with high-resolution shots.') }}</li>
                             </ul>
                         </div>
                     </aside>

@@ -186,23 +186,23 @@
         {{-- ============ coupons table ============ --}}
         <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             <div class="flex flex-wrap items-center gap-2 border-b border-slate-200 px-4 py-3">
-                <i class="fas fa-ticket text-muted"></i>
+                <i class="fas fa-ticket text-muted" aria-hidden="true"></i>
                 <h3 class="text-sm font-bold text-slate-800">{{ __('Coupon Campaigns') }}</h3>
                 <div class="ms-auto flex flex-wrap items-center gap-2">
                     <input type="search" placeholder="{{ __('Search code…') }}" class="h-9 w-44 rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" @input="onSearchInput">
-                    <select class="h-9 rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" @change="onStatusChange">
+                    <select aria-label="{{ __('Status') }}" class="h-9 rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" @change="onStatusChange">
                         <option value="all">{{ __('All Status') }}</option>
                         <option value="active">{{ __('Active') }}</option>
                         <option value="scheduled">{{ __('Scheduled') }}</option>
                         <option value="expired">{{ __('Expired') }}</option>
                         <option value="paused">{{ __('Paused') }}</option>
                     </select>
-                    <button type="button" class="h-9 rounded-xl border border-slate-200 px-3.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800" @click="exportCsv"><i class="fas fa-file-csv me-1"></i>{{ __('Export') }}</button>
+                    <button type="button" class="h-9 rounded-xl border border-slate-200 px-3.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800" @click="exportCsv"><i class="fas fa-file-csv me-1" aria-hidden="true"></i>{{ __('Export') }}</button>
                 </div>
             </div>
             @if (count($couponRows) === 0)
                 <div class="px-4 py-14 text-center">
-                    <i class="fas fa-ticket mb-3 block text-2xl text-slate-300"></i>
+                    <i class="fas fa-ticket mb-3 block text-2xl text-slate-300" aria-hidden="true"></i>
                     <p class="text-sm font-bold text-slate-600">{{ __('No coupons yet') }}</p>
                     <p class="mt-1 text-xs text-muted">{{ __('Create your first coupon campaign to start tracking redemptions here.') }}</p>
                     <a href="{{ route('admin.discounts.coupons.create') }}" class="font-display mt-4 inline-flex rounded-xl bg-navy-deep px-4 py-2 text-sm font-bold text-white hover:bg-navy-raised">{{ __('Create Coupon') }}</a>
@@ -289,7 +289,7 @@
         {{-- ============ site coupon settings (collapsible, existing form) ============ --}}
         <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
             <button type="button" class="flex w-full items-center gap-2 px-4 py-3.5 text-left" @click="toggleSettings">
-                <i class="fas fa-sliders text-muted"></i>
+                <i class="fas fa-sliders text-muted" aria-hidden="true"></i>
                 <span class="text-sm font-bold text-slate-800">{{ __('Site Coupon Settings') }}</span>
                 <span class="cp-num ms-2 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-500">{{ $couponCode !== '' ? $couponCode : __('No code') }}</span>
                 <span class="ms-auto text-muted" x-text="settingsChevron">▾</span>
@@ -317,7 +317,7 @@
                         <input type="hidden" name="discount_brands[]" value="{{ (string) $brand }}">
                     @endforeach
 
-                    <label class="inline-flex items-center gap-2.5 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-700">
+                    <label for="code" class="inline-flex items-center gap-2.5 rounded-xl border border-slate-200 px-4 py-2.5 text-sm font-bold text-slate-700">
                         <input type="checkbox" name="coupon_enabled" value="1" x-model="couponEnabled" class="h-4 w-4 rounded border-slate-300 text-accent focus:ring-accent dark:border-slate-600 dark:bg-slate-900">
                         {{ __('Campaign Active') }}
                         <span class="rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide" :class="settingsStateClass" x-text="settingsStateLabel"></span>
@@ -399,33 +399,33 @@
                     <div class="min-h-0 flex-1 space-y-4 overflow-y-auto p-5">
                         <div>
                             <label class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Coupon Code') }}</label>
-                            <input type="text" name="code" required :value="edit.code" @input="onEditCodeInput" class="cp-num w-full rounded-xl border-slate-300 text-sm uppercase focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                            <input id="code" type="text" name="code" required :value="edit.code" @input="onEditCodeInput" class="cp-num w-full rounded-xl border-slate-300 text-sm uppercase focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Type') }}</label>
-                                <select name="type" x-model="edit.type" class="w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                <label for="type" class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Type') }}</label>
+                                <select id="type" name="type" x-model="edit.type" class="w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                     <option value="percent">{{ __('Percent (%)') }}</option>
                                     <option value="fixed">{{ __('Fixed Amount') }}</option>
                                 </select>
                             </div>
                             <div>
-                                <label class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Value') }}</label>
-                                <input type="number" name="value" required step="0.01" min="0" :max="editValueMax" x-model="edit.value" class="cp-num w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                <label for="value" class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Value') }}</label>
+                                <input id="value" type="number" name="value" required step="0.01" min="0" :max="editValueMax" x-model="edit.value" class="cp-num w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             </div>
                         </div>
                         <div>
-                            <label class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Usage Limit') }} <span class="font-normal text-muted">({{ __('0 = unlimited') }})</span></label>
-                            <input type="number" name="usage_limit" min="0" x-model="edit.usageLimit" class="cp-num w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                            <label for="usage_limit" class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Usage Limit') }} <span class="font-normal text-muted">({{ __('0 = unlimited') }})</span></label>
+                            <input id="usage_limit" type="number" name="usage_limit" min="0" x-model="edit.usageLimit" class="cp-num w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                         </div>
                         <div class="grid grid-cols-2 gap-3">
                             <div>
-                                <label class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Starts At') }}</label>
-                                <input type="date" name="starts_at" x-model="edit.startsAt" class="w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                <label for="starts_at" class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Starts At') }}</label>
+                                <input id="starts_at" type="date" name="starts_at" x-model="edit.startsAt" class="w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             </div>
                             <div>
-                                <label class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Expiry') }}</label>
-                                <input type="date" name="ends_at" x-model="edit.endsAt" class="w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                <label for="ends_at" class="mb-1 block text-[11px] font-bold text-slate-500">{{ __('Expiry') }}</label>
+                                <input id="ends_at" type="date" name="ends_at" x-model="edit.endsAt" class="w-full rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                             </div>
                         </div>
                         <p class="rounded-xl bg-slate-50 px-3.5 py-2.5 text-[11px] leading-relaxed text-slate-500">{{ __('Changes are saved to the coupons table and logged in the activity log. Status follows the active switch and the schedule automatically.') }}</p>

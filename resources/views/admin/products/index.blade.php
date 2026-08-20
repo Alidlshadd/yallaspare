@@ -368,7 +368,7 @@
                                             <div class="text-[11px] text-slate-500">{{ __('Upload CSV / XLSX to update or create products') }}</div>
                                         </div>
                                     </div>
-                                    <button type="button" @click="close()"
+                                    <button type="button" @click="close()" aria-label="{{ __('Close') }}"
                                             class="h-8 w-8 rounded-lg grid place-items-center text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                                     </button>
@@ -658,7 +658,7 @@
                                 <img src="{{ asset('storage/' . ltrim((string) $product->image, '/')) }}"
                                      alt="{{ $product->name }}" loading="lazy">
                             @else
-                                <i class="fas fa-image placeholder"></i>
+                                <i class="fas fa-image placeholder" aria-hidden="true"></i>
                             @endif
                             <span class="badge-tr status-pill {{ $product->is_active ? 'active' : 'inactive' }}">
                                 {{ $product->is_active ? __('Active') : __('Inactive') }}
@@ -674,7 +674,7 @@
                         </div>
                         <div class="mt-2 flex items-center justify-between gap-2 rounded-lg border border-slate-100 bg-slate-50 px-2.5 py-2 text-[11px] font-semibold text-slate-500">
                             <span class="inline-flex items-center gap-1.5">
-                                <i class="fas fa-eye text-accent"></i>
+                                <i class="fas fa-eye text-accent" aria-hidden="true"></i>
                                 {{ __(':count views', ['count' => number_format($viewsCount)]) }}
                             </span>
                             @if($lastViewedAt)
@@ -702,7 +702,7 @@
                         <div class="acts">
                             <a href="{{ route('admin.products.edit', ['product' => $product, 'return_to' => request()->fullUrl()]) }}"
                                class="btn primary" title="{{ __('Edit') }}">
-                                <i class="fas fa-pen"></i> {{ __('Edit') }}
+                                <i class="fas fa-pen" aria-hidden="true"></i> {{ __('Edit') }}
                             </a>
                             <form action="{{ route('admin.products.destroy', $product) }}"
                                   method="POST"
@@ -714,7 +714,7 @@
                                 @method('DELETE')
                                 <input type="hidden" name="return_to" value="{{ $currentProductsUrl }}">
                                 <button type="submit" class="btn danger w-full" title="{{ __('Delete') }}">
-                                    <i class="fas fa-trash"></i>
+                                    <i class="fas fa-trash" aria-hidden="true"></i>
                                 </button>
                             </form>
                         </div>

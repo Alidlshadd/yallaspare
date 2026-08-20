@@ -104,42 +104,42 @@
                 <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                     <div class="flex items-start justify-between gap-2">
                         <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-muted dark:text-slate-500">{{ __('Pending') }}</p>
-                        <i class="fas fa-hourglass-half text-accent"></i>
+                        <i class="fas fa-hourglass-half text-accent" aria-hidden="true"></i>
                     </div>
                     <p class="sr-num mt-2 text-2xl font-bold text-accent dark:text-accent">{{ number_format($summary['pending']) }}</p>
                 </article>
                 <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                     <div class="flex items-start justify-between gap-2">
                         <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-muted dark:text-slate-500">{{ __('Notified') }}</p>
-                        <i class="fas fa-bell text-emerald-500"></i>
+                        <i class="fas fa-bell text-emerald-500" aria-hidden="true"></i>
                     </div>
                     <p class="sr-num mt-2 text-2xl font-bold text-emerald-600">{{ number_format($summary['notified']) }}</p>
                 </article>
                 <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                     <div class="flex items-start justify-between gap-2">
                         <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-muted dark:text-slate-500">{{ __('Products') }}</p>
-                        <i class="fas fa-box-open text-info"></i>
+                        <i class="fas fa-box-open text-info" aria-hidden="true"></i>
                     </div>
                     <p class="sr-num mt-2 text-2xl font-bold text-info dark:text-info">{{ number_format($summary['products']) }}</p>
                 </article>
                 <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                     <div class="flex items-start justify-between gap-2">
                         <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-muted dark:text-slate-500">{{ __('High Demand') }}</p>
-                        <i class="fas fa-fire text-rose-500"></i>
+                        <i class="fas fa-fire text-rose-500" aria-hidden="true"></i>
                     </div>
                     <p class="sr-num mt-2 text-2xl font-bold text-rose-600">{{ number_format($summary['high_demand']) }}</p>
                 </article>
                 <article class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                     <div class="flex items-start justify-between gap-2">
                         <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-muted dark:text-slate-500">{{ __('Out of Stock') }}</p>
-                        <i class="fas fa-circle-exclamation text-rose-500"></i>
+                        <i class="fas fa-circle-exclamation text-rose-500" aria-hidden="true"></i>
                     </div>
                     <p class="sr-num mt-2 text-2xl font-bold text-rose-600">{{ number_format($summary['out_of_stock_requests']) }}</p>
                 </article>
                 <article class="sr-hero rounded-2xl border border-transparent p-4 shadow-sm">
                     <div class="flex items-start justify-between gap-2">
                         <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-white/55">{{ __('In Purchase List') }}</p>
-                        <i class="fas fa-cart-shopping text-accent"></i>
+                        <i class="fas fa-cart-shopping text-accent" aria-hidden="true"></i>
                     </div>
                     <p class="sr-num mt-2 text-2xl font-bold text-accent" x-text="inListCountLabel">0</p>
                     <p class="text-[10px] text-white/45">{{ __('on this page') }}</p>
@@ -150,7 +150,7 @@
             <form method="GET" action="{{ route('admin.stock-requests.index') }}" class="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
                 <div class="flex flex-wrap items-center gap-2">
                     <input type="search" name="search" value="{{ $search }}" placeholder="{{ __('Search product, SKU, brand') }}" class="min-w-0 flex-[2_1_220px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                    <select name="status" class="min-w-0 flex-[1_1_140px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                    <select aria-label="{{ __('Status') }}" name="status" class="min-w-0 flex-[1_1_140px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                         @foreach(['pending' => __('Pending'), 'notified' => __('Notified'), 'all' => __('All')] as $value => $label)
                             <option value="{{ $value }}" @selected($status === $value)>{{ $label }}</option>
                         @endforeach
@@ -162,7 +162,7 @@
 
             @unless($hasTable)
                 <div class="rounded-2xl border border-dashed border-slate-300 bg-white p-10 text-center dark:border-slate-700">
-                    <i class="fas fa-plug-circle-xmark mb-3 block text-2xl text-slate-300"></i>
+                    <i class="fas fa-plug-circle-xmark mb-3 block text-2xl text-slate-300" aria-hidden="true"></i>
                     <p class="text-sm font-bold text-slate-600">{{ __('Back-in-stock subscriptions table is not available yet.') }}</p>
                     <p class="mt-1 text-xs text-muted">{{ __('Run the pending database migrations to enable stock request tracking.') }}</p>
                 </div>
@@ -170,7 +170,7 @@
                 {{-- ============ main request table ============ --}}
                 <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
                     <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3">
-                        <i class="fas fa-list-check text-muted"></i>
+                        <i class="fas fa-list-check text-muted" aria-hidden="true"></i>
                         <h3 class="text-sm font-bold text-slate-800">{{ __('Requested products') }}</h3>
                         <span class="ms-auto text-xs font-semibold text-muted">{{ __(':from–:to of :total', ['from' => $products->firstItem() ?? 0, 'to' => $products->lastItem() ?? 0, 'total' => $products->total()]) }}</span>
                     </div>
@@ -230,14 +230,14 @@
                                         <td class="px-4 py-3">
                                             <div class="flex items-center justify-end gap-1.5">
                                                 <button type="button" class="sr-icon-btn" @click="openDrawer" title="{{ __('View requests') }}" aria-label="{{ __('View requests') }}">
-                                                    <i class="fas fa-users"></i>
+                                                    <i class="fas fa-users" aria-hidden="true"></i>
                                                 </button>
                                                 <button type="button" class="sr-icon-btn sr-add" data-sr-add data-id="{{ $product->id }}" @click="addFromRow" aria-label="{{ __('Add to purchase list') }}">
-                                                    <i class="fas fa-cart-plus sr-ic-add"></i>
-                                                    <i class="fas fa-check sr-ic-added"></i>
+                                                    <i class="fas fa-cart-plus sr-ic-add" aria-hidden="true"></i>
+                                                    <i class="fas fa-check sr-ic-added" aria-hidden="true"></i>
                                                 </button>
                                                 <a href="{{ route('admin.products.edit', $product) }}" class="sr-icon-btn" title="{{ __('View product') }}" aria-label="{{ __('View product') }}">
-                                                    <i class="fas fa-up-right-from-square"></i>
+                                                    <i class="fas fa-up-right-from-square" aria-hidden="true"></i>
                                                 </a>
                                                 @if($pending > 0 && $stock > 0)
                                                     <form method="POST" action="{{ route('admin.stock-requests.notify', $product) }}">
@@ -256,7 +256,7 @@
                                 @empty
                                     <tr>
                                         <td colspan="7" class="px-4 py-12 text-center">
-                                            <i class="fas fa-inbox mb-3 block text-2xl text-slate-300"></i>
+                                            <i class="fas fa-inbox mb-3 block text-2xl text-slate-300" aria-hidden="true"></i>
                                             <p class="text-sm font-bold text-slate-600">{{ __('No stock requests matched the filters.') }}</p>
                                             <p class="mt-1 text-xs text-muted">{{ __('Requests will appear here when customers ask for unavailable products.') }}</p>
                                             <div class="mt-4 flex justify-center gap-2">
@@ -275,7 +275,7 @@
                 {{-- ============ recent requests ============ --}}
                 <section class="rounded-2xl border border-slate-200 bg-white shadow-sm">
                     <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3">
-                        <i class="fas fa-clock-rotate-left text-muted"></i>
+                        <i class="fas fa-clock-rotate-left text-muted" aria-hidden="true"></i>
                         <h3 class="text-sm font-bold text-slate-800">{{ __('Recent Requests') }}</h3>
                         <span class="ms-auto text-xs font-semibold text-muted">{{ __('latest :count', ['count' => $requests->count()]) }}</span>
                     </div>
@@ -300,7 +300,7 @@
                             </div>
                         @empty
                             <div class="md:col-span-2 xl:col-span-3 py-8 text-center">
-                                <i class="fas fa-inbox mb-2 block text-xl text-slate-300"></i>
+                                <i class="fas fa-inbox mb-2 block text-xl text-slate-300" aria-hidden="true"></i>
                                 <p class="text-sm font-bold text-slate-600">{{ __('No stock requests yet.') }}</p>
                                 <p class="mt-1 text-xs text-muted">{{ __('Requests will appear here when customers ask for unavailable products.') }}</p>
                             </div>
@@ -323,7 +323,7 @@
 
                     <div class="min-h-0 flex-1 overflow-y-auto">
                         <div class="px-5 py-10 text-center" x-show="drawerEmpty">
-                            <i class="fas fa-user-clock mb-2 block text-xl text-slate-300"></i>
+                            <i class="fas fa-user-clock mb-2 block text-xl text-slate-300" aria-hidden="true"></i>
                             <p class="text-sm font-bold text-slate-600">{{ __('No customer requests for this product.') }}</p>
                         </div>
                         <template x-for="sub in drawerSubs" :key="sub.id">
@@ -347,7 +347,7 @@
                         </form>
                         <span class="rounded-lg bg-amber-50 px-3.5 py-2 text-xs font-bold text-amber-700" x-show="drawerHasPending && !drawerCanNotify">{{ __('Awaiting stock') }}</span>
                         <button type="button" class="rounded-lg bg-accent px-3.5 py-2 text-sm font-bold text-[#422006] hover:bg-accent" @click="addFromDrawer">
-                            <i class="fas fa-cart-plus me-1"></i>{{ __('Add to Purchase List') }}
+                            <i class="fas fa-cart-plus me-1" aria-hidden="true"></i>{{ __('Add to Purchase List') }}
                         </button>
                         <button type="button" class="ms-auto rounded-lg border border-slate-200 px-3.5 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800" @click="closeDrawer">{{ __('Close') }}</button>
                     </div>

@@ -142,8 +142,8 @@
                         <form method="POST" action="{{ route('admin.inventory.store') }}" class="mt-5 space-y-4">
                             @csrf
                             <div class="relative" @click.outside="closeList()">
-                                <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Product') }}</label>
-                                <input type="hidden" name="product_id" x-model="productId">
+                                <label for="product_id" class="block text-sm font-medium text-slate-700 mb-1">{{ __('Product') }}</label>
+                                <input id="product_id" type="hidden" name="product_id" x-model="productId">
                                 <div class="flex rounded-lg border border-slate-300 bg-white focus-within:ring-2 focus-within:ring-accent dark:border-slate-700">
                                     <input
                                         type="text"
@@ -198,8 +198,8 @@
 
                             @if($hasWarehouseSupport)
                                 <div>
-                                    <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Warehouse') }}</label>
-                                    <select name="warehouse_id" class="w-full rounded-lg border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700">
+                                    <label for="warehouse_id" class="block text-sm font-medium text-slate-700 mb-1">{{ __('Warehouse') }}</label>
+                                    <select id="warehouse_id" name="warehouse_id" class="w-full rounded-lg border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700">
                                         <option value="">{{ __('General stock only') }}</option>
                                         @foreach($warehouses as $warehouse)
                                             <option value="{{ $warehouse->id }}" @selected((int) old('warehouse_id') === (int) $warehouse->id)>
@@ -214,8 +214,8 @@
                             @endif
 
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Direction') }}</label>
-                                <input type="hidden" name="type" :value="type">
+                                <label for="type" class="block text-sm font-medium text-slate-700 mb-1">{{ __('Direction') }}</label>
+                                <input id="type" type="hidden" name="type" :value="type">
                                 <div class="grid grid-cols-2 gap-2">
                                     <button type="button" @click="setTypeIn" :class="typeInClass" class="rounded-xl border-2 px-3 py-2.5 text-sm font-bold transition">
                                         &#8595; {{ __('Stock In') }}
@@ -227,8 +227,8 @@
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Quantity') }}</label>
-                                <input type="number" name="quantity" min="1" x-model.number="quantity" value="{{ old('quantity', 1) }}" class="w-full rounded-lg border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700" required>
+                                <label for="quantity" class="block text-sm font-medium text-slate-700 mb-1">{{ __('Quantity') }}</label>
+                                <input id="quantity" type="number" name="quantity" min="1" x-model.number="quantity" value="{{ old('quantity', 1) }}" class="w-full rounded-lg border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700" required>
                             </div>
 
                             <div x-show="selectedProduct" x-cloak class="rounded-xl border border-amber-200/70 bg-amber-50/60 px-4 py-3 text-sm dark:border-amber-900/40 dark:bg-amber-950/15">
@@ -245,13 +245,13 @@
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Reference') }}</label>
-                                <input type="text" name="reference" value="{{ old('reference') }}" placeholder="{{ __('PO-1001, Return-22...') }}" class="w-full rounded-lg border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700">
+                                <label for="reference" class="block text-sm font-medium text-slate-700 mb-1">{{ __('Reference') }}</label>
+                                <input id="reference" type="text" name="reference" value="{{ old('reference') }}" placeholder="{{ __('PO-1001, Return-22...') }}" class="w-full rounded-lg border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700">
                             </div>
 
                             <div>
-                                <label class="block text-sm font-medium text-slate-700 mb-1">{{ __('Note') }}</label>
-                                <textarea name="note" rows="3" class="w-full rounded-lg border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700" placeholder="{{ __('Optional note...') }}">{{ old('note') }}</textarea>
+                                <label for="note" class="block text-sm font-medium text-slate-700 mb-1">{{ __('Note') }}</label>
+                                <textarea id="note" name="note" rows="3" class="w-full rounded-lg border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700" placeholder="{{ __('Optional note...') }}">{{ old('note') }}</textarea>
                             </div>
 
                             <button type="submit" class="w-full rounded-lg bg-navy-deep px-4 py-2.5 text-sm font-bold text-accent transition hover:bg-navy-raised">
@@ -273,7 +273,7 @@
                         </div>
                         <form method="POST" action="{{ route('admin.inventory.import') }}" enctype="multipart/form-data" class="mt-4 space-y-3">
                             @csrf
-                            <input type="file" name="import_file" accept=".csv,.txt" required
+                            <input aria-label="{{ __('Import') }}" type="file" name="import_file" accept=".csv,.txt" required
                                    class="block w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-navy-deep file:px-4 file:py-2 file:text-sm file:font-bold file:text-accent hover:file:bg-navy-raised">
                             <button type="submit" class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800">
                                 {{ __('Upload & Import') }}
@@ -294,27 +294,27 @@
                     <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                         <form method="GET" action="{{ route('admin.inventory.index') }}" class="grid grid-cols-1 gap-3 lg:grid-cols-12">
                             <input type="text" name="search" value="{{ $search }}" placeholder="{{ __('Search product, user, reference...') }}" class="lg:col-span-4 rounded-lg border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700">
-                            <select name="type" class="lg:col-span-2 rounded-lg border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700">
+                            <select aria-label="{{ __('Type') }}" name="type" class="lg:col-span-2 rounded-lg border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700">
                                 <option value="">{{ __('All types') }}</option>
                                 <option value="in" @selected($type === 'in')>{{ __('Stock In') }}</option>
                                 <option value="out" @selected($type === 'out')>{{ __('Stock Out') }}</option>
                             </select>
-                            <select name="product_id" class="lg:col-span-3 rounded-lg border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700">
+                            <select aria-label="{{ __('Product') }}" name="product_id" class="lg:col-span-3 rounded-lg border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700">
                                 <option value="0">{{ __('All products') }}</option>
                                 @foreach($products as $product)
                                     <option value="{{ $product->id }}" @selected((int) $productId === (int) $product->id)>{{ $product->name }}</option>
                                 @endforeach
                             </select>
                             @if($hasWarehouseSupport)
-                                <select name="warehouse_id" class="lg:col-span-3 rounded-lg border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700">
+                                <select aria-label="{{ __('Warehouse') }}" name="warehouse_id" class="lg:col-span-3 rounded-lg border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700">
                                     <option value="0">{{ __('All warehouses') }}</option>
                                     @foreach($warehouses as $warehouse)
                                         <option value="{{ $warehouse->id }}" @selected((int) $warehouseId === (int) $warehouse->id)>{{ $warehouse->name }}</option>
                                     @endforeach
                                 </select>
                             @endif
-                            <input type="date" name="from" value="{{ $from }}" class="lg:col-span-3 rounded-lg border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700">
-                            <input type="date" name="to" value="{{ $to }}" class="lg:col-span-3 rounded-lg border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700">
+                            <input aria-label="{{ __('From') }}" type="date" name="from" value="{{ $from }}" class="lg:col-span-3 rounded-lg border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700">
+                            <input aria-label="{{ __('To') }}" type="date" name="to" value="{{ $to }}" class="lg:col-span-3 rounded-lg border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700">
                             <div class="lg:col-span-6 flex flex-wrap gap-2">
                                 <button type="submit" class="rounded-lg bg-navy-deep px-4 py-2 text-sm font-bold text-accent transition hover:bg-navy-raised">{{ __('Filter') }}</button>
                                 <a href="{{ route('admin.inventory.index') }}" class="rounded-lg bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-200 dark:hover:bg-slate-700">{{ __('Reset') }}</a>

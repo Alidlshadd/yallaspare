@@ -145,7 +145,7 @@
                                     <a href="{{ route('admin.popups.edit', $popup) }}"
                                        aria-label="{{ __('Edit') }}"
                                        class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-slate-500 bg-slate-50 border border-slate-200 hover:text-slate-800 hover:bg-slate-100 dark:hover:text-slate-100 transition">
-                                        <i class="fas fa-pen text-[11px]"></i>
+                                        <i class="fas fa-pen text-[11px]" aria-hidden="true"></i>
                                     </a>
                                     <form method="POST" action="{{ route('admin.popups.destroy', $popup) }}"
                                           data-danger-confirm
@@ -156,7 +156,7 @@
                                         <button type="submit"
                                                 aria-label="{{ __('Delete') }}"
                                                 class="inline-flex h-8 w-8 items-center justify-center rounded-lg text-rose-500 bg-rose-50 border border-rose-200 hover:bg-rose-100 transition">
-                                            <i class="fas fa-trash-can text-[11px]"></i>
+                                            <i class="fas fa-trash-can text-[11px]" aria-hidden="true"></i>
                                         </button>
                                     </form>
                                 </div>

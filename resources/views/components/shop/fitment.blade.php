@@ -38,7 +38,7 @@
             <h2 class="mt-1.5 text-[17px] font-semibold tracking-[-0.022em] text-app">{{ __('Fits these vehicles') }}</h2>
             <p class="mt-1 font-mono text-[11px] text-muted">{{ $families->count() }} {{ __('families') }} · {{ $variantCount }} {{ __('variants') }}@if($brandName !== '') · {{ $brandName }}@endif</p>
         </div>
-        <span class="grid h-9 w-9 place-items-center rounded-xl bg-navy text-accent dark:bg-accent dark:text-navy"><i class="fas fa-car-side text-xs"></i></span>
+        <span class="grid h-9 w-9 place-items-center rounded-xl bg-navy text-accent dark:bg-accent dark:text-navy"><i class="fas fa-car-side text-xs" aria-hidden="true"></i></span>
     </div>
 
     <div class="mt-4 space-y-3">
@@ -54,7 +54,7 @@
                             @if($variant['image'])
                                 <img src="{{ $variant['image'] }}" alt="{{ $variant['name'] }}" class="h-11 w-14 shrink-0 rounded-lg border border-app bg-white object-cover dark:bg-slate-950">
                             @else
-                                <span class="grid h-11 w-14 shrink-0 place-items-center rounded-lg border border-dashed border-app text-muted"><i class="fas fa-car-side text-sm"></i></span>
+                                <span class="grid h-11 w-14 shrink-0 place-items-center rounded-lg border border-dashed border-app text-muted"><i class="fas fa-car-side text-sm" aria-hidden="true"></i></span>
                             @endif
                             <div class="min-w-0 flex-1">
                                 <h4 class="truncate text-[14px] font-semibold text-app">{{ $variant['name'] }}</h4>

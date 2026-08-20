@@ -5,7 +5,7 @@
                 <a href="{{ route('admin.email.index') }}"
                    class="h-10 w-10 rounded-xl border border-slate-200 bg-white text-slate-600 grid place-items-center hover:bg-slate-50 dark:hover:bg-slate-800"
                    title="{{ __('Back to Email Center') }}">
-                    <i class="fas fa-arrow-left text-xs"></i>
+                    <i class="fas fa-arrow-left text-xs" aria-hidden="true"></i>
                 </a>
                 <div>
                     <p class="text-[10px] uppercase tracking-[0.22em] text-muted font-bold leading-none">
@@ -53,17 +53,17 @@
                                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-2" id="audience-tiles">
                                         <button type="button" data-audience="all"
                                                 class="audience-tile rounded-xl border-2 border-primary bg-primary/5 px-3 py-3 text-sm font-bold text-primary text-center dark:bg-primary/10">
-                                            <i class="fas fa-users block mb-1 text-base"></i>{{ __('All eligible') }}
+                                            <i class="fas fa-users block mb-1 text-base" aria-hidden="true"></i>{{ __('All eligible') }}
                                             <p class="font-mono text-[10px] text-muted mt-1">{{ __('Verified users') }}</p>
                                         </button>
                                         <button type="button" data-audience="role"
                                                 class="audience-tile rounded-xl border border-slate-200 px-3 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 text-center dark:hover:bg-slate-800">
-                                            <i class="fas fa-user-group block mb-1 text-base"></i>{{ __('Role group') }}
+                                            <i class="fas fa-user-group block mb-1 text-base" aria-hidden="true"></i>{{ __('Role group') }}
                                             <p class="font-mono text-[10px] text-muted mt-1">{{ __('Customers / Dealers') }}</p>
                                         </button>
                                         <button type="button" data-audience="user"
                                                 class="audience-tile rounded-xl border border-slate-200 px-3 py-3 text-sm font-bold text-slate-600 hover:bg-slate-50 text-center dark:hover:bg-slate-800">
-                                            <i class="fas fa-user block mb-1 text-base"></i>{{ __('Single user') }}
+                                            <i class="fas fa-user block mb-1 text-base" aria-hidden="true"></i>{{ __('Single user') }}
                                             <p class="font-mono text-[10px] text-muted mt-1">{{ __('By email') }}</p>
                                         </button>
                                     </div>
@@ -122,20 +122,20 @@
                                     <div class="rounded-xl border border-slate-200 overflow-hidden focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20">
                                         {{-- Toolbar (markdown-lite, plain text insertion only) --}}
                                         <div class="rt-toolbar flex items-center flex-wrap gap-0.5 border-b border-slate-200 bg-slate-50/60 px-2 py-1.5 dark:bg-slate-950">
-                                            <button type="button" data-md="bold" title="{{ __('Bold (Markdown)') }}" class="rt-btn"><i class="fas fa-bold text-xs"></i></button>
-                                            <button type="button" data-md="italic" title="{{ __('Italic (Markdown)') }}" class="rt-btn"><i class="fas fa-italic text-xs"></i></button>
-                                            <button type="button" data-md="strike" title="{{ __('Strike') }}" class="rt-btn"><i class="fas fa-strikethrough text-xs"></i></button>
+                                            <button type="button" data-md="bold" title="{{ __('Bold (Markdown)') }}" class="rt-btn"><i class="fas fa-bold text-xs" aria-hidden="true"></i></button>
+                                            <button type="button" data-md="italic" title="{{ __('Italic (Markdown)') }}" class="rt-btn"><i class="fas fa-italic text-xs" aria-hidden="true"></i></button>
+                                            <button type="button" data-md="strike" title="{{ __('Strike') }}" class="rt-btn"><i class="fas fa-strikethrough text-xs" aria-hidden="true"></i></button>
                                             <span class="rt-sep"></span>
-                                            <button type="button" data-md="h1" title="{{ __('Heading') }}" class="rt-btn"><i class="fas fa-heading text-xs"></i></button>
+                                            <button type="button" data-md="h1" title="{{ __('Heading') }}" class="rt-btn"><i class="fas fa-heading text-xs" aria-hidden="true"></i></button>
                                             <span class="rt-sep"></span>
-                                            <button type="button" data-md="ul" title="{{ __('Bullet list') }}" class="rt-btn"><i class="fas fa-list-ul text-xs"></i></button>
-                                            <button type="button" data-md="ol" title="{{ __('Numbered list') }}" class="rt-btn"><i class="fas fa-list-ol text-xs"></i></button>
-                                            <button type="button" data-md="quote" title="{{ __('Quote') }}" class="rt-btn"><i class="fas fa-quote-right text-xs"></i></button>
+                                            <button type="button" data-md="ul" title="{{ __('Bullet list') }}" class="rt-btn"><i class="fas fa-list-ul text-xs" aria-hidden="true"></i></button>
+                                            <button type="button" data-md="ol" title="{{ __('Numbered list') }}" class="rt-btn"><i class="fas fa-list-ol text-xs" aria-hidden="true"></i></button>
+                                            <button type="button" data-md="quote" title="{{ __('Quote') }}" class="rt-btn"><i class="fas fa-quote-right text-xs" aria-hidden="true"></i></button>
                                             <span class="rt-sep"></span>
-                                            <button type="button" data-md="link" title="{{ __('Link') }}" class="rt-btn"><i class="fas fa-link text-xs"></i></button>
-                                            <button type="button" data-md="divider" title="{{ __('Divider') }}" class="rt-btn"><i class="fas fa-minus text-xs"></i></button>
+                                            <button type="button" data-md="link" title="{{ __('Link') }}" class="rt-btn"><i class="fas fa-link text-xs" aria-hidden="true"></i></button>
+                                            <button type="button" data-md="divider" title="{{ __('Divider') }}" class="rt-btn"><i class="fas fa-minus text-xs" aria-hidden="true"></i></button>
                                             <span class="rt-sep"></span>
-                                            <button type="button" data-md="line-break" title="{{ __('Line break') }}" class="rt-btn"><i class="fas fa-paragraph text-xs"></i></button>
+                                            <button type="button" data-md="line-break" title="{{ __('Line break') }}" class="rt-btn"><i class="fas fa-paragraph text-xs" aria-hidden="true"></i></button>
                                             <span class="ml-auto"></span>
                                             <span class="font-mono text-[10px] text-muted pr-2">{{ __('plain text · markdown supported') }}</span>
                                         </div>
@@ -221,12 +221,12 @@
                             <div class="flex flex-col gap-2">
                                 <button type="submit" @disabled(! $broadcastsAvailable)
                                         class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-white shadow-md hover:bg-primary-hover transition disabled:cursor-not-allowed disabled:bg-slate-400">
-                                    <i class="fas fa-paper-plane"></i>
+                                    <i class="fas fa-paper-plane" aria-hidden="true"></i>
                                     {{ __('Send Broadcast') }}
                                 </button>
                                 <a href="{{ route('admin.email.index') }}"
                                    class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50 transition dark:hover:bg-slate-800">
-                                    <i class="fas fa-xmark"></i>
+                                    <i class="fas fa-xmark" aria-hidden="true"></i>
                                     {{ __('Cancel') }}
                                 </a>
                             </div>

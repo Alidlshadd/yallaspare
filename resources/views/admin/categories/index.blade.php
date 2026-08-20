@@ -240,7 +240,7 @@
                                             <div class="text-[11px] text-slate-500">{{ __('Upload CSV / XLSX to create categories') }}</div>
                                         </div>
                                     </div>
-                                    <button type="button" @click="close()"
+                                    <button type="button" @click="close()" aria-label="{{ __('Close') }}"
                                             class="h-8 w-8 rounded-lg grid place-items-center text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
                                         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                                     </button>
@@ -388,7 +388,7 @@
                                 <img src="{{ asset('storage/' . ltrim((string) $category->image, '/')) }}"
                                      alt="{{ $category->name }}" loading="lazy">
                             @else
-                                <i class="fas fa-folder-open placeholder"></i>
+                                <i class="fas fa-folder-open placeholder" aria-hidden="true"></i>
                             @endif
                             @if($category->products_count > 0)
                                 <a href="{{ route('admin.products.index', ['category_id' => $category->id]) }}"
@@ -412,11 +412,11 @@
                         </div>
                         <div class="acts">
                             <a href="{{ route('admin.categories.edit', $category) }}" class="btn primary" title="{{ __('Edit') }}">
-                                <i class="fas fa-pen"></i> {{ __('Edit') }}
+                                <i class="fas fa-pen" aria-hidden="true"></i> {{ __('Edit') }}
                             </a>
                             @if($category->products_count > 0)
                                 <span class="btn locked" style="flex: 0 0 42px;" title="{{ __('Cannot delete category with assigned products') }}">
-                                    <i class="fas fa-lock"></i>
+                                    <i class="fas fa-lock" aria-hidden="true"></i>
                                 </span>
                             @else
                                 <form method="POST" action="{{ route('admin.categories.destroy', $category) }}"
@@ -427,7 +427,7 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn danger w-full" title="{{ __('Delete') }}">
-                                        <i class="fas fa-trash"></i>
+                                        <i class="fas fa-trash" aria-hidden="true"></i>
                                     </button>
                                 </form>
                             @endif

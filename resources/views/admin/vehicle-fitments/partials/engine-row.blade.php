@@ -14,7 +14,7 @@
     <div class="grid gap-3 sm:grid-cols-[minmax(0,1.1fr)_minmax(0,.8fr)_minmax(0,.9fr)_auto] sm:items-end">
         <div>
             <label class="vf-lbl">{{ __('Fuel Type') }}</label>
-            <select name="engines[{{ $index }}][fuel_type]" class="vf-sel" data-engine-fuel required>
+            <select aria-label="{{ __('Fuel Type') }}" name="engines[{{ $index }}][fuel_type]" class="vf-sel" data-engine-fuel required>
                 <option value="">{{ __('Select fuel type') }}</option>
                 @foreach($fuelTypes as $fuelType)
                     <option value="{{ $fuelType['value'] }}" data-has-displacement="{{ $fuelType['has_displacement'] ? '1' : '0' }}" @selected($fuel === $fuelType['value'])>{{ $fuelType['label'] }}</option>
@@ -36,14 +36,14 @@
 
         <div data-engine-aspiration @if($hidesDisplacement) hidden @endif>
             <label class="vf-lbl">{{ __('Aspiration') }}</label>
-            <select name="engines[{{ $index }}][aspiration]" class="vf-sel">
+            <select aria-label="{{ __('Aspiration') }}" name="engines[{{ $index }}][aspiration]" class="vf-sel">
                 <option value="" @selected($aspiration === '')>{{ __('Naturally Aspirated') }}</option>
                 <option value="turbo" @selected($aspiration === 'turbo')>{{ __('Turbo') }}</option>
             </select>
         </div>
 
         <button type="button" class="vf-btn danger sm" data-engine-remove aria-label="{{ __('Remove Engine') }}">
-            <i class="fas fa-trash text-[9px]"></i>
+            <i class="fas fa-trash text-[9px]" aria-hidden="true"></i>
         </button>
     </div>
 

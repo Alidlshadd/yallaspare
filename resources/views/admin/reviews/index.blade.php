@@ -336,7 +336,7 @@
                     <a href="{{ $flaggedUrl(! $flaggedOnly) }}"
                        class="ychip {{ $flaggedOnly ? 'on' : '' }}"
                        title="{{ __('Reviews where profanity was auto-masked') }}">
-                        <i class="fas fa-eye-slash text-[10px]"></i> {{ __('Censored') }}
+                        <i class="fas fa-eye-slash text-[10px]" aria-hidden="true"></i> {{ __('Censored') }}
                         <span class="cnt">{{ number_format($flaggedCount) }}</span>
                     </a>
                 @endif
@@ -373,7 +373,7 @@
                                 @if($review->is_flagged)
                                     <span class="inline-flex items-center gap-1 rounded-full border border-amber-300 bg-amber-50 px-2 py-0.5 text-[10px] font-bold text-amber-700"
                                           title="{{ __('Profanity was auto-masked in this review') }}">
-                                        <i class="fas fa-eye-slash text-[9px]"></i> {{ __('Censored') }}
+                                        <i class="fas fa-eye-slash text-[9px]" aria-hidden="true"></i> {{ __('Censored') }}
                                     </span>
                                 @endif
                             </span>
@@ -438,7 +438,7 @@
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="rv-btn danger sm" title="{{ __('Delete') }}">
-                                        <i class="fas fa-trash text-[10px]"></i>
+                                        <i class="fas fa-trash text-[10px]" aria-hidden="true"></i>
                                     </button>
                                 </form>
                             </div>

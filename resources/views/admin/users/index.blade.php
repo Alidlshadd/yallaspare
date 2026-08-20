@@ -370,7 +370,7 @@
                                         <form method="POST" action="{{ route('admin.users.update-role', $user) }}" class="flex items-center gap-2">
                                             @csrf
                                             @method('PATCH')
-                                            <select
+                                            <select aria-label="{{ __('Role') }}"
                                                 name="role"
                                                 class="rounded-lg border-slate-300 bg-white py-1.5 text-xs text-slate-900 dark:border-slate-700"
                                                 @disabled($isSelf)

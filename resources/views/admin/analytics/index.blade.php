@@ -35,7 +35,7 @@
     <div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 bento-shadow">
         <div class="flex items-center gap-3">
             <div class="grid h-10 w-10 place-items-center rounded-xl bg-info text-info">
-                <i class="far fa-calendar-days"></i>
+                <i class="far fa-calendar-days" aria-hidden="true"></i>
             </div>
             <div>
                 <div class="kicker">{{ __('Time Range') }}</div>
@@ -63,7 +63,7 @@
     @if(! ($hasData ?? false))
         <div class="rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-8 text-center bento-shadow">
             <div class="mx-auto grid h-12 w-12 place-items-center rounded-xl bg-slate-50 text-slate-500">
-                <i class="fas fa-chart-simple"></i>
+                <i class="fas fa-chart-simple" aria-hidden="true"></i>
             </div>
             <p class="mt-3 text-sm font-bold text-slate-700">{{ __('No analytics data yet. Data will appear after visitors use the website.') }}</p>
         </div>
@@ -79,12 +79,12 @@
                     <p class="kicker">{{ __('Page Views') }}</p>
                     <p class="mt-1 text-[11px] text-muted">{{ __('All trackable pages') }}</p>
                 </div>
-                <div class="grid h-9 w-9 place-items-center rounded-lg bg-info text-info"><i class="far fa-eye"></i></div>
+                <div class="grid h-9 w-9 place-items-center rounded-lg bg-info text-info"><i class="far fa-eye" aria-hidden="true"></i></div>
             </div>
             <p class="num-display mt-4 pl-2 text-3xl font-bold text-slate-900">{{ number_format($kpi['page_views']) }}</p>
             <div class="mt-2 flex items-center gap-2 pl-2">
                 <span class="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-bold {{ $d['class'] }}">
-                    <i class="fas {{ $d['icon'] }} text-[9px]"></i> {{ number_format(abs($kpi['page_views_delta']), 1) }}%
+                    <i class="fas {{ $d['icon'] }} text-[9px]" aria-hidden="true"></i> {{ number_format(abs($kpi['page_views_delta']), 1) }}%
                 </span>
                 <span class="text-[11px] text-slate-500">{{ __('vs previous period') }}</span>
             </div>
@@ -98,12 +98,12 @@
                     <p class="kicker">{{ __('Unique Visitors') }}</p>
                     <p class="mt-1 text-[11px] text-muted">{{ __('Distinct sessions') }}</p>
                 </div>
-                <div class="grid h-9 w-9 place-items-center rounded-lg bg-info text-info"><i class="fas fa-users-line"></i></div>
+                <div class="grid h-9 w-9 place-items-center rounded-lg bg-info text-info"><i class="fas fa-users-line" aria-hidden="true"></i></div>
             </div>
             <p class="num-display mt-4 pl-2 text-3xl font-bold text-slate-900">{{ number_format($kpi['unique_visitors']) }}</p>
             <div class="mt-2 flex items-center gap-2 pl-2">
                 <span class="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-bold {{ $d['class'] }}">
-                    <i class="fas {{ $d['icon'] }} text-[9px]"></i> {{ number_format(abs($kpi['unique_visitors_delta']), 1) }}%
+                    <i class="fas {{ $d['icon'] }} text-[9px]" aria-hidden="true"></i> {{ number_format(abs($kpi['unique_visitors_delta']), 1) }}%
                 </span>
                 <span class="text-[11px] text-slate-500">{{ __('vs previous period') }}</span>
             </div>
@@ -117,12 +117,12 @@
                     <p class="kicker">{{ __('Add to Cart') }}</p>
                     <p class="mt-1 text-[11px] text-muted">{{ __('Total clicks') }}</p>
                 </div>
-                <div class="grid h-9 w-9 place-items-center rounded-lg bg-rose-50 text-rose-600"><i class="fas fa-cart-plus"></i></div>
+                <div class="grid h-9 w-9 place-items-center rounded-lg bg-rose-50 text-rose-600"><i class="fas fa-cart-plus" aria-hidden="true"></i></div>
             </div>
             <p class="num-display mt-4 pl-2 text-3xl font-bold text-slate-900">{{ number_format($kpi['cart_adds']) }}</p>
             <div class="mt-2 flex items-center gap-2 pl-2">
                 <span class="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-bold {{ $d['class'] }}">
-                    <i class="fas {{ $d['icon'] }} text-[9px]"></i> {{ number_format(abs($kpi['cart_adds_delta']), 1) }}%
+                    <i class="fas {{ $d['icon'] }} text-[9px]" aria-hidden="true"></i> {{ number_format(abs($kpi['cart_adds_delta']), 1) }}%
                 </span>
                 <span class="text-[11px] text-slate-500">{{ __('vs previous period') }}</span>
             </div>
@@ -144,12 +144,12 @@
                     <p class="kicker">{{ __('Wishlist Clicks') }}</p>
                     <p class="mt-1 text-[11px] text-muted">{{ __('Saved to wishlist') }}</p>
                 </div>
-                <div class="grid h-9 w-9 place-items-center rounded-lg bg-amber-50 text-amber-700"><i class="far fa-heart"></i></div>
+                <div class="grid h-9 w-9 place-items-center rounded-lg bg-amber-50 text-amber-700"><i class="far fa-heart" aria-hidden="true"></i></div>
             </div>
             <p class="num-display mt-4 pl-2 text-3xl font-bold text-slate-900">{{ number_format($kpi['wishlist_clicks']) }}</p>
             <div class="mt-2 flex items-center gap-2 pl-2">
                 <span class="inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[11px] font-bold {{ $d['class'] }}">
-                    <i class="fas {{ $d['icon'] }} text-[9px]"></i> {{ number_format(abs($kpi['wishlist_clicks_delta']), 1) }}%
+                    <i class="fas {{ $d['icon'] }} text-[9px]" aria-hidden="true"></i> {{ number_format(abs($kpi['wishlist_clicks_delta']), 1) }}%
                 </span>
                 <span class="text-[11px] text-slate-500">{{ __('vs previous period') }}</span>
             </div>
@@ -274,7 +274,7 @@
         <div class="rounded-2xl border border-slate-200 bg-white bento-shadow">
             <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
                 <h3 class="text-sm font-bold text-slate-900">
-                    <i class="fas fa-magnifying-glass mr-1 text-info"></i>
+                    <i class="fas fa-magnifying-glass mr-1 text-info" aria-hidden="true"></i>
                     {{ __('Top searched keywords') }}
                 </h3>
                 <span class="kicker">{{ __('Last :n days', ['n' => $days]) }}</span>
@@ -309,7 +309,7 @@
         <div class="rounded-2xl border border-slate-200 bg-white bento-shadow">
             <div class="flex items-center justify-between border-b border-slate-100 px-5 py-4">
                 <h3 class="text-sm font-bold text-slate-900">
-                    <i class="far fa-clock mr-1 text-slate-500"></i>
+                    <i class="far fa-clock mr-1 text-slate-500" aria-hidden="true"></i>
                     {{ __('Recent searches') }}
                 </h3>
                 <span class="kicker">{{ __('All-time') }}</span>

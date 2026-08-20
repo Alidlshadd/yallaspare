@@ -402,8 +402,8 @@
                             data-collapse-label="{{ __('Collapse sidebar') }}"
                             data-admin-sidebar-toggle
                         >
-                            <i class="fas {{ $isRtl ? 'fa-angles-right' : 'fa-angles-left' }} text-sm admin-toggle-collapse-icon"></i>
-                            <i class="fas {{ $isRtl ? 'fa-angles-left' : 'fa-angles-right' }} text-sm admin-toggle-expand-icon"></i>
+                            <i class="fas {{ $isRtl ? 'fa-angles-right' : 'fa-angles-left' }} text-sm admin-toggle-collapse-icon" aria-hidden="true"></i>
+                            <i class="fas {{ $isRtl ? 'fa-angles-left' : 'fa-angles-right' }} text-sm admin-toggle-expand-icon" aria-hidden="true"></i>
                         </button>
                         <button
                             type="button"
@@ -413,7 +413,7 @@
                             title="{{ __('Collapse sidebar') }}"
                             data-admin-mobile-sidebar-close
                         >
-                            <i class="fas fa-xmark text-sm"></i>
+                            <i class="fas fa-xmark text-sm" aria-hidden="true"></i>
                         </button>
                     </div>
                     @php
@@ -448,7 +448,7 @@
                             data-admin-sidebar-tooltip="{{ __('Dashboard') }}"
                             @if(request()->routeIs('admin.dashboard')) aria-current="page" @endif
                         >
-                            <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-chart-line"></i></span>
+                            <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-chart-line" aria-hidden="true"></i></span>
                             <span class="admin-nav-label">{{ __('Dashboard') }}</span>
                         </a>
                         @can(\App\Models\User::PERMISSION_ORDERS_MANAGE)
@@ -458,7 +458,7 @@
                                 data-admin-sidebar-tooltip="{{ __('Orders Management') }}"
                                 @if(request()->routeIs('admin.orders.*')) aria-current="page" @endif
                             >
-                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-receipt"></i></span>
+                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-receipt" aria-hidden="true"></i></span>
                                 <span class="admin-nav-label">{{ __('Orders Management') }}</span>
                             </a>
                             <a
@@ -467,7 +467,7 @@
                                 data-admin-sidebar-tooltip="{{ __('Returns & Refunds') }}"
                                 @if(request()->routeIs('admin.returns.*')) aria-current="page" @endif
                             >
-                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-rotate-left"></i></span>
+                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-rotate-left" aria-hidden="true"></i></span>
                                 <span class="admin-nav-label">{{ __('Returns & Refunds') }}</span>
                             </a>
                         @endcan
@@ -481,7 +481,7 @@
                                 data-admin-sidebar-tooltip="{{ __('Products') }}"
                                 @if(request()->routeIs('admin.products.*')) aria-current="page" @endif
                             >
-                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-box"></i></span>
+                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-box" aria-hidden="true"></i></span>
                                 <span class="admin-nav-label">{{ __('Products') }}</span>
                             </a>
                             <a
@@ -490,7 +490,7 @@
                                 data-admin-sidebar-tooltip="{{ __('Categories') }}"
                                 @if(request()->routeIs('admin.categories.*')) aria-current="page" @endif
                             >
-                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-layer-group"></i></span>
+                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-layer-group" aria-hidden="true"></i></span>
                                 <span class="admin-nav-label">{{ __('Categories') }}</span>
                             </a>
                             <a
@@ -499,7 +499,7 @@
                                 data-admin-sidebar-tooltip="{{ __('Product Brands') }}"
                                 @if(request()->routeIs('admin.product-brands.*')) aria-current="page" @endif
                             >
-                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-tags"></i></span>
+                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-tags" aria-hidden="true"></i></span>
                                 <span class="admin-nav-label">{{ __('Product Brands') }}</span>
                             </a>
                             <a
@@ -508,7 +508,7 @@
                                 data-admin-sidebar-tooltip="{{ __('Vehicle Finder') }}"
                                 @if(request()->routeIs('admin.vehicle-fitments.*')) aria-current="page" @endif
                             >
-                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-car-side"></i></span>
+                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-car-side" aria-hidden="true"></i></span>
                                 <span class="admin-nav-label">{{ __('Vehicle Finder') }}</span>
                             </a>
                             <a
@@ -517,7 +517,7 @@
                                 data-admin-sidebar-tooltip="{{ __('Customer Reviews') }}"
                                 @if(request()->routeIs('admin.reviews.*')) aria-current="page" @endif
                             >
-                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-star"></i></span>
+                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-star" aria-hidden="true"></i></span>
                                 <span class="admin-nav-label">{{ __('Customer Reviews') }}</span>
                             </a>
                             <a
@@ -526,7 +526,7 @@
                                 data-admin-sidebar-tooltip="{{ __('Dead Stock') }}"
                                 @if(request()->routeIs('admin.dead-stock.*')) aria-current="page" @endif
                             >
-                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-boxes-stacked"></i></span>
+                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-boxes-stacked" aria-hidden="true"></i></span>
                                 <span class="admin-nav-label">{{ __('Dead Stock') }}</span>
                             </a>
                         @endif
@@ -540,7 +540,7 @@
                                 data-admin-sidebar-tooltip="{{ __('Product Requests') }}"
                                 @if(request()->routeIs('admin.stock-requests.*')) aria-current="page" @endif
                             >
-                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-bell-concierge"></i></span>
+                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-bell-concierge" aria-hidden="true"></i></span>
                                 <span class="admin-nav-label">{{ __('Product Requests') }}</span>
                             </a>
                         @endif
@@ -554,7 +554,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Revenue') }}"
                                     @if(request()->routeIs('admin.revenue.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-sack-dollar"></i></span>
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-sack-dollar" aria-hidden="true"></i></span>
                                     <span class="admin-nav-label">{{ __('Revenue') }}</span>
                                 </a>
                             @endcan
@@ -565,7 +565,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Site Analytics') }}"
                                     @if(request()->routeIs('admin.analytics.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-chart-line"></i></span>
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-chart-line" aria-hidden="true"></i></span>
                                     <span class="admin-nav-label">{{ __('Site Analytics') }}</span>
                                 </a>
                                 <a
@@ -574,7 +574,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Search Insights') }}"
                                     @if(request()->routeIs('admin.search-insights.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-magnifying-glass-chart"></i></span>
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-magnifying-glass-chart" aria-hidden="true"></i></span>
                                     <span class="admin-nav-label">{{ __('Search Insights') }}</span>
                                 </a>
                             @endcan
@@ -585,7 +585,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Inventory') }}"
                                     @if(request()->routeIs('admin.inventory.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-warehouse"></i></span>
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-warehouse" aria-hidden="true"></i></span>
                                     <span class="admin-nav-label">{{ __('Inventory') }}</span>
                                 </a>
                                 <a
@@ -594,7 +594,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Purchase Planning') }}"
                                     @if(request()->routeIs('admin.purchase-planning.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-cart-flatbed"></i></span>
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-cart-flatbed" aria-hidden="true"></i></span>
                                     <span class="admin-nav-label">{{ __('Purchase Planning') }}</span>
                                 </a>
                             @endcan
@@ -609,7 +609,7 @@
                                 data-admin-sidebar-tooltip="{{ __('Dealers') }}"
                                 @if(request()->routeIs('admin.dealers.*')) aria-current="page" @endif
                             >
-                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-handshake"></i></span>
+                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-handshake" aria-hidden="true"></i></span>
                                 <span class="admin-nav-label">{{ __('Dealers') }}</span>
                             </a>
                         @endif
@@ -624,7 +624,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Coupon Management') }}"
                                     @if(request()->routeIs('admin.discounts.edit') || request()->routeIs('admin.discounts.coupons.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-tags"></i></span>
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-tags" aria-hidden="true"></i></span>
                                     <span class="admin-nav-label">{{ __('Coupon Management') }}</span>
                                 </a>
                                 <a
@@ -633,7 +633,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Discount Rules') }}"
                                     @if(request()->routeIs('admin.discounts.rules')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-percent"></i></span>
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-percent" aria-hidden="true"></i></span>
                                     <span class="admin-nav-label">{{ __('Discount Rules') }}</span>
                                 </a>
                             @endcan
@@ -644,7 +644,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Email Center') }}"
                                     @if(request()->routeIs('admin.email.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-envelope-open-text"></i></span>
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-envelope-open-text" aria-hidden="true"></i></span>
                                     <span class="admin-nav-label">{{ __('Email Center') }}</span>
                                 </a>
                                 <a
@@ -653,7 +653,7 @@
                                     data-admin-sidebar-tooltip="{{ config('services.otpiq.whatsapp.admin_visible', true) ? __('SMS & WhatsApp Center') : __('SMS Center') }}"
                                     @if(request()->routeIs('admin.messaging.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-comments"></i></span>
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-comments" aria-hidden="true"></i></span>
                                     <span class="admin-nav-label">{{ config('services.otpiq.whatsapp.admin_visible', true) ? __('SMS & WhatsApp Center') : __('SMS Center') }}</span>
                                 </a>
                                 <a
@@ -662,7 +662,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Popups') }}"
                                     @if(request()->routeIs('admin.popups.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-bullhorn"></i></span>
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-bullhorn" aria-hidden="true"></i></span>
                                     <span class="admin-nav-label">{{ __('Popups') }}</span>
                                 </a>
                             @endcan
@@ -673,7 +673,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Inbound WhatsApp') }}"
                                     @if(request()->routeIs('admin.whatsapp.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fab fa-whatsapp"></i></span>
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fab fa-whatsapp" aria-hidden="true"></i></span>
                                     <span class="admin-nav-label">{{ __('Inbound WhatsApp') }}</span>
                                 </a>
                             @endif
@@ -689,7 +689,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Users') }}"
                                     @if(request()->routeIs('admin.users.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-users"></i></span>
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-users" aria-hidden="true"></i></span>
                                     <span class="admin-nav-label">{{ __('Users') }}</span>
                                 </a>
                             @endcan
@@ -700,7 +700,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Settings') }}"
                                     @if(request()->routeIs('admin.settings.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-gear"></i></span>
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-gear" aria-hidden="true"></i></span>
                                     <span class="admin-nav-label">{{ __('Settings') }}</span>
                                 </a>
                             @endcan
@@ -711,7 +711,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Activity Logs') }}"
                                     @if(request()->routeIs('admin.activity-logs.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-clipboard-list"></i></span>
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-clipboard-list" aria-hidden="true"></i></span>
                                     <span class="admin-nav-label">{{ __('Activity Logs') }}</span>
                                 </a>
                             @endcan
@@ -752,7 +752,7 @@
                                     title="{{ __('Expand sidebar') }}"
                                     data-admin-sidebar-expand
                                 >
-                                    <i class="fas {{ $isRtl ? 'fa-angles-left' : 'fa-angles-right' }} text-sm"></i>
+                                    <i class="fas {{ $isRtl ? 'fa-angles-left' : 'fa-angles-right' }} text-sm" aria-hidden="true"></i>
                                 </button>
                                 {{-- Mobile menu toggle --}}
                                 <button
@@ -764,7 +764,7 @@
                                     title="{{ __('Expand sidebar') }}"
                                     data-admin-mobile-sidebar-toggle
                                 >
-                                    <i class="fas fa-bars text-sm"></i>
+                                    <i class="fas fa-bars text-sm" aria-hidden="true"></i>
                                 </button>
                             </div>
 
@@ -801,7 +801,7 @@
                                         class="topbar-action inline-flex relative"
                                         aria-label="{{ __('Notifications') }}"
                                     >
-                                        <i class="fas fa-bell text-[13px]"></i>
+                                        <i class="fas fa-bell text-[13px]" aria-hidden="true"></i>
                                         <span
                                             id="adminNotificationsBadge"
                                             class="hidden absolute -top-0.5 {{ $isRtl ? '-left-0.5' : '-right-0.5' }} min-w-[15px] h-[15px] px-1 rounded-full bg-rose-500 text-white text-[9px] font-bold items-center justify-center"
@@ -881,7 +881,7 @@
                                         aria-label="{{ __('Log Out') }}"
                                         title="{{ __('Log Out') }}"
                                     >
-                                        <i class="fas fa-right-from-bracket text-[13px]"></i>
+                                        <i class="fas fa-right-from-bracket text-[13px]" aria-hidden="true"></i>
                                     </button>
                                 </form>
                             </div>
@@ -896,7 +896,7 @@
                         <div class="admin-danger-surface w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_30px_80px_rgba(15,23,42,0.35)] dark:border-slate-800 dark:bg-slate-900">
                             <div class="flex items-start gap-3">
                                 <div class="flex h-10 w-10 items-center justify-center rounded-full bg-rose-50 text-rose-600 dark:bg-rose-900/30 dark:text-rose-300">
-                                    <i class="fas fa-triangle-exclamation"></i>
+                                    <i class="fas fa-triangle-exclamation" aria-hidden="true"></i>
                                 </div>
                                 <div class="min-w-0 flex-1">
                                     <h3 id="adminDangerTitle" class="text-lg font-semibold text-slate-900 dark:text-slate-100">{{ __('Delete Coupon') }}</h3>

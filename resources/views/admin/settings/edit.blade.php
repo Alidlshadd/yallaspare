@@ -147,19 +147,19 @@
 
                             <div class="grid grid-cols-1 gap-4">
                                 <div>
-                                    <label class="{{ $labelClasses }}">{{ __('Site Name') }}</label>
-                                    <input type="text" name="site_name" value="{{ old('site_name', $settings['site_name'] ?? '') }}" class="{{ $inputClasses }}" required>
+                                    <label for="site_name" class="{{ $labelClasses }}">{{ __('Site Name') }}</label>
+                                    <input id="site_name" type="text" name="site_name" value="{{ old('site_name', $settings['site_name'] ?? '') }}" class="{{ $inputClasses }}" required>
                                 </div>
 
                                 <div>
-                                    <label class="{{ $labelClasses }}">{{ __('Site Logo') }}</label>
-                                    <input type="file" name="site_logo" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp" class="{{ $inputClasses }}">
+                                    <label for="site_logo" class="{{ $labelClasses }}">{{ __('Site Logo') }}</label>
+                                    <input id="site_logo" type="file" name="site_logo" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp" class="{{ $inputClasses }}">
                                     <p class="{{ $hintClasses }}">{{ __('Transparent PNG or WEBP recommended. If the uploaded logo has a white outer background, the system will try to save it as a transparent PNG. Max 8MB.') }}</p>
                                     @error('site_logo')
                                         <p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>
                                     @enderror
                                     @if(!empty($settings['site_logo']))
-                                        <label class="mt-2 inline-flex items-center gap-2 text-xs text-slate-600">
+                                        <label for="storefront_hero_video" class="mt-2 inline-flex items-center gap-2 text-xs text-slate-600">
                                             <input type="checkbox" name="remove_logo" value="1" class="rounded border-slate-300 text-muted focus:ring-accent dark:border-slate-700 dark:text-slate-500">
                                             {{ __('Remove current logo') }}
                                         </label>
@@ -173,14 +173,14 @@
                             <p class="mt-1 mb-5 text-xs text-slate-500">{{ __('Upload the video shown on the customer home page hero.') }}</p>
 
                             <label class="{{ $labelClasses }}">{{ __('Hero Video') }}</label>
-                            <input type="file" name="storefront_hero_video" accept=".mp4,video/mp4" class="{{ $inputClasses }}" data-hero-video-input>
+                            <input id="storefront_hero_video" type="file" name="storefront_hero_video" accept=".mp4,video/mp4" class="{{ $inputClasses }}" data-hero-video-input>
                             <p class="{{ $hintClasses }}">{{ __('MP4 video only. Max 50MB.') }}</p>
                             <p class="mt-1 hidden text-xs font-semibold text-rose-600" data-hero-video-client-error></p>
                             @if($storefrontHeroVideoUrl)
                                 <video class="mt-3 h-32 w-full rounded-lg object-cover" muted controls>
                                     <source src="{{ $storefrontHeroVideoUrl }}" type="video/mp4">
                                 </video>
-                                <label class="mt-2 inline-flex items-center gap-2 text-xs text-slate-600">
+                                <label for="currency_code" class="mt-2 inline-flex items-center gap-2 text-xs text-slate-600">
                                     <input type="checkbox" name="remove_storefront_hero_video" value="1" class="rounded border-slate-300 text-muted focus:ring-accent dark:border-slate-700 dark:text-slate-500">
                                     {{ __('Remove current hero video') }}
                                 </label>
@@ -197,13 +197,13 @@
                             <div class="grid grid-cols-1 gap-4">
                                 <div>
                                     <label class="{{ $labelClasses }}">{{ __('Currency Code') }}</label>
-                                    <input type="text" name="currency_code" value="{{ old('currency_code', $settings['currency_code'] ?? 'IQD') }}" class="{{ $inputClasses }}" required>
+                                    <input id="currency_code" type="text" name="currency_code" value="{{ old('currency_code', $settings['currency_code'] ?? 'IQD') }}" class="{{ $inputClasses }}" required>
                                     <p class="{{ $hintClasses }}">{{ __('Example: USD, EUR, IQD') }}</p>
                                 </div>
 
                                 <div>
-                                    <label class="{{ $labelClasses }}">{{ __('Currency Symbol') }}</label>
-                                    <input type="text" name="currency_symbol" value="{{ old('currency_symbol', $settings['currency_symbol'] ?? 'IQD') }}" class="{{ $inputClasses }}" required>
+                                    <label for="currency_symbol" class="{{ $labelClasses }}">{{ __('Currency Symbol') }}</label>
+                                    <input id="currency_symbol" type="text" name="currency_symbol" value="{{ old('currency_symbol', $settings['currency_symbol'] ?? 'IQD') }}" class="{{ $inputClasses }}" required>
                                     <p class="{{ $hintClasses }}">{{ __('Example: IQD, EUR') }}</p>
                                 </div>
                             </div>
@@ -215,14 +215,14 @@
 
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 <div>
-                                    <label class="{{ $labelClasses }}">{{ __('Shipping Fee') }}</label>
-                                    <input type="number" name="shipping_fee" min="0" step="0.01" value="{{ old('shipping_fee', (float) ($settings['shipping_fee'] ?? 5000)) }}" class="{{ $inputClasses }}" required>
+                                    <label for="shipping_fee" class="{{ $labelClasses }}">{{ __('Shipping Fee') }}</label>
+                                    <input id="shipping_fee" type="number" name="shipping_fee" min="0" step="0.01" value="{{ old('shipping_fee', (float) ($settings['shipping_fee'] ?? 5000)) }}" class="{{ $inputClasses }}" required>
                                     <p class="{{ $hintClasses }}">{{ __('Used for checkout, order totals, and invoices.') }}</p>
                                 </div>
 
                                 <div>
-                                    <label class="{{ $labelClasses }}">{{ __('Low Stock Threshold') }}</label>
-                                    <input type="number" name="low_stock_threshold" min="0" value="{{ old('low_stock_threshold', (int) ($settings['low_stock_threshold'] ?? 5)) }}" class="{{ $inputClasses }}" required>
+                                    <label for="low_stock_threshold" class="{{ $labelClasses }}">{{ __('Low Stock Threshold') }}</label>
+                                    <input id="low_stock_threshold" type="number" name="low_stock_threshold" min="0" value="{{ old('low_stock_threshold', (int) ($settings['low_stock_threshold'] ?? 5)) }}" class="{{ $inputClasses }}" required>
                                     <p class="{{ $hintClasses }}">{{ __('Used across dashboard and products table.') }}</p>
                                 </div>
                             </div>
@@ -234,13 +234,13 @@
 
                             <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                                 <div>
-                                    <label class="{{ $labelClasses }}">{{ __('SMS Webhook URL') }}</label>
-                                    <input type="url" name="sms_provider_webhook_url" value="{{ old('sms_provider_webhook_url', $settings['sms_provider_webhook_url'] ?? '') }}" class="{{ $inputClasses }}">
+                                    <label for="sms_provider_webhook_url" class="{{ $labelClasses }}">{{ __('SMS Webhook URL') }}</label>
+                                    <input id="sms_provider_webhook_url" type="url" name="sms_provider_webhook_url" value="{{ old('sms_provider_webhook_url', $settings['sms_provider_webhook_url'] ?? '') }}" class="{{ $inputClasses }}">
                                 </div>
                                 @if ($whatsappAdminVisible)
                                     <div>
-                                        <label class="{{ $labelClasses }}">{{ __('WhatsApp Webhook URL') }}</label>
-                                        <input type="url" name="whatsapp_provider_webhook_url" value="{{ old('whatsapp_provider_webhook_url', $settings['whatsapp_provider_webhook_url'] ?? '') }}" class="{{ $inputClasses }}">
+                                        <label for="whatsapp_provider_webhook_url" class="{{ $labelClasses }}">{{ __('WhatsApp Webhook URL') }}</label>
+                                        <input id="whatsapp_provider_webhook_url" type="url" name="whatsapp_provider_webhook_url" value="{{ old('whatsapp_provider_webhook_url', $settings['whatsapp_provider_webhook_url'] ?? '') }}" class="{{ $inputClasses }}">
                                     </div>
                                 @endif
                             </div>
@@ -315,7 +315,7 @@
                                 class="flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-500 transition hover:bg-slate-50 dark:hover:bg-slate-800"
                                 title="{{ __('Live Preview') }}"
                             >
-                                <i class="fas fa-eye text-xs"></i>
+                                <i class="fas fa-eye text-xs" aria-hidden="true"></i>
                             </button>
                             <div
                                 x-show="open"

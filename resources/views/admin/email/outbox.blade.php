@@ -7,7 +7,7 @@
             </div>
             <a href="{{ route('admin.email.index') }}"
                class="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-xs font-medium text-slate-600 shadow-sm hover:bg-slate-50">
-                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-left" aria-hidden="true"></i>
                 {{ __('Back to Email Center') }}
             </a>
         </div>
@@ -78,11 +78,11 @@
                                 <td class="px-4 py-3">
                                     @if($log->status === 'sent')
                                         <span class="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-semibold text-emerald-700 dark:bg-emerald-900/60">
-                                            <i class="fas fa-check"></i> {{ __('Sent') }}
+                                            <i class="fas fa-check" aria-hidden="true"></i> {{ __('Sent') }}
                                         </span>
                                     @else
                                         <span class="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-xs font-semibold text-red-700 dark:bg-red-900/60 dark:text-red-200" title="{{ $log->error_message }}">
-                                            <i class="fas fa-times"></i> {{ __('Failed') }}
+                                            <i class="fas fa-times" aria-hidden="true"></i> {{ __('Failed') }}
                                         </span>
                                     @endif
                                 </td>

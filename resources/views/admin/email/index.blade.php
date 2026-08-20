@@ -90,7 +90,7 @@
 
     @if($emailStats['last_sent_label'] === __('Mail log table is not installed yet'))
         <div class="mb-4 rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800 dark:text-amber-200">
-            <i class="fas fa-triangle-exclamation mr-1"></i>
+            <i class="fas fa-triangle-exclamation mr-1" aria-hidden="true"></i>
             {{ __('Mail log table is not installed yet') }}. {{ __('Run the pending migrations to start recording email activity.') }}
         </div>
     @endif
@@ -111,7 +111,7 @@
                     {{-- Compose CTA --}}
                     <a href="{{ route('admin.email.broadcasts.create') }}"
                        class="w-full flex items-center gap-2 rounded-xl bg-gradient-to-br from-primary to-navy-raised text-white px-3 py-2.5 text-sm font-bold shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition">
-                        <i class="fas fa-pen-to-square text-xs"></i> {{ __('New Broadcast') }}
+                        <i class="fas fa-pen-to-square text-xs" aria-hidden="true"></i> {{ __('New Broadcast') }}
                     </a>
 
                     {{-- Workspace nav --}}
@@ -120,31 +120,31 @@
                         <nav class="mt-1 space-y-0.5">
                             <a href="#overview"
                                class="font-display flex items-center gap-2.5 rounded-lg bg-primary/10 px-2.5 py-2 text-sm font-bold text-primary dark:bg-primary/20 dark:text-info">
-                                <i class="fas fa-house w-4 text-primary text-xs dark:text-info"></i> {{ __('Overview') }}
+                                <i class="fas fa-house w-4 text-primary text-xs dark:text-info" aria-hidden="true"></i> {{ __('Overview') }}
                                 <span class="ml-auto font-mono text-[10px] text-primary/70 dark:text-info">{{ number_format($totalSent7d) }}</span>
                             </a>
                             <a href="#broadcasts"
                                class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:hover:bg-slate-900 dark:hover:text-white">
-                                <i class="fas fa-bullhorn w-4 text-muted text-xs"></i> {{ __('Broadcasts') }}
+                                <i class="fas fa-bullhorn w-4 text-muted text-xs" aria-hidden="true"></i> {{ __('Broadcasts') }}
                                 <span class="ml-auto font-mono text-[10px] text-muted">{{ number_format($broadcastAll) }}</span>
                             </a>
                             <a href="{{ route('admin.email.outbox') }}"
                                class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:hover:bg-slate-900 dark:hover:text-white">
-                                <i class="fas fa-inbox w-4 text-muted text-xs"></i> {{ __('Outbox') }}
-                                <span class="ml-auto font-mono text-[10px] text-muted"><i class="fas fa-arrow-up-right-from-square text-[8px]"></i></span>
+                                <i class="fas fa-inbox w-4 text-muted text-xs" aria-hidden="true"></i> {{ __('Outbox') }}
+                                <span class="ml-auto font-mono text-[10px] text-muted"><i class="fas fa-arrow-up-right-from-square text-[8px]" aria-hidden="true"></i></span>
                             </a>
                             <a href="#settings"
                                class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:hover:bg-slate-900 dark:hover:text-white">
-                                <i class="fas fa-gears w-4 text-muted text-xs"></i> {{ __('Settings') }}
+                                <i class="fas fa-gears w-4 text-muted text-xs" aria-hidden="true"></i> {{ __('Settings') }}
                             </a>
                             <a href="{{ route('admin.email.templates.index') }}"
                                class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:hover:bg-slate-900 dark:hover:text-white">
-                                <i class="fas fa-file-pen w-4 text-muted text-xs"></i> {{ __('Template Editor') }}
-                                <span class="ml-auto font-mono text-[10px] text-muted"><i class="fas fa-arrow-up-right-from-square text-[8px]"></i></span>
+                                <i class="fas fa-file-pen w-4 text-muted text-xs" aria-hidden="true"></i> {{ __('Template Editor') }}
+                                <span class="ml-auto font-mono text-[10px] text-muted"><i class="fas fa-arrow-up-right-from-square text-[8px]" aria-hidden="true"></i></span>
                             </a>
                             <a href="#templates"
                                class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:hover:bg-slate-900 dark:hover:text-white">
-                                <i class="fas fa-file-lines w-4 text-muted text-xs"></i> {{ __('Templates') }}
+                                <i class="fas fa-file-lines w-4 text-muted text-xs" aria-hidden="true"></i> {{ __('Templates') }}
                                 <span class="ml-auto font-mono text-[10px] text-muted">{{ count($templateCards) }}</span>
                             </a>
                         </nav>
@@ -214,7 +214,7 @@
                         <div class="flex items-center gap-2">
                             <a href="{{ route('admin.email.preview', ['template' => 'order-status', 'locale' => app()->getLocale()]) }}" target="_blank" rel="noopener"
                                class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800">
-                                <i class="fas fa-eye text-[10px]"></i> {{ __('Preview templates') }}
+                                <i class="fas fa-eye text-[10px]" aria-hidden="true"></i> {{ __('Preview templates') }}
                             </a>
                         </div>
                     </div>
@@ -227,14 +227,14 @@
                             <div class="flex items-start justify-between">
                                 <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">{{ __('Total Sent') }}</p>
                                 <div class="h-7 w-7 rounded-lg bg-primary/10 text-primary grid place-items-center dark:bg-primary/20 dark:text-info">
-                                    <i class="fas fa-envelopes-bulk text-[10px]"></i>
+                                    <i class="fas fa-envelopes-bulk text-[10px]" aria-hidden="true"></i>
                                 </div>
                             </div>
                             <p class="mt-3 num-display text-3xl font-bold text-primary dark:text-white">{{ number_format($totalSent7d) }}</p>
                             <div class="mt-2 flex items-center justify-between">
                                 <span class="text-[10px] text-muted font-mono">{{ __('last 7 days') }}</span>
                                 @if($successRate7d !== null)
-                                    <span class="text-[10px] font-bold text-primary dark:text-info"><i class="fas fa-arrow-up text-[8px]"></i> {{ $successRate7d }}%</span>
+                                    <span class="text-[10px] font-bold text-primary dark:text-info"><i class="fas fa-arrow-up text-[8px]" aria-hidden="true"></i> {{ $successRate7d }}%</span>
                                 @endif
                             </div>
                             <div class="mt-2 h-1 rounded-full bg-slate-100 overflow-hidden">
@@ -248,7 +248,7 @@
                             <div class="flex items-start justify-between">
                                 <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-500">{{ __('Delivered') }}</p>
                                 <div class="h-7 w-7 rounded-lg bg-emerald-50 text-emerald-600 grid place-items-center">
-                                    <i class="fas fa-circle-check text-[10px]"></i>
+                                    <i class="fas fa-circle-check text-[10px]" aria-hidden="true"></i>
                                 </div>
                             </div>
                             <p class="mt-3 num-display text-3xl font-bold text-primary dark:text-white">{{ number_format($sent24h) }}</p>
@@ -267,7 +267,7 @@
                             <div class="flex items-start justify-between">
                                 <p class="text-[10px] font-bold uppercase tracking-[0.22em] text-accent dark:text-accent">{{ __('Pending') }}</p>
                                 <div class="h-7 w-7 rounded-lg bg-amber-100 text-amber-700 grid place-items-center">
-                                    <i class="fas fa-clock text-[10px]"></i>
+                                    <i class="fas fa-clock text-[10px]" aria-hidden="true"></i>
                                 </div>
                             </div>
                             <p class="mt-3 num-display text-3xl font-bold text-primary flex items-center gap-2 dark:text-white">
@@ -296,7 +296,7 @@
                         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
                             <div class="flex items-center gap-2.5">
                                 <div class="h-8 w-8 rounded-lg bg-primary/10 text-primary grid place-items-center dark:bg-primary/20 dark:text-info">
-                                    <i class="fas fa-clock-rotate-left text-xs"></i>
+                                    <i class="fas fa-clock-rotate-left text-xs" aria-hidden="true"></i>
                                 </div>
                                 <div>
                                     <p class="text-sm font-bold text-primary leading-none dark:text-white">{{ __('Broadcast History') }}</p>
@@ -306,7 +306,7 @@
                             <div class="flex flex-wrap items-center gap-2">
                                 @if(! $broadcastsAvailable)
                                     <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 text-amber-700 px-2.5 py-1 text-[10px] font-bold border border-amber-100 dark:border-amber-900/60">
-                                        <i class="fas fa-triangle-exclamation"></i> {{ __('Table not installed') }}
+                                        <i class="fas fa-triangle-exclamation" aria-hidden="true"></i> {{ __('Table not installed') }}
                                     </span>
                                 @endif
                                 @php
@@ -319,19 +319,19 @@
                                 <nav class="inline-flex items-center gap-0.5 rounded-xl border border-slate-200 bg-white p-1 shadow-sm" aria-label="{{ __('Filter broadcasts by status') }}">
                                     <a href="{{ route('admin.email.index', array_filter(['q' => $searchTerm])) }}#broadcasts"
                                        class="{{ $pillBase }} {{ $activeStatus === '' ? $pillOn : $pillOff }}">
-                                        <i class="fas fa-layer-group text-[9px]"></i> {{ __('All') }} <span class="{{ $activeStatus === '' ? $countChipOn : $countChipOff }}">{{ number_format($broadcastAll) }}</span>
+                                        <i class="fas fa-layer-group text-[9px]" aria-hidden="true"></i> {{ __('All') }} <span class="{{ $activeStatus === '' ? $countChipOn : $countChipOff }}">{{ number_format($broadcastAll) }}</span>
                                     </a>
                                     <a href="{{ route('admin.email.index', array_filter(['status' => 'sent', 'q' => $searchTerm])) }}#broadcasts"
                                        class="{{ $pillBase }} {{ $activeStatus === 'sent' ? $pillOn : $pillOff }}">
-                                        <i class="fas fa-check text-[9px]"></i> {{ __('Sent') }} <span class="{{ $activeStatus === 'sent' ? $countChipOn : $countChipOff }}">{{ number_format($broadcastSentTotal) }}</span>
+                                        <i class="fas fa-check text-[9px]" aria-hidden="true"></i> {{ __('Sent') }} <span class="{{ $activeStatus === 'sent' ? $countChipOn : $countChipOff }}">{{ number_format($broadcastSentTotal) }}</span>
                                     </a>
                                     <a href="{{ route('admin.email.index', array_filter(['status' => 'failed', 'q' => $searchTerm])) }}#broadcasts"
                                        class="{{ $pillBase }} {{ $activeStatus === 'failed' ? $pillOn : $pillOff }}">
-                                        <i class="fas fa-xmark text-[9px]"></i> {{ __('Failed') }} <span class="{{ $activeStatus === 'failed' ? $countChipOn : $countChipOff }}">{{ number_format($broadcastFailedTotal) }}</span>
+                                        <i class="fas fa-xmark text-[9px]" aria-hidden="true"></i> {{ __('Failed') }} <span class="{{ $activeStatus === 'failed' ? $countChipOn : $countChipOff }}">{{ number_format($broadcastFailedTotal) }}</span>
                                     </a>
                                     <a href="{{ route('admin.email.index', array_filter(['status' => 'pending', 'q' => $searchTerm])) }}#broadcasts"
                                        class="{{ $pillBase }} {{ $activeStatus === 'pending' ? $pillOn : $pillOff }}">
-                                        <i class="fas fa-clock text-[9px]"></i> {{ __('Pending') }} <span class="{{ $activeStatus === 'pending' ? $countChipOn : $countChipOff }}">{{ number_format($broadcastPendingTotal) }}</span>
+                                        <i class="fas fa-clock text-[9px]" aria-hidden="true"></i> {{ __('Pending') }} <span class="{{ $activeStatus === 'pending' ? $countChipOn : $countChipOff }}">{{ number_format($broadcastPendingTotal) }}</span>
                                     </a>
                                 </nav>
                             </div>
@@ -343,7 +343,7 @@
                                 <input type="hidden" name="status" value="{{ $activeStatus }}">
                             @endif
                             <div class="relative">
-                                <i class="fas fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-muted text-xs"></i>
+                                <i class="fas fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-muted text-xs" aria-hidden="true"></i>
                                 <input type="search"
                                        name="q"
                                        value="{{ $searchTerm }}"
@@ -353,7 +353,7 @@
                                 @if($searchTerm !== '')
                                     <a href="{{ route('admin.email.index', array_filter(['status' => $activeStatus])) }}#broadcasts"
                                        class="absolute right-14 top-1/2 -translate-y-1/2 text-[10px] font-bold text-slate-500 hover:text-rose-600">
-                                        <i class="fas fa-xmark"></i> {{ __('Clear') }}
+                                        <i class="fas fa-xmark" aria-hidden="true"></i> {{ __('Clear') }}
                                     </a>
                                 @endif
                                 <button type="submit" class="absolute right-2 top-1/2 -translate-y-1/2 rounded-lg bg-primary px-3 py-1 text-sm font-bold text-white hover:bg-primary-hover">
@@ -379,7 +379,7 @@
                                         @if(in_array($statusKey, ['queued','sending']))
                                             <span class="inline-flex h-1.5 w-1.5 rounded-full bg-accent animate-pulse"></span>
                                         @else
-                                            <i class="fas {{ $statusStyle['icon'] }} text-xs"></i>
+                                            <i class="fas {{ $statusStyle['icon'] }} text-xs" aria-hidden="true"></i>
                                         @endif
                                     </span>
                                     <div class="flex-1 min-w-0">
@@ -408,19 +408,19 @@
                             @empty
                                 <li class="px-5 py-12 text-center">
                                     <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500">
-                                        <i class="fas fa-bullhorn"></i>
+                                        <i class="fas fa-bullhorn" aria-hidden="true"></i>
                                     </span>
                                     @if($activeStatus !== '' || $searchTerm !== '')
                                         <p class="mt-3 text-sm font-semibold text-primary dark:text-slate-100">{{ __('No broadcasts match this filter') }}</p>
                                         <p class="mt-1 text-xs text-slate-500">{{ __('Try a different status or clear the search.') }}</p>
                                         <a href="{{ route('admin.email.index') }}#broadcasts" class="mt-4 inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800">
-                                            <i class="fas fa-rotate-left text-[10px]"></i> {{ __('Reset filters') }}
+                                            <i class="fas fa-rotate-left text-[10px]" aria-hidden="true"></i> {{ __('Reset filters') }}
                                         </a>
                                     @else
                                         <p class="mt-3 text-sm font-semibold text-primary dark:text-slate-100">{{ __('No broadcasts yet') }}</p>
                                         <p class="mt-1 text-xs text-slate-500">{{ __('Use Create Broadcast to send your first one.') }}</p>
                                         <a href="{{ route('admin.email.broadcasts.create') }}" class="font-display mt-4 inline-flex items-center gap-1.5 rounded-xl bg-primary px-3 py-2 text-sm font-bold text-white hover:bg-primary-hover">
-                                            <i class="fas fa-plus text-[10px]"></i> {{ __('Create Broadcast') }}
+                                            <i class="fas fa-plus text-[10px]" aria-hidden="true"></i> {{ __('Create Broadcast') }}
                                         </a>
                                     @endif
                                 </li>
@@ -435,7 +435,7 @@
                         <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
                             <div class="flex items-center gap-2.5">
                                 <div class="h-8 w-8 rounded-lg bg-info text-info grid place-items-center dark:bg-info/50 dark:text-info">
-                                    <i class="fas fa-inbox text-xs"></i>
+                                    <i class="fas fa-inbox text-xs" aria-hidden="true"></i>
                                 </div>
                                 <div>
                                     <p class="text-sm font-bold text-primary leading-none dark:text-white">{{ __('Recent Activity') }}</p>
@@ -443,7 +443,7 @@
                                 </div>
                             </div>
                             <a href="{{ route('admin.email.outbox') }}" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-1.5 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800">
-                                <i class="fas fa-arrow-up-right-from-square text-[10px]"></i> {{ __('View all') }}
+                                <i class="fas fa-arrow-up-right-from-square text-[10px]" aria-hidden="true"></i> {{ __('View all') }}
                             </a>
                         </div>
                         <div class="divide-y divide-slate-100 dark:divide-slate-800">
@@ -455,7 +455,7 @@
                                     </div>
                                     <div class="min-w-0 flex items-center gap-2.5">
                                         <span class="h-7 w-7 shrink-0 rounded-lg bg-slate-100 text-slate-500 grid place-items-center">
-                                            <i class="fas fa-envelope text-[10px]"></i>
+                                            <i class="fas fa-envelope text-[10px]" aria-hidden="true"></i>
                                         </span>
                                         <div class="min-w-0">
                                             <p class="truncate text-sm font-bold text-primary dark:text-slate-100" title="{{ $log->subject }}">{{ $log->subject ?: __('No subject') }}</p>
@@ -465,14 +465,14 @@
                                         </div>
                                     </div>
                                     <span class="inline-flex w-fit items-center gap-1 rounded-full border px-2.5 py-1 text-[11px] font-bold {{ $log->status === 'sent' ? 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-900/50' : 'bg-rose-50 text-rose-700 border-rose-100 dark:bg-rose-950/40 dark:text-rose-300 dark:border-rose-900/50' }}">
-                                        <i class="fas {{ $log->status === 'sent' ? 'fa-check' : 'fa-xmark' }} text-[9px]"></i>
+                                        <i class="fas {{ $log->status === 'sent' ? 'fa-check' : 'fa-xmark' }} text-[9px]" aria-hidden="true"></i>
                                         {{ __(ucfirst($log->status)) }}
                                     </span>
                                 </div>
                             @empty
                                 <div class="px-5 py-12 text-center">
                                     <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500">
-                                        <i class="fas fa-inbox"></i>
+                                        <i class="fas fa-inbox" aria-hidden="true"></i>
                                     </span>
                                     <p class="mt-3 text-sm font-bold text-primary dark:text-slate-100">{{ __('No mail activity yet') }}</p>
                                     <p class="mt-1 text-xs text-slate-500">{{ __('Send a test email to create the first outbox record.') }}</p>
@@ -495,7 +495,7 @@
                         <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
                             <div class="flex items-center gap-2.5">
                                 <div class="h-8 w-8 rounded-lg bg-primary/10 text-primary grid place-items-center dark:bg-primary/20 dark:text-info">
-                                    <i class="fas fa-pen-nib text-xs"></i>
+                                    <i class="fas fa-pen-nib text-xs" aria-hidden="true"></i>
                                 </div>
                                 <div>
                                     <p class="text-sm font-bold text-primary leading-none dark:text-white">{{ __('Create Broadcast') }}</p>
@@ -504,7 +504,7 @@
                             </div>
                             <a href="{{ route('admin.email.broadcasts.create') }}"
                                class="font-display inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-sm font-bold text-slate-600 hover:bg-primary hover:text-white hover:border-primary transition">
-                                <i class="fas fa-expand text-[9px]"></i> {{ __('Full editor') }}
+                                <i class="fas fa-expand text-[9px]" aria-hidden="true"></i> {{ __('Full editor') }}
                             </a>
                         </div>
 
@@ -516,7 +516,7 @@
                                     <button type="button" data-audience="all"
                                             class="ic-tile rounded-xl border-2 border-primary bg-primary/5 text-primary px-3 py-3 text-sm font-bold text-left transition dark:bg-primary/10">
                                         <div class="flex items-center gap-2">
-                                            <i class="fas fa-users text-base"></i>
+                                            <i class="fas fa-users text-base" aria-hidden="true"></i>
                                             <span>{{ __('All users') }}</span>
                                         </div>
                                         <p class="font-mono text-[9px] text-muted mt-1 truncate">{{ number_format($audienceCounts['total']) }} {{ __('verified') }}</p>
@@ -524,7 +524,7 @@
                                     <button type="button" data-audience="user"
                                             class="ic-tile rounded-xl border border-slate-200 px-3 py-3 text-sm font-bold text-slate-600 text-left hover:bg-slate-50 transition dark:hover:bg-slate-800">
                                         <div class="flex items-center gap-2">
-                                            <i class="fas fa-user text-base"></i>
+                                            <i class="fas fa-user text-base" aria-hidden="true"></i>
                                             <span>{{ __('Specific person') }}</span>
                                         </div>
                                         <p class="font-mono text-[9px] text-muted mt-1 truncate">{{ __('By email address') }}</p>
@@ -574,12 +574,12 @@
                             {{-- Send button (prominent) --}}
                             <button type="submit" @disabled(! $broadcastsAvailable)
                                     class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-br from-primary to-navy-raised px-4 py-3 text-sm font-bold text-white shadow-md shadow-primary/20 hover:shadow-lg hover:shadow-primary/30 transition disabled:cursor-not-allowed disabled:from-slate-400 disabled:to-slate-500 disabled:shadow-none">
-                                <i class="fas fa-paper-plane"></i> {{ __('Send Broadcast') }}
+                                <i class="fas fa-paper-plane" aria-hidden="true"></i> {{ __('Send Broadcast') }}
                             </button>
 
                             @if(! $broadcastsAvailable)
                                 <p class="text-[11px] text-accent font-mono">
-                                    <i class="fas fa-triangle-exclamation"></i> {{ __('Email broadcast table is not installed yet. Run the pending migrations before sending broadcasts.') }}
+                                    <i class="fas fa-triangle-exclamation" aria-hidden="true"></i> {{ __('Email broadcast table is not installed yet. Run the pending migrations before sending broadcasts.') }}
                                 </p>
                             @endif
                         </div>
@@ -591,7 +591,7 @@
                         <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
                             <div class="flex items-center gap-2.5">
                                 <div class="h-8 w-8 rounded-lg {{ $health['tone'] === 'green' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-200' : ($health['tone'] === 'amber' ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-200' : 'bg-rose-100 text-rose-700 dark:bg-rose-900/50 dark:text-rose-200') }} grid place-items-center">
-                                    <i class="fas fa-shield-halved text-xs"></i>
+                                    <i class="fas fa-shield-halved text-xs" aria-hidden="true"></i>
                                 </div>
                                 <div>
                                     <p class="text-sm font-bold text-primary leading-none dark:text-white">{{ __('Readiness Checks') }}</p>
@@ -609,13 +609,13 @@
                             @foreach($checks as $check)
                                 <div class="group flex items-start gap-3 px-5 py-3 hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition">
                                     <span class="mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg {{ $check['ok'] ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/50 dark:text-emerald-200' : 'bg-amber-100 text-amber-700 dark:bg-amber-900/50 dark:text-amber-200' }}">
-                                        <i class="fas {{ $check['ok'] ? 'fa-check' : 'fa-screwdriver-wrench' }} text-[11px]"></i>
+                                        <i class="fas {{ $check['ok'] ? 'fa-check' : 'fa-screwdriver-wrench' }} text-[11px]" aria-hidden="true"></i>
                                     </span>
                                     <div class="min-w-0 flex-1">
                                         <div class="flex flex-wrap items-center justify-between gap-2">
                                             <p class="text-sm font-bold text-primary dark:text-slate-100">{{ $check['label'] }}</p>
                                             <span class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold {{ $check['ok'] ? 'bg-emerald-50 text-emerald-700 border border-emerald-100 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-900/50' : 'bg-amber-50 text-amber-700 border border-amber-100 dark:bg-amber-950/40 dark:text-amber-300 dark:border-amber-900/50' }}">
-                                                <i class="fas {{ $check['ok'] ? 'fa-circle-check' : 'fa-triangle-exclamation' }} text-[9px]"></i>
+                                                <i class="fas {{ $check['ok'] ? 'fa-circle-check' : 'fa-triangle-exclamation' }} text-[9px]" aria-hidden="true"></i>
                                                 {{ $check['ok'] ? __('OK') : __('Action') }}
                                             </span>
                                         </div>
@@ -637,7 +637,7 @@
                             <div class="flex items-center justify-between gap-3">
                                 <div class="flex items-center gap-2.5">
                                     <div class="h-8 w-8 rounded-lg bg-primary/10 text-primary grid place-items-center dark:bg-primary/20 dark:text-info">
-                                        <i class="fas fa-layer-group text-xs"></i>
+                                        <i class="fas fa-layer-group text-xs" aria-hidden="true"></i>
                                     </div>
                                     <div>
                                         <p class="text-sm font-bold text-primary leading-none dark:text-white">{{ __('Template Library') }}</p>
@@ -645,7 +645,7 @@
                                     </div>
                                 </div>
                                 <span class="inline-flex items-center gap-1 rounded-full bg-primary/10 text-primary px-2.5 py-1 text-[10px] font-bold border border-primary/20 dark:bg-primary/20 dark:text-info dark:border-primary/40">
-                                    <i class="fas fa-envelope-open-text text-[9px]"></i> {{ __('transactional') }}
+                                    <i class="fas fa-envelope-open-text text-[9px]" aria-hidden="true"></i> {{ __('transactional') }}
                                 </span>
                             </div>
                         </div>
@@ -654,7 +654,7 @@
                             @foreach($templateCards as $template)
                                 <li class="group flex items-center gap-3 px-5 py-2.5 hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition">
                                     <span class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border {{ $toneClasses[$template['tone']] ?? $toneClasses['slate'] }}">
-                                        <i class="fas {{ $template['icon'] }} text-[11px]"></i>
+                                        <i class="fas {{ $template['icon'] }} text-[11px]" aria-hidden="true"></i>
                                     </span>
                                     <div class="min-w-0 flex-1">
                                         <div class="flex items-center gap-2">
@@ -673,7 +673,7 @@
                                     </div>
                                     <a href="{{ route('admin.email.preview', ['template' => $template['key'], 'locale' => app()->getLocale()]) }}" target="_blank" rel="noopener"
                                        class="shrink-0 inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2 py-1 text-[10px] font-bold text-slate-700 hover:bg-primary hover:text-white hover:border-primary transition">
-                                        <i class="fas fa-up-right-from-square text-[8px]"></i> {{ __('Open') }}
+                                        <i class="fas fa-up-right-from-square text-[8px]" aria-hidden="true"></i> {{ __('Open') }}
                                     </a>
                                 </li>
                             @endforeach

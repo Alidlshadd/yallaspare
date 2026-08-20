@@ -21,9 +21,9 @@
 
 <details {{ $attributes->merge(['class' => 'group relative inline-block text-left']) }}>
     <summary class="inline-flex cursor-pointer list-none items-center justify-center gap-2 whitespace-nowrap bg-primary font-semibold text-white shadow-sm transition hover:bg-navy-raised focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 [&::-webkit-details-marker]:hidden {{ $summaryClasses }}">
-        <i class="fas fa-file-pdf"></i>
+        <i class="fas fa-file-pdf" aria-hidden="true"></i>
         <span>{{ __('Invoice') }}</span>
-        <i class="fas fa-chevron-down text-[10px] transition group-open:rotate-180"></i>
+        <i class="fas fa-chevron-down text-[10px] transition group-open:rotate-180" aria-hidden="true"></i>
     </summary>
     <div class="invisible absolute {{ $menuAlignment }} z-50 mt-1 flex min-w-full overflow-hidden rounded-md border border-slate-200 bg-white opacity-0 shadow-lg transition group-open:visible group-open:opacity-100 group-hover:visible group-hover:opacity-100 dark:border-slate-700 dark:bg-slate-900">
         @foreach($invoiceLocales as $localeCode => $localeLabel)

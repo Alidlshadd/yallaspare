@@ -196,20 +196,20 @@
         {{-- ============ toolbar ============ --}}
         <div class="flex flex-wrap items-center gap-2 rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
             <input type="search" placeholder="{{ __('Search rule name or scope…') }}" class="min-w-0 flex-[2_1_200px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" @input="onWallSearch">
-            <select class="min-w-0 flex-[1_1_130px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" @change="onWallStatus">
+            <select aria-label="{{ __('Status') }}" class="min-w-0 flex-[1_1_130px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" @change="onWallStatus">
                 <option value="all">{{ __('All statuses') }}</option>
                 <option value="live">{{ __('Live') }}</option>
                 <option value="scheduled">{{ __('Scheduled') }}</option>
                 <option value="draft">{{ __('Draft') }}</option>
                 <option value="expired">{{ __('Expired') }}</option>
             </select>
-            <select class="min-w-0 flex-[1_1_150px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" @change="onWallSort">
+            <select aria-label="{{ __('Sort') }}" class="min-w-0 flex-[1_1_150px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100" @change="onWallSort">
                 <option value="default">{{ __('Sort: Status') }}</option>
                 <option value="value">{{ __('Sort: Highest discount') }}</option>
                 <option value="used">{{ __('Sort: Most used') }}</option>
                 <option value="name">{{ __('Sort: Name A–Z') }}</option>
             </select>
-            <button type="button" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800" @click="exportRules"><i class="fas fa-file-csv me-1"></i>{{ __('Export') }}</button>
+            <button type="button" class="rounded-xl border border-slate-200 px-4 py-2 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800" @click="exportRules"><i class="fas fa-file-csv me-1" aria-hidden="true"></i>{{ __('Export') }}</button>
             <p class="w-full text-xs font-bold text-emerald-600 sm:ms-auto sm:w-auto" x-show="hasFlash" x-cloak x-text="flashMessage"></p>
         </div>
 
@@ -224,7 +224,7 @@
         <section class="dr-pegboard rounded-3xl border border-slate-200 p-5">
             @if ($discountRows->isEmpty())
                 <div class="rounded-2xl border-2 border-dashed border-slate-300 bg-white/60 px-6 py-14 text-center dark:border-slate-700 dark:bg-slate-900/60">
-                    <i class="fas fa-tag mb-3 block text-2xl text-slate-300"></i>
+                    <i class="fas fa-tag mb-3 block text-2xl text-slate-300" aria-hidden="true"></i>
                     <p class="text-sm font-bold text-slate-600">{{ __('No saved discount rules yet') }}</p>
                     <p class="mt-1 text-xs text-muted">{{ __('Press your first tag in the builder below — it will hang here.') }}</p>
                     <a href="#discount-rule-form" class="font-display mt-4 inline-flex rounded-xl bg-navy-deep px-4 py-2 text-sm font-bold text-white hover:bg-navy-raised">{{ __('Create Discount Rule') }}</a>
@@ -379,25 +379,25 @@
                         <div class="grid gap-2.5 sm:grid-cols-2 xl:grid-cols-4">
                             <label class="cursor-pointer rounded-xl border-[1.5px] p-3 transition" :class="scopeAllCardClass">
                                 <input type="radio" name="discount_scope" value="all" x-model="scope" class="sr-only">
-                                <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-navy-deep text-accent"><i class="fas fa-globe text-xs"></i></span>
+                                <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-navy-deep text-accent"><i class="fas fa-globe text-xs" aria-hidden="true"></i></span>
                                 <span class="block text-sm font-bold text-slate-900">{{ __('All Products') }}</span>
                                 <span class="block text-[11px] text-muted">{{ __('Full catalog') }}</span>
                             </label>
                             <label class="cursor-pointer rounded-xl border-[1.5px] p-3 transition" :class="scopeProductsCardClass">
                                 <input type="radio" name="discount_scope" value="products" x-model="scope" class="sr-only">
-                                <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-navy-deep text-accent"><i class="fas fa-box text-xs"></i></span>
+                                <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-navy-deep text-accent"><i class="fas fa-box text-xs" aria-hidden="true"></i></span>
                                 <span class="block text-sm font-bold text-slate-900">{{ __('Specific Products') }}</span>
                                 <span class="block text-[11px] text-muted">{{ __('Pick exact items') }}</span>
                             </label>
                             <label class="cursor-pointer rounded-xl border-[1.5px] p-3 transition" :class="scopeCategoriesCardClass">
                                 <input type="radio" name="discount_scope" value="categories" x-model="scope" class="sr-only">
-                                <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-navy-deep text-accent"><i class="fas fa-layer-group text-xs"></i></span>
+                                <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-navy-deep text-accent"><i class="fas fa-layer-group text-xs" aria-hidden="true"></i></span>
                                 <span class="block text-sm font-bold text-slate-900">{{ __('Specific Categories') }}</span>
                                 <span class="block text-[11px] text-muted">{{ __('Product families') }}</span>
                             </label>
                             <label class="cursor-pointer rounded-xl border-[1.5px] p-3 transition" :class="scopeBrandsCardClass">
                                 <input type="radio" name="discount_scope" value="brands" x-model="scope" class="sr-only">
-                                <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-navy-deep text-accent"><i class="fas fa-tags text-xs"></i></span>
+                                <span class="mb-1.5 flex h-8 w-8 items-center justify-center rounded-lg bg-navy-deep text-accent"><i class="fas fa-tags text-xs" aria-hidden="true"></i></span>
                                 <span class="block text-sm font-bold text-slate-900">{{ __('Specific Brands') }}</span>
                                 <span class="block text-[11px] text-muted">{{ __('Brand-led rules') }}</span>
                             </label>
@@ -419,19 +419,19 @@
                             </div>
                             <div class="mt-3 grid gap-2 md:grid-cols-4">
                                 <input type="text" x-model="filters.query" @input.debounce.300ms="refreshProducts" placeholder="{{ __('Search name, SKU, or brand') }}" class="rounded-xl border-slate-300 text-sm focus:border-accent focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 md:col-span-4">
-                                <select x-model="filters.categoryId" @change="refreshProducts" class="rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                <select aria-label="{{ __('Category') }}" x-model="filters.categoryId" @change="refreshProducts" class="rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                     <option value="">{{ __('All categories') }}</option>
                                     <template x-for="category in categoryOptions" :key="category.id">
                                         <option :value="category.id" x-text="category.name"></option>
                                     </template>
                                 </select>
-                                <select x-model="filters.brand" @change="refreshProducts" class="rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                <select aria-label="{{ __('Brand') }}" x-model="filters.brand" @change="refreshProducts" class="rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                     <option value="">{{ __('All brands') }}</option>
                                     <template x-for="brand in brandOptions" :key="brand">
                                         <option :value="brand" x-text="brand"></option>
                                     </template>
                                 </select>
-                                <select x-model="filters.stock" @change="refreshProducts" class="rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                                <select aria-label="{{ __('Stock') }}" x-model="filters.stock" @change="refreshProducts" class="rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                                     <option value="">{{ __('All stock') }}</option>
                                     <option value="in_stock">{{ __('In stock') }}</option>
                                     <option value="low_stock">{{ __('Low stock') }}</option>

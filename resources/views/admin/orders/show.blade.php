@@ -29,7 +29,7 @@
                 <p class="text-sm text-slate-500">{{ __('Placed') }} {{ $order->created_at?->format('M d, Y h:i A') }}</p>
             </div>
             <a href="{{ route('admin.orders.index') }}" class="inline-flex items-center gap-2 text-sm font-medium text-info hover:text-info">
-                <i class="fas fa-arrow-left"></i>
+                <i class="fas fa-arrow-left" aria-hidden="true"></i>
                 {{ __('Back to Orders') }}
             </a>
         </div>
@@ -104,7 +104,7 @@
                                                             <img src="{{ asset('storage/' . $item->product->image) }}" alt="{{ $item->product?->name ?? __('Product') }}" class="h-full w-full object-cover">
                                                         @else
                                                             <div class="flex h-full w-full items-center justify-center text-muted">
-                                                                <i class="fas fa-image"></i>
+                                                                <i class="fas fa-image" aria-hidden="true"></i>
                                                             </div>
                                                         @endif
                                                     </div>
@@ -154,7 +154,7 @@
                         <form method="POST" action="{{ route('admin.orders.update-status', $order) }}" class="mt-4 space-y-3" data-loading-form data-loading-button-text="Saving...">
                             @csrf
                             @method('PATCH')
-                            <select name="status" class="w-full rounded-lg border-slate-300 text-sm focus:border-info focus:ring-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
+                            <select aria-label="{{ __('Order status') }}" name="status" class="w-full rounded-lg border-slate-300 text-sm focus:border-info focus:ring-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
                                 @php
                                     $statusChoices = array_values(array_unique(array_merge([(string) $order->status], $nextStatuses ?? [])));
                                 @endphp
@@ -226,7 +226,7 @@
                         <form method="POST" action="{{ route('admin.orders.update-payment', $order) }}" class="mt-4 space-y-3">
                             @csrf
                             @method('PATCH')
-                            <select name="payment_status" class="w-full rounded-lg border-slate-300 text-sm focus:border-info focus:ring-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
+                            <select aria-label="{{ __('Payment') }}" name="payment_status" class="w-full rounded-lg border-slate-300 text-sm focus:border-info focus:ring-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
                                 @foreach(\App\Models\Order::allowedPaymentStatuses() as $paymentStatus)
                                     <option value="{{ $paymentStatus }}" @selected(\App\Models\Order::normalizedPaymentStatus((string) ($order->payment_status ?? 'pending')) === $paymentStatus)>
                                         {{ \App\Models\Order::paymentStatusMeta((string) $paymentStatus)['label'] }}

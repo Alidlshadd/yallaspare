@@ -108,19 +108,19 @@
         <section class="rounded-2xl border border-slate-200 bg-white shadow-sm">
             <form method="GET" action="{{ route('admin.whatsapp.events.index') }}" class="grid gap-3 border-b border-slate-200 p-4 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-7">
                 <input name="phone" value="{{ $filters['phone'] ?? '' }}" placeholder="{{ __('Phone number') }}" class="rounded-xl border-slate-300 bg-white text-sm dark:border-slate-700 dark:text-white">
-                <select name="event_type" class="rounded-xl border-slate-300 bg-white text-sm dark:border-slate-700 dark:text-white">
+                <select aria-label="{{ __('Event type') }}" name="event_type" class="rounded-xl border-slate-300 bg-white text-sm dark:border-slate-700 dark:text-white">
                     <option value="">{{ __('All event types') }}</option>
                     @foreach($eventTypes as $type)<option value="{{ $type }}" @selected(($filters['event_type'] ?? '') === $type)>{{ $type }}</option>@endforeach
                 </select>
-                <select name="message_type" class="rounded-xl border-slate-300 bg-white text-sm dark:border-slate-700 dark:text-white">
+                <select aria-label="{{ __('Message type') }}" name="message_type" class="rounded-xl border-slate-300 bg-white text-sm dark:border-slate-700 dark:text-white">
                     <option value="">{{ __('All message types') }}</option>
                     @foreach($messageTypes as $type)<option value="{{ $type }}" @selected(($filters['message_type'] ?? '') === $type)>{{ $type }}</option>@endforeach
                 </select>
-                <select name="processing_status" class="rounded-xl border-slate-300 bg-white text-sm dark:border-slate-700 dark:text-white">
+                <select aria-label="{{ __('Status') }}" name="processing_status" class="rounded-xl border-slate-300 bg-white text-sm dark:border-slate-700 dark:text-white">
                     <option value="">{{ __('All statuses') }}</option>
                     @foreach(['received', 'processing', 'processed', 'ignored', 'failed'] as $status)<option value="{{ $status }}" @selected(($filters['processing_status'] ?? '') === $status)>{{ __(ucfirst($status)) }}</option>@endforeach
                 </select>
-                <select name="read_status" class="rounded-xl border-slate-300 bg-white text-sm dark:border-slate-700 dark:text-white">
+                <select aria-label="{{ __('Read and unread') }}" name="read_status" class="rounded-xl border-slate-300 bg-white text-sm dark:border-slate-700 dark:text-white">
                     <option value="">{{ __('Read and unread') }}</option>
                     <option value="unread" @selected(($filters['read_status'] ?? '') === 'unread')>{{ __('Unread') }}</option>
                     <option value="read" @selected(($filters['read_status'] ?? '') === 'read')>{{ __('Read') }}</option>

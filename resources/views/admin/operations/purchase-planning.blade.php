@@ -118,28 +118,28 @@
                 <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                     <div class="flex items-start justify-between gap-3">
                         <p class="text-xs font-bold uppercase tracking-[0.14em] text-muted dark:text-slate-500">{{ __('Out of Stock') }}</p>
-                        <i class="fas fa-circle-exclamation text-rose-500"></i>
+                        <i class="fas fa-circle-exclamation text-rose-500" aria-hidden="true"></i>
                     </div>
                     <p class="pp-num mt-3 text-2xl font-bold text-rose-600">{{ number_format($summary['out_of_stock']) }}</p>
                 </article>
                 <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                     <div class="flex items-start justify-between gap-3">
                         <p class="text-xs font-bold uppercase tracking-[0.14em] text-muted dark:text-slate-500">{{ __('Low Stock') }}</p>
-                        <i class="fas fa-arrow-trend-down text-accent"></i>
+                        <i class="fas fa-arrow-trend-down text-accent" aria-hidden="true"></i>
                     </div>
                     <p class="pp-num mt-3 text-2xl font-bold text-slate-900">{{ number_format($summary['low_stock']) }}</p>
                 </article>
                 <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                     <div class="flex items-start justify-between gap-3">
                         <p class="text-xs font-bold uppercase tracking-[0.14em] text-muted dark:text-slate-500">{{ __('Waiting Customers') }}</p>
-                        <i class="fas fa-bell text-info"></i>
+                        <i class="fas fa-bell text-info" aria-hidden="true"></i>
                     </div>
                     <p class="pp-num mt-3 text-2xl font-bold text-info dark:text-info">{{ number_format($summary['waiting_customers']) }}</p>
                 </article>
                 <article class="pp-hero rounded-2xl border border-transparent p-5 shadow-sm">
                     <div class="flex items-start justify-between gap-3">
                         <p class="text-xs font-bold uppercase tracking-[0.14em] text-white/55">{{ __('Page Budget') }}</p>
-                        <i class="fas fa-coins text-accent"></i>
+                        <i class="fas fa-coins text-accent" aria-hidden="true"></i>
                     </div>
                     <p class="pp-num mt-3 text-2xl font-bold text-accent">{{ $money($summary['estimated_budget']) }}</p>
                 </article>
@@ -149,17 +149,17 @@
             <form method="GET" action="{{ route('admin.purchase-planning.index') }}" class="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
                 <div class="flex flex-wrap items-center gap-2">
                     <input type="search" name="search" value="{{ $search }}" placeholder="{{ __('Search product, SKU, brand') }}" class="min-w-0 flex-[2_1_220px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
-                    <select name="status" class="min-w-0 flex-[1_1_140px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                    <select aria-label="{{ __('Status') }}" name="status" class="min-w-0 flex-[1_1_140px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                         @foreach(['needs_reorder' => __('Needs reorder'), 'out_of_stock' => __('Out of stock'), 'low_stock' => __('Low stock'), 'all' => __('All products')] as $value => $label)
                             <option value="{{ $value }}" @selected($status === $value)>{{ $label }}</option>
                         @endforeach
                     </select>
-                    <select name="days" class="min-w-0 flex-[1_1_130px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                    <select aria-label="{{ __('Period') }}" name="days" class="min-w-0 flex-[1_1_130px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                         @foreach([7, 30, 90] as $option)
                             <option value="{{ $option }}" @selected($days === $option)>{{ __('Sales :days days', ['days' => $option]) }}</option>
                         @endforeach
                     </select>
-                    <select name="coverage_days" class="min-w-0 flex-[1_1_130px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
+                    <select aria-label="{{ __('Coverage') }}" name="coverage_days" class="min-w-0 flex-[1_1_130px] rounded-xl border-slate-300 text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100">
                         @foreach([14, 30, 60, 90] as $option)
                             <option value="{{ $option }}" @selected($coverageDays === $option)>{{ __('Cover :days days', ['days' => $option]) }}</option>
                         @endforeach
@@ -176,7 +176,7 @@
                 <div class="min-w-0 space-y-6">
                     <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
                         <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3">
-                            <i class="fas fa-boxes-stacked text-muted"></i>
+                            <i class="fas fa-boxes-stacked text-muted" aria-hidden="true"></i>
                             <h3 class="text-sm font-bold text-slate-800">{{ __('Products to reorder') }}</h3>
                             <span class="ms-auto text-xs font-semibold text-muted">{{ __(':from–:to of :total', ['from' => $products->firstItem() ?? 0, 'to' => $products->lastItem() ?? 0, 'total' => $products->total()]) }}</span>
                         </div>
@@ -236,7 +236,7 @@
                     {{-- ---------- recent purchase lists ---------- --}}
                     <section class="rounded-2xl border border-slate-200 bg-white shadow-sm">
                         <div class="flex items-center gap-2 border-b border-slate-200 px-4 py-3">
-                            <i class="fas fa-folder-open text-muted"></i>
+                            <i class="fas fa-folder-open text-muted" aria-hidden="true"></i>
                             <h3 class="text-sm font-bold text-slate-800">{{ __('Recent Purchase Lists') }}</h3>
                             <span class="ms-auto text-xs font-semibold text-muted">{{ __('saved in this browser') }}</span>
                         </div>
@@ -307,7 +307,7 @@
                         {{-- items --}}
                         <div class="max-h-[380px] overflow-y-auto">
                             <div class="px-4 py-8 text-center text-sm text-muted" x-show="activeEmpty">
-                                <i class="fas fa-cart-plus mb-2 block text-xl"></i>
+                                <i class="fas fa-cart-plus mb-2 block text-xl" aria-hidden="true"></i>
                                 {{ __('This list is empty. Click + on a product, or add a manual item by code below.') }}
                             </div>
                             <template x-for="item in activeItems" :key="item.key">
@@ -325,12 +325,12 @@
                                     <div class="mt-2 grid grid-cols-[84px_110px_1fr] items-center gap-1.5">
                                         <div>
                                             <label class="mb-0.5 block text-[9px] font-bold uppercase tracking-[0.09em] text-muted">{{ __('Qty') }}</label>
-                                            <input type="number" min="1" step="1" class="pp-num h-[30px] w-full rounded-lg border-slate-300 bg-slate-50 px-2 py-0 text-right text-[13px] focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-900"
+                                            <input aria-label="{{ __('Qty') }}" type="number" min="1" step="1" class="pp-num h-[30px] w-full rounded-lg border-slate-300 bg-slate-50 px-2 py-0 text-right text-[13px] focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-900"
                                                 :value="item.qty" :data-key="item.key" @input="onQtyInput" @change="onQtyChange">
                                         </div>
                                         <div>
                                             <label class="mb-0.5 block text-[9px] font-bold uppercase tracking-[0.09em] text-muted">{{ __('Unit cost') }}</label>
-                                            <input type="number" min="0" step="any" class="pp-num h-[30px] w-full rounded-lg border-slate-300 bg-slate-50 px-2 py-0 text-right text-[13px] focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-900"
+                                            <input aria-label="{{ __('Unit cost') }}" type="number" min="0" step="any" class="pp-num h-[30px] w-full rounded-lg border-slate-300 bg-slate-50 px-2 py-0 text-right text-[13px] focus:border-accent focus:bg-white focus:ring-2 focus:ring-accent/25 dark:border-slate-700 dark:text-slate-100 dark:focus:bg-slate-900"
                                                 :value="item.cost" :data-key="item.key" @input="onCostInput" @change="onCostChange">
                                         </div>
                                         <div class="text-right">
@@ -346,7 +346,7 @@
 
                         {{-- add by code --}}
                         <button type="button" class="flex w-full items-center justify-between border-t border-slate-100 px-4 py-2.5 text-sm font-bold text-amber-700 hover:bg-amber-50/50 dark:hover:bg-slate-800/40" @click="toggleAbc">
-                            <span><i class="fas fa-barcode me-1.5"></i>{{ __('Add by code (manual item)') }}</span>
+                            <span><i class="fas fa-barcode me-1.5" aria-hidden="true"></i>{{ __('Add by code (manual item)') }}</span>
                             <span x-text="abcChevron"></span>
                         </button>
                         <div class="space-y-1.5 px-4 pb-3" x-show="abcOpen" x-cloak>
@@ -381,10 +381,10 @@
 
                         {{-- actions --}}
                         <div class="flex flex-wrap gap-1.5 px-3.5 py-3">
-                            <button type="button" class="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-bold text-white hover:bg-emerald-500" @click="saveList"><i class="fas fa-floppy-disk me-1"></i>{{ __('Save List') }}</button>
+                            <button type="button" class="rounded-lg bg-emerald-600 px-3 py-1.5 text-sm font-bold text-white hover:bg-emerald-500" @click="saveList"><i class="fas fa-floppy-disk me-1" aria-hidden="true"></i>{{ __('Save List') }}</button>
                             <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800" @click="saveDraft">{{ __('Save Draft') }}</button>
-                            <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800" @click="printList"><i class="fas fa-print me-1"></i>{{ __('Print') }}</button>
-                            <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800" @click="exportCsv"><i class="fas fa-file-csv me-1"></i>{{ __('Export CSV') }}</button>
+                            <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800" @click="printList"><i class="fas fa-print me-1" aria-hidden="true"></i>{{ __('Print') }}</button>
+                            <button type="button" class="rounded-lg border border-slate-200 px-3 py-1.5 text-sm font-bold text-slate-600 hover:bg-slate-50 dark:hover:bg-slate-800" @click="exportCsv"><i class="fas fa-file-csv me-1" aria-hidden="true"></i>{{ __('Export CSV') }}</button>
                             <button type="button" class="rounded-lg px-3 py-1.5 text-sm font-bold text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30" @click="clearList">✕ {{ __('Clear') }}</button>
                         </div>
                         <p class="px-4 pb-3 text-[10.5px] text-muted">{{ __('Lists are stored in this browser only — they survive reloads and filters, but other admins cannot see them.') }}</p>

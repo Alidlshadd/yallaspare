@@ -5,7 +5,7 @@
                 <a href="{{ route('admin.email.index') }}"
                    class="h-10 w-10 rounded-xl border border-slate-200 bg-white text-slate-600 grid place-items-center hover:bg-slate-50 dark:hover:bg-slate-800"
                    title="{{ __('Back to Email Center') }}">
-                    <i class="fas fa-arrow-left text-xs"></i>
+                    <i class="fas fa-arrow-left text-xs" aria-hidden="true"></i>
                 </a>
                 <div>
                     <p class="text-[10px] uppercase tracking-[0.22em] text-muted font-bold leading-none">
@@ -31,7 +31,7 @@
 
         @if(! $templateAvailable)
             <div class="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-800 dark:text-amber-200">
-                <i class="fas fa-triangle-exclamation mr-1"></i>
+                <i class="fas fa-triangle-exclamation mr-1" aria-hidden="true"></i>
                 {{ __('Email templates table is not installed yet. Run the pending migrations to enable saving edits.') }}
             </div>
         @endif
@@ -42,7 +42,7 @@
             <div class="flex flex-wrap items-center justify-between gap-3 px-5 py-4">
                 <div class="flex items-center gap-3">
                     <div class="h-11 w-11 rounded-2xl bg-gradient-to-br from-primary to-navy-raised text-white grid place-items-center shadow-lg shadow-primary/20">
-                        <i class="fas fa-file-pen text-sm"></i>
+                        <i class="fas fa-file-pen text-sm" aria-hidden="true"></i>
                     </div>
                     <div>
                         <p class="text-[10px] uppercase tracking-[0.22em] text-muted font-bold leading-none">{{ __('Transactional templates') }}</p>
@@ -52,7 +52,7 @@
                 </div>
                 <div class="flex items-center gap-2">
                     <a href="{{ route('admin.email.index') }}#templates" class="inline-flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800">
-                        <i class="fas fa-eye text-[10px]"></i> {{ __('Preview templates') }}
+                        <i class="fas fa-eye text-[10px]" aria-hidden="true"></i> {{ __('Preview templates') }}
                     </a>
                 </div>
             </div>
@@ -74,7 +74,7 @@
   ($row['tone'] === 'indigo' ? 'border-info bg-info text-info' :
   ($row['tone'] === 'orange' ? 'border-orange-200 bg-orange-50 text-orange-700' :
   'border-slate-200 bg-slate-50 text-slate-700'))))))) }}">
-                                <i class="fas {{ $row['icon'] }} text-xs"></i>
+                                <i class="fas {{ $row['icon'] }} text-xs" aria-hidden="true"></i>
                             </span>
                             <div class="flex-1 min-w-0">
                                 <div class="flex flex-wrap items-center gap-2">
@@ -88,7 +88,7 @@
                                            class="group inline-flex items-center gap-1.5 rounded-lg border {{ $info['has_override'] ? 'border-primary/30 bg-primary/5 text-primary dark:border-primary/50 dark:bg-primary/10 dark:text-info' : 'border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300' }} px-2.5 py-1 text-[11px] font-bold hover:bg-primary hover:text-white hover:border-primary transition">
                                             <span class="uppercase">{{ $locale }}</span>
                                             @if($info['has_override'])
-                                                <i class="fas fa-check text-[9px] text-emerald-500 group-hover:text-white"></i>
+                                                <i class="fas fa-check text-[9px] text-emerald-500 group-hover:text-white" aria-hidden="true"></i>
                                             @endif
                                             @if($info['updated_at'])
                                                 <span class="font-mono text-[9px] text-muted group-hover:text-white/70">· {{ $info['updated_at']->diffForHumans() }}</span>
@@ -104,7 +104,7 @@
         </div>
 
         <p class="text-[10px] font-mono text-muted">
-            <i class="fas fa-info-circle"></i>
+            <i class="fas fa-info-circle" aria-hidden="true"></i>
             {{ __('Green check = admin override saved. Empty = using default hardcoded content.') }}
         </p>
 
