@@ -299,8 +299,8 @@
     direction: ltr;
     display: grid;
     grid-template-columns: minmax(0, 1.06fr) minmax(0, 0.94fr);
-    width: min(100%, 90rem);
-    min-height: min(52rem, calc(100svh - clamp(2rem, 5vw, 5rem)));
+    width: min(100%, 84rem);
+    min-height: min(49rem, calc(100svh - clamp(3rem, 7vw, 7rem)));
     overflow: hidden;
     border: 1px solid rgb(var(--border-rgb) / 0.82);
     border-radius: 2rem;
@@ -309,12 +309,196 @@
         0 2px 3px rgb(var(--brand-navy-rgb) / 0.05),
         0 28px 90px -36px rgb(var(--brand-navy-rgb) / 0.38);
     animation: ysAuthPortalEnter 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
-    transition: opacity 180ms ease, transform 180ms ease;
+    transition: opacity 560ms cubic-bezier(0.22, 1, 0.36, 1), transform 560ms cubic-bezier(0.22, 1, 0.36, 1), filter 560ms ease;
 }
 
-.ys-auth-is-leaving {
+.ys-auth-route-transition {
+    pointer-events: none;
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    overflow: hidden;
+    visibility: hidden;
+}
+
+.ys-auth-transition-blade {
+    position: absolute;
+    inset: -12vh -14vw;
+    transform: translateX(120%);
+    clip-path: polygon(8% 0, 100% 0, 92% 100%, 0 100%);
+    will-change: transform;
+}
+
+.ys-auth-transition-accent {
+    z-index: 1;
+    background: var(--brand-orange);
+    transition: transform 380ms cubic-bezier(0.72, 0, 0.2, 1);
+}
+
+.ys-auth-transition-shadow {
+    z-index: 2;
+    background: rgb(18 18 74 / 1);
+    transition: transform 480ms 70ms cubic-bezier(0.72, 0, 0.2, 1);
+}
+
+.ys-auth-transition-navy {
+    z-index: 3;
+    background:
+        radial-gradient(circle at 50% 50%, rgb(var(--accent-rgb) / 0.08), transparent 18rem),
+        linear-gradient(135deg, var(--brand-navy), rgb(4 4 31 / 1));
+    transition: transform 560ms 140ms cubic-bezier(0.72, 0, 0.2, 1);
+}
+
+.ys-auth-transition-core {
+    position: absolute;
+    inset: 0;
+    z-index: 4;
+    display: grid;
+    place-content: center;
+    justify-items: center;
+    gap: 1rem;
     opacity: 0;
-    transform: translateY(8px) scale(0.992);
+    transform: scale(0.76);
+    transition: opacity 180ms ease, transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.ys-auth-transition-ring {
+    position: relative;
+    display: grid;
+    width: 7.25rem;
+    height: 7.25rem;
+    place-items: center;
+}
+
+.ys-auth-transition-ring::before,
+.ys-auth-transition-ring::after {
+    content: '';
+    position: absolute;
+    border-radius: 999px;
+}
+
+.ys-auth-transition-ring::before {
+    inset: 0;
+    border: 1px solid rgb(255 255 255 / 0.13);
+    box-shadow: 0 0 50px rgb(var(--accent-rgb) / 0.16);
+}
+
+.ys-auth-transition-ring::after {
+    inset: 1.25rem;
+    border: 1px solid rgb(var(--accent-rgb) / 0.42);
+}
+
+.ys-auth-transition-ring svg {
+    position: absolute;
+    inset: 0.55rem;
+    width: calc(100% - 1.1rem);
+    height: calc(100% - 1.1rem);
+    stroke: rgb(255 255 255 / 0.24);
+    stroke-width: 0.7;
+    animation: ysAuthTransitionSpin 7s linear infinite;
+}
+
+.ys-auth-transition-ring strong {
+    position: relative;
+    z-index: 1;
+    font-family: theme('fontFamily.display');
+    font-size: 1.55rem;
+    font-weight: 700;
+    letter-spacing: -0.08em;
+    color: white;
+}
+
+.ys-auth-transition-ring strong::after {
+    content: '';
+    position: absolute;
+    width: 0.42rem;
+    height: 0.42rem;
+    inset-inline-end: -0.8rem;
+    top: 0.15rem;
+    border-radius: 999px;
+    background: var(--brand-orange);
+    box-shadow: 0 0 0 5px rgb(var(--accent-rgb) / 0.12);
+}
+
+.ys-auth-transition-copy {
+    font-family: theme('fontFamily.sans');
+    font-size: 0.63rem;
+    font-weight: 700;
+    letter-spacing: 0.24em;
+    color: rgb(255 255 255 / 0.46);
+}
+
+.ys-auth-direction-backward .ys-auth-transition-blade,
+html[data-auth-transition='backward'] .ys-auth-transition-blade {
+    transform: translateX(-120%);
+    clip-path: polygon(0 0, 92% 0, 100% 100%, 8% 100%);
+}
+
+.ys-auth-transitioning .ys-auth-route-transition,
+.ys-auth-arriving .ys-auth-route-transition,
+html[data-auth-transition] .ys-auth-route-transition {
+    visibility: visible;
+}
+
+.ys-auth-transitioning .ys-auth-transition-blade,
+.ys-auth-arriving .ys-auth-transition-blade,
+html[data-auth-transition] .ys-auth-transition-blade {
+    transform: translateX(0);
+}
+
+.ys-auth-transitioning .ys-auth-transition-core {
+    opacity: 1;
+    transform: scale(1);
+    transition-delay: 390ms;
+}
+
+.ys-auth-transitioning .ys-auth-shell {
+    opacity: 0.38;
+    filter: blur(3px);
+    transform: translateY(5px) scale(0.965);
+}
+
+.ys-auth-arriving .ys-auth-shell {
+    animation: none;
+    opacity: 0.45;
+    transform: scale(0.965);
+}
+
+.ys-auth-arriving .ys-auth-transition-core,
+html[data-auth-transition] .ys-auth-transition-core {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.ys-auth-arriving .ys-auth-transition-navy {
+    transition: transform 560ms 40ms cubic-bezier(0.8, 0, 0.28, 1);
+}
+
+.ys-auth-arriving .ys-auth-transition-shadow {
+    transition: transform 520ms 120ms cubic-bezier(0.8, 0, 0.28, 1);
+}
+
+.ys-auth-arriving .ys-auth-transition-accent {
+    transition: transform 470ms 200ms cubic-bezier(0.8, 0, 0.28, 1);
+}
+
+.ys-auth-arriving-ready .ys-auth-shell {
+    opacity: 1;
+    transform: scale(1);
+}
+
+.ys-auth-arriving-ready .ys-auth-transition-core {
+    opacity: 0;
+    transform: scale(1.2);
+    transition-delay: 40ms;
+}
+
+.ys-auth-arriving-ready.ys-auth-direction-forward .ys-auth-transition-blade {
+    transform: translateX(-120%);
+}
+
+.ys-auth-arriving-ready.ys-auth-direction-backward .ys-auth-transition-blade {
+    transform: translateX(120%);
 }
 
 .ys-auth-aside,
@@ -328,7 +512,7 @@
     min-height: 100%;
     flex-direction: column;
     overflow: hidden;
-    padding: clamp(2rem, 4.1vw, 4.75rem);
+    padding: clamp(2rem, 3.7vw, 4rem);
     color: white;
     background:
         linear-gradient(145deg, rgb(var(--brand-navy-rgb) / 0.98), rgb(4 4 31 / 1) 72%),
@@ -531,7 +715,7 @@
     max-width: 38rem;
     margin-top: 1.15rem;
     font-family: theme('fontFamily.display');
-    font-size: clamp(2.45rem, 4.8vw, 4.75rem);
+    font-size: clamp(2.35rem, 4.35vw, 4.15rem);
     font-weight: 600;
     line-height: 1.02;
     letter-spacing: -0.055em;
@@ -737,12 +921,12 @@
     flex: 1 1 auto;
     align-items: center;
     justify-content: center;
-    padding: clamp(1rem, 2.5vw, 2.5rem) clamp(1.5rem, 4vw, 4.75rem) 2rem;
+    padding: clamp(1rem, 2.25vw, 2.25rem) clamp(1.5rem, 3.6vw, 4rem) 2rem;
 }
 
 .ys-auth-surface {
-    width: min(100%, 32.5rem);
-    padding: clamp(1.6rem, 3.25vw, 2.75rem);
+    width: min(100%, 31rem);
+    padding: clamp(1.6rem, 2.9vw, 2.45rem);
     border: 1px solid rgb(var(--border-rgb) / 0.78);
     border-radius: 1.5rem;
     background: rgb(var(--surface-rgb) / 0.92);
@@ -1091,6 +1275,12 @@
     }
 }
 
+@keyframes ysAuthTransitionSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 @media (max-width: 1023px) {
     .ys-auth-stage {
         padding: 1.25rem;
@@ -1251,11 +1441,14 @@
 
 @media (prefers-reduced-motion: reduce) {
     .ys-auth-shell,
-    .ys-auth-is-leaving,
     .ys-auth-primary-action,
     .ys-auth-secondary-action {
         animation: none;
         transition: none;
+    }
+
+    .ys-auth-route-transition {
+        display: none;
     }
 }
 

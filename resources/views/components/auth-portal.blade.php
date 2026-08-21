@@ -25,9 +25,40 @@
     @include('partials.brand-head')
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    <script nonce="{{ $cspNonce }}">
+        (() => {
+            try {
+                const direction = window.sessionStorage.getItem('ys-auth-transition');
+                if (direction === 'forward' || direction === 'backward') {
+                    document.documentElement.dataset.authTransition = direction;
+                }
+            } catch (error) {
+                // The transition is progressive enhancement; navigation still works.
+            }
+        })();
+    </script>
 </head>
-<body class="ys-auth-page antialiased selection:bg-accent selection:text-navy">
+<body class="ys-auth-page antialiased selection:bg-accent selection:text-navy" data-auth-mode="{{ $mode }}">
     <x-loading-overlay message="{{ __('Processing, please wait...') }}" variant="full" />
+
+    <div class="ys-auth-route-transition" aria-hidden="true">
+        <div class="ys-auth-transition-blade ys-auth-transition-accent"></div>
+        <div class="ys-auth-transition-blade ys-auth-transition-shadow"></div>
+        <div class="ys-auth-transition-blade ys-auth-transition-navy"></div>
+
+        <div class="ys-auth-transition-core">
+            <span class="ys-auth-transition-ring">
+                <svg viewBox="0 0 100 100" fill="none">
+                    <circle cx="50" cy="50" r="43" />
+                    <circle cx="50" cy="50" r="30" stroke-dasharray="3 7" />
+                    <path d="M50 4V19M50 81V96M4 50H19M81 50H96" />
+                    <path d="M50 27 57 40l15 3-10 11 2 15-14-7-14 7 2-15-10-11 15-3 7-13Z" />
+                </svg>
+                <strong>YS</strong>
+            </span>
+            <span class="ys-auth-transition-copy">YALLASPARE · SECURE ACCESS</span>
+        </div>
+    </div>
 
     <main class="ys-auth-stage">
         <div class="ys-auth-orbit ys-auth-orbit-one" aria-hidden="true"></div>
@@ -154,6 +185,30 @@
     </main>
 
     <script nonce="{{ $cspNonce }}">
+        const authBody = document.body;
+        const arrivingDirection = document.documentElement.dataset.authTransition;
+
+        if (arrivingDirection === 'forward' || arrivingDirection === 'backward') {
+            authBody.classList.add('ys-auth-arriving', `ys-auth-direction-${arrivingDirection}`);
+
+            try {
+                window.sessionStorage.removeItem('ys-auth-transition');
+            } catch (error) {
+                // Storage can be unavailable; the visual transition remains optional.
+            }
+
+            window.requestAnimationFrame(() => {
+                window.requestAnimationFrame(() => {
+                    authBody.classList.add('ys-auth-arriving-ready');
+                });
+            });
+
+            window.setTimeout(() => {
+                authBody.classList.remove('ys-auth-arriving', 'ys-auth-arriving-ready', `ys-auth-direction-${arrivingDirection}`);
+                delete document.documentElement.dataset.authTransition;
+            }, 1050);
+        }
+
         document.addEventListener('click', (event) => {
             const link = event.target.closest('[data-auth-nav]');
             if (!link || event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
@@ -162,13 +217,32 @@
 
             const href = link.getAttribute('href');
             const portal = document.querySelector('[data-auth-portal]');
-            if (!href || !portal || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            if (!href || !portal) {
                 return;
             }
 
             event.preventDefault();
-            portal.classList.add('ys-auth-is-leaving');
-            window.setTimeout(() => window.location.assign(href), 180);
+
+            if (link.dataset.navLocked === '1') {
+                return;
+            }
+            link.dataset.navLocked = '1';
+
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                window.location.assign(href);
+                return;
+            }
+
+            const direction = authBody.dataset.authMode === 'register' ? 'backward' : 'forward';
+
+            try {
+                window.sessionStorage.setItem('ys-auth-transition', direction);
+            } catch (error) {
+                // Navigation is unaffected when session storage is blocked.
+            }
+
+            authBody.classList.add('ys-auth-transitioning', `ys-auth-direction-${direction}`);
+            window.setTimeout(() => window.location.assign(href), 720);
         });
     </script>
     @include('partials.language-switcher-script')
