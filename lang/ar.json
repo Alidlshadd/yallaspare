@@ -3240,5 +3240,8 @@
     "Governorate added.": "تمت إضافة المحافظة.",
     "Governorate removed.": "تم حذف المحافظة.",
     "Deselect all": "إلغاء تحديد الكل",
-    "No results found": "لم يتم العثور على نتائج"
+    "No results found": "لم يتم العثور على نتائج",
+    "Signing in...": "جارٍ تسجيل الدخول...",
+    "Processing...": "جارٍ المعالجة...",
+    "YallaSpare Management System": "نظام إدارة YallaSpare"
 }
