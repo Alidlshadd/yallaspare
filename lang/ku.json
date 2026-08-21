@@ -3238,5 +3238,7 @@
     "Select": "هەڵبژاردن",
     "The governorate is removed from the shipping table.": "پارێزگاکە لە خشتەی ناردن لادەبرێت.",
     "Governorate added.": "پارێزگا زیادکرا.",
-    "Governorate removed.": "پارێزگا لابرا."
+    "Governorate removed.": "پارێزگا لابرا.",
+    "Deselect all": "هەموو هەڵبژاردنەکان لاببە",
+    "No results found": "هیچ ئەنجامێک نەدۆزرایەوە"
 }

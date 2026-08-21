@@ -316,18 +316,66 @@ Alpine.data('governorateShipping', () => ({
     dirty: {},
     selected: {},
     search: '',
+    feeFilter: 'all',
     adding: false,
     bulkDays: '',
     bulkFee: '',
+    revision: 0,
+    submitting: false,
+    beforeUnloadHandler: null,
+    rootElement: null,
+
+    init() {
+        this.rootElement = this.$root;
+        this.beforeUnloadHandler = (event) => {
+            if (this.changedRows === 0 || this.submitting) {
+                return;
+            }
+
+            event.preventDefault();
+            event.returnValue = '';
+        };
+
+        window.addEventListener('beforeunload', this.beforeUnloadHandler);
+        this.$nextTick(() => {
+            this.revision += 1;
+        });
+    },
+
+    destroy() {
+        if (this.beforeUnloadHandler) {
+            window.removeEventListener('beforeunload', this.beforeUnloadHandler);
+        }
+    },
+
+    openAdding() {
+        this.adding = true;
+    },
+
+    toggleAdding() {
+        this.adding = ! this.adding;
+    },
+
+    beginSubmit() {
+        this.submitting = true;
+    },
+
+    setFeeFilter(filter) {
+        this.feeFilter = ['all', 'free', 'paid'].includes(filter) ? filter : 'all';
+    },
 
     // Typing a value back to what it started as is not a change, so the key is
     // dropped rather than left flagged.
     mark(key, value, original) {
         if (String(value) === String(original)) {
             delete this.dirty[key];
-            return;
+        } else {
+            this.dirty[key] = true;
         }
-        this.dirty[key] = true;
+
+        // Direct DOM inputs are intentionally used so the submitted form remains
+        // the source of truth. This counter makes filters and row badges refresh.
+        this.revision += 1;
     },
 
     isDirty(key) {
@@ -339,28 +387,61 @@ Alpine.data('governorateShipping', () => ({
         return new Set(Object.keys(this.dirty).map((key) => key.split('-')[0])).size;
     },
 
-    matches(haystack) {
+    matchesSearch(haystack) {
         const needle = this.search.trim().toLocaleLowerCase();
         return needle === '' || haystack.toLocaleLowerCase().includes(needle);
     },
 
+    rowFee(row) {
+        const input = row?.querySelector('[data-fee-input]');
+        if (! input || input.value === '') {
+            return null;
+        }
+
+        const value = Number(input.value);
+        return Number.isFinite(value) ? value : null;
+    },
+
+    matchesRow(row) {
+        // Register direct input writes as a reactive dependency.
+        void this.revision;
+
+        if (! this.matchesSearch(row.dataset.governorateSearch)) {
+            return false;
+        }
+
+        const fee = this.rowFee(row);
+        if (this.feeFilter === 'free') {
+            return fee === 0;
+        }
+        if (this.feeFilter === 'paid') {
+            return fee !== null && fee > 0;
+        }
+
+        return true;
+    },
+
     rowElements() {
-        return Array.from(this.$el.querySelectorAll('[data-governorate-row]'));
+        return Array.from((this.rootElement || this.$root).querySelectorAll('[data-governorate-row]'));
     },
 
     visibleRows() {
-        return this.rowElements().filter((row) => this.matches(row.dataset.governorateSearch));
+        return this.rowElements().filter((row) => this.matchesRow(row));
     },
 
     // Ticking rows narrows the target; otherwise whatever the search has left
     // on screen is the target, which is what makes "find, then set" work.
     targetRows() {
-        const ticked = this.visibleRows().filter((row) => this.selected[row.dataset.governorateRow]);
+        const ticked = this.rowElements().filter((row) => this.selected[row.dataset.governorateRow]);
         return ticked.length > 0 ? ticked : this.visibleRows();
     },
 
     get selectedCount() {
-        return this.visibleRows().filter((row) => this.selected[row.dataset.governorateRow]).length;
+        return this.rowElements().filter((row) => this.selected[row.dataset.governorateRow]).length;
+    },
+
+    get visibleCount() {
+        return this.visibleRows().length;
     },
 
     get targetCount() {
@@ -372,11 +453,76 @@ Alpine.data('governorateShipping', () => ({
         return visible.length > 0 && visible.every((row) => this.selected[row.dataset.governorateRow]);
     },
 
+    get hasFilters() {
+        return this.search.trim() !== '' || this.feeFilter !== 'all';
+    },
+
+    validWholeNumber(value, min, max) {
+        if (value === '') {
+            return true;
+        }
+
+        const number = Number(value);
+        return Number.isInteger(number) && number >= min && number <= max;
+    },
+
+    get bulkDaysInvalid() {
+        return ! this.validWholeNumber(this.bulkDays, 1, 60);
+    },
+
+    get bulkFeeInvalid() {
+        return ! this.validWholeNumber(this.bulkFee, 0, 1000000);
+    },
+
+    get canApplyBulk() {
+        const hasValue = this.bulkDays !== '' || this.bulkFee !== '';
+        return this.targetCount > 0 && hasValue && ! this.bulkDaysInvalid && ! this.bulkFeeInvalid;
+    },
+
     toggleAll() {
         const select = ! this.allVisibleSelected;
         this.visibleRows().forEach((row) => {
             this.selected[row.dataset.governorateRow] = select;
         });
+    },
+
+    isSelected(id) {
+        return Boolean(this.selected[String(id)]);
+    },
+
+    toggleSelection(id) {
+        const key = String(id);
+        this.selected = {
+            ...this.selected,
+            [key]: ! this.selected[key],
+        };
+    },
+
+    clearSelection() {
+        this.selected = {};
+    },
+
+    resetFilters() {
+        this.search = '';
+        this.feeFilter = 'all';
+    },
+
+    rowIsDirty(index) {
+        return Object.keys(this.dirty).some((key) => key.startsWith(`${index}-`));
+    },
+
+    isRowFree(id) {
+        void this.revision;
+        const row = this.rowElements().find((candidate) => candidate.dataset.governorateRow === String(id));
+        return this.rowFee(row) === 0;
+    },
+
+    rowClass(id, index) {
+        const classes = [];
+        if (this.selected[String(id)]) classes.push('is-selected');
+        if (this.rowIsDirty(String(index))) classes.push('is-dirty');
+        if (this.isRowFree(String(id))) classes.push('is-free');
+        return classes.join(' ');
     },
 
     write(input, value) {
@@ -396,6 +542,10 @@ Alpine.data('governorateShipping', () => ({
     },
 
     applyBulk() {
+        if (! this.canApplyBulk) {
+            return;
+        }
+
         this.applyToTarget(this.bulkDays, this.bulkFee);
         this.bulkDays = '';
         this.bulkFee = '';
@@ -414,6 +564,7 @@ Alpine.data('governorateShipping', () => ({
             this.write(fee, fee.dataset.original);
         });
         this.dirty = {};
+        this.revision += 1;
     },
 }));
 

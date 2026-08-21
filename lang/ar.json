@@ -3238,5 +3238,7 @@
     "Select": "تحديد",
     "The governorate is removed from the shipping table.": "تُحذف المحافظة من جدول الشحن.",
     "Governorate added.": "تمت إضافة المحافظة.",
-    "Governorate removed.": "تم حذف المحافظة."
+    "Governorate removed.": "تم حذف المحافظة.",
+    "Deselect all": "إلغاء تحديد الكل",
+    "No results found": "لم يتم العثور على نتائج"
 }

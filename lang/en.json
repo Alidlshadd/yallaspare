@@ -3238,5 +3238,7 @@
     "Select": "Select",
     "The governorate is removed from the shipping table.": "The governorate is removed from the shipping table.",
     "Governorate added.": "Governorate added.",
-    "Governorate removed.": "Governorate removed."
+    "Governorate removed.": "Governorate removed.",
+    "Deselect all": "Deselect all",
+    "No results found": "No results found"
 }
