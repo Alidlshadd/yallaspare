@@ -249,7 +249,7 @@
     min-height: 100vh;
     min-height: 100svh;
     place-items: center;
-    padding: clamp(1rem, 2.5vw, 2.5rem);
+    padding: clamp(0.75rem, 1.8vw, 1.75rem);
     isolation: isolate;
 }
 
@@ -298,9 +298,9 @@
 .ys-auth-shell {
     direction: ltr;
     display: grid;
-    grid-template-columns: minmax(0, 1.06fr) minmax(0, 0.94fr);
-    width: min(100%, 84rem);
-    min-height: min(49rem, calc(100svh - clamp(3rem, 7vw, 7rem)));
+    grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
+    width: min(100%, 76rem);
+    min-height: min(43.5rem, calc(100svh - clamp(2rem, 5vw, 4.5rem)));
     overflow: hidden;
     border: 1px solid rgb(var(--border-rgb) / 0.82);
     border-radius: 2rem;
@@ -512,7 +512,7 @@ html[data-auth-transition] .ys-auth-transition-core {
     min-height: 100%;
     flex-direction: column;
     overflow: hidden;
-    padding: clamp(2rem, 3.7vw, 4rem);
+    padding: clamp(1.7rem, 3vw, 3.1rem);
     color: white;
     background:
         linear-gradient(145deg, rgb(var(--brand-navy-rgb) / 0.98), rgb(4 4 31 / 1) 72%),
@@ -574,8 +574,8 @@ html[data-auth-transition] .ys-auth-transition-core {
 
 .ys-auth-brand-mark {
     display: grid;
-    width: 2.75rem;
-    height: 2.75rem;
+    width: 2.5rem;
+    height: 2.5rem;
     flex: 0 0 auto;
     place-items: center;
     overflow: hidden;
@@ -612,7 +612,7 @@ html[data-auth-transition] .ys-auth-transition-core {
 
 .ys-auth-wordmark {
     font-family: theme('fontFamily.display');
-    font-size: clamp(1.1rem, 2vw, 1.35rem);
+    font-size: clamp(1rem, 1.7vw, 1.22rem);
     font-weight: 700;
     letter-spacing: -0.045em;
     color: white;
@@ -634,9 +634,9 @@ html[data-auth-transition] .ys-auth-transition-core {
     pointer-events: none;
     position: absolute;
     z-index: 1;
-    width: min(87%, 39rem);
-    inset-inline-end: -3.5rem;
-    top: 5.5rem;
+    width: min(84%, 35rem);
+    inset-inline-end: -3rem;
+    top: 4.5rem;
     opacity: 0.82;
 }
 
@@ -681,9 +681,9 @@ html[data-auth-transition] .ys-auth-transition-core {
 }
 
 .ys-auth-story {
-    width: min(100%, 39rem);
+    width: min(100%, 35rem);
     margin-top: auto;
-    padding-top: clamp(13rem, 28vh, 20rem);
+    padding-top: clamp(10.5rem, 22vh, 15.5rem);
 }
 
 .ys-auth-eyebrow,
@@ -712,10 +712,10 @@ html[data-auth-transition] .ys-auth-transition-core {
 }
 
 .ys-auth-story h1 {
-    max-width: 38rem;
-    margin-top: 1.15rem;
+    max-width: 34rem;
+    margin-top: 1rem;
     font-family: theme('fontFamily.display');
-    font-size: clamp(2.35rem, 4.35vw, 4.15rem);
+    font-size: clamp(2.05rem, 3.55vw, 3.35rem);
     font-weight: 600;
     line-height: 1.02;
     letter-spacing: -0.055em;
@@ -731,7 +731,7 @@ html[data-auth-transition] .ys-auth-transition-core {
     display: block;
     width: 4.25rem;
     height: 3px;
-    margin-top: 1.45rem;
+    margin-top: 1.15rem;
     border-radius: 999px;
     background: linear-gradient(90deg, var(--brand-orange), rgb(var(--accent-rgb) / 0));
 }
@@ -741,10 +741,10 @@ html[data-auth-transition] .ys-auth-transition-core {
 }
 
 .ys-auth-story > p {
-    max-width: 34rem;
-    margin-top: 1.2rem;
-    font-size: 0.96rem;
-    line-height: 1.8;
+    max-width: 31rem;
+    margin-top: 1rem;
+    font-size: 0.88rem;
+    line-height: 1.72;
     color: rgb(255 255 255 / 0.64);
 }
 
@@ -752,19 +752,19 @@ html[data-auth-transition] .ys-auth-transition-core {
     display: flex;
     flex-wrap: wrap;
     gap: 0.55rem;
-    margin-top: 1.65rem;
+    margin-top: 1.3rem;
 }
 
 .ys-auth-capabilities > span {
     display: inline-flex;
-    min-height: 2.45rem;
+    min-height: 2.2rem;
     align-items: center;
     gap: 0.5rem;
-    padding: 0.55rem 0.75rem;
+    padding: 0.45rem 0.65rem;
     border: 1px solid rgb(255 255 255 / 0.10);
     border-radius: 0.75rem;
     background: rgb(255 255 255 / 0.055);
-    font-size: 0.72rem;
+    font-size: 0.68rem;
     font-weight: 600;
     color: rgb(255 255 255 / 0.75);
     box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.035);
@@ -785,8 +785,8 @@ html[data-auth-transition] .ys-auth-transition-core {
     align-items: center;
     justify-content: space-between;
     gap: 1.25rem;
-    margin-top: 2.4rem;
-    padding-top: 1.45rem;
+    margin-top: 1.75rem;
+    padding-top: 1.15rem;
     border-top: 1px solid rgb(255 255 255 / 0.09);
 }
 
@@ -837,7 +837,7 @@ html[data-auth-transition] .ys-auth-transition-core {
 
 .ys-auth-secondary-action {
     display: inline-flex;
-    min-height: 2.75rem;
+    min-height: 2.55rem;
     flex: 0 0 auto;
     align-items: center;
     justify-content: center;
@@ -885,11 +885,11 @@ html[data-auth-transition] .ys-auth-transition-core {
 
 .ys-auth-toolbar {
     display: flex;
-    min-height: 5.5rem;
+    min-height: 4.75rem;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
-    padding: 1.4rem clamp(1.5rem, 3.5vw, 3.75rem);
+    padding: 1.05rem clamp(1.35rem, 3vw, 3rem);
 }
 
 .ys-auth-toolbar-label {
@@ -903,7 +903,7 @@ html[data-auth-transition] .ys-auth-transition-core {
 
 .ys-auth-language [data-header-dropdown-trigger] {
     min-width: 7.4rem;
-    height: 2.65rem;
+    height: 2.45rem;
     justify-content: center;
     border-color: rgb(var(--border-rgb) / 0.9);
     border-radius: 0.8rem;
@@ -921,12 +921,12 @@ html[data-auth-transition] .ys-auth-transition-core {
     flex: 1 1 auto;
     align-items: center;
     justify-content: center;
-    padding: clamp(1rem, 2.25vw, 2.25rem) clamp(1.5rem, 3.6vw, 4rem) 2rem;
+    padding: clamp(0.7rem, 1.7vw, 1.55rem) clamp(1.25rem, 3vw, 3.2rem) 1.5rem;
 }
 
 .ys-auth-surface {
-    width: min(100%, 31rem);
-    padding: clamp(1.6rem, 2.9vw, 2.45rem);
+    width: min(100%, 28.5rem);
+    padding: clamp(1.35rem, 2.25vw, 1.95rem);
     border: 1px solid rgb(var(--border-rgb) / 0.78);
     border-radius: 1.5rem;
     background: rgb(var(--surface-rgb) / 0.92);
@@ -942,8 +942,8 @@ html[data-auth-transition] .ys-auth-transition-core {
 
 .ys-auth-form-icon {
     display: grid;
-    width: 2rem;
-    height: 2rem;
+    width: 1.85rem;
+    height: 1.85rem;
     place-items: center;
     border: 1px solid rgb(var(--accent-rgb) / 0.22);
     border-radius: 0.65rem;
@@ -960,9 +960,9 @@ html[data-auth-transition] .ys-auth-transition-core {
 }
 
 .ys-auth-surface > h2 {
-    margin-top: 1.2rem;
+    margin-top: 1rem;
     font-family: theme('fontFamily.display');
-    font-size: clamp(1.9rem, 3.5vw, 2.55rem);
+    font-size: clamp(1.7rem, 2.8vw, 2.2rem);
     font-weight: 600;
     line-height: 1.12;
     letter-spacing: -0.045em;
@@ -975,10 +975,18 @@ html[data-auth-transition] .ys-auth-transition-core {
 
 .ys-auth-form-subtitle {
     max-width: 27rem;
-    margin-top: 0.7rem;
-    font-size: 0.87rem;
-    line-height: 1.7;
+    margin-top: 0.55rem;
+    font-size: 0.82rem;
+    line-height: 1.6;
     color: var(--text-muted);
+}
+
+.ys-auth-form [data-auth-form] {
+    margin-top: 1.35rem;
+}
+
+.ys-auth-form [data-auth-form] > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.95rem;
 }
 
 .ys-auth-form .ys-auth-label,
@@ -990,10 +998,10 @@ html[data-auth-transition] .ys-auth-transition-core {
 
 .ys-auth-form :is(input:not([type='checkbox']):not([type='radio']), select, textarea) {
     width: 100%;
-    min-height: 3.5rem;
+    min-height: 3.15rem;
     padding-inline: 1rem;
     border: 1px solid rgb(var(--border-rgb) / 1);
-    border-radius: 0.9rem;
+    border-radius: 0.82rem;
     background-color: rgb(var(--surface-sunk-rgb) / 0.45);
     color: var(--text);
     font-size: 0.9rem;
@@ -1139,13 +1147,13 @@ html[data-auth-transition] .ys-auth-transition-core {
     position: relative;
     display: inline-flex;
     width: 100%;
-    min-height: 3.5rem;
+    min-height: 3.15rem;
     align-items: center;
     justify-content: center;
     gap: 0.75rem;
     overflow: hidden;
     border: 1px solid rgb(var(--brand-navy-rgb) / 0.98);
-    border-radius: 0.9rem;
+    border-radius: 0.82rem;
     background: linear-gradient(115deg, var(--brand-navy), rgb(18 18 74 / 1));
     padding: 0.85rem 1.15rem;
     font-family: theme('fontFamily.display');
@@ -1202,7 +1210,7 @@ html[data-auth-transition] .ys-auth-transition-core {
 }
 
 .ys-auth-legal {
-    padding: 0.8rem 2rem 1.4rem;
+    padding: 0.65rem 2rem 1rem;
     text-align: center;
     font-size: 0.64rem;
     color: var(--text-muted);
@@ -1283,41 +1291,41 @@ html[data-auth-transition] .ys-auth-transition-core {
 
 @media (max-width: 1023px) {
     .ys-auth-stage {
-        padding: 1.25rem;
+        padding: 1rem;
     }
 
     .ys-auth-shell {
         grid-template-columns: minmax(0, 1fr);
-        max-width: 48rem;
+        max-width: 44rem;
     }
 
     .ys-auth-aside {
-        min-height: 31rem;
-        padding: 2rem clamp(1.5rem, 6vw, 3rem);
+        min-height: 25rem;
+        padding: 1.7rem clamp(1.4rem, 5vw, 2.5rem);
     }
 
     .ys-auth-technical {
-        width: min(67%, 30rem);
+        width: min(61%, 25rem);
         inset-inline-end: -2rem;
         top: 3.5rem;
     }
 
     .ys-auth-story {
-        padding-top: 8.5rem;
+        padding-top: 6.25rem;
     }
 
     .ys-auth-story h1 {
-        max-width: 31rem;
-        font-size: clamp(2.3rem, 7vw, 3.8rem);
+        max-width: 29rem;
+        font-size: clamp(2rem, 6vw, 3rem);
     }
 
     .ys-auth-toolbar {
-        min-height: 4.75rem;
+        min-height: 4.25rem;
     }
 
     .ys-auth-form-wrap {
-        padding-top: 1.25rem;
-        padding-bottom: 2.75rem;
+        padding-top: 0.75rem;
+        padding-bottom: 2rem;
     }
 }
 
@@ -1340,7 +1348,7 @@ html[data-auth-transition] .ys-auth-transition-core {
 
     .ys-auth-aside {
         min-height: auto;
-        padding: 1.4rem 1.35rem 1.6rem;
+        padding: 1.15rem 1.2rem 1.25rem;
     }
 
     .ys-auth-series,
@@ -1351,7 +1359,7 @@ html[data-auth-transition] .ys-auth-transition-core {
     }
 
     .ys-auth-story {
-        padding-top: 3.7rem;
+        padding-top: 2.4rem;
     }
 
     .ys-auth-eyebrow {
@@ -1359,8 +1367,8 @@ html[data-auth-transition] .ys-auth-transition-core {
     }
 
     .ys-auth-story h1 {
-        margin-top: 0.9rem;
-        font-size: clamp(2rem, 11vw, 3rem);
+        margin-top: 0.7rem;
+        font-size: clamp(1.75rem, 9.5vw, 2.4rem);
         line-height: 1.06;
     }
 
@@ -1371,9 +1379,9 @@ html[data-auth-transition] .ys-auth-transition-core {
 
     .ys-auth-story > p {
         display: -webkit-box;
-        margin-top: 0.8rem;
+        margin-top: 0.65rem;
         overflow: hidden;
-        font-size: 0.82rem;
+        font-size: 0.78rem;
         line-height: 1.65;
         -webkit-box-orient: vertical;
         -webkit-line-clamp: 2;
@@ -1381,8 +1389,8 @@ html[data-auth-transition] .ys-auth-transition-core {
 
     .ys-auth-aside-footer {
         justify-content: flex-end;
-        margin-top: 1.3rem;
-        padding-top: 1rem;
+        margin-top: 1rem;
+        padding-top: 0.8rem;
     }
 
     .ys-auth-secondary-action {
@@ -1391,8 +1399,8 @@ html[data-auth-transition] .ys-auth-transition-core {
     }
 
     .ys-auth-toolbar {
-        min-height: 4.25rem;
-        padding: 0.85rem 1.25rem;
+        min-height: 3.85rem;
+        padding: 0.7rem 1rem;
     }
 
     .ys-auth-toolbar-label {
@@ -1409,25 +1417,33 @@ html[data-auth-transition] .ys-auth-transition-core {
 
     .ys-auth-form-wrap {
         align-items: flex-start;
-        padding: 0.5rem 1rem 2.25rem;
+        padding: 0.35rem 0.85rem 1.75rem;
     }
 
     .ys-auth-surface {
-        padding: 1.35rem 1.15rem;
+        padding: 1.15rem 1rem;
         border-radius: 1.15rem;
     }
 
     .ys-auth-surface > h2 {
-        font-size: 1.85rem;
+        font-size: 1.65rem;
     }
 
     .ys-auth-form-subtitle {
         font-size: 0.8rem;
     }
 
+    .ys-auth-form [data-auth-form] {
+        margin-top: 1.1rem;
+    }
+
+    .ys-auth-form [data-auth-form] > :not([hidden]) ~ :not([hidden]) {
+        margin-top: 0.85rem;
+    }
+
     .ys-auth-form :is(input:not([type='checkbox']):not([type='radio']), select, textarea),
     .ys-auth-primary-action {
-        min-height: 3.35rem;
+        min-height: 3.1rem;
     }
 
     .ys-auth-form #password-rules {
