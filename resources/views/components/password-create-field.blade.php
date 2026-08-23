@@ -101,6 +101,7 @@
             <template x-for="suggestion in suggestions" :key="suggestion">
                 <button
                     type="button"
+                    data-password-suggestion
                     @click="applySuggestion(suggestion)"
                     class="rounded-md border border-slate-300 bg-slate-100 px-2.5 py-1.5 font-mono text-sm tracking-wide text-slate-700 transition duration-200 hover:border-red-400 hover:bg-red-50 hover:text-red-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:border-slate-600 dark:bg-slate-500/15 dark:text-slate-200 dark:hover:border-red-400/60 dark:hover:bg-red-500/15 dark:hover:text-red-200"
                     :aria-label="suggestionLabel(suggestion)"

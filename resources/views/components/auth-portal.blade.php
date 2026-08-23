@@ -1,17 +1,55 @@
 @props([
     'heading',
     'formSubtitle',
+    'kicker',
+    'panelEyebrow',
     'panelTitle',
+    'panelTitleAccent' => null,
     'panelSubtitle',
-    'panelTag',
-    'panelButtonText',
-    'panelButtonHref',
+    'switchText',
+    'switchLabel',
+    'switchHref',
+    'loadingMessage' => null,
     'mode' => 'login',
 ])
 
 @php
     $siteName = (string) ($systemSettings['site_name'] ?? config('app.name', 'YallaSpare'));
-    $isRegister = $mode === 'register';
+    $mode = in_array($mode, ['login', 'register', 'recover'], true) ? $mode : 'login';
+    $serial = [
+        'login' => 'YS / ACCESS 01',
+        'register' => 'YS / ACCESS 02',
+        'recover' => 'YS / ACCESS 03',
+    ][$mode];
+
+    // One line icon per screen, drawn on the same 20x20 grid at the same
+    // stroke weight, so the three kickers read as one set.
+    $kickerPath = [
+        'login' => 'M6 8.5V6.8a4 4 0 0 1 8 0v1.7M4.5 8.5h11v8.5h-11ZM10 11.8v2',
+        'register' => 'M12.5 16v-1.2a3.8 3.8 0 0 0-3.8-3.8H5.8A3.8 3.8 0 0 0 2 14.8V16M7.2 8.5a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM15 6.5v5M12.5 9h5',
+        'recover' => 'M11.4 8.6a3.4 3.4 0 1 0-3.2 5.6l-1 1H5.4v1.9H3.5v-1.9l4.7-4.7M13.2 6.8h.01',
+    ][$mode];
+
+    // Both screens carry the same three capabilities. They are what the
+    // platform is, not a per-page selling point, so they do not change
+    // between sign-in and sign-up — only the headline above them does.
+    $features = [
+        [
+            'title' => __('Smart Inventory'),
+            'body' => __('Live stock across every warehouse and shelf.'),
+            'path' => 'M3 6.5 10 3l7 3.5-7 3.5-7-3.5ZM3 10l7 3.5 7-3.5M3 13.5 10 17l7-3.5',
+        ],
+        [
+            'title' => __('Order Management'),
+            'body' => __('From basket to delivery in one timeline.'),
+            'path' => 'M5.5 3.5h9v13h-9zM8 7h4M8 10h4M8 13h2.5',
+        ],
+        [
+            'title' => __('Dealer Network'),
+            'body' => __('Pricing, permissions and partners in one place.'),
+            'path' => 'M10 3.2 16.5 6v4.6c0 3.2-2.6 5.7-6.5 7.2-3.9-1.5-6.5-4-6.5-7.2V6L10 3.2ZM7.4 10.2l1.8 1.8 3.6-3.8',
+        ],
+    ];
 @endphp
 
 <!DOCTYPE html>
@@ -20,230 +58,218 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="theme-color" content="#070740">
 
     <title>{{ $heading }} | {{ $siteName }}</title>
     @include('partials.brand-head')
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <script nonce="{{ $cspNonce }}">
+        // Stamped before first paint so a page arriving from the other auth
+        // screen comes up behind the curtain instead of flashing the form.
         (() => {
             try {
-                const direction = window.sessionStorage.getItem('ys-auth-transition');
-                if (direction === 'forward' || direction === 'backward') {
-                    document.documentElement.dataset.authTransition = direction;
+                if (window.sessionStorage.getItem('ys-auth-enter') === '1') {
+                    document.documentElement.dataset.ysAuthEnter = '1';
                 }
             } catch (error) {
-                // The transition is progressive enhancement; navigation still works.
+                // The curtain is progressive enhancement; navigation still works.
             }
         })();
     </script>
 </head>
-<body class="ys-auth-page antialiased selection:bg-accent selection:text-navy" data-auth-mode="{{ $mode }}">
-    <x-loading-overlay message="{{ __('Processing, please wait...') }}" variant="full" />
+<body class="ys-auth-page antialiased selection:bg-accent selection:text-navy">
+    <x-loading-overlay :message="$loadingMessage ?: __('Preparing your workspace')" variant="full" />
 
-    <div class="ys-auth-route-transition" aria-hidden="true">
-        <div class="ys-auth-transition-blade ys-auth-transition-accent"></div>
-        <div class="ys-auth-transition-blade ys-auth-transition-shadow"></div>
-        <div class="ys-auth-transition-blade ys-auth-transition-navy"></div>
-
-        <div class="ys-auth-transition-core">
-            <span class="ys-auth-transition-ring">
-                <svg viewBox="0 0 100 100" fill="none">
-                    <circle cx="50" cy="50" r="43" />
-                    <circle cx="50" cy="50" r="30" stroke-dasharray="3 7" />
-                    <path d="M50 4V19M50 81V96M4 50H19M81 50H96" />
-                    <path d="M50 27 57 40l15 3-10 11 2 15-14-7-14 7 2-15-10-11 15-3 7-13Z" />
-                </svg>
-                <strong>YS</strong>
-            </span>
-            <span class="ys-auth-transition-copy">YALLASPARE · SECURE ACCESS</span>
-        </div>
+    <div class="ys-auth-curtain" aria-hidden="true">
+        <span class="ys-auth-curtain-mark">YS</span>
     </div>
 
     <main class="ys-auth-stage">
-        <div class="ys-auth-orbit ys-auth-orbit-one" aria-hidden="true"></div>
-        <div class="ys-auth-orbit ys-auth-orbit-two" aria-hidden="true"></div>
-
-        <section class="ys-auth-shell" data-auth-portal>
-            <aside class="ys-auth-aside">
-                <div class="ys-auth-grid" aria-hidden="true"></div>
-                <div class="ys-auth-glow" aria-hidden="true"></div>
-
-                <div class="ys-auth-aside-top">
-                    <a href="{{ url('/') }}" class="ys-auth-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-accent" aria-label="{{ $siteName }}">
-                        <x-brand-mark
-                            :brand="$siteName"
-                            wrapper-class="ys-auth-brand-mark"
-                            img-class="ys-auth-brand-image"
-                            fallback-class="ys-auth-brand-fallback"
-                            fallback-text-class="ys-auth-brand-initials"
-                        />
-                        <span class="ys-auth-wordmark">Yalla<span>Spare</span></span>
-                    </a>
-
-                    <span class="ys-auth-series" aria-hidden="true">YS / ACCESS {{ $isRegister ? '02' : '01' }}</span>
-                </div>
-
-                <div class="ys-auth-technical" aria-hidden="true">
-                    <svg viewBox="0 0 620 430" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <g class="ys-auth-drawing-soft">
-                            <circle cx="415" cy="205" r="152" />
-                            <circle cx="415" cy="205" r="119" />
-                            <circle cx="415" cy="205" r="72" />
-                            <circle cx="415" cy="205" r="31" />
-                            <path d="M415 53V357M263 205H567" />
-                            <path d="M307 97L523 313M523 97L307 313" />
-                            <path d="M415 86L449 153L523 165L470 217L482 291L415 256L348 291L360 217L307 165L381 153L415 86Z" />
+        <aside class="ys-auth-aside">
+            {{-- Blueprint backdrop: a caliper ring over a shop-floor datum
+                 line. Drawn rather than decorated, so it reads as a technical
+                 document instead of an abstract blob. --}}
+            <div class="ys-auth-blueprint" aria-hidden="true">
+                <svg viewBox="0 0 640 600" xmlns="http://www.w3.org/2000/svg">
+                    <g data-line="soft">
+                        <circle cx="320" cy="300" r="228" />
+                        <circle cx="320" cy="300" r="176" />
+                        <circle cx="320" cy="300" r="108" />
+                        <path d="M320 44v512M64 300h512" />
+                        <path d="M158 138 482 462M482 138 158 462" />
+                    </g>
+                    <g data-line="strong">
+                        <circle cx="320" cy="300" r="140" stroke-dasharray="6 14" />
+                        <path d="M320 300 320 160" />
+                        <path d="M48 468h176l54-52h188" />
+                        <path d="M44 496h150" />
+                        <path d="M86 440h96l34-32" />
+                        <path d="M556 300h44M320 32v40M320 528v40" />
+                    </g>
+                    <g data-line="accent">
+                        <path d="M92 300a228 228 0 0 1 228-228" />
+                        <circle cx="320" cy="300" r="9" />
+                        <path d="M44 468h96" />
+                        <g data-line="sweep">
+                            <path d="M320 300 320 92" stroke-opacity="0.85" />
                         </g>
-                        <g class="ys-auth-drawing-strong">
-                            <path d="M90 324H250L298 278H458" />
-                            <path d="M86 344H224" />
-                            <path d="M113 302H202L233 272" />
-                            <circle cx="415" cy="205" r="92" stroke-dasharray="5 12" />
-                            <path d="M574 205H608M415 18V50M415 360V397" />
-                        </g>
-                        <g class="ys-auth-drawing-accent">
-                            <path d="M263 205A152 152 0 0 1 415 53" />
-                            <path d="M85 324H174" />
-                            <circle cx="415" cy="205" r="7" />
-                        </g>
+                    </g>
+                </svg>
+            </div>
+
+            <div class="ys-auth-aside-top">
+                <a href="{{ url('/') }}" class="ys-auth-brand" aria-label="{{ $siteName }}">
+                    <x-brand-mark
+                        :brand="$siteName"
+                        wrapper-class="ys-auth-brand-mark"
+                        img-class="ys-auth-brand-image"
+                        fallback-class="ys-auth-brand-fallback"
+                        fallback-text-class="ys-auth-brand-initials"
+                    />
+                    <span class="ys-auth-wordmark">Yalla<span>Spare</span></span>
+                </a>
+
+                <span class="ys-auth-serial" aria-hidden="true">{{ $serial }}</span>
+            </div>
+
+            <div class="ys-auth-story">
+                <span class="ys-auth-eyebrow">
+                    <span class="ys-auth-dot" aria-hidden="true"></span>
+                    {{ $panelEyebrow }}
+                </span>
+
+                <h1>
+                    {{ $panelTitle }}@if ($panelTitleAccent) <em>{{ $panelTitleAccent }}</em>@endif
+                </h1>
+
+                <p>{{ $panelSubtitle }}</p>
+
+                <div class="ys-auth-rule" aria-hidden="true"></div>
+
+                <ul class="ys-auth-features">
+                    @foreach ($features as $feature)
+                        <li class="ys-auth-feature">
+                            <span class="ys-auth-feature-icon" aria-hidden="true">
+                                <svg viewBox="0 0 20 20"><path d="{{ $feature['path'] }}" /></svg>
+                            </span>
+                            <span class="ys-auth-feature-body">
+                                <b>{{ $feature['title'] }}</b>
+                                <small>{{ $feature['body'] }}</small>
+                            </span>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+
+            <div class="ys-auth-aside-foot">
+                <span class="ys-auth-shield" aria-hidden="true">
+                    <svg viewBox="0 0 20 20">
+                        <path d="M10 2.5 16 5v4.4c0 3.6-2.4 6.6-6 8.1-3.6-1.5-6-4.5-6-8.1V5l6-2.5Z" />
+                        <path d="m7.5 10 1.6 1.6 3.6-3.8" />
                     </svg>
-                    <span class="ys-auth-spec ys-auth-spec-a">Ø 19.00</span>
-                    <span class="ys-auth-spec ys-auth-spec-b">SYS 964</span>
-                </div>
+                </span>
+                <span class="ys-auth-secure-copy">
+                    <b>{{ __('Encrypted session') }}</b>
+                    <small>{{ __('Authorized users only') }}</small>
+                </span>
+            </div>
+        </aside>
 
-                <div class="ys-auth-story">
-                    <span class="ys-auth-eyebrow">
-                        <span class="ys-auth-live-dot" aria-hidden="true"></span>
-                        {{ $panelTag }}
+        <div class="ys-auth-main">
+            <div class="ys-auth-toolbar">
+                <span class="ys-auth-toolbar-label">{{ __('Management System') }}</span>
+                <x-language-switcher class="ys-auth-language" />
+            </div>
+
+            <div class="ys-auth-panel-wrap">
+                <div id="auth-panel" class="ys-auth-panel">
+                    <span class="ys-auth-kicker">
+                        <svg viewBox="0 0 20 20" aria-hidden="true"><path d="{{ $kickerPath }}" /></svg>
+                        {{ $kicker }}
                     </span>
 
-                    <h1>{{ $panelTitle }}</h1>
-                    <p>{{ $panelSubtitle }}</p>
+                    <h2>{{ $heading }}</h2>
+                    <p class="ys-auth-sub">{{ $formSubtitle }}</p>
 
-                    <div class="ys-auth-capabilities" aria-label="{{ __('YallaSpare Management System') }}">
-                        <span>
-                            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3 6.5 10 3l7 3.5-7 3.5-7-3.5Z M3 10l7 3.5 7-3.5M3 13.5 10 17l7-3.5" /></svg>
-                            {{ __('Smart Inventory') }}
-                        </span>
-                        <span>
-                            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M5 3.5h10v13H5zM7.5 7h5M7.5 10h5M7.5 13h3" /></svg>
-                            {{ __('Order Management') }}
-                        </span>
-                        <span>
-                            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M3.5 8.5 10 3l6.5 5.5v8h-13v-8ZM7 16.5V11h6v5.5" /></svg>
-                            {{ __('Dealer Portal') }}
-                        </span>
-                    </div>
-                </div>
-
-                <div class="ys-auth-aside-footer">
-                    <div class="ys-auth-secure-note">
-                        <span class="ys-auth-shield" aria-hidden="true">
-                            <svg viewBox="0 0 20 20" fill="none"><path d="M10 2.5 16 5v4.4c0 3.6-2.4 6.6-6 8.1-3.6-1.5-6-4.5-6-8.1V5l6-2.5Z"/><path d="m7.5 10 1.6 1.6 3.6-3.8"/></svg>
-                        </span>
-                        <span><strong>{{ __('Secure') }}</strong><small>{{ __('Authorized Users') }}</small></span>
+                    <div class="ys-auth-form">
+                        {{ $slot }}
                     </div>
 
-                    <a href="{{ $panelButtonHref }}" class="ys-auth-secondary-action" data-auth-nav>
-                        {{ $panelButtonText }}
-                        <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5" /></svg>
-                    </a>
+                    <p class="ys-auth-switch">
+                        {{ $switchText }}
+                        <a href="{{ $switchHref }}" data-auth-nav>{{ $switchLabel }}</a>
+                    </p>
                 </div>
-            </aside>
-
-            <div class="ys-auth-main">
-                <div class="ys-auth-toolbar">
-                    <span class="ys-auth-toolbar-label">{{ __('YallaSpare Management System') }}</span>
-                    <x-language-switcher class="ys-auth-language" />
-                </div>
-
-                <div class="ys-auth-form-wrap">
-                    <div id="auth-panel" class="ys-auth-surface">
-                        <div class="ys-auth-form-heading">
-                            <span class="ys-auth-form-icon" aria-hidden="true">
-                                @if ($isRegister)
-                                    <svg viewBox="0 0 24 24" fill="none"><path d="M15 19v-1.5a4.5 4.5 0 0 0-4.5-4.5h-3A4.5 4.5 0 0 0 3 17.5V19M9 9a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7ZM17 8v6M14 11h6" /></svg>
-                                @else
-                                    <svg viewBox="0 0 24 24" fill="none"><path d="M7 10V8a5 5 0 0 1 10 0v2M5 10h14v11H5V10Z" /><path d="M12 14v3" /></svg>
-                                @endif
-                            </span>
-                            <span>{{ $panelTag }}</span>
-                        </div>
-                        <h2>{{ $heading }}</h2>
-                        <p class="ys-auth-form-subtitle">{{ $formSubtitle }}</p>
-
-                        <div class="ys-auth-form">
-                            {{ $slot }}
-                        </div>
-                    </div>
-                </div>
-
-                <p class="ys-auth-legal">© {{ now()->year }} {{ $siteName }} · {{ __('Secure account action') }}</p>
             </div>
-        </section>
+
+            <p class="ys-auth-foot">
+                <svg viewBox="0 0 20 20" aria-hidden="true">
+                    <path d="M10 2.5 16 5v4.4c0 3.6-2.4 6.6-6 8.1-3.6-1.5-6-4.5-6-8.1V5l6-2.5Z" />
+                </svg>
+                © {{ now()->year }} {{ $siteName }} · {{ __('Protected connection') }}
+            </p>
+        </div>
     </main>
 
     <script nonce="{{ $cspNonce }}">
-        const authBody = document.body;
-        const arrivingDirection = document.documentElement.dataset.authTransition;
+        (() => {
+            const body = document.body;
+            const CURTAIN_OUT = 340;
 
-        if (arrivingDirection === 'forward' || arrivingDirection === 'backward') {
-            authBody.classList.add('ys-auth-arriving', `ys-auth-direction-${arrivingDirection}`);
+            if (document.documentElement.dataset.ysAuthEnter === '1') {
+                // Hand the curtain from <html> to <body> in one step: the body
+                // class keeps it painted, so clearing the attribute cannot flash.
+                body.classList.add('ys-auth-arriving');
+                delete document.documentElement.dataset.ysAuthEnter;
 
-            try {
-                window.sessionStorage.removeItem('ys-auth-transition');
-            } catch (error) {
-                // Storage can be unavailable; the visual transition remains optional.
-            }
+                try {
+                    window.sessionStorage.removeItem('ys-auth-enter');
+                } catch (error) {
+                    // Storage can be blocked; the curtain simply stays visible
+                    // for its own timeout below.
+                }
 
-            window.requestAnimationFrame(() => {
                 window.requestAnimationFrame(() => {
-                    authBody.classList.add('ys-auth-arriving-ready');
+                    window.requestAnimationFrame(() => body.classList.add('ys-auth-arriving-ready'));
                 });
+
+                window.setTimeout(() => {
+                    body.classList.remove('ys-auth-arriving', 'ys-auth-arriving-ready');
+                }, 900);
+            }
+
+            document.addEventListener('click', (event) => {
+                const link = event.target.closest('[data-auth-nav]');
+
+                if (!link || event.defaultPrevented || event.button !== 0
+                    || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+                    return;
+                }
+
+                const href = link.getAttribute('href');
+                if (!href || link.dataset.navLocked === '1') {
+                    return;
+                }
+
+                event.preventDefault();
+                link.dataset.navLocked = '1';
+
+                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+                    window.location.assign(href);
+                    return;
+                }
+
+                try {
+                    window.sessionStorage.setItem('ys-auth-enter', '1');
+                } catch (error) {
+                    // Navigation is unaffected when session storage is blocked.
+                }
+
+                body.classList.add('ys-auth-leaving');
+                window.setTimeout(() => window.location.assign(href), CURTAIN_OUT);
             });
-
-            window.setTimeout(() => {
-                authBody.classList.remove('ys-auth-arriving', 'ys-auth-arriving-ready', `ys-auth-direction-${arrivingDirection}`);
-                delete document.documentElement.dataset.authTransition;
-            }, 1050);
-        }
-
-        document.addEventListener('click', (event) => {
-            const link = event.target.closest('[data-auth-nav]');
-            if (!link || event.defaultPrevented || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) {
-                return;
-            }
-
-            const href = link.getAttribute('href');
-            const portal = document.querySelector('[data-auth-portal]');
-            if (!href || !portal) {
-                return;
-            }
-
-            event.preventDefault();
-
-            if (link.dataset.navLocked === '1') {
-                return;
-            }
-            link.dataset.navLocked = '1';
-
-            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                window.location.assign(href);
-                return;
-            }
-
-            const direction = authBody.dataset.authMode === 'register' ? 'backward' : 'forward';
-
-            try {
-                window.sessionStorage.setItem('ys-auth-transition', direction);
-            } catch (error) {
-                // Navigation is unaffected when session storage is blocked.
-            }
-
-            authBody.classList.add('ys-auth-transitioning', `ys-auth-direction-${direction}`);
-            window.setTimeout(() => window.location.assign(href), 720);
-        });
+        })();
     </script>
     @include('partials.language-switcher-script')
 </body>

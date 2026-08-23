@@ -227,370 +227,192 @@
 }
 
 /* ========================================================================
-   Premium authentication portal
+   YS Access — the authentication system
 
-   Login and registration intentionally share this isolated surface. Other
-   verification and recovery views continue to use the compact auth layout.
+   Login, registration and the loading screen are one family. They share the
+   variables in this block: a navy field, a single orange accent, one radius
+   ladder and one shadow ladder. Nothing here leaks onto the storefront or
+   the admin shell — every selector is scoped under .ys-auth-page or the
+   .ys-loading-* overlay.
    ======================================================================== */
 .ys-auth-page {
+    /* The identity does not follow the theme. Auth is the front door: it
+       wears navy and orange in both light and dark mode, and only the form
+       side of the split swaps surfaces. */
+    --ys-navy: #070740;
+    --ys-navy-deep: #04041c;
+    --ys-orange: #ff6a00;
+    --ys-orange-soft: #ff8a3d;
+
+    /* One line weight for every hairline drawn on navy. Mixing greys is
+       what made the old panel read as unfinished. */
+    --ys-line: rgb(255 255 255 / 0.10);
+    --ys-line-strong: rgb(255 255 255 / 0.18);
+    --ys-on-navy: #ffffff;
+    --ys-on-navy-soft: #b9bed2;
+    --ys-on-navy-faint: #858cab;
+
+    /* Radius ladder: panel, card, control, chip. Four steps, used in that
+       order of size, so nothing on the page invents its own corner. */
+    --ys-r-card: 18px;
+    --ys-r-control: 12px;
+    --ys-r-chip: 999px;
+
+    --ys-form-bg: #ffffff;
+    --ys-form-sunk: #f6f7fa;
+    --ys-form-text: #0e0e28;
+    --ys-form-muted: #6b7383;
+    --ys-form-border: #dde0e7;
+    --ys-form-link: #c24c00;
+
     min-height: 100vh;
     min-height: 100svh;
     overflow-x: hidden;
-    background:
-        radial-gradient(circle at 8% 12%, rgb(var(--accent-rgb) / 0.09), transparent 26rem),
-        radial-gradient(circle at 86% 82%, rgb(var(--brand-navy-rgb) / 0.10), transparent 32rem),
-        linear-gradient(145deg, var(--bg), var(--surface-sunk));
-    color: var(--text);
+    background: var(--ys-form-bg);
+    color: var(--ys-form-text);
 }
 
+.dark .ys-auth-page {
+    --ys-form-bg: #0b0b2e;
+    --ys-form-sunk: #12123f;
+    --ys-form-text: #edeef5;
+    --ys-form-muted: #949ab4;
+    --ys-form-border: #26264f;
+    --ys-form-link: #ff8a3d;
+}
+
+/* ------------------------------------------------------------------ stage */
 .ys-auth-stage {
-    position: relative;
     display: grid;
     min-height: 100vh;
     min-height: 100svh;
-    place-items: center;
-    padding: clamp(0.75rem, 1.8vw, 1.75rem);
-    isolation: isolate;
+    grid-template-columns: 1fr;
 }
 
-.ys-auth-orbit {
-    pointer-events: none;
-    position: fixed;
-    z-index: -1;
-    border: 1px solid rgb(var(--brand-navy-rgb) / 0.07);
-    border-radius: 999px;
+@media (min-width: 1024px) {
+    .ys-auth-stage {
+        /* The brand panel takes the larger share. An even split makes the
+           form look like it is negotiating for space rather than being
+           handed it. */
+        grid-template-columns: minmax(0, 1.06fr) minmax(0, 0.94fr);
+    }
 }
 
-.ys-auth-orbit::after {
-    content: '';
-    position: absolute;
-    width: 7px;
-    height: 7px;
-    border-radius: 999px;
-    background: rgb(var(--accent-rgb) / 0.65);
-    box-shadow: 0 0 0 7px rgb(var(--accent-rgb) / 0.08);
-}
-
-.ys-auth-orbit-one {
-    width: 24rem;
-    height: 24rem;
-    inset-inline-start: -9rem;
-    top: -8rem;
-}
-
-.ys-auth-orbit-one::after {
-    inset-inline-end: 3.5rem;
-    bottom: 2rem;
-}
-
-.ys-auth-orbit-two {
-    width: 31rem;
-    height: 31rem;
-    inset-inline-end: -12rem;
-    bottom: -13rem;
-}
-
-.ys-auth-orbit-two::after {
-    inset-inline-start: 3rem;
-    top: 6rem;
-}
-
-.ys-auth-shell {
-    direction: ltr;
-    display: grid;
-    grid-template-columns: minmax(0, 1.04fr) minmax(0, 0.96fr);
-    width: min(100%, 76rem);
-    min-height: min(43.5rem, calc(100svh - clamp(2rem, 5vw, 4.5rem)));
-    overflow: hidden;
-    border: 1px solid rgb(var(--border-rgb) / 0.82);
-    border-radius: 2rem;
-    background: var(--surface);
-    box-shadow:
-        0 2px 3px rgb(var(--brand-navy-rgb) / 0.05),
-        0 28px 90px -36px rgb(var(--brand-navy-rgb) / 0.38);
-    animation: ysAuthPortalEnter 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
-    transition: opacity 560ms cubic-bezier(0.22, 1, 0.36, 1), transform 560ms cubic-bezier(0.22, 1, 0.36, 1), filter 560ms ease;
-}
-
-.ys-auth-route-transition {
-    pointer-events: none;
-    position: fixed;
-    inset: 0;
-    z-index: 10000;
-    overflow: hidden;
-    visibility: hidden;
-}
-
-.ys-auth-transition-blade {
-    position: absolute;
-    inset: -12vh -14vw;
-    transform: translateX(120%);
-    clip-path: polygon(8% 0, 100% 0, 92% 100%, 0 100%);
-    will-change: transform;
-}
-
-.ys-auth-transition-accent {
-    z-index: 1;
-    background: var(--brand-orange);
-    transition: transform 380ms cubic-bezier(0.72, 0, 0.2, 1);
-}
-
-.ys-auth-transition-shadow {
-    z-index: 2;
-    background: rgb(18 18 74 / 1);
-    transition: transform 480ms 70ms cubic-bezier(0.72, 0, 0.2, 1);
-}
-
-.ys-auth-transition-navy {
-    z-index: 3;
-    background:
-        radial-gradient(circle at 50% 50%, rgb(var(--accent-rgb) / 0.08), transparent 18rem),
-        linear-gradient(135deg, var(--brand-navy), rgb(4 4 31 / 1));
-    transition: transform 560ms 140ms cubic-bezier(0.72, 0, 0.2, 1);
-}
-
-.ys-auth-transition-core {
-    position: absolute;
-    inset: 0;
-    z-index: 4;
-    display: grid;
-    place-content: center;
-    justify-items: center;
-    gap: 1rem;
-    opacity: 0;
-    transform: scale(0.76);
-    transition: opacity 180ms ease, transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.ys-auth-transition-ring {
-    position: relative;
-    display: grid;
-    width: 7.25rem;
-    height: 7.25rem;
-    place-items: center;
-}
-
-.ys-auth-transition-ring::before,
-.ys-auth-transition-ring::after {
-    content: '';
-    position: absolute;
-    border-radius: 999px;
-}
-
-.ys-auth-transition-ring::before {
-    inset: 0;
-    border: 1px solid rgb(255 255 255 / 0.13);
-    box-shadow: 0 0 50px rgb(var(--accent-rgb) / 0.16);
-}
-
-.ys-auth-transition-ring::after {
-    inset: 1.25rem;
-    border: 1px solid rgb(var(--accent-rgb) / 0.42);
-}
-
-.ys-auth-transition-ring svg {
-    position: absolute;
-    inset: 0.55rem;
-    width: calc(100% - 1.1rem);
-    height: calc(100% - 1.1rem);
-    stroke: rgb(255 255 255 / 0.24);
-    stroke-width: 0.7;
-    animation: ysAuthTransitionSpin 7s linear infinite;
-}
-
-.ys-auth-transition-ring strong {
-    position: relative;
-    z-index: 1;
-    font-family: theme('fontFamily.display');
-    font-size: 1.55rem;
-    font-weight: 700;
-    letter-spacing: -0.08em;
-    color: white;
-}
-
-.ys-auth-transition-ring strong::after {
-    content: '';
-    position: absolute;
-    width: 0.42rem;
-    height: 0.42rem;
-    inset-inline-end: -0.8rem;
-    top: 0.15rem;
-    border-radius: 999px;
-    background: var(--brand-orange);
-    box-shadow: 0 0 0 5px rgb(var(--accent-rgb) / 0.12);
-}
-
-.ys-auth-transition-copy {
-    font-family: theme('fontFamily.sans');
-    font-size: 0.63rem;
-    font-weight: 700;
-    letter-spacing: 0.24em;
-    color: rgb(255 255 255 / 0.46);
-}
-
-.ys-auth-direction-backward .ys-auth-transition-blade,
-html[data-auth-transition='backward'] .ys-auth-transition-blade {
-    transform: translateX(-120%);
-    clip-path: polygon(0 0, 92% 0, 100% 100%, 8% 100%);
-}
-
-.ys-auth-transitioning .ys-auth-route-transition,
-.ys-auth-arriving .ys-auth-route-transition,
-html[data-auth-transition] .ys-auth-route-transition {
-    visibility: visible;
-}
-
-.ys-auth-transitioning .ys-auth-transition-blade,
-.ys-auth-arriving .ys-auth-transition-blade,
-html[data-auth-transition] .ys-auth-transition-blade {
-    transform: translateX(0);
-}
-
-.ys-auth-transitioning .ys-auth-transition-core {
-    opacity: 1;
-    transform: scale(1);
-    transition-delay: 390ms;
-}
-
-.ys-auth-transitioning .ys-auth-shell {
-    opacity: 0.38;
-    filter: blur(3px);
-    transform: translateY(5px) scale(0.965);
-}
-
-.ys-auth-arriving .ys-auth-shell {
-    animation: none;
-    opacity: 0.45;
-    transform: scale(0.965);
-}
-
-.ys-auth-arriving .ys-auth-transition-core,
-html[data-auth-transition] .ys-auth-transition-core {
-    opacity: 1;
-    transform: scale(1);
-}
-
-.ys-auth-arriving .ys-auth-transition-navy {
-    transition: transform 560ms 40ms cubic-bezier(0.8, 0, 0.28, 1);
-}
-
-.ys-auth-arriving .ys-auth-transition-shadow {
-    transition: transform 520ms 120ms cubic-bezier(0.8, 0, 0.28, 1);
-}
-
-.ys-auth-arriving .ys-auth-transition-accent {
-    transition: transform 470ms 200ms cubic-bezier(0.8, 0, 0.28, 1);
-}
-
-.ys-auth-arriving-ready .ys-auth-shell {
-    opacity: 1;
-    transform: scale(1);
-}
-
-.ys-auth-arriving-ready .ys-auth-transition-core {
-    opacity: 0;
-    transform: scale(1.2);
-    transition-delay: 40ms;
-}
-
-.ys-auth-arriving-ready.ys-auth-direction-forward .ys-auth-transition-blade {
-    transform: translateX(-120%);
-}
-
-.ys-auth-arriving-ready.ys-auth-direction-backward .ys-auth-transition-blade {
-    transform: translateX(120%);
-}
-
-.ys-auth-aside,
-.ys-auth-main {
-    min-width: 0;
-}
-
+/* -------------------------------------------------------- branded aside */
 .ys-auth-aside {
     position: relative;
+    isolation: isolate;
     display: flex;
-    min-height: 100%;
     flex-direction: column;
     overflow: hidden;
-    padding: clamp(1.7rem, 3vw, 3.1rem);
-    color: white;
+    padding: clamp(1.5rem, 4vw, 3.75rem);
+    color: var(--ys-on-navy);
     background:
-        linear-gradient(145deg, rgb(var(--brand-navy-rgb) / 0.98), rgb(4 4 31 / 1) 72%),
-        var(--brand-navy);
+        radial-gradient(115% 85% at 78% 8%, rgb(255 106 0 / 0.14), transparent 58%),
+        radial-gradient(90% 70% at 4% 96%, rgb(13 13 85 / 0.85), transparent 60%),
+        linear-gradient(158deg, var(--ys-navy) 0%, var(--ys-navy-deep) 100%);
 }
 
+/* Engineering paper. Two grids at different pitches read as a drawing;
+   one grid alone reads as a spreadsheet. */
 .ys-auth-aside::before {
     content: '';
     position: absolute;
     inset: 0;
-    pointer-events: none;
-    background:
-        linear-gradient(115deg, transparent 0 44%, rgb(255 255 255 / 0.025) 44% 44.2%, transparent 44.2% 100%),
-        linear-gradient(25deg, transparent 0 70%, rgb(var(--accent-rgb) / 0.045) 70% 100%);
-}
-
-.ys-auth-grid {
-    position: absolute;
-    inset: 0;
-    opacity: 0.42;
+    z-index: -2;
     background-image:
-        linear-gradient(rgb(255 255 255 / 0.045) 1px, transparent 1px),
-        linear-gradient(90deg, rgb(255 255 255 / 0.045) 1px, transparent 1px);
-    background-size: 42px 42px;
-    mask-image: linear-gradient(to bottom right, black, transparent 72%);
+        linear-gradient(var(--ys-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--ys-line) 1px, transparent 1px),
+        linear-gradient(rgb(255 255 255 / 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgb(255 255 255 / 0.035) 1px, transparent 1px);
+    background-size: 132px 132px, 132px 132px, 33px 33px, 33px 33px;
+    mask-image: radial-gradient(120% 95% at 62% 32%, #000 20%, transparent 78%);
+    -webkit-mask-image: radial-gradient(120% 95% at 62% 32%, #000 20%, transparent 78%);
 }
 
-.ys-auth-glow {
+.ys-auth-blueprint {
     position: absolute;
-    width: 29rem;
-    height: 29rem;
-    inset-inline-end: -12rem;
-    top: 4rem;
-    border-radius: 999px;
-    background: rgb(var(--accent-rgb) / 0.13);
-    filter: blur(90px);
+    z-index: -1;
+    inset-block-start: 50%;
+    inset-inline-end: -9%;
+    width: min(40rem, 78%);
+    translate: 0 -52%;
+    pointer-events: none;
 }
 
-.ys-auth-aside-top,
-.ys-auth-story,
-.ys-auth-aside-footer {
-    position: relative;
-    z-index: 2;
+.ys-auth-blueprint svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    fill: none;
 }
 
+.ys-auth-blueprint [data-line='soft'] {
+    stroke: rgb(255 255 255 / 0.08);
+    stroke-width: 1;
+}
+
+.ys-auth-blueprint [data-line='strong'] {
+    stroke: rgb(255 255 255 / 0.18);
+    stroke-width: 1.2;
+    stroke-linecap: round;
+}
+
+.ys-auth-blueprint [data-line='accent'] {
+    stroke: rgb(255 106 0 / 0.5);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+}
+
+.ys-auth-blueprint [data-line='sweep'] {
+    transform-origin: 320px 300px;
+    animation: ysAuthSweep 18s linear infinite;
+}
+
+@keyframes ysAuthSweep {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* --------------------------------------------------------- aside header */
 .ys-auth-aside-top {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 1.5rem;
+    gap: 1rem;
 }
 
 .ys-auth-brand {
     display: inline-flex;
     align-items: center;
     gap: 0.75rem;
-    border-radius: 0.875rem;
+    border-radius: var(--ys-r-control);
+    color: inherit;
+    text-decoration: none;
+}
+
+.ys-auth-brand:focus-visible {
+    outline: 2px solid var(--ys-orange);
+    outline-offset: 4px;
 }
 
 .ys-auth-brand-mark {
-    display: grid;
-    width: 2.5rem;
-    height: 2.5rem;
+    display: inline-flex;
+    width: 2.75rem;
+    height: 2.75rem;
     flex: 0 0 auto;
-    place-items: center;
+    align-items: center;
+    justify-content: center;
     overflow: hidden;
-    border: 1px solid rgb(255 255 255 / 0.14);
-    border-radius: 0.875rem;
-    background: rgb(255 255 255 / 0.08);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.12);
+    border-radius: 14px;
+    border: 1px solid var(--ys-line-strong);
+    background: rgb(255 255 255 / 0.07);
 }
 
 .ys-auth-brand-image {
-    width: 100%;
-    height: 100%;
-    padding: 0.26rem;
-    border-radius: 0.72rem;
-    background: rgb(255 255 255 / 0.94);
+    width: 72%;
+    height: 72%;
     object-fit: contain;
 }
 
@@ -600,870 +422,831 @@ html[data-auth-transition] .ys-auth-transition-core {
     height: 100%;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(145deg, rgb(var(--accent-rgb) / 0.95), rgb(var(--accent-rgb) / 0.72));
 }
 
 .ys-auth-brand-initials {
-    font-family: theme('fontFamily.display');
-    font-size: 0.75rem;
-    font-weight: 700;
-    color: var(--brand-navy);
+    font-size: 0.8125rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    color: var(--ys-on-navy);
 }
 
 .ys-auth-wordmark {
-    font-family: theme('fontFamily.display');
-    font-size: clamp(1rem, 1.7vw, 1.22rem);
-    font-weight: 700;
-    letter-spacing: -0.045em;
-    color: white;
+    font-size: 1.1875rem;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.02em;
 }
 
 .ys-auth-wordmark span {
-    color: var(--brand-orange);
+    color: var(--ys-orange-soft);
 }
 
-.ys-auth-series {
-    font-family: theme('fontFamily.sans');
-    font-size: 0.625rem;
-    font-weight: 700;
-    letter-spacing: 0.19em;
-    color: rgb(255 255 255 / 0.42);
-}
-
-.ys-auth-technical {
-    pointer-events: none;
-    position: absolute;
-    z-index: 1;
-    width: min(84%, 35rem);
-    inset-inline-end: -3rem;
-    top: 4.5rem;
-    opacity: 0.82;
-}
-
-.ys-auth-technical svg {
-    display: block;
-    width: 100%;
-    height: auto;
-}
-
-.ys-auth-drawing-soft {
-    stroke: rgb(255 255 255 / 0.10);
-    stroke-width: 1;
-}
-
-.ys-auth-drawing-strong {
-    stroke: rgb(255 255 255 / 0.24);
-    stroke-width: 1.2;
-}
-
-.ys-auth-drawing-accent {
-    stroke: rgb(var(--accent-rgb) / 0.86);
-    stroke-width: 1.7;
-}
-
-.ys-auth-spec {
-    position: absolute;
-    font-family: theme('fontFamily.sans');
-    font-size: 0.56rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    color: rgb(255 255 255 / 0.35);
-}
-
-.ys-auth-spec-a {
-    inset-inline-end: 7%;
-    top: 18%;
-}
-
-.ys-auth-spec-b {
-    inset-inline-start: 27%;
-    bottom: 13%;
-}
-
-.ys-auth-story {
-    width: min(100%, 35rem);
-    margin-top: auto;
-    padding-top: clamp(10.5rem, 22vh, 15.5rem);
-}
-
-.ys-auth-eyebrow,
-.ys-auth-form-heading {
+.ys-auth-serial {
     display: inline-flex;
     align-items: center;
-    gap: 0.6rem;
-    font-family: theme('fontFamily.display');
-    font-size: 0.68rem;
-    font-weight: 700;
+    padding: 0.4rem 0.7rem;
+    border-radius: var(--ys-r-chip);
+    border: 1px solid var(--ys-line);
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 0.6875rem;
     letter-spacing: 0.14em;
-    text-transform: uppercase;
+    color: var(--ys-on-navy-faint);
+    white-space: nowrap;
+}
+
+/* ---------------------------------------------------------- aside story */
+.ys-auth-story {
+    margin-block: auto;
+    padding-block: clamp(2rem, 6vw, 3.5rem);
+    max-width: 34rem;
 }
 
 .ys-auth-eyebrow {
-    color: rgb(255 255 255 / 0.66);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.4rem 0.85rem;
+    border-radius: var(--ys-r-chip);
+    border: 1px solid rgb(255 106 0 / 0.32);
+    background: rgb(255 106 0 / 0.1);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #ffc59b;
 }
 
-.ys-auth-live-dot {
-    position: relative;
-    width: 0.48rem;
-    height: 0.48rem;
-    border-radius: 999px;
-    background: var(--brand-orange);
-    box-shadow: 0 0 0 5px rgb(var(--accent-rgb) / 0.13);
+.ys-auth-dot {
+    width: 0.4rem;
+    height: 0.4rem;
+    flex: 0 0 auto;
+    border-radius: 50%;
+    background: var(--ys-orange);
+    box-shadow: 0 0 0 0 rgb(255 106 0 / 0.55);
+    animation: ysAuthPulse 2.6s ease-out infinite;
+}
+
+@keyframes ysAuthPulse {
+    70% {
+        box-shadow: 0 0 0 0.5rem rgb(255 106 0 / 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgb(255 106 0 / 0);
+    }
 }
 
 .ys-auth-story h1 {
-    max-width: 34rem;
-    margin-top: 1rem;
-    font-family: theme('fontFamily.display');
-    font-size: clamp(2.05rem, 3.55vw, 3.35rem);
-    font-weight: 600;
-    line-height: 1.02;
-    letter-spacing: -0.055em;
-    color: white;
+    margin-block: 1.35rem 0;
+    font-size: clamp(2rem, 3.1vw, 3rem);
+    font-weight: 800;
+    line-height: 1.08;
+    letter-spacing: -0.035em;
+    text-wrap: balance;
 }
 
-[dir='rtl'] .ys-auth-story h1 {
-    letter-spacing: 0;
-}
-
-.ys-auth-story h1::after {
-    content: '';
-    display: block;
-    width: 4.25rem;
-    height: 3px;
-    margin-top: 1.15rem;
-    border-radius: 999px;
-    background: linear-gradient(90deg, var(--brand-orange), rgb(var(--accent-rgb) / 0));
-}
-
-[dir='rtl'] .ys-auth-story h1::after {
-    background: linear-gradient(-90deg, var(--brand-orange), rgb(var(--accent-rgb) / 0));
+.ys-auth-story h1 em {
+    font-style: normal;
+    color: var(--ys-orange-soft);
 }
 
 .ys-auth-story > p {
-    max-width: 31rem;
-    margin-top: 1rem;
-    font-size: 0.88rem;
-    line-height: 1.72;
-    color: rgb(255 255 255 / 0.64);
+    margin-block: 1.1rem 0;
+    max-width: 30rem;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--ys-on-navy-soft);
 }
 
-.ys-auth-capabilities {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.55rem;
-    margin-top: 1.3rem;
+.ys-auth-rule {
+    width: 4.5rem;
+    height: 3px;
+    margin-block: 1.85rem;
+    border-radius: 2px;
+    background: linear-gradient(to var(--ys-rule-to, right), var(--ys-orange), rgb(255 106 0 / 0));
 }
 
-.ys-auth-capabilities > span {
-    display: inline-flex;
-    min-height: 2.2rem;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.45rem 0.65rem;
-    border: 1px solid rgb(255 255 255 / 0.10);
-    border-radius: 0.75rem;
-    background: rgb(255 255 255 / 0.055);
-    font-size: 0.68rem;
-    font-weight: 600;
-    color: rgb(255 255 255 / 0.75);
-    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.035);
-    backdrop-filter: blur(8px);
+[dir='rtl'] .ys-auth-rule {
+    --ys-rule-to: left;
 }
 
-.ys-auth-capabilities svg {
-    width: 1rem;
-    height: 1rem;
-    stroke: var(--brand-orange);
-    stroke-width: 1.45;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-.ys-auth-aside-footer {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1.25rem;
-    margin-top: 1.75rem;
-    padding-top: 1.15rem;
-    border-top: 1px solid rgb(255 255 255 / 0.09);
-}
-
-.ys-auth-secure-note {
-    display: flex;
-    min-width: 0;
-    align-items: center;
-    gap: 0.65rem;
-}
-
-.ys-auth-shield {
+/* -------------------------------------------------------- feature blocks */
+.ys-auth-features {
     display: grid;
-    width: 2.25rem;
-    height: 2.25rem;
-    flex: 0 0 auto;
-    place-items: center;
-    border: 1px solid rgb(255 255 255 / 0.09);
-    border-radius: 0.65rem;
-    background: rgb(255 255 255 / 0.055);
+    gap: 0.65rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
 }
 
-.ys-auth-shield svg {
-    width: 1.15rem;
-    height: 1.15rem;
-    stroke: rgb(255 255 255 / 0.72);
-    stroke-width: 1.45;
-    stroke-linecap: round;
-    stroke-linejoin: round;
+.ys-auth-feature {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 0.85rem 1rem;
+    border-radius: var(--ys-r-card);
+    border: 1px solid var(--ys-line);
+    background: rgb(255 255 255 / 0.04);
+    transition: border-color 220ms ease, background-color 220ms ease, transform 220ms ease;
 }
 
-.ys-auth-secure-note strong,
-.ys-auth-secure-note small {
-    display: block;
+.ys-auth-feature:hover {
+    transform: translateY(-2px);
+    border-color: var(--ys-line-strong);
+    background: rgb(255 255 255 / 0.07);
 }
 
-.ys-auth-secure-note strong {
-    font-family: theme('fontFamily.display');
-    font-size: 0.72rem;
-    font-weight: 600;
-    color: rgb(255 255 255 / 0.84);
-}
-
-.ys-auth-secure-note small {
-    margin-top: 0.12rem;
-    font-size: 0.64rem;
-    color: rgb(255 255 255 / 0.38);
-}
-
-.ys-auth-secondary-action {
+.ys-auth-feature-icon {
     display: inline-flex;
-    min-height: 2.55rem;
+    width: 2.5rem;
+    height: 2.5rem;
     flex: 0 0 auto;
     align-items: center;
     justify-content: center;
-    gap: 0.65rem;
-    padding: 0.65rem 0.9rem 0.65rem 1rem;
-    border: 1px solid rgb(var(--accent-rgb) / 0.32);
-    border-radius: 0.8rem;
-    background: rgb(var(--accent-rgb) / 0.09);
-    font-family: theme('fontFamily.display');
-    font-size: 0.75rem;
-    font-weight: 600;
-    color: var(--brand-orange);
-    transition: border-color 180ms ease, background-color 180ms ease, transform 180ms ease;
+    border-radius: var(--ys-r-control);
+    border: 1px solid rgb(255 106 0 / 0.28);
+    background: rgb(255 106 0 / 0.12);
+    color: var(--ys-orange-soft);
 }
 
-.ys-auth-secondary-action:hover {
-    border-color: rgb(var(--accent-rgb) / 0.58);
-    background: rgb(var(--accent-rgb) / 0.15);
-    transform: translateY(-1px);
-}
-
-.ys-auth-secondary-action:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / 0.28);
-}
-
-.ys-auth-secondary-action svg,
-.ys-auth-primary-action svg {
-    width: 1rem;
-    height: 1rem;
+.ys-auth-feature-icon svg {
+    width: 1.15rem;
+    height: 1.15rem;
+    fill: none;
     stroke: currentColor;
     stroke-width: 1.6;
     stroke-linecap: round;
     stroke-linejoin: round;
 }
 
-.ys-auth-main {
+.ys-auth-feature-body {
     display: flex;
-    min-height: 100%;
+    min-width: 0;
     flex-direction: column;
-    background:
-        radial-gradient(circle at 100% 0%, rgb(var(--brand-navy-rgb) / 0.055), transparent 21rem),
-        linear-gradient(155deg, rgb(var(--surface-rgb) / 1), rgb(var(--surface-sunk-rgb) / 0.42));
+    gap: 0.15rem;
 }
 
-.ys-auth-toolbar {
-    display: flex;
-    min-height: 4.75rem;
-    align-items: center;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 1.05rem clamp(1.35rem, 3vw, 3rem);
-}
-
-.ys-auth-toolbar-label {
-    font-family: theme('fontFamily.sans');
-    font-size: 0.64rem;
+.ys-auth-feature-body b {
+    font-size: 0.9375rem;
     font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-muted);
+    letter-spacing: -0.01em;
 }
 
-.ys-auth-language [data-header-dropdown-trigger] {
-    min-width: 7.4rem;
-    height: 2.45rem;
-    justify-content: center;
-    border-color: rgb(var(--border-rgb) / 0.9);
-    border-radius: 0.8rem;
-    background: rgb(var(--surface-rgb) / 0.74);
-    box-shadow: 0 6px 18px -14px rgb(var(--brand-navy-rgb) / 0.45);
+.ys-auth-feature-body small {
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: var(--ys-on-navy-faint);
 }
 
-.ys-auth-language [data-header-dropdown-trigger]:hover {
-    border-color: rgb(var(--accent-rgb) / 0.35);
-    background: var(--surface);
-}
-
-.ys-auth-form-wrap {
+/* --------------------------------------------------------- aside footer */
+.ys-auth-aside-foot {
     display: flex;
-    flex: 1 1 auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding-block-start: 1.5rem;
+    border-block-start: 1px solid var(--ys-line);
+}
+
+.ys-auth-shield {
+    display: inline-flex;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex: 0 0 auto;
     align-items: center;
     justify-content: center;
-    padding: clamp(0.7rem, 1.7vw, 1.55rem) clamp(1.25rem, 3vw, 3.2rem) 1.5rem;
+    border-radius: var(--ys-r-control);
+    border: 1px solid var(--ys-line);
+    background: rgb(255 255 255 / 0.05);
+    color: var(--ys-on-navy-soft);
 }
 
-.ys-auth-surface {
-    width: min(100%, 28.5rem);
-    padding: clamp(1.35rem, 2.25vw, 1.95rem);
-    border: 1px solid rgb(var(--border-rgb) / 0.78);
-    border-radius: 1.5rem;
-    background: rgb(var(--surface-rgb) / 0.92);
-    box-shadow:
-        0 1px 0 rgb(255 255 255 / 0.85) inset,
-        0 24px 65px -42px rgb(var(--brand-navy-rgb) / 0.5);
-    backdrop-filter: blur(18px);
-}
-
-.ys-auth-form-heading {
-    color: var(--brand-orange-ink);
-}
-
-.ys-auth-form-icon {
-    display: grid;
-    width: 1.85rem;
-    height: 1.85rem;
-    place-items: center;
-    border: 1px solid rgb(var(--accent-rgb) / 0.22);
-    border-radius: 0.65rem;
-    background: rgb(var(--accent-rgb) / 0.075);
-}
-
-.ys-auth-form-icon svg {
+.ys-auth-shield svg {
     width: 1.05rem;
     height: 1.05rem;
+    fill: none;
     stroke: currentColor;
-    stroke-width: 1.55;
+    stroke-width: 1.6;
     stroke-linecap: round;
     stroke-linejoin: round;
 }
 
-.ys-auth-surface > h2 {
-    margin-top: 1rem;
-    font-family: theme('fontFamily.display');
-    font-size: clamp(1.7rem, 2.8vw, 2.2rem);
-    font-weight: 600;
-    line-height: 1.12;
-    letter-spacing: -0.045em;
-    color: var(--text);
+.ys-auth-secure-copy {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.1rem;
 }
 
-[dir='rtl'] .ys-auth-surface > h2 {
-    letter-spacing: 0;
+.ys-auth-secure-copy b {
+    font-size: 0.8125rem;
+    font-weight: 700;
 }
 
-.ys-auth-form-subtitle {
+.ys-auth-secure-copy small {
+    font-size: 0.75rem;
+    color: var(--ys-on-navy-faint);
+}
+
+/* ------------------------------------------------------------ form side */
+.ys-auth-main {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    padding: clamp(1.5rem, 3.5vw, 3rem) clamp(1.25rem, 4vw, 4rem);
+    background: var(--ys-form-bg);
+}
+
+.ys-auth-toolbar {
+    display: flex;
+    min-height: 2.5rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.ys-auth-toolbar-label {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--ys-form-muted);
+}
+
+.ys-auth-language [data-header-dropdown-trigger] {
+    border-radius: var(--ys-r-control);
+    border-color: var(--ys-form-border);
+    background: var(--ys-form-bg);
+    color: var(--ys-form-text);
+}
+
+.ys-auth-language [data-header-dropdown-trigger]:hover {
+    border-color: rgb(255 106 0 / 0.45);
+    background: var(--ys-form-sunk);
+}
+
+.ys-auth-panel-wrap {
+    display: flex;
+    flex: 1 1 auto;
+    align-items: center;
+    justify-content: center;
+    padding-block: clamp(1.75rem, 5vw, 3rem);
+}
+
+.ys-auth-panel {
+    width: 100%;
     max-width: 27rem;
-    margin-top: 0.55rem;
-    font-size: 0.82rem;
-    line-height: 1.6;
-    color: var(--text-muted);
 }
 
-.ys-auth-form [data-auth-form] {
-    margin-top: 1.35rem;
+.ys-auth-kicker {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    padding: 0.4rem 0.8rem;
+    border-radius: var(--ys-r-chip);
+    border: 1px solid var(--ys-form-border);
+    background: var(--ys-form-sunk);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ys-form-muted);
 }
 
-.ys-auth-form [data-auth-form] > :not([hidden]) ~ :not([hidden]) {
-    margin-top: 0.95rem;
+.ys-auth-kicker svg {
+    width: 0.9rem;
+    height: 0.9rem;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: var(--ys-orange);
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
-.ys-auth-form .ys-auth-label,
-.ys-auth-form label:not(.sr-only) {
-    font-size: 0.78rem;
-    font-weight: 650;
-    color: var(--text-secondary);
+.ys-auth-panel h2 {
+    margin-block: 1.1rem 0;
+    font-size: clamp(1.75rem, 2.4vw, 2.125rem);
+    font-weight: 800;
+    line-height: 1.15;
+    letter-spacing: -0.03em;
+    color: var(--ys-form-text);
+}
+
+.ys-auth-sub {
+    margin-block: 0.6rem 0;
+    font-size: 0.9375rem;
+    line-height: 1.65;
+    color: var(--ys-form-muted);
+}
+
+/* -------------------------------------------------------- form controls */
+.ys-auth-form {
+    margin-block-start: 1.85rem;
+}
+
+.ys-auth-form label:not(.sr-only),
+.ys-auth-form .ys-auth-label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: var(--ys-form-text);
 }
 
 .ys-auth-form :is(input:not([type='checkbox']):not([type='radio']), select, textarea) {
     width: 100%;
-    min-height: 3.15rem;
-    padding-inline: 1rem;
-    border: 1px solid rgb(var(--border-rgb) / 1);
-    border-radius: 0.82rem;
-    background-color: rgb(var(--surface-sunk-rgb) / 0.45);
-    color: var(--text);
-    font-size: 0.9rem;
-    box-shadow: inset 0 1px 1px rgb(var(--brand-navy-rgb) / 0.025);
-    transition: border-color 170ms ease, box-shadow 170ms ease, background-color 170ms ease, transform 170ms ease;
+    min-height: 3.125rem;
+    padding: 0.8rem 0.95rem;
+    border-radius: var(--ys-r-control);
+    border: 1px solid var(--ys-form-border);
+    background: var(--ys-form-bg);
+    color: var(--ys-form-text);
+    font-size: 0.9375rem;
+    line-height: 1.4;
+    box-shadow: 0 1px 2px rgb(7 7 64 / 0.04);
+    transition: border-color 180ms ease, box-shadow 180ms ease;
 }
 
 .ys-auth-form :is(input:not([type='checkbox']):not([type='radio']), select, textarea):hover {
-    border-color: rgb(var(--brand-navy-rgb) / 0.23);
-    background-color: var(--surface);
+    border-color: rgb(7 7 64 / 0.28);
+}
+
+.dark .ys-auth-form :is(input:not([type='checkbox']):not([type='radio']), select, textarea):hover {
+    border-color: rgb(255 255 255 / 0.28);
 }
 
 .ys-auth-form :is(input:not([type='checkbox']):not([type='radio']), select, textarea):focus {
-    border-color: rgb(var(--accent-rgb) / 0.85);
     outline: none;
-    background-color: var(--surface);
-    box-shadow:
-        0 0 0 4px rgb(var(--accent-rgb) / 0.12),
-        0 12px 24px -20px rgb(var(--brand-navy-rgb) / 0.38);
+    border-color: var(--ys-orange);
+    box-shadow: 0 0 0 3px rgb(255 106 0 / 0.16);
 }
 
 .ys-auth-form :is(input, textarea)::placeholder {
-    color: var(--text-muted);
-    opacity: 0.72;
-}
-
-.ys-auth-form .password-input-control {
-    padding-inline-end: 3.5rem !important;
+    color: var(--ys-form-muted);
+    opacity: 0.75;
 }
 
 .ys-auth-form .password-input-toggle {
-    inset-inline-end: 0.65rem;
-    width: 2.4rem;
-    height: 2.4rem;
-    inset-block: 0;
-    margin-block: auto;
-    border-radius: 0.7rem;
+    border-radius: var(--ys-r-control);
+    color: var(--ys-form-muted);
 }
 
 .ys-auth-form .password-input-toggle:hover {
-    background: rgb(var(--accent-rgb) / 0.08);
-    color: var(--brand-orange-ink);
+    color: var(--ys-form-text);
 }
 
+/* The password checklist is part of the form, not a footnote: two columns
+   on anything wider than a phone, so four rules do not become four lines. */
 .ys-auth-form #password-rules {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
-    gap: 0.45rem;
-    margin-top: 0.7rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.4rem 0.9rem;
+    margin-block-start: 0.7rem;
+    padding: 0.75rem 0.85rem;
+    border-radius: var(--ys-r-control);
+    border: 1px solid var(--ys-form-border);
+    background: var(--ys-form-sunk);
 }
 
 .ys-auth-form #password-rules li {
-    min-width: 0;
-    padding: 0.4rem 0.5rem;
-    border: 1px solid rgb(var(--border-rgb) / 0.68);
-    border-radius: 0.65rem;
-    background: rgb(var(--surface-sunk-rgb) / 0.32);
-    font-size: 0.66rem;
-    line-height: 1.35;
+    /* The list carries space-y for the stacked default; inside this grid the
+       gap already does that job and the extra margin only breaks the rows. */
+    margin-block-start: 0;
+    font-size: 0.75rem;
 }
 
-.ys-auth-form .ys-auth-hint {
-    font-size: 0.7rem;
-    line-height: 1.55;
-    color: var(--text-muted);
+/* Generated password chips. They inherit the panel's neutrals rather than
+   the slate the shared component ships, so the form stays one surface. */
+.ys-auth-form [data-password-suggestion] {
+    border-radius: 10px;
+    border-color: var(--ys-form-border);
+    background: var(--ys-form-sunk);
+    color: var(--ys-form-text);
+    box-shadow: none;
+}
+
+.ys-auth-form [data-password-suggestion]:hover {
+    border-color: rgb(255 106 0 / 0.45);
+    background: rgb(255 106 0 / 0.08);
+    color: var(--ys-form-text);
+}
+
+.ys-auth-hint {
+    margin-block-start: 0.45rem;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    color: var(--ys-form-muted);
 }
 
 .ys-auth-error {
-    font-size: 0.75rem;
-    line-height: 1.5;
-    color: var(--danger);
+    margin-block-start: 0.45rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #b42318;
+}
+
+.dark .ys-auth-error {
+    color: #ff9f96;
 }
 
 .ys-auth-alert {
-    border: 1px solid;
-    border-radius: 0.8rem;
-    padding: 0.75rem 0.9rem;
-    font-size: 0.78rem;
-    line-height: 1.55;
+    padding: 0.8rem 0.95rem;
+    border-radius: var(--ys-r-control);
+    border: 1px solid transparent;
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.5;
 }
 
 .ys-auth-alert-success {
-    border-color: rgb(14 124 85 / 0.22);
-    background: rgb(14 124 85 / 0.075);
-    color: var(--success);
+    border-color: rgb(14 124 85 / 0.28);
+    background: rgb(14 124 85 / 0.09);
+    color: #0e7c55;
 }
 
 .ys-auth-alert-error {
-    border-color: rgb(180 35 24 / 0.22);
-    background: rgb(180 35 24 / 0.07);
-    color: var(--danger);
+    border-color: rgb(180 35 24 / 0.28);
+    background: rgb(180 35 24 / 0.08);
+    color: #b42318;
+}
+
+.dark .ys-auth-alert-success {
+    color: #74d3ac;
+}
+
+.dark .ys-auth-alert-error {
+    color: #ff9f96;
+}
+
+/* ------------------------------------------------------- remember + link */
+.ys-auth-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
 }
 
 .ys-auth-remember {
     display: inline-flex;
-    cursor: pointer;
     align-items: center;
-    gap: 0.6rem;
-    color: var(--text-secondary);
+    gap: 0.55rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--ys-form-muted);
+    cursor: pointer;
 }
 
 .ys-auth-checkbox {
-    width: 1.1rem;
-    height: 1.1rem;
+    width: 1.05rem;
+    height: 1.05rem;
+    flex: 0 0 auto;
+    border-radius: 6px;
+    border: 1px solid var(--ys-form-border);
+    background: var(--ys-form-bg);
+    accent-color: var(--ys-orange);
     cursor: pointer;
-    border: 1px solid rgb(var(--border-rgb) / 1);
-    border-radius: 0.35rem;
-    color: var(--brand-navy);
 }
 
-.ys-auth-checkbox:checked {
-    border-color: var(--brand-navy);
-    background-color: var(--brand-navy);
+.ys-auth-checkbox:focus-visible {
+    outline: 2px solid var(--ys-orange);
+    outline-offset: 2px;
 }
 
-.ys-auth-checkbox:focus {
-    box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / 0.19);
-}
-
-.ys-auth-text-link {
-    border-radius: 0.4rem;
-    font-family: theme('fontFamily.display');
-    font-size: 0.75rem;
+.ys-auth-link {
+    border-radius: 6px;
+    font-size: 0.875rem;
     font-weight: 600;
-    color: var(--text-secondary);
-    text-decoration-line: underline;
-    text-decoration-color: rgb(var(--accent-rgb) / 0.35);
-    text-underline-offset: 0.28rem;
-    transition: color 160ms ease, text-decoration-color 160ms ease;
+    color: var(--ys-form-link);
+    text-decoration: none;
 }
 
-.ys-auth-text-link:hover {
-    color: var(--brand-orange-ink);
-    text-decoration-color: var(--brand-orange);
+.ys-auth-link:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
 }
 
-.ys-auth-text-link:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 3px rgb(var(--accent-rgb) / 0.18);
+.ys-auth-link:focus-visible {
+    outline: 2px solid var(--ys-orange);
+    outline-offset: 3px;
 }
 
-.ys-auth-primary-action {
-    position: relative;
+/* ---------------------------------------------------------------- actions */
+.ys-auth-cta {
     display: inline-flex;
     width: 100%;
-    min-height: 3.15rem;
+    min-height: 3.25rem;
     align-items: center;
     justify-content: center;
-    gap: 0.75rem;
-    overflow: hidden;
-    border: 1px solid rgb(var(--brand-navy-rgb) / 0.98);
-    border-radius: 0.82rem;
-    background: linear-gradient(115deg, var(--brand-navy), rgb(18 18 74 / 1));
-    padding: 0.85rem 1.15rem;
-    font-family: theme('fontFamily.display');
-    font-size: 0.84rem;
-    font-weight: 600;
-    color: white;
-    box-shadow: 0 14px 28px -16px rgb(var(--brand-navy-rgb) / 0.68);
-    transition: transform 170ms ease, box-shadow 170ms ease, filter 170ms ease;
+    gap: 0.6rem;
+    padding: 0.9rem 1.4rem;
+    border: 0;
+    border-radius: var(--ys-r-control);
+    /* Orange fill, navy label: white on #ff6a00 measures 2.87:1 and fails
+       AA, navy on it clears 6.5:1. The accent stays loud without the label
+       paying for it. */
+    background: var(--ys-orange);
+    color: var(--ys-navy);
+    font-size: 0.9375rem;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 10px 26px -14px rgb(255 106 0 / 0.85);
+    transition: transform 180ms ease, box-shadow 220ms ease, background-color 180ms ease;
 }
 
-.ys-auth-primary-action::before {
-    content: '';
-    position: absolute;
-    width: 5rem;
-    height: 5rem;
-    inset-inline-end: -2rem;
-    top: -2.5rem;
-    border-radius: 999px;
-    background: rgb(var(--accent-rgb) / 0.18);
-    transition: transform 220ms ease, background-color 220ms ease;
-}
-
-.ys-auth-primary-action > * {
-    position: relative;
-    z-index: 1;
-}
-
-.ys-auth-primary-action:hover {
+.ys-auth-cta:hover {
     transform: translateY(-1px);
-    filter: brightness(1.08);
-    box-shadow: 0 18px 32px -15px rgb(var(--brand-navy-rgb) / 0.76);
+    background: #ff7a1c;
+    box-shadow: 0 16px 34px -16px rgb(255 106 0 / 0.9);
 }
 
-.ys-auth-primary-action:hover::before {
-    transform: scale(1.28);
-    background: rgb(var(--accent-rgb) / 0.26);
-}
-
-.ys-auth-primary-action:active {
+.ys-auth-cta:active {
     transform: translateY(0);
 }
 
-.ys-auth-primary-action:focus-visible {
-    outline: none;
-    box-shadow: 0 0 0 4px rgb(var(--accent-rgb) / 0.24), 0 14px 28px -16px rgb(var(--brand-navy-rgb) / 0.68);
+.ys-auth-cta:focus-visible {
+    outline: 3px solid rgb(7 7 64 / 0.35);
+    outline-offset: 3px;
 }
 
-.ys-auth-form > .mt-5 > .relative.flex.items-center > div {
-    background-color: rgb(var(--border-rgb) / 0.8);
+.dark .ys-auth-cta:focus-visible {
+    outline-color: rgb(255 255 255 / 0.45);
 }
 
-.ys-auth-form > .mt-5 > .relative.flex.items-center > span {
-    color: var(--text-muted);
+.ys-auth-cta svg {
+    width: 1.05rem;
+    height: 1.05rem;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
-.ys-auth-legal {
-    padding: 0.65rem 2rem 1rem;
+[dir='rtl'] .ys-auth-cta svg {
+    scale: -1 1;
+}
+
+/* The way across to the other screen. Quiet by design — it is the second
+   thing on the page, and an outlined twin of the CTA would fight it. */
+.ys-auth-switch {
+    margin-block-start: 1.5rem;
+    padding-block-start: 1.35rem;
+    border-block-start: 1px solid var(--ys-form-border);
+    font-size: 0.875rem;
+    color: var(--ys-form-muted);
     text-align: center;
-    font-size: 0.64rem;
-    color: var(--text-muted);
 }
 
-.dark .ys-auth-page {
-    background:
-        radial-gradient(circle at 8% 12%, rgb(var(--accent-rgb) / 0.08), transparent 26rem),
-        radial-gradient(circle at 86% 82%, rgb(43 43 143 / 0.2), transparent 32rem),
-        var(--bg);
+.ys-auth-switch a {
+    margin-inline-start: 0.3rem;
+    border-radius: 6px;
+    font-weight: 700;
+    color: var(--ys-form-text);
+    text-decoration: none;
 }
 
-.dark .ys-auth-shell {
-    border-color: rgb(255 255 255 / 0.08);
-    box-shadow: 0 32px 90px -38px rgb(0 0 0 / 0.82);
+.ys-auth-switch a:hover {
+    color: var(--ys-form-link);
+    text-decoration: underline;
+    text-underline-offset: 3px;
 }
 
-.dark .ys-auth-main {
-    background:
-        radial-gradient(circle at 100% 0%, rgb(var(--accent-rgb) / 0.045), transparent 22rem),
-        linear-gradient(155deg, var(--surface), var(--bg));
+.ys-auth-switch a:focus-visible {
+    outline: 2px solid var(--ys-orange);
+    outline-offset: 3px;
 }
 
-.dark .ys-auth-surface {
-    border-color: rgb(255 255 255 / 0.075);
-    background: rgb(var(--surface-rgb) / 0.86);
-    box-shadow: 0 1px 0 rgb(255 255 255 / 0.035) inset, 0 28px 70px -44px rgb(0 0 0 / 0.9);
+.ys-auth-terms {
+    margin-block-start: 1.1rem;
+    font-size: 0.75rem;
+    line-height: 1.6;
+    color: var(--ys-form-muted);
 }
 
-.dark .ys-auth-language [data-header-dropdown-trigger] {
-    border-color: rgb(255 255 255 / 0.09);
-    background: rgb(255 255 255 / 0.045);
-    color: var(--text-secondary);
+.ys-auth-terms a {
+    font-weight: 600;
+    color: var(--ys-form-text);
+    text-decoration: underline;
+    text-underline-offset: 2px;
 }
 
-.dark .ys-auth-form :is(input:not([type='checkbox']):not([type='radio']), select, textarea) {
-    border-color: var(--border);
-    background-color: rgb(var(--surface-sunk-rgb) / 0.62);
+.ys-auth-terms a:hover {
+    color: var(--ys-form-link);
 }
 
-.dark .ys-auth-form :is(input:not([type='checkbox']):not([type='radio']), select, textarea):hover,
-.dark .ys-auth-form :is(input:not([type='checkbox']):not([type='radio']), select, textarea):focus {
-    background-color: var(--surface-sunk);
+.ys-auth-foot {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: var(--ys-form-muted);
+    text-align: center;
 }
 
-.dark .ys-auth-primary-action {
-    border-color: rgb(var(--accent-rgb) / 0.28);
-    background: linear-gradient(115deg, rgb(43 43 143 / 1), rgb(18 18 74 / 1));
+.ys-auth-foot svg {
+    width: 0.85rem;
+    height: 0.85rem;
+    flex: 0 0 auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
 }
 
-[dir='rtl'] .ys-auth-aside,
-[dir='rtl'] .ys-auth-main {
-    direction: rtl;
-    text-align: right;
+/* The divider rendered by auth/partials/social-login sits inside the panel,
+   so it takes the panel's neutrals rather than carrying its own slate. */
+.ys-auth-form .relative.flex.items-center > div {
+    background: var(--ys-form-border);
 }
 
-[dir='rtl'] .ys-auth-secondary-action svg,
-[dir='rtl'] .ys-auth-primary-action svg {
-    transform: scaleX(-1);
+.ys-auth-form .relative.flex.items-center > span {
+    color: var(--ys-form-muted);
 }
 
-@keyframes ysAuthPortalEnter {
-    from {
-        opacity: 0;
-        transform: translateY(18px) scale(0.985);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
-
-@keyframes ysAuthTransitionSpin {
-    to {
-        transform: rotate(360deg);
-    }
-}
-
+/* ------------------------------------------------------- mobile stacking */
 @media (max-width: 1023px) {
-    .ys-auth-stage {
-        padding: 1rem;
-    }
-
-    .ys-auth-shell {
-        grid-template-columns: minmax(0, 1fr);
-        max-width: 44rem;
-    }
-
     .ys-auth-aside {
-        min-height: 25rem;
-        padding: 1.7rem clamp(1.4rem, 5vw, 2.5rem);
+        padding: 1.75rem clamp(1.25rem, 5vw, 2.5rem) 2rem;
     }
 
-    .ys-auth-technical {
-        width: min(61%, 25rem);
-        inset-inline-end: -2rem;
-        top: 3.5rem;
+    .ys-auth-blueprint {
+        inset-block-start: 44%;
+        inset-inline-end: -30%;
+        width: 30rem;
+        opacity: 0.55;
     }
 
     .ys-auth-story {
-        padding-top: 6.25rem;
+        padding-block: 1.75rem 0;
     }
 
     .ys-auth-story h1 {
-        max-width: 29rem;
-        font-size: clamp(2rem, 6vw, 3rem);
+        font-size: clamp(1.75rem, 5.5vw, 2.5rem);
     }
 
-    .ys-auth-toolbar {
-        min-height: 4.25rem;
+    /* Stacked, the three blocks become one scannable row rather than three
+       tall cards pushing the form below the fold. */
+    .ys-auth-features {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 0.5rem;
     }
 
-    .ys-auth-form-wrap {
-        padding-top: 0.75rem;
-        padding-bottom: 2rem;
+    .ys-auth-feature {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.55rem;
+        padding: 0.75rem;
+    }
+
+    .ys-auth-feature-body small {
+        display: none;
+    }
+
+    .ys-auth-aside-foot {
+        margin-block-start: 1.75rem;
+    }
+
+    .ys-auth-panel {
+        max-width: 30rem;
     }
 }
 
 @media (max-width: 639px) {
-    .ys-auth-stage {
-        display: block;
-        padding: 0;
-    }
-
-    .ys-auth-orbit {
+    .ys-auth-serial {
         display: none;
-    }
-
-    .ys-auth-shell {
-        min-height: 100svh;
-        border: 0;
-        border-radius: 0;
-        box-shadow: none;
-    }
-
-    .ys-auth-aside {
-        min-height: auto;
-        padding: 1.15rem 1.2rem 1.25rem;
-    }
-
-    .ys-auth-series,
-    .ys-auth-secure-note,
-    .ys-auth-technical,
-    .ys-auth-capabilities {
-        display: none;
-    }
-
-    .ys-auth-story {
-        padding-top: 2.4rem;
-    }
-
-    .ys-auth-eyebrow {
-        font-size: 0.62rem;
-    }
-
-    .ys-auth-story h1 {
-        margin-top: 0.7rem;
-        font-size: clamp(1.75rem, 9.5vw, 2.4rem);
-        line-height: 1.06;
-    }
-
-    .ys-auth-story h1::after {
-        width: 3.2rem;
-        margin-top: 1rem;
     }
 
     .ys-auth-story > p {
-        display: -webkit-box;
-        margin-top: 0.65rem;
-        overflow: hidden;
-        font-size: 0.78rem;
-        line-height: 1.65;
-        -webkit-box-orient: vertical;
-        -webkit-line-clamp: 2;
+        font-size: 0.9375rem;
     }
 
-    .ys-auth-aside-footer {
-        justify-content: flex-end;
-        margin-top: 1rem;
-        padding-top: 0.8rem;
+    .ys-auth-rule {
+        margin-block: 1.35rem;
     }
 
-    .ys-auth-secondary-action {
-        min-height: 2.5rem;
-        font-size: 0.7rem;
+    .ys-auth-features {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
-    .ys-auth-toolbar {
-        min-height: 3.85rem;
-        padding: 0.7rem 1rem;
+    /* Three across is too tight under 640px, so the third block takes a
+       full-width row of its own instead of being squeezed. */
+    .ys-auth-features > :nth-child(3) {
+        grid-column: 1 / -1;
+        flex-direction: row;
+        align-items: center;
     }
 
-    .ys-auth-toolbar-label {
-        display: none;
+    .ys-auth-main {
+        padding-inline: 1.25rem;
     }
 
-    .ys-auth-language {
-        margin-inline-start: auto;
-    }
-
-    .ys-auth-language [data-header-dropdown-trigger] {
-        min-width: auto;
-    }
-
-    .ys-auth-form-wrap {
-        align-items: flex-start;
-        padding: 0.35rem 0.85rem 1.75rem;
-    }
-
-    .ys-auth-surface {
-        padding: 1.15rem 1rem;
-        border-radius: 1.15rem;
-    }
-
-    .ys-auth-surface > h2 {
-        font-size: 1.65rem;
-    }
-
-    .ys-auth-form-subtitle {
-        font-size: 0.8rem;
-    }
-
-    .ys-auth-form [data-auth-form] {
-        margin-top: 1.1rem;
-    }
-
-    .ys-auth-form [data-auth-form] > :not([hidden]) ~ :not([hidden]) {
-        margin-top: 0.85rem;
-    }
-
-    .ys-auth-form :is(input:not([type='checkbox']):not([type='radio']), select, textarea),
-    .ys-auth-primary-action {
-        min-height: 3.1rem;
+    .ys-auth-panel-wrap {
+        padding-block: 1.75rem;
     }
 
     .ys-auth-form #password-rules {
         grid-template-columns: 1fr;
     }
 
-    .ys-auth-legal {
-        padding-bottom: 1rem;
+    .ys-auth-form :is(input:not([type='checkbox']):not([type='radio']), select, textarea) {
+        /* 16px keeps iOS Safari from zooming the viewport on focus. */
+        font-size: 1rem;
+    }
+}
+
+/* -------------------------------------------------- login/register move */
+.ys-auth-curtain {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: grid;
+    place-items: center;
+    visibility: hidden;
+    pointer-events: none;
+    background: linear-gradient(158deg, var(--ys-navy) 0%, var(--ys-navy-deep) 100%);
+    opacity: 0;
+    transition: opacity 360ms ease, visibility 0s linear 360ms;
+}
+
+/* The attribute is stamped on <html> by a head script so an arriving page
+   paints behind the curtain rather than flashing the form first. The body
+   classes below take over once the document is parsed. */
+html[data-ys-auth-enter] .ys-auth-curtain,
+.ys-auth-leaving .ys-auth-curtain,
+.ys-auth-arriving .ys-auth-curtain {
+    visibility: visible;
+    opacity: 1;
+    transition: opacity 360ms ease;
+}
+
+.ys-auth-arriving-ready .ys-auth-curtain {
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 420ms ease, visibility 0s linear 420ms;
+}
+
+.ys-auth-curtain-mark {
+    display: inline-flex;
+    width: 4.5rem;
+    height: 4.5rem;
+    align-items: center;
+    justify-content: center;
+    border-radius: 20px;
+    border: 1px solid var(--ys-line-strong);
+    background: rgb(255 255 255 / 0.06);
+    color: var(--ys-on-navy);
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.12em;
+}
+
+.ys-auth-leaving .ys-auth-aside,
+.ys-auth-leaving .ys-auth-main {
+    opacity: 0;
+    transition: opacity 280ms ease;
+}
+
+/* ----------------------------------------------------------- entry motion */
+.ys-auth-aside > *,
+.ys-auth-main > * {
+    animation: ysAuthRise 620ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.ys-auth-aside > :nth-child(3) { animation-delay: 70ms; }
+.ys-auth-aside > :nth-child(4) { animation-delay: 140ms; }
+.ys-auth-main > :nth-child(2) { animation-delay: 90ms; }
+.ys-auth-main > :nth-child(3) { animation-delay: 150ms; }
+
+@keyframes ysAuthRise {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .ys-auth-shell,
-    .ys-auth-primary-action,
-    .ys-auth-secondary-action {
+    .ys-auth-aside > *,
+    .ys-auth-main > *,
+    .ys-auth-blueprint [data-line='sweep'],
+    .ys-auth-dot {
         animation: none;
+    }
+
+    .ys-auth-feature,
+    .ys-auth-cta {
         transition: none;
     }
 
-    .ys-auth-route-transition {
+    .ys-auth-curtain {
         display: none;
     }
 }
@@ -1756,10 +1539,25 @@ html[data-auth-transition] .ys-auth-transition-core {
         transform: translateY(-1px);
     }
 
+    /* ================================================================
+       YS Access — the loading screen
+
+       Same family as the auth split: navy field, blueprint grid, one
+       orange accent. It is a system-access screen rather than a spinner
+       on a card, so the composition is centred and the card chrome is
+       gone — the rings are the object.
+       ================================================================ */
     .ys-loading-overlay {
+        --ys-loading-navy: #070740;
+        --ys-loading-navy-deep: #04041c;
+        --ys-loading-accent: #ff6a00;
+        --ys-loading-line: rgba(255, 255, 255, 0.12);
+        --ys-loading-text: #ffffff;
+        --ys-loading-muted: #9aa1af;
+
         align-items: center;
         justify-content: center;
-        color: #ffffff;
+        color: var(--ys-loading-text);
         opacity: 1;
         transition: opacity 240ms ease, visibility 240ms ease;
     }
@@ -1777,9 +1575,9 @@ html[data-auth-transition] .ys-auth-transition-core {
         display: flex;
         min-height: 100dvh;
         padding: 1.5rem;
-        background: rgba(7, 11, 31, 0.72);
-        backdrop-filter: blur(22px) saturate(140%);
-        -webkit-backdrop-filter: blur(22px) saturate(140%);
+        background:
+            radial-gradient(90% 70% at 50% 42%, rgba(255, 106, 0, 0.12), transparent 62%),
+            linear-gradient(158deg, var(--ys-loading-navy) 0%, var(--ys-loading-navy-deep) 100%);
     }
 
     .ys-loading-overlay-compact {
@@ -1789,136 +1587,211 @@ html[data-auth-transition] .ys-auth-transition-core {
         display: flex;
         min-height: 12rem;
         border-radius: inherit;
-        background: rgba(7, 11, 31, 0.72);
+        background: rgba(7, 7, 64, 0.86);
         backdrop-filter: blur(14px);
         -webkit-backdrop-filter: blur(14px);
     }
 
+    /* The same engineering paper the auth aside uses, masked to a soft
+       pool behind the composition instead of tiling to the edges. */
+    .ys-loading-grid {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image:
+            linear-gradient(var(--ys-loading-line) 1px, transparent 1px),
+            linear-gradient(90deg, var(--ys-loading-line) 1px, transparent 1px);
+        background-size: 116px 116px, 116px 116px;
+        mask-image: radial-gradient(60% 55% at 50% 48%, #000 10%, transparent 76%);
+        -webkit-mask-image: radial-gradient(60% 55% at 50% 48%, #000 10%, transparent 76%);
+        opacity: 0.75;
+    }
+
+    .ys-loading-overlay-compact .ys-loading-grid {
+        display: none;
+    }
+
     .ys-loading-card {
         position: relative;
+        z-index: 1;
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 1.5rem;
-        padding: 2.25rem 2.5rem;
-        min-width: min(18rem, calc(100vw - 2rem));
-        max-width: 22rem;
-        background: linear-gradient(155deg, #070740 0%, #04041f 100%);
-        border-radius: 1.75rem;
-        box-shadow:
-            0 30px 90px -20px rgba(0, 0, 0, 0.7),
-            0 0 0 1px rgba(255, 255, 255, 0.06) inset,
-            0 1px 0 rgba(255, 255, 255, 0.08) inset;
-        overflow: hidden;
+        gap: 1.75rem;
+        width: min(21rem, calc(100vw - 2.5rem));
         text-align: center;
     }
 
-    .ys-loading-card::before,
-    .ys-loading-card::after {
-        content: '';
-        position: absolute;
-        pointer-events: none;
-        filter: blur(24px);
-        z-index: 0;
-    }
-
-    .ys-loading-card::before {
-        top: -30%;
-        left: -20%;
-        width: 60%;
-        height: 60%;
-        background: radial-gradient(circle, rgba(99, 102, 241, 0.32), transparent 60%);
-    }
-
-    .ys-loading-card::after {
-        bottom: -25%;
-        right: -20%;
-        width: 55%;
-        height: 55%;
-        background: radial-gradient(circle, rgba(232, 93, 42, 0.20), transparent 60%);
-    }
-
-    .ys-loading-brand {
+    /* ---- the ring stack ---- */
+    .ys-loading-core {
         position: relative;
-        z-index: 1;
+        display: grid;
+        place-items: center;
+        width: 8.5rem;
+        height: 8.5rem;
+    }
+
+    .ys-loading-ring {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        border: 1px solid var(--ys-loading-line);
+    }
+
+    .ys-loading-ring-inner {
+        inset: 1.35rem;
+        border-style: dashed;
+        border-color: rgba(255, 255, 255, 0.16);
+        animation: ysLoadingSpinSlow 26s linear infinite reverse;
+    }
+
+    /* The radar pass. A conic gradient masked to a ring reads as a sweep;
+       a rotating border only reads as a spinner. */
+    .ys-loading-sweep {
+        position: absolute;
+        inset: -0.35rem;
+        border-radius: 50%;
+        background: conic-gradient(from 0deg, rgba(255, 106, 0, 0) 0deg, rgba(255, 106, 0, 0) 250deg, rgba(255, 106, 0, 0.75) 350deg, rgba(255, 106, 0, 0) 360deg);
+        mask-image: radial-gradient(closest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));
+        -webkit-mask-image: radial-gradient(closest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));
+        animation: ysLoadingSpin 1.7s cubic-bezier(0.6, 0.05, 0.35, 0.95) infinite;
+    }
+
+    .ys-loading-badge {
+        position: relative;
         display: inline-flex;
-        flex-direction: column;
+        width: 4.25rem;
+        height: 4.25rem;
         align-items: center;
-        gap: 1rem;
-        min-width: 0;
+        justify-content: center;
+        overflow: hidden;
+        border-radius: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.06);
+        box-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.9);
     }
 
     .ys-loading-logo {
-        position: relative;
         display: inline-flex;
-        height: 5.5rem;
-        width: 5.5rem;
-        flex: 0 0 auto;
+        width: 100%;
+        height: 100%;
         align-items: center;
         justify-content: center;
-        overflow: visible;
-        border-radius: 9999px;
-        background: rgba(255, 255, 255, 0.06);
-    }
-
-    .ys-loading-logo::before {
-        content: '';
-        position: absolute;
-        inset: -6px;
-        border-radius: 9999px;
-        border: 2px solid rgba(255, 255, 255, 0.08);
-        border-top-color: rgba(124, 140, 255, 0.95);
-        border-right-color: rgba(124, 140, 255, 0.5);
-        animation: ysLoadingSpin 1.2s linear infinite;
-        pointer-events: none;
     }
 
     .ys-loading-logo-image {
-        height: 62%;
-        width: auto;
-        max-width: 62%;
+        width: 66%;
+        height: 66%;
         object-fit: contain;
     }
 
     .ys-loading-logo-fallback {
         display: inline-flex;
-        height: 100%;
         width: 100%;
+        height: 100%;
         align-items: center;
         justify-content: center;
-        border-radius: inherit;
-        background: transparent;
     }
 
     .ys-loading-logo-fallback-text {
-        font-size: 0.75rem;
-        font-weight: 700;
-        letter-spacing: 0.14em;
-        color: #ffffff;
+        font-size: 0.9375rem;
+        font-weight: 800;
+        letter-spacing: 0.12em;
+        color: var(--ys-loading-text);
+    }
+
+    /* ---- copy ---- */
+    .ys-loading-copy {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.45rem;
+        min-width: 0;
     }
 
     .ys-loading-brand-name {
-        font-size: 1.0625rem;
-        font-weight: 700;
-        letter-spacing: -0.015em;
-        line-height: 1;
-        color: #ffffff;
-        max-width: 14rem;
+        max-width: 16rem;
         overflow: hidden;
+        font-size: 1.125rem;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.02em;
+        color: var(--ys-loading-text);
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
-    .ys-loading-ring {
+    .ys-loading-message {
+        margin: 0;
+        font-size: 0.875rem;
+        line-height: 1.55;
+        color: var(--ys-loading-muted);
+    }
+
+    /* ---- progress ---- */
+    .ys-loading-track {
         position: relative;
-        z-index: 1;
-        height: 2.4rem;
-        width: 2.4rem;
-        border-radius: 9999px;
-        border: 3px solid rgba(255, 255, 255, 0.08);
-        border-top-color: rgba(124, 140, 255, 0.95);
-        border-right-color: rgba(124, 140, 255, 0.5);
-        animation: ysLoadingSpin 1.2s linear infinite;
+        width: 100%;
+        height: 3px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .ys-loading-bar {
+        position: absolute;
+        inset-block: 0;
+        width: 42%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, rgba(255, 106, 0, 0), var(--ys-loading-accent), rgba(255, 106, 0, 0));
+        animation: ysLoadingShuttle 1.6s ease-in-out infinite;
+    }
+
+    .ys-loading-tag {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.625rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.4);
+    }
+
+    .ys-loading-overlay-compact .ys-loading-card {
+        gap: 1.1rem;
+    }
+
+    .ys-loading-overlay-compact .ys-loading-core {
+        width: 5.5rem;
+        height: 5.5rem;
+    }
+
+    .ys-loading-overlay-compact .ys-loading-badge {
+        width: 2.75rem;
+        height: 2.75rem;
+        border-radius: 14px;
+    }
+
+    .ys-loading-overlay-compact .ys-loading-ring-inner {
+        inset: 0.85rem;
+    }
+
+    .ys-loading-overlay-compact .ys-loading-tag {
+        display: none;
+    }
+
+    @keyframes ysLoadingSpinSlow {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes ysLoadingShuttle {
+        0% {
+            transform: translateX(-105%);
+        }
+
+        100% {
+            transform: translateX(240%);
+        }
     }
 
     .ys-button-loading {
@@ -1982,10 +1855,18 @@ html[data-auth-transition] .ys-auth-transition-core {
             transition: none;
         }
 
-        .ys-loading-ring,
-        .ys-loading-logo::before,
+        .ys-loading-ring-inner,
+        .ys-loading-sweep,
+        .ys-loading-bar,
         .ys-button-spinner {
             animation: none;
+        }
+
+        /* Without the shuttle the track would read as an empty rail, so it
+           holds a static part-filled bar instead. */
+        .ys-loading-bar {
+            width: 55%;
+            transform: none;
         }
     }
 
@@ -2745,20 +2626,6 @@ html[data-auth-transition] .ys-auth-transition-core {
         --admin-shadow: 0 1px 0 rgba(255, 255, 255, 0.05), 0 28px 58px -34px rgba(0, 0, 0, 0.82);
         --admin-shadow-soft: 0 1px 0 rgba(255, 255, 255, 0.04), 0 16px 38px -30px rgba(0, 0, 0, 0.72);
         background-color: var(--admin-bg);
-    }
-
-    .dark .ys-loading-overlay {
-        --ys-loading-bg: rgba(5, 7, 38, 0.96);
-        --ys-loading-card: rgba(7, 11, 31, 0.88);
-        --ys-loading-border: rgba(148, 163, 184, 0.18);
-        --ys-loading-text: #ffffff;
-        --ys-loading-muted: #cbd5e1;
-        --ys-loading-accent: #ff8a3d;
-        --ys-loading-ring: rgba(255, 255, 255, 0.14);
-    }
-
-    .dark .ys-loading-logo {
-        background: rgba(255, 255, 255, 0.08);
     }
 
     .dark .admin-shell .admin-main {

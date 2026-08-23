@@ -1,26 +1,27 @@
-<x-auth-split-layout
-    :heading="__('Forgot Password')"
-    form-position="right"
-    enter-direction="right"
-    :panel-title="__('Reset Your Password')"
-    :panel-subtitle="__('Enter your email or phone number to receive a secure password reset link.')"
-    :panel-tag="__('Account Recovery')"
-    panel-theme="login"
-    :panel-button-text="__('Back to Sign In')"
-    panel-button-action="navigate"
-    :panel-button-href="route('login')"
-    panel-exit-direction="left"
+<x-auth-portal
+    mode="recover"
+    :kicker="__('Password reset')"
+    :heading="__('Reset your password')"
+    :form-subtitle="__('Enter the email or phone number on your account and we will send a secure reset link.')"
+    :panel-eyebrow="__('Account recovery')"
+    :panel-title="__('Locked out of your workspace?')"
+    :panel-title-accent="__('We will get you back in.')"
+    :panel-subtitle="__('Reset links are single use and expire on their own, so recovering access never leaves the account open behind you.')"
+    :switch-text="__('Remembered your password?')"
+    :switch-label="__('Back to sign in')"
+    :switch-href="route('login')"
+    :loading-message="__('Sending your reset link')"
 >
-    <x-auth-session-status class="mt-4 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300" :status="session('status')" />
+    <x-auth-session-status class="ys-auth-alert ys-auth-alert-success mb-5" :status="session('status')" />
 
-    <form method="POST" action="{{ route('password.email') }}" class="mt-5 space-y-4" data-auth-form data-loading-button-text="Sending...">
+    <form method="POST" action="{{ route('password.email') }}" class="space-y-4" data-auth-form data-loading-button-text="{{ __('Sending...') }}">
         @csrf
 
         <div>
-            <x-input-label for="login" :value="__('Email or phone')" class="text-sm font-medium text-slate-300" />
+            <x-input-label for="login" :value="__('Email or phone')" class="ys-auth-label" />
             <x-text-input
                 id="login"
-                class="mt-2 block w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder-muted transition duration-200 focus:border-accent focus:ring-accent dark:border-slate-700 dark:bg-slate-800/90 dark:text-slate-100"
+                class="mt-2"
                 type="text"
                 name="login"
                 :value="old('login')"
@@ -29,14 +30,16 @@
                 autocomplete="username"
                 placeholder="{{ __('you@example.com or +964...') }}"
             />
-            <x-input-error :messages="$errors->get('login')" class="mt-2 text-sm text-red-400" />
+            <x-input-error :messages="$errors->get('login')" class="ys-auth-error" />
         </div>
 
-        <button
-            type="submit"
-            class="pointer-events-auto touch-manipulation inline-flex w-full items-center justify-center rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-navy shadow-lg shadow-navy/25 transition duration-200 hover:bg-accent-hover focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
-        >
-            {{ __('Send Password Reset Link') }}
+        <button type="submit" class="ys-auth-cta">
+            <span>{{ __('Send reset link') }}</span>
+            <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12M11 5l5 5-5 5" /></svg>
         </button>
+
+        <p class="ys-auth-hint">
+            {{ __('The link works once and expires shortly after it is sent. Check your spam folder if it does not arrive.') }}
+        </p>
     </form>
-</x-auth-split-layout>
+</x-auth-portal>
