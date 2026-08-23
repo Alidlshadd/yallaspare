@@ -1539,23 +1539,10 @@ html[data-ys-auth-enter] .ys-auth-curtain,
         transform: translateY(-1px);
     }
 
-    /* ================================================================
-       YS Access — the loading screen
-
-       Same family as the auth split: navy field, one orange accent. The
-       composition is a mark inside a ring with a rail underneath, and
-       nothing else — a splash screen has one job and the wait is short.
-       ================================================================ */
     .ys-loading-overlay {
-        --ys-loading-navy: #070740;
-        --ys-loading-navy-deep: #04041c;
-        --ys-loading-accent: #ff6a00;
-        --ys-loading-text: #ffffff;
-        --ys-loading-muted: #9aa1af;
-
         align-items: center;
         justify-content: center;
-        color: var(--ys-loading-text);
+        color: #ffffff;
         opacity: 1;
         transition: opacity 240ms ease, visibility 240ms ease;
     }
@@ -1573,9 +1560,9 @@ html[data-ys-auth-enter] .ys-auth-curtain,
         display: flex;
         min-height: 100dvh;
         padding: 1.5rem;
-        background:
-            radial-gradient(70% 55% at 50% 45%, rgba(255, 106, 0, 0.1), transparent 65%),
-            linear-gradient(158deg, var(--ys-loading-navy) 0%, var(--ys-loading-navy-deep) 100%);
+        background: rgba(7, 11, 31, 0.72);
+        backdrop-filter: blur(22px) saturate(140%);
+        -webkit-backdrop-filter: blur(22px) saturate(140%);
     }
 
     .ys-loading-overlay-compact {
@@ -1585,177 +1572,136 @@ html[data-ys-auth-enter] .ys-auth-curtain,
         display: flex;
         min-height: 12rem;
         border-radius: inherit;
-        background: rgba(7, 7, 64, 0.88);
+        background: rgba(7, 11, 31, 0.72);
         backdrop-filter: blur(14px);
         -webkit-backdrop-filter: blur(14px);
     }
 
     .ys-loading-card {
+        position: relative;
         display: flex;
-        width: min(17rem, calc(100vw - 2.5rem));
         flex-direction: column;
         align-items: center;
-        gap: 1.35rem;
+        gap: 1.5rem;
+        padding: 2.25rem 2.5rem;
+        min-width: min(18rem, calc(100vw - 2rem));
+        max-width: 22rem;
+        background: linear-gradient(155deg, #070740 0%, #04041f 100%);
+        border-radius: 1.75rem;
+        box-shadow:
+            0 30px 90px -20px rgba(0, 0, 0, 0.7),
+            0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+            0 1px 0 rgba(255, 255, 255, 0.08) inset;
+        overflow: hidden;
         text-align: center;
     }
 
-    /* ---- mark in a ring ---- */
-    .ys-loading-core {
-        position: relative;
-        display: grid;
-        place-items: center;
-        width: 7rem;
-        height: 7rem;
-    }
-
-    .ys-loading-orbit {
+    .ys-loading-card::before,
+    .ys-loading-card::after {
+        content: '';
         position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        fill: none;
+        pointer-events: none;
+        filter: blur(24px);
+        z-index: 0;
     }
 
-    .ys-loading-orbit-track {
-        stroke: rgba(255, 255, 255, 0.12);
-        stroke-width: 1.5;
+    .ys-loading-card::before {
+        top: -30%;
+        left: -20%;
+        width: 60%;
+        height: 60%;
+        background: radial-gradient(circle, rgba(99, 102, 241, 0.32), transparent 60%);
     }
 
-    /* Circumference at r=56 is ~351.9, so a 62-unit dash leaves one arc with
-       a clean gap rather than a dotted ring. */
-    .ys-loading-orbit-arc {
-        stroke: var(--ys-loading-accent);
-        stroke-width: 2.5;
-        stroke-linecap: round;
-        stroke-dasharray: 62 290;
-        transform-origin: 60px 60px;
-        animation: ysLoadingOrbit 1.4s linear infinite;
+    .ys-loading-card::after {
+        bottom: -25%;
+        right: -20%;
+        width: 55%;
+        height: 55%;
+        background: radial-gradient(circle, rgba(232, 93, 42, 0.20), transparent 60%);
     }
 
-    .ys-loading-badge {
+    .ys-loading-brand {
+        position: relative;
+        z-index: 1;
         display: inline-flex;
-        width: 4.5rem;
-        height: 4.5rem;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.14);
-        /* Near-white so an uploaded logo keeps its own colours instead of
-           disappearing into the navy behind it. */
-        background: rgba(255, 255, 255, 0.94);
-        box-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.9);
+        gap: 1rem;
+        min-width: 0;
     }
 
     .ys-loading-logo {
+        position: relative;
         display: inline-flex;
-        width: 100%;
-        height: 100%;
+        height: 5.5rem;
+        width: 5.5rem;
+        flex: 0 0 auto;
         align-items: center;
         justify-content: center;
+        overflow: visible;
+        border-radius: 9999px;
+        background: rgba(255, 255, 255, 0.06);
+    }
+
+    .ys-loading-logo::before {
+        content: '';
+        position: absolute;
+        inset: -6px;
+        border-radius: 9999px;
+        border: 2px solid rgba(255, 255, 255, 0.08);
+        border-top-color: rgba(124, 140, 255, 0.95);
+        border-right-color: rgba(124, 140, 255, 0.5);
+        animation: ysLoadingSpin 1.2s linear infinite;
+        pointer-events: none;
     }
 
     .ys-loading-logo-image {
-        width: 68%;
-        height: 68%;
+        height: 62%;
+        width: auto;
+        max-width: 62%;
         object-fit: contain;
     }
 
     .ys-loading-logo-fallback {
         display: inline-flex;
-        width: 100%;
         height: 100%;
+        width: 100%;
         align-items: center;
         justify-content: center;
+        border-radius: inherit;
+        background: transparent;
     }
 
     .ys-loading-logo-fallback-text {
-        font-size: 1.25rem;
-        font-weight: 800;
-        letter-spacing: 0.08em;
-        color: var(--ys-loading-navy);
-    }
-
-    /* ---- copy ---- */
-    .ys-loading-copy {
-        display: flex;
-        min-width: 0;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.35rem;
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        color: #ffffff;
     }
 
     .ys-loading-brand-name {
-        max-width: 15rem;
-        overflow: hidden;
         font-size: 1.0625rem;
-        font-weight: 800;
+        font-weight: 700;
+        letter-spacing: -0.015em;
         line-height: 1;
-        letter-spacing: -0.02em;
-        color: var(--ys-loading-text);
+        color: #ffffff;
+        max-width: 14rem;
+        overflow: hidden;
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
-    .ys-loading-message {
-        margin: 0;
-        font-size: 0.8125rem;
-        line-height: 1.5;
-        color: var(--ys-loading-muted);
-    }
-
-    /* ---- progress ---- */
-    .ys-loading-track {
+    .ys-loading-ring {
         position: relative;
-        width: 100%;
-        height: 3px;
-        overflow: hidden;
-        border-radius: 999px;
-        background: rgba(255, 255, 255, 0.1);
-    }
-
-    .ys-loading-bar {
-        position: absolute;
-        inset-block: 0;
-        width: 40%;
-        border-radius: inherit;
-        background: linear-gradient(90deg, rgba(255, 106, 0, 0), var(--ys-loading-accent), rgba(255, 106, 0, 0));
-        animation: ysLoadingShuttle 1.5s ease-in-out infinite;
-    }
-
-    .ys-loading-overlay-compact .ys-loading-card {
-        gap: 1rem;
-    }
-
-    .ys-loading-overlay-compact .ys-loading-core {
-        width: 4.5rem;
-        height: 4.5rem;
-    }
-
-    .ys-loading-overlay-compact .ys-loading-badge {
-        width: 2.75rem;
-        height: 2.75rem;
-        border-radius: 13px;
-    }
-
-    .ys-loading-overlay-compact .ys-loading-logo-fallback-text {
-        font-size: 0.8125rem;
-    }
-
-    @keyframes ysLoadingOrbit {
-        to {
-            transform: rotate(360deg);
-        }
-    }
-
-    @keyframes ysLoadingShuttle {
-        0% {
-            transform: translateX(-105%);
-        }
-
-        100% {
-            transform: translateX(250%);
-        }
+        z-index: 1;
+        height: 2.4rem;
+        width: 2.4rem;
+        border-radius: 9999px;
+        border: 3px solid rgba(255, 255, 255, 0.08);
+        border-top-color: rgba(124, 140, 255, 0.95);
+        border-right-color: rgba(124, 140, 255, 0.5);
+        animation: ysLoadingSpin 1.2s linear infinite;
     }
 
     .ys-button-loading {
@@ -1819,8 +1765,8 @@ html[data-ys-auth-enter] .ys-auth-curtain,
             transition: none;
         }
 
-        .ys-loading-orbit-arc,
-        .ys-loading-bar,
+        .ys-loading-ring,
+        .ys-loading-logo::before,
         .ys-button-spinner {
             animation: none;
         }
@@ -2669,6 +2615,20 @@ html[data-ys-auth-enter] .ys-auth-curtain,
         background-color: var(--admin-bg);
     }
 
+    .dark .ys-loading-overlay {
+        --ys-loading-bg: rgba(5, 7, 38, 0.96);
+        --ys-loading-card: rgba(7, 11, 31, 0.88);
+        --ys-loading-border: rgba(148, 163, 184, 0.18);
+        --ys-loading-text: #ffffff;
+        --ys-loading-muted: #cbd5e1;
+        --ys-loading-accent: #ff8a3d;
+        --ys-loading-ring: rgba(255, 255, 255, 0.14);
+    }
+
+    .dark .ys-loading-logo {
+        background: rgba(255, 255, 255, 0.08);
+    }
+
     /* Keep the legacy compatibility layer deliberately low-specificity so
        component-level dark: utilities remain authoritative. */
     :where(.dark .admin-shell) .admin-main {
@@ -2934,38 +2894,38 @@ html[data-ys-auth-enter] .ys-auth-curtain,
 
     /* Cover legacy admin pages still using gray utilities without dark variants */
     :where(.dark .admin-shell) .bg-gray-50 {
-        background-color: #070740;
+        background-color: var(--admin-card);
     }
     :where(.dark .admin-shell) .bg-gray-100 {
-        background-color: #12124a;
+        background-color: var(--admin-surface-strong);
     }
     :where(.dark .admin-shell) .bg-gray-200 {
-        background-color: #12124a;
+        background-color: var(--admin-surface-strong);
     }
     :where(.dark .admin-shell) .border-gray-100 {
-        border-color: rgba(148, 155, 199, 0.18);
+        border-color: var(--admin-border-soft);
     }
     :where(.dark .admin-shell) .border-gray-200 {
-        border-color: rgba(148, 155, 199, 0.26);
+        border-color: var(--admin-border);
     }
     :where(.dark .admin-shell) .text-gray-500 {
-        color: #99a0c8;
+        color: var(--admin-text-soft);
     }
     :where(.dark .admin-shell) .text-gray-600 {
-        color: #c3c9e2;
+        color: var(--admin-text-muted);
     }
     :where(.dark .admin-shell) .text-gray-700 {
-        color: #dfe3f5;
+        color: var(--admin-text);
     }
     :where(.dark .admin-shell) .text-gray-800,
     :where(.dark .admin-shell) .text-gray-900 {
-        color: #f6f7fd;
+        color: var(--admin-text-strong);
     }
     :where(.dark .admin-shell) .hover\:bg-gray-100:hover {
-        background-color: #12124a;
+        background-color: var(--admin-surface-hover);
     }
     :where(.dark .admin-shell) .hover\:bg-gray-200:hover {
-        background-color: #12124a;
+        background-color: var(--admin-surface-hover);
     }
 
     /* Ensure user-facing pages stay readable in dark mode even on legacy utility
