@@ -332,6 +332,7 @@
                     'admin.dead-stock.*'           => __('Dead Stock'),
                     'admin.orders.*'               => __('Orders Management'),
                     'admin.returns.*'              => __('Returns & Refunds'),
+                    'admin.shipping.*'             => __('Shipping'),
                     'admin.dealers.*'              => __('Dealers'),
                     'admin.users.*'                => __('Users'),
                     'admin.discounts.coupons.*'    => __('Coupon Management'),

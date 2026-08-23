@@ -46,11 +46,16 @@ class GovernorateShippingTest extends TestCase
 
     public function test_the_page_lists_every_governorate(): void
     {
-        $this->actingAs($this->makeAdmin())
+        $response = $this->actingAs($this->makeAdmin())
             ->get(route('admin.shipping.governorates'))
             ->assertOk()
             ->assertSeeText('Baghdad')
             ->assertSeeText('Salah ad-Din');
+
+        $this->assertMatchesRegularExpression(
+            '/<h2[^>]*>Shipping<\/h2>/',
+            $response->getContent()
+        );
     }
 
     /**
