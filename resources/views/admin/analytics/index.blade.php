@@ -14,19 +14,22 @@
 @endphp
 
 <style>
-    .bento-shadow { box-shadow: 0 1px 2px rgba(7,7,64,0.04), 0 4px 16px rgba(7,7,64,0.06); }
-    .bento-shadow-lg { box-shadow: 0 10px 30px rgba(7,7,64,0.18), 0 30px 60px rgba(7,7,64,0.20); }
+    .bento-shadow { box-shadow: var(--admin-shadow-soft); }
+    .bento-shadow-lg { box-shadow: var(--admin-shadow); }
     .bento-stripes-soft {
-        background-image: repeating-linear-gradient(135deg, rgba(7,7,64,0.04) 0px, rgba(7,7,64,0.04) 1px, transparent 1px, transparent 14px);
+        background-image: repeating-linear-gradient(135deg, var(--admin-chart-grid) 0px, var(--admin-chart-grid) 1px, transparent 1px, transparent 14px);
     }
     .num-display { font-feature-settings: "tnum" 1, "lnum" 1; letter-spacing: -0.025em; }
     .kicker { font-size: 10px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-muted); }
-    .kicker-w { color: rgba(255,255,255,0.60); }
+    .kicker-w { color: var(--admin-text-muted); }
     .strip { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; }
-    .rank { display:inline-grid; place-items:center; width:22px; height:22px; border-radius:6px; font-size:11px; font-weight: 700; background:#eef2ff; color:#3730a3; margin-right:8px; font-family: ui-monospace, monospace; }
+    .rank { display:inline-grid; place-items:center; width:22px; height:22px; border-radius:6px; font-size:11px; font-weight: 700; background:var(--admin-surface-strong); color:var(--admin-text); margin-right:8px; font-family: ui-monospace, monospace; }
     .rank-1 { background:#fef3c7; color:#92400e; }
     .rank-2 { background:#e0e7ff; color:#3730a3; }
     .rank-3 { background:#fce7f3; color:#9d174d; }
+    :where(.dark) .rank-1 { background:rgb(251 191 36 / .14); color:#fcd34d; }
+    :where(.dark) .rank-2 { background:rgb(129 140 248 / .14); color:#a5b4fc; }
+    :where(.dark) .rank-3 { background:rgb(244 114 182 / .14); color:#f9a8d4; }
 </style>
 
 <div class="px-4 sm:px-6 lg:px-8 py-6 space-y-6">
@@ -158,12 +161,12 @@
 
     {{-- Funnel + chart --}}
     <div class="grid grid-cols-1 gap-4 lg:grid-cols-3">
-        <div class="relative overflow-hidden rounded-2xl bg-gradient-to-br from-navy-deep via-navy to-navy p-6 bento-shadow-lg lg:col-span-2">
+        <div class="relative overflow-hidden rounded-2xl border border-slate-200 bg-white p-6 bento-shadow-lg dark:border-slate-700 dark:bg-slate-900 lg:col-span-2">
             <div class="absolute inset-0 bento-stripes-soft opacity-20 pointer-events-none"></div>
             <div class="relative flex items-start justify-between gap-4 flex-wrap">
                 <div>
                     <span class="kicker kicker-w">{{ __('Activity over time') }}</span>
-                    <h3 class="mt-1 text-xl font-bold tracking-tight text-white">{{ __('Daily event volume') }}</h3>
+                    <h3 class="mt-1 text-xl font-bold tracking-tight text-slate-900 dark:text-white">{{ __('Daily event volume') }}</h3>
                 </div>
                 <span class="rounded-md border border-accent/30 bg-accent/10 px-2 py-1 font-mono text-[10px] font-bold uppercase tracking-widest text-accent">
                     {{ count($dailySeries['labels']) }} {{ __('days') }}

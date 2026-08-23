@@ -39,7 +39,7 @@
     </x-slot>
 
     <style nonce="{{ $cspNonce ?? '' }}">
-        .gov-page { --gov-navy: #070740; --gov-orange: #ff6a00; }
+        .gov-page { --gov-navy: var(--brand-navy); --gov-orange: var(--brand-orange); }
         .gov-hero {
             position: relative; overflow: hidden;
             background:
@@ -79,15 +79,15 @@
         .gov-row.is-free .gov-fee-shell { background: rgba(255,106,0,.045); border-color: rgba(255,106,0,.2); }
         .gov-dirty-dot { opacity: 0; transform: scale(.65); transition: opacity .16s ease, transform .16s ease; }
         .gov-checkbox { accent-color: var(--gov-orange); }
-        .gov-table-head { background: linear-gradient(180deg, #f8fafc 0%, #f4f6f9 100%); }
+        .gov-table-head { background: linear-gradient(180deg, var(--admin-surface-muted) 0%, var(--admin-surface-strong) 100%); }
         .gov-savebar { box-shadow: 0 -16px 34px -28px rgba(15,23,42,.55); }
-        :is(.dark .gov-row:hover) { background: rgba(30,41,59,.58); }
-        :is(.dark .gov-row.is-selected) { background: rgba(255,255,255,.035); }
+        :is(.dark .gov-row:hover) { background: var(--admin-surface-hover); }
+        :is(.dark .gov-row.is-selected) { background: rgb(var(--admin-card-rgb) / .55); }
         :is(.dark .gov-row.is-dirty) { background: rgba(255,106,0,.07); }
-        :is(.dark .gov-table-head) { background: #111827; }
+        :is(.dark .gov-table-head) { background: var(--admin-surface-muted); }
         @media (max-width: 639px) {
-            .gov-row { margin: 12px; border: 1px solid #e2e8f0 !important; border-radius: 16px; overflow: hidden; }
-            :is(.dark .gov-row) { border-color: #334155 !important; }
+            .gov-row { margin: 12px; border: 1px solid var(--admin-border) !important; border-radius: 16px; overflow: hidden; }
+            :is(.dark .gov-row) { border-color: var(--admin-border) !important; }
         }
         @media (prefers-reduced-motion: reduce) {
             .gov-page *, .gov-page *::before, .gov-page *::after { scroll-behavior: auto !important; transition-duration: .01ms !important; }
