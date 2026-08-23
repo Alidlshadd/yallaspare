@@ -305,7 +305,7 @@
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    padding: clamp(1.5rem, 4vw, 3.75rem);
+    padding: clamp(1.35rem, 3vw, 2.75rem);
     color: var(--ys-on-navy);
     background:
         radial-gradient(115% 85% at 78% 8%, rgb(255 106 0 / 0.14), transparent 58%),
@@ -334,8 +334,8 @@
     position: absolute;
     z-index: -1;
     inset-block-start: 50%;
-    inset-inline-end: -9%;
-    width: min(40rem, 78%);
+    inset-inline-end: -8%;
+    width: min(32rem, 72%);
     translate: 0 -52%;
     pointer-events: none;
 }
@@ -399,13 +399,13 @@
 
 .ys-auth-brand-mark {
     display: inline-flex;
-    width: 2.75rem;
-    height: 2.75rem;
+    width: 2.375rem;
+    height: 2.375rem;
     flex: 0 0 auto;
     align-items: center;
     justify-content: center;
     overflow: hidden;
-    border-radius: 14px;
+    border-radius: 12px;
     border: 1px solid var(--ys-line-strong);
     background: rgb(255 255 255 / 0.07);
 }
@@ -432,7 +432,7 @@
 }
 
 .ys-auth-wordmark {
-    font-size: 1.1875rem;
+    font-size: 1.0625rem;
     font-weight: 800;
     line-height: 1;
     letter-spacing: -0.02em;
@@ -445,11 +445,11 @@
 .ys-auth-serial {
     display: inline-flex;
     align-items: center;
-    padding: 0.4rem 0.7rem;
+    padding: 0.3rem 0.6rem;
     border-radius: var(--ys-r-chip);
     border: 1px solid var(--ys-line);
     font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-    font-size: 0.6875rem;
+    font-size: 0.625rem;
     letter-spacing: 0.14em;
     color: var(--ys-on-navy-faint);
     white-space: nowrap;
@@ -458,19 +458,19 @@
 /* ---------------------------------------------------------- aside story */
 .ys-auth-story {
     margin-block: auto;
-    padding-block: clamp(2rem, 6vw, 3.5rem);
-    max-width: 34rem;
+    padding-block: clamp(1.5rem, 4vw, 2.5rem);
+    max-width: 30rem;
 }
 
 .ys-auth-eyebrow {
     display: inline-flex;
     align-items: center;
     gap: 0.55rem;
-    padding: 0.4rem 0.85rem;
+    padding: 0.3rem 0.7rem;
     border-radius: var(--ys-r-chip);
     border: 1px solid rgb(255 106 0 / 0.32);
     background: rgb(255 106 0 / 0.1);
-    font-size: 0.6875rem;
+    font-size: 0.625rem;
     font-weight: 700;
     letter-spacing: 0.16em;
     text-transform: uppercase;
@@ -498,8 +498,8 @@
 }
 
 .ys-auth-story h1 {
-    margin-block: 1.35rem 0;
-    font-size: clamp(2rem, 3.1vw, 3rem);
+    margin-block: 1.1rem 0;
+    font-size: clamp(1.6rem, 2.2vw, 2.25rem);
     font-weight: 800;
     line-height: 1.08;
     letter-spacing: -0.035em;
@@ -512,17 +512,17 @@
 }
 
 .ys-auth-story > p {
-    margin-block: 1.1rem 0;
-    max-width: 30rem;
-    font-size: 1rem;
-    line-height: 1.7;
+    margin-block: 0.85rem 0;
+    max-width: 27rem;
+    font-size: 0.875rem;
+    line-height: 1.65;
     color: var(--ys-on-navy-soft);
 }
 
 .ys-auth-rule {
-    width: 4.5rem;
-    height: 3px;
-    margin-block: 1.85rem;
+    width: 3.5rem;
+    height: 2px;
+    margin-block: 1.35rem;
     border-radius: 2px;
     background: linear-gradient(to var(--ys-rule-to, right), var(--ys-orange), rgb(255 106 0 / 0));
 }
@@ -534,7 +534,7 @@
 /* -------------------------------------------------------- feature blocks */
 .ys-auth-features {
     display: grid;
-    gap: 0.65rem;
+    gap: 0.5rem;
     margin: 0;
     padding: 0;
     list-style: none;
@@ -543,8 +543,8 @@
 .ys-auth-feature {
     display: flex;
     align-items: center;
-    gap: 0.9rem;
-    padding: 0.85rem 1rem;
+    gap: 0.75rem;
+    padding: 0.65rem 0.8rem;
     border-radius: var(--ys-r-card);
     border: 1px solid var(--ys-line);
     background: rgb(255 255 255 / 0.04);
@@ -559,8 +559,8 @@
 
 .ys-auth-feature-icon {
     display: inline-flex;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2.125rem;
+    height: 2.125rem;
     flex: 0 0 auto;
     align-items: center;
     justify-content: center;
@@ -571,8 +571,8 @@
 }
 
 .ys-auth-feature-icon svg {
-    width: 1.15rem;
-    height: 1.15rem;
+    width: 1rem;
+    height: 1rem;
     fill: none;
     stroke: currentColor;
     stroke-width: 1.6;
@@ -588,14 +588,14 @@
 }
 
 .ys-auth-feature-body b {
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     font-weight: 700;
     letter-spacing: -0.01em;
 }
 
 .ys-auth-feature-body small {
-    font-size: 0.8125rem;
-    line-height: 1.45;
+    font-size: 0.75rem;
+    line-height: 1.4;
     color: var(--ys-on-navy-faint);
 }
 
@@ -603,15 +603,15 @@
 .ys-auth-aside-foot {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding-block-start: 1.5rem;
+    gap: 0.65rem;
+    padding-block-start: 1.15rem;
     border-block-start: 1px solid var(--ys-line);
 }
 
 .ys-auth-shield {
     display: inline-flex;
-    width: 2.25rem;
-    height: 2.25rem;
+    width: 2rem;
+    height: 2rem;
     flex: 0 0 auto;
     align-items: center;
     justify-content: center;
@@ -639,12 +639,12 @@
 }
 
 .ys-auth-secure-copy b {
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     font-weight: 700;
 }
 
 .ys-auth-secure-copy small {
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
     color: var(--ys-on-navy-faint);
 }
 
@@ -653,20 +653,20 @@
     position: relative;
     display: flex;
     flex-direction: column;
-    padding: clamp(1.5rem, 3.5vw, 3rem) clamp(1.25rem, 4vw, 4rem);
+    padding: clamp(1.25rem, 2.5vw, 2.25rem) clamp(1.25rem, 3vw, 3rem);
     background: var(--ys-form-bg);
 }
 
 .ys-auth-toolbar {
     display: flex;
-    min-height: 2.5rem;
+    min-height: 2.25rem;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
 }
 
 .ys-auth-toolbar-label {
-    font-size: 0.6875rem;
+    font-size: 0.625rem;
     font-weight: 700;
     letter-spacing: 0.16em;
     text-transform: uppercase;
@@ -690,23 +690,23 @@
     flex: 1 1 auto;
     align-items: center;
     justify-content: center;
-    padding-block: clamp(1.75rem, 5vw, 3rem);
+    padding-block: clamp(1.25rem, 3.5vw, 2rem);
 }
 
 .ys-auth-panel {
     width: 100%;
-    max-width: 27rem;
+    max-width: 24rem;
 }
 
 .ys-auth-kicker {
     display: inline-flex;
     align-items: center;
     gap: 0.55rem;
-    padding: 0.4rem 0.8rem;
+    padding: 0.3rem 0.65rem;
     border-radius: var(--ys-r-chip);
     border: 1px solid var(--ys-form-border);
     background: var(--ys-form-sunk);
-    font-size: 0.6875rem;
+    font-size: 0.625rem;
     font-weight: 700;
     letter-spacing: 0.14em;
     text-transform: uppercase;
@@ -714,8 +714,8 @@
 }
 
 .ys-auth-kicker svg {
-    width: 0.9rem;
-    height: 0.9rem;
+    width: 0.8rem;
+    height: 0.8rem;
     flex: 0 0 auto;
     fill: none;
     stroke: var(--ys-orange);
@@ -725,8 +725,8 @@
 }
 
 .ys-auth-panel h2 {
-    margin-block: 1.1rem 0;
-    font-size: clamp(1.75rem, 2.4vw, 2.125rem);
+    margin-block: 0.85rem 0;
+    font-size: clamp(1.5rem, 1.9vw, 1.75rem);
     font-weight: 800;
     line-height: 1.15;
     letter-spacing: -0.03em;
@@ -734,34 +734,34 @@
 }
 
 .ys-auth-sub {
-    margin-block: 0.6rem 0;
-    font-size: 0.9375rem;
-    line-height: 1.65;
+    margin-block: 0.45rem 0;
+    font-size: 0.875rem;
+    line-height: 1.6;
     color: var(--ys-form-muted);
 }
 
 /* -------------------------------------------------------- form controls */
 .ys-auth-form {
-    margin-block-start: 1.85rem;
+    margin-block-start: 1.4rem;
 }
 
 .ys-auth-form label:not(.sr-only),
 .ys-auth-form .ys-auth-label {
     display: block;
-    font-size: 0.8125rem;
+    font-size: 0.75rem;
     font-weight: 600;
     color: var(--ys-form-text);
 }
 
 .ys-auth-form :is(input:not([type='checkbox']):not([type='radio']), select, textarea) {
     width: 100%;
-    min-height: 3.125rem;
-    padding: 0.8rem 0.95rem;
+    min-height: 2.75rem;
+    padding: 0.6rem 0.8rem;
     border-radius: var(--ys-r-control);
     border: 1px solid var(--ys-form-border);
     background: var(--ys-form-bg);
     color: var(--ys-form-text);
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     line-height: 1.4;
     box-shadow: 0 1px 2px rgb(7 7 64 / 0.04);
     transition: border-color 180ms ease, box-shadow 180ms ease;
@@ -800,9 +800,9 @@
 .ys-auth-form #password-rules {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 0.4rem 0.9rem;
-    margin-block-start: 0.7rem;
-    padding: 0.75rem 0.85rem;
+    gap: 0.3rem 0.75rem;
+    margin-block-start: 0.55rem;
+    padding: 0.6rem 0.7rem;
     border-radius: var(--ys-r-control);
     border: 1px solid var(--ys-form-border);
     background: var(--ys-form-sunk);
@@ -832,15 +832,15 @@
 }
 
 .ys-auth-hint {
-    margin-block-start: 0.45rem;
-    font-size: 0.75rem;
+    margin-block-start: 0.4rem;
+    font-size: 0.6875rem;
     line-height: 1.5;
     color: var(--ys-form-muted);
 }
 
 .ys-auth-error {
-    margin-block-start: 0.45rem;
-    font-size: 0.8125rem;
+    margin-block-start: 0.4rem;
+    font-size: 0.75rem;
     font-weight: 600;
     color: #b42318;
 }
@@ -850,10 +850,10 @@
 }
 
 .ys-auth-alert {
-    padding: 0.8rem 0.95rem;
+    padding: 0.7rem 0.85rem;
     border-radius: var(--ys-r-control);
     border: 1px solid transparent;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-weight: 600;
     line-height: 1.5;
 }
@@ -890,8 +890,8 @@
 .ys-auth-remember {
     display: inline-flex;
     align-items: center;
-    gap: 0.55rem;
-    font-size: 0.875rem;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
     font-weight: 500;
     color: var(--ys-form-muted);
     cursor: pointer;
@@ -915,7 +915,7 @@
 
 .ys-auth-link {
     border-radius: 6px;
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     font-weight: 600;
     color: var(--ys-form-link);
     text-decoration: none;
@@ -935,11 +935,11 @@
 .ys-auth-cta {
     display: inline-flex;
     width: 100%;
-    min-height: 3.25rem;
+    min-height: 2.875rem;
     align-items: center;
     justify-content: center;
-    gap: 0.6rem;
-    padding: 0.9rem 1.4rem;
+    gap: 0.55rem;
+    padding: 0.75rem 1.25rem;
     border: 0;
     border-radius: var(--ys-r-control);
     /* Orange fill, navy label: white on #ff6a00 measures 2.87:1 and fails
@@ -947,7 +947,7 @@
        paying for it. */
     background: var(--ys-orange);
     color: var(--ys-navy);
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     font-weight: 800;
     cursor: pointer;
     box-shadow: 0 10px 26px -14px rgb(255 106 0 / 0.85);
@@ -974,8 +974,8 @@
 }
 
 .ys-auth-cta svg {
-    width: 1.05rem;
-    height: 1.05rem;
+    width: 0.95rem;
+    height: 0.95rem;
     flex: 0 0 auto;
     fill: none;
     stroke: currentColor;
@@ -991,10 +991,10 @@
 /* The way across to the other screen. Quiet by design — it is the second
    thing on the page, and an outlined twin of the CTA would fight it. */
 .ys-auth-switch {
-    margin-block-start: 1.5rem;
-    padding-block-start: 1.35rem;
+    margin-block-start: 1.2rem;
+    padding-block-start: 1.05rem;
     border-block-start: 1px solid var(--ys-form-border);
-    font-size: 0.875rem;
+    font-size: 0.8125rem;
     color: var(--ys-form-muted);
     text-align: center;
 }
@@ -1019,8 +1019,8 @@
 }
 
 .ys-auth-terms {
-    margin-block-start: 1.1rem;
-    font-size: 0.75rem;
+    margin-block-start: 0.9rem;
+    font-size: 0.6875rem;
     line-height: 1.6;
     color: var(--ys-form-muted);
 }
@@ -1041,7 +1041,7 @@
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
-    font-size: 0.75rem;
+    font-size: 0.6875rem;
     color: var(--ys-form-muted);
     text-align: center;
 }
@@ -1070,7 +1070,7 @@
 /* ------------------------------------------------------- mobile stacking */
 @media (max-width: 1023px) {
     .ys-auth-aside {
-        padding: 1.75rem clamp(1.25rem, 5vw, 2.5rem) 2rem;
+        padding: 1.35rem clamp(1.15rem, 4vw, 2rem) 1.6rem;
     }
 
     .ys-auth-blueprint {
@@ -1081,11 +1081,11 @@
     }
 
     .ys-auth-story {
-        padding-block: 1.75rem 0;
+        padding-block: 1.35rem 0;
     }
 
     .ys-auth-story h1 {
-        font-size: clamp(1.75rem, 5.5vw, 2.5rem);
+        font-size: clamp(1.45rem, 4.4vw, 1.9rem);
     }
 
     /* Stacked, the three blocks become one scannable row rather than three
@@ -1098,8 +1098,8 @@
     .ys-auth-feature {
         flex-direction: column;
         align-items: flex-start;
-        gap: 0.55rem;
-        padding: 0.75rem;
+        gap: 0.45rem;
+        padding: 0.6rem;
     }
 
     .ys-auth-feature-body small {
@@ -1107,11 +1107,11 @@
     }
 
     .ys-auth-aside-foot {
-        margin-block-start: 1.75rem;
+        margin-block-start: 1.35rem;
     }
 
     .ys-auth-panel {
-        max-width: 30rem;
+        max-width: 26rem;
     }
 }
 
@@ -1121,11 +1121,11 @@
     }
 
     .ys-auth-story > p {
-        font-size: 0.9375rem;
+        font-size: 0.8125rem;
     }
 
     .ys-auth-rule {
-        margin-block: 1.35rem;
+        margin-block: 1.1rem;
     }
 
     .ys-auth-features {
@@ -1145,7 +1145,7 @@
     }
 
     .ys-auth-panel-wrap {
-        padding-block: 1.75rem;
+        padding-block: 1.35rem;
     }
 
     .ys-auth-form #password-rules {
@@ -1191,8 +1191,8 @@ html[data-ys-auth-enter] .ys-auth-curtain,
 
 .ys-auth-curtain-mark {
     display: inline-flex;
-    width: 4.5rem;
-    height: 4.5rem;
+    width: 4rem;
+    height: 4rem;
     align-items: center;
     justify-content: center;
     border-radius: 20px;
@@ -1542,16 +1542,14 @@ html[data-ys-auth-enter] .ys-auth-curtain,
     /* ================================================================
        YS Access — the loading screen
 
-       Same family as the auth split: navy field, blueprint grid, one
-       orange accent. It is a system-access screen rather than a spinner
-       on a card, so the composition is centred and the card chrome is
-       gone — the rings are the object.
+       Same family as the auth split: navy field, one orange accent. The
+       composition is a mark inside a ring with a rail underneath, and
+       nothing else — a splash screen has one job and the wait is short.
        ================================================================ */
     .ys-loading-overlay {
         --ys-loading-navy: #070740;
         --ys-loading-navy-deep: #04041c;
         --ys-loading-accent: #ff6a00;
-        --ys-loading-line: rgba(255, 255, 255, 0.12);
         --ys-loading-text: #ffffff;
         --ys-loading-muted: #9aa1af;
 
@@ -1576,7 +1574,7 @@ html[data-ys-auth-enter] .ys-auth-curtain,
         min-height: 100dvh;
         padding: 1.5rem;
         background:
-            radial-gradient(90% 70% at 50% 42%, rgba(255, 106, 0, 0.12), transparent 62%),
+            radial-gradient(70% 55% at 50% 45%, rgba(255, 106, 0, 0.1), transparent 65%),
             linear-gradient(158deg, var(--ys-loading-navy) 0%, var(--ys-loading-navy-deep) 100%);
     }
 
@@ -1587,87 +1585,65 @@ html[data-ys-auth-enter] .ys-auth-curtain,
         display: flex;
         min-height: 12rem;
         border-radius: inherit;
-        background: rgba(7, 7, 64, 0.86);
+        background: rgba(7, 7, 64, 0.88);
         backdrop-filter: blur(14px);
         -webkit-backdrop-filter: blur(14px);
     }
 
-    /* The same engineering paper the auth aside uses, masked to a soft
-       pool behind the composition instead of tiling to the edges. */
-    .ys-loading-grid {
-        position: absolute;
-        inset: 0;
-        pointer-events: none;
-        background-image:
-            linear-gradient(var(--ys-loading-line) 1px, transparent 1px),
-            linear-gradient(90deg, var(--ys-loading-line) 1px, transparent 1px);
-        background-size: 116px 116px, 116px 116px;
-        mask-image: radial-gradient(60% 55% at 50% 48%, #000 10%, transparent 76%);
-        -webkit-mask-image: radial-gradient(60% 55% at 50% 48%, #000 10%, transparent 76%);
-        opacity: 0.75;
-    }
-
-    .ys-loading-overlay-compact .ys-loading-grid {
-        display: none;
-    }
-
     .ys-loading-card {
-        position: relative;
-        z-index: 1;
         display: flex;
+        width: min(17rem, calc(100vw - 2.5rem));
         flex-direction: column;
         align-items: center;
-        gap: 1.75rem;
-        width: min(21rem, calc(100vw - 2.5rem));
+        gap: 1.35rem;
         text-align: center;
     }
 
-    /* ---- the ring stack ---- */
+    /* ---- mark in a ring ---- */
     .ys-loading-core {
         position: relative;
         display: grid;
         place-items: center;
-        width: 8.5rem;
-        height: 8.5rem;
+        width: 7rem;
+        height: 7rem;
     }
 
-    .ys-loading-ring {
+    .ys-loading-orbit {
         position: absolute;
         inset: 0;
-        border-radius: 50%;
-        border: 1px solid var(--ys-loading-line);
+        width: 100%;
+        height: 100%;
+        fill: none;
     }
 
-    .ys-loading-ring-inner {
-        inset: 1.35rem;
-        border-style: dashed;
-        border-color: rgba(255, 255, 255, 0.16);
-        animation: ysLoadingSpinSlow 26s linear infinite reverse;
+    .ys-loading-orbit-track {
+        stroke: rgba(255, 255, 255, 0.12);
+        stroke-width: 1.5;
     }
 
-    /* The radar pass. A conic gradient masked to a ring reads as a sweep;
-       a rotating border only reads as a spinner. */
-    .ys-loading-sweep {
-        position: absolute;
-        inset: -0.35rem;
-        border-radius: 50%;
-        background: conic-gradient(from 0deg, rgba(255, 106, 0, 0) 0deg, rgba(255, 106, 0, 0) 250deg, rgba(255, 106, 0, 0.75) 350deg, rgba(255, 106, 0, 0) 360deg);
-        mask-image: radial-gradient(closest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));
-        -webkit-mask-image: radial-gradient(closest-side, transparent calc(100% - 3px), #000 calc(100% - 3px));
-        animation: ysLoadingSpin 1.7s cubic-bezier(0.6, 0.05, 0.35, 0.95) infinite;
+    /* Circumference at r=56 is ~351.9, so a 62-unit dash leaves one arc with
+       a clean gap rather than a dotted ring. */
+    .ys-loading-orbit-arc {
+        stroke: var(--ys-loading-accent);
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-dasharray: 62 290;
+        transform-origin: 60px 60px;
+        animation: ysLoadingOrbit 1.4s linear infinite;
     }
 
     .ys-loading-badge {
-        position: relative;
         display: inline-flex;
-        width: 4.25rem;
-        height: 4.25rem;
+        width: 4.5rem;
+        height: 4.5rem;
         align-items: center;
         justify-content: center;
         overflow: hidden;
         border-radius: 20px;
-        border: 1px solid rgba(255, 255, 255, 0.16);
-        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        /* Near-white so an uploaded logo keeps its own colours instead of
+           disappearing into the navy behind it. */
+        background: rgba(255, 255, 255, 0.94);
         box-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.9);
     }
 
@@ -1680,8 +1656,8 @@ html[data-ys-auth-enter] .ys-auth-curtain,
     }
 
     .ys-loading-logo-image {
-        width: 66%;
-        height: 66%;
+        width: 68%;
+        height: 68%;
         object-fit: contain;
     }
 
@@ -1694,25 +1670,25 @@ html[data-ys-auth-enter] .ys-auth-curtain,
     }
 
     .ys-loading-logo-fallback-text {
-        font-size: 0.9375rem;
+        font-size: 1.25rem;
         font-weight: 800;
-        letter-spacing: 0.12em;
-        color: var(--ys-loading-text);
+        letter-spacing: 0.08em;
+        color: var(--ys-loading-navy);
     }
 
     /* ---- copy ---- */
     .ys-loading-copy {
         display: flex;
+        min-width: 0;
         flex-direction: column;
         align-items: center;
-        gap: 0.45rem;
-        min-width: 0;
+        gap: 0.35rem;
     }
 
     .ys-loading-brand-name {
-        max-width: 16rem;
+        max-width: 15rem;
         overflow: hidden;
-        font-size: 1.125rem;
+        font-size: 1.0625rem;
         font-weight: 800;
         line-height: 1;
         letter-spacing: -0.02em;
@@ -1723,8 +1699,8 @@ html[data-ys-auth-enter] .ys-auth-curtain,
 
     .ys-loading-message {
         margin: 0;
-        font-size: 0.875rem;
-        line-height: 1.55;
+        font-size: 0.8125rem;
+        line-height: 1.5;
         color: var(--ys-loading-muted);
     }
 
@@ -1741,44 +1717,32 @@ html[data-ys-auth-enter] .ys-auth-curtain,
     .ys-loading-bar {
         position: absolute;
         inset-block: 0;
-        width: 42%;
+        width: 40%;
         border-radius: inherit;
         background: linear-gradient(90deg, rgba(255, 106, 0, 0), var(--ys-loading-accent), rgba(255, 106, 0, 0));
-        animation: ysLoadingShuttle 1.6s ease-in-out infinite;
-    }
-
-    .ys-loading-tag {
-        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-        font-size: 0.625rem;
-        letter-spacing: 0.22em;
-        text-transform: uppercase;
-        color: rgba(255, 255, 255, 0.4);
+        animation: ysLoadingShuttle 1.5s ease-in-out infinite;
     }
 
     .ys-loading-overlay-compact .ys-loading-card {
-        gap: 1.1rem;
+        gap: 1rem;
     }
 
     .ys-loading-overlay-compact .ys-loading-core {
-        width: 5.5rem;
-        height: 5.5rem;
+        width: 4.5rem;
+        height: 4.5rem;
     }
 
     .ys-loading-overlay-compact .ys-loading-badge {
         width: 2.75rem;
         height: 2.75rem;
-        border-radius: 14px;
+        border-radius: 13px;
     }
 
-    .ys-loading-overlay-compact .ys-loading-ring-inner {
-        inset: 0.85rem;
+    .ys-loading-overlay-compact .ys-loading-logo-fallback-text {
+        font-size: 0.8125rem;
     }
 
-    .ys-loading-overlay-compact .ys-loading-tag {
-        display: none;
-    }
-
-    @keyframes ysLoadingSpinSlow {
+    @keyframes ysLoadingOrbit {
         to {
             transform: rotate(360deg);
         }
@@ -1790,7 +1754,7 @@ html[data-ys-auth-enter] .ys-auth-curtain,
         }
 
         100% {
-            transform: translateX(240%);
+            transform: translateX(250%);
         }
     }
 
@@ -1855,8 +1819,7 @@ html[data-ys-auth-enter] .ys-auth-curtain,
             transition: none;
         }
 
-        .ys-loading-ring-inner,
-        .ys-loading-sweep,
+        .ys-loading-orbit-arc,
         .ys-loading-bar,
         .ys-button-spinner {
             animation: none;
@@ -1870,30 +1833,90 @@ html[data-ys-auth-enter] .ys-auth-curtain,
         }
     }
 
-    .dark .admin-shell :is(input, select, textarea) {
+    :where(.dark .admin-shell) :where(input, select, textarea) {
         background-color: var(--admin-input);
         color: var(--admin-text-strong);
         border-color: var(--admin-border);
     }
-    .dark .admin-shell :is(input, select, textarea)::placeholder {
+    :where(.dark .admin-shell) :where(input, select, textarea)::placeholder {
         color: var(--admin-text-soft);
         opacity: 1;
     }
-    .dark .admin-shell :is(input, select, textarea):focus {
+    :where(.dark .admin-shell) :where(input, select, textarea):focus {
         border-color: rgb(255 138 61 / 0.55);
         box-shadow: 0 0 0 3px rgb(255 138 61 / 0.12);
         outline: none;
     }
-    .dark .admin-shell :is(select) option {
+    :where(.dark .admin-shell) :where(select) option {
         background-color: var(--admin-card);
         color: var(--admin-text-strong);
     }
-    .dark .admin-shell :is(input, select, textarea)[disabled] {
+    :where(.dark .admin-shell) :where(input, select, textarea)[disabled] {
         background-color: var(--admin-surface-strong);
         color: var(--admin-text-soft);
     }
 
     .admin-shell {
+        /* Admin content theme: one source for every page surface. The sidebar
+           and topbar remain branded separately and deliberately stay navy. */
+        --admin-bg: #f3f4f7;
+        --admin-surface: #ffffff;
+        --admin-surface-muted: #f8fafc;
+        --admin-surface-strong: #eef0f4;
+        --admin-surface-strong-rgb: 238 240 244;
+        --admin-surface-hover: #f1f5f9;
+        --admin-card: #ffffff;
+        --admin-card-rgb: 255 255 255;
+        --admin-card-elevated: #ffffff;
+        --admin-input: #ffffff;
+        --admin-sidebar: #04041f;
+        --admin-border: #dde0e7;
+        --admin-border-rgb: 221 224 231;
+        --admin-border-soft: #e6e8ec;
+        --admin-border-cool: rgb(11 105 163 / 0.18);
+        --admin-text: #3e4358;
+        --admin-text-strong: #0e0e28;
+        --admin-text-muted: #6b7383;
+        --admin-text-soft: #6b7383;
+        --admin-text-muted-rgb: 107 115 131;
+        --admin-accent: var(--brand-orange);
+        --admin-accent-hover: var(--brand-orange-hover);
+        --admin-accent-warm: var(--brand-orange);
+        --admin-accent-violet: var(--brand-orange);
+        --admin-shadow: 0 18px 50px -32px rgb(7 7 64 / 0.30);
+        --admin-shadow-soft: 0 1px 2px rgb(7 7 64 / 0.05), 0 12px 30px -24px rgb(7 7 64 / 0.24);
+        --admin-chart-grid: rgb(7 7 64 / 0.09);
+        --admin-chart-tick: #6b7383;
+        --admin-chart-legend: #3e4358;
+        --admin-chart-tooltip-bg: rgb(7 7 64 / 0.96);
+        --admin-chart-tooltip-border: rgb(255 255 255 / 0.14);
+        --admin-chart-primary: #4f46e5;
+        --admin-chart-primary-fill: rgb(79 70 229 / 0.16);
+        --admin-chart-info: #0891b2;
+        --admin-chart-danger: #e11d48;
+        --admin-chart-success: #059669;
+
+        /* Compatibility aliases for legacy page CSS. They now resolve from
+           the admin theme instead of the storefront root palette. */
+        --bg: var(--admin-bg);
+        --surface: var(--admin-card);
+        --surface-sunk: var(--admin-surface-strong);
+        --surface-rgb: var(--admin-card-rgb);
+        --surface-sunk-rgb: var(--admin-surface-strong-rgb);
+        --text: var(--admin-text-strong);
+        --text-secondary: var(--admin-text);
+        --text-muted: var(--admin-text-muted);
+        --text-muted-rgb: var(--admin-text-muted-rgb);
+        --muted: var(--admin-text-muted);
+        --border: var(--admin-border);
+        --border-subtle: var(--admin-border-soft);
+        --border-rgb: var(--admin-border-rgb);
+        --focus: rgb(255 106 0 / 0.38);
+        --hover-tint: rgb(7 7 64 / 0.045);
+        --shadow: var(--admin-shadow-soft);
+        --surface-1: var(--admin-surface-strong);
+        --surface-2: var(--admin-card);
+
         --sidebar-width-expanded: 16rem;
         --sidebar-width-collapsed: 5.5rem;
         --sidebar-width: var(--sidebar-width-expanded);
@@ -1975,6 +1998,7 @@ html[data-ys-auth-enter] .ys-auth-curtain,
         min-width: 0;
         width: 100%;
         max-width: 100vw;
+        background-color: var(--admin-bg);
         transition: margin-inline-start 240ms cubic-bezier(0.22, 1, 0.36, 1), margin-inline-end 240ms cubic-bezier(0.22, 1, 0.36, 1);
     }
 
@@ -1988,6 +2012,7 @@ html[data-ys-auth-enter] .ys-auth-curtain,
         min-width: 0;
         max-width: 118rem;
         margin-inline: auto;
+        color: var(--admin-text);
         overflow-x: hidden;
         overflow-x: clip;
     }
@@ -2604,18 +2629,22 @@ html[data-ys-auth-enter] .ys-auth-curtain,
         --admin-surface: #070740;
         --admin-surface-muted: #070740;
         --admin-surface-strong: #12124a;
+        --admin-surface-strong-rgb: 18 18 74;
         --admin-surface-hover: #12124a;
         --admin-card: #070740;
+        --admin-card-rgb: 7 7 64;
         --admin-card-elevated: #12124a;
         --admin-input: #070740;
         --admin-sidebar: #04041f;
         --admin-border: rgba(148, 155, 199, 0.20);
+        --admin-border-rgb: 148 155 199;
         --admin-border-soft: rgb(255 138 61 / 0.14);
         --admin-border-cool: rgba(125, 211, 252, 0.16);
         --admin-text: #e9ecfa;
         --admin-text-strong: #ffffff;
         --admin-text-muted: #c3c9e2;
         --admin-text-soft: #8e95bd;
+        --admin-text-muted-rgb: 195 201 226;
         /* Aliases onto the brand accent, so the panel and the storefront
            cannot drift apart again. --admin-accent-violet was a leftover from
            an earlier theme and belonged to no part of the brand. */
@@ -2625,303 +2654,317 @@ html[data-ys-auth-enter] .ys-auth-curtain,
         --admin-accent-violet: var(--brand-orange);
         --admin-shadow: 0 1px 0 rgba(255, 255, 255, 0.05), 0 28px 58px -34px rgba(0, 0, 0, 0.82);
         --admin-shadow-soft: 0 1px 0 rgba(255, 255, 255, 0.04), 0 16px 38px -30px rgba(0, 0, 0, 0.72);
+        --admin-chart-grid: rgb(255 255 255 / 0.07);
+        --admin-chart-tick: #8e95bd;
+        --admin-chart-legend: #c3c9e2;
+        --admin-chart-tooltip-bg: rgb(4 4 31 / 0.97);
+        --admin-chart-tooltip-border: rgb(255 138 61 / 0.20);
+        --admin-chart-primary: #818cf8;
+        --admin-chart-primary-fill: rgb(129 140 248 / 0.18);
+        --admin-chart-info: #22d3ee;
+        --admin-chart-danger: #fb7185;
+        --admin-chart-success: #34d399;
+        --focus: rgb(255 138 61 / 0.42);
+        --hover-tint: rgb(255 255 255 / 0.05);
         background-color: var(--admin-bg);
     }
 
-    .dark .admin-shell .admin-main {
+    /* Keep the legacy compatibility layer deliberately low-specificity so
+       component-level dark: utilities remain authoritative. */
+    :where(.dark .admin-shell) .admin-main {
         background:
             linear-gradient(180deg, rgba(3, 3, 24, 0.98) 0%, rgba(7, 7, 48, 0.98) 46%, rgba(3, 3, 26, 0.98) 100%),
             repeating-linear-gradient(135deg, rgba(255, 255, 255, 0.02) 0 1px, transparent 1px 22px);
     }
 
-    .dark .admin-shell .admin-sidebar {
+    :where(.dark .admin-shell) .admin-sidebar {
         background-color: var(--admin-sidebar);
     }
 
-    .dark .admin-shell .admin-content {
+    :where(.dark .admin-shell) .admin-content {
         color: var(--admin-text);
     }
 
-    .dark .admin-shell .admin-topbar {
+    :where(.dark .admin-shell) .admin-topbar {
         background-color: rgba(3, 3, 32, 0.94);
         border-color: var(--admin-border-soft);
     }
 
-    .dark .admin-shell .bg-white {
+    :where(.dark .admin-shell) .bg-white {
         background-color: var(--admin-card);
     }
-    .dark .admin-shell .bg-slate-50 {
+    :where(.dark .admin-shell) .bg-slate-50 {
         background-color: var(--admin-surface-muted);
     }
-    .dark .admin-shell .bg-slate-900,
-    .dark .admin-shell .bg-slate-950 {
+    :where(.dark .admin-shell) .bg-slate-900,
+    :where(.dark .admin-shell) .bg-slate-950 {
         background-color: var(--admin-sidebar);
     }
-    .dark .admin-shell .dark\:bg-slate-900 {
+    :where(.dark .admin-shell) .dark\:bg-slate-900 {
         background-color: var(--admin-card);
     }
-    .dark .admin-shell .dark\:bg-slate-950 {
+    :where(.dark .admin-shell) .dark\:bg-slate-950 {
         background-color: var(--admin-surface);
     }
-    .dark .admin-shell .dark\:bg-slate-900\/80 {
+    :where(.dark .admin-shell) .dark\:bg-slate-900\/80 {
         background-color: rgba(8, 8, 58, 0.88);
     }
-    .dark .admin-shell .dark\:bg-slate-800\/60 {
+    :where(.dark .admin-shell) .dark\:bg-slate-800\/60 {
         background-color: rgba(18, 18, 74, 0.64);
     }
 
-    .dark .admin-shell :is(section, article, aside, form, div).bg-white,
-    .dark .admin-shell :is(section, article, aside, form, div).dark\:bg-slate-900 {
+    :where(.dark .admin-shell) :is(section, article, aside, form, div).bg-white,
+    :where(.dark .admin-shell) :is(section, article, aside, form, div).dark\:bg-slate-900 {
         background-image:
             linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0));
         box-shadow: var(--admin-shadow-soft);
     }
 
-    .dark .admin-shell :is(table, thead, tbody, tr, th, td) {
+    :where(.dark .admin-shell) :is(table, thead, tbody, tr, th, td) {
         border-color: var(--admin-border);
     }
 
-    .dark .admin-shell thead,
-    .dark .admin-shell .dark\:bg-slate-950\/40 {
+    :where(.dark .admin-shell) thead,
+    :where(.dark .admin-shell) .dark\:bg-slate-950\/40 {
         background-color: rgba(4, 4, 42, 0.72);
     }
 
-    .dark .admin-shell tbody tr:hover,
-    .dark .admin-shell .hover\:bg-slate-50\/70:hover {
+    :where(.dark .admin-shell) tbody tr:hover,
+    :where(.dark .admin-shell) .hover\:bg-slate-50\/70:hover {
         background-color: rgb(255 138 61 / 0.045);
     }
-    .dark .admin-shell .border-slate-200 {
+    :where(.dark .admin-shell) .border-slate-200 {
         border-color: var(--admin-border);
     }
-    .dark .admin-shell .border-slate-100,
-    .dark .admin-shell .border-slate-200\/60,
-    .dark .admin-shell .border-slate-200\/70,
-    .dark .admin-shell .border-slate-200\/80 {
+    :where(.dark .admin-shell) .border-slate-100,
+    :where(.dark .admin-shell) .border-slate-200\/60,
+    :where(.dark .admin-shell) .border-slate-200\/70,
+    :where(.dark .admin-shell) .border-slate-200\/80 {
         border-color: var(--admin-border);
     }
-    .dark .admin-shell .dark\:border-slate-800 {
+    :where(.dark .admin-shell) .dark\:border-slate-800 {
         border-color: var(--admin-border);
     }
-    .dark .admin-shell .dark\:border-slate-700 {
+    :where(.dark .admin-shell) .dark\:border-slate-700 {
         border-color: rgba(148, 155, 199, 0.28);
     }
-    .dark .admin-shell .border-white\/10 {
+    :where(.dark .admin-shell) .border-white\/10 {
         border-color: var(--admin-border-soft);
     }
-    .dark .admin-shell .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
-    .dark .admin-shell .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
+    :where(.dark .admin-shell) .divide-slate-100 > :not([hidden]) ~ :not([hidden]),
+    :where(.dark .admin-shell) .divide-slate-200 > :not([hidden]) ~ :not([hidden]) {
         border-color: rgba(148, 155, 199, 0.16);
     }
-    .dark .admin-shell .text-slate-900 {
+    :where(.dark .admin-shell) .text-slate-900 {
         color: var(--admin-text-strong);
     }
-    .dark .admin-shell .text-slate-800 {
+    :where(.dark .admin-shell) .text-slate-800 {
         color: var(--admin-text);
     }
-    .dark .admin-shell .text-slate-700 {
+    :where(.dark .admin-shell) .text-slate-700 {
         color: var(--admin-text-muted);
     }
-    .dark .admin-shell .text-slate-600 {
+    :where(.dark .admin-shell) .text-slate-600 {
         color: var(--admin-text-soft);
     }
-    .dark .admin-shell .text-slate-500 {
+    :where(.dark .admin-shell) .text-slate-500 {
         color: var(--admin-text-soft);
     }
-    .dark .admin-shell .text-slate-400 {
+    :where(.dark .admin-shell) .text-slate-400 {
         color: #99a0c8;
     }
-    .dark .admin-shell .text-slate-300 {
+    :where(.dark .admin-shell) .text-slate-300 {
         color: #c3c9e2;
     }
-    .dark .admin-shell .dark\:text-slate-300 {
+    :where(.dark .admin-shell) .dark\:text-slate-300 {
         color: var(--admin-text-muted);
     }
-    .dark .admin-shell .dark\:text-slate-400 {
+    :where(.dark .admin-shell) .dark\:text-slate-400 {
         color: #99a0c8;
     }
-    .dark .admin-shell .dark\:text-slate-500 {
+    :where(.dark .admin-shell) .dark\:text-slate-500 {
         color: #99a0c8;
     }
-    .dark .admin-shell .shadow-sm {
+    :where(.dark .admin-shell) .shadow-sm {
         box-shadow: var(--admin-shadow-soft);
     }
-    .dark .admin-shell .shadow-2xl {
+    :where(.dark .admin-shell) .shadow-2xl {
         box-shadow: var(--admin-shadow);
     }
-    .dark .admin-shell .hover\:shadow-sm:hover {
+    :where(.dark .admin-shell) .hover\:shadow-sm:hover {
         box-shadow: 0 1px 0 rgba(255, 255, 255, 0.04), 0 18px 40px -32px rgba(0, 0, 0, 0.68);
     }
 
-    .dark .admin-shell .bg-slate-800 {
+    :where(.dark .admin-shell) .bg-slate-800 {
         background-color: var(--admin-surface-strong);
     }
-    .dark .admin-shell .bg-slate-100,
-    .dark .admin-shell .bg-slate-200 {
+    :where(.dark .admin-shell) .bg-slate-100,
+    :where(.dark .admin-shell) .bg-slate-200 {
         background-color: rgba(18, 18, 74, 0.72);
     }
-    .dark .admin-shell .hover\:bg-slate-50:hover,
-    .dark .admin-shell .hover\:bg-slate-100:hover {
+    :where(.dark .admin-shell) .hover\:bg-slate-50:hover,
+    :where(.dark .admin-shell) .hover\:bg-slate-100:hover {
         background-color: rgb(255 138 61 / 0.06);
     }
-    .dark .admin-shell .hover\:bg-slate-800\/60:hover {
+    :where(.dark .admin-shell) .hover\:bg-slate-800\/60:hover {
         background-color: var(--admin-surface-hover);
     }
-    .dark .admin-shell .hover\:bg-slate-900:hover {
+    :where(.dark .admin-shell) .hover\:bg-slate-900:hover {
         background-color: var(--admin-surface-hover);
     }
-    .dark .admin-shell .bg-slate-800\/80 {
+    :where(.dark .admin-shell) .bg-slate-800\/80 {
         background-color: rgba(16, 16, 66, 0.86);
     }
-    .dark .admin-shell .bg-slate-800\/70 {
+    :where(.dark .admin-shell) .bg-slate-800\/70 {
         background-color: rgba(16, 16, 66, 0.76);
     }
-    .dark .admin-shell .bg-slate-800\/60 {
+    :where(.dark .admin-shell) .bg-slate-800\/60 {
         background-color: rgba(16, 16, 66, 0.62);
     }
-    .dark .admin-shell .dark\:hover\:bg-slate-800:hover,
-    .dark .admin-shell .dark\:hover\:bg-slate-900:hover {
+    :where(.dark .admin-shell) .dark\:hover\:bg-slate-800:hover,
+    :where(.dark .admin-shell) .dark\:hover\:bg-slate-900:hover {
         background-color: var(--admin-surface-hover);
     }
 
-    .dark .admin-shell .bg-indigo-600 {
+    :where(.dark .admin-shell) .bg-indigo-600 {
         background-color: #2563eb;
     }
-    .dark .admin-shell .text-indigo-600 {
+    :where(.dark .admin-shell) .text-indigo-600 {
         color: #93c5fd;
     }
-    .dark .admin-shell .bg-indigo-50,
-    .dark .admin-shell .dark\:bg-indigo-500\/10 {
+    :where(.dark .admin-shell) .bg-indigo-50,
+    :where(.dark .admin-shell) .dark\:bg-indigo-500\/10 {
         background-color: rgba(79, 70, 229, 0.16);
     }
-    .dark .admin-shell .text-indigo-700,
-    .dark .admin-shell .dark\:text-indigo-300 {
+    :where(.dark .admin-shell) .text-indigo-700,
+    :where(.dark .admin-shell) .dark\:text-indigo-300 {
         color: #a5b4fc;
     }
-    .dark .admin-shell .bg-emerald-500 {
+    :where(.dark .admin-shell) .bg-emerald-500 {
         background-color: #22c55e;
     }
-    .dark .admin-shell .bg-emerald-50,
-    .dark .admin-shell .dark\:bg-emerald-950\/20,
-    .dark .admin-shell .dark\:bg-emerald-950\/30,
-    .dark .admin-shell .dark\:bg-emerald-950\/40 {
+    :where(.dark .admin-shell) .bg-emerald-50,
+    :where(.dark .admin-shell) .dark\:bg-emerald-950\/20,
+    :where(.dark .admin-shell) .dark\:bg-emerald-950\/30,
+    :where(.dark .admin-shell) .dark\:bg-emerald-950\/40 {
         background-color: rgba(16, 185, 129, 0.14);
     }
-    .dark .admin-shell .text-emerald-500 {
+    :where(.dark .admin-shell) .text-emerald-500 {
         color: #22c55e;
     }
-    .dark .admin-shell .text-emerald-600,
-    .dark .admin-shell .text-emerald-700,
-    .dark .admin-shell .dark\:text-emerald-300,
-    .dark .admin-shell .dark\:text-emerald-400 {
+    :where(.dark .admin-shell) .text-emerald-600,
+    :where(.dark .admin-shell) .text-emerald-700,
+    :where(.dark .admin-shell) .dark\:text-emerald-300,
+    :where(.dark .admin-shell) .dark\:text-emerald-400 {
         color: #6ee7b7;
     }
-    .dark .admin-shell .border-emerald-200,
-    .dark .admin-shell .dark\:border-emerald-900\/60 {
+    :where(.dark .admin-shell) .border-emerald-200,
+    :where(.dark .admin-shell) .dark\:border-emerald-900\/60 {
         border-color: rgba(16, 185, 129, 0.34);
     }
-    .dark .admin-shell .bg-amber-50,
-    .dark .admin-shell .bg-amber-100,
-    .dark .admin-shell .dark\:bg-amber-950\/20,
-    .dark .admin-shell .dark\:bg-amber-950\/30,
-    .dark .admin-shell .dark\:bg-amber-950\/40 {
+    :where(.dark .admin-shell) .bg-amber-50,
+    :where(.dark .admin-shell) .bg-amber-100,
+    :where(.dark .admin-shell) .dark\:bg-amber-950\/20,
+    :where(.dark .admin-shell) .dark\:bg-amber-950\/30,
+    :where(.dark .admin-shell) .dark\:bg-amber-950\/40 {
         background-color: rgba(251, 191, 36, 0.14);
     }
-    .dark .admin-shell .text-amber-500 {
+    :where(.dark .admin-shell) .text-amber-500 {
         color: #f59e0b;
     }
-    .dark .admin-shell .text-amber-600,
-    .dark .admin-shell .text-amber-700,
-    .dark .admin-shell .dark\:text-amber-300,
-    .dark .admin-shell .dark\:text-amber-400 {
+    :where(.dark .admin-shell) .text-amber-600,
+    :where(.dark .admin-shell) .text-amber-700,
+    :where(.dark .admin-shell) .dark\:text-amber-300,
+    :where(.dark .admin-shell) .dark\:text-amber-400 {
         color: #fcd34d;
     }
-    .dark .admin-shell .border-amber-200,
-    .dark .admin-shell .border-amber-300,
-    .dark .admin-shell .dark\:border-amber-900\/50,
-    .dark .admin-shell .dark\:border-amber-900\/60 {
+    :where(.dark .admin-shell) .border-amber-200,
+    :where(.dark .admin-shell) .border-amber-300,
+    :where(.dark .admin-shell) .dark\:border-amber-900\/50,
+    :where(.dark .admin-shell) .dark\:border-amber-900\/60 {
         border-color: rgba(251, 191, 36, 0.36);
     }
-    .dark .admin-shell .bg-rose-50,
-    .dark .admin-shell .dark\:bg-rose-950\/20,
-    .dark .admin-shell .dark\:bg-rose-950\/30,
-    .dark .admin-shell .dark\:bg-rose-950\/40 {
+    :where(.dark .admin-shell) .bg-rose-50,
+    :where(.dark .admin-shell) .dark\:bg-rose-950\/20,
+    :where(.dark .admin-shell) .dark\:bg-rose-950\/30,
+    :where(.dark .admin-shell) .dark\:bg-rose-950\/40 {
         background-color: rgba(244, 63, 94, 0.14);
     }
-    .dark .admin-shell .text-rose-500 {
+    :where(.dark .admin-shell) .text-rose-500 {
         color: #ef4444;
     }
-    .dark .admin-shell .text-rose-600,
-    .dark .admin-shell .text-rose-700,
-    .dark .admin-shell .dark\:text-rose-300,
-    .dark .admin-shell .dark\:text-rose-400 {
+    :where(.dark .admin-shell) .text-rose-600,
+    :where(.dark .admin-shell) .text-rose-700,
+    :where(.dark .admin-shell) .dark\:text-rose-300,
+    :where(.dark .admin-shell) .dark\:text-rose-400 {
         color: #fda4af;
     }
-    .dark .admin-shell .border-rose-200,
-    .dark .admin-shell .dark\:border-rose-800,
-    .dark .admin-shell .dark\:border-rose-900\/60 {
+    :where(.dark .admin-shell) .border-rose-200,
+    :where(.dark .admin-shell) .dark\:border-rose-800,
+    :where(.dark .admin-shell) .dark\:border-rose-900\/60 {
         border-color: rgba(244, 63, 94, 0.34);
     }
-    .dark .admin-shell .bg-sky-50,
-    .dark .admin-shell .dark\:bg-sky-950\/30 {
+    :where(.dark .admin-shell) .bg-sky-50,
+    :where(.dark .admin-shell) .dark\:bg-sky-950\/30 {
         background-color: rgba(14, 165, 233, 0.14);
     }
-    .dark .admin-shell .text-sky-600,
-    .dark .admin-shell .text-sky-700,
-    .dark .admin-shell .dark\:text-sky-300 {
+    :where(.dark .admin-shell) .text-sky-600,
+    :where(.dark .admin-shell) .text-sky-700,
+    :where(.dark .admin-shell) .dark\:text-sky-300 {
         color: #7dd3fc;
     }
-    .dark .admin-shell .border-sky-200,
-    .dark .admin-shell .border-sky-300,
-    .dark .admin-shell .dark\:border-sky-800 {
+    :where(.dark .admin-shell) .border-sky-200,
+    :where(.dark .admin-shell) .border-sky-300,
+    :where(.dark .admin-shell) .dark\:border-sky-800 {
         border-color: rgba(14, 165, 233, 0.34);
     }
-    .dark .admin-shell .bg-rose-900\/20 {
+    :where(.dark .admin-shell) .bg-rose-900\/20 {
         background-color: rgba(239, 68, 68, 0.14);
     }
-    .dark .admin-shell .bg-emerald-900\/30 {
+    :where(.dark .admin-shell) .bg-emerald-900\/30 {
         background-color: rgba(34, 197, 94, 0.14);
     }
-    .dark .admin-shell .dark\:text-slate-100 {
+    :where(.dark .admin-shell) .dark\:text-slate-100 {
         color: var(--admin-text-strong);
     }
 
-    .dark .admin-shell [class*='bg-gradient-to-'] {
+    :where(.dark .admin-shell) [class*='bg-gradient-to-'] {
         filter: saturate(0.92) brightness(1.04);
     }
 
     /* Cover legacy admin pages still using gray utilities without dark variants */
-    .dark .admin-shell .bg-gray-50 {
+    :where(.dark .admin-shell) .bg-gray-50 {
         background-color: #070740;
     }
-    .dark .admin-shell .bg-gray-100 {
+    :where(.dark .admin-shell) .bg-gray-100 {
         background-color: #12124a;
     }
-    .dark .admin-shell .bg-gray-200 {
+    :where(.dark .admin-shell) .bg-gray-200 {
         background-color: #12124a;
     }
-    .dark .admin-shell .border-gray-100 {
+    :where(.dark .admin-shell) .border-gray-100 {
         border-color: rgba(148, 155, 199, 0.18);
     }
-    .dark .admin-shell .border-gray-200 {
+    :where(.dark .admin-shell) .border-gray-200 {
         border-color: rgba(148, 155, 199, 0.26);
     }
-    .dark .admin-shell .text-gray-500 {
+    :where(.dark .admin-shell) .text-gray-500 {
         color: #99a0c8;
     }
-    .dark .admin-shell .text-gray-600 {
+    :where(.dark .admin-shell) .text-gray-600 {
         color: #c3c9e2;
     }
-    .dark .admin-shell .text-gray-700 {
+    :where(.dark .admin-shell) .text-gray-700 {
         color: #dfe3f5;
     }
-    .dark .admin-shell .text-gray-800,
-    .dark .admin-shell .text-gray-900 {
+    :where(.dark .admin-shell) .text-gray-800,
+    :where(.dark .admin-shell) .text-gray-900 {
         color: #f6f7fd;
     }
-    .dark .admin-shell .hover\:bg-gray-100:hover {
+    :where(.dark .admin-shell) .hover\:bg-gray-100:hover {
         background-color: #12124a;
     }
-    .dark .admin-shell .hover\:bg-gray-200:hover {
+    :where(.dark .admin-shell) .hover\:bg-gray-200:hover {
         background-color: #12124a;
     }
 

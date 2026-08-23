@@ -18,15 +18,16 @@
     aria-live="polite"
     aria-hidden="true"
 >
-    <div class="ys-loading-grid" aria-hidden="true"></div>
-
     <div class="ys-loading-card">
-        {{-- The rings are the object here, so they are one decorative group:
-             a screen reader gets the message below, not a ring inventory. --}}
+        {{-- One decorative group: a screen reader gets the message below,
+             not an inventory of rings. --}}
         <div class="ys-loading-core" aria-hidden="true">
-            <span class="ys-loading-ring"></span>
-            <span class="ys-loading-ring ys-loading-ring-inner"></span>
-            <span class="ys-loading-sweep"></span>
+            {{-- Drawn as SVG strokes rather than a masked gradient: the arc
+                 stays crisp at any size and rotates on one transform. --}}
+            <svg class="ys-loading-orbit" viewBox="0 0 120 120">
+                <circle class="ys-loading-orbit-track" cx="60" cy="60" r="56" />
+                <circle class="ys-loading-orbit-arc" cx="60" cy="60" r="56" />
+            </svg>
 
             <span class="ys-loading-badge">
                 @if ($showLogo)
@@ -57,7 +58,5 @@
         <div class="ys-loading-track" aria-hidden="true">
             <span class="ys-loading-bar"></span>
         </div>
-
-        <span class="ys-loading-tag" aria-hidden="true">{{ __('Secure access') }}</span>
     </div>
 </div>
