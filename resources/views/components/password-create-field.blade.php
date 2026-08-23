@@ -58,7 +58,7 @@
                         <path stroke-linecap="round" stroke-linejoin="round" d="m2 6.3 2.8 2.8L10 3.4" />
                     </svg>
                 </span>
-                <span>{{ __('Contains a letter') }}</span>
+                <span>{{ __('Contains an upper and a lower case letter') }}</span>
                 <span class="sr-only" x-text="letterRuleState"></span>
             </li>
             <li class="{{ $ruleClass }}" :class="digitRuleClass">
@@ -69,6 +69,15 @@
                 </span>
                 <span>{{ __('Contains a number') }}</span>
                 <span class="sr-only" x-text="digitRuleState"></span>
+            </li>
+            <li class="{{ $ruleClass }}" :class="symbolRuleClass">
+                <span class="{{ $markClass }}" :class="symbolMarkClass" aria-hidden="true">
+                    <svg class="h-2.5 w-2.5" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2.4" x-cloak>
+                        <path stroke-linecap="round" stroke-linejoin="round" d="m2 6.3 2.8 2.8L10 3.4" />
+                    </svg>
+                </span>
+                <span>{{ __('Contains a symbol, such as ! or $') }}</span>
+                <span class="sr-only" x-text="symbolRuleState"></span>
             </li>
         </ul>
 

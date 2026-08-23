@@ -37,7 +37,7 @@ return [
     'current_password' => 'كلمة المرور الحالية',
     'new_password' => 'كلمة المرور الجديدة',
     'confirm_password' => 'تأكيد كلمة المرور',
-    'password_rules' => 'الحد الأدنى 8 أحرف.',
+    'password_rules' => 'الحد الأدنى 8 أحرف، مع حرف كبير وحرف صغير ورقم ورمز.',
     'update_password' => 'تحديث كلمة المرور',
     'profile_updated' => 'تم تحديث الملف الشخصي بنجاح.',
     'password_updated' => 'تم تحديث كلمة المرور بنجاح.',

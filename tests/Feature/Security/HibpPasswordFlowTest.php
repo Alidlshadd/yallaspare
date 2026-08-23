@@ -24,9 +24,9 @@ class HibpPasswordFlowTest extends TestCase
 {
     use RefreshDatabase;
 
-    private const GOOD = 'Quarry7Lantern4Bridge';
+    private const GOOD = 'Quarry7Lantern4Bridge!';
 
-    private const BAD = 'Compromised4Password9';
+    private const BAD = 'Compromised4Password9!';
 
     /** @var list<MessageLogged> */
     private array $logged = [];
@@ -42,7 +42,7 @@ class HibpPasswordFlowTest extends TestCase
         // The suite runs as 'testing', where Password::defaults() deliberately
         // drops uncompromised(). Re-apply the production shape so these flows
         // exercise the verifier the way production does.
-        Password::defaults(fn () => Password::min(8)->letters()->numbers()->uncompromised());
+        Password::defaults(fn () => Password::min(8)->letters()->mixedCase()->numbers()->symbols()->uncompromised());
 
         $this->logged = [];
         Event::listen(MessageLogged::class, function (MessageLogged $event): void {
@@ -210,7 +210,7 @@ class HibpPasswordFlowTest extends TestCase
     {
         $user = $this->verifiedUser(['email' => 'probe-reset-down@example.com']);
         $token = PasswordBroker::createToken($user);
-        $new = 'Sandpiper3Meadow8';
+        $new = 'Sandpiper3Meadow8!';
 
         $this->fakeHibpDown();
 
@@ -245,7 +245,7 @@ class HibpPasswordFlowTest extends TestCase
     public function test_web_password_change_still_works_when_hibp_is_down(): void
     {
         $user = $this->verifiedUser();
-        $new = 'Trellis5Harbour2';
+        $new = 'Trellis5Harbour2!';
         $this->fakeHibpDown();
 
         $this->actingAs($user)->put('/password', [
@@ -275,7 +275,7 @@ class HibpPasswordFlowTest extends TestCase
     public function test_account_password_change_reports_its_own_flow_label(): void
     {
         $user = $this->verifiedUser();
-        $new = 'Kestrel6Willow3';
+        $new = 'Kestrel6Willow3!';
         $this->fakeHibpDown();
 
         $this->actingAs($user)->patch('/user/account/password', [
@@ -307,7 +307,7 @@ class HibpPasswordFlowTest extends TestCase
     {
         $user = $this->verifiedUser();
         Sanctum::actingAs($user, ['mobile:read', 'mobile:write']);
-        $new = 'Foxglove8Anchor4';
+        $new = 'Foxglove8Anchor4!';
 
         $this->fakeHibpDown();
 
@@ -352,7 +352,7 @@ class HibpPasswordFlowTest extends TestCase
             'phone_verified_at' => now(),
         ]);
         $target = $this->verifiedUser();
-        $new = 'Cobblestone2Ridge7';
+        $new = 'Cobblestone2Ridge7!';
 
         $this->fakeHibpDown();
 

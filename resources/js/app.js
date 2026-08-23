@@ -28,7 +28,8 @@ Alpine.data('passwordInput', (showLabel, hideLabel) => ({
 }));
 
 // Password creation field: live rule checklist plus generated suggestions.
-// Must stay in sync with Password::min(8)->letters()->numbers() in AppServiceProvider.
+// Must stay in sync with Password::min(8)->letters()->mixedCase()->numbers()->symbols()
+// in AppServiceProvider.
 const PASSWORD_MIN_LENGTH = 8;
 
 // Confusable glyphs (I, l, O, o, 0, 1) are left out. A suggested password only
@@ -36,6 +37,10 @@ const PASSWORD_MIN_LENGTH = 8;
 const PASSWORD_UPPER = 'ABCDEFGHJKMNPQRSTUVWXYZ';
 const PASSWORD_LOWER = 'abcdefghijkmnpqrstuvwxyz';
 const PASSWORD_DIGITS = '23456789';
+// Punctuation only, and only the keys that sit on a plain phone keyboard without
+// a long press. Brackets and quotes are left out: they get eaten by autofill and
+// by anything that pastes the password through a shell.
+const PASSWORD_SYMBOLS = '!@#$%&*?+-=';
 
 function randomIndex(bound) {
     // Rejection sampling: discard the tail that would make low indexes more
@@ -60,8 +65,8 @@ function generatePassword() {
     // Seed one character of each class so every suggestion clears the rules,
     // fill the rest from the full alphabet, then shuffle. The first character
     // stays an uppercase letter — it keeps the shape familiar and readable.
-    const all = PASSWORD_UPPER + PASSWORD_LOWER + PASSWORD_DIGITS;
-    const tail = [randomChar(PASSWORD_LOWER), randomChar(PASSWORD_DIGITS), randomChar(PASSWORD_DIGITS)];
+    const all = PASSWORD_UPPER + PASSWORD_LOWER + PASSWORD_DIGITS + PASSWORD_SYMBOLS;
+    const tail = [randomChar(PASSWORD_LOWER), randomChar(PASSWORD_DIGITS), randomChar(PASSWORD_SYMBOLS)];
 
     while (tail.length < PASSWORD_MIN_LENGTH - 1) {
         tail.push(randomChar(all));
@@ -99,20 +104,27 @@ Alpine.data('passwordField', (metLabel, unmetLabel, useLabel) => ({
 
     get hasSuggestions() { return this.suggestions.length > 0; },
     get hasLength() { return this.value.length >= PASSWORD_MIN_LENGTH; },
-    get hasLetter() { return /[a-z]/i.test(this.value); },
+    // Unicode-aware to match the server: Laravel's mixedCase and symbols rules
+    // read \p{Lu}/\p{Ll} and \p{Z}\p{S}\p{P}, so an Arabic or Kurdish password
+    // must not be told here that it passes a check the server will fail it on.
+    get hasMixedCase() { return /\p{Lu}/u.test(this.value) && /\p{Ll}/u.test(this.value); },
     get hasDigit() { return /[0-9]/.test(this.value); },
+    get hasSymbol() { return /[\p{Z}\p{S}\p{P}]/u.test(this.value); },
 
     get lengthRuleClass() { return this.ruleClass(this.hasLength); },
-    get letterRuleClass() { return this.ruleClass(this.hasLetter); },
+    get letterRuleClass() { return this.ruleClass(this.hasMixedCase); },
     get digitRuleClass() { return this.ruleClass(this.hasDigit); },
+    get symbolRuleClass() { return this.ruleClass(this.hasSymbol); },
 
     get lengthMarkClass() { return this.markClass(this.hasLength); },
-    get letterMarkClass() { return this.markClass(this.hasLetter); },
+    get letterMarkClass() { return this.markClass(this.hasMixedCase); },
     get digitMarkClass() { return this.markClass(this.hasDigit); },
+    get symbolMarkClass() { return this.markClass(this.hasSymbol); },
 
     get lengthRuleState() { return this.ruleState(this.hasLength); },
-    get letterRuleState() { return this.ruleState(this.hasLetter); },
+    get letterRuleState() { return this.ruleState(this.hasMixedCase); },
     get digitRuleState() { return this.ruleState(this.hasDigit); },
+    get symbolRuleState() { return this.ruleState(this.hasSymbol); },
 
     suggestionLabel(password) { return `${this._useLabel}: ${password}`; },
 

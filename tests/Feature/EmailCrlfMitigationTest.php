@@ -29,8 +29,8 @@ class EmailCrlfMitigationTest extends TestCase
             'name' => 'Attacker',
             'email' => $this->crlfEmail,
             'phone' => null,
-            'password' => 'Password123',
-            'password_confirmation' => 'Password123',
+            'password' => 'Password123!',
+            'password_confirmation' => 'Password123!',
         ])->assertStatus(422);
 
         $this->assertDatabaseMissing('users', ['name' => 'Attacker']);
@@ -170,7 +170,7 @@ class EmailCrlfMitigationTest extends TestCase
             'name' => 'Mobile Attacker',
             'email' => $this->crlfEmail,
             'phone' => null,
-            'password' => 'Password123',
+            'password' => 'Password123!',
         ])->assertStatus(422);
 
         $this->assertDatabaseMissing('users', ['name' => 'Mobile Attacker']);

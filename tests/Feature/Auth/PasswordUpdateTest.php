@@ -20,15 +20,15 @@ class PasswordUpdateTest extends TestCase
             ->from('/profile')
             ->put('/password', [
                 'current_password' => 'password',
-                'password' => 'new-password1',
-                'password_confirmation' => 'new-password1',
+                'password' => 'New-Password1!',
+                'password_confirmation' => 'New-Password1!',
             ]);
 
         $response
             ->assertSessionHasNoErrors()
             ->assertRedirect('/profile');
 
-        $this->assertTrue(Hash::check('new-password1', $user->refresh()->password));
+        $this->assertTrue(Hash::check('New-Password1!', $user->refresh()->password));
     }
 
     public function test_password_update_revokes_api_tokens(): void
@@ -41,8 +41,8 @@ class PasswordUpdateTest extends TestCase
             ->from('/profile')
             ->put('/password', [
                 'current_password' => 'password',
-                'password' => 'new-password1',
-                'password_confirmation' => 'new-password1',
+                'password' => 'New-Password1!',
+                'password_confirmation' => 'New-Password1!',
             ])
             ->assertSessionHasNoErrors();
 
@@ -58,8 +58,8 @@ class PasswordUpdateTest extends TestCase
             ->from('/profile')
             ->put('/password', [
                 'current_password' => 'wrong-password',
-                'password' => 'new-password1',
-                'password_confirmation' => 'new-password1',
+                'password' => 'New-Password1!',
+                'password_confirmation' => 'New-Password1!',
             ]);
 
         $response

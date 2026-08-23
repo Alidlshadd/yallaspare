@@ -213,8 +213,8 @@ class SecurityHardeningRegressionTest extends TestCase
             'name' => 'Attacker',
             'email' => "attacker@example.test\r\nBcc: victim@example.test",
             'phone' => null,
-            'password' => 'Password123',
-            'password_confirmation' => 'Password123',
+            'password' => 'Password123!',
+            'password_confirmation' => 'Password123!',
         ])->assertStatus(422);
     }
 

@@ -76,8 +76,8 @@ class UserSecurityActionsTest extends TestCase
         $this->actingAs($user)
             ->put(route('password.update'), [
                 'current_password' => 'password',
-                'password' => 'new-password1',
-                'password_confirmation' => 'new-password1',
+                'password' => 'New-Password1!',
+                'password_confirmation' => 'New-Password1!',
             ])
             ->assertRedirect(route('user.two-factor.challenge'));
 
