@@ -61,7 +61,7 @@
     <style>
         .inv-hero {
             position: relative; overflow: hidden;
-            background: var(--admin-feature-gradient);
+            background: linear-gradient(135deg, #04041f, #12124a);
             border-radius: 16px; color: #fff;
         }
         .inv-hero::after {
@@ -93,7 +93,7 @@
             @endif
 
             {{-- ===== Dock hero: IN gate / net / OUT gate ===== --}}
-            <section class="admin-theme-panel inv-hero">
+            <section class="inv-hero">
                 <div class="grid items-center gap-4 px-5 py-5 sm:px-6 md:grid-cols-[1fr_auto_1fr]">
                     <a href="{{ $gateUrl('in') }}" class="font-display block rounded-xl border-2 px-4 py-3 transition hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent {{ $type === 'in' ? 'border-accent bg-accent/15' : 'border-accent/60 bg-white/5' }}">
                         <p class="text-[10px] font-bold uppercase tracking-[0.16em] text-white/55">{{ __('Stock In') }} &mdash; {{ __('Gate A') }}</p>

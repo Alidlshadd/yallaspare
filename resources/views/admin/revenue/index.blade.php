@@ -60,7 +60,7 @@
             $fmt = fn ($value) => number_format((float) $value, $currencyDecimals);
         @endphp
 
-        <section class="admin-theme-panel admin-theme-terminal overflow-hidden rounded-2xl border border-navy-raised font-mono">
+        <section class="overflow-hidden rounded-2xl border border-navy-raised bg-[linear-gradient(160deg,#04041f_0%,#070740_55%,#070740_100%)] font-mono shadow-[0_28px_70px_rgba(2,2,20,0.6)]">
 
             {{-- ===== Terminal top bar ===== --}}
             <div class="flex flex-wrap items-center justify-between gap-2 border-b border-navy-raised bg-navy-deep/80 px-4 py-2.5 text-[13px] tracking-[0.14em] text-[#7c84b3]">

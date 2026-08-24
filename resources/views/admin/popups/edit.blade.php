@@ -10,7 +10,8 @@
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {{-- ═════════════ Hero ═════════════ --}}
-        <div class="admin-theme-panel relative overflow-hidden rounded-2xl mb-4 p-6 text-white">
+        <div class="relative overflow-hidden rounded-2xl mb-4 p-6 text-white"
+             style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
             <div class="absolute inset-0 bento-stripes pointer-events-none opacity-50"></div>
             <div class="absolute top-0 bottom-0 left-0 w-[3px]" style="background: linear-gradient(180deg, #ff8a3d 0%, #e65c00 100%);"></div>
             <div class="absolute -top-16 -right-16 h-64 w-64 rounded-full bg-accent/10 blur-[60px] pointer-events-none"></div>

@@ -24,7 +24,7 @@
     <style>
         .si-hero {
             position: relative; overflow: hidden;
-            background: var(--admin-feature-gradient);
+            background: linear-gradient(135deg, #04041f, #12124a);
             border-radius: 16px; color: #fff;
         }
         .si-hero::after {
@@ -39,7 +39,7 @@
         <div class="mx-auto max-w-7xl space-y-5 px-4 sm:px-6 lg:px-8">
 
             {{-- ===== Navy hero: terminal bar + ticker ===== --}}
-            <section class="admin-theme-panel si-hero">
+            <section class="si-hero">
                 <div class="flex flex-wrap items-center justify-between gap-2 border-b border-white/10 px-5 py-3 text-[11px] font-semibold uppercase tracking-[0.14em] text-white/55">
                     <span><span class="text-accent">&#9679;</span> Yalla Spare &mdash; <span class="text-white">{{ __('Search Terminal') }}</span></span>
                     <span>{{ __('Sort') }}: <span class="text-white">{{ $sortLabels[$sort] ?? $sort }} {{ $direction === 'desc' ? '↓' : '↑' }}</span> &middot; <span class="text-white si-mono">{{ now()->format('H:i') }}</span></span>

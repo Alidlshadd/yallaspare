@@ -17,7 +17,7 @@
     <style>
         /* Dealers Management (dl-) */
         .dl-hero {
-            background: var(--admin-feature-gradient);
+            background: linear-gradient(135deg, #04041f, #12124a);
             position: relative; overflow: hidden;
         }
         .dl-hero::after {
@@ -50,7 +50,7 @@
             @endif
 
             {{-- ============ navy command header ============ --}}
-            <section class="admin-theme-panel dl-hero rounded-3xl p-6 text-white shadow-sm sm:p-7">
+            <section class="dl-hero rounded-3xl p-6 text-white shadow-sm sm:p-7">
                 <div class="flex flex-wrap items-start justify-between gap-4">
                     <div class="min-w-0">
                         <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-accent">{{ __('Dealer Operations') }}</p>
@@ -251,7 +251,7 @@
             {{-- ============ quick-edit drawer ============ --}}
             <div class="fixed inset-0 z-50 bg-navy-deep/55" x-show="drawerOpen" x-cloak @click.self="closeDrawer" role="dialog" aria-modal="true">
                 <aside class="absolute end-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl">
-                    <div class="admin-theme-panel dl-hero flex items-start justify-between gap-3 px-5 py-4 text-white">
+                    <div class="dl-hero flex items-start justify-between gap-3 px-5 py-4 text-white">
                         <div class="flex min-w-0 items-center gap-3">
                             <span class="dl-avatar" style="background: rgb(255 138 61 / 0.15);" x-text="drawerInitial"></span>
                             <div class="min-w-0">

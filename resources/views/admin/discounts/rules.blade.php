@@ -103,7 +103,7 @@
 <style>
     /* Discount Rules — Price Tag Wall (dr-) */
     .dr-hero {
-        background: var(--admin-feature-gradient);
+        background: linear-gradient(135deg, #04041f, #12124a);
         position: relative; overflow: hidden;
     }
     .dr-hero::after {
@@ -172,7 +172,7 @@
         @include('admin.discounts.partials._alerts')
 
         {{-- ============ navy header ============ --}}
-        <section class="admin-theme-panel dr-hero rounded-3xl p-6 text-white shadow-sm sm:p-7">
+        <section class="dr-hero rounded-3xl p-6 text-white shadow-sm sm:p-7">
             <div class="flex flex-wrap items-start justify-between gap-4">
                 <div class="min-w-0">
                     <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-accent">{{ __('Discount Rules') }}</p>
@@ -321,7 +321,7 @@
             @method('PUT')
             <input type="hidden" name="discount_id" value="{{ $discountId }}">
 
-            <div class="admin-theme-panel dr-hero flex flex-wrap items-center justify-between gap-3 px-5 py-4 text-white">
+            <div class="dr-hero flex flex-wrap items-center justify-between gap-3 px-5 py-4 text-white">
                 <div>
                     <p class="text-[10px] font-bold uppercase tracking-[0.15em] text-accent">{{ __('Tag Press') }}</p>
                     <h2 class="mt-0.5 text-lg font-bold">{{ $builderTitle }}</h2>

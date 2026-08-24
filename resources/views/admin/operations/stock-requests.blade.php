@@ -39,7 +39,7 @@
     <style>
         /* Stock Requests board (sr-) */
         .sr-hero {
-            background: var(--admin-feature-gradient);
+            background: linear-gradient(135deg, #04041f, #12124a);
             position: relative; overflow: hidden;
         }
         .sr-hero::after {
@@ -89,7 +89,7 @@
                 <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700">{{ session('error') }}</div>
             @endif
 
-            <section class="admin-theme-panel sr-hero flex flex-col gap-3 rounded-2xl px-5 py-4 text-white shadow-sm sm:flex-row sm:items-center sm:justify-between">
+            <section class="sr-hero flex flex-col gap-3 rounded-2xl px-5 py-4 text-white shadow-sm sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <p class="text-xs font-bold uppercase tracking-[0.14em] text-accent">{{ __('Automatic restock notifications') }}</p>
                     <p class="mt-1 text-sm text-white/75">{{ __('When stock changes from zero to available, waiting customers are notified automatically.') }}</p>
@@ -136,7 +136,7 @@
                     </div>
                     <p class="sr-num mt-2 text-2xl font-bold text-rose-600">{{ number_format($summary['out_of_stock_requests']) }}</p>
                 </article>
-                <article class="admin-theme-panel sr-hero rounded-2xl border border-transparent p-4 shadow-sm">
+                <article class="sr-hero rounded-2xl border border-transparent p-4 shadow-sm">
                     <div class="flex items-start justify-between gap-2">
                         <p class="text-[11px] font-bold uppercase tracking-[0.12em] text-white/55">{{ __('In Purchase List') }}</p>
                         <i class="fas fa-cart-shopping text-accent" aria-hidden="true"></i>
@@ -312,7 +312,7 @@
             {{-- ============ waiting customers drawer ============ --}}
             <div class="fixed inset-0 z-50 bg-navy-deep/55" x-show="drawerOpen" x-cloak @click.self="closeDrawer" role="dialog" aria-modal="true">
                 <aside class="absolute end-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl">
-                    <div class="admin-theme-panel sr-hero flex items-start justify-between gap-3 px-5 py-4 text-white">
+                    <div class="sr-hero flex items-start justify-between gap-3 px-5 py-4 text-white">
                         <div class="min-w-0">
                             <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-accent">{{ __('Waiting customers') }}</p>
                             <h3 class="mt-0.5 truncate text-[15px] font-bold" x-text="drawerName"></h3>

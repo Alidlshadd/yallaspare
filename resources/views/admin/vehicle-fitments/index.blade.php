@@ -277,7 +277,8 @@
         <div class="grid gap-4 lg:grid-cols-[300px_minmax(0,1fr)] items-stretch">
 
             {{-- Coverage ring --}}
-            <div class="admin-theme-panel relative overflow-hidden rounded-2xl p-5 text-white flex flex-col gap-3">
+            <div class="relative overflow-hidden rounded-2xl p-5 text-white flex flex-col gap-3"
+                 style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
                 <div class="absolute inset-0 bento-stripes pointer-events-none opacity-50"></div>
                 <div class="absolute top-0 bottom-0 start-0 w-[3px]" style="background: linear-gradient(180deg, #ff8a3d 0%, #e65c00 100%);"></div>
                 <div class="absolute -top-16 -end-16 h-52 w-52 rounded-full bg-accent/10 blur-[60px] pointer-events-none"></div>

@@ -70,7 +70,7 @@
 <style>
     /* Coupon console (cp-) */
     .cp-hero {
-        background: var(--admin-feature-gradient);
+        background: linear-gradient(135deg, #04041f, #12124a);
         position: relative; overflow: hidden;
     }
     .cp-hero::after {
@@ -101,7 +101,7 @@
         @include('admin.discounts.partials._alerts')
 
         {{-- ============ navy command header ============ --}}
-        <section class="admin-theme-panel cp-hero rounded-3xl p-6 text-white shadow-sm sm:p-7">
+        <section class="cp-hero rounded-3xl p-6 text-white shadow-sm sm:p-7">
             <div class="flex flex-wrap items-start justify-between gap-4">
                 <div class="min-w-0">
                     <p class="text-[11px] font-bold uppercase tracking-[0.16em] text-accent">{{ __('Coupon Operations') }}</p>
@@ -384,7 +384,7 @@
         {{-- ============ edit coupon drawer ============ --}}
         <div class="fixed inset-0 z-50 bg-navy-deep/55" x-show="editOpen" x-cloak @click.self="closeEdit" role="dialog" aria-modal="true">
             <aside class="absolute end-0 top-0 flex h-full w-full max-w-md flex-col bg-white shadow-2xl">
-                <div class="admin-theme-panel cp-hero flex items-start justify-between gap-3 px-5 py-4 text-white">
+                <div class="cp-hero flex items-start justify-between gap-3 px-5 py-4 text-white">
                     <div class="min-w-0">
                         <p class="text-[10px] font-bold uppercase tracking-[0.14em] text-accent">{{ __('Edit Coupon') }}</p>
                         <h3 class="cp-num mt-0.5 truncate text-lg font-bold tracking-wide" x-text="edit.code"></h3>
