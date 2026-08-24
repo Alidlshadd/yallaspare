@@ -252,7 +252,7 @@
                 @endif
 
                 @if (session('phone_verification_sent'))
-                    <div class="mb-4 rounded-2xl border border-info bg-info p-4 text-sm font-medium text-info dark:border-info/20 dark:bg-info/10 dark:text-info">
+                    <div class="mb-4 rounded-2xl border border-info/30 bg-info/10 p-4 text-sm font-medium text-info dark:border-info/20 dark:bg-info/10 dark:text-info">
                         {{ session('phone_verification_sent') }}
                     </div>
                 @endif

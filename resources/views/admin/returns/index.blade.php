@@ -16,7 +16,7 @@
             ],
             'approved' => [
                 'label' => __('Approved'),
-                'pill'  => 'bg-info text-info border-info dark:bg-info/10 dark:text-info dark:border-info/30',
+                'pill'  => 'bg-info/10 text-info border-info/30 dark:bg-info/10 dark:text-info dark:border-info/30',
                 'dot'   => 'bg-info',
                 'hex'   => '#2563eb',
             ],
@@ -28,7 +28,7 @@
             ],
             'received' => [
                 'label' => __('Received'),
-                'pill'  => 'bg-info text-info border-info dark:bg-info/10 dark:text-info dark:border-info/30',
+                'pill'  => 'bg-info/10 text-info border-info/30 dark:bg-info/10 dark:text-info dark:border-info/30',
                 'dot'   => 'bg-info',
                 'hex'   => '#0891b2',
             ],
@@ -48,7 +48,7 @@
 
         $typeMeta = [
             'return'   => ['label' => __('Return'),   'class' => 'bg-slate-100 text-slate-700 border-slate-200'],
-            'exchange' => ['label' => __('Exchange'), 'class' => 'bg-info text-info border-info dark:bg-info/10 dark:text-info'],
+            'exchange' => ['label' => __('Exchange'), 'class' => 'bg-info/10 text-info border-info/30 dark:bg-info/10 dark:text-info'],
             'refund'   => ['label' => __('Refund'),   'class' => 'bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-500/10'],
         ];
 

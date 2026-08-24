@@ -241,7 +241,7 @@
                     <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">{{ __('Total Orders') }}</p>
                     <p class="mt-1 text-xs text-muted dark:text-slate-500">{{ __('All-time fulfilled') }}</p>
                 </div>
-                <div class="h-10 w-10 rounded-xl bg-info text-info grid place-items-center dark:bg-info/30 dark:text-info">
+                <div class="h-10 w-10 rounded-xl bg-info/10 text-info grid place-items-center dark:bg-info/30 dark:text-info">
                     <i class="fas fa-bag-shopping" aria-hidden="true"></i>
                 </div>
             </div>
@@ -285,7 +285,7 @@
                     <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">{{ __('Total Products') }}</p>
                     <p class="mt-1 text-xs text-muted dark:text-slate-500">{{ __('Active catalog') }}</p>
                 </div>
-                <div class="h-10 w-10 rounded-xl bg-info text-info grid place-items-center dark:bg-info/30 dark:text-info">
+                <div class="h-10 w-10 rounded-xl bg-info/10 text-info grid place-items-center dark:bg-info/30 dark:text-info">
                     <i class="fas fa-screwdriver-wrench" aria-hidden="true"></i>
                 </div>
             </div>
@@ -390,7 +390,7 @@
             <div class="absolute top-0 left-0 bottom-0 w-1 bg-info"></div>
             <div class="flex items-center justify-between">
                 <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">{{ __('Total Users') }}</p>
-                <div class="h-9 w-9 rounded-xl bg-info text-info grid place-items-center dark:bg-info/30 dark:text-info">
+                <div class="h-9 w-9 rounded-xl bg-info/10 text-info grid place-items-center dark:bg-info/30 dark:text-info">
                     <i class="fas fa-users" aria-hidden="true"></i>
                 </div>
             </div>
@@ -428,7 +428,7 @@
             <div class="absolute top-0 left-0 bottom-0 w-1 bg-info"></div>
             <div class="flex items-center justify-between">
                 <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">{{ __('New') }}</p>
-                <div class="h-9 w-9 rounded-xl bg-info text-info grid place-items-center dark:bg-info/30 dark:text-info">
+                <div class="h-9 w-9 rounded-xl bg-info/10 text-info grid place-items-center dark:bg-info/30 dark:text-info">
                     <i class="fas fa-user-plus" aria-hidden="true"></i>
                 </div>
             </div>
@@ -903,7 +903,7 @@
                     <p class="text-[10px] uppercase tracking-[0.22em] text-slate-500 font-bold">{{ __('Avg Ship Time (30d)') }}</p>
                     <p class="mt-1 text-xs text-muted dark:text-slate-500">{{ __('Processing → Shipped') }}</p>
                 </div>
-                <div class="h-10 w-10 rounded-xl bg-info text-info grid place-items-center dark:bg-info/30 dark:text-info">
+                <div class="h-10 w-10 rounded-xl bg-info/10 text-info grid place-items-center dark:bg-info/30 dark:text-info">
                     <i class="fas fa-truck-fast" aria-hidden="true"></i>
                 </div>
             </div>

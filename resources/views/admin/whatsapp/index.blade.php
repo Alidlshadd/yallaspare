@@ -26,7 +26,7 @@
             ] as $card)
                 @php
                     $tone = match ($card['tone']) {
-                        'sky' => 'bg-info text-info dark:bg-info/10 dark:text-info',
+                        'sky' => 'bg-info/10 text-info dark:bg-info/10 dark:text-info',
                         'amber' => 'bg-amber-50 text-amber-600',
                         'emerald' => 'bg-emerald-50 text-emerald-600',
                         'rose' => 'bg-rose-50 text-rose-600',
@@ -147,7 +147,7 @@
                                     'processed' => 'bg-emerald-50 text-emerald-700',
                                     'failed' => 'bg-rose-50 text-rose-700',
                                     'ignored' => 'bg-slate-100 text-slate-600',
-                                    'processing' => 'bg-info text-info dark:bg-info/10 dark:text-info',
+                                    'processing' => 'bg-info/10 text-info dark:bg-info/10 dark:text-info',
                                     default => 'bg-amber-50 text-amber-700',
                                 };
                             @endphp

@@ -108,14 +108,14 @@
                         </div>
                         <div class="flex items-center justify-between gap-3 px-5 py-3">
                             <span class="text-sm font-semibold text-slate-500">{{ __('Admin 2FA') }}</span>
-                            <span class="inline-flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs font-bold {{ $adminTwoFactorRequired ? 'bg-info text-info dark:bg-info/30 dark:text-info' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300' }}">
+                            <span class="inline-flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs font-bold {{ $adminTwoFactorRequired ? 'bg-info/10 text-info dark:bg-info/30 dark:text-info' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300' }}">
                                 <i class="fas fa-key text-[10px]" aria-hidden="true"></i>
                                 {{ $adminTwoFactorRequired ? __('Required') : __('Optional') }}
                             </span>
                         </div>
                         <div class="flex items-center justify-between gap-3 px-5 py-3">
                             <span class="text-sm font-semibold text-slate-500">{{ __('Profile Photo') }}</span>
-                            <span class="inline-flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs font-bold {{ $profilePhotoUrl ? 'bg-info text-info dark:bg-info/30 dark:text-info' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300' }}">
+                            <span class="inline-flex items-center gap-2 rounded-lg px-2.5 py-1 text-xs font-bold {{ $profilePhotoUrl ? 'bg-info/10 text-info dark:bg-info/30 dark:text-info' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300' }}">
                                 <i class="fas fa-image text-[10px]" aria-hidden="true"></i>
                                 {{ $profilePhotoUrl ? __('Set') : __('Initials') }}
                             </span>

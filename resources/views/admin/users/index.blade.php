@@ -22,8 +22,8 @@
             if ($role === \App\Models\User::ROLE_SUPER_ADMIN) {
                 return [
                     'label' => __('Super Admin'),
-                    'chip' => 'border-info bg-info text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
-                    'avatar' => 'bg-info text-info dark:bg-info/15 dark:text-info',
+                    'chip' => 'border-info/30 bg-info/10 text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
+                    'avatar' => 'bg-info/10 text-info dark:bg-info/15 dark:text-info',
                 ];
             }
             if ($role === \App\Models\User::ROLE_ADMIN) {
@@ -43,15 +43,15 @@
             if (in_array($role, $managerRoleList, true)) {
                 return [
                     'label' => __(ucwords(str_replace('_', ' ', $role))),
-                    'chip' => 'border-info bg-info text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
-                    'avatar' => 'bg-info text-info dark:bg-info/15 dark:text-info',
+                    'chip' => 'border-info/30 bg-info/10 text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
+                    'avatar' => 'bg-info/10 text-info dark:bg-info/15 dark:text-info',
                 ];
             }
 
             return [
                 'label' => __('User'),
-                'chip' => 'border-info bg-info text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
-                'avatar' => 'bg-info text-info dark:bg-info/15 dark:text-info',
+                'chip' => 'border-info/30 bg-info/10 text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
+                'avatar' => 'bg-info/10 text-info dark:bg-info/15 dark:text-info',
             ];
         };
 

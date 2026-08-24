@@ -65,13 +65,13 @@
                     <li class="px-5 py-4">
                         <div class="flex items-start gap-4">
                             <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border
-  {{ $row['tone'] === 'blue' ? 'border-info bg-info text-info' :
+  {{ $row['tone'] === 'blue' ? 'border-info/30 bg-info/10 text-info' :
   ($row['tone'] === 'emerald' ? 'border-emerald-200 bg-emerald-50 text-emerald-700' :
   ($row['tone'] === 'rose' ? 'border-rose-200 bg-rose-50 text-rose-700' :
   ($row['tone'] === 'amber' ? 'border-amber-200 bg-amber-50 text-amber-700' :
-  ($row['tone'] === 'violet' ? 'border-info bg-info text-info' :
-  ($row['tone'] === 'cyan' ? 'border-info bg-info text-info' :
-  ($row['tone'] === 'indigo' ? 'border-info bg-info text-info' :
+  ($row['tone'] === 'violet' ? 'border-info/30 bg-info/10 text-info' :
+  ($row['tone'] === 'cyan' ? 'border-info/30 bg-info/10 text-info' :
+  ($row['tone'] === 'indigo' ? 'border-info/30 bg-info/10 text-info' :
   ($row['tone'] === 'orange' ? 'border-orange-200 bg-orange-50 text-orange-700' :
   'border-slate-200 bg-slate-50 text-slate-700'))))))) }}">
                                 <i class="fas {{ $row['icon'] }} text-xs" aria-hidden="true"></i>

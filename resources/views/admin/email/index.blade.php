@@ -28,24 +28,24 @@
         \App\Models\EmailBroadcast::AUDIENCE_USER => __('User'),
     ];
     $audienceAvatarClasses = [
-        \App\Models\EmailBroadcast::AUDIENCE_ALL => 'bg-info text-info dark:bg-info/40 dark:text-info',
+        \App\Models\EmailBroadcast::AUDIENCE_ALL => 'bg-info/10 text-info dark:bg-info/40 dark:text-info',
         \App\Models\EmailBroadcast::AUDIENCE_ROLE => 'bg-amber-100 text-amber-700',
         \App\Models\EmailBroadcast::AUDIENCE_USER => 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/40',
     ];
     $broadcastStatusClasses = [
         'sent' => ['cls' => 'bg-emerald-50 text-emerald-700 border-emerald-100 dark:bg-emerald-900/40 dark:text-emerald-200 dark:border-emerald-900/60', 'icon' => 'fa-check'],
-        'sending' => ['cls' => 'bg-info text-info border-info dark:bg-info/40 dark:text-info dark:border-info/60', 'icon' => 'fa-paper-plane'],
+        'sending' => ['cls' => 'bg-info/10 text-info border-info/30 dark:bg-info/40 dark:text-info dark:border-info/60', 'icon' => 'fa-paper-plane'],
         'queued' => ['cls' => 'bg-amber-50 text-amber-700 border-amber-100 dark:bg-amber-900/40 dark:text-amber-200 dark:border-amber-900/60', 'icon' => 'fa-clock'],
         'failed' => ['cls' => 'bg-rose-50 text-rose-700 border-rose-100 dark:bg-rose-900/40 dark:text-rose-200 dark:border-rose-900/60', 'icon' => 'fa-xmark'],
     ];
     $toneClasses = [
-        'blue' => 'border-info bg-info text-info dark:border-info/50 dark:bg-info/30 dark:text-info',
+        'blue' => 'border-info/30 bg-info/10 text-info dark:border-info/50 dark:bg-info/30 dark:text-info',
         'emerald' => 'border-emerald-200 bg-emerald-50 text-emerald-700',
         'rose' => 'border-rose-200 bg-rose-50 text-rose-700',
         'amber' => 'border-amber-200 bg-amber-50 text-amber-700',
-        'violet' => 'border-info bg-info text-info dark:border-info/50 dark:bg-info/30 dark:text-info',
-        'cyan' => 'border-info bg-info text-info dark:border-info/50 dark:bg-info/30 dark:text-info',
-        'indigo' => 'border-info bg-info text-info dark:border-info/50 dark:bg-info/30 dark:text-info',
+        'violet' => 'border-info/30 bg-info/10 text-info dark:border-info/50 dark:bg-info/30 dark:text-info',
+        'cyan' => 'border-info/30 bg-info/10 text-info dark:border-info/50 dark:bg-info/30 dark:text-info',
+        'indigo' => 'border-info/30 bg-info/10 text-info dark:border-info/50 dark:bg-info/30 dark:text-info',
         'orange' => 'border-orange-200 bg-orange-50 text-orange-700 dark:border-orange-900/50 dark:bg-orange-950/30 dark:text-orange-200',
         'slate' => 'border-slate-200 bg-slate-50 text-slate-700',
     ];
@@ -434,7 +434,7 @@
                     <div class="relative rounded-2xl border border-slate-200/70 bg-white bento-shadow-em overflow-hidden">
                         <div class="flex items-center justify-between border-b border-slate-200/70 px-5 py-3.5 bg-gradient-to-r from-slate-50/80 via-white to-slate-50/80 dark:from-slate-900 dark:via-slate-900 dark:to-slate-900">
                             <div class="flex items-center gap-2.5">
-                                <div class="h-8 w-8 rounded-lg bg-info text-info grid place-items-center dark:bg-info/50 dark:text-info">
+                                <div class="h-8 w-8 rounded-lg bg-info/10 text-info grid place-items-center dark:bg-info/50 dark:text-info">
                                     <i class="fas fa-inbox text-xs" aria-hidden="true"></i>
                                 </div>
                                 <div>

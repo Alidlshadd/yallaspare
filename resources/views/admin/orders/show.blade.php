@@ -340,7 +340,7 @@
                         <div>
                             <p class="text-xs uppercase text-slate-500">{{ __('Association') }}</p>
                             @if($order->user && $order->user->role === \App\Models\User::ROLE_DEALER)
-                                <p class="inline-flex rounded-full bg-info px-2 py-1 text-xs font-semibold text-info dark:bg-slate-800/70 dark:text-slate-100">{{ __('Dealer') }}</p>
+                                <p class="inline-flex rounded-full bg-info/10 px-2 py-1 text-xs font-semibold text-info dark:bg-slate-800/70 dark:text-slate-100">{{ __('Dealer') }}</p>
                                 <p class="mt-1 text-xs text-slate-500">{{ __('Status: :status', ['status' => __(ucfirst($order->user->dealer_status ?? 'inactive'))]) }} | {{ __('Discount: :percent%', ['percent' => number_format((float) ($order->user->dealer_discount ?? 0), 2)]) }}</p>
                             @else
                                 <p class="inline-flex rounded-full bg-slate-100 px-2 py-1 text-xs font-semibold text-slate-700">{{ __('User') }}</p>

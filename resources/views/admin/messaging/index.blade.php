@@ -49,9 +49,9 @@
                         $tone = match ($card['tone']) {
                             'emerald' => 'bg-emerald-50 text-emerald-600',
                             'amber' => 'bg-amber-50 text-amber-600',
-                            'sky' => 'bg-info text-info dark:bg-info/10 dark:text-info',
+                            'sky' => 'bg-info/10 text-info dark:bg-info/10 dark:text-info',
                             'green' => 'bg-green-50 text-green-600 dark:bg-green-500/10 dark:text-green-300',
-                            default => 'bg-info text-info dark:bg-info/10 dark:text-info',
+                            default => 'bg-info/10 text-info dark:bg-info/10 dark:text-info',
                         };
                     @endphp
                     <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">

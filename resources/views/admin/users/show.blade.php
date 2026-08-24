@@ -19,8 +19,8 @@
         if ($user->role === \App\Models\User::ROLE_SUPER_ADMIN) {
             $roleMeta = [
                 'label' => __('Super Admin'),
-                'chip' => 'border-info bg-info text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
-                'avatar' => 'bg-info text-info dark:bg-info/15 dark:text-info',
+                'chip' => 'border-info/30 bg-info/10 text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
+                'avatar' => 'bg-info/10 text-info dark:bg-info/15 dark:text-info',
             ];
         } elseif ($user->role === \App\Models\User::ROLE_ADMIN) {
             $roleMeta = [
@@ -37,14 +37,14 @@
         } elseif (in_array($user->role, $managerRoleList, true)) {
             $roleMeta = [
                 'label' => __(ucwords(str_replace('_', ' ', $user->role))),
-                'chip' => 'border-info bg-info text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
-                'avatar' => 'bg-info text-info dark:bg-info/15 dark:text-info',
+                'chip' => 'border-info/30 bg-info/10 text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
+                'avatar' => 'bg-info/10 text-info dark:bg-info/15 dark:text-info',
             ];
         } else {
             $roleMeta = [
                 'label' => __('User'),
-                'chip' => 'border-info bg-info text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
-                'avatar' => 'bg-info text-info dark:bg-info/15 dark:text-info',
+                'chip' => 'border-info/30 bg-info/10 text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
+                'avatar' => 'bg-info/10 text-info dark:bg-info/15 dark:text-info',
             ];
         }
 
@@ -56,8 +56,8 @@
                 'delivered' => 'border-emerald-300 bg-emerald-50 text-emerald-700 dark:border-emerald-400/40',
                 'cancelled' => 'border-rose-300 bg-rose-50 text-rose-700 dark:border-rose-400/40',
                 'pending' => 'border-amber-300 bg-amber-50 text-amber-700',
-                'processing' => 'border-info bg-info text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
-                'shipped' => 'border-info bg-info text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
+                'processing' => 'border-info/30 bg-info/10 text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
+                'shipped' => 'border-info/30 bg-info/10 text-info dark:border-info/40 dark:bg-info/10 dark:text-info',
                 default => 'border-slate-300 bg-slate-50 text-slate-600 dark:border-slate-600',
             };
         };
@@ -236,7 +236,7 @@
                                 <p class="mt-1 text-xs text-slate-500">{{ __('Super admin always has every permission. Other roles can be narrowed or expanded here.') }}</p>
                             </div>
                             @if ($user->role === \App\Models\User::ROLE_SUPER_ADMIN)
-                                <span class="inline-flex items-center gap-1.5 rounded-full border border-info bg-info px-2.5 py-0.5 text-[11px] font-bold text-info dark:border-info/40 dark:bg-info/10 dark:text-info">
+                                <span class="inline-flex items-center gap-1.5 rounded-full border border-info/30 bg-info/10 px-2.5 py-0.5 text-[11px] font-bold text-info dark:border-info/40 dark:bg-info/10 dark:text-info">
                                     <span class="h-1.5 w-1.5 rounded-full bg-current"></span>
                                     {{ __('All Access') }}
                                 </span>

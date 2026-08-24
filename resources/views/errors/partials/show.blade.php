@@ -50,7 +50,7 @@
                         </a>
 
                         <div class="space-y-4">
-                            <span class="inline-flex items-center rounded-full border border-info bg-info px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-info dark:border-info/60 dark:bg-info/20 dark:text-info">
+                            <span class="inline-flex items-center rounded-full border border-info/30 bg-info/10 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.22em] text-info dark:border-info/60 dark:bg-info/20 dark:text-info">
                                 {{ $errorBadge }}
                             </span>
                             <div class="space-y-3">
@@ -71,7 +71,7 @@
                             <a href="{{ $secondaryAction['url'] }}" class="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
                                 {{ $secondaryAction['label'] }}
                             </a>
-                            <a href="{{ $tertiaryAction['url'] }}" class="inline-flex items-center justify-center rounded-2xl border border-info bg-info px-5 py-3 text-sm font-semibold text-info transition hover:bg-info dark:border-info/60 dark:bg-info/20 dark:text-info dark:hover:bg-info/30">
+                            <a href="{{ $tertiaryAction['url'] }}" class="inline-flex items-center justify-center rounded-2xl border border-info/30 bg-info/10 px-5 py-3 text-sm font-semibold text-info transition hover:bg-info/20 dark:border-info/60 dark:bg-info/20 dark:text-info dark:hover:bg-info/30">
                                 {{ $tertiaryAction['label'] }}
                             </a>
                         </div>

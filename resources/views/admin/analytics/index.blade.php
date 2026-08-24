@@ -37,7 +37,7 @@
     {{-- Time range selector --}}
     <div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 bento-shadow">
         <div class="flex items-center gap-3">
-            <div class="grid h-10 w-10 place-items-center rounded-xl bg-info text-info">
+            <div class="grid h-10 w-10 place-items-center rounded-xl bg-info/10 text-info">
                 <i class="far fa-calendar-days" aria-hidden="true"></i>
             </div>
             <div>
@@ -54,7 +54,7 @@
                     href="{{ route('admin.analytics.index', ['days' => $option]) }}"
                     class="rounded-lg border px-3 py-1.5 text-xs font-bold transition
   {{ $option === $days
-  ? 'border-info bg-info text-info'
+  ? 'border-info/30 bg-info/10 text-info'
   : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300 hover:text-slate-700' }}"
                 >
                     {{ $option === 365 ? '1Y' : ($option . 'D') }}
@@ -82,7 +82,7 @@
                     <p class="kicker">{{ __('Page Views') }}</p>
                     <p class="mt-1 text-[11px] text-muted">{{ __('All trackable pages') }}</p>
                 </div>
-                <div class="grid h-9 w-9 place-items-center rounded-lg bg-info text-info"><i class="far fa-eye" aria-hidden="true"></i></div>
+                <div class="grid h-9 w-9 place-items-center rounded-lg bg-info/10 text-info"><i class="far fa-eye" aria-hidden="true"></i></div>
             </div>
             <p class="num-display mt-4 pl-2 text-3xl font-bold text-slate-900">{{ number_format($kpi['page_views']) }}</p>
             <div class="mt-2 flex items-center gap-2 pl-2">
@@ -101,7 +101,7 @@
                     <p class="kicker">{{ __('Unique Visitors') }}</p>
                     <p class="mt-1 text-[11px] text-muted">{{ __('Distinct sessions') }}</p>
                 </div>
-                <div class="grid h-9 w-9 place-items-center rounded-lg bg-info text-info"><i class="fas fa-users-line" aria-hidden="true"></i></div>
+                <div class="grid h-9 w-9 place-items-center rounded-lg bg-info/10 text-info"><i class="fas fa-users-line" aria-hidden="true"></i></div>
             </div>
             <p class="num-display mt-4 pl-2 text-3xl font-bold text-slate-900">{{ number_format($kpi['unique_visitors']) }}</p>
             <div class="mt-2 flex items-center gap-2 pl-2">

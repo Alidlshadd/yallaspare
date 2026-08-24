@@ -27,8 +27,8 @@
         $pillClass = function (?string $key) {
             return match ((string) $key) {
                 'pending'                              => 'bg-amber-100 text-amber-800 border-amber-200 dark:text-amber-300',
-                'processing'                           => 'bg-info text-info border-info dark:bg-info/10 dark:text-info dark:border-info/30',
-                'shipped'                              => 'bg-info text-info border-info dark:bg-info/10 dark:text-info dark:border-info/30',
+                'processing'                           => 'bg-info/10 text-info border-info/30 dark:bg-info/10 dark:text-info dark:border-info/30',
+                'shipped'                              => 'bg-info/10 text-info border-info/30 dark:bg-info/10 dark:text-info dark:border-info/30',
                 'delivered', 'paid'                    => 'bg-emerald-100 text-emerald-800 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-300',
                 'cancelled', 'failed'                  => 'bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-500/10',
                 'pending_payment', 'pending-payment'   => 'bg-amber-100 text-amber-800 border-amber-200 dark:text-amber-300',
@@ -616,9 +616,9 @@
                                             <div class="text-[10.5px] text-slate-500 truncate">{{ $order->user?->email ?? '-' }}</div>
                                             @if($order->user)
                                                 @if($isDealer)
-                                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide mt-1 bg-info text-info border border-info dark:bg-info/10 dark:text-info dark:border-info/30">{{ __('Dealer') }}</span>
+                                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide mt-1 bg-info/10 text-info border border-info dark:bg-info/10 dark:text-info dark:border-info/30">{{ __('Dealer') }}</span>
                                                 @else
-                                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide mt-1 bg-info text-info border border-info dark:bg-info/10 dark:text-info dark:border-info/30">{{ __('User') }}</span>
+                                                    <span class="inline-flex items-center px-1.5 py-0.5 rounded text-[9px] font-bold uppercase tracking-wide mt-1 bg-info/10 text-info border border-info dark:bg-info/10 dark:text-info dark:border-info/30">{{ __('User') }}</span>
                                                 @endif
                                             @endif
                                         </div>

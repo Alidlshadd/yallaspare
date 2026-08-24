@@ -7,7 +7,7 @@
             'processed' => 'bg-emerald-50 text-emerald-700',
             'failed' => 'bg-rose-50 text-rose-700',
             'ignored' => 'bg-slate-100 text-slate-600',
-            'processing' => 'bg-info text-info dark:bg-info/10 dark:text-info',
+            'processing' => 'bg-info/10 text-info dark:bg-info/10 dark:text-info',
             default => 'bg-amber-50 text-amber-700',
         };
     @endphp
@@ -40,7 +40,7 @@
             </div>
 
             <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-                <div class="flex items-center gap-3"><span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-info text-info dark:bg-info/10 dark:text-info"><i class="fas fa-shield-halved" aria-hidden="true"></i></span><h2 class="text-lg font-bold text-slate-900">{{ __('Header and processing information') }}</h2></div>
+                <div class="flex items-center gap-3"><span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-info/10 text-info dark:bg-info/10 dark:text-info"><i class="fas fa-shield-halved" aria-hidden="true"></i></span><h2 class="text-lg font-bold text-slate-900">{{ __('Header and processing information') }}</h2></div>
                 <dl class="mt-5 grid gap-4 sm:grid-cols-2">
                     @foreach([
                         [__('Event type'), $event->event_type], [__('Attempt'), $event->attempt_number],
