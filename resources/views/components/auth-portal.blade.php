@@ -175,7 +175,7 @@
                     <h2>{{ $heading }}</h2>
                     <p class="ys-auth-sub">{{ $formSubtitle }}</p>
 
-                    <div class="ys-auth-form">
+                    <div class="ys-auth-form @if($mode === 'register') ys-auth-form-dense @endif">
                         {{ $slot }}
                     </div>
 

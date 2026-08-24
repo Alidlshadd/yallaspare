@@ -831,6 +831,38 @@
     color: var(--ys-form-text);
 }
 
+/* Registration asks for six fields where sign-in asks for two, so the shared
+   rhythm makes its panel close to twice as tall. This tightens the gaps and
+   the password affordances only — control heights, type scale and the panel
+   itself stay identical to sign-in, which is what keeps the two screens
+   reading as one system rather than two sizes of it. */
+.ys-auth-form-dense .space-y-4 > :not([hidden]) ~ :not([hidden]) {
+    margin-top: 0.7rem;
+}
+
+.ys-auth-form-dense #password-rules {
+    gap: 0.25rem 0.6rem;
+    margin-block-start: 0.45rem;
+    padding: 0.5rem 0.6rem;
+}
+
+.ys-auth-form-dense #password-rules li {
+    font-size: 0.6875rem;
+}
+
+.ys-auth-form-dense [data-password-suggestion] {
+    padding: 0.3rem 0.55rem;
+    font-size: 0.75rem;
+}
+
+.ys-auth-form-dense .ys-auth-hint {
+    margin-block-start: 0.3rem;
+}
+
+.ys-auth-form-dense .ys-auth-terms {
+    margin-block-start: 0.8rem;
+}
+
 .ys-auth-hint {
     margin-block-start: 0.4rem;
     font-size: 0.6875rem;
@@ -1483,10 +1515,23 @@
         transform: translateY(-1px);
     }
 
+    /* ================================================================
+       The loading screen
+
+       Navy field, the configured logo, one orange accent — the same three
+       ingredients the auth split uses, so a submit that opens this screen
+       does not look like it left the product.
+       ================================================================ */
     .ys-loading-overlay {
+        --ys-loading-navy: #070740;
+        --ys-loading-navy-deep: #04041c;
+        --ys-loading-accent: #ff6a00;
+        --ys-loading-text: #ffffff;
+        --ys-loading-muted: #9aa1af;
+
         align-items: center;
         justify-content: center;
-        color: #ffffff;
+        color: var(--ys-loading-text);
         opacity: 1;
         transition: opacity 240ms ease, visibility 240ms ease;
     }
@@ -1504,9 +1549,9 @@
         display: flex;
         min-height: 100dvh;
         padding: 1.5rem;
-        background: rgba(7, 11, 31, 0.72);
-        backdrop-filter: blur(22px) saturate(140%);
-        -webkit-backdrop-filter: blur(22px) saturate(140%);
+        background:
+            radial-gradient(70% 55% at 50% 44%, rgba(255, 106, 0, 0.11), transparent 66%),
+            linear-gradient(158deg, var(--ys-loading-navy) 0%, var(--ys-loading-navy-deep) 100%);
     }
 
     .ys-loading-overlay-compact {
@@ -1516,136 +1561,174 @@
         display: flex;
         min-height: 12rem;
         border-radius: inherit;
-        background: rgba(7, 11, 31, 0.72);
+        background: rgba(7, 7, 64, 0.88);
         backdrop-filter: blur(14px);
         -webkit-backdrop-filter: blur(14px);
     }
 
     .ys-loading-card {
-        position: relative;
         display: flex;
+        width: min(17rem, calc(100vw - 2.5rem));
         flex-direction: column;
         align-items: center;
-        gap: 1.5rem;
-        padding: 2.25rem 2.5rem;
-        min-width: min(18rem, calc(100vw - 2rem));
-        max-width: 22rem;
-        background: linear-gradient(155deg, #070740 0%, #04041f 100%);
-        border-radius: 1.75rem;
-        box-shadow:
-            0 30px 90px -20px rgba(0, 0, 0, 0.7),
-            0 0 0 1px rgba(255, 255, 255, 0.06) inset,
-            0 1px 0 rgba(255, 255, 255, 0.08) inset;
-        overflow: hidden;
+        gap: 1.35rem;
         text-align: center;
     }
 
-    .ys-loading-card::before,
-    .ys-loading-card::after {
-        content: '';
-        position: absolute;
-        pointer-events: none;
-        filter: blur(24px);
-        z-index: 0;
-    }
-
-    .ys-loading-card::before {
-        top: -30%;
-        left: -20%;
-        width: 60%;
-        height: 60%;
-        background: radial-gradient(circle, rgba(99, 102, 241, 0.32), transparent 60%);
-    }
-
-    .ys-loading-card::after {
-        bottom: -25%;
-        right: -20%;
-        width: 55%;
-        height: 55%;
-        background: radial-gradient(circle, rgba(232, 93, 42, 0.20), transparent 60%);
-    }
-
-    .ys-loading-brand {
+    /* ---- the mark and its ring ---- */
+    .ys-loading-core {
         position: relative;
-        z-index: 1;
+        display: grid;
+        place-items: center;
+        width: 7.5rem;
+        height: 7.5rem;
+    }
+
+    .ys-loading-orbit {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        fill: none;
+    }
+
+    .ys-loading-orbit-track {
+        stroke: rgba(255, 255, 255, 0.12);
+        stroke-width: 1.5;
+    }
+
+    /* Circumference at r=56 is about 352, so a 62-unit dash leaves one arc
+       with a clean gap rather than a dotted ring. */
+    .ys-loading-orbit-arc {
+        stroke: var(--ys-loading-accent);
+        stroke-width: 2.5;
+        stroke-linecap: round;
+        stroke-dasharray: 62 290;
+        transform-origin: 60px 60px;
+        animation: ysLoadingOrbit 1.4s linear infinite;
+    }
+
+    /* No plate behind the logo. The mark is white with an orange accent, so
+       navy is what it was drawn for; a light tile would erase it. */
+    .ys-loading-badge {
         display: inline-flex;
-        flex-direction: column;
+        width: 5rem;
+        height: 5rem;
         align-items: center;
-        gap: 1rem;
-        min-width: 0;
+        justify-content: center;
     }
 
     .ys-loading-logo {
-        position: relative;
         display: inline-flex;
-        height: 5.5rem;
-        width: 5.5rem;
-        flex: 0 0 auto;
+        width: 100%;
+        height: 100%;
         align-items: center;
         justify-content: center;
-        overflow: visible;
-        border-radius: 9999px;
-        background: rgba(255, 255, 255, 0.06);
-    }
-
-    .ys-loading-logo::before {
-        content: '';
-        position: absolute;
-        inset: -6px;
-        border-radius: 9999px;
-        border: 2px solid rgba(255, 255, 255, 0.08);
-        border-top-color: rgba(124, 140, 255, 0.95);
-        border-right-color: rgba(124, 140, 255, 0.5);
-        animation: ysLoadingSpin 1.2s linear infinite;
-        pointer-events: none;
     }
 
     .ys-loading-logo-image {
-        height: 62%;
-        width: auto;
-        max-width: 62%;
+        width: 100%;
+        height: 100%;
         object-fit: contain;
     }
 
     .ys-loading-logo-fallback {
         display: inline-flex;
-        height: 100%;
         width: 100%;
+        height: 100%;
         align-items: center;
         justify-content: center;
-        border-radius: inherit;
-        background: transparent;
+        border-radius: 18px;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.06);
     }
 
     .ys-loading-logo-fallback-text {
-        font-size: 0.75rem;
-        font-weight: 700;
-        letter-spacing: 0.14em;
-        color: #ffffff;
+        font-size: 1.25rem;
+        font-weight: 800;
+        letter-spacing: 0.08em;
+        color: var(--ys-loading-text);
+    }
+
+    /* ---- copy ---- */
+    .ys-loading-copy {
+        display: flex;
+        min-width: 0;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.35rem;
     }
 
     .ys-loading-brand-name {
-        font-size: 1.0625rem;
-        font-weight: 700;
-        letter-spacing: -0.015em;
-        line-height: 1;
-        color: #ffffff;
-        max-width: 14rem;
+        max-width: 15rem;
         overflow: hidden;
+        font-size: 1.0625rem;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.02em;
+        color: var(--ys-loading-text);
         text-overflow: ellipsis;
         white-space: nowrap;
     }
 
-    .ys-loading-ring {
+    .ys-loading-message {
+        margin: 0;
+        font-size: 0.8125rem;
+        line-height: 1.5;
+        color: var(--ys-loading-muted);
+    }
+
+    /* ---- progress ---- */
+    .ys-loading-track {
         position: relative;
-        z-index: 1;
-        height: 2.4rem;
-        width: 2.4rem;
-        border-radius: 9999px;
-        border: 3px solid rgba(255, 255, 255, 0.08);
-        border-top-color: rgba(124, 140, 255, 0.95);
-        border-right-color: rgba(124, 140, 255, 0.5);
-        animation: ysLoadingSpin 1.2s linear infinite;
+        width: 100%;
+        height: 3px;
+        overflow: hidden;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.1);
+    }
+
+    .ys-loading-bar {
+        position: absolute;
+        inset-block: 0;
+        width: 40%;
+        border-radius: inherit;
+        background: linear-gradient(90deg, rgba(255, 106, 0, 0), var(--ys-loading-accent), rgba(255, 106, 0, 0));
+        animation: ysLoadingShuttle 1.5s ease-in-out infinite;
+    }
+
+    .ys-loading-overlay-compact .ys-loading-card {
+        gap: 1rem;
+    }
+
+    .ys-loading-overlay-compact .ys-loading-core {
+        width: 4.75rem;
+        height: 4.75rem;
+    }
+
+    .ys-loading-overlay-compact .ys-loading-badge {
+        width: 3rem;
+        height: 3rem;
+    }
+
+    .ys-loading-overlay-compact .ys-loading-logo-fallback-text {
+        font-size: 0.8125rem;
+    }
+
+    @keyframes ysLoadingOrbit {
+        to {
+            transform: rotate(360deg);
+        }
+    }
+
+    @keyframes ysLoadingShuttle {
+        0% {
+            transform: translateX(-105%);
+        }
+
+        100% {
+            transform: translateX(250%);
+        }
     }
 
     .ys-button-loading {
@@ -1709,10 +1792,17 @@
             transition: none;
         }
 
-        .ys-loading-ring,
-        .ys-loading-logo::before,
+        .ys-loading-orbit-arc,
+        .ys-loading-bar,
         .ys-button-spinner {
             animation: none;
+        }
+
+        /* Without the shuttle the rail would read as an empty groove, so it
+           holds a static part-filled bar instead. */
+        .ys-loading-bar {
+            width: 55%;
+            transform: none;
         }
 
         /* Without the shuttle the track would read as an empty rail, so it
@@ -2559,20 +2649,6 @@
         --focus: rgb(255 138 61 / 0.42);
         --hover-tint: rgb(255 255 255 / 0.05);
         background-color: var(--admin-bg);
-    }
-
-    .dark .ys-loading-overlay {
-        --ys-loading-bg: rgba(5, 7, 38, 0.96);
-        --ys-loading-card: rgba(7, 11, 31, 0.88);
-        --ys-loading-border: rgba(148, 163, 184, 0.18);
-        --ys-loading-text: #ffffff;
-        --ys-loading-muted: #cbd5e1;
-        --ys-loading-accent: #ff8a3d;
-        --ys-loading-ring: rgba(255, 255, 255, 0.14);
-    }
-
-    .dark .ys-loading-logo {
-        background: rgba(255, 255, 255, 0.08);
     }
 
     /* Keep the legacy compatibility layer deliberately low-specificity so
