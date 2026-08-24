@@ -45,6 +45,7 @@ use App\Http\Controllers\User\UserSettingsController;
 use App\Http\Controllers\User\WishlistController;
 use App\Models\Setting;
 use App\Models\User;
+use App\Support\BrandIcon;
 use App\Support\Branding;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -132,6 +133,24 @@ Route::get('/brand/logo', function () {
     );
 })->name('brand.logo');
 
+// Every icon slot in the head resolves here when a logo is configured, so one
+// upload changes the tab, the home-screen shortcut and the search result alike.
+// Sizes are whitelisted in BrandIcon; anything else is a 404.
+Route::get('/brand/icon-{size}.png', function (int $size) {
+    $png = BrandIcon::render($size);
+
+    if ($png === null) {
+        abort(404);
+    }
+
+    return response($png, 200, [
+        'Content-Type' => 'image/png',
+        // The URL carries a version stamp, so the file behind it never changes
+        // and can be held for a year.
+        'Cache-Control' => 'public, max-age=31536000, immutable',
+    ]);
+})->whereNumber('size')->name('brand.icon');
+
 // The packaged site.webmanifest points at fixed icon files, so an admin logo
 // change never reached an installed home-screen shortcut. This serves the same
 // document with the current logo instead.
@@ -144,13 +163,23 @@ Route::get('/brand/manifest.webmanifest', function () {
         (string) ($settings['site_logo_version'] ?? '')
     );
 
-    if ($logoUrl !== null) {
+    $iconVersion = BrandIcon::version();
+
+    if ($iconVersion !== null) {
+        // Real pixel sizes now, because these are rendered square at exactly
+        // the size claimed rather than being whatever the admin uploaded.
+        $icons = collect([192, 512])
+            ->map(fn (int $size) => [
+                'src' => url(route('brand.icon', ['size' => $size], false)).'?v='.$iconVersion,
+                'sizes' => $size.'x'.$size,
+                'type' => 'image/png',
+            ])
+            ->all();
+    } elseif ($logoUrl !== null) {
         $mimeType = Branding::safeLogoMimeType(
             Branding::storagePathFromValue((string) ($settings['site_logo'] ?? ''))
         );
 
-        // 'any' rather than a pixel size: the upload is whatever the admin gave
-        // us, and claiming 192x192 for a file that isn't would be a lie.
         $icons = [[
             'src' => url($logoUrl),
             'sizes' => 'any',

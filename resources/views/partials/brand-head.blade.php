@@ -1,5 +1,5 @@
 @php
-    $iconVersion = '20260616b';
+    $iconVersion = '20260824';
     $siteName = (string) ($systemSettings['site_name'] ?? config('app.name', 'YallaSpare'));
     $defaultMetaTitle = __('YallaSpare | Auto Spare Parts Platform in Iraq');
     $pageTitle = trim($__env->yieldContent('title'));
@@ -14,23 +14,31 @@
             ? $siteLogoUrl
             : url($siteLogoUrl))
         : null;
+
+    // When a logo is configured every icon slot is rendered from it, square and
+    // at the exact size the slot declares. The packaged files below are the
+    // no-logo fallback, not a second competing set.
+    $brandIconVersion = \App\Support\BrandIcon::version();
+    $brandIcon = fn (int $size) => route('brand.icon', ['size' => $size]).'?v='.$brandIconVersion;
     // A square logo is not a 1200x630 banner, so when the admin has set one the
     // card drops to the small format rather than declaring dimensions it hasn't.
     $socialImageUrl = $siteLogoIconUrl ?: asset('icons/yallaspare-og-preview.png') . '?v=' . $iconVersion;
     $socialCardType = $siteLogoIconUrl ? 'summary' : 'summary_large_image';
 @endphp
-@if($siteLogoIconUrl)
-    {{-- One source for every icon slot. The packaged favicons are skipped
-         entirely: left in place they declare explicit sizes, and a browser
-         picks those over a sizeless link, which is why the tab kept the old
-         mark after an upload. --}}
-    <link rel="icon" href="{{ $siteLogoIconUrl }}" sizes="any">
-    <link rel="apple-touch-icon" href="{{ $siteLogoIconUrl }}">
+{{-- Both branches declare the same slots at the same sizes, so switching
+     between them can never leave a browser holding a stale link that happens
+     to declare a size the new set does not. --}}
+@if($brandIconVersion)
+    <link rel="icon" type="image/png" sizes="16x16" href="{{ $brandIcon(16) }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ $brandIcon(32) }}">
+    <link rel="icon" type="image/png" sizes="48x48" href="{{ $brandIcon(48) }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ $brandIcon(192) }}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{{ $brandIcon(180) }}">
 @else
-    <link rel="icon" href="{{ asset('favicon.ico') }}?v={{ $iconVersion }}" sizes="any">
-    <link rel="icon" type="image/png" href="{{ asset('favicon.png') }}?v={{ $iconVersion }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}?v={{ $iconVersion }}">
+    <link rel="icon" href="{{ asset('favicon.ico') }}?v={{ $iconVersion }}" sizes="16x16 32x32 48x48">
     <link rel="icon" type="image/png" sizes="16x16" href="{{ asset('favicon-16x16.png') }}?v={{ $iconVersion }}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32x32.png') }}?v={{ $iconVersion }}">
+    <link rel="icon" type="image/png" sizes="192x192" href="{{ asset('android-chrome-192x192.png') }}?v={{ $iconVersion }}">
     <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('apple-touch-icon.png') }}?v={{ $iconVersion }}">
 @endif
 <link rel="manifest" href="{{ route('brand.manifest') }}">

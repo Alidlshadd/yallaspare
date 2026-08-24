@@ -15,7 +15,7 @@ class SiteIconHeadTest extends TestCase
 
     private const PUBLIC_SEO_DESCRIPTION = 'YallaSpare is an auto spare parts platform built for Iraq, helping customers find trusted parts, check vehicle compatibility, order easily, and get reliable support.';
 
-    private const HEAD_ICON_VERSION = '20260616b';
+    private const HEAD_ICON_VERSION = '20260824';
 
     private string $logoPath = 'settings/test-head-logo.png';
 
@@ -29,8 +29,8 @@ class SiteIconHeadTest extends TestCase
     /**
      * The packaged favicons declare explicit sizes. Left in the head alongside
      * the uploaded logo they win the browser's pick, which is why the tab kept
-     * the old mark after an admin changed the logo. Once a logo exists it has
-     * to be the only icon offered.
+     * the old mark after an admin changed the logo. Once a logo exists every
+     * slot has to be rendered from it instead.
      */
     public function test_an_uploaded_logo_replaces_every_packaged_icon(): void
     {
@@ -39,8 +39,14 @@ class SiteIconHeadTest extends TestCase
         $head = $this->extractHead($this->get(route('user.shop.home'))->getContent());
 
         $this->assertStringContainsString('rel="icon"', $head);
-        $this->assertStringContainsString('/brand/logo?v=', $head);
-        $this->assertStringContainsString('sv=head-logo-version', $head);
+
+        foreach ([16, 32, 48, 192] as $size) {
+            $this->assertStringContainsString('/brand/icon-'.$size.'.png?v=', $head);
+            $this->assertStringContainsString('sizes="'.$size.'x'.$size.'"', $head);
+        }
+
+        $this->assertStringContainsString('/brand/icon-180.png?v=', $head);
+        $this->assertStringContainsString('rel="apple-touch-icon" sizes="180x180"', $head);
 
         foreach (['favicon.ico', 'favicon.png', 'favicon-32x32.png', 'favicon-16x16.png', 'apple-touch-icon.png'] as $packaged) {
             $this->assertStringNotContainsString($packaged, $head, $packaged.' still competes with the uploaded logo.');
@@ -67,7 +73,7 @@ class SiteIconHeadTest extends TestCase
         $this->assertStringContainsString('icons/yallaspare-og-preview.png?v='.$iconVersion, $head);
         $this->assertStringContainsString('og:image:width', $head);
         $this->assertStringContainsString('name="twitter:card" content="summary_large_image"', $head);
-        $this->assertStringNotContainsString('/brand/logo?v=', $head);
+        $this->assertStringNotContainsString('/brand/icon-', $head);
     }
 
     public function test_head_points_at_the_generated_manifest_not_the_packaged_file(): void
@@ -90,9 +96,11 @@ class SiteIconHeadTest extends TestCase
         $manifest = $response->json();
 
         $this->assertSame('Yalla Spare', $manifest['name']);
-        $this->assertCount(1, $manifest['icons']);
-        $this->assertStringContainsString('/brand/logo?v=', $manifest['icons'][0]['src']);
-        $this->assertStringContainsString('sv=head-logo-version', $manifest['icons'][0]['src']);
+        $this->assertCount(2, $manifest['icons']);
+        $this->assertStringContainsString('/brand/icon-192.png?v=', $manifest['icons'][0]['src']);
+        $this->assertSame('192x192', $manifest['icons'][0]['sizes']);
+        $this->assertStringContainsString('/brand/icon-512.png?v=', $manifest['icons'][1]['src']);
+        $this->assertSame('512x512', $manifest['icons'][1]['sizes']);
     }
 
     public function test_generated_manifest_falls_back_to_packaged_icons(): void
@@ -157,7 +165,6 @@ class SiteIconHeadTest extends TestCase
             'android-chrome-512x512.png',
             'icons/yallaspare-og-preview.png',
             'site.webmanifest',
-            'manifest.json',
         ] as $path) {
             $fullPath = public_path($path);
 
@@ -167,9 +174,9 @@ class SiteIconHeadTest extends TestCase
 
         $manifest = json_decode((string) file_get_contents(public_path('site.webmanifest')), true);
 
-        $this->assertSame('Yalla Spare', $manifest['name'] ?? null);
-        $this->assertSame('/android-chrome-192x192.png?v=20260605', $manifest['icons'][0]['src'] ?? null);
-        $this->assertSame('/android-chrome-512x512.png?v=20260605', $manifest['icons'][1]['src'] ?? null);
+        $this->assertSame('YallaSpare', $manifest['name'] ?? null);
+        $this->assertSame('/android-chrome-192x192.png?v='.self::HEAD_ICON_VERSION, $manifest['icons'][0]['src'] ?? null);
+        $this->assertSame('/android-chrome-512x512.png?v='.self::HEAD_ICON_VERSION, $manifest['icons'][1]['src'] ?? null);
     }
 
     private function extractHead(string $html): string
