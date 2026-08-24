@@ -2596,7 +2596,7 @@
     .admin-theme-panel {
         background: var(--admin-feature-gradient) !important;
         border-color: var(--admin-border) !important;
-        color: var(--admin-text-strong);
+        color: var(--admin-text-strong) !important;
         box-shadow: var(--admin-shadow-soft);
     }
 
@@ -2636,9 +2636,9 @@
         .bg-white\/10,
         .bg-white\/15,
         .bg-white\/20,
-        .bg-white\/[0\.06],
-        .bg-white\/[\.06],
-        .bg-white\/[\.07]
+        [class*='bg-white/[0.06]'],
+        [class*='bg-white/[.06]'],
+        [class*='bg-white/[.07]']
     ) {
         background-color: rgb(var(--admin-surface-strong-rgb) / 0.72) !important;
     }
@@ -2655,7 +2655,23 @@
         background-color: var(--admin-surface-hover) !important;
     }
 
-    :root:not(.dark) .admin-theme-terminal :is(.bg-navy, .bg-navy\/80, .bg-navy-deep\/80, .bg-navy-deep\/60) {
+    :root:not(.dark) .admin-theme-panel .text-orange-100 {
+        color: var(--admin-accent) !important;
+    }
+
+    :root:not(.dark) .admin-theme-panel .text-rose-300 {
+        color: var(--admin-chart-danger) !important;
+    }
+
+    :root:not(.dark) .admin-theme-panel .text-emerald-300 {
+        color: var(--admin-chart-success) !important;
+    }
+
+    :root:not(.dark) .admin-theme-panel .text-amber-300 {
+        color: #b45309 !important;
+    }
+
+    :root:not(.dark) .admin-theme-terminal :is(.bg-navy, .bg-navy\/80, .bg-navy\/60, .bg-navy-deep\/80, .bg-navy-deep\/60) {
         background-color: var(--admin-surface-muted) !important;
     }
 

@@ -77,7 +77,7 @@
         .dark .pp-chip-ordered { color: #38bdf8; }
 
         .pp-dock-head {
-            background: linear-gradient(135deg, #04041f, #12124a);
+            background: var(--admin-feature-gradient);
             position: relative; overflow: hidden;
         }
         .pp-dock-head::after {
@@ -87,7 +87,7 @@
         .pp-dock-head > * { position: relative; z-index: 1; }
 
         .pp-hero {
-            background: linear-gradient(135deg, #04041f, #12124a);
+            background: var(--admin-feature-gradient);
             position: relative; overflow: hidden;
         }
         .pp-hero::after {
@@ -136,7 +136,7 @@
                     </div>
                     <p class="pp-num mt-3 text-2xl font-bold text-info dark:text-info">{{ number_format($summary['waiting_customers']) }}</p>
                 </article>
-                <article class="pp-hero rounded-2xl border border-transparent p-5 shadow-sm">
+                <article class="admin-theme-panel pp-hero rounded-2xl border border-transparent p-5 shadow-sm">
                     <div class="flex items-start justify-between gap-3">
                         <p class="text-xs font-bold uppercase tracking-[0.14em] text-white/55">{{ __('Page Budget') }}</p>
                         <i class="fas fa-coins text-accent" aria-hidden="true"></i>
@@ -277,7 +277,7 @@
                         </div>
 
                         {{-- dock header --}}
-                        <div class="pp-dock-head px-4 py-3.5 text-white">
+                        <div class="admin-theme-panel pp-dock-head px-4 py-3.5 text-white">
                             <div class="flex items-center gap-2">
                                 <input
                                     type="text"
@@ -395,7 +395,7 @@
             {{-- ============ view saved list modal ============ --}}
             <div class="fixed inset-0 z-50 flex items-center justify-center bg-navy-deep/55 p-4" x-show="viewOpen" x-cloak @click.self="closeView" role="dialog" aria-modal="true">
                 <div class="max-h-[82vh] w-full max-w-xl overflow-auto rounded-2xl bg-white shadow-2xl">
-                    <div class="pp-dock-head flex items-center justify-between px-5 py-3.5 text-white">
+                    <div class="admin-theme-panel pp-dock-head flex items-center justify-between px-5 py-3.5 text-white">
                         <div class="min-w-0">
                             <h3 class="truncate text-[15px] font-bold" x-text="viewTitle"></h3>
                             <p class="text-[11px] text-white/60" x-text="viewMeta"></p>

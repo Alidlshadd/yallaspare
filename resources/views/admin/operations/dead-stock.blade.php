@@ -25,7 +25,7 @@
     <style>
         .ds-hero {
             position: relative; overflow: hidden;
-            background: linear-gradient(135deg, #04041f, #12124a);
+            background: var(--admin-feature-gradient);
             border-radius: 16px; padding: 18px 20px; color: #fff;
         }
         .ds-hero::after {
@@ -148,7 +148,7 @@
     <div class="py-8">
         <div class="mx-auto max-w-7xl space-y-6 px-4 sm:px-6 lg:px-8">
             <section class="grid gap-4 md:grid-cols-2 xl:grid-cols-[1.4fr_1fr_1fr_1fr]">
-                <article class="ds-hero">
+                <article class="admin-theme-panel ds-hero">
                     <p class="ds-lbl">{{ __('Value On Page') }}</p>
                     <p class="ds-hero-big">{{ $money($summary['value_on_page']) }}</p>
                     <p class="ds-hero-sub">{{ __('No sales :days days', ['days' => $idleDays]) }}</p>

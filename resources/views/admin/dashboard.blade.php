@@ -145,7 +145,7 @@
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4" data-animate-stagger>
 
         {{-- ============ TOTAL REVENUE — HERO 2x2 ============ --}}
-        <div id="admin-revenue-section" class="relative sm:col-span-2 lg:col-span-2 lg:row-span-2 rounded-3xl bg-primary text-white p-7 overflow-hidden bento-shadow-lg corner-brackets scroll-mt-24" style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
+        <div id="admin-revenue-section" class="admin-theme-panel relative sm:col-span-2 lg:col-span-2 lg:row-span-2 rounded-3xl text-white p-7 overflow-hidden bento-shadow-lg corner-brackets scroll-mt-24">
             <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
             <div class="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-info/25 blur-[100px]"></div>
             <div class="absolute -bottom-32 -left-20 h-80 w-80 rounded-full bg-info/15 blur-[100px]"></div>
@@ -583,7 +583,7 @@
         $opMax = max(collect($operationsQueue)->pluck('count')->map(fn($x) => (int) $x)->all() ?: [1]);
         $opMax = $opMax > 0 ? $opMax : 1;
     @endphp
-    <div class="mb-8 relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5 sm:p-7" style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
+    <div class="admin-theme-panel mb-8 relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5 sm:p-7">
         <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
         <div class="absolute -top-32 -right-32 h-96 w-96 rounded-full bg-accent/15 blur-[100px]"></div>
         <div class="absolute -bottom-24 -left-20 h-80 w-80 rounded-full bg-info/15 blur-[100px]"></div>
@@ -744,7 +744,7 @@
     <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 mb-8" data-animate="fade-up">
 
         {{-- ============ MONTHLY ORDERS TREND — COMPACT ============ --}}
-        <div class="xl:col-span-2 relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5" style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
+        <div class="admin-theme-panel xl:col-span-2 relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5">
             <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
             <div class="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-info/20 blur-[100px]"></div>
             <div class="absolute -bottom-16 -left-12 h-56 w-56 rounded-full bg-info/15 blur-[80px]"></div>
@@ -807,7 +807,7 @@
         </div>
 
         {{-- ============ PRODUCTS DISTRIBUTION — COMPACT TOP 5 ============ --}}
-        <div class="relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5" style="background: linear-gradient(135deg, #04041f 0%, #070740 60%, #070740 100%);">
+        <div class="admin-theme-panel relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5">
             <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
             <div class="absolute -top-16 -right-16 h-48 w-48 rounded-full bg-info/20 blur-[70px]"></div>
             <div class="absolute -bottom-16 -left-10 h-48 w-48 rounded-full bg-info/15 blur-[70px]"></div>
@@ -1157,7 +1157,7 @@
     </div>
 
     {{-- ================= RECENT PRODUCTS — FULL HERO ================= --}}
-    <div class="relative mb-8 rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5 sm:p-6" style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
+    <div class="admin-theme-panel relative mb-8 rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5 sm:p-6">
         <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
         <div class="absolute -top-24 -right-24 h-80 w-80 rounded-full bg-emerald-500/15 blur-[100px]"></div>
         <div class="absolute -bottom-20 -left-16 h-64 w-64 rounded-full bg-info/10 blur-[80px]"></div>
@@ -1243,7 +1243,7 @@
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-4" data-animate="fade-up">
 
         {{-- ============ RECENT ORDERS — FULL HERO ============ --}}
-        <div class="relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5 sm:p-6" style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
+        <div class="admin-theme-panel relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5 sm:p-6">
             <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
             <div class="absolute -top-24 -right-24 h-72 w-72 rounded-full bg-purple-500/15 blur-[100px]"></div>
             <div class="absolute -bottom-20 -left-16 h-56 w-56 rounded-full bg-info/10 blur-[80px]"></div>
@@ -1334,7 +1334,7 @@
         </div>
 
         {{-- ============ TOP SELLING PRODUCTS — HALL OF FAME ============ --}}
-        <div class="relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5 sm:p-6" style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
+        <div class="admin-theme-panel relative rounded-3xl overflow-hidden bento-shadow-lg corner-brackets p-5 sm:p-6">
             <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
             <div class="absolute -top-24 -right-24 h-80 w-80 rounded-full bg-accent/15 blur-[100px]"></div>
             <div class="absolute -bottom-24 -left-16 h-64 w-64 rounded-full bg-orange-500/10 blur-[80px]"></div>

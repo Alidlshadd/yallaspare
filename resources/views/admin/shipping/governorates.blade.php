@@ -42,9 +42,7 @@
         .gov-page { --gov-navy: var(--brand-navy); --gov-orange: var(--brand-orange); }
         .gov-hero {
             position: relative; overflow: hidden;
-            background:
-                radial-gradient(circle at 88% 12%, rgba(255,106,0,.18), transparent 27%),
-                linear-gradient(135deg, #05052d 0%, #070740 58%, #10105b 100%);
+            background: var(--admin-feature-gradient);
             box-shadow: 0 24px 55px -34px rgba(7,7,64,.78);
         }
         .gov-hero::before {
@@ -114,7 +112,7 @@
                 </div>
             @endif
 
-            <section class="gov-hero rounded-[24px] px-5 py-6 text-white sm:px-7 sm:py-7" aria-labelledby="shipping-overview-title">
+            <section class="admin-theme-panel gov-hero rounded-[24px] px-5 py-6 text-white sm:px-7 sm:py-7" aria-labelledby="shipping-overview-title">
                 <div class="gov-route-line" aria-hidden="true"></div>
                 <div class="relative grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(430px,.72fr)] lg:items-end">
                     <div class="max-w-2xl">

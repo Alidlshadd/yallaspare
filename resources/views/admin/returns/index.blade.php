@@ -176,8 +176,7 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
 
             {{-- ═══ HERO 2x2 — Total Refund Value ═══ --}}
-            <div class="relative sm:col-span-2 lg:col-span-2 lg:row-span-2 rounded-3xl text-white p-7 overflow-hidden bento-shadow-lg corner-brackets"
-                 style="background: linear-gradient(135deg, #04041f 0%, #070740 50%, #070740 100%);">
+            <div class="admin-theme-panel relative sm:col-span-2 lg:col-span-2 lg:row-span-2 rounded-3xl text-white p-7 overflow-hidden bento-shadow-lg corner-brackets">
                 <div class="absolute inset-0 bento-stripes pointer-events-none"></div>
                 <div class="absolute -top-24 -right-24 h-80 w-80 rounded-full bg-accent/20 blur-[80px] pointer-events-none"></div>
                 <div class="absolute -bottom-24 -left-12 h-64 w-64 rounded-full bg-info/15 blur-[80px] pointer-events-none"></div>
