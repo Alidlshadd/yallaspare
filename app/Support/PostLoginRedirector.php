@@ -42,7 +42,7 @@ class PostLoginRedirector
         }
 
         // One verified contact channel (email OR phone) activates the account.
-        if ($user && ! $user->hasVerifiedEmail() && $user->phone_verified_at === null) {
+        if ($user && ! $user->hasVerifiedAccount()) {
             return redirect()->route('verification.notice');
         }
 

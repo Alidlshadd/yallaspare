@@ -3284,5 +3284,7 @@
     "Back to sign in": "Back to sign in",
     "Sending your reset link": "Sending your reset link",
     "Send reset link": "Send reset link",
-    "The link works once and expires shortly after it is sent. Check your spam folder if it does not arrive.": "The link works once and expires shortly after it is sent. Check your spam folder if it does not arrive."
+    "The link works once and expires shortly after it is sent. Check your spam folder if it does not arrive.": "The link works once and expires shortly after it is sent. Check your spam folder if it does not arrive.",
+    "Verified by phone": "Verified by phone",
+    "Phone Verified": "Phone Verified"
 }

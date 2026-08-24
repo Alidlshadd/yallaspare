@@ -57,7 +57,9 @@ class AdminUsersIndexTest extends TestCase
     public function test_unverified_filter_limits_results(): void
     {
         $admin = $this->superAdmin();
-        User::factory()->unverified()->create([
+        // Either channel proves the account, so an unverified fixture has to
+        // clear both — unverified() only drops the email timestamp.
+        User::factory()->unverified()->unverifiedPhone()->create([
             'role' => User::ROLE_USER,
             'name' => 'Unverified Email Account',
         ]);

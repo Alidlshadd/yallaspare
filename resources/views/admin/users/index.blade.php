@@ -350,9 +350,12 @@
                                                 {{ $user->isPermanentlyBanned() ? __('Permanent Ban') : __('Temporarily Banned') }}
                                             </span>
                                         @endif
-                                        @if($user->email_verified_at)
-                                            <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600" title="{{ __('Verified email') }}">
+                                        @if($user->hasVerifiedAccount())
+                                            {{-- Which channel proved it, since either one counts and an
+                                                 admin chasing a customer needs to know which they used. --}}
+                                            <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600" title="{{ $user->verifiedVia() === 'phone' ? __('Verified by phone') : __('Verified email') }}">
                                                 <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" /></svg>
+                                                <span class="sr-only">{{ $user->verifiedVia() === 'phone' ? __('Verified by phone') : __('Verified email') }}</span>
                                             </span>
                                         @endif
                                     </div>

@@ -101,7 +101,7 @@ class UserTwoFactorController extends Controller
         $request->session()->forget('user_2fa.challenge');
         $request->session()->put('user_2fa.verified_user_id', $user->id);
 
-        if ($user->phone_verified_at === null && ! $user->hasVerifiedEmail() && ! $user->isAdminPanelUser()) {
+        if (! $user->hasVerifiedAccount() && ! $user->isAdminPanelUser()) {
             return redirect()->route('verification.notice');
         }
 

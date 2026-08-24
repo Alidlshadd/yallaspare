@@ -3284,5 +3284,7 @@
     "Back to sign in": "گەڕانەوە بۆ چوونەژوورەوە",
     "Sending your reset link": "بەستەری گەڕاندنەوەت دەنێردرێت",
     "Send reset link": "ناردنی بەستەری گەڕاندنەوە",
-    "The link works once and expires shortly after it is sent. Check your spam folder if it does not arrive.": "بەستەرەکە تەنیا یەک جار کار دەکات و لە ماوەیەکی کورتدا بەسەردەچێت. ئەگەر نەگەیشت، سەیری فۆڵدەری سپام بکە."
+    "The link works once and expires shortly after it is sent. Check your spam folder if it does not arrive.": "بەستەرەکە تەنیا یەک جار کار دەکات و لە ماوەیەکی کورتدا بەسەردەچێت. ئەگەر نەگەیشت، سەیری فۆڵدەری سپام بکە.",
+    "Verified by phone": "بە مۆبایل پشتڕاستکراوەتەوە",
+    "Phone Verified": "مۆبایل پشتڕاستکراوە"
 }

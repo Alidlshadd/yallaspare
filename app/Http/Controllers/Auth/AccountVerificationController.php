@@ -190,7 +190,7 @@ class AccountVerificationController extends Controller
             return $user->hasVerifiedEmail();
         }
 
-        return $user->hasVerifiedEmail() || $user->phone_verified_at !== null;
+        return $user->hasVerifiedAccount();
     }
 
     private function destination(User $user): RedirectResponse

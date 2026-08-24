@@ -118,10 +118,10 @@
                                     {{ $user->isPermanentlyBanned() ? __('Permanent Ban') : __('Temporarily Banned') }}
                                 </span>
                             @endif
-                            @if ($user->email_verified_at)
+                            @if ($user->hasVerifiedAccount())
                                 <span class="inline-flex items-center gap-1 rounded-full border border-emerald-300 bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700 dark:border-emerald-400/40">
                                     <svg class="h-3 w-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="m5 13 4 4L19 7" /></svg>
-                                    {{ __('Verified email') }}
+                                    {{ $user->verifiedVia() === 'phone' ? __('Verified by phone') : __('Verified email') }}
                                 </span>
                             @else
                                 <span class="inline-flex items-center rounded-full border border-slate-300 bg-slate-50 px-2.5 py-0.5 text-[11px] font-bold text-slate-500 dark:border-slate-600">
@@ -417,9 +417,16 @@
                     <div class="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
                         <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500">{{ __('Current Snapshot') }}</p>
                         <dl class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+                            {{-- Both channels get their own row. Collapsing them into one
+                                 "verified" line is what hid an SMS verification from the
+                                 admin while the login gate was already honouring it. --}}
                             <div>
                                 <dt class="text-[11px] font-bold uppercase tracking-widest text-muted dark:text-slate-500">{{ __('Email Verified') }}</dt>
                                 <dd class="mt-1 text-sm font-semibold text-slate-900">{{ $user->email_verified_at ? $user->email_verified_at->format('d M Y H:i') : __('Unverified') }}</dd>
+                            </div>
+                            <div>
+                                <dt class="text-[11px] font-bold uppercase tracking-widest text-muted dark:text-slate-500">{{ __('Phone Verified') }}</dt>
+                                <dd class="mt-1 text-sm font-semibold text-slate-900">{{ $user->phone_verified_at ? $user->phone_verified_at->format('d M Y H:i') : __('Unverified') }}</dd>
                             </div>
                             <div>
                                 <dt class="text-[11px] font-bold uppercase tracking-widest text-muted dark:text-slate-500">{{ __('Created') }}</dt>

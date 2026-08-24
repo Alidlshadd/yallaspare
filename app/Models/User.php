@@ -7,8 +7,10 @@ use App\Notifications\ImmediateVerifyEmail;
 use App\Support\EmailVerificationCode;
 use App\Support\IraqiPhoneNumber;
 use App\Support\PhoneVerificationCode;
+use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Translation\HasLocalePreference;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -158,6 +160,54 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
         'banned_at' => 'datetime',
         'banned_until' => 'datetime',
     ];
+
+    /**
+     * Registration accepts one proof of ownership, not two: the code goes to
+     * email by default and SMS or WhatsApp are the alternatives, so either
+     * timestamp means the account is verified. The login gate has always read
+     * it this way; anything reporting on accounts has to agree, or a customer
+     * who verified by SMS is listed as unverified while being let straight in.
+     *
+     * Deliberately not the rule for email deliverability — a broadcast still
+     * needs email_verified_at, since a verified phone proves nothing about
+     * the address.
+     */
+    public function hasVerifiedAccount(): bool
+    {
+        return $this->hasVerifiedEmail() || $this->phone_verified_at !== null;
+    }
+
+    public function verifiedVia(): ?string
+    {
+        if ($this->hasVerifiedEmail()) {
+            return 'email';
+        }
+
+        return $this->phone_verified_at !== null ? 'phone' : null;
+    }
+
+    public function verifiedAt(): ?Carbon
+    {
+        return $this->email_verified_at ?? $this->phone_verified_at;
+    }
+
+    /**
+     * @param  Builder<User>  $query
+     */
+    public function scopeVerifiedAccount(Builder $query): void
+    {
+        $query->where(function (Builder $inner): void {
+            $inner->whereNotNull('email_verified_at')->orWhereNotNull('phone_verified_at');
+        });
+    }
+
+    /**
+     * @param  Builder<User>  $query
+     */
+    public function scopeUnverifiedAccount(Builder $query): void
+    {
+        $query->whereNull('email_verified_at')->whereNull('phone_verified_at');
+    }
 
     public function isBanned(): bool
     {

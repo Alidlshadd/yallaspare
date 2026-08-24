@@ -57,8 +57,8 @@ class UserController extends Controller
                     ->orWhere('role', 'customer')
                     ->orWhereNull('role');
             }),
-            'verified' => $usersQuery->whereNotNull('email_verified_at'),
-            'unverified' => $usersQuery->whereNull('email_verified_at'),
+            'verified' => $usersQuery->verifiedAccount(),
+            'unverified' => $usersQuery->unverifiedAccount(),
             'active' => $usersQuery->where(function (Builder $query): void {
                 $query->whereNull('banned_at')
                     ->orWhere(function (Builder $expiredQuery): void {
@@ -124,7 +124,7 @@ class UserController extends Controller
             ->orWhere('role', 'customer')
             ->orWhereNull('role')
             ->count();
-        $verifiedUsers = User::whereNotNull('email_verified_at')->count();
+        $verifiedUsers = User::query()->verifiedAccount()->count();
         $unverifiedUsers = $totalUsers - $verifiedUsers;
         $temporarilyBannedUsers = User::whereNotNull('banned_at')->where('banned_until', '>', now())->count();
         $permanentlyBannedUsers = User::whereNotNull('banned_at')->whereNull('banned_until')->count();

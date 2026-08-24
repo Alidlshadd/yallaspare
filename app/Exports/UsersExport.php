@@ -37,6 +37,8 @@ class UsersExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMappin
             'dealer_status',
             'dealer_discount',
             'email_verified',
+            'phone_verified',
+            'account_verified',
             'locale_preference',
             'created_at',
         ];
@@ -53,6 +55,10 @@ class UsersExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMappin
             (string) ($user->dealer_status ?? ''),
             $user->dealer_discount !== null ? (float) $user->dealer_discount : null,
             $user->email_verified_at ? 'yes' : 'no',
+            $user->phone_verified_at ? 'yes' : 'no',
+            // Either channel counts, so the per-channel columns alone would
+            // read as "unverified" for a customer who confirmed by SMS.
+            $user->hasVerifiedAccount() ? 'yes' : 'no',
             (string) ($user->locale_preference ?? ''),
             optional($user->created_at)->format('Y-m-d H:i'),
         ]);

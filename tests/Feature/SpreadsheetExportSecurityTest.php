@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Exports\UsersExport;
+use App\Models\User;
 use App\Support\SpreadsheetSanitizer;
 use Tests\TestCase;
 
@@ -21,7 +22,12 @@ class SpreadsheetExportSecurityTest extends TestCase
     public function test_user_export_neutralizes_formula_cells(): void
     {
         $export = new UsersExport;
-        $row = $export->map((object) [
+
+        // Raw attributes rather than a loose object: the export reads model
+        // methods now, and filling normally would let the phone mutator
+        // rewrite the payload on the way in.
+        $user = new User;
+        $user->setRawAttributes([
             'id' => 1,
             'name' => '=WEBSERVICE("https://evil.test")',
             'email' => 'attacker@example.test',
@@ -30,12 +36,15 @@ class SpreadsheetExportSecurityTest extends TestCase
             'dealer_status' => 'inactive',
             'dealer_discount' => 0,
             'email_verified_at' => null,
+            'phone_verified_at' => null,
             'locale_preference' => "en\r\n=CMD()",
             'created_at' => null,
         ]);
 
+        $row = $export->map($user);
+
         $this->assertSame("'=WEBSERVICE(\"https://evil.test\")", $row[1]);
         $this->assertSame("'+SUM(1,1)", $row[3]);
-        $this->assertSame('en =CMD()', $row[8]);
+        $this->assertSame('en =CMD()', $row[10]);
     }
 }
