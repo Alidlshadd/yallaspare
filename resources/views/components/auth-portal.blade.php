@@ -64,26 +64,9 @@
     @include('partials.brand-head')
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <script nonce="{{ $cspNonce }}">
-        // Stamped before first paint so a page arriving from the other auth
-        // screen comes up behind the curtain instead of flashing the form.
-        (() => {
-            try {
-                if (window.sessionStorage.getItem('ys-auth-enter') === '1') {
-                    document.documentElement.dataset.ysAuthEnter = '1';
-                }
-            } catch (error) {
-                // The curtain is progressive enhancement; navigation still works.
-            }
-        })();
-    </script>
 </head>
 <body class="ys-auth-page antialiased selection:bg-accent selection:text-navy">
     <x-loading-overlay :message="$loadingMessage ?: __('Preparing your workspace')" variant="full" />
-
-    <div class="ys-auth-curtain" aria-hidden="true">
-        <span class="ys-auth-curtain-mark">YS</span>
-    </div>
 
     <main class="ys-auth-stage">
         <aside class="ys-auth-aside">
@@ -198,7 +181,7 @@
 
                     <p class="ys-auth-switch">
                         {{ $switchText }}
-                        <a href="{{ $switchHref }}" data-auth-nav>{{ $switchLabel }}</a>
+                        <a href="{{ $switchHref }}">{{ $switchLabel }}</a>
                     </p>
                 </div>
             </div>
@@ -212,65 +195,6 @@
         </div>
     </main>
 
-    <script nonce="{{ $cspNonce }}">
-        (() => {
-            const body = document.body;
-            const CURTAIN_OUT = 340;
-
-            if (document.documentElement.dataset.ysAuthEnter === '1') {
-                // Hand the curtain from <html> to <body> in one step: the body
-                // class keeps it painted, so clearing the attribute cannot flash.
-                body.classList.add('ys-auth-arriving');
-                delete document.documentElement.dataset.ysAuthEnter;
-
-                try {
-                    window.sessionStorage.removeItem('ys-auth-enter');
-                } catch (error) {
-                    // Storage can be blocked; the curtain simply stays visible
-                    // for its own timeout below.
-                }
-
-                window.requestAnimationFrame(() => {
-                    window.requestAnimationFrame(() => body.classList.add('ys-auth-arriving-ready'));
-                });
-
-                window.setTimeout(() => {
-                    body.classList.remove('ys-auth-arriving', 'ys-auth-arriving-ready');
-                }, 900);
-            }
-
-            document.addEventListener('click', (event) => {
-                const link = event.target.closest('[data-auth-nav]');
-
-                if (!link || event.defaultPrevented || event.button !== 0
-                    || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
-                    return;
-                }
-
-                const href = link.getAttribute('href');
-                if (!href || link.dataset.navLocked === '1') {
-                    return;
-                }
-
-                event.preventDefault();
-                link.dataset.navLocked = '1';
-
-                if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-                    window.location.assign(href);
-                    return;
-                }
-
-                try {
-                    window.sessionStorage.setItem('ys-auth-enter', '1');
-                } catch (error) {
-                    // Navigation is unaffected when session storage is blocked.
-                }
-
-                body.classList.add('ys-auth-leaving');
-                window.setTimeout(() => window.location.assign(href), CURTAIN_OUT);
-            });
-        })();
-    </script>
     @include('partials.language-switcher-script')
 </body>
 </html>

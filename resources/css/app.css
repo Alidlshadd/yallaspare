@@ -1158,58 +1158,6 @@
     }
 }
 
-/* -------------------------------------------------- login/register move */
-.ys-auth-curtain {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    display: grid;
-    place-items: center;
-    visibility: hidden;
-    pointer-events: none;
-    background: linear-gradient(158deg, var(--ys-navy) 0%, var(--ys-navy-deep) 100%);
-    opacity: 0;
-    transition: opacity 360ms ease, visibility 0s linear 360ms;
-}
-
-/* The attribute is stamped on <html> by a head script so an arriving page
-   paints behind the curtain rather than flashing the form first. The body
-   classes below take over once the document is parsed. */
-html[data-ys-auth-enter] .ys-auth-curtain,
-.ys-auth-leaving .ys-auth-curtain,
-.ys-auth-arriving .ys-auth-curtain {
-    visibility: visible;
-    opacity: 1;
-    transition: opacity 360ms ease;
-}
-
-.ys-auth-arriving-ready .ys-auth-curtain {
-    visibility: hidden;
-    opacity: 0;
-    transition: opacity 420ms ease, visibility 0s linear 420ms;
-}
-
-.ys-auth-curtain-mark {
-    display: inline-flex;
-    width: 4rem;
-    height: 4rem;
-    align-items: center;
-    justify-content: center;
-    border-radius: 20px;
-    border: 1px solid var(--ys-line-strong);
-    background: rgb(255 255 255 / 0.06);
-    color: var(--ys-on-navy);
-    font-size: 1rem;
-    font-weight: 800;
-    letter-spacing: 0.12em;
-}
-
-.ys-auth-leaving .ys-auth-aside,
-.ys-auth-leaving .ys-auth-main {
-    opacity: 0;
-    transition: opacity 280ms ease;
-}
-
 /* ----------------------------------------------------------- entry motion */
 .ys-auth-aside > *,
 .ys-auth-main > * {
@@ -1244,10 +1192,6 @@ html[data-ys-auth-enter] .ys-auth-curtain,
     .ys-auth-feature,
     .ys-auth-cta {
         transition: none;
-    }
-
-    .ys-auth-curtain {
-        display: none;
     }
 }
 
@@ -1841,6 +1785,7 @@ html[data-ys-auth-enter] .ys-auth-curtain,
         --admin-chart-info: #0891b2;
         --admin-chart-danger: #e11d48;
         --admin-chart-success: #059669;
+        --admin-feature-gradient: linear-gradient(145deg, var(--admin-card) 0%, var(--admin-surface-muted) 58%, var(--admin-surface-strong) 100%);
 
         /* Compatibility aliases for legacy page CSS. They now resolve from
            the admin theme instead of the storefront root palette. */
@@ -2610,6 +2555,7 @@ html[data-ys-auth-enter] .ys-auth-curtain,
         --admin-chart-info: #22d3ee;
         --admin-chart-danger: #fb7185;
         --admin-chart-success: #34d399;
+        --admin-feature-gradient: linear-gradient(135deg, #04041f 0%, #070740 55%, #12124a 100%);
         --focus: rgb(255 138 61 / 0.42);
         --hover-tint: rgb(255 255 255 / 0.05);
         background-color: var(--admin-bg);
@@ -2643,6 +2589,99 @@ html[data-ys-auth-enter] .ys-auth-curtain,
 
     :where(.dark .admin-shell) .admin-content {
         color: var(--admin-text);
+    }
+
+    /* Theme-aware replacement for legacy admin "hero" panels. These panels
+       keep their composition, but no longer force a dark surface in light mode. */
+    .admin-theme-panel {
+        background: var(--admin-feature-gradient) !important;
+        border-color: var(--admin-border) !important;
+        color: var(--admin-text-strong);
+        box-shadow: var(--admin-shadow-soft);
+    }
+
+    :root:not(.dark) .admin-theme-panel .bento-stripes,
+    :root:not(.dark) .admin-theme-panel.bento-stripes,
+    :root:not(.dark) .admin-theme-panel::after {
+        background-image: repeating-linear-gradient(135deg, var(--admin-chart-grid) 0 1px, transparent 1px 14px);
+    }
+
+    :root:not(.dark) .admin-theme-panel.corner-brackets::before,
+    :root:not(.dark) .admin-theme-panel.corner-brackets::after {
+        border-color: var(--admin-border);
+    }
+
+    :root:not(.dark) .admin-theme-panel :is(.text-white, .text-white\/95) {
+        color: var(--admin-text-strong) !important;
+    }
+
+    :root:not(.dark) .admin-theme-panel :is(
+        .text-white\/85,
+        .text-white\/80,
+        .text-white\/70,
+        .text-white\/65,
+        .text-white\/60,
+        .text-white\/55,
+        .text-white\/50,
+        .text-white\/45,
+        .text-white\/40,
+        .text-white\/35,
+        .text-white\/30
+    ) {
+        color: var(--admin-text-muted) !important;
+    }
+
+    :root:not(.dark) .admin-theme-panel :is(
+        .bg-white\/5,
+        .bg-white\/10,
+        .bg-white\/15,
+        .bg-white\/20,
+        .bg-white\/[0\.06],
+        .bg-white\/[\.06],
+        .bg-white\/[\.07]
+    ) {
+        background-color: rgb(var(--admin-surface-strong-rgb) / 0.72) !important;
+    }
+
+    :root:not(.dark) .admin-theme-panel :is(
+        .border-white\/10,
+        .border-white\/15,
+        .border-white\/20
+    ) {
+        border-color: var(--admin-border) !important;
+    }
+
+    :root:not(.dark) .admin-theme-panel :is(.hover\:bg-white\/10, .hover\:bg-white\/15, .hover\:bg-white\/20):hover {
+        background-color: var(--admin-surface-hover) !important;
+    }
+
+    :root:not(.dark) .admin-theme-terminal :is(.bg-navy, .bg-navy\/80, .bg-navy-deep\/80, .bg-navy-deep\/60) {
+        background-color: var(--admin-surface-muted) !important;
+    }
+
+    :root:not(.dark) .admin-theme-terminal [class*='border-navy-raised'] {
+        border-color: var(--admin-border) !important;
+    }
+
+    :root:not(.dark) .admin-theme-terminal :is(
+        [class*='text-[#f2f3ff]'],
+        [class*='text-[#e6e9ff]'],
+        [class*='text-[#c0c5e8]']
+    ) {
+        color: var(--admin-text-strong) !important;
+    }
+
+    :root:not(.dark) .admin-theme-terminal :is(
+        [class*='text-[#7c84b3]'],
+        [class*='text-[#666fa3]'],
+        [class*='text-[#4a5288]'],
+        [class*='text-[#a9b0d6]']
+    ) {
+        color: var(--admin-text-muted) !important;
+    }
+
+    :root:not(.dark) .admin-theme-terminal input {
+        color-scheme: light;
     }
 
     :where(.dark .admin-shell) .admin-topbar {
