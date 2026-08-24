@@ -3286,5 +3286,8 @@
     "Send reset link": "ناردنی بەستەری گەڕاندنەوە",
     "The link works once and expires shortly after it is sent. Check your spam folder if it does not arrive.": "بەستەرەکە تەنیا یەک جار کار دەکات و لە ماوەیەکی کورتدا بەسەردەچێت. ئەگەر نەگەیشت، سەیری فۆڵدەری سپام بکە.",
     "Verified by phone": "بە مۆبایل پشتڕاستکراوەتەوە",
-    "Phone Verified": "مۆبایل پشتڕاستکراوە"
+    "Phone Verified": "مۆبایل پشتڕاستکراوە",
+    "Back to products": "گەڕانەوە بۆ بەرهەمەکان",
+    "Back to Address Book": "گەڕانەوە بۆ دەفتەری ناونیشان",
+    "Cancel and go back": "پاشگەزبوونەوە و گەڕانەوە"
 }

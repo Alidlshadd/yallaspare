@@ -1,3 +1,12 @@
+@php
+    // Only admin routes sit behind password.confirm, so the way out is the
+    // panel the sensitive action was started from. Without this the page has
+    // no exit at all: no header, no sidebar, and the panel button was off.
+    $confirmExit = auth()->user()?->isAdminPanelUser()
+        ? route('admin.dashboard')
+        : route('account.index');
+@endphp
+
 <x-auth-split-layout
     :heading="__('Confirm your password')"
     form-position="right"
@@ -6,7 +15,10 @@
     :panel-subtitle="__('You are about to perform a sensitive action. Please confirm your password to continue.')"
     :panel-tag="__('Identity check')"
     panel-theme="login"
-    panel-button-action="none"
+    panel-button-action="navigate"
+    :panel-button-text="__('Cancel and go back')"
+    :panel-button-href="$confirmExit"
+    panel-exit-direction="left"
 >
     <p class="mt-4 text-sm text-slate-600 dark:text-slate-300">
         {{ __('This is a secure area of the application. Please confirm your password before continuing.') }}
@@ -38,5 +50,13 @@
         >
             <span data-button-label>{{ __('Confirm') }}</span>
         </button>
+
+        {{-- Repeated under the form because on a narrow screen the panel and
+             its button sit above the fold, out of sight from here. --}}
+        <p class="text-center text-sm">
+            <a href="{{ $confirmExit }}" class="font-semibold text-slate-500 underline-offset-4 hover:text-accent hover:underline dark:text-slate-400">
+                {{ __('Cancel and go back') }}
+            </a>
+        </p>
     </form>
 </x-auth-split-layout>

@@ -3286,5 +3286,8 @@
     "Send reset link": "إرسال رابط إعادة التعيين",
     "The link works once and expires shortly after it is sent. Check your spam folder if it does not arrive.": "يعمل الرابط مرة واحدة وتنتهي صلاحيته بعد إرساله بقليل. تحقق من مجلد البريد العشوائي إن لم يصلك.",
     "Verified by phone": "تم التحقق عبر الهاتف",
-    "Phone Verified": "تم التحقق من الهاتف"
+    "Phone Verified": "تم التحقق من الهاتف",
+    "Back to products": "العودة إلى المنتجات",
+    "Back to Address Book": "العودة إلى دفتر العناوين",
+    "Cancel and go back": "إلغاء والعودة"
 }

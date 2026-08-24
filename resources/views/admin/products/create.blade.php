@@ -5,10 +5,19 @@
                 <h2 class="text-2xl font-semibold text-slate-900">{{ __('Add Product') }}</h2>
                 <p class="text-sm text-slate-500">{{ __('Create a new product listing with pricing and inventory details.') }}</p>
             </div>
-            <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600 shadow-sm">
-                <i class="fas fa-circle-info text-info" aria-hidden="true"></i>
-                {{ __('Required fields are marked') }}
-            </span>
+            <div class="flex flex-wrap items-center gap-2">
+                <a href="{{ route('admin.products.index') }}"
+                   class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 shadow-sm transition hover:bg-slate-50 dark:hover:bg-slate-800">
+                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                    </svg>
+                    {{ __('Back to products') }}
+                </a>
+                <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-medium text-slate-600 shadow-sm">
+                    <i class="fas fa-circle-info text-info" aria-hidden="true"></i>
+                    {{ __('Required fields are marked') }}
+                </span>
+            </div>
         </div>
     </x-slot>
 
