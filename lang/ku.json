@@ -3304,5 +3304,6 @@
     "WAYL has not confirmed the payment yet. Your order will remain pending until verification succeeds.": "WAYL هێشتا پارەدانەکەی پشتڕاست نەکردووەتەوە. داواکارییەکەت چاوەڕوان دەمێنێتەوە تا پشتڕاستکردنەوە سەرکەوتوو دەبێت.",
     "Payment status": "دۆخی پارەدان",
     "WAYL payment status could not be verified. Please try again.": "نەکرا دۆخی پارەدانی WAYL پشتڕاست بکرێتەوە. تکایە دووبارە هەوڵ بدەوە.",
-    "WAYL payment status verified: :status.": "دۆخی پارەدانی WAYL پشتڕاست کرایەوە: :status."
+    "WAYL payment status verified: :status.": "دۆخی پارەدانی WAYL پشتڕاست کرایەوە: :status.",
+    "WAYL requires a minimum order total of :amount IQD.": "WAYL داوای کەمترین کۆی داواکاری بە بڕی :amount IQD دەکات."
 }

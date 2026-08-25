@@ -3304,5 +3304,6 @@
     "WAYL has not confirmed the payment yet. Your order will remain pending until verification succeeds.": "WAYL has not confirmed the payment yet. Your order will remain pending until verification succeeds.",
     "Payment status": "Payment status",
     "WAYL payment status could not be verified. Please try again.": "WAYL payment status could not be verified. Please try again.",
-    "WAYL payment status verified: :status.": "WAYL payment status verified: :status."
+    "WAYL payment status verified: :status.": "WAYL payment status verified: :status.",
+    "WAYL requires a minimum order total of :amount IQD.": "WAYL requires a minimum order total of :amount IQD."
 }

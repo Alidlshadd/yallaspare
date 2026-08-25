@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Product;
+use App\Models\Setting;
 use App\Models\User;
 use App\Models\UserAddress;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -158,6 +159,27 @@ class OnlinePaymentTest extends TestCase
         $this->assertSame(Order::STATUS_PROCESSING, (string) $order->fresh()->status);
         $this->assertSame(Payment::STATUS_PAID, (string) $payment->fresh()->status);
         Mail::assertQueued(OperationalNotificationMail::class, 1);
+    }
+
+    public function test_wayl_order_below_minimum_is_rejected_before_order_creation(): void
+    {
+        [$user, $address, $product] = $this->makeCheckoutContext();
+        $this->enableWayl();
+        Setting::setValue('shipping_fee', 0);
+        $product->update(['price' => 1000]);
+        Http::fake();
+
+        $response = $this->actingAs($user)->post(route('checkout.store'), [
+            'address_id' => $address->id,
+            'payment_method' => 'wayl',
+        ]);
+
+        $response->assertSessionHas('error', 'WAYL requires a minimum order total of 3,000 IQD.');
+        $this->assertDatabaseCount('orders', 0);
+        $this->assertDatabaseCount('payments', 0);
+        $this->assertDatabaseCount('cart_items', 1);
+        $this->assertSame(5, (int) $product->fresh()->stock_quantity);
+        Http::assertNothingSent();
     }
 
     public function test_wayl_pending_status_keeps_order_pending_on_result_page(): void

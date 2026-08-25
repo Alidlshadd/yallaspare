@@ -27,6 +27,7 @@ return [
             'online' => true,
             'enabled' => env('WAYL_ENABLED', false),
             'coming_soon' => ! env('WAYL_ENABLED', false),
+            'minimum_amount' => 3000,
         ],
         'fastpay' => [
             'label' => 'FastPay',

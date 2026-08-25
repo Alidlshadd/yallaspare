@@ -145,8 +145,13 @@ class WaylPaymentService implements PaymentProviderInterface
 
         $rawAmount = (float) $payment->amount;
         $amount = (int) round($rawAmount);
-        if ($amount < 1 || abs($rawAmount - $amount) > 0.0001) {
+        if (abs($rawAmount - $amount) > 0.0001) {
             throw new \RuntimeException('WAYL requires a positive whole-IQD amount.');
+        }
+
+        $minimumAmount = max(1, (int) config('payments.methods.wayl.minimum_amount', 3000));
+        if ($amount < $minimumAmount) {
+            throw new \RuntimeException("WAYL requires a minimum payment amount of {$minimumAmount} IQD.");
         }
 
         return $amount;

@@ -144,6 +144,7 @@ class CheckoutService
         $couponShippingDiscount = ($couponPreview['free_shipping'] ?? false) ? $shippingFee : 0.0;
         $discountAmount = round($couponDiscount + $couponShippingDiscount, 2);
         $grandTotal = round(max(0, $subtotalAmount + $shippingFee - $discountAmount), 2);
+        $this->assertPaymentMinimum($paymentMethod, $grandTotal);
         $notes = $this->checkoutNotes($user, $notesInput);
         $paymentStatus = $paymentMethod === PaymentService::METHOD_COD
             ? Order::PAYMENT_PENDING
@@ -222,6 +223,20 @@ class CheckoutService
     private function shippingFee(): float
     {
         return max(0, round((float) Setting::getValue('shipping_fee', 5000), 2));
+    }
+
+    private function assertPaymentMinimum(string $paymentMethod, float $grandTotal): void
+    {
+        if ($paymentMethod !== 'wayl') {
+            return;
+        }
+
+        $minimumAmount = max(1, (int) config('payments.methods.wayl.minimum_amount', 3000));
+        if ($grandTotal < $minimumAmount) {
+            throw new \RuntimeException(__('WAYL requires a minimum order total of :amount IQD.', [
+                'amount' => number_format($minimumAmount),
+            ]));
+        }
     }
 
     private function contactDestination(User $user, UserAddress $address): string

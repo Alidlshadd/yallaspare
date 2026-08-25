@@ -3304,5 +3304,6 @@
     "WAYL has not confirmed the payment yet. Your order will remain pending until verification succeeds.": "لم تؤكد WAYL الدفع بعد. سيبقى طلبك قيد الانتظار حتى ينجح التحقق.",
     "Payment status": "حالة الدفع",
     "WAYL payment status could not be verified. Please try again.": "تعذر التحقق من حالة دفع WAYL. يرجى المحاولة مرة أخرى.",
-    "WAYL payment status verified: :status.": "تم التحقق من حالة دفع WAYL: :status."
+    "WAYL payment status verified: :status.": "تم التحقق من حالة دفع WAYL: :status.",
+    "WAYL requires a minimum order total of :amount IQD.": "يتطلب WAYL حدًا أدنى لإجمالي الطلب قدره :amount د.ع."
 }
