@@ -3289,5 +3289,20 @@
     "Phone Verified": "مۆبایل پشتڕاستکراوە",
     "Back to products": "گەڕانەوە بۆ بەرهەمەکان",
     "Back to Address Book": "گەڕانەوە بۆ دەفتەری ناونیشان",
-    "Cancel and go back": "پاشگەزبوونەوە و گەڕانەوە"
+    "Cancel and go back": "پاشگەزبوونەوە و گەڕانەوە",
+    "WAYL status: :status": "دۆخی WAYL: :status",
+    "Last verified: :time": "دوا پشتڕاستکردنەوە: :time",
+    "Verify with WAYL": "پشتڕاستکردنەوە لەگەڵ WAYL",
+    "WAYL Payment Result": "ئەنجامی پارەدانی WAYL",
+    "Payment verification is temporarily unavailable": "پشتڕاستکردنەوەی پارەدان لە ئێستادا بەردەست نییە",
+    "Your order is saved and remains pending. Please check again later or contact support with your order number.": "داواکارییەکەت پاشەکەوت کرا و هێشتا چاوەڕوانە. تکایە دواتر دووبارە پشکنین بکە یان بە ژمارەی داواکارییەکەتەوە پەیوەندی بە پشتگیرییەوە بکە.",
+    "Payment confirmed": "پارەدان پشتڕاست کرایەوە",
+    "WAYL confirmed your payment on the server. Your order is now processing.": "WAYL پارەدانەکەت لە سێرڤەرەوە پشتڕاست کردەوە. داواکارییەکەت ئێستا لە پرۆسەدایە.",
+    "Payment was not completed": "پارەدان تەواو نەبوو",
+    "WAYL reported that this payment was cancelled or rejected.": "WAYL ڕایگەیاند کە ئەم پارەدانە هەڵوەشاوەتەوە یان ڕەت کراوەتەوە.",
+    "Payment is pending": "پارەدان چاوەڕوانە",
+    "WAYL has not confirmed the payment yet. Your order will remain pending until verification succeeds.": "WAYL هێشتا پارەدانەکەی پشتڕاست نەکردووەتەوە. داواکارییەکەت چاوەڕوان دەمێنێتەوە تا پشتڕاستکردنەوە سەرکەوتوو دەبێت.",
+    "Payment status": "دۆخی پارەدان",
+    "WAYL payment status could not be verified. Please try again.": "نەکرا دۆخی پارەدانی WAYL پشتڕاست بکرێتەوە. تکایە دووبارە هەوڵ بدەوە.",
+    "WAYL payment status verified: :status.": "دۆخی پارەدانی WAYL پشتڕاست کرایەوە: :status."
 }

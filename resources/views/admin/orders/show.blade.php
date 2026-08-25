@@ -219,6 +219,22 @@
                                         @if($payment->provider_transaction_id)
                                             <p class="mt-1 text-slate-500">{{ __('Transaction: :id', ['id' => $payment->provider_transaction_id]) }}</p>
                                         @endif
+                                        @if($payment->provider === 'wayl')
+                                            @if(data_get($payment->provider_response, 'data.status'))
+                                                <p class="mt-1 text-slate-500">{{ __('WAYL status: :status', ['status' => data_get($payment->provider_response, 'data.status')]) }}</p>
+                                            @endif
+                                            @if($payment->verified_at)
+                                                <p class="mt-1 text-slate-500">{{ __('Last verified: :time', ['time' => $payment->verified_at->format('M d, Y H:i')]) }}</p>
+                                            @endif
+                                            @if(! $payment->isPaid())
+                                                <form method="POST" action="{{ route('admin.orders.payments.verify-wayl', [$order, $payment]) }}" class="mt-3">
+                                                    @csrf
+                                                    <button type="submit" class="inline-flex rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+                                                        {{ __('Verify with WAYL') }}
+                                                    </button>
+                                                </form>
+                                            @endif
+                                        @endif
                                     </div>
                                 @endforeach
                             </div>

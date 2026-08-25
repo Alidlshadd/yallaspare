@@ -5,6 +5,7 @@ namespace App\Services\Payments;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Services\Payments\Providers\FibPaymentService;
+use App\Services\Payments\Providers\WaylPaymentService;
 use App\Services\Payments\Providers\ZainCashPaymentService;
 use App\Support\UserCommunication;
 use Illuminate\Http\Request;
@@ -18,6 +19,7 @@ class PaymentService
     public function __construct(
         private readonly FibPaymentService $fib,
         private readonly ZainCashPaymentService $zainCash,
+        private readonly WaylPaymentService $wayl,
     ) {}
 
     public function checkoutMethods(): array
@@ -38,7 +40,7 @@ class PaymentService
     public function allowedCheckoutMethods(): array
     {
         return collect((array) config('payments.methods', []))
-            ->only([self::METHOD_COD, 'fib', 'zaincash'])
+            ->only([self::METHOD_COD, 'fib', 'zaincash', 'wayl'])
             ->filter(fn (array $method): bool => (bool) ($method['enabled'] ?? false))
             ->keys()
             ->values()
@@ -288,6 +290,7 @@ class PaymentService
         return match ($method) {
             'fib' => $this->fib,
             'zaincash' => $this->zainCash,
+            'wayl' => $this->wayl,
             default => throw new \InvalidArgumentException("Unsupported payment provider [{$method}]."),
         };
     }

@@ -73,6 +73,13 @@ return [
         'webhook_token' => env('ZAINCASH_WEBHOOK_TOKEN'),
     ],
 
+    'wayl' => [
+        'enabled' => env('WAYL_ENABLED', false),
+        'env' => env('WAYL_ENV', 'test'),
+        'token' => env('WAYL_API_TOKEN'),
+        'base_url' => env('WAYL_BASE_URL', 'https://api.thewayl.com'),
+    ],
+
     'otpiq' => [
         'api_key' => env('OTPIQ_API_KEY'),
         'base_url' => env('OTPIQ_BASE_URL', 'https://api.otpiq.com/api'),

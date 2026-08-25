@@ -3289,5 +3289,20 @@
     "Phone Verified": "Phone Verified",
     "Back to products": "Back to products",
     "Back to Address Book": "Back to Address Book",
-    "Cancel and go back": "Cancel and go back"
+    "Cancel and go back": "Cancel and go back",
+    "WAYL status: :status": "WAYL status: :status",
+    "Last verified: :time": "Last verified: :time",
+    "Verify with WAYL": "Verify with WAYL",
+    "WAYL Payment Result": "WAYL Payment Result",
+    "Payment verification is temporarily unavailable": "Payment verification is temporarily unavailable",
+    "Your order is saved and remains pending. Please check again later or contact support with your order number.": "Your order is saved and remains pending. Please check again later or contact support with your order number.",
+    "Payment confirmed": "Payment confirmed",
+    "WAYL confirmed your payment on the server. Your order is now processing.": "WAYL confirmed your payment on the server. Your order is now processing.",
+    "Payment was not completed": "Payment was not completed",
+    "WAYL reported that this payment was cancelled or rejected.": "WAYL reported that this payment was cancelled or rejected.",
+    "Payment is pending": "Payment is pending",
+    "WAYL has not confirmed the payment yet. Your order will remain pending until verification succeeds.": "WAYL has not confirmed the payment yet. Your order will remain pending until verification succeeds.",
+    "Payment status": "Payment status",
+    "WAYL payment status could not be verified. Please try again.": "WAYL payment status could not be verified. Please try again.",
+    "WAYL payment status verified: :status.": "WAYL payment status verified: :status."
 }

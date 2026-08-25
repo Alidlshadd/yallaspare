@@ -22,6 +22,12 @@ return [
             'enabled' => env('ZAINCASH_PAYMENTS_ENABLED', false),
             'coming_soon' => ! env('ZAINCASH_PAYMENTS_ENABLED', false),
         ],
+        'wayl' => [
+            'label' => 'WAYL',
+            'online' => true,
+            'enabled' => env('WAYL_ENABLED', false),
+            'coming_soon' => ! env('WAYL_ENABLED', false),
+        ],
         'fastpay' => [
             'label' => 'FastPay',
             'online' => true,

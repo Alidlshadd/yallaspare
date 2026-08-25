@@ -476,6 +476,9 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::patch('/orders/{order}/payment', [OrderController::class, 'updatePayment'])
             ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('orders.update-payment');
+        Route::post('/orders/{order}/payments/{payment}/verify-wayl', [OrderController::class, 'verifyWaylPayment'])
+            ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
+            ->name('orders.payments.verify-wayl');
         Route::post('/orders/{order}/admin-notes', [OrderController::class, 'storeAdminNote'])
             ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('orders.admin-notes.store');

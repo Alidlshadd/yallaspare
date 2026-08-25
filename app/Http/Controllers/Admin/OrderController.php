@@ -6,10 +6,12 @@ use App\Exports\OrdersExport;
 use App\Http\Controllers\Controller;
 use App\Models\InventoryMovement;
 use App\Models\Order;
+use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Setting;
 use App\Models\User;
 use App\Services\Orders\OrderStatusService;
+use App\Services\Payments\PaymentService;
 use App\Support\AdminLogger;
 use App\Support\Branding;
 use App\Support\SqlSafe;
@@ -296,6 +298,38 @@ class OrderController extends Controller
         ]);
 
         return back()->with('success', __('Order #:order payment updated.', ['order' => $order->order_number]));
+    }
+
+    public function verifyWaylPayment(
+        Request $request,
+        Order $order,
+        Payment $payment,
+        PaymentService $payments
+    ): RedirectResponse {
+        abort_unless($request->user()?->hasPermission(User::PERMISSION_FINANCE_MANAGE), 403);
+        abort_unless($payment->order_id === $order->id && $payment->provider === 'wayl', 404);
+
+        try {
+            $verified = $payments->verifyAndApply($payment, 'admin');
+        } catch (\Throwable $exception) {
+            Log::warning('Admin WAYL payment status verification failed', [
+                'payment_id' => $payment->id,
+                'order_id' => $order->id,
+                'admin_id' => $request->user()?->id,
+                'error_type' => $exception::class,
+            ]);
+
+            return back()->with('error', __('WAYL payment status could not be verified. Please try again.'));
+        }
+
+        AdminLogger::log('order.wayl_payment_verified', $order, [
+            'payment_id' => $verified->id,
+            'payment_status' => $verified->status,
+        ]);
+
+        return back()->with('success', __('WAYL payment status verified: :status.', [
+            'status' => __(ucfirst(str_replace('_', ' ', (string) $verified->status))),
+        ]));
     }
 
     public function updateStatus(Request $request, Order $order, OrderStatusService $statuses): RedirectResponse
