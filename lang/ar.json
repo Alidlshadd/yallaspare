@@ -1159,6 +1159,11 @@
     "Payment is not confirmed yet. We will update the order after the gateway confirms it.": "لم يتم تأكيد الدفع بعد. سنحدّث الطلب بعد أن تؤكده بوابة الدفع.",
     "Payment Management": "إدارة الدفع",
     "Payment Method": "طريقة الدفع",
+    "Cash on Delivery": "الدفع عند الاستلام",
+    "Pay when your order arrives": "ادفع عند استلام طلبك",
+    "Online Payment": "الدفع الإلكتروني",
+    "Card & digital payments": "الدفع بالبطاقات والوسائل الرقمية",
+    "Coming Soon": "قريباً",
     "Payment pending": "الدفع معلق",
     "Payment reference": "مرجع الدفع",
     "Payments, invoices, and billing requests": "المدفوعات والفواتير وطلبات الفوترة",
@@ -3368,5 +3373,13 @@
     "Integration": "التكامل",
     "Refresh": "تحديث",
     "Time": "الوقت",
-    "HTTP": "HTTP"
+    "HTTP": "HTTP",
+    "Running": "جارٍ التشغيل",
+    "Last Check": "آخر فحص",
+    "Not Tested": "لم يُختبر",
+    "HTTP Status": "حالة HTTP",
+    "Webhook Required": "Webhook مطلوب",
+    "Test only. Creates no order or payment record, changes no stock or cart, and omits webhookUrl and webhookSecret entirely.": "للاختبار فقط. لا ينشئ طلبًا أو سجل دفع، ولا يغيّر المخزون أو السلة، ولا يرسل حقلي webhookUrl وwebhookSecret إطلاقًا.",
+    "WAYL create-link diagnostic passed without webhook fields (HTTP :status).": "نجح تشخيص إنشاء رابط WAYL دون حقول webhook (HTTP :status).",
+    "WAYL create-link diagnostic failed (HTTP :status): :message": "فشل تشخيص إنشاء رابط WAYL (HTTP :status): :message"
 }

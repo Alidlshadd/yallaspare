@@ -96,26 +96,35 @@
                     </div>
                 </div>
 
-                <div class="mt-4 rounded-2xl border border-slate-200/80 bg-white p-3 dark:bg-slate-950">
+                <div class="mt-4 rounded-2xl border border-slate-200/80 bg-white p-4 dark:border-slate-800 dark:bg-slate-950">
                     <p class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">{{ __('Payment Method') }}</p>
-                    <div class="mt-3 grid gap-2 sm:grid-cols-2">
+                    <div class="mt-3 grid gap-3 sm:grid-cols-2">
                         @foreach($paymentMethods as $method)
-                            @php($isDisabled = ! ($method['enabled'] ?? false))
-                            <label class="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm transition {{ $isDisabled ? 'cursor-not-allowed opacity-60' : 'cursor-pointer hover:border-primary/30' }}">
+                            @php
+                                $isDisabled = ! ($method['enabled'] ?? false);
+                                $isCod = ($method['key'] ?? null) === 'cash_on_delivery';
+                            @endphp
+                            <label class="relative flex min-h-28 items-start gap-3 overflow-hidden rounded-2xl border p-4 text-sm transition {{ $isDisabled ? 'cursor-not-allowed border-amber-200 bg-gradient-to-br from-amber-50 via-white to-orange-50/70 shadow-sm dark:border-amber-500/25 dark:from-amber-500/10 dark:via-slate-900 dark:to-orange-500/5' : 'cursor-pointer border-primary/35 bg-gradient-to-br from-primary/5 via-white to-accent/10 shadow-sm ring-1 ring-primary/10 hover:border-primary/60 hover:shadow-md dark:border-info/30 dark:from-info/10 dark:via-slate-900 dark:to-info/5' }}">
                                 <input
                                     type="radio"
                                     name="payment_method"
                                     value="{{ $method['key'] }}"
                                     @checked(old('payment_method', 'cash_on_delivery') === $method['key'])
                                     @disabled($isDisabled)
-                                    class="h-4 w-4 border-slate-300 text-primary focus:ring-accent/30 dark:border-slate-700 dark:bg-slate-900"
+                                    class="mt-1 h-4 w-4 shrink-0 border-slate-300 text-primary focus:ring-accent/30 disabled:border-amber-300 disabled:bg-amber-50 dark:border-slate-700 dark:bg-slate-900 dark:disabled:border-amber-500/40 dark:disabled:bg-slate-800"
                                 >
-                                <span class="flex-1 font-medium text-slate-900">{{ __($method['label']) }}</span>
-                                @if($method['coming_soon'] ?? false)
-                                    <span class="rounded-full bg-amber-100 px-2 py-0.5 text-[11px] font-semibold text-amber-700 dark:bg-amber-900/30 dark:text-amber-300">{{ __('Coming soon') }}</span>
-                                @elseif($method['online'])
-                                    <span class="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-semibold text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300">{{ __('Online') }}</span>
-                                @endif
+                                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl {{ $isDisabled ? 'bg-amber-100 text-amber-700 dark:bg-amber-500/15 dark:text-amber-300' : 'bg-primary/10 text-primary dark:bg-info/10 dark:text-info' }}">
+                                    <i class="fas {{ $isCod ? 'fa-money-bill-wave' : 'fa-credit-card' }}" aria-hidden="true"></i>
+                                </span>
+                                <span class="min-w-0 flex-1">
+                                    <span class="flex flex-wrap items-center gap-2">
+                                        <span class="font-bold text-slate-900 dark:text-white">{{ __($method['label']) }}</span>
+                                        @if($method['coming_soon'] ?? false)
+                                            <span class="rounded-full border border-amber-200 bg-amber-100/80 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-amber-800 dark:border-amber-500/30 dark:bg-amber-500/15 dark:text-amber-200">{{ __('Coming Soon') }}</span>
+                                        @endif
+                                    </span>
+                                    <span class="mt-1.5 block text-xs leading-5 {{ $isDisabled ? 'text-amber-800/80 dark:text-amber-200/75' : 'text-slate-500 dark:text-slate-400' }}">{{ __($method['description']) }}</span>
+                                </span>
                             </label>
                         @endforeach
                     </div>

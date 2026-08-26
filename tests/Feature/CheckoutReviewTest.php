@@ -81,7 +81,7 @@ class CheckoutReviewTest extends TestCase
         $this->assertSame(3, $product->fresh()->stock_quantity);
     }
 
-    public function test_customer_checkout_only_displays_cod_when_online_providers_are_configured(): void
+    public function test_customer_checkout_displays_cod_and_a_single_disabled_online_payment_card(): void
     {
         [$user, $address] = $this->makeCheckoutContext();
         config([
@@ -97,10 +97,21 @@ class CheckoutReviewTest extends TestCase
             ->assertOk()
             ->assertSee('value="cash_on_delivery"', false)
             ->assertSee('checked', false)
+            ->assertSee('Cash on Delivery')
+            ->assertSee('Pay when your order arrives')
+            ->assertSee('Online Payment')
+            ->assertSee('Card &amp; digital payments', false)
+            ->assertSee('Coming Soon')
+            ->assertSee('value="online_payment"', false)
+            ->assertSee('disabled', false)
             ->assertDontSee('value="fib"', false)
             ->assertDontSee('value="zaincash"', false)
             ->assertDontSee('value="wayl"', false)
-            ->assertDontSee('value="fastpay"', false);
+            ->assertDontSee('value="fastpay"', false)
+            ->assertDontSee('WAYL')
+            ->assertDontSee('FIB')
+            ->assertDontSee('ZainCash')
+            ->assertDontSee('FastPay');
     }
 
     public function test_customer_cannot_submit_online_payment_methods_when_feature_is_disabled(): void
@@ -114,7 +125,7 @@ class CheckoutReviewTest extends TestCase
             'payments.methods.fastpay.enabled' => true,
         ]);
 
-        foreach (['fib', 'zaincash', 'wayl', 'fastpay'] as $method) {
+        foreach (['online_payment', 'fib', 'zaincash', 'wayl', 'fastpay'] as $method) {
             $this->actingAs($user)
                 ->post(route('checkout.store'), [
                     'address_id' => $address->id,
@@ -380,7 +391,17 @@ class CheckoutReviewTest extends TestCase
             ->assertSee('name="quantity" value="8"', false)
             ->assertSee('Final order check')
             ->assertSee('Quantity')
-            ->assertSee('8');
+            ->assertSee('8')
+            ->assertSee('value="cash_on_delivery"', false)
+            ->assertSee('Online Payment')
+            ->assertSee('Card &amp; digital payments', false)
+            ->assertSee('Coming Soon')
+            ->assertSee('value="online_payment"', false)
+            ->assertSee('disabled', false)
+            ->assertDontSee('value="wayl"', false)
+            ->assertDontSee('value="fib"', false)
+            ->assertDontSee('value="zaincash"', false)
+            ->assertDontSee('value="fastpay"', false);
     }
 
     public function test_pending_order_can_be_cancelled_directly_by_customer(): void

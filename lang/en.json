@@ -1159,6 +1159,11 @@
     "Payment is not confirmed yet. We will update the order after the gateway confirms it.": "Payment is not confirmed yet. We will update the order after the gateway confirms it.",
     "Payment Management": "Payment Management",
     "Payment Method": "Payment Method",
+    "Cash on Delivery": "Cash on Delivery",
+    "Pay when your order arrives": "Pay when your order arrives",
+    "Online Payment": "Online Payment",
+    "Card & digital payments": "Card & digital payments",
+    "Coming Soon": "Coming Soon",
     "Payment pending": "Payment pending",
     "Payment reference": "Payment reference",
     "Payments, invoices, and billing requests": "Payments, invoices, and billing requests",
@@ -3368,5 +3373,13 @@
     "Integration": "Integration",
     "Refresh": "Refresh",
     "Time": "Time",
-    "HTTP": "HTTP"
+    "HTTP": "HTTP",
+    "Running": "Running",
+    "Last Check": "Last Check",
+    "Not Tested": "Not Tested",
+    "HTTP Status": "HTTP Status",
+    "Webhook Required": "Webhook Required",
+    "Test only. Creates no order or payment record, changes no stock or cart, and omits webhookUrl and webhookSecret entirely.": "Test only. Creates no order or payment record, changes no stock or cart, and omits webhookUrl and webhookSecret entirely.",
+    "WAYL create-link diagnostic passed without webhook fields (HTTP :status).": "WAYL create-link diagnostic passed without webhook fields (HTTP :status).",
+    "WAYL create-link diagnostic failed (HTTP :status): :message": "WAYL create-link diagnostic failed (HTTP :status): :message"
 }

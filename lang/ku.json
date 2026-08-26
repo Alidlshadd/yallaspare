@@ -1159,6 +1159,11 @@
     "Payment is not confirmed yet. We will update the order after the gateway confirms it.": "پارەدان هێشتا پشتڕاست نەکراوەتەوە. دوای پشتڕاستکردنەوەی دەروازەکە داواکارییەکە نوێ دەکەینەوە.",
     "Payment Management": "بەڕێوەبردنی پارەدان",
     "Payment Method": "ڕێگای پارەدان",
+    "Cash on Delivery": "پارەدان لە کاتی گەیاندن",
+    "Pay when your order arrives": "کاتێک داواکارییەکەت گەیشت پارە بدە",
+    "Online Payment": "پارەدانی ئۆنلاین",
+    "Card & digital payments": "پارەدان بە کارت و شێوازی دیجیتاڵ",
+    "Coming Soon": "بەم زووانە",
     "Payment pending": "پارەدان چاوەڕوانە",
     "Payment reference": "سەرچاوەی پارەدان",
     "Payments, invoices, and billing requests": "پارەدان، فاکتورەکان و داواکارییەکانی فاکتورکردن",
@@ -3368,5 +3373,13 @@
     "Integration": "یەکخستن",
     "Refresh": "نوێکردنەوە",
     "Time": "کات",
-    "HTTP": "HTTP"
+    "HTTP": "HTTP",
+    "Running": "لە کاردایە",
+    "Last Check": "دوا پشکنین",
+    "Not Tested": "تاقی نەکراوەتەوە",
+    "HTTP Status": "دۆخی HTTP",
+    "Webhook Required": "Webhook پێویستە",
+    "Test only. Creates no order or payment record, changes no stock or cart, and omits webhookUrl and webhookSecret entirely.": "تەنها بۆ تاقیکردنەوەیە. هیچ داواکاری یان تۆماری پارەدان دروست ناکات، کۆگا یان سەبەتە ناگۆڕێت، و webhookUrl و webhookSecret بە تەواوی نانێرێت.",
+    "WAYL create-link diagnostic passed without webhook fields (HTTP :status).": "پشکنینی دروستکردنی بەستەری WAYL بەبێ خانەکانی webhook سەرکەوتوو بوو (HTTP :status).",
+    "WAYL create-link diagnostic failed (HTTP :status): :message": "پشکنینی دروستکردنی بەستەری WAYL شکستی هێنا (HTTP :status): :message"
 }

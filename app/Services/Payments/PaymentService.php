@@ -25,11 +25,26 @@ class PaymentService
 
     public function checkoutMethods(): array
     {
-        return collect($this->customerCheckoutMethodConfig())
+        $methods = $this->customerCheckoutMethodConfig();
+
+        if (! (bool) config('payments.customer_online_payments_enabled', false)) {
+            $methods['online_payment'] = [
+                'label' => 'Online Payment',
+                'description' => 'Card & digital payments',
+                'online' => true,
+                'enabled' => false,
+                'coming_soon' => true,
+            ];
+        }
+
+        return collect($methods)
             ->filter(fn (array $method): bool => (bool) ($method['enabled'] ?? false) || (bool) ($method['coming_soon'] ?? false))
             ->map(fn (array $method, string $key): array => [
                 'key' => $key,
                 'label' => (string) ($method['label'] ?? $key),
+                'description' => (string) ($method['description'] ?? ($key === self::METHOD_COD
+                    ? 'Pay when your order arrives'
+                    : 'Card & digital payments')),
                 'online' => (bool) ($method['online'] ?? false),
                 'enabled' => (bool) ($method['enabled'] ?? false),
                 'coming_soon' => (bool) ($method['coming_soon'] ?? false),
