@@ -92,18 +92,18 @@ class CheckoutReviewTest extends TestCase
             'payments.methods.fastpay.enabled' => true,
         ]);
 
-        $this->actingAs($user)
-            ->post(route('checkout.review'), ['address_id' => $address->id])
+        $response = $this->actingAs($user)
+            ->post(route('checkout.review'), ['address_id' => $address->id]);
+
+        $response
             ->assertOk()
             ->assertSee('value="cash_on_delivery"', false)
-            ->assertSee('checked', false)
             ->assertSee('Cash on Delivery')
             ->assertSee('Pay when your order arrives')
             ->assertSee('Online Payment')
-            ->assertSee('Card &amp; digital payments', false)
+            ->assertSee('Fast &amp; secure online payment', false)
             ->assertSee('Coming Soon')
             ->assertSee('value="online_payment"', false)
-            ->assertSee('disabled', false)
             ->assertDontSee('value="fib"', false)
             ->assertDontSee('value="zaincash"', false)
             ->assertDontSee('value="wayl"', false)
@@ -112,6 +112,11 @@ class CheckoutReviewTest extends TestCase
             ->assertDontSee('FIB')
             ->assertDontSee('ZainCash')
             ->assertDontSee('FastPay');
+
+        $html = (string) $response->getContent();
+
+        $this->assertMatchesRegularExpression('/<input(?=[^>]*value="cash_on_delivery")(?=[^>]*checked)[^>]*>/s', $html);
+        $this->assertMatchesRegularExpression('/<input(?=[^>]*value="online_payment")(?=[^>]*disabled)[^>]*>/s', $html);
     }
 
     public function test_customer_cannot_submit_online_payment_methods_when_feature_is_disabled(): void
@@ -382,11 +387,13 @@ class CheckoutReviewTest extends TestCase
             'is_default' => true,
         ]);
 
-        $this->actingAs($user)
+        $response = $this->actingAs($user)
             ->get(route('checkout.options', [
                 'product' => $product->id,
                 'quantity' => 10,
-            ], false))
+            ], false));
+
+        $response
             ->assertOk()
             ->assertSee('name="quantity" value="8"', false)
             ->assertSee('Final order check')
@@ -394,14 +401,18 @@ class CheckoutReviewTest extends TestCase
             ->assertSee('8')
             ->assertSee('value="cash_on_delivery"', false)
             ->assertSee('Online Payment')
-            ->assertSee('Card &amp; digital payments', false)
+            ->assertSee('Fast &amp; secure online payment', false)
             ->assertSee('Coming Soon')
             ->assertSee('value="online_payment"', false)
-            ->assertSee('disabled', false)
             ->assertDontSee('value="wayl"', false)
             ->assertDontSee('value="fib"', false)
             ->assertDontSee('value="zaincash"', false)
             ->assertDontSee('value="fastpay"', false);
+
+        $html = (string) $response->getContent();
+
+        $this->assertMatchesRegularExpression('/<input(?=[^>]*value="cash_on_delivery")(?=[^>]*checked)[^>]*>/s', $html);
+        $this->assertMatchesRegularExpression('/<input(?=[^>]*value="online_payment")(?=[^>]*disabled)[^>]*>/s', $html);
     }
 
     public function test_pending_order_can_be_cancelled_directly_by_customer(): void
