@@ -207,6 +207,33 @@ Alpine.data('toggle', (initial = false) => ({
     get ariaExpanded() { return this.open ? 'true' : 'false'; },
 }));
 
+// WAYL provider traffic drawer. Row details arrive through a data attribute so
+// the CSP Alpine build never evaluates server-provided JSON as an expression.
+Alpine.data('waylTraffic', () => ({
+    drawerOpen: false,
+    log: {},
+    openLog(event) {
+        try {
+            this.log = JSON.parse(event.currentTarget.dataset.waylLog || '{}');
+        } catch (error) {
+            this.log = {};
+        }
+        this.drawerOpen = true;
+        document.body.classList.add('overflow-y-hidden');
+    },
+    closeDrawer() {
+        this.drawerOpen = false;
+        document.body.classList.remove('overflow-y-hidden');
+    },
+    get hasValidationErrors() {
+        const errors = this.log.validation_errors;
+        return Array.isArray(errors) ? errors.length > 0 : Boolean(errors && Object.keys(errors).length);
+    },
+    get validationJson() { return JSON.stringify(this.log.validation_errors || [], null, 2); },
+    get requestJson() { return JSON.stringify(this.log.request || {}, null, 2); },
+    get responseJson() { return JSON.stringify(this.log.response || {}, null, 2); },
+}));
+
 // Password/field reveal: replaces x-data="{ show:true }" + x-init auto-hide arrow fns.
 Alpine.data('reveal', (initial = true) => ({
     show: Boolean(initial),

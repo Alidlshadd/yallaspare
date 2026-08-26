@@ -20,6 +20,7 @@ class PaymentService
         private readonly FibPaymentService $fib,
         private readonly ZainCashPaymentService $zainCash,
         private readonly WaylPaymentService $wayl,
+        private readonly PaymentPayloadSanitizer $payloadSanitizer,
     ) {}
 
     public function checkoutMethods(): array
@@ -183,29 +184,7 @@ class PaymentService
 
     public function sanitizePayload(array $payload): array
     {
-        $blocked = ['authorization', 'access_token', 'refresh_token', 'token', 'secret', 'password', 'pin', 'cvv', 'cvc', 'card', 'pan', 'qrcode', 'qr_code'];
-
-        $sanitize = function ($value, $key = null) use (&$sanitize, $blocked) {
-            $keyText = strtolower((string) $key);
-            foreach ($blocked as $blockedKey) {
-                if ($keyText !== '' && str_contains($keyText, $blockedKey)) {
-                    return '[redacted]';
-                }
-            }
-
-            if (is_array($value)) {
-                $clean = [];
-                foreach ($value as $childKey => $childValue) {
-                    $clean[$childKey] = $sanitize($childValue, $childKey);
-                }
-
-                return $clean;
-            }
-
-            return $value;
-        };
-
-        return $sanitize($payload);
+        return $this->payloadSanitizer->sanitize($payload);
     }
 
     private function applyVerification(Payment $payment, PaymentVerificationResult $result, string $source): bool

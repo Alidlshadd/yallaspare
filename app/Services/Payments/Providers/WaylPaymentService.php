@@ -4,15 +4,27 @@ namespace App\Services\Payments\Providers;
 
 use App\Models\Order;
 use App\Models\Payment;
+use App\Models\PaymentProviderLog;
+use App\Services\Payments\PaymentPayloadSanitizer;
 use App\Services\Payments\PaymentProviderInterface;
+use App\Services\Payments\PaymentProviderLogger;
 use App\Services\Payments\PaymentRedirectData;
 use App\Services\Payments\PaymentVerificationResult;
+use App\Services\Payments\WaylProviderException;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\PendingRequest;
+use Illuminate\Http\Client\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Throwable;
 
 class WaylPaymentService implements PaymentProviderInterface
 {
+    public function __construct(
+        private readonly PaymentProviderLogger $traffic,
+        private readonly PaymentPayloadSanitizer $sanitizer,
+    ) {}
+
     public function provider(): string
     {
         return 'wayl';
@@ -23,24 +35,35 @@ class WaylPaymentService implements PaymentProviderInterface
         $amount = $this->amountInIqd($payment);
         $referenceId = $this->referenceId($payment);
 
-        $response = $this->request()
-            ->post($this->url('/api/v1/links'), [
-                'env' => $this->environment(),
-                'referenceId' => $referenceId,
-                'total' => $amount,
-                'currency' => 'IQD',
-                'customParameter' => (string) $order->order_number,
-                'lineItem' => [
-                    [
-                        'label' => 'YallaSpare order '.$order->order_number,
-                        'amount' => $amount,
-                        'type' => 'increase',
-                    ],
+        $payload = [
+            'env' => $this->environment(),
+            'referenceId' => $referenceId,
+            'total' => $amount,
+            'currency' => 'IQD',
+            'customParameter' => (string) $order->order_number,
+            'lineItem' => [
+                [
+                    'label' => 'YallaSpare order '.$order->order_number,
+                    'amount' => $amount,
+                    'type' => 'increase',
                 ],
-                'redirectionUrl' => (string) $payment->return_url,
-            ])
-            ->throw()
-            ->json();
+            ],
+            // WAYL currently rejects omitted webhook fields even though
+            // its public schema describes them as optional. Empty strings
+            // preserve the no-webhook flow while satisfying its validator.
+            'webhookUrl' => (string) config('services.wayl.webhook_url', ''),
+            'webhookSecret' => (string) config('services.wayl.webhook_secret', ''),
+            'redirectionUrl' => (string) $payment->return_url,
+        ];
+
+        $response = $this->send(
+            method: 'POST',
+            path: '/api/v1/links',
+            eventType: PaymentProviderLog::EVENT_CREATE_LINK,
+            payment: $payment,
+            payload: $payload,
+            referenceId: $referenceId,
+        );
 
         $data = is_array($response['data'] ?? null) ? $response['data'] : [];
         $this->assertPaymentIdentity($data, $referenceId, $amount);
@@ -68,10 +91,13 @@ class WaylPaymentService implements PaymentProviderInterface
     {
         $referenceId = trim((string) ($payment->provider_reference ?: $this->referenceId($payment)));
 
-        $response = $this->request()
-            ->get($this->url('/api/v1/links/'.rawurlencode($referenceId)))
-            ->throw()
-            ->json();
+        $response = $this->send(
+            method: 'GET',
+            path: '/api/v1/links/'.rawurlencode($referenceId),
+            eventType: PaymentProviderLog::EVENT_STATUS_CHECK,
+            payment: $payment,
+            referenceId: $referenceId,
+        );
 
         $data = is_array($response['data'] ?? null) ? $response['data'] : [];
         $this->assertPaymentIdentity($data, $referenceId, $this->amountInIqd($payment));
@@ -106,6 +132,35 @@ class WaylPaymentService implements PaymentProviderInterface
         return false;
     }
 
+    /** @return array{connected: bool, http_status: ?int, result: string, message: string} */
+    public function healthCheck(): array
+    {
+        $path = '/'.ltrim((string) config('services.wayl.health_path', '/api/v1/links'), '/');
+
+        try {
+            $this->send(
+                method: 'GET',
+                path: $path,
+                eventType: PaymentProviderLog::EVENT_HEALTH_CHECK,
+                payload: ['limit' => 1],
+            );
+
+            return [
+                'connected' => true,
+                'http_status' => 200,
+                'result' => 'Success',
+                'message' => 'Authentication valid',
+            ];
+        } catch (WaylProviderException $exception) {
+            return [
+                'connected' => false,
+                'http_status' => $exception->httpStatus,
+                'result' => $exception->httpStatus === 401 ? 'Authentication Failed' : 'Connection Failed',
+                'message' => $exception->getMessage(),
+            ];
+        }
+    }
+
     private function request(): PendingRequest
     {
         return Http::withHeaders([
@@ -115,6 +170,134 @@ class WaylPaymentService implements PaymentProviderInterface
             ->asJson()
             ->connectTimeout(5)
             ->timeout(15);
+    }
+
+    /**
+     * Execute and audit one WAYL call without ever persisting credentials or headers.
+     *
+     * @param  array<string, mixed>  $payload
+     * @return array<string, mixed>
+     */
+    private function send(
+        string $method,
+        string $path,
+        string $eventType,
+        ?Payment $payment = null,
+        array $payload = [],
+        ?string $referenceId = null,
+    ): array {
+        $startedAt = hrtime(true);
+        $url = $this->url($path);
+
+        try {
+            $response = strtoupper($method) === 'GET'
+                ? $this->request()->get($url, $payload)
+                : $this->request()->send(strtoupper($method), $url, ['json' => $payload]);
+        } catch (ConnectionException $exception) {
+            $duration = $this->durationMs($startedAt);
+            $message = 'WAYL API is unavailable.';
+            $this->traffic->record(
+                provider: $this->provider(),
+                eventType: $eventType,
+                method: $method,
+                endpoint: $path,
+                result: 'Unavailable',
+                payment: $payment,
+                durationMs: $duration,
+                safeMessage: $message,
+                requestMetadata: $payload,
+                referenceId: $referenceId,
+            );
+
+            throw new WaylProviderException(null, $message, previous: $exception);
+        } catch (Throwable $exception) {
+            $duration = $this->durationMs($startedAt);
+            $message = 'WAYL request could not be completed.';
+            $this->traffic->record(
+                provider: $this->provider(),
+                eventType: $eventType,
+                method: $method,
+                endpoint: $path,
+                result: 'Request Failed',
+                payment: $payment,
+                durationMs: $duration,
+                safeMessage: $message,
+                requestMetadata: $payload,
+                referenceId: $referenceId,
+            );
+
+            throw new WaylProviderException(null, $message, previous: $exception);
+        }
+
+        $body = $this->responseBody($response);
+        $duration = $this->durationMs($startedAt);
+        $message = $this->safeProviderMessage($body, $response);
+        $errors = is_array($body['errors'] ?? null)
+            ? $this->sanitizer->sanitize($body['errors'])
+            : [];
+        $result = $this->result($response);
+
+        $this->traffic->record(
+            provider: $this->provider(),
+            eventType: $eventType,
+            method: $method,
+            endpoint: $path,
+            result: $result,
+            payment: $payment,
+            httpStatus: $response->status(),
+            durationMs: $duration,
+            safeMessage: $message,
+            requestMetadata: $payload,
+            responseMetadata: $body,
+            referenceId: $referenceId,
+        );
+
+        if (! $response->successful()) {
+            throw new WaylProviderException($response->status(), $message, $errors);
+        }
+
+        return $body;
+    }
+
+    /** @return array<string, mixed> */
+    private function responseBody(Response $response): array
+    {
+        $body = $response->json();
+
+        return is_array($body) ? $body : [];
+    }
+
+    /** @param array<string, mixed> $body */
+    private function safeProviderMessage(array $body, Response $response): string
+    {
+        $message = is_scalar($body['message'] ?? null) ? trim((string) $body['message']) : '';
+        if ($message !== '') {
+            return $this->sanitizer->text($message) ?: 'WAYL provider request failed.';
+        }
+
+        return match ($response->status()) {
+            401, 403 => 'Authentication failed.',
+            422 => 'WAYL rejected the request validation.',
+            429 => 'WAYL rate limit reached.',
+            default => $response->successful() ? 'Request completed successfully.' : 'WAYL provider request failed.',
+        };
+    }
+
+    private function result(Response $response): string
+    {
+        return match (true) {
+            $response->successful() => 'Success',
+            in_array($response->status(), [401, 403], true) => 'Authentication Error',
+            $response->status() === 422 => 'Validation Error',
+            $response->status() === 429 => 'Rate Limited',
+            $response->serverError() => 'Provider Error',
+            default => 'Request Failed',
+        };
+    }
+
+    private function durationMs(int $startedAt): int
+    {
+        return max(0, (int) round((hrtime(true) - $startedAt) / 1_000_000));
     }
 
     private function token(): string

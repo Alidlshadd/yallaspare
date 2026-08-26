@@ -78,6 +78,9 @@ return [
         'env' => env('WAYL_ENV', 'test'),
         'token' => env('WAYL_API_TOKEN'),
         'base_url' => env('WAYL_BASE_URL', 'https://api.thewayl.com'),
+        'health_path' => env('WAYL_HEALTH_PATH', '/api/v1/links'),
+        'webhook_url' => env('WAYL_WEBHOOK_URL'),
+        'webhook_secret' => env('WAYL_WEBHOOK_SECRET'),
     ],
 
     'otpiq' => [

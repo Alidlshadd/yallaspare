@@ -342,6 +342,7 @@
                     'admin.popups.*'               => __('Popups'),
                     'admin.messaging.*'            => config('services.otpiq.whatsapp.admin_visible', true) ? __('SMS & WhatsApp Center') : __('SMS Center'),
                     'admin.whatsapp.*'             => __('Inbound WhatsApp'),
+                    'admin.wayl.*'                 => __('WAYL Payments'),
                     'admin.settings.*'             => __('Settings'),
                     'admin.activity-logs.*'        => __('Activity Logs'),
                     'admin.profile.*'              => __('Profile'),
@@ -657,6 +658,19 @@
                                     <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-comments" aria-hidden="true"></i></span>
                                     <span class="admin-nav-label">{{ config('services.otpiq.whatsapp.admin_visible', true) ? __('SMS & WhatsApp Center') : __('SMS Center') }}</span>
                                 </a>
+                            @endcan
+                            @can(\App\Models\User::PERMISSION_FINANCE_VIEW)
+                                <a
+                                    href="{{ route('admin.wayl.index') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.wayl.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('WAYL Payments') }}"
+                                    @if(request()->routeIs('admin.wayl.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-credit-card" aria-hidden="true"></i></span>
+                                    <span class="admin-nav-label">{{ __('WAYL Payments') }}</span>
+                                </a>
+                            @endcan
+                            @can(\App\Models\User::PERMISSION_SETTINGS_MANAGE)
                                 <a
                                     href="{{ route('admin.popups.index') }}"
                                     class="admin-nav-link {{ $navItem(request()->routeIs('admin.popups.*')) }}"

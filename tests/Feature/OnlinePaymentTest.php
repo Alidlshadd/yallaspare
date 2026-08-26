@@ -145,8 +145,8 @@ class OnlinePaymentTest extends TestCase
                 && $request['currency'] === 'IQD'
                 && $request['lineItem'][0]['amount'] === (int) $order->grand_total
                 && $request['redirectionUrl'] === route('payments.return', $payment)
-                && ! array_key_exists('webhookUrl', $request->data())
-                && ! array_key_exists('webhookSecret', $request->data());
+                && $request['webhookUrl'] === ''
+                && $request['webhookSecret'] === '';
         });
 
         $this->actingAs($user)

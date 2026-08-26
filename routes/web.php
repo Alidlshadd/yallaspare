@@ -28,6 +28,7 @@ use App\Http\Controllers\Admin\RevenueController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VehicleFitmentController;
+use App\Http\Controllers\Admin\WaylPaymentController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CspReportController;
@@ -636,6 +637,12 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::post('/messaging/test', [MessagingController::class, 'sendTest'])
             ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'throttle:phone-verification-send'])
             ->name('messaging.test');
+        Route::get('/integrations/wayl', [WaylPaymentController::class, 'index'])
+            ->middleware('can:'.User::PERMISSION_FINANCE_VIEW)
+            ->name('wayl.index');
+        Route::post('/integrations/wayl/health', [WaylPaymentController::class, 'health'])
+            ->middleware(['can:'.User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
+            ->name('wayl.health');
         Route::get('/whatsapp', [OtpiqWhatsAppController::class, 'index'])
             ->middleware('can:manage-whatsapp-webhooks')
             ->name('whatsapp.index');
