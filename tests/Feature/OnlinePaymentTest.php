@@ -268,6 +268,7 @@ class OnlinePaymentTest extends TestCase
     private function enableFib(): void
     {
         config([
+            'payments.customer_online_payments_enabled' => true,
             'payments.methods.fib.enabled' => true,
             'services.fib.enabled' => true,
             'services.fib.base_url' => 'https://fib.test',
@@ -279,6 +280,7 @@ class OnlinePaymentTest extends TestCase
     private function enableWayl(): void
     {
         config([
+            'payments.customer_online_payments_enabled' => true,
             'payments.currency' => 'IQD',
             'payments.methods.wayl.enabled' => true,
             'services.wayl.enabled' => true,

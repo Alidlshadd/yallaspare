@@ -205,6 +205,27 @@ class MobileBuyNowTest extends TestCase
         $this->assertSame(0, Order::query()->where('user_id', $user->id)->count());
     }
 
+    public function test_place_rejects_online_payment_method_when_customer_feature_is_disabled(): void
+    {
+        config([
+            'payments.customer_online_payments_enabled' => false,
+            'payments.methods.wayl.enabled' => true,
+        ]);
+        $user = $this->userWithAddress();
+        $product = Product::factory()->create(['price' => 10000, 'stock_quantity' => 5, 'is_active' => true]);
+
+        $this->actingAs($user, 'sanctum')
+            ->postJson('/api/mobile/products/'.$product->id.'/buy-now/place', [
+                'quantity' => 1,
+                'payment_method' => 'wayl',
+            ])
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('payment_method');
+
+        $this->assertSame(0, Order::query()->where('user_id', $user->id)->count());
+        $this->assertSame(5, (int) $product->fresh()->stock_quantity);
+    }
+
     public function test_place_respects_address_payment_notes_and_coupon(): void
     {
         Setting::setValue('shipping_fee', 5000);

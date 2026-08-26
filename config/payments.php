@@ -3,6 +3,10 @@
 return [
     'currency' => env('PAYMENT_CURRENCY', 'IQD'),
 
+    // Customer checkout kill switch. Provider integrations and admin tooling
+    // remain available while online methods are hidden and rejected at checkout.
+    'customer_online_payments_enabled' => (bool) env('CUSTOMER_ONLINE_PAYMENTS_ENABLED', false),
+
     'methods' => [
         'cash_on_delivery' => [
             'label' => 'Cash on Delivery',

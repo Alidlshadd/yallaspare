@@ -25,7 +25,7 @@ class PaymentService
 
     public function checkoutMethods(): array
     {
-        return collect((array) config('payments.methods', []))
+        return collect($this->customerCheckoutMethodConfig())
             ->filter(fn (array $method): bool => (bool) ($method['enabled'] ?? false) || (bool) ($method['coming_soon'] ?? false))
             ->map(fn (array $method, string $key): array => [
                 'key' => $key,
@@ -40,12 +40,24 @@ class PaymentService
 
     public function allowedCheckoutMethods(): array
     {
-        return collect((array) config('payments.methods', []))
+        return collect($this->customerCheckoutMethodConfig())
             ->only([self::METHOD_COD, 'fib', 'zaincash', 'wayl'])
             ->filter(fn (array $method): bool => (bool) ($method['enabled'] ?? false))
             ->keys()
             ->values()
             ->all();
+    }
+
+    /** @return array<string, array<string, mixed>> */
+    private function customerCheckoutMethodConfig(): array
+    {
+        $methods = (array) config('payments.methods', []);
+
+        if ((bool) config('payments.customer_online_payments_enabled', false)) {
+            return $methods;
+        }
+
+        return array_intersect_key($methods, [self::METHOD_COD => true]);
     }
 
     public function isOnlineMethod(string $method): bool

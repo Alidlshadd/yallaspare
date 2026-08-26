@@ -66,6 +66,9 @@ class CheckoutReviewTest extends TestCase
         $this->assertNotNull($order);
         $this->assertSame($user->id, $order->user_id);
         $this->assertSame('pending', $order->status);
+        $this->assertSame('cash_on_delivery', $order->payment_method);
+        $this->assertSame(Order::PAYMENT_PENDING, $order->payment_status);
+        $this->assertDatabaseCount('payments', 0);
         $this->assertStringContainsString('Call on arrival', (string) $order->notes);
         $this->assertDatabaseHas('order_items', [
             'order_id' => $order->id,
@@ -76,6 +79,80 @@ class CheckoutReviewTest extends TestCase
             'product_id' => $product->id,
         ]);
         $this->assertSame(3, $product->fresh()->stock_quantity);
+    }
+
+    public function test_customer_checkout_only_displays_cod_when_online_providers_are_configured(): void
+    {
+        [$user, $address] = $this->makeCheckoutContext();
+        config([
+            'payments.customer_online_payments_enabled' => false,
+            'payments.methods.fib.enabled' => true,
+            'payments.methods.zaincash.enabled' => true,
+            'payments.methods.wayl.enabled' => true,
+            'payments.methods.fastpay.enabled' => true,
+        ]);
+
+        $this->actingAs($user)
+            ->post(route('checkout.review'), ['address_id' => $address->id])
+            ->assertOk()
+            ->assertSee('value="cash_on_delivery"', false)
+            ->assertSee('checked', false)
+            ->assertDontSee('value="fib"', false)
+            ->assertDontSee('value="zaincash"', false)
+            ->assertDontSee('value="wayl"', false)
+            ->assertDontSee('value="fastpay"', false);
+    }
+
+    public function test_customer_cannot_submit_online_payment_methods_when_feature_is_disabled(): void
+    {
+        [$user, $address, $product] = $this->makeCheckoutContext();
+        config([
+            'payments.customer_online_payments_enabled' => false,
+            'payments.methods.fib.enabled' => true,
+            'payments.methods.zaincash.enabled' => true,
+            'payments.methods.wayl.enabled' => true,
+            'payments.methods.fastpay.enabled' => true,
+        ]);
+
+        foreach (['fib', 'zaincash', 'wayl', 'fastpay'] as $method) {
+            $this->actingAs($user)
+                ->post(route('checkout.store'), [
+                    'address_id' => $address->id,
+                    'payment_method' => $method,
+                ])
+                ->assertRedirect()
+                ->assertSessionHasErrors('payment_method');
+        }
+
+        $this->assertDatabaseCount('orders', 0);
+        $this->assertDatabaseCount('payments', 0);
+        $this->assertDatabaseHas('cart_items', [
+            'product_id' => $product->id,
+            'quantity' => 2,
+        ]);
+        $this->assertSame(5, (int) $product->fresh()->stock_quantity);
+    }
+
+    public function test_buy_now_rejects_manipulated_online_payment_method_without_stock_or_order_changes(): void
+    {
+        [$user, $address, $product] = $this->makeCheckoutContext();
+        config([
+            'payments.customer_online_payments_enabled' => false,
+            'payments.methods.wayl.enabled' => true,
+        ]);
+
+        $this->actingAs($user)
+            ->post(route('checkout.buy-now.place', $product), [
+                'quantity' => 1,
+                'address_id' => $address->id,
+                'payment_method' => 'wayl',
+            ])
+            ->assertRedirect()
+            ->assertSessionHasErrors('payment_method');
+
+        $this->assertDatabaseCount('orders', 0);
+        $this->assertDatabaseCount('payments', 0);
+        $this->assertSame(5, (int) $product->fresh()->stock_quantity);
     }
 
     public function test_checkout_store_applies_coupon_and_records_usage(): void
