@@ -185,6 +185,51 @@
                 </section>
             </div>
 
+            @if($diagnosticVisible)
+                @php
+                    $diagnosticTone = match ($diagnostic['status']) {
+                        'Passed' => 'emerald',
+                        'Failed' => 'rose',
+                        default => 'slate',
+                    };
+                    $webhookRequiredLabel = match ($diagnostic['webhook_required']) {
+                        true => __('Yes'),
+                        false => __('No'),
+                        default => __('Unknown'),
+                    };
+                @endphp
+                <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900" aria-labelledby="wayl-diagnostics-title">
+                    <div class="flex flex-col gap-4 border-b border-slate-200 px-5 py-4 sm:flex-row sm:items-center sm:justify-between dark:border-slate-800">
+                        <div class="flex items-center gap-3">
+                            <span class="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-600 dark:bg-amber-500/10 dark:text-amber-300"><i class="fas fa-vial-circle-check" aria-hidden="true"></i></span>
+                            <div><p class="text-xs font-bold uppercase tracking-[0.2em] text-muted">{{ __('Diagnostics') }}</p><h3 id="wayl-diagnostics-title" class="text-lg font-bold text-slate-900 dark:text-white">Create-Link API</h3></div>
+                        </div>
+                        @if($diagnosticCanRun)
+                            <form method="POST" action="{{ route('admin.wayl.diagnostics.create-link') }}" data-loading-form data-loading-button-text="{{ __('Running') }}">
+                                @csrf
+                                <button type="submit" class="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 text-sm font-bold text-white shadow-lg shadow-amber-500/20 transition hover:bg-amber-600" data-loading-button>
+                                    <i class="fas fa-play text-xs" aria-hidden="true"></i>Run Create-Link Diagnostic
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+                    <div class="grid gap-3 p-5 sm:grid-cols-2 lg:grid-cols-4">
+                        @foreach ([
+                            ['Create-Link API', __($diagnostic['status'])],
+                            [__('Last Check'), $diagnostic['last_check']?->diffForHumans() ?? __('Not Tested')],
+                            [__('HTTP Status'), $diagnostic['http_status'] !== null ? 'HTTP '.$diagnostic['http_status'] : '—'],
+                            [__('Webhook Required'), $webhookRequiredLabel],
+                        ] as [$label, $value])
+                            <div class="rounded-xl border border-slate-200 bg-slate-50/70 px-4 py-3 dark:border-slate-800 dark:bg-slate-950/40">
+                                <p class="text-[10px] font-bold uppercase tracking-widest text-muted">{{ $label }}</p>
+                                <p class="mt-1 text-sm font-bold {{ $diagnosticTone === 'emerald' ? 'text-emerald-600 dark:text-emerald-300' : ($diagnosticTone === 'rose' ? 'text-rose-600 dark:text-rose-300' : 'text-slate-800 dark:text-slate-200') }}">{{ $value }}</p>
+                            </div>
+                        @endforeach
+                        <p class="text-xs leading-5 text-slate-500 sm:col-span-2 lg:col-span-4"><i class="fas fa-shield-halved me-1" aria-hidden="true"></i>{{ __('Test only. Creates no order or payment record, changes no stock or cart, and omits webhookUrl and webhookSecret entirely.') }}</p>
+                    </div>
+                </section>
+            @endif
+
             <section class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <div class="flex flex-col gap-4 border-b border-slate-200 px-5 py-4 lg:flex-row lg:items-center lg:justify-between dark:border-slate-800">
                     <div>
@@ -266,7 +311,7 @@
                 </div>
                 <form method="GET" action="{{ route('admin.wayl.index') }}" class="grid gap-3 border-b border-slate-200 p-4 sm:grid-cols-[220px_minmax(0,1fr)_auto] dark:border-slate-800">
                     @foreach(['status', 'search', 'period'] as $key)@if(! empty($filters[$key]))<input type="hidden" name="{{ $key }}" value="{{ $filters[$key] }}">@endif @endforeach
-                    <select name="event_type" aria-label="{{ __('Event type') }}" class="h-10 rounded-xl border-slate-300 bg-white text-sm font-semibold dark:border-slate-700 dark:bg-slate-950 dark:text-white"><option value="">{{ __('All event types') }}</option>@foreach(['CREATE_LINK', 'STATUS_CHECK', 'HEALTH_CHECK', 'WEBHOOK_RECEIVED', 'WEBHOOK_REJECTED'] as $type)<option value="{{ $type }}" @selected(($filters['event_type'] ?? '') === $type)>{{ $type }}</option>@endforeach</select>
+                    <select name="event_type" aria-label="{{ __('Event type') }}" class="h-10 rounded-xl border-slate-300 bg-white text-sm font-semibold dark:border-slate-700 dark:bg-slate-950 dark:text-white"><option value="">{{ __('All event types') }}</option>@foreach(['CREATE_LINK', 'CREATE_LINK_DIAGNOSTIC', 'STATUS_CHECK', 'HEALTH_CHECK', 'WEBHOOK_RECEIVED', 'WEBHOOK_REJECTED'] as $type)<option value="{{ $type }}" @selected(($filters['event_type'] ?? '') === $type)>{{ $type }}</option>@endforeach</select>
                     <input type="search" name="api_result" value="{{ $filters['api_result'] ?? '' }}" placeholder="{{ __('Result, e.g. Validation Error') }}" class="h-10 rounded-xl border-slate-300 bg-white text-sm dark:border-slate-700 dark:bg-slate-950 dark:text-white">
                     <button class="inline-flex h-10 items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 text-sm font-bold text-white dark:bg-slate-700"><i class="fas fa-filter text-xs" aria-hidden="true"></i>{{ __('Filter') }}</button>
                 </form>
@@ -286,7 +331,11 @@
                                     'duration' => $log->duration_ms !== null ? $log->duration_ms.' ms' : '—',
                                     'result' => $log->result,
                                     'message' => $log->safe_message ?: '—',
-                                    'validation_errors' => data_get($log->response_metadata, 'errors', []),
+                                    'validation_errors' => data_get($log->response_metadata, '_validation_errors')
+                                        ?? data_get($log->response_metadata, 'errors')
+                                        ?? data_get($log->response_metadata, 'validationErrors')
+                                        ?? data_get($log->response_metadata, 'issues')
+                                        ?? data_get($log->response_metadata, 'error.errors', []),
                                     'request' => $debugVisible ? ($log->request_metadata ?? []) : null,
                                     'response' => $debugVisible ? ($log->response_metadata ?? []) : null,
                                     'debug_visible' => $debugVisible,

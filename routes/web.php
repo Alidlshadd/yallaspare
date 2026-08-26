@@ -643,6 +643,9 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::post('/integrations/wayl/health', [WaylPaymentController::class, 'health'])
             ->middleware(['can:'.User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
             ->name('wayl.health');
+        Route::post('/integrations/wayl/diagnostics/create-link', [WaylPaymentController::class, 'createLinkDiagnostic'])
+            ->middleware(['can:'.User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
+            ->name('wayl.diagnostics.create-link');
         Route::get('/whatsapp', [OtpiqWhatsAppController::class, 'index'])
             ->middleware('can:manage-whatsapp-webhooks')
             ->name('whatsapp.index');

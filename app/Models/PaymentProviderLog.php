@@ -12,6 +12,8 @@ class PaymentProviderLog extends Model
 
     public const EVENT_CREATE_LINK = 'CREATE_LINK';
 
+    public const EVENT_CREATE_LINK_DIAGNOSTIC = 'CREATE_LINK_DIAGNOSTIC';
+
     public const EVENT_STATUS_CHECK = 'STATUS_CHECK';
 
     public const EVENT_HEALTH_CHECK = 'HEALTH_CHECK';

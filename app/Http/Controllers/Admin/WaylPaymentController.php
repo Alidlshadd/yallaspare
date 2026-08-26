@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
 use App\Models\PaymentProviderLog;
+use App\Models\User;
 use App\Services\Payments\Providers\WaylPaymentService;
 use App\Support\AdminLogger;
 use App\Support\SqlSafe;
@@ -30,6 +31,7 @@ class WaylPaymentController extends Controller
             'period' => ['nullable', Rule::in(['today', '7_days', '30_days'])],
             'event_type' => ['nullable', Rule::in([
                 PaymentProviderLog::EVENT_CREATE_LINK,
+                PaymentProviderLog::EVENT_CREATE_LINK_DIAGNOSTIC,
                 PaymentProviderLog::EVENT_STATUS_CHECK,
                 PaymentProviderLog::EVENT_HEALTH_CHECK,
                 PaymentProviderLog::EVENT_WEBHOOK_RECEIVED,
@@ -103,6 +105,12 @@ class WaylPaymentController extends Controller
             ->latest('id')
             ->first();
 
+        $latestDiagnostic = PaymentProviderLog::query()
+            ->where('provider', 'wayl')
+            ->where('event_type', PaymentProviderLog::EVENT_CREATE_LINK_DIAGNOSTIC)
+            ->latest('id')
+            ->first();
+
         $webhookLogs = PaymentProviderLog::query()->where('provider', 'wayl');
         $lastWebhook = (clone $webhookLogs)
             ->whereIn('event_type', [
@@ -144,12 +152,15 @@ class WaylPaymentController extends Controller
                 'minimum_amount' => max(1, (int) config('payments.methods.wayl.minimum_amount', 3000)),
             ],
             'latestHealth' => $latestHealth,
+            'diagnostic' => $this->diagnosticSummary($latestDiagnostic),
             'webhook' => [
                 'last_event' => $lastWebhook?->created_at,
                 'valid' => (clone $webhookLogs)->where('event_type', PaymentProviderLog::EVENT_WEBHOOK_RECEIVED)->count(),
                 'rejected' => (clone $webhookLogs)->where('event_type', PaymentProviderLog::EVENT_WEBHOOK_REJECTED)->count(),
             ],
             'debugVisible' => strtolower((string) config('services.wayl.env', 'test')) !== 'live',
+            'diagnosticVisible' => strtolower((string) config('services.wayl.env', 'test')) === 'test',
+            'diagnosticCanRun' => $request->user()?->hasPermission(User::PERMISSION_FINANCE_MANAGE) ?? false,
         ]);
     }
 
@@ -170,6 +181,69 @@ class WaylPaymentController extends Controller
         }
 
         return back()->with('success', __('WAYL connection is healthy. Authentication is valid.'));
+    }
+
+    public function createLinkDiagnostic(Request $request, WaylPaymentService $wayl): RedirectResponse
+    {
+        abort_unless(strtolower((string) config('services.wayl.env', 'test')) === 'test', 404);
+
+        $result = $wayl->createLinkDiagnostic();
+
+        AdminLogger::log('wayl.create_link_diagnostic_run', null, [
+            'http_status' => $result['http_status'],
+            'success' => $result['success'],
+            'webhook_required' => $result['webhook_required'],
+            'reference_id' => $result['reference_id'],
+            'admin_id' => $request->user()?->id,
+        ]);
+
+        $flash = $result['success'] ? 'success' : 'error';
+        $message = $result['success']
+            ? __('WAYL create-link diagnostic passed without webhook fields (HTTP :status).', [
+                'status' => $result['http_status'],
+            ])
+            : __('WAYL create-link diagnostic failed (HTTP :status): :message', [
+                'status' => $result['http_status'] ?? 'N/A',
+                'message' => $result['message'],
+            ]);
+
+        return back()->with($flash, $message);
+    }
+
+    /** @return array{status: string, last_check: mixed, http_status: ?int, webhook_required: ?bool} */
+    private function diagnosticSummary(?PaymentProviderLog $log): array
+    {
+        if (! $log) {
+            return [
+                'status' => 'Not Tested',
+                'last_check' => null,
+                'http_status' => null,
+                'webhook_required' => null,
+            ];
+        }
+
+        $errors = data_get($log->response_metadata, '_validation_errors');
+        if (! is_array($errors)) {
+            $errors = data_get($log->response_metadata, 'errors');
+        }
+        if (! is_array($errors)) {
+            $errors = data_get($log->response_metadata, 'validationErrors',
+                data_get($log->response_metadata, 'issues', data_get($log->response_metadata, 'error.errors', []))
+            );
+        }
+        $encodedErrors = strtolower((string) json_encode(is_array($errors) ? $errors : []));
+        $webhookRequired = $log->result === 'Success'
+            ? false
+            : ($log->http_status === 422
+                && str_contains($encodedErrors, 'webhookurl')
+                && str_contains($encodedErrors, 'webhooksecret') ? true : null);
+
+        return [
+            'status' => $log->result === 'Success' ? 'Passed' : 'Failed',
+            'last_check' => $log->created_at,
+            'http_status' => $log->http_status,
+            'webhook_required' => $webhookRequired,
+        ];
     }
 
     private function applyPeriod(Builder $query, ?string $period): void

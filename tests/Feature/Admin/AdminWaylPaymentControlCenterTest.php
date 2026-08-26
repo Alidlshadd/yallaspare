@@ -2,13 +2,19 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Models\AdminActivityLog;
+use App\Models\Cart;
+use App\Models\CartItem;
+use App\Models\Category;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\PaymentProviderLog;
+use App\Models\Product;
 use App\Models\User;
 use App\Services\Payments\Providers\WaylPaymentService;
 use App\Services\Payments\WaylProviderException;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
@@ -24,6 +30,7 @@ class AdminWaylPaymentControlCenterTest extends TestCase
 
         config([
             'security.admin_two_factor.enabled' => false,
+            'app.url' => 'https://yallaspare.test',
             'services.wayl.enabled' => true,
             'services.wayl.env' => 'test',
             'services.wayl.token' => 'super-secret-wayl-token',
@@ -38,6 +45,7 @@ class AdminWaylPaymentControlCenterTest extends TestCase
 
         $this->admin = User::factory()->create([
             'role' => User::ROLE_ADMIN,
+            'permissions' => User::defaultPermissionsForRole(User::ROLE_ADMIN),
             'email_verified_at' => now(),
         ]);
     }
@@ -50,7 +58,9 @@ class AdminWaylPaymentControlCenterTest extends TestCase
             ->assertSee('WAYL Payment Gateway')
             ->assertSee('Payment Traffic')
             ->assertSee('API Traffic')
-            ->assertSee('Check Connection');
+            ->assertSee('Check Connection')
+            ->assertSee('Diagnostics')
+            ->assertSee('Run Create-Link Diagnostic');
     }
 
     public function test_normal_user_cannot_open_wayl_control_center_or_health_action(): void
@@ -59,6 +69,214 @@ class AdminWaylPaymentControlCenterTest extends TestCase
 
         $this->actingAs($user)->get(route('admin.wayl.index'))->assertForbidden();
         $this->actingAs($user)->post(route('admin.wayl.health'))->assertForbidden();
+        $this->actingAs($user)->post(route('admin.wayl.diagnostics.create-link'))->assertForbidden();
+    }
+
+    public function test_create_link_diagnostic_is_hidden_and_blocked_outside_test_environment(): void
+    {
+        config(['services.wayl.env' => 'live']);
+        Http::fake();
+
+        $this->actingAs($this->admin)
+            ->get(route('admin.wayl.index'))
+            ->assertOk()
+            ->assertDontSee('Run Create-Link Diagnostic');
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.wayl.diagnostics.create-link'))
+            ->assertNotFound();
+
+        Http::assertNothingSent();
+    }
+
+    public function test_422_diagnostic_has_no_commerce_side_effects_and_preserves_sanitized_validation_details(): void
+    {
+        $category = Category::factory()->create();
+        $product = Product::factory()->create([
+            'category_id' => $category->id,
+            'stock_quantity' => 9,
+        ]);
+        $cart = Cart::query()->create(['user_id' => $this->admin->id]);
+        $cartItem = CartItem::query()->create([
+            'cart_id' => $cart->id,
+            'product_id' => $product->id,
+            'quantity' => 2,
+        ]);
+
+        Http::fake([
+            'https://wayl.test/api/v1/links' => Http::response([
+                'success' => false,
+                'message' => 'Whoops, missing fields for super-secret-wayl-token',
+                'errors' => [
+                    [
+                        'path' => 'webhookUrl',
+                        'code' => 'invalid_type',
+                        'expected' => 'string',
+                        'message' => 'Expected string',
+                    ],
+                    [
+                        'path' => 'webhookSecret',
+                        'code' => 'invalid_type',
+                        'expected' => 'string',
+                        'message' => 'Expected string',
+                    ],
+                ],
+                'token' => 'super-secret-wayl-token',
+                'authorization' => 'Bearer super-secret-wayl-token',
+            ], 422),
+        ]);
+
+        $response = $this->actingAs($this->admin)
+            ->post(route('admin.wayl.diagnostics.create-link'));
+
+        $response->assertRedirect()->assertSessionHas('error');
+        $this->assertDatabaseCount('orders', 0);
+        $this->assertDatabaseCount('payments', 0);
+        $this->assertSame(9, (int) $product->fresh()->stock_quantity);
+        $this->assertDatabaseHas('cart_items', [
+            'id' => $cartItem->id,
+            'cart_id' => $cart->id,
+            'product_id' => $product->id,
+            'quantity' => 2,
+        ]);
+
+        Http::assertSent(function (Request $request): bool {
+            $reference = (string) $request['referenceId'];
+
+            return $request->method() === 'POST'
+                && $request->url() === 'https://wayl.test/api/v1/links'
+                && $request->hasHeader('X-WAYL-AUTHENTICATION', 'super-secret-wayl-token')
+                && $request['env'] === 'test'
+                && preg_match('/^wayl-diagnostic-[0-9A-HJKMNP-TV-Z]{26}$/', $reference) === 1
+                && $request['total'] === 3000
+                && $request['currency'] === 'IQD'
+                && $request['customParameter'] === $reference
+                && $request['lineItem'] === [[
+                    'label' => 'YallaSpare WAYL diagnostic',
+                    'amount' => 3000,
+                    'type' => 'increase',
+                ]]
+                && $request['redirectionUrl'] === 'https://yallaspare.test/admin/integrations/wayl'
+                && ! array_key_exists('webhookUrl', $request->data())
+                && ! array_key_exists('webhookSecret', $request->data());
+        });
+
+        $log = PaymentProviderLog::query()
+            ->where('event_type', PaymentProviderLog::EVENT_CREATE_LINK_DIAGNOSTIC)
+            ->firstOrFail();
+        $this->assertNull($log->order_id);
+        $this->assertNull($log->payment_id);
+        $this->assertSame(422, $log->http_status);
+        $this->assertSame('Validation Error', $log->result);
+        $this->assertArrayNotHasKey('webhookUrl', $log->request_metadata);
+        $this->assertArrayNotHasKey('webhookSecret', $log->request_metadata);
+        $this->assertSame('webhookUrl', $log->response_metadata['errors'][0]['path']);
+        $this->assertSame('invalid_type', $log->response_metadata['errors'][0]['code']);
+        $this->assertSame('string', $log->response_metadata['errors'][0]['expected']);
+        $this->assertSame('Expected string', $log->response_metadata['errors'][0]['message']);
+        $this->assertSame('webhookSecret', $log->response_metadata['errors'][1]['path']);
+        $this->assertSame('[redacted]', $log->response_metadata['token']);
+        $this->assertSame('[redacted]', $log->response_metadata['authorization']);
+
+        $stored = json_encode([
+            $log->toArray(),
+            AdminActivityLog::query()->where('action', 'wayl.create_link_diagnostic_run')->first()?->toArray(),
+        ]);
+        $this->assertIsString($stored);
+        $this->assertStringNotContainsString('super-secret-wayl-token', $stored);
+        $this->assertStringNotContainsString('super-secret-webhook-key', $stored);
+        $this->assertStringNotContainsString('X-WAYL-AUTHENTICATION', $stored);
+
+        $this->actingAs($this->admin)
+            ->get(route('admin.wayl.index'))
+            ->assertOk()
+            ->assertSee('Failed')
+            ->assertSee('HTTP 422')
+            ->assertSee('Webhook Required')
+            ->assertSee('Yes')
+            ->assertSee('Whoops, missing fields for [redacted]')
+            ->assertSee('webhookUrl')
+            ->assertSee('webhookSecret')
+            ->assertSee('invalid_type')
+            ->assertSee('Expected string')
+            ->assertDontSee('super-secret-wayl-token')
+            ->assertDontSee('super-secret-webhook-key')
+            ->assertDontSee('X-WAYL-AUTHENTICATION');
+    }
+
+    public function test_201_diagnostic_is_reported_as_passed_without_webhook_requirement(): void
+    {
+        Http::fake([
+            'https://wayl.test/api/v1/links' => Http::response([
+                'success' => true,
+                'message' => 'Link created successfully.',
+                'data' => [
+                    'id' => 'diagnostic-link-id',
+                    'url' => 'https://checkout.thewayl.test/pay/DIAGNOSTIC',
+                    'status' => 'Created',
+                ],
+            ], 201),
+        ]);
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.wayl.diagnostics.create-link'))
+            ->assertRedirect()
+            ->assertSessionHas('success');
+
+        $this->assertDatabaseCount('orders', 0);
+        $this->assertDatabaseCount('payments', 0);
+        $this->assertDatabaseHas('payment_provider_logs', [
+            'provider' => 'wayl',
+            'event_type' => PaymentProviderLog::EVENT_CREATE_LINK_DIAGNOSTIC,
+            'http_status' => 201,
+            'result' => 'Success',
+        ]);
+
+        Http::assertSent(fn (Request $request): bool => ! array_key_exists('webhookUrl', $request->data())
+            && ! array_key_exists('webhookSecret', $request->data())
+        );
+
+        $this->actingAs($this->admin)
+            ->get(route('admin.wayl.index'))
+            ->assertOk()
+            ->assertSee('Passed')
+            ->assertSee('HTTP 201')
+            ->assertSee('Webhook Required')
+            ->assertSee('No')
+            ->assertSee('Link created successfully.');
+    }
+
+    public function test_diagnostic_normalizes_associative_provider_validation_errors(): void
+    {
+        Http::fake([
+            'https://wayl.test/api/v1/links' => Http::response([
+                'success' => false,
+                'message' => 'Whoops, missing fields',
+                'errors' => [
+                    'webhookUrl' => ['Expected string'],
+                    'webhookSecret' => ['Expected string'],
+                ],
+            ], 422),
+        ]);
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.wayl.diagnostics.create-link'))
+            ->assertRedirect()
+            ->assertSessionHas('error');
+
+        $log = PaymentProviderLog::query()->latest('id')->firstOrFail();
+        $this->assertSame([
+            ['path' => 'webhookUrl', 'message' => 'Expected string'],
+            ['path' => 'webhookSecret', 'message' => 'Expected string'],
+        ], $log->response_metadata['_validation_errors']);
+
+        $this->actingAs($this->admin)
+            ->get(route('admin.wayl.index'))
+            ->assertOk()
+            ->assertSee('Webhook Required')
+            ->assertSee('Yes')
+            ->assertSee('webhookUrl')
+            ->assertSee('webhookSecret');
     }
 
     public function test_tokens_and_webhook_secrets_are_never_rendered(): void

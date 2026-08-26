@@ -16,6 +16,7 @@ use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Str;
 use Throwable;
 
 class WaylPaymentService implements PaymentProviderInterface
@@ -161,6 +162,121 @@ class WaylPaymentService implements PaymentProviderInterface
         }
     }
 
+    /**
+     * Probe WAYL's create-link validator without creating any local commerce records.
+     *
+     * @return array{
+     *     http_status: ?int,
+     *     success: bool,
+     *     message: string,
+     *     errors: array<string|int, mixed>,
+     *     webhook_required: ?bool,
+     *     reference_id: string
+     * }
+     */
+    public function createLinkDiagnostic(): array
+    {
+        if ($this->environment() !== 'test') {
+            throw new \RuntimeException('WAYL create-link diagnostic is available in the test environment only.');
+        }
+
+        $referenceId = 'wayl-diagnostic-'.Str::ulid();
+        $amount = max(3000, (int) config('payments.methods.wayl.minimum_amount', 3000));
+        $redirectionUrl = rtrim((string) config('app.url'), '/').'/admin/integrations/wayl';
+
+        if (! str_starts_with($redirectionUrl, 'https://')) {
+            throw new \RuntimeException('WAYL diagnostic requires APP_URL to be a real HTTPS URL.');
+        }
+
+        $payload = [
+            'env' => 'test',
+            'referenceId' => $referenceId,
+            'total' => $amount,
+            'currency' => 'IQD',
+            'customParameter' => $referenceId,
+            'lineItem' => [
+                [
+                    'label' => 'YallaSpare WAYL diagnostic',
+                    'amount' => $amount,
+                    'type' => 'increase',
+                ],
+            ],
+            'redirectionUrl' => $redirectionUrl,
+        ];
+
+        $startedAt = hrtime(true);
+        $path = '/api/v1/links';
+
+        try {
+            $response = $this->request()->send('POST', $this->url($path), ['json' => $payload]);
+        } catch (ConnectionException $exception) {
+            $message = 'WAYL API is unavailable.';
+            $this->traffic->record(
+                provider: $this->provider(),
+                eventType: PaymentProviderLog::EVENT_CREATE_LINK_DIAGNOSTIC,
+                method: 'POST',
+                endpoint: $path,
+                result: 'Unavailable',
+                durationMs: $this->durationMs($startedAt),
+                safeMessage: $message,
+                requestMetadata: $payload,
+                referenceId: $referenceId,
+            );
+
+            return $this->diagnosticResult(null, false, $message, [], null, $referenceId);
+        } catch (Throwable $exception) {
+            $message = 'WAYL diagnostic request could not be completed.';
+            $this->traffic->record(
+                provider: $this->provider(),
+                eventType: PaymentProviderLog::EVENT_CREATE_LINK_DIAGNOSTIC,
+                method: 'POST',
+                endpoint: $path,
+                result: 'Request Failed',
+                durationMs: $this->durationMs($startedAt),
+                safeMessage: $message,
+                requestMetadata: $payload,
+                referenceId: $referenceId,
+            );
+
+            return $this->diagnosticResult(null, false, $message, [], null, $referenceId);
+        }
+
+        $body = $this->responseBody($response);
+        $errors = $this->validationErrors($body);
+        $message = $this->safeProviderMessage($body, $response);
+        $webhookRequired = $response->successful()
+            ? false
+            : ($response->status() === 422 && $this->mentionsBothWebhookFields($errors) ? true : null);
+
+        $responseMetadata = $body;
+        if ($errors !== []) {
+            $responseMetadata['_validation_errors'] = $errors;
+        }
+
+        $this->traffic->record(
+            provider: $this->provider(),
+            eventType: PaymentProviderLog::EVENT_CREATE_LINK_DIAGNOSTIC,
+            method: 'POST',
+            endpoint: $path,
+            result: $this->result($response),
+            httpStatus: $response->status(),
+            durationMs: $this->durationMs($startedAt),
+            safeMessage: $message,
+            requestMetadata: $payload,
+            responseMetadata: $responseMetadata,
+            referenceId: $referenceId,
+        );
+
+        return $this->diagnosticResult(
+            $response->status(),
+            $response->successful(),
+            $message,
+            $errors,
+            $webhookRequired,
+            $referenceId,
+        );
+    }
+
     private function request(): PendingRequest
     {
         return Http::withHeaders([
@@ -293,6 +409,87 @@ class WaylPaymentService implements PaymentProviderInterface
             $response->serverError() => 'Provider Error',
             default => 'Request Failed',
         };
+    }
+
+    /** @param array<string, mixed> $body */
+    private function validationErrors(array $body): array
+    {
+        $errors = null;
+        foreach (['errors', 'validationErrors', 'issues'] as $key) {
+            if (is_array($body[$key] ?? null)) {
+                $errors = $body[$key];
+                break;
+            }
+        }
+
+        if (! is_array($errors)) {
+            $errors = data_get($body, 'error.errors');
+        }
+
+        if (! is_array($errors)) {
+            return [];
+        }
+
+        $normalized = [];
+        foreach ($errors as $key => $error) {
+            if (is_array($error) && is_int($key)) {
+                $item = [];
+                foreach (['path', 'code', 'expected', 'message'] as $field) {
+                    if (array_key_exists($field, $error)) {
+                        $item[$field] = $error[$field];
+                    }
+                }
+                if ($item !== []) {
+                    $normalized[] = $this->sanitizer->sanitize($item);
+                }
+
+                continue;
+            }
+
+            if (is_string($key)) {
+                $messages = is_array($error) ? $error : [$error];
+                foreach ($messages as $message) {
+                    if (is_scalar($message)) {
+                        $normalized[] = [
+                            'path' => $this->sanitizer->text($key, 500),
+                            'message' => $this->sanitizer->text($message, 1000),
+                        ];
+                    }
+                }
+            }
+        }
+
+        return $normalized;
+    }
+
+    /** @param array<string|int, mixed> $errors */
+    private function mentionsBothWebhookFields(array $errors): bool
+    {
+        $encoded = strtolower((string) json_encode($errors));
+
+        return str_contains($encoded, 'webhookurl') && str_contains($encoded, 'webhooksecret');
+    }
+
+    /**
+     * @param  array<string|int, mixed>  $errors
+     * @return array{http_status: ?int, success: bool, message: string, errors: array<string|int, mixed>, webhook_required: ?bool, reference_id: string}
+     */
+    private function diagnosticResult(
+        ?int $httpStatus,
+        bool $success,
+        string $message,
+        array $errors,
+        ?bool $webhookRequired,
+        string $referenceId,
+    ): array {
+        return [
+            'http_status' => $httpStatus,
+            'success' => $success,
+            'message' => $message,
+            'errors' => $errors,
+            'webhook_required' => $webhookRequired,
+            'reference_id' => $referenceId,
+        ];
     }
 
     private function durationMs(int $startedAt): int
