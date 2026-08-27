@@ -1,5 +1,8 @@
 @extends('layouts.user')
 
+@section('checkout_back', route('checkout.delivery'))
+@section('checkout_back_label', __('Back to Delivery'))
+
 @section('content')
     <div class="mx-auto w-full max-w-5xl space-y-6 py-4">
         @if (session('success'))

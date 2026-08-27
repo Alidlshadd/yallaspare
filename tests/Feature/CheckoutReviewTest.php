@@ -472,6 +472,35 @@ class CheckoutReviewTest extends TestCase
     /**
      * @return array{User, UserAddress, Product}
      */
+    public function test_checkout_steps_drop_the_store_header_and_footer_for_a_back_link(): void
+    {
+        [$user, $address] = $this->makeCheckoutContext();
+
+        // The cart still carries the full store chrome — the focused shell
+        // starts once the customer commits to checking out.
+        $this->actingAs($user)
+            ->get(route('cart.index'))
+            ->assertOk()
+            ->assertSee('data-store-header', false)
+            ->assertSee('distance-sales-agreement', false);
+
+        $this->actingAs($user)
+            ->get(route('checkout.delivery'))
+            ->assertOk()
+            ->assertDontSee('data-store-header', false)
+            ->assertDontSee('distance-sales-agreement', false)
+            ->assertSee('href="'.route('cart.index').'"', false)
+            ->assertSee('Back to Cart');
+
+        $this->actingAs($user)
+            ->post(route('checkout.review'), ['address_id' => $address->id])
+            ->assertOk()
+            ->assertDontSee('data-store-header', false)
+            ->assertDontSee('distance-sales-agreement', false)
+            ->assertSee('href="'.route('checkout.delivery').'"', false)
+            ->assertSee('Back to Delivery');
+    }
+
     private function makeCheckoutContext(): array
     {
         $user = User::factory()->create();

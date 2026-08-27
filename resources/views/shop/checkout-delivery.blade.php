@@ -1,5 +1,8 @@
 @extends('layouts.user')
 
+@section('checkout_back', route('cart.index'))
+@section('checkout_back_label', __('Back to Cart'))
+
 @section('content')
     <div class="space-y-5 pb-16">
         @if (session('success'))

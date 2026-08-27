@@ -53,6 +53,17 @@
         : ($isUserHomeRoute
             ? 'mx-auto w-full max-w-7xl px-4 pb-8 pt-0 sm:px-6 sm:pb-10 sm:pt-0 lg:px-8 lg:pb-12 lg:pt-0'
             : 'mx-auto w-full max-w-7xl px-4 py-5 sm:px-6 sm:py-8 lg:px-8 lg:py-12');
+
+    // Checkout steps run in a focused shell. A child view that sets the
+    // `checkout_back` section gets no store header and no footer — only a back
+    // link to the previous step, so nothing pulls the customer out of the flow
+    // mid-order. Every other page keeps the full chrome.
+    $focusedBackUrl = View::hasSection('checkout_back')
+        ? trim($__env->yieldContent('checkout_back'))
+        : null;
+    $focusedBackLabel = View::hasSection('checkout_back_label')
+        ? trim($__env->yieldContent('checkout_back_label'))
+        : __('Back');
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', $locale) }}" dir="{{ $dir }}" class="{{ $htmlClasses }}">
@@ -137,6 +148,23 @@
         <x-loading-overlay message="{{ __('Processing, please wait...') }}" variant="full" />
 
         <div class="{{ $shellClasses }}">
+            @if ($focusedBackUrl)
+                <div class="border-b border-[var(--border)] bg-[var(--surface)]">
+                    <div class="mx-auto w-full max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
+                        <a
+                            href="{{ $focusedBackUrl }}"
+                            class="inline-flex items-center gap-2 rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-1.5 text-sm font-medium text-[var(--text)] transition duration-200 hover:bg-[var(--surface-sunk)] focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                        >
+                            <svg class="h-4 w-4 rtl:rotate-180" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M12.78 4.97a.75.75 0 0 1 0 1.06L9.06 9.75l3.72 3.72a.75.75 0 1 1-1.06 1.06l-4.25-4.25a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0Z" clip-rule="evenodd" />
+                            </svg>
+                            {{ $focusedBackLabel }}
+                        </a>
+                    </div>
+                </div>
+            @endif
+
+            @unless ($focusedBackUrl)
             <header data-store-header class="relative sticky top-0 z-40 transform-gpu border-0 bg-[linear-gradient(180deg,#070740_0%,#04041f_100%)] text-white shadow-none transition-transform duration-[420ms] ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform motion-reduce:duration-0" style="margin-top:0;border-top:0">
                 @php
                     $headerCategories = $headerCategories ?? $dropdownCategories ?? collect();
@@ -595,6 +623,7 @@
                     </div>
                 </nav>
             </header>
+            @endunless
 
             @if (! request()->routeIs('cart.*') && (session('success') || session('error')))
                 <div class="mx-auto mt-4 w-full max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -618,7 +647,9 @@
                 @yield('content')
             </main>
 
-            @include('partials.site-footer')
+            @unless ($focusedBackUrl)
+                @include('partials.site-footer')
+            @endunless
         </div>
         @include('partials.store-popup')
         @include('partials.cart-feedback-script')
