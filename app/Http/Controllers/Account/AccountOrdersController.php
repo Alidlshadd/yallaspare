@@ -81,8 +81,7 @@ class AccountOrdersController extends Controller
         $explicit = (string) $request->query('lang', $request->query('locale', ''));
         $locale = $renderer->resolveLocale($explicit !== '' ? $explicit : null, $order, auth()->user());
 
-        return $renderer->render($order, $locale)
-            ->download('invoice-'.$order->id.'-'.$locale.'.pdf');
+        return $renderer->download($order, $locale);
     }
 
     public function reorder(Request $request, Order $order): RedirectResponse

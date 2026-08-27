@@ -5,7 +5,10 @@ namespace App\Services;
 use App\Models\Order;
 use App\Models\User;
 use App\Support\Branding;
-use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\File;
+use Mpdf\Mpdf;
+use Mpdf\Output\Destination;
 
 final class InvoiceRenderer
 {
@@ -41,13 +44,12 @@ final class InvoiceRenderer
     }
 
     /**
-     * Build the invoice PDF for an order in the given locale.
-     * Returns a DomPDF instance — callers choose download() or stream().
+     * Build the invoice PDF for an order in the given locale and return the raw bytes.
      *
      * The provided locale must already be normalized (use resolveLocale()).
      * Temporarily switches app locale for view rendering and restores it after.
      */
-    public function render(Order $order, string $locale): \Barryvdh\DomPDF\PDF
+    public function render(Order $order, string $locale): string
     {
         $order->loadMissing([
             'user:id,name,email,phone,locale_preference',
@@ -61,12 +63,13 @@ final class InvoiceRenderer
         $discount = (float) $order->discount_amount;
         $grandTotal = (float) ($order->grand_total ?: ($subtotal + $shipping - $discount));
         $year = optional($order->created_at)->format('Y') ?: now()->format('Y');
+        $isRtl = in_array($locale, ['ar', 'ku'], true);
 
         $previousLocale = app()->getLocale();
         app()->setLocale($locale);
 
         try {
-            return Pdf::loadView('admin.orders.invoice', [
+            $html = view('admin.orders.invoice', [
                 'order' => $order,
                 'invoiceNumber' => 'INV-'.$year.'-'.str_pad((string) $order->id, 5, '0', STR_PAD_LEFT),
                 'currency' => 'IQD',
@@ -76,10 +79,59 @@ final class InvoiceRenderer
                 'discount' => $discount,
                 'grandTotal' => $grandTotal,
                 'locale' => $locale,
-                'isRtl' => in_array($locale, ['ar', 'ku'], true),
-            ])->setPaper('a4');
+                'isRtl' => $isRtl,
+            ])->render();
         } finally {
             app()->setLocale($previousLocale);
         }
+
+        $mpdf = $this->makeEngine($isRtl);
+        $mpdf->WriteHTML($html);
+
+        return (string) $mpdf->Output('', Destination::STRING_RETURN);
+    }
+
+    /**
+     * Render the invoice as a download response.
+     */
+    public function download(Order $order, string $locale): Response
+    {
+        return new Response($this->render($order, $locale), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="invoice-'.$order->id.'-'.$locale.'.pdf"',
+        ]);
+    }
+
+    /**
+     * mPDF rather than DomPDF because DomPDF cannot shape Arabic script: it can
+     * only print pre-composed presentation forms, and Unicode defines none for
+     * ڕ, ڵ or ێ. Those three letters are everywhere in Sorani, so every Kurdish
+     * invoice came out with words broken apart mid-join. mPDF applies the
+     * font's own OpenType joining, which handles them and Arabic correctly.
+     *
+     * autoScriptToLang/autoLangToFont stay off so the invoice keeps one font in
+     * every locale — DejaVu Sans shapes all three scripts here.
+     */
+    private function makeEngine(bool $isRtl): Mpdf
+    {
+        $tempDir = storage_path('framework/cache/mpdf');
+        File::ensureDirectoryExists($tempDir);
+
+        $mpdf = new Mpdf([
+            'mode' => 'utf-8',
+            'format' => 'A4',
+            'tempDir' => $tempDir,
+            'default_font' => 'dejavusans',
+            'useOTL' => 0xFF,
+            'useKashida' => 0,
+            'autoScriptToLang' => false,
+            'autoLangToFont' => false,
+        ]);
+
+        if ($isRtl) {
+            $mpdf->SetDirectionality('rtl');
+        }
+
+        return $mpdf;
     }
 }

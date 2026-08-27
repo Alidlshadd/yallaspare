@@ -56,9 +56,8 @@
             padding: 12px 14px;
         }
 
-        body.rtl .info-card {
-            padding: 15px 16px;
-            min-height: 130px;
+        body.rtl .info-card-body {
+            padding: 14px 16px;
         }
 
         body.rtl table,
@@ -71,12 +70,6 @@
             direction: rtl !important;
             text-align: right !important;
             unicode-bidi: embed;
-        }
-
-        body.rtl .pdf-rtl-text {
-            direction: ltr !important;
-            text-align: right !important;
-            unicode-bidi: bidi-override;
         }
 
         table {
@@ -93,10 +86,6 @@
         }
 
         body.rtl .text-center {
-            text-align: center !important;
-        }
-
-        body.rtl .text-center.pdf-rtl-text {
             text-align: center !important;
         }
 
@@ -190,18 +179,30 @@
 
         .cards-table td {
             vertical-align: top;
-            width: 50%;
+            width: 49%;
         }
 
         .card-spacer {
-            width: 14px !important;
+            width: 2% !important;
         }
 
         .info-card {
             border: 1px solid #d1d5db;
             border-radius: 8px;
-            min-height: 118px;
-            padding: 13px 14px;
+            border-collapse: separate;
+            width: 100%;
+        }
+
+        .info-card-body {
+            padding: 12px 14px;
+        }
+
+        .meta-label {
+            color: #6b7280;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: .5px;
+            text-transform: uppercase;
         }
 
         .card-title {
@@ -210,7 +211,6 @@
             color: #070740;
             font-size: 11px;
             font-weight: 700;
-            margin: -13px -14px 12px;
             padding: 8px 14px;
             text-transform: uppercase;
         }
@@ -360,56 +360,58 @@
     </style>
 </head>
 <body class="{{ !empty($isRtl) ? 'rtl' : 'ltr' }}">
-    @php
-        $pdfText = static fn ($value) => \App\Support\PdfArabicText::forDompdf((string) $value, !empty($isRtl));
-        $pdfRtlClass = !empty($isRtl) ? 'pdf-rtl-text' : '';
-    @endphp
     <table class="header-table">
         <tr>
             <td style="width: 55%;">
                 @if (!empty($logoPath))
                     <img src="{{ $logoPath }}" alt="{{ __('YallaSpare logo') }}" class="logo-img">
                 @else
-                    <span class="logo-box">YS</span>
+                    <div class="logo-box">YS</div>
                 @endif
-                <p class="company-name {{ $pdfRtlClass }}">{{ $pdfText(__('invoice.company_name')) }}</p>
-                <p class="company-address {{ $pdfRtlClass }}">{{ $pdfText(__('invoice.company_address')) }}</p>
+                <p class="company-name">{{ __('invoice.company_name') }}</p>
+                <p class="company-address">{{ __('invoice.company_address') }}</p>
                 <p class="company-address">support@yallaspare.com</p>
                 <p class="company-address">+964 770 448 8315</p>
             </td>
             <td class="text-right" style="width: 45%;">
-                <h1 class="invoice-title {{ $pdfRtlClass }}">{{ $pdfText(__('invoice.title')) }}</h1>
-                <p class="invoice-meta"><span class="label {{ $pdfRtlClass }}">{{ $pdfText(__('invoice.invoice_number')) }}</span><span class="value">{{ $invoiceNumber }}</span></p>
-                <p class="invoice-meta"><span class="label {{ $pdfRtlClass }}">{{ $pdfText(__('invoice.order_date')) }}</span><span class="value">{{ optional($order->created_at)->format('Y-m-d H:i') }}</span></p>
+                <h1 class="invoice-title">{{ __('invoice.title') }}</h1>
+                <p class="invoice-meta"><span class="meta-label">{{ __('invoice.invoice_number') }}</span> <span class="value">{{ $invoiceNumber }}</span></p>
+                <p class="invoice-meta"><span class="meta-label">{{ __('invoice.order_date') }}</span> <span class="value">{{ optional($order->created_at)->format('Y-m-d H:i') }}</span></p>
             </td>
         </tr>
     </table>
 
     <table class="cards-table">
         <tr>
-            <td>
-                <div class="info-card">
-                    <div class="card-title {{ $pdfRtlClass }}">{{ $pdfText(__('invoice.customer_information')) }}</div>
-                    <span class="label {{ $pdfRtlClass }}">{{ $pdfText(__('invoice.customer_name')) }}</span>
-                    <div class="value {{ $pdfRtlClass }}" dir="{{ !empty($isRtl) ? 'ltr' : 'auto' }}">{{ $pdfText($order->user?->name ?? __('invoice.guest_customer')) }}</div>
-                    @if ($order->user?->email)
-                        <div class="muted">{{ $order->user->email }}</div>
-                    @endif
-                    @if ($order->user?->phone)
-                        <div class="muted"><span class="{{ $pdfRtlClass }}">{{ $pdfText(__('invoice.phone')) }}</span>: {{ $order->user->phone }}</div>
-                    @endif
-                </div>
+            <td style="width: 49%;">
+                {{-- A nested table, not a bordered div: mPDF drops border, background
+                     and padding on a block element inside a table cell. --}}
+                <table class="info-card">
+                    <tr><td class="card-title">{{ __('invoice.customer_information') }}</td></tr>
+                    <tr><td class="info-card-body">
+                        <div class="label">{{ __('invoice.customer_name') }}</div>
+                        <div class="value">{{ $order->user?->name ?? __('invoice.guest_customer') }}</div>
+                        @if ($order->user?->email)
+                            <div class="muted">{{ $order->user->email }}</div>
+                        @endif
+                        @if ($order->user?->phone)
+                            <div class="muted">{{ __('invoice.phone') }}: {{ $order->user->phone }}</div>
+                        @endif
+                    </td></tr>
+                </table>
             </td>
-            <td class="card-spacer"></td>
-            <td>
-                <div class="info-card">
-                    <div class="card-title {{ $pdfRtlClass }}">{{ $pdfText(__('invoice.shipping_information')) }}</div>
-                    <span class="label {{ $pdfRtlClass }}">{{ $pdfText(__('invoice.ship_to')) }}</span>
-                    <div class="value {{ $pdfRtlClass }}" dir="{{ !empty($isRtl) ? 'ltr' : 'auto' }}">{{ $pdfText($order->user?->name ?? __('invoice.guest_customer')) }}</div>
-                    <div class="{{ $pdfRtlClass }}" dir="{{ !empty($isRtl) ? 'ltr' : 'auto' }}">{{ $pdfText($order->delivery_address) }}</div>
-                    <div class="{{ $pdfRtlClass }}">{{ $pdfText($order->delivery_city) }}</div>
-                    <div class="muted"><span class="{{ $pdfRtlClass }}">{{ $pdfText(__('invoice.phone')) }}</span>: {{ $order->delivery_phone }}</div>
-                </div>
+            <td class="card-spacer" style="width: 2%;"></td>
+            <td style="width: 49%;">
+                <table class="info-card">
+                    <tr><td class="card-title">{{ __('invoice.shipping_information') }}</td></tr>
+                    <tr><td class="info-card-body">
+                        <div class="label">{{ __('invoice.ship_to') }}</div>
+                        <div class="value">{{ $order->user?->name ?? __('invoice.guest_customer') }}</div>
+                        <div>{{ $order->delivery_address }}</div>
+                        <div>{{ $order->delivery_city }}</div>
+                        <div class="muted">{{ __('invoice.phone') }}: {{ $order->delivery_phone }}</div>
+                    </td></tr>
+                </table>
             </td>
         </tr>
     </table>
@@ -417,25 +419,25 @@
     <table class="items-table">
         <thead>
             <tr>
-                <th class="{{ $pdfRtlClass }}">{{ $pdfText(__('invoice.product_name')) }}</th>
-                <th class="{{ $pdfRtlClass }}" style="width: 105px;">{{ $pdfText(__('invoice.sku')) }}</th>
-                <th class="text-center {{ $pdfRtlClass }}" style="width: 70px;">{{ $pdfText(__('invoice.quantity')) }}</th>
-                <th class="text-right {{ $pdfRtlClass }}" style="width: 105px;">{{ $pdfText(__('invoice.unit_price')) }}</th>
-                <th class="text-right {{ $pdfRtlClass }}" style="width: 110px;">{{ $pdfText(__('invoice.total')) }}</th>
+                <th>{{ __('invoice.product_name') }}</th>
+                <th style="width: 105px;">{{ __('invoice.sku') }}</th>
+                <th class="text-center" style="width: 70px;">{{ __('invoice.quantity') }}</th>
+                <th class="text-right" style="width: 105px;">{{ __('invoice.unit_price') }}</th>
+                <th class="text-right" style="width: 110px;">{{ __('invoice.total') }}</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($order->items as $item)
                 <tr>
                     <td>
-                        <div class="product-name {{ $pdfRtlClass }}" dir="{{ !empty($isRtl) ? 'ltr' : 'auto' }}">
-                            {{ $pdfText($item->product?->localizedName($locale ?? app()->getLocale()) ?? __('invoice.product_unavailable')) }}
+                        <div class="product-name">
+                            {{ $item->product?->localizedName($locale ?? app()->getLocale()) ?? __('invoice.product_unavailable') }}
                         </div>
                         @if ($item->product?->brand)
-                            <div class="sku" dir="{{ !empty($isRtl) ? 'ltr' : 'auto' }}"><span class="{{ $pdfRtlClass }}">{{ $pdfText(__('invoice.brand')) }}</span>: {{ $item->product->brand }}</div>
+                            <div class="sku"><span>{{ __('invoice.brand') }}</span>: {{ $item->product->brand }}</div>
                         @endif
                     </td>
-                    <td class="sku">{{ $item->product?->sku ?? $pdfText(__('invoice.not_available')) }}</td>
+                    <td class="sku">{{ $item->product?->sku ?? __('invoice.not_available') }}</td>
                     <td class="text-center">{{ number_format((int) $item->quantity) }}</td>
                     <td class="text-right">{{ number_format((float) $item->unit_price) }} {{ $currency }}</td>
                     <td class="text-right">{{ number_format((float) $item->subtotal) }} {{ $currency }}</td>
@@ -446,49 +448,49 @@
 
     <table class="summary-table">
         <tr>
-            <td class="summary-label {{ $pdfRtlClass }}">{{ $pdfText(__('invoice.subtotal')) }}</td>
+            <td class="summary-label">{{ __('invoice.subtotal') }}</td>
             <td class="text-right">{{ number_format((float) $subtotal) }} {{ $currency }}</td>
         </tr>
         <tr>
-            <td class="summary-label {{ $pdfRtlClass }}">{{ $pdfText(__('invoice.shipping')) }}</td>
+            <td class="summary-label">{{ __('invoice.shipping') }}</td>
             <td class="text-right">{{ number_format((float) $shipping) }} {{ $currency }}</td>
         </tr>
         @if (!empty($discount) && (float) $discount > 0)
             <tr>
-                <td class="summary-label {{ $pdfRtlClass }}">{{ $pdfText(__('invoice.discount')) }}</td>
+                <td class="summary-label">{{ __('invoice.discount') }}</td>
                 <td class="text-right">- {{ number_format((float) $discount) }} {{ $currency }}</td>
             </tr>
         @endif
         <tr class="grand">
-            <td class="{{ $pdfRtlClass }}">{{ $pdfText(__('invoice.grand_total')) }}</td>
+            <td>{{ __('invoice.grand_total') }}</td>
             <td class="text-right">{{ number_format((float) $grandTotal) }} {{ $currency }}</td>
         </tr>
     </table>
 
     <div class="print-note">
-        <p class="{{ $pdfRtlClass }}">
-            <strong class="navy">{{ $pdfText(__('invoice.shipping_copy')) }}:</strong>
-            {{ $pdfText(__('invoice.shipping_copy_note_line_1')) }}
+        <p>
+            <strong class="navy">{{ __('invoice.shipping_copy') }}:</strong>
+            {{ __('invoice.shipping_copy_note_line_1') }}
         </p>
-        <p class="{{ $pdfRtlClass }}">{{ $pdfText(__('invoice.shipping_copy_note_line_2')) }}</p>
+        <p>{{ __('invoice.shipping_copy_note_line_2') }}</p>
     </div>
 
     <div class="invoice-policies">
-        <p class="{{ $pdfRtlClass }}">
-            <span class="invoice-policies-title">{{ $pdfText(__('invoice.return_exchange_title')) }}:</span>
-            {{ $pdfText(__('invoice.return_exchange_note_line_1')) }}
+        <p>
+            <span class="invoice-policies-title">{{ __('invoice.return_exchange_title') }}:</span>
+            {{ __('invoice.return_exchange_note_line_1') }}
         </p>
-        <p class="{{ $pdfRtlClass }}">{{ $pdfText(__('invoice.return_exchange_note_line_2')) }}</p>
-        <p class="{{ $pdfRtlClass }}">
-            <span class="invoice-policies-title">{{ $pdfText(__('invoice.warranty_title')) }}:</span>
-            {{ $pdfText(__('invoice.warranty_note_line_1')) }}
+        <p>{{ __('invoice.return_exchange_note_line_2') }}</p>
+        <p>
+            <span class="invoice-policies-title">{{ __('invoice.warranty_title') }}:</span>
+            {{ __('invoice.warranty_note_line_1') }}
         </p>
-        <p class="{{ $pdfRtlClass }}">{{ $pdfText(__('invoice.warranty_note_line_2')) }}</p>
+        <p>{{ __('invoice.warranty_note_line_2') }}</p>
     </div>
 
-    <div class="footer {{ $pdfRtlClass }}">
-        {{ $pdfText(__('invoice.thank_you')) }}<br>
-        {{ $pdfText(__('invoice.generated_by')) }}
+    <div class="footer">
+        {{ __('invoice.thank_you') }}<br>
+        {{ __('invoice.generated_by') }}
     </div>
 </body>
 </html>

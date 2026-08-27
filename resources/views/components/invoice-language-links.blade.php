@@ -21,9 +21,18 @@
 
 <details {{ $attributes->merge(['class' => 'group relative inline-block text-left']) }}>
     <summary class="inline-flex cursor-pointer list-none items-center justify-center gap-2 whitespace-nowrap bg-primary font-semibold text-white shadow-sm transition hover:bg-navy-raised focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 [&::-webkit-details-marker]:hidden {{ $summaryClasses }}">
-        <i class="fas fa-file-pdf" aria-hidden="true"></i>
+        {{-- Inline SVG: this control also renders on the storefront account
+             pages, and layouts/user does not load Font Awesome, so the glyphs
+             were simply missing there. --}}
+        <svg class="h-3.5 w-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M14 3H7a1.5 1.5 0 0 0-1.5 1.5v15A1.5 1.5 0 0 0 7 21h10a1.5 1.5 0 0 0 1.5-1.5V7.5z" />
+            <path d="M14 3v4.5h4.5" />
+            <path d="M9 15.5h6" />
+        </svg>
         <span>{{ __('Invoice') }}</span>
-        <i class="fas fa-chevron-down text-[10px] transition group-open:rotate-180" aria-hidden="true"></i>
+        <svg class="h-2.5 w-2.5 shrink-0 transition group-open:rotate-180" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m5 8.5 7 7 7-7" />
+        </svg>
     </summary>
     <div class="invisible absolute {{ $menuAlignment }} z-50 mt-1 flex min-w-full overflow-hidden rounded-md border border-slate-200 bg-white opacity-0 shadow-lg transition group-open:visible group-open:opacity-100 group-hover:visible group-hover:opacity-100 dark:border-slate-700 dark:bg-slate-900">
         @foreach($invoiceLocales as $localeCode => $localeLabel)

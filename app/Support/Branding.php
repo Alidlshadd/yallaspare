@@ -151,7 +151,7 @@ class Branding
 
     /**
      * Resolve an absolute filesystem path to the site logo for embedding in PDFs.
-     * DomPDF needs a path, not a URL. Returns null if no safe logo can be found.
+     * The PDF engine needs a path, not a URL. Returns null if no safe logo can be found.
      */
     public static function invoiceLogoPath(): ?string
     {

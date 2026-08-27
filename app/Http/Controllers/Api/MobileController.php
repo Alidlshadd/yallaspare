@@ -1391,8 +1391,7 @@ class MobileController extends Controller
             $request->user(),
         );
 
-        return $renderer->render($order, $locale)
-            ->download('invoice-'.$order->id.'-'.$locale.'.pdf');
+        return $renderer->download($order, $locale);
     }
 
     public function reviews(string $idOrSlug)

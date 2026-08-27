@@ -8,21 +8,18 @@ use App\Models\InventoryMovement;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Product;
-use App\Models\Setting;
 use App\Models\User;
+use App\Services\InvoiceRenderer;
 use App\Services\Orders\OrderStatusService;
 use App\Services\Payments\PaymentService;
 use App\Support\AdminLogger;
-use App\Support\Branding;
 use App\Support\SqlSafe;
 use App\Support\UserCommunication;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Str;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\Response;
@@ -186,42 +183,16 @@ class OrderController extends Controller
         ]);
     }
 
-    public function invoice(Request $request, Order $order): Response
+    // Renders through the shared InvoiceRenderer rather than a second copy of
+    // the same view call, so admin downloads get the same engine — and the same
+    // Arabic/Kurdish shaping — as the customer and mobile ones. The locale
+    // resolution below stays admin-specific on purpose: an admin's own language
+    // preference must not decide the language of someone else's invoice.
+    public function invoice(Request $request, Order $order, InvoiceRenderer $renderer): Response
     {
-        $order->load([
-            'user:id,name,email,phone,locale_preference',
-            'items' => fn ($query) => $query
-                ->select(['id', 'order_id', 'product_id', 'quantity', 'unit_price', 'subtotal'])
-                ->with(['product:id,name_en,name_ar,name_ku,sku,brand']),
-        ]);
+        $order->load(['user:id,name,email,phone,locale_preference']);
 
-        $subtotal = (float) ($order->subtotal_amount ?: $order->items->sum('subtotal'));
-        $shipping = (float) $order->shipping_fee;
-        $discount = (float) $order->discount_amount;
-        $grandTotal = (float) ($order->grand_total ?: ($subtotal + $shipping - $discount));
-        $year = optional($order->created_at)->format('Y') ?: now()->format('Y');
-        $locale = $this->invoiceLocale($request, $order);
-        $previousLocale = app()->getLocale();
-        app()->setLocale($locale);
-
-        try {
-            $pdf = Pdf::loadView('admin.orders.invoice', [
-                'order' => $order,
-                'invoiceNumber' => 'INV-'.$year.'-'.str_pad((string) $order->id, 5, '0', STR_PAD_LEFT),
-                'currency' => 'IQD',
-                'logoPath' => $this->invoiceLogoPath(),
-                'subtotal' => $subtotal,
-                'shipping' => $shipping,
-                'discount' => $discount,
-                'grandTotal' => $grandTotal,
-                'locale' => $locale,
-                'isRtl' => in_array($locale, ['ar', 'ku'], true),
-            ])->setPaper('a4');
-        } finally {
-            app()->setLocale($previousLocale);
-        }
-
-        return $pdf->download('invoice-'.$order->id.'-'.$locale.'.pdf');
+        return $renderer->download($order, $this->invoiceLocale($request, $order));
     }
 
     private function invoiceLocale(Request $request, Order $order): string
@@ -234,35 +205,6 @@ class OrderController extends Controller
         $preferredLocale = strtolower((string) ($order->user?->locale_preference ?: app()->getLocale()));
 
         return in_array($preferredLocale, ['en', 'ar', 'ku'], true) ? $preferredLocale : 'en';
-    }
-
-    private function invoiceLogoPath(): ?string
-    {
-        $logoValue = (string) Setting::getValue('site_logo', '');
-        if ($logoValue === '') {
-            return null;
-        }
-
-        $storagePath = Branding::storagePathFromValue($logoValue);
-        if ($storagePath && Branding::isSafeLogoPath($storagePath)) {
-            $publicStoragePath = public_path('storage/'.ltrim($storagePath, '/'));
-            if (is_file($publicStoragePath)) {
-                return str_replace('\\', '/', $publicStoragePath);
-            }
-        }
-
-        $normalized = str_replace('\\', '/', trim($logoValue));
-        if (
-            Branding::isSafeLogoPath($normalized)
-            && Str::startsWith($normalized, ['assets/', 'images/', 'storage/', '/assets/', '/images/', '/storage/'])
-        ) {
-            $publicPath = public_path(ltrim($normalized, '/'));
-            if (is_file($publicPath)) {
-                return str_replace('\\', '/', $publicPath);
-            }
-        }
-
-        return null;
     }
 
     public function update(Request $request, Order $order, OrderStatusService $statuses): RedirectResponse
