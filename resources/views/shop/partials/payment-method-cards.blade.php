@@ -9,9 +9,17 @@
     }
 @endphp
 
-<div class="rounded-2xl border border-slate-200/80 bg-white p-3.5 dark:border-slate-800 dark:bg-slate-950">
-    <p class="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{{ __('Payment Method') }}</p>
-    <div class="mt-2.5 grid gap-3 sm:grid-cols-2">
+{{--
+    One card per row, always stacked. The sidebar this renders into on
+    checkout-review is 22rem wide, so a viewport-based two-column grid split it
+    into ~150px columns and broke "Cash on Delivery" across three lines.
+--}}
+<fieldset class="m-0 min-w-0 border-0 p-0">
+    <legend class="p-0 text-[11px] font-bold uppercase tracking-[0.14em] text-[var(--text-muted)]">
+        {{ __('Payment Method') }}
+    </legend>
+
+    <div class="mt-3 grid gap-3">
         @foreach($paymentMethods as $method)
             @php
                 $isDisabled = ! ($method['enabled'] ?? false);
@@ -24,14 +32,11 @@
 
             <label
                 data-payment-method-card="{{ $method['key'] }}"
-                class="relative flex min-h-24 min-w-0 items-center gap-3 overflow-hidden rounded-2xl border px-3.5 py-3 text-sm {{ $isDisabled
-                    ? 'cursor-not-allowed border-slate-200 bg-slate-50/80 dark:border-slate-700 dark:bg-slate-900/60'
-                    : 'cursor-pointer border-[#070740]/45 bg-[#070740]/[0.025] shadow-[0_1px_3px_rgba(7,7,64,0.08)] transition duration-200 hover:-translate-y-0.5 hover:border-[#070740]/70 hover:shadow-[0_3px_8px_rgba(7,7,64,0.10)] focus-within:border-[#070740] focus-within:ring-2 focus-within:ring-[#FF6A00]/25 motion-reduce:transform-none motion-reduce:transition-none dark:border-slate-500 dark:bg-slate-900/80 dark:hover:border-slate-300 dark:focus-within:border-white' }}"
+                @if($isDisabled) aria-disabled="true" @endif
+                class="group relative flex min-h-[92px] min-w-0 items-center gap-3.5 overflow-hidden rounded-2xl border px-4 py-4 transition duration-200 motion-reduce:transition-none {{ $isDisabled
+                    ? 'cursor-not-allowed border-dashed border-[var(--border)] bg-[var(--surface-sunk)]'
+                    : 'cursor-pointer border-[var(--border)] bg-[var(--surface)] hover:border-[rgb(var(--text-muted-rgb)/0.5)] hover:shadow-[0_6px_18px_-8px_rgb(var(--primary-solid-rgb)/0.3)] has-[:checked]:border-accent/45 has-[:checked]:bg-accent/[0.035] dark:has-[:checked]:bg-accent/[0.07] has-[:focus-visible]:outline has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent' }}"
             >
-                @if($isSelected)
-                    <span aria-hidden="true" class="absolute inset-y-3 start-0 w-0.5 rounded-full bg-[#FF6A00]"></span>
-                @endif
-
                 <input
                     type="radio"
                     name="payment_method"
@@ -41,29 +46,76 @@
                     class="sr-only"
                 >
 
-                <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl {{ $isDisabled
-                    ? 'border border-slate-200 bg-white text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300'
-                    : 'bg-[#070740]/[0.07] text-[#070740] dark:bg-white/10 dark:text-white' }}">
-                    <i class="fas {{ $isCod ? 'fa-truck' : 'fa-credit-card' }} text-sm" aria-hidden="true"></i>
+                @unless($isDisabled)
+                    <span
+                        aria-hidden="true"
+                        class="absolute inset-y-0 start-0 w-[3px] bg-accent opacity-0 transition-opacity duration-200 group-has-[:checked]:opacity-100 motion-reduce:transition-none"
+                    ></span>
+                @endunless
+
+                <span class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl transition duration-200 motion-reduce:transition-none {{ $isDisabled
+                    ? 'border border-[var(--border)] text-[var(--text-muted)]'
+                    : 'bg-[var(--surface-sunk)] text-primary group-has-[:checked]:bg-accent/10 group-has-[:checked]:text-accent-ink' }}">
+                    {{-- Inline SVG, like the rest of the storefront: layouts/user does not load Font Awesome. --}}
+                    @if($isCod)
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M3 7a1 1 0 0 1 1-1h9a1 1 0 0 1 1 1v9H3z" />
+                            <path d="M14 10h3.2a1 1 0 0 1 .8.4l2 2.6a1 1 0 0 1 .2.6V16h-6z" />
+                            <circle cx="7" cy="18" r="2" />
+                            <circle cx="17" cy="18" r="2" />
+                        </svg>
+                    @else
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <rect x="2.5" y="5" width="19" height="14" rx="2.5" />
+                            <path d="M2.5 10h19" />
+                            <path d="M6.5 15h3" />
+                        </svg>
+                    @endif
                 </span>
 
                 <span class="min-w-0 flex-1">
-                    <span class="flex min-w-0 flex-wrap items-center justify-between gap-x-2 gap-y-1">
-                        <span class="min-w-0 font-semibold leading-5 text-slate-950 dark:text-white">{{ __($method['label']) }}</span>
+                    <span class="flex min-w-0 flex-wrap items-center gap-x-2 gap-y-1">
+                        <span class="min-w-0 text-[15px] font-semibold leading-tight text-[var(--text)]">
+                            {{ __($method['label']) }}
+                        </span>
 
                         @if($method['coming_soon'] ?? false)
-                            <span class="shrink-0 whitespace-nowrap rounded-full border border-[#FF6A00]/20 bg-[#FF6A00]/[0.08] px-2 py-0.5 text-[9px] font-bold uppercase leading-4 tracking-[0.08em] text-[#C85100] dark:border-orange-400/25 dark:bg-orange-400/10 dark:text-orange-300">
+                            <span class="shrink-0 whitespace-nowrap rounded-full border border-[var(--border)] bg-[var(--surface)] px-2.5 py-0.5 text-[10px] font-bold uppercase leading-4 tracking-[0.09em] text-[var(--text-muted)]">
                                 {{ __('Coming Soon') }}
-                            </span>
-                        @elseif($isSelected)
-                            <span aria-hidden="true" class="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#070740] text-white dark:bg-white dark:text-[#070740]">
-                                <i class="fas fa-check text-[10px]" aria-hidden="true"></i>
                             </span>
                         @endif
                     </span>
 
-                    <span class="mt-1 block text-xs leading-4 text-slate-500 dark:text-slate-400">{{ __($description) }}</span>
+                    <span class="mt-1 block text-[13px] leading-snug text-[var(--text-secondary)]">
+                        {{ __($description) }}
+                    </span>
+
+                    {{-- --text-muted only clears 3.9:1 on the sunk surface, so the disabled card steps up a level. --}}
+                    <span class="mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[11.5px] font-semibold {{ $isDisabled ? 'text-[var(--text-secondary)]' : 'text-[var(--text-muted)]' }}">
+                        <span class="inline-flex items-center gap-1.5">
+                            <span aria-hidden="true" class="h-1.5 w-1.5 shrink-0 rounded-full bg-current"></span>
+                            {{ $isDisabled ? __('Not available yet') : __('Available now') }}
+                        </span>
+
+                        @unless($isDisabled)
+                            {{-- Text cue so the selected state never rests on colour alone. --}}
+                            <span class="hidden text-[var(--text-secondary)] group-has-[:checked]:inline">
+                                &middot; {{ __('Selected') }}
+                            </span>
+                        @endunless
+                    </span>
                 </span>
+
+                @unless($isDisabled)
+                    <span
+                        aria-hidden="true"
+                        class="inline-flex h-[22px] w-[22px] shrink-0 items-center justify-center rounded-full border-[1.5px] border-[var(--border)] text-transparent transition duration-200 group-has-[:checked]:border-accent group-has-[:checked]:bg-accent group-has-[:checked]:text-navy-deep motion-reduce:transition-none"
+                    >
+                        <svg class="h-2.5 w-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M4.5 12.5 9.5 17.5 19.5 7" />
+                        </svg>
+                    </span>
+                @endunless
             </label>
         @endforeach
     </div>
@@ -71,4 +123,4 @@
     @error('payment_method')
         <p class="mt-2 text-xs font-medium text-rose-600 dark:text-rose-400">{{ $message }}</p>
     @enderror
-</div>
+</fieldset>
