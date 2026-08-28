@@ -1,4 +1,6 @@
 @php
+    use App\Support\EmailStyle;
+
     $tone = $tone ?? 'info';
     $styles = [
         'info'    => ['bg' => '#f1f5fb', 'border' => '#cdd9ee', 'accent' => '#1d4ed8', 'text' => '#1e3a8a', 'label' => __('Info'),    'class' => 'em-alert-info'],
@@ -8,13 +10,14 @@
     ];
     $s = $styles[$tone] ?? $styles['info'];
 @endphp
-{{-- v2 alert: left accent border + monospace caps tone label + message. No icon
-     character — keeps it clean across email clients that ship different emoji sets. --}}
+{{-- v2 alert: accent border on the reading edge + monospace caps tone label + message.
+     No icon character — keeps it clean across email clients that ship different emoji
+     sets. The accent border mirrors to the right edge in ar/ku. --}}
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:20px 0;">
 <tr>
     <td class="{{ $s['class'] }}"
-        style="background:{{ $s['bg'] }};border:1px solid {{ $s['border'] }};border-left:3px solid {{ $s['accent'] }};border-radius:4px;padding:14px 18px;color:{{ $s['text'] }};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;font-size:13.5px;line-height:21px;font-weight:500;">
-        <span style="display:block;margin-bottom:4px;font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;font-size:9.5px;font-weight:700;color:{{ $s['accent'] }};letter-spacing:1.8px;text-transform:uppercase;">{{ $s['label'] }}</span>
+        style="background:{{ $s['bg'] }};border:1px solid {{ $s['border'] }};border-{{ EmailStyle::start() }}:3px solid {{ $s['accent'] }};border-radius:4px;padding:14px 18px;color:{{ $s['text'] }};font-family:{{ EmailStyle::sans() }};font-size:13.5px;line-height:21px;font-weight:500;">
+        <span style="display:block;margin-bottom:4px;font-family:{{ EmailStyle::mono() }};font-size:{{ EmailStyle::isRtl() ? '10.5px' : '9.5px' }};font-weight:700;color:{{ $s['accent'] }};{{ EmailStyle::tracking('1.8px') }}{{ EmailStyle::caps() }}">{{ $s['label'] }}</span>
         {{ $message ?? '' }}
     </td>
 </tr>

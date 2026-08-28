@@ -1,4 +1,6 @@
 @php
+    use App\Support\EmailStyle;
+
     $status = strtolower($status ?? 'pending');
     $configs = [
         'placed'      => ['border' => '#cdd9ee', 'accent' => '#1d4ed8', 'label' => __('Order Placed')],
@@ -15,10 +17,12 @@
     $cfg   = $configs[$status] ?? ['border' => '#ebedf0', 'accent' => '#4a4e63', 'label' => ucfirst($status)];
     $label = $customLabel ?? $cfg['label'];
 @endphp
-{{-- v2 badge: 1px outline + monospace caps. No background fill — cleaner against the white card. --}}
+{{-- v2 badge: 1px outline + monospace caps. No background fill — cleaner against the
+     white card. In ar/ku the caps and tracking come off and the label runs in the
+     Arabic sans stack, otherwise the status word arrives disjointed. --}}
 <table role="presentation" cellpadding="0" cellspacing="0">
 <tr>
-    <td style="background:#ffffff;border:1px solid {{ $cfg['border'] }};border-radius:3px;padding:4px 10px;color:{{ $cfg['accent'] }};font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;font-size:10px;font-weight:700;white-space:nowrap;letter-spacing:1.5px;text-transform:uppercase;">
+    <td style="background:#ffffff;border:1px solid {{ $cfg['border'] }};border-radius:3px;padding:4px 10px;color:{{ $cfg['accent'] }};font-family:{{ EmailStyle::mono() }};font-size:{{ EmailStyle::isRtl() ? '11.5px' : '10px' }};font-weight:700;white-space:nowrap;{{ EmailStyle::tracking('1.5px') }}{{ EmailStyle::caps() }}">
         {{ $label }}
     </td>
 </tr>

@@ -1,23 +1,20 @@
 @extends('emails.layouts.base', [
     'preheader' => __('A new support request has been submitted via YallaSpare.'),
+    'specTag'   => 'SUP / REQUEST',
 ])
 
 @section('content')
 
-    {{-- Eyebrow --}}
-    <p style="margin:0 0 10px;color:#7c3aed;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2.2px;">
-        {{ __('Support request') }}
-    </p>
+    {{-- Kicker --}}
+    <x-email-kicker :text="__('Support request')" />
 
     {{-- Headline --}}
-    <h1 class="em-title" style="margin:0;color:#0f172a;font-size:30px;line-height:38px;font-weight: 700;letter-spacing:-0.5px;">
-        {{ __('New support request') }}
-    </h1>
+    <x-email-title :text="__('New support request')" />
 
     {{-- Intro --}}
-    <p class="em-copy" style="margin:16px 0 0;color:#475569;font-size:16px;line-height:27px;">
+    <x-email-copy>
         {{ __('A visitor submitted a support request through the YallaSpare contact form. Details are below.') }}
-    </p>
+    </x-email-copy>
 
     {{-- Contact details --}}
     @include('emails.components.meta-grid', ['items' => array_filter([
@@ -28,24 +25,19 @@
         ['label' => __('Subject'), 'value' => $requestSubject ?? ''],
     ])])
 
-    {{-- Message body --}}
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:4px 0 0;">
+    {{-- Message body — inset card on the v2 hairline palette (#fafbfc / #ebedf0,
+         4px radius), matching <security-notice>. It was on the pre-rebrand slate
+         card with a 14px radius. The visitor's text is whatever language they
+         typed, so it keeps its own direction rather than the email's. --}}
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:18px 0 8px;">
     <tr>
-        <td style="padding:14px 12px 6px;">
-            <p style="margin:0 0 8px;color:#64748b;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.9px;">
+        <td class="em-sec-notice" align="{{ App\Support\EmailStyle::start() }}" style="padding:16px 18px;background:#fafbfc;border:1px solid #ebedf0;border-radius:4px;">
+            <p class="em-sec-title" style="margin:0 0 6px;font-family:{{ App\Support\EmailStyle::mono() }};color:#9aa0b5;font-size:{{ App\Support\EmailStyle::isRtl() ? '11.5px' : '10px' }};font-weight:700;{{ App\Support\EmailStyle::tracking('1.8px') }}{{ App\Support\EmailStyle::caps() }}">
                 {{ __('Message') }}
             </p>
-        </td>
-    </tr>
-    <tr>
-        <td style="padding:0 0 8px;">
-            <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-            <tr>
-                <td style="padding:18px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:14px;color:#334155;font-size:15px;line-height:25px;">
-                    {!! nl2br(e($messageText ?? '')) !!}
-                </td>
-            </tr>
-            </table>
+            <div class="em-sec-text" dir="{{ preg_match('/\p{Arabic}/u', (string) ($messageText ?? '')) ? 'rtl' : 'ltr' }}" style="font-family:{{ App\Support\EmailStyle::sans() }};color:#4a4e63;font-size:14px;line-height:24px;unicode-bidi:isolate;">
+                {!! nl2br(e($messageText ?? '')) !!}
+            </div>
         </td>
     </tr>
     </table>

@@ -10,14 +10,12 @@
     <x-email-security-label :text="__('Security alert')" />
 
     {{-- Headline --}}
-    <h1 class="em-title" style="margin:0;font-family:'Space Grotesk','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#070740;font-size:30px;line-height:35px;font-weight:700;letter-spacing:-0.6px;">
-        {{ $title ?? __('Admin security alert') }}
-    </h1>
+    <x-email-title :text="$title ?? __('Admin security alert')" />
 
     {{-- Body copy --}}
-    <p class="em-copy" style="margin:16px 0 0;color:#4a4e63;font-size:15px;line-height:25px;">
+    <x-email-copy>
         {!! nl2br(e($bodyText ?? '')) !!}
-    </p>
+    </x-email-copy>
 
     @if (!empty($metaItems))
         @include('emails.components.meta-grid', ['items' => $metaItems])

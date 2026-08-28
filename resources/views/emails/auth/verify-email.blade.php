@@ -10,14 +10,12 @@
     <x-email-kicker :text="__('Account verification')" />
 
     {{-- Headline --}}
-    <h1 class="em-title" style="margin:0;font-family:'Space Grotesk','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#070740;font-size:30px;line-height:35px;font-weight:700;letter-spacing:-0.6px;">
-        {{ __('Verify your email address') }}
-    </h1>
+    <x-email-title :text="__('Verify your email address')" />
 
     {{-- Body copy --}}
-    <p class="em-copy" style="margin:16px 0 0;color:#4a4e63;font-size:15px;line-height:25px;">
+    <x-email-copy>
         {{ __('Enter this verification code on the YallaSpare verification screen to protect your account and unlock checkout, order tracking, and account settings.') }}
-    </p>
+    </x-email-copy>
 
     {{-- Meta info --}}
     @include('emails.components.meta-grid', ['items' => [

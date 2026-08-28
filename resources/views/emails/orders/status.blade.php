@@ -11,9 +11,7 @@
     <x-email-kicker :text="$eyebrow ?? __('Order update')" />
 
     {{-- Headline + optional status badge --}}
-    <h1 class="em-title" style="margin:0;font-family:'Space Grotesk','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#070740;font-size:30px;line-height:35px;font-weight:700;letter-spacing:-0.6px;">
-        {{ $title ?? __('Order status updated') }}
-    </h1>
+    <x-email-title :text="$title ?? __('Order status updated')" />
 
     @if (!empty($orderStatus))
     <div style="margin:14px 0 0;">
@@ -22,9 +20,9 @@
     @endif
 
     {{-- Body copy --}}
-    <p class="em-copy" style="margin:16px 0 0;color:#4a4e63;font-size:15px;line-height:25px;">
+    <x-email-copy>
         {{ $intro ?? $bodyText ?? '' }}
-    </p>
+    </x-email-copy>
 
     {{-- Meta grid --}}
     @include('emails.components.meta-grid', ['items' => $metaItems ?? []])
@@ -34,15 +32,15 @@
 
     {{-- Totals --}}
     @if (!empty($totals))
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:0 0 26px;">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" dir="{{ App\Support\EmailStyle::isRtl() ? 'rtl' : 'ltr' }}" style="margin:0 0 26px;">
         @foreach ($totals as $total)
         <tr class="em-totals-row">
-            <td class="em-totals-label"
-                style="padding:8px 0;border-top:{{ $loop->first ? '1px solid #ebedf0' : '0' }};{{ $loop->last ? 'border-top:1px solid #ebedf0;padding-top:14px;' : '' }}font-family:{{ $loop->last ? "'Space Grotesk','Inter',sans-serif" : "-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif" }};color:{{ $loop->last ? '#070740' : '#4a4e63' }};font-size:{{ $loop->last ? '15px' : '13px' }};font-weight:{{ $loop->last ? '700' : '500' }};">
+            <td class="em-totals-label" align="{{ App\Support\EmailStyle::start() }}"
+                style="padding:8px 0;border-top:{{ $loop->first ? '1px solid #ebedf0' : '0' }};{{ $loop->last ? 'border-top:1px solid #ebedf0;padding-top:14px;' : '' }}font-family:{{ $loop->last ? App\Support\EmailStyle::display() : App\Support\EmailStyle::sans() }};color:{{ $loop->last ? '#070740' : '#4a4e63' }};font-size:{{ $loop->last ? '15px' : '13px' }};font-weight:{{ $loop->last ? '700' : '500' }};">
                 {{ $total['label'] }}
             </td>
-            <td class="em-totals-val" align="right"
-                style="padding:8px 0;border-top:{{ $loop->first ? '1px solid #ebedf0' : '0' }};{{ $loop->last ? 'border-top:1px solid #ebedf0;padding-top:14px;' : '' }}font-family:'Space Grotesk','Inter',sans-serif;color:{{ $loop->last ? '#070740' : '#070740' }};font-size:{{ $loop->last ? '15px' : '14px' }};font-weight:700;white-space:nowrap;">
+            <td class="em-totals-val" align="{{ App\Support\EmailStyle::end() }}"
+                style="padding:8px 0;border-top:{{ $loop->first ? '1px solid #ebedf0' : '0' }};{{ $loop->last ? 'border-top:1px solid #ebedf0;padding-top:14px;' : '' }}font-family:{{ App\Support\EmailStyle::display() }};color:#070740;font-size:{{ $loop->last ? '15px' : '14px' }};font-weight:700;white-space:nowrap;">
                 <span dir="ltr" style="unicode-bidi:isolate;">{{ $total['value'] }}</span>
             </td>
         </tr>

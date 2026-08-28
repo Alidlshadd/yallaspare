@@ -1,24 +1,21 @@
 @extends('emails.layouts.base', [
     'preheader'      => $preheader ?? __('A dealer account update from YallaSpare.'),
     'recipientEmail' => $recipientEmail ?? null,
+    'specTag'        => 'DLR / UPDATE',
 ])
 
 @section('content')
 
-    {{-- Eyebrow --}}
-    <p style="margin:0 0 10px;color:#0891b2;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2.2px;">
-        {{ __('Dealer notification') }}
-    </p>
+    {{-- Kicker --}}
+    <x-email-kicker :text="__('Dealer notification')" />
 
     {{-- Headline --}}
-    <h1 class="em-title" style="margin:0;color:#0f172a;font-size:30px;line-height:38px;font-weight: 700;letter-spacing:-0.5px;">
-        {{ $title ?? __('Dealer account update') }}
-    </h1>
+    <x-email-title :text="$title ?? __('Dealer account update')" />
 
     {{-- Body copy --}}
-    <p class="em-copy" style="margin:16px 0 0;color:#475569;font-size:16px;line-height:27px;">
+    <x-email-copy>
         {!! nl2br(e($bodyText ?? '')) !!}
-    </p>
+    </x-email-copy>
 
     {{-- Meta grid --}}
     @include('emails.components.meta-grid', ['items' => $metaItems ?? []])

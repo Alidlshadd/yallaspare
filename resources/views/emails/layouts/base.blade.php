@@ -1,7 +1,9 @@
 @php
+    use App\Support\EmailStyle;
+
     $brandName     = (string) ($brandName ?? ($systemSettings['site_name'] ?? 'YallaSpare'));
     $locale        = (string) ($locale ?? app()->getLocale());
-    $isRtl         = in_array($locale, ['ar', 'ku'], true);
+    $isRtl         = EmailStyle::isRtl($locale);
     $preheaderText = trim((string) ($preheader ?? ''));
     $recipientEmail = $recipientEmail ?? null;
     $recipientName  = $recipientName  ?? null;
@@ -49,8 +51,16 @@
             .em-btn           { display:block!important; width:100%!important; box-sizing:border-box!important; text-align:center!important; padding:14px 18px!important; }
             .em-btn-wrap      { width:100%!important; }
             .em-code          { font-size:30px!important; letter-spacing:8px!important; padding-left:8px!important; }
-            .em-meta-label    { display:block!important; width:100%!important; border-right:0!important; border-bottom:1px solid #ebedf0!important; }
-            .em-meta-value    { display:block!important; width:100%!important; padding-top:0!important; }
+            {{-- Label above value on mobile, so the column divider goes away entirely
+                 and the row divider is left to the value cell's own border-bottom
+                 (which the component already drops on the last row).
+
+                 The value rule is .em-meta-val, not .em-meta-value: the component has
+                 always emitted the short name, so the old rule never matched and the
+                 value stayed a table-cell while the label above it went block —
+                 the row only half-stacked. --}}
+            .em-meta-label    { display:block!important; width:100%!important; border:0!important; padding:14px 0 0!important; }
+            .em-meta-val      { display:block!important; width:100%!important; padding:2px 0 14px!important; }
             .em-hide-sm       { display:none!important; }
             .em-stack         { display:block!important; width:100%!important; }
             .em-card-legal    { padding:14px 16px!important; font-size:10.5px!important; }
@@ -99,7 +109,7 @@
         }
     </style>
 </head>
-<body class="em-page-bg" style="margin:0;padding:0;background:#eef0f4;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;color:#0f172a;">
+<body class="em-page-bg" style="margin:0;padding:0;background:#eef0f4;font-family:{{ EmailStyle::sans($locale) }};color:#0f172a;">
 
     {{-- PREHEADER (invisible preview text) --}}
     @if ($preheaderText !== '')
@@ -149,8 +159,8 @@
             @if ($recipientEmail || $recipientName)
             <tr>
                 <td class="em-rbar" style="padding:11px 36px;background:#fafbfc;border-bottom:1px solid #ebedf0;">
-                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0"><tr>
-                    <td class="em-rbar-text" style="font-family:'SFMono-Regular',Consolas,'Liberation Mono',Menlo,monospace;font-size:11px;color:#8a8ea3;font-weight:500;letter-spacing:0.4px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" dir="{{ $isRtl ? 'rtl' : 'ltr' }}"><tr>
+                    <td class="em-rbar-text" align="{{ EmailStyle::start($locale) }}" style="font-family:{{ EmailStyle::mono($locale) }};font-size:{{ $isRtl ? '12px' : '11px' }};color:#8a8ea3;font-weight:500;{{ EmailStyle::tracking('0.4px', $locale) }}">
                         @if ($recipientName)
                             <strong style="color:#4a4e63;font-weight:700;">{{ $recipientName }}</strong>
                             &nbsp;&middot;&nbsp;
@@ -164,7 +174,10 @@
 
             {{-- ░░ CONTENT ░░ --}}
             <tr>
-                <td class="em-body em-body-bg" style="padding:44px 40px 36px;background:#ffffff;">
+                {{-- dir/align repeated here rather than left to inherit from <html>:
+                     Outlook's Word engine does not reliably carry direction down
+                     through nested tables. --}}
+                <td class="em-body em-body-bg" dir="{{ $isRtl ? 'rtl' : 'ltr' }}" align="{{ EmailStyle::start($locale) }}" style="padding:44px 40px 36px;background:#ffffff;">
                     @yield('content')
                 </td>
             </tr>
@@ -181,7 +194,7 @@
 
         {{-- BELOW-CARD LEGAL --}}
         <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:620px;margin:0 auto;"><tr>
-        <td align="center" class="em-card-legal" style="padding:18px 20px 4px;font-size:11px;line-height:18px;color:#6b6f80;">
+        <td align="center" class="em-card-legal" style="padding:18px 20px 4px;font-family:{{ EmailStyle::sans($locale) }};font-size:11px;line-height:18px;color:#6b6f80;">
             &copy; {{ date('Y') }} {{ $brandName }}.
             {{ __('This is an automated message — please do not reply.') }}
         </td>

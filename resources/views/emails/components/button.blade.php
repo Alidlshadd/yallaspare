@@ -1,4 +1,6 @@
 @php
+    use App\Support\EmailStyle;
+
     $variant = $variant ?? 'primary';
     $size    = $size    ?? 'default';
 
@@ -22,7 +24,9 @@
         style="border-radius:14px;background:{{ $cfg['bg'] }};box-shadow:0 6px 20px {{ $cfg['shadow'] }};">
         <a href="{{ $url }}"
            class="em-btn"
-           style="display:inline-block;padding:{{ $padding }};border-radius:14px;color:{{ $cfg['text'] }};font-size:{{ $fontSize }};font-weight:700;line-height:1.25;text-decoration:none;text-align:center;letter-spacing:-0.1px;min-width:180px;">
+           {{-- Negative tracking tightens the Latin label; on Arabic script it would
+                crowd the joins, so it only ships for LTR locales. --}}
+           style="display:inline-block;padding:{{ $padding }};border-radius:14px;color:{{ $cfg['text'] }};font-family:{{ EmailStyle::display() }};font-size:{{ $fontSize }};font-weight:700;line-height:1.25;text-decoration:none;text-align:center;{{ EmailStyle::tracking('-0.1px') }}min-width:180px;">
             {{ $label }}
         </a>
     </td>

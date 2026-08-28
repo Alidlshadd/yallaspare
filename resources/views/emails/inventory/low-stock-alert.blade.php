@@ -1,23 +1,20 @@
 @extends('emails.layouts.base', [
     'preheader' => __('Inventory alert: one or more products are running low on stock.'),
+    'specTag'   => 'INV / STOCK',
 ])
 
 @section('content')
 
-    {{-- Eyebrow --}}
-    <p style="margin:0 0 10px;color:#d97706;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:2.2px;">
-        {{ __('Inventory alert') }}
-    </p>
+    {{-- Kicker --}}
+    <x-email-kicker :text="__('Inventory alert')" />
 
     {{-- Headline --}}
-    <h1 class="em-title" style="margin:0;color:#0f172a;font-size:30px;line-height:38px;font-weight: 700;letter-spacing:-0.5px;">
-        {{ $title ?? __('Low stock alert') }}
-    </h1>
+    <x-email-title :text="$title ?? __('Low stock alert')" />
 
     {{-- Body copy --}}
-    <p class="em-copy" style="margin:16px 0 0;color:#475569;font-size:16px;line-height:27px;">
+    <x-email-copy>
         {{ $bodyText ?? __('One or more products in your inventory have reached the low-stock threshold and require attention.') }}
-    </p>
+    </x-email-copy>
 
     {{-- Meta grid --}}
     @include('emails.components.meta-grid', ['items' => $metaItems ?? []])

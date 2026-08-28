@@ -10,14 +10,12 @@
     <x-email-security-label :text="__('Secure account action')" />
 
     {{-- Headline --}}
-    <h1 class="em-title" style="margin:0;font-family:'Space Grotesk','Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;color:#070740;font-size:30px;line-height:35px;font-weight:700;letter-spacing:-0.6px;">
-        {{ __('Reset your password') }}
-    </h1>
+    <x-email-title :text="__('Reset your password')" />
 
     {{-- Body copy --}}
-    <p class="em-copy" style="margin:16px 0 0;color:#4a4e63;font-size:15px;line-height:25px;">
+    <x-email-copy>
         {{ __('We received a request to reset the password for your YallaSpare account. Click the button below to choose a new password.') }}
-    </p>
+    </x-email-copy>
 
     {{-- Meta info --}}
     @include('emails.components.meta-grid', ['items' => [
