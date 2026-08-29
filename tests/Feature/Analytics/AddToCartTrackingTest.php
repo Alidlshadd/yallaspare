@@ -83,16 +83,17 @@ class AddToCartTrackingTest extends TestCase
             ->count());
     }
 
-    public function test_unauthenticated_add_does_not_track(): void
+    public function test_a_guest_add_is_tracked_like_any_other(): void
     {
         $product = Product::factory()->create(['is_active' => true, 'stock_quantity' => 10]);
 
         $this->withServerVariables(['HTTP_USER_AGENT' => $this->browserUserAgent])
             ->post(route('cart.add', $product), ['quantity' => 1])
-            ->assertRedirect(route('login'));
+            ->assertRedirect();
 
-        $this->assertSame(0, DB::table('analytics_events')
+        $this->assertSame(1, DB::table('analytics_events')
             ->where('event_type', 'add_to_cart')
+            ->where('product_id', $product->id)
             ->count());
     }
 }

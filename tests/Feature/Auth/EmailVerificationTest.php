@@ -99,7 +99,7 @@ class EmailVerificationTest extends TestCase
         $user = User::factory()->unverified()->unverifiedPhone()->create();
 
         $this->actingAs($user)
-            ->get(route('cart.index'))
+            ->get(route('user.account.edit'))
             ->assertRedirect(route('verification.notice'));
     }
 
@@ -108,8 +108,8 @@ class EmailVerificationTest extends TestCase
         $phoneOnly = User::factory()->unverified()->create();
         $emailOnly = User::factory()->unverifiedPhone()->create();
 
-        $this->actingAs($phoneOnly)->get(route('cart.index'))->assertOk();
-        $this->actingAs($emailOnly)->get(route('cart.index'))->assertOk();
+        $this->actingAs($phoneOnly)->get(route('user.account.edit'))->assertOk();
+        $this->actingAs($emailOnly)->get(route('user.account.edit'))->assertOk();
     }
 
     public function test_completely_unverified_mobile_users_cannot_receive_login_tokens(): void

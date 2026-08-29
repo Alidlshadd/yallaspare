@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
 use App\Models\Setting;
 use App\Services\Analytics\AddToCartTracker;
+use App\Services\Cart\CartService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,17 +15,16 @@ use Illuminate\View\View;
 
 class CartController extends Controller
 {
+    public function __construct(private readonly CartService $carts) {}
+
     public function index(): View
     {
         $user = auth()->user();
         $currencyLabel = (string) Setting::getValue('currency_code', 'IQD');
 
-        $cart = Cart::query()
-            ->where('user_id', $user?->id)
-            ->with('items.product.category')
-            ->first();
+        $cart = $this->carts->current()?->load('items.product.category');
 
-        if ($cart && $this->syncCartQuantitiesToStock($cart)) {
+        if ($cart && $this->carts->syncToStock($cart)) {
             $cart->load('items.product.category');
             session()->flash('error', __('Some cart quantities were adjusted to available stock.'));
         }
@@ -70,37 +69,16 @@ class CartController extends Controller
         ]);
         $quantity = (int) ($data['quantity'] ?? 1);
 
-        if (! auth()->check()) {
-            $this->storePendingAction(
-                $product->id,
-                $quantity,
-                $this->safeInternalUrl($request->headers->get('referer'))
-            );
-            session()->put('url.intended', route('cart.pending.resume'));
-
-            if ($request->expectsJson() || $request->ajax()) {
-                return response()->json([
-                    'ok' => false,
-                    'login_required' => true,
-                    'redirect' => route('login'),
-                    'message' => __('Please sign in or register to add items to your cart.'),
-                ], 401);
-            }
-
-            return redirect()->route('login')
-                ->with('status', __('Please sign in or register to add items to your cart.'));
-        }
-
         if (! $product->is_active) {
             return back()->with('error', __('This product is not available right now.'));
         }
 
         $buyNow = $request->boolean('buy_now');
 
-        $cart = Cart::query()->firstOrCreate(['user_id' => auth()->id()]);
+        $cart = $this->carts->currentOrCreate();
 
         try {
-            [$wasLimited, $cartQuantity] = $this->performAuthenticatedAdd($cart, $product, $quantity);
+            [$wasLimited, $cartQuantity] = $this->carts->addProduct($cart, $product, $quantity);
         } catch (\RuntimeException $exception) {
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
@@ -149,7 +127,7 @@ class CartController extends Controller
 
     public function update(Request $request, CartItem $item): RedirectResponse
     {
-        $cart = Cart::query()->where('user_id', auth()->id())->first();
+        $cart = $this->carts->current();
         if (! $cart || $item->cart_id !== $cart->id) {
             abort(403);
         }
@@ -161,7 +139,7 @@ class CartController extends Controller
         [$status, $cartQuantity] = DB::transaction(function () use ($item, $data): array {
             $lockedItem = CartItem::query()->whereKey($item->id)->lockForUpdate()->firstOrFail();
             $lockedProduct = Product::query()->whereKey($lockedItem->product_id)->lockForUpdate()->first();
-            $maxQuantity = $lockedProduct ? $this->maxPurchasableQuantity($lockedProduct) : 0;
+            $maxQuantity = $lockedProduct ? $this->carts->maxPurchasableQuantity($lockedProduct) : 0;
 
             if ($maxQuantity < 1) {
                 $lockedItem->delete();
@@ -189,7 +167,7 @@ class CartController extends Controller
 
     public function remove(CartItem $item): RedirectResponse
     {
-        $cart = Cart::query()->where('user_id', auth()->id())->first();
+        $cart = $this->carts->current();
         if (! $cart || $item->cart_id !== $cart->id) {
             abort(403);
         }
@@ -197,142 +175,5 @@ class CartController extends Controller
         $item->delete();
 
         return back()->with('success', __('Item removed from cart.'));
-    }
-
-    public function resumePending(Request $request): RedirectResponse
-    {
-        $pending = session()->pull('pending_cart_action');
-
-        if (! is_array($pending)) {
-            return redirect()->route('user.shop.home');
-        }
-
-        $expiresAt = (int) ($pending['expires_at'] ?? 0);
-        if ($expiresAt < now()->timestamp) {
-            return redirect()->route('user.shop.home')
-                ->with('error', __('Your add-to-cart session expired. Please try again.'));
-        }
-
-        $safeRedirect = $this->safeInternalUrl($pending['redirect_to'] ?? null);
-        $product = Product::query()->find($pending['product_id'] ?? null);
-
-        if (! $product || ! $product->is_active || $this->maxPurchasableQuantity($product) < 1) {
-            return redirect()->to($safeRedirect)
-                ->with('error', __('The item you were adding is no longer available.'));
-        }
-
-        $quantity = max(1, min(99, (int) ($pending['quantity'] ?? 1)));
-        $cart = Cart::query()->firstOrCreate(['user_id' => auth()->id()]);
-
-        try {
-            [$wasLimited, $cartQuantity] = $this->performAuthenticatedAdd($cart, $product, $quantity);
-        } catch (\RuntimeException $exception) {
-            return redirect()->to($safeRedirect)->with('error', $exception->getMessage());
-        }
-
-        app(AddToCartTracker::class)->record($request, $product, $quantity);
-
-        $message = $wasLimited
-            ? __('Only :quantity available. Cart quantity was set to :quantity.', ['quantity' => $cartQuantity])
-            : __('Added to cart successfully');
-
-        return redirect()->route('cart.index')->with($wasLimited ? 'error' : 'success', $message);
-    }
-
-    private function storePendingAction(int $productId, int $quantity, string $redirectTo): void
-    {
-        session()->put('pending_cart_action', [
-            'product_id' => $productId,
-            'quantity' => max(1, min(99, $quantity)),
-            'redirect_to' => $redirectTo,
-            'expires_at' => now()->addMinutes(30)->timestamp,
-        ]);
-    }
-
-    private function safeInternalUrl(?string $url): string
-    {
-        $fallback = route('user.shop.home');
-
-        if (! is_string($url) || $url === '') {
-            return $fallback;
-        }
-
-        // Protocol-relative URLs (//evil.com/...) are dangerous.
-        if (str_starts_with($url, '//')) {
-            return $fallback;
-        }
-
-        // Same-origin relative paths.
-        if (str_starts_with($url, '/')) {
-            return $url;
-        }
-
-        $appHost = parse_url((string) config('app.url'), PHP_URL_HOST);
-        $urlHost = parse_url($url, PHP_URL_HOST);
-
-        if ($appHost && $urlHost && strcasecmp($appHost, $urlHost) === 0) {
-            return $url;
-        }
-
-        return $fallback;
-    }
-
-    private function performAuthenticatedAdd(Cart $cart, Product $product, int $quantity): array
-    {
-        return DB::transaction(function () use ($cart, $product, $quantity): array {
-            $lockedProduct = Product::query()->whereKey($product->id)->lockForUpdate()->firstOrFail();
-            $maxQuantity = $this->maxPurchasableQuantity($lockedProduct);
-
-            if (! $lockedProduct->is_active || $maxQuantity < 1) {
-                throw new \RuntimeException(__('This product is not available right now.'));
-            }
-
-            $item = CartItem::query()->firstOrNew([
-                'cart_id' => $cart->id,
-                'product_id' => $lockedProduct->id,
-            ]);
-
-            $currentQty = $item->exists ? (int) $item->quantity : 0;
-            $requestedTotal = $currentQty + $quantity;
-            $item->quantity = min($maxQuantity, $requestedTotal);
-            $item->save();
-
-            return [$item->quantity < $requestedTotal, (int) $item->quantity];
-        });
-    }
-
-    private function maxPurchasableQuantity(Product $product): int
-    {
-        return min(99, max(0, (int) $product->stock_quantity));
-    }
-
-    private function syncCartQuantitiesToStock(Cart $cart): bool
-    {
-        $changed = false;
-
-        $cart->loadMissing('items.product');
-
-        foreach ($cart->items as $item) {
-            $product = $item->product;
-            $maxQuantity = $product ? $this->maxPurchasableQuantity($product) : 0;
-
-            if ($maxQuantity < 1) {
-                $item->delete();
-                $changed = true;
-
-                continue;
-            }
-
-            if ((int) $item->quantity > $maxQuantity) {
-                $item->update(['quantity' => $maxQuantity]);
-                $changed = true;
-            }
-        }
-
-        if ($changed) {
-            $cart->unsetRelation('items');
-        }
-
-        return $changed;
     }
 }

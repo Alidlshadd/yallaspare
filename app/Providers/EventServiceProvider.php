@@ -4,7 +4,9 @@ namespace App\Providers;
 
 use App\Listeners\LogFailedLogin;
 use App\Listeners\LogSentEmail;
+use App\Listeners\MergeGuestCartOnLogin;
 use Illuminate\Auth\Events\Failed;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Mail\Events\MessageSent;
 use SocialiteProviders\Apple\AppleExtendSocialite;
@@ -28,6 +30,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         Failed::class => [
             LogFailedLogin::class,
+        ],
+        Login::class => [
+            MergeGuestCartOnLogin::class,
         ],
         SocialiteWasCalled::class => [
             AppleExtendSocialite::class.'@handle',

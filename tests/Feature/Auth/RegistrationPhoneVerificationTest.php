@@ -236,7 +236,7 @@ class RegistrationPhoneVerificationTest extends TestCase
             ->assertRedirect(route('verification.notice'));
 
         $this->actingAs($user)
-            ->get(route('cart.index'))
+            ->get(route('checkout.delivery'))
             ->assertRedirect(route('verification.notice'));
     }
 

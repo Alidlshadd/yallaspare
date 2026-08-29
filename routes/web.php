@@ -218,13 +218,15 @@ Route::get('/brand/manifest.webmanifest', function () {
     ], 200, ['Content-Type' => 'application/manifest+json']);
 })->name('brand.manifest');
 
+// A visitor fills a cart before deciding whether to have an account. The cart
+// belongs to their session until they sign in, and CartService is what knows
+// which of the two it is.
 Route::post('/cart/{product}', [CartController::class, 'add'])->middleware('throttle:commerce-write')->name('cart.add');
+Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+Route::patch('/cart/items/{item}', [CartController::class, 'update'])->middleware('throttle:commerce-write')->name('cart.update');
+Route::delete('/cart/items/{item}', [CartController::class, 'remove'])->middleware('throttle:commerce-write')->name('cart.remove');
 
 Route::middleware(['auth', 'verified', 'customer.area', 'customer.phone', 'customer.phone.verified', 'user.2fa'])->group(function () {
-    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
-    Route::get('/cart/pending/resume', [CartController::class, 'resumePending'])->name('cart.pending.resume');
-    Route::patch('/cart/items/{item}', [CartController::class, 'update'])->middleware('throttle:commerce-write')->name('cart.update');
-    Route::delete('/cart/items/{item}', [CartController::class, 'remove'])->middleware('throttle:commerce-write')->name('cart.remove');
     Route::get('/checkout/options/{product}', [CheckoutController::class, 'options'])->name('checkout.options');
     Route::match(['get', 'post'], '/checkout/buy-now/{product}', [CheckoutController::class, 'buyNow'])->middleware('throttle:checkout-write')->name('checkout.buy-now');
     Route::post('/checkout/buy-now/{product}/place', [CheckoutController::class, 'placeBuyNow'])->middleware('throttle:checkout-write')->name('checkout.buy-now.place');

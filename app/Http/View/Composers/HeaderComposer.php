@@ -5,6 +5,7 @@ namespace App\Http\View\Composers;
 use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Wishlist;
+use App\Services\Cart\CartService;
 use App\Support\LocalizedText;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
@@ -21,6 +22,8 @@ class HeaderComposer
     public const USER_COUNT_CACHE_TTL_SECONDS = 60;
 
     private const CART_SUMMARY_CACHE_PREFIX = 'header_cart_summary_user_';
+
+    private const GUEST_CART_SUMMARY_CACHE_PREFIX = 'header_cart_summary_guest_';
 
     private const WISHLIST_COUNT_CACHE_PREFIX = 'header_wishlist_count_user_';
 
@@ -45,15 +48,18 @@ class HeaderComposer
 
     public function cartFor(?Authenticatable $user): ?Cart
     {
-        if ($user === null) {
-            return null;
-        }
-
         try {
-            return Cart::query()
-                ->where('user_id', $user->getAuthIdentifier())
-                ->with('items.product')
-                ->first();
+            $query = Cart::query()->with('items.product');
+
+            if ($user !== null) {
+                return $query->where('user_id', $user->getAuthIdentifier())->first();
+            }
+
+            // A guest who has not started a cart is not given a token just so
+            // the header can look one up.
+            $token = app(CartService::class)->guestToken();
+
+            return $token === null ? null : $query->where('session_token', $token)->first();
         } catch (\Throwable $e) {
             return null;
         }
@@ -69,13 +75,13 @@ class HeaderComposer
      */
     public function cartSummaryFor(?Authenticatable $user): array
     {
-        if ($user === null) {
+        $cacheKey = $this->cartSummaryCacheKey($user);
+
+        if ($cacheKey === null) {
             return $this->emptyCartSummary();
         }
 
-        $userId = (int) $user->getAuthIdentifier();
-
-        return Cache::remember($this->cartSummaryCacheKey($userId), self::USER_COUNT_CACHE_TTL_SECONDS, function () use ($user): array {
+        return Cache::remember($cacheKey, self::USER_COUNT_CACHE_TTL_SECONDS, function () use ($user): array {
             try {
                 $cart = $this->cartFor($user);
 
@@ -190,6 +196,18 @@ class HeaderComposer
         Cache::forget(self::CART_SUMMARY_CACHE_PREFIX.$userId);
     }
 
+    /**
+     * Forget the header summary for whichever kind of cart changed.
+     */
+    public static function forgetCartCacheFor(?int $userId, ?string $sessionToken): void
+    {
+        self::forgetCartCacheForUser($userId);
+
+        if (is_string($sessionToken) && $sessionToken !== '') {
+            Cache::forget(self::GUEST_CART_SUMMARY_CACHE_PREFIX.sha1($sessionToken));
+        }
+    }
+
     public static function forgetWishlistCacheForUser(?int $userId): void
     {
         if ($userId === null || $userId < 1) {
@@ -212,9 +230,21 @@ class HeaderComposer
         ];
     }
 
-    private function cartSummaryCacheKey(int $userId): string
+    /**
+     * Null when there is nothing to summarise: a guest who has not started a
+     * cart has no key, and therefore no cached empty summary to invalidate.
+     */
+    private function cartSummaryCacheKey(?Authenticatable $user): ?string
     {
-        return self::CART_SUMMARY_CACHE_PREFIX.$userId;
+        if ($user !== null) {
+            return self::CART_SUMMARY_CACHE_PREFIX.(int) $user->getAuthIdentifier();
+        }
+
+        $token = app(CartService::class)->guestToken();
+
+        return $token === null
+            ? null
+            : self::GUEST_CART_SUMMARY_CACHE_PREFIX.sha1($token);
     }
 
     private function wishlistCountCacheKey(int $userId): string
