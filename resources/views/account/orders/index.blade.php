@@ -71,6 +71,9 @@
                                                     <span class="inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold {{ $statusMeta['class'] }}">
                                                         {{ $statusMeta['label'] }}
                                                     </span>
+                                                    @if ($order->hasShipmentTracking())
+                                                        <span class="mt-1.5 block font-mono text-[11px] text-slate-500">{{ $order->tracking_number }}</span>
+                                                    @endif
                                                 </td>
                                                 <td class="px-6 py-4 text-sm font-semibold text-slate-900">{{ number_format((float) $order->total_amount, $currencyDecimals) }} {{ $currencyLabel }}</td>
                                                 <td class="px-6 py-4 text-sm text-slate-600">{{ optional($order->created_at)->format('M d, Y') }}</td>

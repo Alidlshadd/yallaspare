@@ -295,6 +295,60 @@ class OrderController extends Controller
         return back()->with('success', __('Order #:order status updated to :status.', ['order' => $order->order_number, 'status' => __(ucfirst(str_replace('_', ' ', $status)))]));
     }
 
+    /**
+     * Record who is carrying the parcel and under what number.
+     *
+     * Kept apart from the status change: an operator usually marks an order
+     * shipped before the courier hands back a number, and often corrects the
+     * number afterwards without the status moving at all.
+     */
+    public function updateShipment(Request $request, Order $order): RedirectResponse
+    {
+        $data = $request->validate([
+            'carrier' => ['nullable', 'string', 'max:64'],
+            'tracking_number' => ['nullable', 'string', 'max:64', 'regex:/^[A-Za-z0-9\-\/ ]+$/'],
+        ]);
+
+        $carrier = trim((string) ($data['carrier'] ?? '')) ?: null;
+        $trackingNumber = trim((string) ($data['tracking_number'] ?? '')) ?: null;
+
+        if ($trackingNumber !== null && $carrier === null) {
+            return back()->withErrors([
+                'carrier' => __('Name the carrier the tracking number belongs to.'),
+            ])->withInput();
+        }
+
+        $hadTracking = $order->hasShipmentTracking();
+        $previousTracking = [$order->carrier, $order->tracking_number];
+
+        $order->forceFill([
+            'carrier' => $carrier,
+            'tracking_number' => $trackingNumber,
+        ])->save();
+
+        if ($previousTracking === [$order->carrier, $order->tracking_number]) {
+            return back()->with('success', __('Shipment details are unchanged.'));
+        }
+
+        AdminLogger::log('order.shipment_updated', $order, [
+            'carrier' => $carrier,
+            'has_tracking_number' => $trackingNumber !== null,
+        ]);
+
+        // The status change already announced the shipment. Announce it again
+        // only when this is the number the customer did not have yet.
+        $shouldNotify = $trackingNumber !== null
+            && ! $hadTracking
+            && $order->user
+            && in_array(Order::normalizedStatus((string) $order->status), [Order::STATUS_SHIPPED, Order::STATUS_DELIVERED], true);
+
+        if ($shouldNotify) {
+            UserCommunication::sendShipmentTracking($order->user, $order);
+        }
+
+        return back()->with('success', __('Order #:order shipment details saved.', ['order' => $order->order_number]));
+    }
+
     public function destroy(Order $order): RedirectResponse
     {
         if (auth()->user()?->role !== User::ROLE_SUPER_ADMIN) {

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\Carriers;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -47,6 +48,8 @@ class Order extends Model
         'governorate_id',
         'delivery_governorate',
         'delivery_days',
+        'carrier',
+        'tracking_number',
         'delivery_phone',
         'notes',
         'cancellation_requested_at',
@@ -75,6 +78,8 @@ class Order extends Model
         'grand_total' => 'decimal:2',
         'total_amount' => 'decimal:2',
         'delivery_days' => 'integer',
+        'shipped_at' => 'datetime',
+        'delivered_at' => 'datetime',
         'cancellation_requested_at' => 'datetime',
         'archived_at' => 'datetime',
     ];
@@ -234,6 +239,33 @@ class Order extends Model
     public function coupon(): BelongsTo
     {
         return $this->belongsTo(Coupon::class);
+    }
+
+    /**
+     * True once there is something a customer can act on: who has the parcel
+     * and the number to quote.
+     */
+    public function hasShipmentTracking(): bool
+    {
+        return trim((string) $this->tracking_number) !== '';
+    }
+
+    /**
+     * The carrier as it should be shown — the configured name where the shop
+     * knows the company, the operator's own words otherwise.
+     */
+    public function carrierName(): ?string
+    {
+        return Carriers::displayName($this->carrier);
+    }
+
+    /**
+     * Where the customer can follow the parcel, when the carrier publishes
+     * such a page at all.
+     */
+    public function trackingUrl(): ?string
+    {
+        return Carriers::trackingUrl($this->carrier, $this->tracking_number);
     }
 
     /** @return BelongsTo<Governorate, $this> */

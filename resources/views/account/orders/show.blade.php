@@ -215,6 +215,57 @@
             </section>
         </div>
 
+        @if ($order->hasShipmentTracking() || $order->shipped_at)
+            <section class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:bg-slate-900">
+                <h2 class="text-base font-semibold text-slate-900">{{ __('Shipment Tracking') }}</h2>
+
+                <dl class="mt-4 grid gap-4 text-sm sm:grid-cols-2">
+                    @if ($order->carrierName())
+                        <div>
+                            <dt class="text-xs uppercase tracking-[0.12em] text-slate-500">{{ __('Carrier') }}</dt>
+                            <dd class="mt-1 font-medium text-slate-900">{{ $order->carrierName() }}</dd>
+                        </div>
+                    @endif
+
+                    @if ($order->hasShipmentTracking())
+                        <div>
+                            <dt class="text-xs uppercase tracking-[0.12em] text-slate-500">{{ __('Tracking number') }}</dt>
+                            <dd class="mt-1 font-mono text-sm font-semibold tracking-wide text-slate-900">{{ $order->tracking_number }}</dd>
+                        </div>
+                    @endif
+
+                    @if ($order->shipped_at)
+                        <div>
+                            <dt class="text-xs uppercase tracking-[0.12em] text-slate-500">{{ __('Shipped') }}</dt>
+                            <dd class="mt-1 font-medium text-slate-900">{{ $order->shipped_at->format('M d, Y H:i') }}</dd>
+                        </div>
+                    @endif
+
+                    @if ($order->delivered_at)
+                        <div>
+                            <dt class="text-xs uppercase tracking-[0.12em] text-slate-500">{{ __('Delivered') }}</dt>
+                            <dd class="mt-1 font-medium text-slate-900">{{ $order->delivered_at->format('M d, Y H:i') }}</dd>
+                        </div>
+                    @endif
+                </dl>
+
+                @if ($order->trackingUrl())
+                    <a
+                        href="{{ $order->trackingUrl() }}"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="mt-4 inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-white transition duration-200 hover:opacity-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+                    >
+                        {{ __('Track on the carrier site') }}
+                    </a>
+                @elseif ($order->hasShipmentTracking())
+                    <p class="mt-4 text-sm text-slate-600">{{ __('Quote this number when you contact us about the delivery.') }}</p>
+                @else
+                    <p class="mt-4 text-sm text-slate-600">{{ __('Your order has left us. A tracking number will appear here once the carrier provides one.') }}</p>
+                @endif
+            </section>
+        @endif
+
         @if ($canCancelDirectly || $canRequestCancellation || $order->cancellation_requested_at)
             <section class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm dark:bg-slate-900">
                 <h2 class="text-base font-semibold text-slate-900">{{ $canCancelDirectly ? __('Cancel Order') : __('Cancellation Request') }}</h2>

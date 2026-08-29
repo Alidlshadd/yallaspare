@@ -27,6 +27,7 @@
 | Set default address | `addresses.default` | `PATCH /addresses/{x}/default` |
 | Standard checkout | `checkout.store` | `POST /checkout` |
 | Orders list / detail | `account.orders.*` | `GET /orders`, `GET /orders/{x}` |
+| **Shipment tracking (added this commit)** | `account.orders.show` | **`GET /orders/{x}` carries `carrier`, `tracking_number`, `tracking_url`, `shipped_at`, `delivered_at`** |
 | Cancellation / return request | `orders.cancellation-request` / `orders.return-request` | `POST /orders/{x}/cancellation-request`, `return-request` |
 | **Order invoice download (added this commit)** | `account.orders.invoice` | **`GET /orders/{order}/invoice`** |
 | **Buy-Now checkout flow (added this commit)** | `checkout.options` / `checkout.buy-now` / `checkout.buy-now.place` | **`POST /products/{x}/buy-now/preview` + `POST /products/{x}/buy-now/place`** |

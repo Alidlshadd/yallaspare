@@ -201,6 +201,75 @@
                     </section>
 
                     <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                        <h3 class="text-sm font-semibold text-slate-900">{{ __('Shipment Tracking') }}</h3>
+                        <p class="mt-1 text-xs text-slate-500">{{ __('The customer sees this on their order and is told once a tracking number first appears.') }}</p>
+
+                        <form method="POST" action="{{ route('admin.orders.update-shipment', $order) }}" class="mt-4 space-y-3" data-loading-form data-loading-button-text="Saving...">
+                            @csrf
+                            @method('PATCH')
+
+                            <div>
+                                <label for="carrier" class="text-xs font-semibold uppercase text-slate-500">{{ __('Carrier') }}</label>
+                                <input
+                                    id="carrier"
+                                    name="carrier"
+                                    type="text"
+                                    list="admin-carrier-options"
+                                    maxlength="64"
+                                    value="{{ old('carrier', $order->carrier) }}"
+                                    placeholder="{{ __('Own delivery') }}"
+                                    class="mt-1 w-full rounded-lg border-slate-300 text-sm focus:border-info focus:ring-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                                >
+                                <datalist id="admin-carrier-options">
+                                    @foreach (\App\Support\Carriers::options() as $carrierName)
+                                        <option value="{{ $carrierName }}"></option>
+                                    @endforeach
+                                </datalist>
+                                @error('carrier')
+                                    <p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-300">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <div>
+                                <label for="tracking_number" class="text-xs font-semibold uppercase text-slate-500">{{ __('Tracking number') }}</label>
+                                <input
+                                    id="tracking_number"
+                                    name="tracking_number"
+                                    type="text"
+                                    maxlength="64"
+                                    value="{{ old('tracking_number', $order->tracking_number) }}"
+                                    class="mt-1 w-full rounded-lg border-slate-300 text-sm focus:border-info focus:ring-accent dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100"
+                                >
+                                <p class="mt-1 text-xs text-slate-500">{{ __('Leave both fields empty to remove the tracking details.') }}</p>
+                                @error('tracking_number')
+                                    <p class="mt-1 text-xs font-medium text-rose-600 dark:text-rose-300">{{ $message }}</p>
+                                @enderror
+                            </div>
+
+                            <button type="submit" class="w-full rounded-lg bg-info px-4 py-2 text-sm font-semibold text-white hover:bg-info">
+                                {{ __('Save Shipment Details') }}
+                            </button>
+                        </form>
+
+                        @if ($order->trackingUrl())
+                            <a href="{{ $order->trackingUrl() }}" target="_blank" rel="noopener noreferrer" class="mt-3 inline-flex text-xs font-semibold text-info hover:underline">
+                                {{ __('Open the carrier tracking page') }}
+                            </a>
+                        @endif
+
+                        <dl class="mt-4 space-y-2 border-t border-slate-200 pt-4 text-xs">
+                            <div class="flex items-center justify-between gap-3">
+                                <dt class="text-slate-500">{{ __('Shipped') }}</dt>
+                                <dd class="font-medium text-slate-900">{{ $order->shipped_at?->format('Y-m-d H:i') ?: '-' }}</dd>
+                            </div>
+                            <div class="flex items-center justify-between gap-3">
+                                <dt class="text-slate-500">{{ __('Delivered') }}</dt>
+                                <dd class="font-medium text-slate-900">{{ $order->delivered_at?->format('Y-m-d H:i') ?: '-' }}</dd>
+                            </div>
+                        </dl>
+                    </section>
+
+                    <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                         <h3 class="text-sm font-semibold text-slate-900">{{ __('Payment Management') }}</h3>
                         <div class="mt-3">
                             <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $paymentMeta['class'] }}">

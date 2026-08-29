@@ -2145,6 +2145,11 @@ class MobileController extends Controller
             'delivery_city' => (string) $order->delivery_city,
             'delivery_governorate' => $order->delivery_governorate,
             'delivery_days' => $order->delivery_days,
+            'carrier' => $order->carrierName(),
+            'tracking_number' => $order->tracking_number,
+            'tracking_url' => $order->trackingUrl(),
+            'shipped_at' => optional($order->shipped_at)->toIso8601String(),
+            'delivered_at' => optional($order->delivered_at)->toIso8601String(),
         ];
     }
 

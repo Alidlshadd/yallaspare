@@ -73,7 +73,10 @@ class OrderStatusService
                 }
             }
 
-            $lockedOrder->forceFill(['status' => $status])->save();
+            $lockedOrder->forceFill(array_merge(
+                ['status' => $status],
+                $this->shipmentTimestampsFor($lockedOrder, $status),
+            ))->save();
 
             if (
                 $status === Order::STATUS_DELIVERED
@@ -114,5 +117,24 @@ class OrderStatusService
         }
 
         return $updatedOrder;
+    }
+
+    /**
+     * Stamp when the parcel left and when it arrived.
+     *
+     * Order::workflow() only ever moves forward, so each point is reached once
+     * and there is no backwards move to undo. The guard on an existing value is
+     * there so a re-import or a repeated call cannot rewrite a date that has
+     * already happened.
+     *
+     * @return array<string, mixed>
+     */
+    private function shipmentTimestampsFor(Order $order, string $status): array
+    {
+        return match ($status) {
+            Order::STATUS_SHIPPED => $order->shipped_at ? [] : ['shipped_at' => now()],
+            Order::STATUS_DELIVERED => $order->delivered_at ? [] : ['delivered_at' => now()],
+            default => [],
+        };
     }
 }

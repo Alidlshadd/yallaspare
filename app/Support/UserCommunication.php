@@ -63,19 +63,101 @@ class UserCommunication
                 'customer_name' => $user->name,
             ];
 
+            $context += self::shipmentContext($order);
+
             [$subject, $message] = self::renderTemplate($user, 'order_status_updated',
                 __('Order Status Updated'),
-                implode(PHP_EOL, [
+                implode(PHP_EOL, array_filter([
                     __('Your order status has changed.'),
                     __('Order: :ref', ['ref' => $context['order_number']]),
                     __('From: :from', ['from' => $context['from']]),
                     __('To: :to', ['to' => $context['to']]),
-                ]),
+                    ...self::shipmentLines($order),
+                ])),
                 $context
             );
 
             return self::dispatch($user, 'order_status_updated', $subject, $message, $context);
         });
+    }
+
+    /**
+     * Tell the customer the number to follow the parcel with.
+     *
+     * Sent when the number arrives after the shipment notice already went out,
+     * which is the usual order of events: the order is marked shipped, and the
+     * courier hands back a reference later.
+     */
+    public static function sendShipmentTracking(User $user, Order $order): array
+    {
+        if (! self::shouldSendOperationalUpdates($user)) {
+            return [];
+        }
+
+        return self::withUserLocale($user, function () use ($user, $order) {
+            $context = [
+                'order_id' => $order->id,
+                'order_number' => $order->order_number,
+                'customer_name' => $user->name,
+                'action_url' => route('account.orders.show', $order),
+                'action_text' => __('Track your order'),
+            ] + self::shipmentContext($order);
+
+            [$subject, $message] = self::renderTemplate($user, 'shipment_tracking',
+                __('Your order is on its way'),
+                implode(PHP_EOL, array_filter([
+                    __('Your order has been handed to the carrier.'),
+                    __('Order: :ref', ['ref' => $order->order_number]),
+                    ...self::shipmentLines($order),
+                ])),
+                $context
+            );
+
+            return self::dispatch($user, 'shipment_tracking', $subject, $message, $context);
+        });
+    }
+
+    /**
+     * The carrier and number as message lines, or nothing at all when the
+     * order has no tracking to report.
+     *
+     * @return array<int, string>
+     */
+    private static function shipmentLines(Order $order): array
+    {
+        if (! $order->hasShipmentTracking()) {
+            return [];
+        }
+
+        $lines = [];
+
+        if ($carrier = $order->carrierName()) {
+            $lines[] = __('Carrier: :carrier', ['carrier' => $carrier]);
+        }
+
+        $lines[] = __('Tracking number: :number', ['number' => $order->tracking_number]);
+
+        if ($trackingUrl = $order->trackingUrl()) {
+            $lines[] = __('Track it here: :url', ['url' => $trackingUrl]);
+        }
+
+        return $lines;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private static function shipmentContext(Order $order): array
+    {
+        if (! $order->hasShipmentTracking()) {
+            return [];
+        }
+
+        return array_filter([
+            'carrier' => (string) $order->carrierName(),
+            'tracking_number' => (string) $order->tracking_number,
+            'tracking_url' => (string) $order->trackingUrl(),
+        ], fn (string $value): bool => $value !== '');
     }
 
     public static function sendBackInStock(User $user, Product $product): array

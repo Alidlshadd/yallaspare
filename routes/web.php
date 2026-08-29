@@ -471,6 +471,9 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::patch('/orders/{order}/status', [OrderController::class, 'updateStatus'])
             ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('orders.update-status');
+        Route::patch('/orders/{order}/shipment', [OrderController::class, 'updateShipment'])
+            ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
+            ->name('orders.update-shipment');
         Route::post('/orders/bulk-status', [OrderController::class, 'bulkUpdateStatus'])
             ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('orders.bulk-status');

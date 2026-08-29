@@ -78,6 +78,10 @@ class OrdersExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMappi
             'delivery_city',
             'delivery_governorate',
             'delivery_phone',
+            'carrier',
+            'tracking_number',
+            'shipped_at',
+            'delivered_at',
             'created_at',
         ];
     }
@@ -101,6 +105,10 @@ class OrdersExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMappi
             (string) ($order->delivery_city ?? ''),
             (string) ($order->delivery_governorate ?? ''),
             (string) ($order->delivery_phone ?? ''),
+            (string) ($order->carrier ?? ''),
+            (string) ($order->tracking_number ?? ''),
+            optional($order->shipped_at)->format('Y-m-d H:i'),
+            optional($order->delivered_at)->format('Y-m-d H:i'),
             optional($order->created_at)->format('Y-m-d H:i'),
         ]);
     }
