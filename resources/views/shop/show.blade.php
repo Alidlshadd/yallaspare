@@ -13,6 +13,21 @@
         : collect([$imageUrl])->values();
     $imageUrl = $galleryImages->first() ?: $imageUrl;
 
+    // The landing pages this part belongs to. Linking them from here is what
+    // lets a search engine — and a customer browsing for their car — walk from
+    // one part to everything else that fits.
+    $vehicleLandingPages = $product->relationLoaded('vehicleFitments')
+        ? $product->vehicleFitments
+            ->filter(fn ($fitment) => $fitment->model?->slug && $fitment->model->brand?->slug)
+            ->map(fn ($fitment) => [
+                'label' => trim($fitment->model->brand->name.' '.$fitment->model->localizedName()),
+                'url' => route('catalog.vehicle-model', [$fitment->model->brand->slug, $fitment->model->slug]),
+            ])
+            ->unique('url')
+            ->take(8)
+            ->values()
+        : collect();
+
     $compatibleModels = collect($product->compatible_models ?? [])
         ->map(fn ($item) => is_array($item) ? ($item['name'] ?? reset($item)) : $item)
         ->filter()
@@ -231,6 +246,25 @@
                             </p>
                         @endif
                     </section>
+                    @endif
+
+                    @if ($product->productBrand?->slug || $vehicleLandingPages->isNotEmpty())
+                        <section class="rounded-2xl border border-app bg-surface-2 p-5">
+                            <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">{{ __('Browse related parts') }}</p>
+                            <div class="mt-3 flex flex-wrap gap-2">
+                                @if ($product->productBrand?->slug)
+                                    <a href="{{ route('catalog.brand', $product->productBrand->slug) }}" class="inline-flex rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700 transition hover:border-primary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                        {{ __('All :brand parts', ['brand' => $product->productBrand->name]) }}
+                                    </a>
+                                @endif
+
+                                @foreach ($vehicleLandingPages as $landingPage)
+                                    <a href="{{ $landingPage['url'] }}" class="inline-flex rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-700 transition hover:border-primary/30 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                        {{ __('Parts for :vehicle', ['vehicle' => $landingPage['label']]) }}
+                                    </a>
+                                @endforeach
+                            </div>
+                        </section>
                     @endif
 
                     <section class="overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-5 shadow-sm shadow-slate-900/5 dark:bg-slate-900 dark:shadow-black/10">

@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductBrand;
+use App\Models\VehicleBrand;
+use App\Models\VehicleModel;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Schema;
 
@@ -19,6 +22,8 @@ class SitemapController extends Controller
         ['url' => '/', 'changefreq' => 'daily', 'priority' => '1.0'],
         ['url' => '/shop', 'changefreq' => 'daily', 'priority' => '0.9'],
         ['url' => '/categories', 'changefreq' => 'daily', 'priority' => '0.8'],
+        ['url' => '/brands', 'changefreq' => 'weekly', 'priority' => '0.8'],
+        ['url' => '/vehicles', 'changefreq' => 'weekly', 'priority' => '0.8'],
         ['url' => '/privacy-policy', 'changefreq' => 'yearly', 'priority' => '0.3'],
         ['url' => '/terms', 'changefreq' => 'yearly', 'priority' => '0.3'],
         ['url' => '/support', 'changefreq' => 'monthly', 'priority' => '0.4'],
@@ -73,9 +78,89 @@ class SitemapController extends Controller
             }
         }
 
+        $entries = array_merge($entries, $this->landingPageEntries());
+
         $xml = $this->renderXml($entries);
 
         return response($xml, 200, ['Content-Type' => 'application/xml; charset=UTF-8']);
+    }
+
+    /**
+     * Part-brand and vehicle landing pages.
+     *
+     * Only the ones with something on them: a page whose listing is empty is
+     * served for anyone who follows a link to it, but it is told not to index
+     * itself, and submitting it here would contradict that.
+     *
+     * @return array<int, array{loc: string, lastmod: ?string, changefreq: string, priority: string}>
+     */
+    private function landingPageEntries(): array
+    {
+        $entries = [];
+
+        if (Schema::hasTable('product_brands')) {
+            $brands = ProductBrand::query()
+                ->select(['id', 'slug', 'updated_at'])
+                ->whereHas('products', fn ($query) => $query->where('is_active', true))
+                ->get();
+
+            foreach ($brands as $brand) {
+                if (! $brand->slug) {
+                    continue;
+                }
+
+                $entries[] = [
+                    'loc' => url('/brands/'.$brand->slug),
+                    'lastmod' => optional($brand->updated_at)->toAtomString(),
+                    'changefreq' => 'weekly',
+                    'priority' => '0.7',
+                ];
+            }
+        }
+
+        if (! Schema::hasTable('vehicle_brands') || ! Schema::hasTable('product_vehicle_fitments')) {
+            return $entries;
+        }
+
+        $makes = VehicleBrand::query()
+            ->select(['id', 'slug', 'updated_at'])
+            ->whereHas('models.fitments')
+            ->get();
+
+        foreach ($makes as $make) {
+            if (! $make->slug) {
+                continue;
+            }
+
+            $entries[] = [
+                'loc' => url('/vehicles/'.$make->slug),
+                'lastmod' => optional($make->updated_at)->toAtomString(),
+                'changefreq' => 'weekly',
+                'priority' => '0.7',
+            ];
+        }
+
+        $models = VehicleModel::query()
+            ->select(['id', 'vehicle_brand_id', 'slug', 'updated_at'])
+            ->with('brand:id,slug')
+            ->whereHas('fitments')
+            ->limit(5000)
+            ->get();
+
+        foreach ($models as $model) {
+            if (! $model->slug || ! $model->brand?->slug) {
+                continue;
+            }
+
+            $entries[] = [
+                'loc' => url('/vehicles/'.$model->brand->slug.'/'.$model->slug),
+                'lastmod' => optional($model->updated_at)->toAtomString(),
+                'changefreq' => 'weekly',
+                'priority' => '0.7',
+            ];
+        }
+
+        return $entries;
     }
 
     /**

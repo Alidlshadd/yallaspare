@@ -1,2 +1,13 @@
 User-agent: *
-Disallow:
+
+# Private areas. Nothing here is public, and crawling it spends the crawl
+# budget that should go to the catalogue.
+Disallow: /admin
+Disallow: /cart
+Disallow: /checkout
+Disallow: /account
+Disallow: /profile
+Disallow: /user/settings
+Disallow: /payments
+
+Sitemap: https://yallaspare.com/sitemap.xml

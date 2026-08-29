@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\CatalogLandingCache;
 use App\Support\DbSchema;
 use App\Support\LocalizedText;
 use App\Support\VehicleFilterCache;
@@ -54,16 +55,24 @@ class Product extends Model
         // the instance after insert, which would flush on every later save.
         static::created(function (): void {
             VehicleFilterCache::flush();
+            CatalogLandingCache::flush();
         });
 
         static::updated(function (self $product): void {
             if ($product->wasChanged(['brand', 'compatible_models'])) {
                 VehicleFilterCache::flush();
             }
+
+            // The brand landing index counts what is on sale per brand, so it
+            // turns stale on a brand move or on a product leaving the catalogue.
+            if ($product->wasChanged(['product_brand_id', 'is_active'])) {
+                CatalogLandingCache::flush();
+            }
         });
 
         static::deleted(function (): void {
             VehicleFilterCache::flush();
+            CatalogLandingCache::flush();
         });
     }
 

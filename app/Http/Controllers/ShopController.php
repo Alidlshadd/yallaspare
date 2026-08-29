@@ -29,7 +29,7 @@ class ShopController extends Controller
             return redirect()->route('shop.show', $product, 301);
         }
 
-        $productRelations = ['category', 'images'];
+        $productRelations = ['category', 'images', 'productBrand:id,name,slug'];
         if (DbSchema::hasTable('product_reviews')) {
             $productRelations['reviews'] = fn ($query) => $query
                 ->where('is_approved', true)
@@ -41,9 +41,13 @@ class ShopController extends Controller
         if (DbSchema::hasTable('product_vehicle_fitments')) {
             $productRelations['vehicleFitments'] = fn ($query) => $query
                 ->with([
-                    'brand:id,name',
-                    'model:id,name,name_en,name_ar,name_ku,vehicle_brand_id,vehicle_model_family_id,image_path',
+                    'brand:id,name,slug',
+                    'model:id,name,slug,name_en,name_ar,name_ku,vehicle_brand_id,vehicle_model_family_id,image_path',
                     'model.family:id,name,name_en,name_ar,name_ku',
+                    // The vehicle landing links on the page are built from the
+                    // model's own make, so it has to come along rather than be
+                    // fetched once per fitment row.
+                    'model.brand:id,name,slug',
                 ])
                 ->orderBy('vehicle_brand_id')
                 ->orderBy('vehicle_model_id')

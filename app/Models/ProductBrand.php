@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\CatalogLandingCache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -18,6 +19,16 @@ class ProductBrand extends Model
         'country_code',
         'logo_path',
     ];
+
+    protected static function booted(): void
+    {
+        $flush = static function (): void {
+            CatalogLandingCache::flush();
+        };
+
+        static::saved($flush);
+        static::deleted($flush);
+    }
 
     /** @return HasMany<Product, $this> */
     public function products(): HasMany

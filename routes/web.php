@@ -30,6 +30,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VehicleFitmentController;
 use App\Http\Controllers\Admin\WaylPaymentController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\CatalogLandingController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CspReportController;
 use App\Http\Controllers\LegalController;
@@ -94,6 +95,20 @@ Route::get('/shop/autocomplete', [CatalogShopController::class, 'autocomplete'])
 Route::get('/categories', [UserShopController::class, 'categories'])->name('categories.index');
 Route::get('/categories/{category}', [UserShopController::class, 'category'])->name('categories.show');
 Route::get('/shop/products/{product}', [CatalogShopController::class, 'show'])->name('shop.show');
+
+// Landing pages a search engine can rank: one address per part brand and per
+// car, rather than one shop URL wearing every filter combination.
+Route::get('/brands', [CatalogLandingController::class, 'brands'])->name('catalog.brands');
+Route::get('/brands/{slug}', [CatalogLandingController::class, 'brand'])
+    ->where('slug', '[a-z0-9-]+')
+    ->name('catalog.brand');
+Route::get('/vehicles', [CatalogLandingController::class, 'vehicles'])->name('catalog.vehicles');
+Route::get('/vehicles/{make}', [CatalogLandingController::class, 'vehicleBrand'])
+    ->where('make', '[a-z0-9-]+')
+    ->name('catalog.vehicle-brand');
+Route::get('/vehicles/{make}/{model}', [CatalogLandingController::class, 'vehicleModel'])
+    ->where(['make' => '[a-z0-9-]+', 'model' => '[a-z0-9-]+'])
+    ->name('catalog.vehicle-model');
 
 Route::get('/privacy-policy', [LegalController::class, 'privacy'])->name('legal.privacy');
 Route::get('/terms', [LegalController::class, 'terms'])->name('legal.terms');
