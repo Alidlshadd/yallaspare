@@ -76,6 +76,7 @@ class OrdersExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMappi
             'customer_email',
             'customer_role',
             'delivery_city',
+            'delivery_governorate',
             'delivery_phone',
             'created_at',
         ];
@@ -98,6 +99,7 @@ class OrdersExport implements FromQuery, ShouldAutoSize, WithHeadings, WithMappi
             (string) ($order->user?->email ?? ''),
             (string) ($order->user?->role ?? ''),
             (string) ($order->delivery_city ?? ''),
+            (string) ($order->delivery_governorate ?? ''),
             (string) ($order->delivery_phone ?? ''),
             optional($order->created_at)->format('Y-m-d H:i'),
         ]);

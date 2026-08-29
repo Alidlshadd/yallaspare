@@ -9,17 +9,20 @@ use App\Models\InventoryMovement;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
-use App\Models\Setting;
 use App\Models\User;
 use App\Models\UserAddress;
 use App\Services\CouponService;
 use App\Services\Payments\PaymentService;
+use App\Services\Shipping\ShippingFeeResolver;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class CheckoutService
 {
-    public function __construct(private readonly CouponService $couponService) {}
+    public function __construct(
+        private readonly CouponService $couponService,
+        private readonly ShippingFeeResolver $shippingFees,
+    ) {}
 
     public function placeCartOrder(
         Cart $cart,
@@ -130,7 +133,8 @@ class CheckoutService
             fn (array $line): float => (float) $line['unit_price'] * (int) $line['quantity'],
             $lineItems
         )), 2);
-        $shippingFee = $this->shippingFee();
+        $shippingQuote = $this->shippingFees->forAddress($address);
+        $shippingFee = $shippingQuote->fee;
         $couponPreview = ['valid' => false, 'coupon' => null, 'discount' => 0.0, 'free_shipping' => false, 'code' => ''];
 
         if ($couponCode !== '') {
@@ -166,6 +170,9 @@ class CheckoutService
             'payment_status' => $paymentStatus,
             'delivery_address' => trim(collect([$address->address_line1, $address->address_line2])->filter()->implode(', ')),
             'delivery_city' => $address->city,
+            'governorate_id' => $shippingQuote->governorate?->id,
+            'delivery_governorate' => $shippingQuote->destinationName(),
+            'delivery_days' => $shippingQuote->deliveryDays,
             'delivery_phone' => $this->contactDestination($user, $address),
             'notes' => $notes !== '' ? $notes : null,
         ]);
@@ -218,11 +225,6 @@ class CheckoutService
         $this->recordDiscountRuleUsage($discountRuleIds);
 
         return $order;
-    }
-
-    private function shippingFee(): float
-    {
-        return max(0, round((float) Setting::getValue('shipping_fee', 5000), 2));
     }
 
     private function assertPaymentMinimum(string $paymentMethod, float $grandTotal): void

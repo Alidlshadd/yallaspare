@@ -50,11 +50,27 @@
             </div>
         </div>
 
-        <div class="grid gap-6 sm:grid-cols-2">
+        <div class="grid gap-6 sm:grid-cols-3">
             <div>
                 <label for="country" class="block text-sm font-medium text-slate-700">{{ __('Country') }}</label>
                 <input id="country" name="country" type="text" value="{{ old('country', $address->country) }}" placeholder="{{ __('Iraq') }}" class="mt-2 block w-full rounded-xl border bg-white px-4 py-3 text-sm text-slate-900 placeholder-muted focus:border-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent {{ $errors->has('country') ? 'border-rose-300' : 'border-slate-200' }}" required>
                 @error('country')
+                    <p class="mt-2 text-sm text-rose-600 dark:text-rose-300">{{ $message }}</p>
+                @enderror
+            </div>
+
+            <div>
+                <label for="governorate_id" class="block text-sm font-medium text-slate-700">{{ __('Governorate') }}</label>
+                <select id="governorate_id" name="governorate_id" class="mt-2 block w-full rounded-xl border bg-white px-4 py-3 text-sm text-slate-900 focus:border-transparent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent {{ $errors->has('governorate_id') ? 'border-rose-300' : 'border-slate-200' }}" required>
+                    <option value="">{{ __('Select a governorate') }}</option>
+                    @foreach ($governorates as $governorate)
+                        <option value="{{ $governorate->id }}" @selected((int) old('governorate_id', $address->governorate_id) === (int) $governorate->id)>
+                            {{ $governorate->localizedName() }} &mdash; {{ $governorate->shipping_fee > 0 ? number_format($governorate->shipping_fee).' IQD' : __('Free delivery') }}
+                        </option>
+                    @endforeach
+                </select>
+                <p class="mt-2 text-xs text-slate-500">{{ __('Delivery time and shipping fee are set by governorate.') }}</p>
+                @error('governorate_id')
                     <p class="mt-2 text-sm text-rose-600 dark:text-rose-300">{{ $message }}</p>
                 @enderror
             </div>

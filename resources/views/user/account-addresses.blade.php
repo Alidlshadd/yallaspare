@@ -73,7 +73,7 @@
                                         @if ($savedAddress->address_line2)
                                             {{ $savedAddress->address_line2 }}<br>
                                         @endif
-                                        {{ $savedAddress->city }}, {{ $savedAddress->country }}
+                                        {{ $savedAddress->city }}@if ($savedAddress->governorate), {{ $savedAddress->governorate->localizedName() }}@endif, {{ $savedAddress->country }}
                                     </p>
                                 </div>
                                 <a href="{{ route('account.addresses.edit', $savedAddress) }}" class="text-sm font-medium text-[var(--primary)] transition duration-150 hover:opacity-80">

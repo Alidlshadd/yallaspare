@@ -5,6 +5,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdatePasswordRequest;
 use App\Http\Requests\UpdateProfileRequest;
+use App\Models\Governorate;
 use App\Models\Order;
 use App\Support\SecureImageStorage;
 use Illuminate\Http\RedirectResponse;
@@ -93,6 +94,7 @@ class UserAccountController extends Controller
         $addressPayload = [
             'label' => __('user.default_delivery'),
             'country' => $data['country'],
+            'governorate_id' => $data['governorate_id'],
             'city' => $data['city'],
             'address_line1' => $data['address_line1'],
             'address_line2' => $data['address_line2'] ?? null,
@@ -142,6 +144,7 @@ class UserAccountController extends Controller
         $user = auth()->user();
         [$firstName, $lastName] = $this->splitName((string) $user->name);
         $addresses = $user->addresses()
+            ->with('governorate')
             ->latest('is_default')
             ->latest('id')
             ->get();
@@ -161,6 +164,7 @@ class UserAccountController extends Controller
             'lastName' => $lastName,
             'address' => $address,
             'addresses' => $addresses,
+            'governorates' => Governorate::query()->ordered()->get(),
             'recentOrders' => $recentOrders,
             'totalOrders' => $totalOrders,
             'pendingOrders' => $pendingOrders,

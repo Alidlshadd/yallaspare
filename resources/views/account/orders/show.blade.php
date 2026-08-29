@@ -79,6 +79,8 @@
         $customerName = trim((string) ($order->user?->name ?? auth()->user()?->name ?? ''));
         $deliveryPhone = trim((string) ($order->delivery_phone ?? ''));
         $deliveryCity = trim((string) ($order->delivery_city ?? ''));
+        $deliveryGovernorate = trim((string) ($order->delivery_governorate ?? ''));
+        $deliveryDays = $order->delivery_days ? (int) $order->delivery_days : null;
         $deliveryAddress = trim((string) ($order->delivery_address ?? ''));
         $orderNotes = trim((string) ($order->notes ?? ''));
         $isDeliveredOrder = $normalizedStatus === \App\Models\Order::STATUS_DELIVERED;
@@ -190,6 +192,17 @@
                         <dt class="text-xs uppercase tracking-[0.12em] text-slate-500">{{ __('Delivery City') }}</dt>
                         <dd class="mt-1 font-medium text-slate-900">{{ $deliveryCity !== '' ? $deliveryCity : __('Not provided') }}</dd>
                     </div>
+                    @if ($deliveryGovernorate !== '')
+                        <div>
+                            <dt class="text-xs uppercase tracking-[0.12em] text-slate-500">{{ __('Governorate') }}</dt>
+                            <dd class="mt-1 font-medium text-slate-900">
+                                {{ $deliveryGovernorate }}
+                                @if ($deliveryDays)
+                                    <span class="mt-0.5 block text-xs font-normal text-slate-500">{{ __('Delivery in :days days', ['days' => $deliveryDays]) }}</span>
+                                @endif
+                            </dd>
+                        </div>
+                    @endif
                     <div>
                         <dt class="text-xs uppercase tracking-[0.12em] text-slate-500">{{ __('Full Address') }}</dt>
                         <dd class="mt-1 font-medium text-slate-900">{{ $deliveryAddress !== '' ? $deliveryAddress : __('Not provided') }}</dd>

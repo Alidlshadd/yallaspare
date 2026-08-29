@@ -88,8 +88,18 @@
                             <span class="text-sm text-slate-600">{{ __('Subtotal') }}</span>
                             <span class="text-sm font-semibold text-slate-900">{{ number_format($subtotal, 0) }} {{ $currencySymbol }}</span>
                         </div>
-                        <div class="flex items-center justify-between border-b border-slate-200/80 py-3">
-                            <span class="text-sm text-slate-600">{{ __('Shipping Fee') }}</span>
+                        <div class="flex items-start justify-between gap-4 border-b border-slate-200/80 py-3">
+                            <span class="text-sm text-slate-600">
+                                {{ __('Shipping Fee') }}
+                                @if ($shippingQuote->isGovernorateRate())
+                                    <span class="mt-0.5 block text-xs text-slate-500">
+                                        {{ $shippingQuote->destinationName() }}
+                                        @if ($shippingQuote->deliveryDays)
+                                            &middot; {{ __('Delivery in :days days', ['days' => $shippingQuote->deliveryDays]) }}
+                                        @endif
+                                    </span>
+                                @endif
+                            </span>
                             <span class="text-sm font-semibold text-slate-900">{{ number_format($shippingFee, 0) }} {{ $currencySymbol }}</span>
                         </div>
                         @if (($discountAmount ?? 0) > 0)

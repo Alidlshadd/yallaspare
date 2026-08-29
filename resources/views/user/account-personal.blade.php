@@ -201,6 +201,14 @@
 
                     <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <x-ui.input name="country" :label="__('user.country')" :value="old('country', $address?->country)" />
+                        <x-ui.select
+                            name="governorate_id"
+                            :label="__('Governorate')"
+                            :placeholder="__('Select a governorate')"
+                            :options="$governorates->mapWithKeys(fn ($governorate) => [$governorate->id => $governorate->localizedName().' — '.($governorate->shipping_fee > 0 ? number_format($governorate->shipping_fee).' IQD' : __('Free delivery'))])"
+                            :value="$address?->governorate_id"
+                            :hint="__('Delivery time and shipping fee are set by governorate.')"
+                        />
                         <x-ui.input name="city" :label="__('user.city')" :value="old('city', $address?->city)" />
                         <div class="md:col-span-2">
                             <x-ui.input name="address_line1" :label="__('user.address_line')" :value="old('address_line1', $address?->address_line1)" />

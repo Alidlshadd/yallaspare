@@ -83,7 +83,7 @@
                                         @if ($address->address_line2)
                                             {{ $address->address_line2 }}<br>
                                         @endif
-                                        {{ $address->city }}, {{ $address->country }}
+                                        {{ $address->city }}@if ($address->governorate), {{ $address->governorate->localizedName() }}@endif, {{ $address->country }}
                                     </p>
 
                                     @if ($address->phone || $address->notes)

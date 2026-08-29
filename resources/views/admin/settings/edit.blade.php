@@ -217,7 +217,7 @@
                                 <div>
                                     <label for="shipping_fee" class="{{ $labelClasses }}">{{ __('Shipping Fee') }}</label>
                                     <input id="shipping_fee" type="number" name="shipping_fee" min="0" step="0.01" value="{{ old('shipping_fee', (float) ($settings['shipping_fee'] ?? 5000)) }}" class="{{ $inputClasses }}" required>
-                                    <p class="{{ $hintClasses }}">{{ __('Used for checkout, order totals, and invoices.') }}</p>
+                                    <p class="{{ $hintClasses }}">{{ __('Fallback only. Orders are charged the fee set for their governorate; this rate applies when the delivery address names none.') }}</p>
                                 </div>
 
                                 <div>

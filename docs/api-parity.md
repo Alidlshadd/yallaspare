@@ -15,6 +15,7 @@
 | **Profile delete (added 78dcd3b)** | `DELETE /profile` | `DELETE /profile` |
 | Catalog browse | `shop.index`, `shop.show` | `GET /products`, `GET /products/{x}` |
 | Categories list | `categories.index` | `GET /categories` |
+| **Governorate shipping map (added this commit)** | checkout address picker | **`GET /governorates`** |
 | Brands list | (inline filter) | `GET /brands` |
 | Vehicle fitments | (catalog filter) | `GET /vehicle-fitments` |
 | VIN decode | - | `POST /vin/decode` |
@@ -52,6 +53,12 @@
 |---|---|---|---|---|
 | 7 | **Account activity feed** | `user.account.activity` | Missing | Returns user's recent orders, address changes, security events. Add `GET /account/activity?limit=N`. |
 | 8 | **Wishlist payload shape mismatch** | `WishlistController` returns full product view models | `GET /mobile/wishlist` returns array of product_ids only | Mobile client has to make N follow-up calls for product details. Fix mobile to return paginated products consistent with `GET /products`. Schema break: bump API version or add `GET /wishlist?expand=products`. |
+
+### Known contract differences
+
+| # | Capability | Web | Mobile | Notes |
+|---|---|---|---|---|
+| 10 | **Governorate on a saved address** | `governorate_id` is **required** by `StoreAddressRequest` | `POST/PATCH /addresses` accept `governorate_id` as **optional** | Requiring it would break address creation in shipped clients, so mobile keeps it optional. An address without one is shipped at the flat `shipping_fee` setting, the pre-existing behaviour. Checkout responses carry a `shipping` block (`fee`, `delivery_days`, `governorate`, `is_governorate_rate`) so a client can show what the customer is being charged; `GET /governorates` feeds the picker. Make it required once clients ship the picker. |
 
 ### Low priority - admin / dealer extras
 

@@ -38,6 +38,7 @@ Route::prefix('mobile')->group(function () {
     Route::post('/legal/contact', [MobileController::class, 'sendContact'])->middleware('throttle:6,1');
 
     Route::get('/categories', [MobileController::class, 'categories']);
+    Route::get('/governorates', [MobileController::class, 'governorates']);
     Route::get('/brands', [MobileController::class, 'brands']);
     Route::get('/vehicle-fitments', [MobileController::class, 'vehicleFitments']);
     Route::post('/vin/decode', [MobileController::class, 'decodeVin'])->middleware('throttle:mobile-lookup');

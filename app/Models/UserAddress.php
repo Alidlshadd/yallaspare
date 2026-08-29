@@ -14,6 +14,7 @@ class UserAddress extends Model
         'user_id',
         'label',
         'country',
+        'governorate_id',
         'city',
         'address_line1',
         'address_line2',
@@ -44,5 +45,11 @@ class UserAddress extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /** @return BelongsTo<Governorate, $this> */
+    public function governorate(): BelongsTo
+    {
+        return $this->belongsTo(Governorate::class);
     }
 }

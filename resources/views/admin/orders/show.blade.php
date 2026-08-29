@@ -371,6 +371,15 @@
                             <p class="text-sm text-slate-900">{{ $order->delivery_city ?? '-' }}</p>
                         </div>
                         <div>
+                            <p class="text-xs uppercase text-slate-500">{{ __('Governorate') }}</p>
+                            <p class="text-sm text-slate-900">
+                                {{ $order->delivery_governorate ?: '-' }}
+                                @if ($order->delivery_days)
+                                    <span class="text-slate-500">&middot; {{ __('Delivery in :days days', ['days' => (int) $order->delivery_days]) }}</span>
+                                @endif
+                            </p>
+                        </div>
+                        <div>
                             <p class="text-xs uppercase text-slate-500">{{ __('Address') }}</p>
                             <p class="text-sm text-slate-900">{{ $order->delivery_address ?? '-' }}</p>
                         </div>

@@ -11,13 +11,13 @@ use App\Models\CartItem;
 use App\Models\Category;
 use App\Models\Coupon;
 use App\Models\Discount;
+use App\Models\Governorate;
 use App\Models\InventoryMovement;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ProductReview;
 use App\Models\RecentlyViewedProduct;
 use App\Models\ReturnRequest;
-use App\Models\Setting;
 use App\Models\User;
 use App\Models\UserAddress;
 use App\Models\VehicleBrand;
@@ -35,6 +35,8 @@ use App\Services\Payments\PaymentService;
 use App\Services\Returns\ReturnRefundService;
 use App\Services\Reviews\ProductReviewEligibilityService;
 use App\Services\Security\UserPrivilegeService;
+use App\Services\Shipping\ShippingFeeResolver;
+use App\Services\Shipping\ShippingQuote;
 use App\Support\IraqiPhoneNumber;
 use App\Support\SqlSafe;
 use App\Support\VehicleLocalization;
@@ -1132,7 +1134,8 @@ class MobileController extends Controller
             ];
         }
 
-        $shippingFee = (float) Setting::getValue('shipping_fee', 5000);
+        $shippingQuote = app(ShippingFeeResolver::class)->forAddress($address);
+        $shippingFee = $shippingQuote->fee;
         $code = $coupons->normalizeCode((string) ($data['coupon_code'] ?? ''));
         $subtotalForCoupon = array_sum(array_map(fn ($i) => $i['quantity'] * $i['unit_price'], $lineItems));
         $couponPreview = $code !== '' ? $coupons->preview($code, round($subtotalForCoupon, 2), $user) : null;
@@ -1144,6 +1147,7 @@ class MobileController extends Controller
             'items' => $responseItems,
             'notes' => (string) ($data['notes'] ?? ''),
             'totals' => $computed,
+            'shipping' => $this->shippingPayload($shippingQuote),
             'coupon_summary' => $this->couponSummaryFor($couponPreview),
         ]]);
     }
@@ -1170,7 +1174,8 @@ class MobileController extends Controller
         $this->abortIfAddressPhoneInvalid($address);
 
         $unitPrice = (float) $product->priceFor($user);
-        $shippingFee = (float) Setting::getValue('shipping_fee', 5000);
+        $shippingQuote = app(ShippingFeeResolver::class)->forAddress($address);
+        $shippingFee = $shippingQuote->fee;
         $code = $coupons->normalizeCode((string) ($data['coupon_code'] ?? ''));
         $subtotalForCoupon = round($unitPrice * $quantity, 2);
         $couponPreview = $code !== '' ? $coupons->preview($code, $subtotalForCoupon, $user) : null;
@@ -1187,6 +1192,7 @@ class MobileController extends Controller
             'address' => $this->addressPayload($address),
             'notes' => (string) ($data['notes'] ?? ''),
             'totals' => $computed,
+            'shipping' => $this->shippingPayload($shippingQuote),
             'coupon_summary' => $this->couponSummaryFor($couponPreview),
         ];
 
@@ -2137,13 +2143,50 @@ class MobileController extends Controller
             'discount_amount' => (float) ($order->discount_amount ?? 0),
             'total' => (float) ($order->grand_total ?? $order->total_amount),
             'delivery_city' => (string) $order->delivery_city,
+            'delivery_governorate' => $order->delivery_governorate,
+            'delivery_days' => $order->delivery_days,
         ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function shippingPayload(ShippingQuote $quote): array
+    {
+        return [
+            'fee' => $quote->fee,
+            'delivery_days' => $quote->deliveryDays,
+            'governorate_id' => $quote->governorate?->id,
+            'governorate' => $quote->destinationName(),
+            'is_governorate_rate' => $quote->isGovernorateRate(),
+        ];
+    }
+
+    /**
+     * The shipping map, so a client can price a destination before the customer
+     * saves an address for it.
+     */
+    public function governorates()
+    {
+        $governorates = Governorate::query()
+            ->ordered()
+            ->get()
+            ->map(fn (Governorate $governorate): array => [
+                'id' => $governorate->id,
+                'code' => $governorate->code,
+                'name' => $governorate->localizedName(),
+                'shipping_fee' => (int) $governorate->shipping_fee,
+                'delivery_days' => (int) $governorate->delivery_days,
+            ]);
+
+        return response()->json(['data' => $governorates]);
     }
 
     private function addressData(Request $request): array
     {
         $data = $request->validate([
             'label' => ['required', 'string', 'max:120'],
+            'governorate_id' => ['nullable', 'integer', Rule::exists('governorates', 'id')],
             'city' => ['required', 'string', 'max:120'],
             'line1' => ['required', 'string', 'max:255'],
             'line2' => ['nullable', 'string', 'max:255'],
@@ -2154,6 +2197,7 @@ class MobileController extends Controller
         return [
             'label' => $data['label'],
             'country' => 'IQ',
+            'governorate_id' => $data['governorate_id'] ?? null,
             'city' => $data['city'],
             'address_line1' => $data['line1'],
             'address_line2' => $data['line2'] ?? null,
@@ -2192,9 +2236,13 @@ class MobileController extends Controller
 
     private function addressPayload(UserAddress $address): array
     {
+        $address->loadMissing('governorate');
+
         $data = [
             'id' => $address->id,
             'label' => $address->label,
+            'governorate_id' => $address->governorate_id,
+            'governorate' => $address->governorate?->localizedName(),
             'city' => $address->city,
             'line1' => $address->address_line1,
             'line2' => (string) $address->address_line2,

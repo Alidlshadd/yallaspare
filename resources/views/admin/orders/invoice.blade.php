@@ -408,7 +408,7 @@
                         <div class="label">{{ __('invoice.ship_to') }}</div>
                         <div class="value">{{ $order->user?->name ?? __('invoice.guest_customer') }}</div>
                         <div>{{ $order->delivery_address }}</div>
-                        <div>{{ $order->delivery_city }}</div>
+                        <div>{{ $order->delivery_city }}@if ($order->delivery_governorate), {{ $order->delivery_governorate }}@endif</div>
                         <div class="muted">{{ __('invoice.phone') }}: {{ $order->delivery_phone }}</div>
                     </td></tr>
                 </table>

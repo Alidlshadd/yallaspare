@@ -3385,5 +3385,10 @@
     "Webhook Required": "Webhook Required",
     "Test only. Creates no order or payment record, changes no stock or cart, and omits webhookUrl and webhookSecret entirely.": "Test only. Creates no order or payment record, changes no stock or cart, and omits webhookUrl and webhookSecret entirely.",
     "WAYL create-link diagnostic passed without webhook fields (HTTP :status).": "WAYL create-link diagnostic passed without webhook fields (HTTP :status).",
-    "WAYL create-link diagnostic failed (HTTP :status): :message": "WAYL create-link diagnostic failed (HTTP :status): :message"
+    "WAYL create-link diagnostic failed (HTTP :status): :message": "WAYL create-link diagnostic failed (HTTP :status): :message",
+    "Select a governorate": "Select a governorate",
+    "Free delivery": "Free delivery",
+    "Delivery in :days days": "Delivery in :days days",
+    "Delivery time and shipping fee are set by governorate.": "Delivery time and shipping fee are set by governorate.",
+    "Fallback only. Orders are charged the fee set for their governorate; this rate applies when the delivery address names none.": "Fallback only. Orders are charged the fee set for their governorate; this rate applies when the delivery address names none."
 }

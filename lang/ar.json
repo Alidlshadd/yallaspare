@@ -3385,5 +3385,10 @@
     "Webhook Required": "Webhook مطلوب",
     "Test only. Creates no order or payment record, changes no stock or cart, and omits webhookUrl and webhookSecret entirely.": "للاختبار فقط. لا ينشئ طلبًا أو سجل دفع، ولا يغيّر المخزون أو السلة، ولا يرسل حقلي webhookUrl وwebhookSecret إطلاقًا.",
     "WAYL create-link diagnostic passed without webhook fields (HTTP :status).": "نجح تشخيص إنشاء رابط WAYL دون حقول webhook (HTTP :status).",
-    "WAYL create-link diagnostic failed (HTTP :status): :message": "فشل تشخيص إنشاء رابط WAYL (HTTP :status): :message"
+    "WAYL create-link diagnostic failed (HTTP :status): :message": "فشل تشخيص إنشاء رابط WAYL (HTTP :status): :message",
+    "Select a governorate": "اختر المحافظة",
+    "Free delivery": "توصيل مجاني",
+    "Delivery in :days days": "التوصيل خلال :days أيام",
+    "Delivery time and shipping fee are set by governorate.": "يتم تحديد مدة التوصيل ورسوم الشحن حسب المحافظة.",
+    "Fallback only. Orders are charged the fee set for their governorate; this rate applies when the delivery address names none.": "احتياطي فقط. تُحتسب الطلبات برسوم محافظتها، وتُطبَّق هذه القيمة عندما لا يحدد عنوان التوصيل محافظة."
 }

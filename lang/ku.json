@@ -3385,5 +3385,10 @@
     "Webhook Required": "Webhook پێویستە",
     "Test only. Creates no order or payment record, changes no stock or cart, and omits webhookUrl and webhookSecret entirely.": "تەنها بۆ تاقیکردنەوەیە. هیچ داواکاری یان تۆماری پارەدان دروست ناکات، کۆگا یان سەبەتە ناگۆڕێت، و webhookUrl و webhookSecret بە تەواوی نانێرێت.",
     "WAYL create-link diagnostic passed without webhook fields (HTTP :status).": "پشکنینی دروستکردنی بەستەری WAYL بەبێ خانەکانی webhook سەرکەوتوو بوو (HTTP :status).",
-    "WAYL create-link diagnostic failed (HTTP :status): :message": "پشکنینی دروستکردنی بەستەری WAYL شکستی هێنا (HTTP :status): :message"
+    "WAYL create-link diagnostic failed (HTTP :status): :message": "پشکنینی دروستکردنی بەستەری WAYL شکستی هێنا (HTTP :status): :message",
+    "Select a governorate": "پارێزگایەک هەڵبژێرە",
+    "Free delivery": "گەیاندنی بێبەرامبەر",
+    "Delivery in :days days": "گەیاندن لە ماوەی :days ڕۆژدا",
+    "Delivery time and shipping fee are set by governorate.": "ماوەی گەیاندن و کرێی گەیاندن بەپێی پارێزگا دیاری دەکرێن.",
+    "Fallback only. Orders are charged the fee set for their governorate; this rate applies when the delivery address names none.": "تەنها یەدەک. داواکارییەکان بە کرێی پارێزگای خۆیان دەژمێردرێن، ئەم بڕەش کاتێک بەکاردێت کە ناونیشانی گەیاندن هیچ پارێزگایەک دیاری نەکات."
 }

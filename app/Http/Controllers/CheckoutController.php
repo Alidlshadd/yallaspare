@@ -11,6 +11,7 @@ use App\Services\Analytics\CheckoutStartTracker;
 use App\Services\Checkout\CheckoutService;
 use App\Services\CouponService;
 use App\Services\Payments\PaymentService;
+use App\Services\Shipping\ShippingFeeResolver;
 use App\Support\UserCommunication;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -28,6 +29,7 @@ class CheckoutController extends Controller
     public function __construct(
         private readonly CheckoutService $checkoutService,
         private readonly PaymentService $paymentService,
+        private readonly ShippingFeeResolver $shippingFees,
     ) {}
 
     public function options(Request $request, Product $product): View|RedirectResponse
@@ -163,7 +165,7 @@ class CheckoutController extends Controller
             return $product ? $product->priceFor($user) * $item->quantity : 0;
         });
 
-        $addresses = $user->addresses()->latest('is_default')->latest('id')->get();
+        $addresses = $user->addresses()->with('governorate')->latest('is_default')->latest('id')->get();
         $defaultAddress = $addresses->firstWhere('is_default', true) ?? $addresses->first();
 
         return view('shop.checkout-delivery', [
@@ -171,6 +173,7 @@ class CheckoutController extends Controller
             'subtotal' => round($subtotal, 2),
             'currencySymbol' => (string) Setting::getValue('currency_code', 'IQD'),
             'addresses' => $addresses,
+            'shippingQuotes' => $this->shippingFees->forAddresses($addresses),
             'defaultAddress' => $defaultAddress,
             'defaultDeliveryNote' => (string) ($user->default_delivery_note ?? ''),
             'defaultContactMethod' => in_array((string) $user->default_contact_method, ['phone', 'email', 'sms'], true)
@@ -261,7 +264,8 @@ class CheckoutController extends Controller
 
             return $product->priceFor($user) * $item->quantity;
         });
-        $shippingFee = $this->shippingFee();
+        $shippingQuote = $this->shippingFees->forAddress($address);
+        $shippingFee = $shippingQuote->fee;
         $couponService = app(CouponService::class);
         $couponCode = (string) $request->session()->get(self::COUPON_SESSION_KEY, '');
 
@@ -310,6 +314,7 @@ class CheckoutController extends Controller
             'notes' => $notes,
             'subtotal' => round($subtotal, 2),
             'shippingFee' => $shippingFee,
+            'shippingQuote' => $shippingQuote,
             'discountAmount' => $discountAmount,
             'grandTotal' => $grandTotal,
             'couponSummary' => $couponPreview,
@@ -427,19 +432,15 @@ class CheckoutController extends Controller
         ]);
     }
 
-    private function shippingFee(): float
-    {
-        return max(0, round((float) Setting::getValue('shipping_fee', 5000), 2));
-    }
-
     private function showBuyNowReview(Request $request, Product $product, int $quantity, array $data = []): View|RedirectResponse
     {
         $user = $request->user();
         abort_unless($user, 403);
 
-        $addresses = $user->addresses()->latest('is_default')->latest('id')->get();
+        $addresses = $user->addresses()->with('governorate')->latest('is_default')->latest('id')->get();
         $defaultAddress = $addresses->firstWhere('is_default', true) ?? $addresses->first();
         $selectedAddressId = isset($data['address_id']) ? (int) $data['address_id'] : (int) ($defaultAddress?->id ?? 0);
+        $selectedAddress = $addresses->firstWhere('id', $selectedAddressId) ?? $defaultAddress;
         $notes = (string) ($data['notes'] ?? $user->default_delivery_note ?? '');
 
         if (! $defaultAddress) {
@@ -449,7 +450,8 @@ class CheckoutController extends Controller
         $currencyLabel = (string) Setting::getValue('currency_code', 'IQD');
         $unitPrice = (float) $product->priceFor($user);
         $subtotal = round($unitPrice * $quantity, 2);
-        $shippingFee = $this->shippingFee();
+        $shippingQuote = $this->shippingFees->forAddress($selectedAddress);
+        $shippingFee = $shippingQuote->fee;
         $couponService = app(CouponService::class);
         $couponCode = (string) $request->session()->get(self::BUY_NOW_COUPON_SESSION_KEY, '');
         $couponAction = (string) ($data['coupon_action'] ?? '');
@@ -489,6 +491,8 @@ class CheckoutController extends Controller
             'unitPrice' => $unitPrice,
             'subtotal' => $subtotal,
             'shippingFee' => $shippingFee,
+            'shippingQuote' => $shippingQuote,
+            'shippingQuotes' => $this->shippingFees->forAddresses($addresses),
             'discountAmount' => $discountAmount,
             'grandTotal' => round(max(0, $subtotal + $shippingFee - $discountAmount), 2),
             'couponSummary' => $couponPreview,

@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Rules\IraqiMobileNumber;
 use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Validator;
 
 class UpdateProfileRequest extends FormRequest
@@ -27,6 +28,7 @@ class UpdateProfileRequest extends FormRequest
             'dob_month' => ['nullable', 'integer', 'between:1,12', 'required_with:dob_day,dob_year'],
             'dob_year' => ['nullable', 'integer', 'between:1900,'.now()->year, 'required_with:dob_day,dob_month'],
             'country' => ['required', 'string', 'max:120'],
+            'governorate_id' => ['required', 'integer', Rule::exists('governorates', 'id')],
             'city' => ['required', 'string', 'max:120'],
             'address_line1' => ['required', 'string', 'max:255'],
             'address_line2' => ['nullable', 'string', 'max:255'],
@@ -45,6 +47,7 @@ class UpdateProfileRequest extends FormRequest
             'dob_month' => 'birth month',
             'dob_year' => 'birth year',
             'country' => __('user.country'),
+            'governorate_id' => __('Governorate'),
             'city' => __('user.city'),
             'address_line1' => __('user.address_line'),
             'address_line2' => __('user.building_apartment'),

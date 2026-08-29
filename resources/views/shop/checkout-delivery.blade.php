@@ -71,9 +71,24 @@
                                                 @if ($address->address_line2)
                                                     <br>{{ $address->address_line2 }}
                                                 @endif
-                                                <br>{{ $address->city }}, {{ $address->country }}
+                                                <br>{{ $address->city }}@if ($address->governorate), {{ $address->governorate->localizedName() }}@endif, {{ $address->country }}
                                                 <br>{{ $address->phone }}
                                             </span>
+                                            @php
+                                                $quote = $shippingQuotes[$address->id] ?? null;
+                                            @endphp
+                                            @if ($quote)
+                                                <span class="mt-3 flex flex-wrap items-center gap-2 text-xs font-medium">
+                                                    <span class="inline-flex items-center rounded-full border border-slate-200/80 bg-white px-2.5 py-1 text-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                                        {{ $quote->isFree() ? __('Free delivery') : number_format($quote->fee, 0).' '.$currencySymbol }}
+                                                    </span>
+                                                    @if ($quote->deliveryDays)
+                                                        <span class="inline-flex items-center rounded-full border border-slate-200/80 bg-white px-2.5 py-1 text-slate-700 dark:bg-slate-900 dark:text-slate-200">
+                                                            {{ __('Delivery in :days days', ['days' => $quote->deliveryDays]) }}
+                                                        </span>
+                                                    @endif
+                                                </span>
+                                            @endif
                                         </span>
                                     </label>
                                 @endforeach

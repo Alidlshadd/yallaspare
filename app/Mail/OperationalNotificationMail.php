@@ -198,6 +198,7 @@ class OperationalNotificationMail extends Mailable implements ShouldQueue
         return trim(implode(', ', array_filter([
             (string) $order->delivery_address,
             (string) $order->delivery_city,
+            (string) $order->delivery_governorate,
             (string) $order->delivery_phone,
         ])));
     }

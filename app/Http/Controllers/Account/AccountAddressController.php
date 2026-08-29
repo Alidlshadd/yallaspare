@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Account;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Account\StoreAddressRequest;
 use App\Http\Requests\Account\UpdateAddressRequest;
+use App\Models\Governorate;
 use App\Models\UserAddress;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
@@ -15,7 +17,7 @@ class AccountAddressController extends Controller
     public function index(): View
     {
         return view('account.addresses.index', [
-            'addresses' => auth()->user()->addresses()->latest('is_default')->latest('id')->get(),
+            'addresses' => auth()->user()->addresses()->with('governorate')->latest('is_default')->latest('id')->get(),
         ]);
     }
 
@@ -23,6 +25,7 @@ class AccountAddressController extends Controller
     {
         return view('account.addresses.create', [
             'address' => new UserAddress,
+            'governorates' => $this->governorates(),
         ]);
     }
 
@@ -43,6 +46,7 @@ class AccountAddressController extends Controller
 
         return view('account.addresses.edit', [
             'address' => $address,
+            'governorates' => $this->governorates(),
         ]);
     }
 
@@ -89,6 +93,14 @@ class AccountAddressController extends Controller
         return redirect()
             ->route('account.addresses.index')
             ->with('status', __('Address removed successfully.'));
+    }
+
+    /**
+     * @return EloquentCollection<int, Governorate>
+     */
+    protected function governorates(): EloquentCollection
+    {
+        return Governorate::query()->ordered()->get();
     }
 
     protected function authorizeAddress(UserAddress $address): void

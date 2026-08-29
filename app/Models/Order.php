@@ -44,6 +44,9 @@ class Order extends Model
         'payment_reference',
         'delivery_address',
         'delivery_city',
+        'governorate_id',
+        'delivery_governorate',
+        'delivery_days',
         'delivery_phone',
         'notes',
         'cancellation_requested_at',
@@ -71,6 +74,7 @@ class Order extends Model
         'discount_amount' => 'decimal:2',
         'grand_total' => 'decimal:2',
         'total_amount' => 'decimal:2',
+        'delivery_days' => 'integer',
         'cancellation_requested_at' => 'datetime',
         'archived_at' => 'datetime',
     ];
@@ -230,6 +234,24 @@ class Order extends Model
     public function coupon(): BelongsTo
     {
         return $this->belongsTo(Coupon::class);
+    }
+
+    /** @return BelongsTo<Governorate, $this> */
+    public function governorate(): BelongsTo
+    {
+        return $this->belongsTo(Governorate::class);
+    }
+
+    /**
+     * Where this order is going, as the customer was shown it. The name copied
+     * onto the order wins over the live governorate row, which an operator may
+     * have renamed since.
+     */
+    public function destinationName(): string
+    {
+        return (string) ($this->delivery_governorate
+            ?: $this->governorate?->localizedName()
+            ?: $this->delivery_city);
     }
 
     /** @return HasMany<OrderAdminNote, $this> */
