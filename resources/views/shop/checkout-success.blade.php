@@ -16,6 +16,8 @@
             </p>
         </section>
 
+        @include('account.partials.choose-credentials')
+
         <section class="rounded-3xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-900/5 dark:bg-slate-900 dark:shadow-black/10 sm:p-8">
             <h2 class="text-xl font-semibold text-slate-950">{{ __('Payment Summary') }}</h2>
 

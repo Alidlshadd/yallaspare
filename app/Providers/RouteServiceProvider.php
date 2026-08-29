@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Product;
+use App\Support\IraqiPhoneNumber;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 use Illuminate\Http\Request;
@@ -69,6 +70,20 @@ class RouteServiceProvider extends ServiceProvider
 
         RateLimiter::for('phone-verification-check', function (Request $request) {
             return Limit::perMinute(10)->by($request->user()?->id ?: $request->ip());
+        });
+
+        // Express checkout sends codes to numbers nobody has signed in with,
+        // so the number itself is the thing to bound: without the first limit
+        // one browser could walk a range of numbers, each a fresh "account"
+        // and so a fresh allowance. Resends carry no number field and fall
+        // back to the address, which the session cooldown already paces.
+        RateLimiter::for('express-checkout-code', function (Request $request) {
+            $phone = IraqiPhoneNumber::digits($request->input('phone'));
+
+            return [
+                Limit::perMinutes(10, 3)->by($phone !== null ? 'phone:'.sha1($phone) : 'ip:'.$request->ip()),
+                Limit::perMinutes(10, 8)->by('ip:'.$request->ip()),
+            ];
         });
 
         // Web counterparts of the mobile-* limiters below. They are deliberately

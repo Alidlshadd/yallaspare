@@ -1,7 +1,9 @@
-@props(['current' => 1])
+@props(['current' => 1, 'steps' => null])
 
 @php
-    $steps = [
+    // Guest checkout walks a different third step, so callers may name their
+    // own; the signed-in cart flow keeps these.
+    $steps ??= [
         1 => ['label' => __('Cart'), 'icon' => 'cart'],
         2 => ['label' => __('Delivery'), 'icon' => 'truck'],
         3 => ['label' => __('Review'), 'icon' => 'check'],

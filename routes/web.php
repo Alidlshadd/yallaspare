@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Account\AccountAddressController;
+use App\Http\Controllers\Account\AccountCredentialsController;
 use App\Http\Controllers\Account\AccountOrdersController;
 use App\Http\Controllers\Admin\AdminActivityLogController;
 use App\Http\Controllers\Admin\AnalyticsController as AdminAnalyticsController;
@@ -33,6 +34,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CatalogLandingController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CspReportController;
+use App\Http\Controllers\ExpressCheckoutController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\PaymentReturnController;
 use App\Http\Controllers\ProductReviewController;
@@ -226,6 +228,23 @@ Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::patch('/cart/items/{item}', [CartController::class, 'update'])->middleware('throttle:commerce-write')->name('cart.update');
 Route::delete('/cart/items/{item}', [CartController::class, 'remove'])->middleware('throttle:commerce-write')->name('cart.remove');
 
+// Checkout without an account. The visitor gives their details once and
+// proves the phone with a code; ExpressCheckoutController explains what that
+// buys and why the account is made for them rather than asked for.
+Route::middleware('guest')->group(function () {
+    Route::get('/checkout/express', [ExpressCheckoutController::class, 'show'])->name('checkout.express');
+    Route::post('/checkout/express', [ExpressCheckoutController::class, 'store'])
+        ->middleware('throttle:express-checkout-code')
+        ->name('checkout.express.store');
+    Route::get('/checkout/express/verify', [ExpressCheckoutController::class, 'verifyForm'])->name('checkout.express.verify');
+    Route::post('/checkout/express/verify', [ExpressCheckoutController::class, 'verify'])
+        ->middleware('throttle:phone-verification-check')
+        ->name('checkout.express.verify.store');
+    Route::post('/checkout/express/resend', [ExpressCheckoutController::class, 'resend'])
+        ->middleware('throttle:express-checkout-code')
+        ->name('checkout.express.resend');
+});
+
 Route::middleware(['auth', 'verified', 'customer.area', 'customer.phone', 'customer.phone.verified', 'user.2fa'])->group(function () {
     Route::get('/checkout/options/{product}', [CheckoutController::class, 'options'])->name('checkout.options');
     Route::match(['get', 'post'], '/checkout/buy-now/{product}', [CheckoutController::class, 'buyNow'])->middleware('throttle:checkout-write')->name('checkout.buy-now');
@@ -250,6 +269,9 @@ Route::middleware(['auth', 'verified', 'customer.area', 'customer.phone', 'custo
     Route::post('/orders/{order}/reorder', [AccountOrdersController::class, 'reorder'])->middleware('throttle:commerce-write')->name('orders.reorder');
     Route::post('/orders/{order}/cancellation-request', [AccountOrdersController::class, 'requestCancellation'])->middleware('throttle:commerce-write')->name('orders.cancellation-request');
     Route::post('/orders/{order}/return-request', [AccountOrdersController::class, 'requestReturn'])->middleware('throttle:commerce-write')->name('orders.return-request');
+    Route::post('/credentials', [AccountCredentialsController::class, 'store'])
+        ->middleware('throttle:commerce-write')
+        ->name('credentials.store');
     Route::get('/addresses', [AccountAddressController::class, 'index'])->name('addresses.index');
     Route::get('/addresses/create', [AccountAddressController::class, 'create'])->name('addresses.create');
     Route::post('/addresses', [AccountAddressController::class, 'store'])->middleware('throttle:commerce-write')->name('addresses.store');

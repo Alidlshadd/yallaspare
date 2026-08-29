@@ -198,13 +198,13 @@
                         <span class="text-[11px] font-semibold uppercase tracking-[0.08em] text-white/60">{{ $currencySymbol }}</span>
                     </p>
                     <a
-                        href="{{ route('checkout.delivery') }}"
+                        href="{{ auth()->check() ? route('checkout.delivery') : route('checkout.express') }}"
                         class="font-display group inline-flex items-center gap-2 rounded-xl bg-accent px-5 py-2.5 text-sm font-bold text-navy transition duration-200 hover:-translate-y-0.5 hover:bg-accent-hover hover:shadow-lg hover:shadow-black/20 active:translate-y-0 active:scale-[0.98] focus:outline-none focus-visible:ring-2 focus-visible:ring-accent/60"
                     >
-                        {{-- Checkout still needs an account. Saying so here beats a
-                             login screen appearing out of nowhere; the cart is kept
-                             and the visitor lands back on checkout afterwards. --}}
-                        {{ auth()->check() ? __('Continue to Delivery') : __('Sign in to check out') }}
+                        {{-- Same step either way. A guest fills the address here and
+                             confirms the order with a code on their phone; nobody is
+                             sent to a sign-up form to finish buying. --}}
+                        {{ __('Continue to Delivery') }}
                         <svg class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-0.5 rtl:rotate-180 rtl:group-hover:-translate-x-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M4 12h16m-6-6 6 6-6 6" />
                         </svg>

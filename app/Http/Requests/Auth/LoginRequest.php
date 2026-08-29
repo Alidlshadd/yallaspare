@@ -47,9 +47,13 @@ class LoginRequest extends FormRequest
         $login = trim((string) $this->input('email'));
         $user = $this->userForLogin($login, (string) $this->input('password'));
 
+        // Attempted by primary key, not by email: an account made at express
+        // checkout has no email address, and a null there would ask the user
+        // provider for "the account whose email is NULL" — matching a
+        // stranger's credential-less account rather than nobody at all.
         if (
             ! $user ||
-            ! Auth::attempt(['email' => $user->email, 'password' => (string) $this->input('password')], $this->boolean('remember'))
+            ! Auth::attempt(['id' => $user->getKey(), 'password' => (string) $this->input('password')], $this->boolean('remember'))
         ) {
             RateLimiter::hit($this->throttleKey());
 

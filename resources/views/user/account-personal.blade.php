@@ -59,6 +59,9 @@
                 </x-ui.alert>
             @endif
 
+            {{-- Outside the profile form on purpose: it carries its own. --}}
+            @include('account.partials.choose-credentials')
+
             <form id="profile-form" method="POST" action="{{ route('user.account.update') }}" enctype="multipart/form-data" class="space-y-6">
                 @csrf
                 @method('PATCH')
