@@ -22,12 +22,16 @@
     $currencyLabel = (string) ($systemSettings['currency_code'] ?? 'IQD');
 
     $cartCount = max(0, (int) $cartCount);
-    $cartRef = $cartRef ?? $headerCartRef ?? '#17-3118';
+    // No cart, no reference. The old fallback invented an order-looking number
+    // for anyone whose cart was empty, which is worse than showing nothing.
+    $cartRef = $cartRef ?? $headerCartRef ?? '';
     $cartTotalFormatted = $cartTotalFormatted ?? $headerCartTotalFormatted ?? trim($currencyLabel . ' ' . number_format($headerCartSubtotal, 2));
     $storeHomeUrl = $isCustomerAuthenticated ? route('user.shop.home') : route('home');
-    $cartUrl = $isCustomerAuthenticated
-        ? (Route::has('cart.index') ? route('cart.index') : (Route::has('user.cart.index') ? route('user.cart.index') : url('/user/cart')))
-        : route('login');
+    // A guest has a cart of their own now, so the icon opens it rather than
+    // sending them to a login screen for something they can already do.
+    $cartUrl = Route::has('cart.index')
+        ? route('cart.index')
+        : (Route::has('user.cart.index') ? route('user.cart.index') : url('/user/cart'));
     $wishlistUrl = $isCustomerAuthenticated
         ? (Route::has('user.wishlist.index') ? route('user.wishlist.index') : url('/user/wishlist'))
         : route('login');
@@ -375,20 +379,21 @@
                         </form>
 
                         <div class="flex items-center justify-end gap-1.5 sm:gap-2">
-                            @if ($isCustomerAuthenticated)
-                                <a
-                                    href="{{ $cartUrl }}"
-                                    class="relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25 sm:h-10 sm:w-10 sm:rounded-xl"
-                                    aria-label="{{ __('Cart') }}"
-                                >
-                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.836L5.61 7.5m0 0h12.84a1.125 1.125 0 0 1 1.089 1.41l-1.12 4.5a1.125 1.125 0 0 1-1.09.84H8.382a1.125 1.125 0 0 1-1.09-.84L5.61 7.5Zm0 0L4.5 4.125M8.25 18.75a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5Zm9 0a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5Z" />
-                                    </svg>
-                                    <span class="absolute -top-1 {{ $isRtl ? '-left-1' : '-right-1' }} inline-flex min-w-[1.1rem] items-center justify-center rounded-full bg-orange-500 px-1 py-0.5 text-[10px] font-semibold leading-none text-white" data-cart-count-badge data-cart-count-value="{{ $cartCount }}" aria-hidden="true">
-                                        {{ $cartCount > 99 ? '99+' : $cartCount }}
-                                    </span>
-                                </a>
+                            {{-- A guest fills a cart of their own, so the cart is for everyone here. Only the wishlist still needs an account. --}}
+                            <a
+                                href="{{ $cartUrl }}"
+                                class="relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25 sm:h-10 sm:w-10 sm:rounded-xl"
+                                aria-label="{{ __('Cart') }}"
+                            >
+                                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.836L5.61 7.5m0 0h12.84a1.125 1.125 0 0 1 1.089 1.41l-1.12 4.5a1.125 1.125 0 0 1-1.09.84H8.382a1.125 1.125 0 0 1-1.09-.84L5.61 7.5Zm0 0L4.5 4.125M8.25 18.75a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5Zm9 0a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5Z" />
+                                </svg>
+                                <span class="absolute -top-1 {{ $isRtl ? '-left-1' : '-right-1' }} inline-flex min-w-[1.1rem] items-center justify-center rounded-full bg-orange-500 px-1 py-0.5 text-[10px] font-semibold leading-none text-white" data-cart-count-badge data-cart-count-value="{{ $cartCount }}" aria-hidden="true">
+                                    {{ $cartCount > 99 ? '99+' : $cartCount }}
+                                </span>
+                            </a>
 
+                            @if ($isCustomerAuthenticated)
                                 <a
                                     href="{{ $wishlistUrl }}"
                                     class="relative inline-flex h-9 w-9 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25 sm:h-10 sm:w-10 sm:rounded-xl"
@@ -425,35 +430,30 @@
 
                     <div class="hidden py-2.5 lg:grid lg:grid-cols-[minmax(11rem,0.75fr)_minmax(30rem,1.45fr)_minmax(11rem,0.75fr)] lg:items-center lg:gap-4">
                         <div class="justify-self-start">
-                            @if ($isCustomerAuthenticated)
-                                <a
-                                    href="{{ $cartUrl }}"
-                                    class="inline-flex min-w-[10rem] items-center gap-2.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25"
-                                    aria-label="{{ __('Cart summary') }}"
-                                >
-                                    <span class="relative inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/10 text-white">
-                                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.836L5.61 7.5m0 0h12.84a1.125 1.125 0 0 1 1.089 1.41l-1.12 4.5a1.125 1.125 0 0 1-1.09.84H8.382a1.125 1.125 0 0 1-1.09-.84L5.61 7.5Zm0 0L4.5 4.125M8.25 18.75a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5Zm9 0a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5Z" />
-                                        </svg>
-                                        <span class="absolute -top-1 {{ $isRtl ? '-left-1' : '-right-1' }} inline-flex min-w-[1.2rem] items-center justify-center rounded-full bg-orange-500 px-1.5 py-0.5 text-[10px] font-semibold leading-none text-white" data-cart-count-badge data-cart-count-value="{{ $cartCount }}" aria-hidden="true">
-                                            {{ $cartCount > 99 ? '99+' : $cartCount }}
-                                        </span>
+                            {{-- The summary reads a guest cart the same way it reads an account one. --}}
+                            <a
+                                href="{{ $cartUrl }}"
+                                class="inline-flex min-w-[10rem] items-center gap-2.5 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-white transition duration-200 hover:bg-white/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/25"
+                                aria-label="{{ __('Cart summary') }}"
+                            >
+                                <span class="relative inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-white/10 text-white">
+                                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.836L5.61 7.5m0 0h12.84a1.125 1.125 0 0 1 1.089 1.41l-1.12 4.5a1.125 1.125 0 0 1-1.09.84H8.382a1.125 1.125 0 0 1-1.09-.84L5.61 7.5Zm0 0L4.5 4.125M8.25 18.75a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5Zm9 0a.75.75 0 1 1 0 1.5.75.75 0 0 1 0-1.5Z" />
+                                    </svg>
+                                    <span class="absolute -top-1 {{ $isRtl ? '-left-1' : '-right-1' }} inline-flex min-w-[1.2rem] items-center justify-center rounded-full bg-orange-500 px-1.5 py-0.5 text-[10px] font-semibold leading-none text-white" data-cart-count-badge data-cart-count-value="{{ $cartCount }}" aria-hidden="true">
+                                        {{ $cartCount > 99 ? '99+' : $cartCount }}
                                     </span>
-
-                                    <span class="min-w-0 flex-1 text-start">
-                                        <span class="block truncate text-[10px] font-semibold uppercase tracking-[0.12em] text-white/80" data-cart-items-label>{{ __('Items (:count)', ['count' => $cartCount]) }}</span>
-                                        <span class="block truncate text-[11px] font-medium text-white/55" data-cart-ref>{{ $cartRef }}</span>
-                                    </span>
-
-                                    <span class="shrink-0 text-right">
-                                        <span class="block text-sm font-semibold tracking-[-0.02em] text-accent" data-cart-total>{{ $cartTotalFormatted }}</span>
-                                    </span>
-                                </a>
-                            @else
-                                <span class="inline-flex min-w-[10rem] items-center justify-center rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-sm font-semibold text-white">
-                                    {{ __('Guest browsing') }}
                                 </span>
-                            @endif
+
+                                <span class="min-w-0 flex-1 text-start">
+                                    <span class="block truncate text-[10px] font-semibold uppercase tracking-[0.12em] text-white/80" data-cart-items-label>{{ __('Items (:count)', ['count' => $cartCount]) }}</span>
+                                    <span class="block truncate text-[11px] font-medium text-white/55" data-cart-ref>{{ $cartRef }}</span>
+                                </span>
+
+                                <span class="shrink-0 text-right">
+                                    <span class="block text-sm font-semibold tracking-[-0.02em] text-accent" data-cart-total>{{ $cartTotalFormatted }}</span>
+                                </span>
+                            </a>
                         </div>
 
                         <form method="GET" action="{{ route('shop.index') }}" class="w-full min-w-0 justify-self-center" data-search-autocomplete data-search-autocomplete-url="{{ route('shop.autocomplete') }}">

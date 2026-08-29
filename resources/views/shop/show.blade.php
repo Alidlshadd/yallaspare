@@ -367,11 +367,15 @@
                                     @endif
                                 @endif
                             @else
+                                {{-- Filling a cart needs no account: it belongs to the session
+                                     until the visitor signs in. Buying now does, because it
+                                     goes straight to checkout. --}}
                                 @if ($inStock)
-                                    <form action="{{ route('checkout.options', $product) }}" method="GET" class="space-y-2.5">
+                                    <form action="{{ route('cart.add', $product) }}" method="POST" id="purchase-form" class="js-add-cart-form space-y-2.5">
+                                        @csrf
                                         <input type="hidden" name="quantity" id="purchase-qty-hidden-guest" value="1">
-                                        <button type="submit" class="inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-navy-raised hover:shadow-lg hover:shadow-primary/25 active:translate-y-0 active:scale-[0.98]">
-                                            {{ __('Login or Register to Order') }}
+                                        <button type="submit" class="js-add-cart-button inline-flex w-full items-center justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white transition duration-200 hover:-translate-y-0.5 hover:bg-navy-raised hover:shadow-lg hover:shadow-primary/25 active:translate-y-0 active:scale-[0.98] disabled:cursor-wait disabled:opacity-80">
+                                            {{ __('Add to Cart') }}
                                         </button>
                                     </form>
                                 @else

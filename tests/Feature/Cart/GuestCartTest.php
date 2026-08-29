@@ -202,6 +202,34 @@ class GuestCartTest extends TestCase
         $this->assertSame(2, CartItem::query()->count());
     }
 
+    public function test_the_product_page_offers_a_guest_the_real_add_to_cart_form(): void
+    {
+        $product = $this->product();
+
+        $this->get(route('shop.show', $product))
+            ->assertOk()
+            ->assertSee('action="'.route('cart.add', $product).'"', false)
+            ->assertSee('Add to Cart')
+            ->assertDontSee('Login or Register to Order');
+    }
+
+    public function test_the_shop_grid_offers_a_guest_the_real_add_to_cart_form(): void
+    {
+        $product = $this->product();
+
+        $this->get(route('shop.index'))
+            ->assertOk()
+            ->assertSee('action="'.route('cart.add', $product->id).'"', false)
+            ->assertDontSee('Login or Register to Order');
+    }
+
+    public function test_the_header_cart_icon_opens_the_cart_rather_than_the_login_screen(): void
+    {
+        $this->get(route('shop.index'))
+            ->assertOk()
+            ->assertSee('href="'.route('cart.index').'"', false);
+    }
+
     private function product(array $attributes = []): Product
     {
         if (! Category::query()->whereKey(1)->exists()) {

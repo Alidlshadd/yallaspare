@@ -139,37 +139,37 @@
         </div>
     </div>
 
-    @if ($customerUser)
-        @if ($inStock)
-            <form method="POST" action="{{ route('cart.add', $product->id) }}" class="js-add-cart-form relative z-20 mt-3">
-                @csrf
-                <button
-                    type="submit"
-                    class="js-add-cart-button inline-flex w-full items-center justify-center rounded-xl bg-primary px-3 py-2.5 text-sm font-semibold uppercase tracking-[0.05em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-80"
-                >
-                    {{ __('Add to Cart') }}
-                </button>
-            </form>
-        @else
-            <form method="POST" action="{{ route('shop.back-in-stock.store', $product) }}" class="relative z-20 mt-3">
-                @csrf
-                <button
-                    type="submit"
-                    class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-3 py-2.5 text-sm font-semibold uppercase tracking-[0.05em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
-                >
-                    <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M5 19h14" />
-                    </svg>
-                    {{ __('Send Request') }}
-                </button>
-            </form>
-        @endif
+    {{-- Anyone can fill a cart. Only an account can be told when stock returns,
+         so that is the one branch still asking the visitor to sign in. --}}
+    @if ($inStock)
+        <form method="POST" action="{{ route('cart.add', $product->id) }}" class="js-add-cart-form relative z-20 mt-3">
+            @csrf
+            <button
+                type="submit"
+                class="js-add-cart-button inline-flex w-full items-center justify-center rounded-xl bg-primary px-3 py-2.5 text-sm font-semibold uppercase tracking-[0.05em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-80"
+            >
+                {{ __('Add to Cart') }}
+            </button>
+        </form>
+    @elseif ($customerUser)
+        <form method="POST" action="{{ route('shop.back-in-stock.store', $product) }}" class="relative z-20 mt-3">
+            @csrf
+            <button
+                type="submit"
+                class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-primary px-3 py-2.5 text-sm font-semibold uppercase tracking-[0.05em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+            >
+                <svg class="h-3.5 w-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M5 19h14" />
+                </svg>
+                {{ __('Send Request') }}
+            </button>
+        </form>
     @else
         <a
-            href="{{ $inStock ? route('checkout.options', $product) : route('login') }}"
+            href="{{ route('login') }}"
             class="font-display relative z-20 mt-3 inline-flex w-full items-center justify-center rounded-xl bg-primary px-3 py-2.5 text-center text-sm font-semibold uppercase tracking-[0.05em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
         >
-            {{ $inStock ? __('Order Now') : __('Send Request') }}
+            {{ __('Send Request') }}
         </a>
     @endif
 </article>
@@ -302,37 +302,35 @@
         </p>
     </div>
 
-    @if ($customerUser)
-        @if ($inStock)
-            <form method="POST" action="{{ route('cart.add', $product->id) }}" class="js-add-cart-form relative z-20 mt-4">
-                @csrf
-                <button
-                    type="submit"
-                    class="js-add-cart-button inline-flex w-full items-center justify-center rounded-2xl bg-primary px-3 py-3 text-sm font-semibold uppercase tracking-[0.04em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-80 sm:px-4 sm:tracking-[0.1em]"
-                >
-                    {{ __('Add to Cart') }}
-                </button>
-            </form>
-        @else
-            <form method="POST" action="{{ route('shop.back-in-stock.store', $product) }}" class="relative z-20 mt-4">
-                @csrf
-                <button
-                    type="submit"
-                    class="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-3 py-3 text-sm font-semibold uppercase tracking-[0.04em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 sm:px-4 sm:tracking-[0.1em]"
-                >
-                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M5 19h14" />
-                    </svg>
-                    {{ __('Send Request') }}
-                </button>
-            </form>
-        @endif
+    @if ($inStock)
+        <form method="POST" action="{{ route('cart.add', $product->id) }}" class="js-add-cart-form relative z-20 mt-4">
+            @csrf
+            <button
+                type="submit"
+                class="js-add-cart-button inline-flex w-full items-center justify-center rounded-2xl bg-primary px-3 py-3 text-sm font-semibold uppercase tracking-[0.04em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 disabled:cursor-wait disabled:opacity-80 sm:px-4 sm:tracking-[0.1em]"
+            >
+                {{ __('Add to Cart') }}
+            </button>
+        </form>
+    @elseif ($customerUser)
+        <form method="POST" action="{{ route('shop.back-in-stock.store', $product) }}" class="relative z-20 mt-4">
+            @csrf
+            <button
+                type="submit"
+                class="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-primary px-3 py-3 text-sm font-semibold uppercase tracking-[0.04em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 sm:px-4 sm:tracking-[0.1em]"
+            >
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v12m0 0 4-4m-4 4-4-4M5 19h14" />
+                </svg>
+                {{ __('Send Request') }}
+            </button>
+        </form>
     @else
         <a
-            href="{{ $inStock ? route('checkout.options', $product) : route('login') }}"
+            href="{{ route('login') }}"
             class="font-display relative z-20 mt-4 inline-flex w-full items-center justify-center rounded-2xl bg-primary px-3 py-3 text-center text-sm font-semibold uppercase tracking-[0.04em] text-white transition duration-200 hover:bg-primary-hover active:translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2 sm:px-4 sm:tracking-[0.1em]"
         >
-            {{ $inStock ? __('Login or Register to Order') : __('Send Request') }}
+            {{ __('Send Request') }}
         </a>
     @endif
 </article>
