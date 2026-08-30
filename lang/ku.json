@@ -3490,5 +3490,6 @@
     ":count queued job(s) have failed since :since.": ":count ئەرکی ڕیزبەند لە :since ەوە سەرکەوتوو نەبوون.",
     "Most recent error:": "دوایین هەڵە:",
     "Inspect them with `php artisan queue:failed`, and retry with `php artisan queue:retry all`.": "بە `php artisan queue:failed` پشکنینیان بکە، و بە `php artisan queue:retry all` دووبارە هەوڵ بدەرەوە.",
-    "Queued jobs are failing on :app": "ئەرکە ڕیزبەندەکان لە :app سەرکەوتوو نابن"
+    "Queued jobs are failing on :app": "ئەرکە ڕیزبەندەکان لە :app سەرکەوتوو نابن",
+    "Spare parts": "پارچەی یەدەگ"
 }

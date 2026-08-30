@@ -177,13 +177,25 @@ class CatalogLandingPagesTest extends TestCase
 
     public function test_every_landing_page_carries_its_breadcrumb_trail_as_structured_data(): void
     {
-        [$make, $model] = $this->vehicleWithParts('Toyota', 'Corolla', 1);
+        // Two parts, not one: Google counts a list as a list from two entries
+        // up, so a page holding a single part carries the trail and no list.
+        [$make, $model] = $this->vehicleWithParts('Toyota', 'Corolla', 2);
 
         $this->get(route('catalog.vehicle-model', [$make->slug, $model->slug]))
             ->assertOk()
             ->assertSee('BreadcrumbList', false)
             ->assertSee('ItemList', false)
             ->assertSee('"position":3', false);
+    }
+
+    public function test_a_landing_page_holding_one_part_carries_no_list(): void
+    {
+        [$make, $model] = $this->vehicleWithParts('Toyota', 'Yaris', 1);
+
+        $this->get(route('catalog.vehicle-model', [$make->slug, $model->slug]))
+            ->assertOk()
+            ->assertSee('BreadcrumbList', false)
+            ->assertDontSee('ItemList', false);
     }
 
     public function test_the_sitemap_offers_landing_pages_that_have_something_on_them(): void

@@ -9,6 +9,7 @@ use App\Models\VehicleModel;
 use App\Models\Wishlist;
 use App\Support\CatalogLandingCache;
 use App\Support\DbSchema;
+use App\Support\Seo\StructuredData;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -203,13 +204,7 @@ class CatalogLandingController extends Controller
      */
     private function breadcrumbs(array $trail): array
     {
-        $breadcrumbs = [['label' => __('Home'), 'url' => route('home')]];
-
-        foreach ($trail as $label => $url) {
-            $breadcrumbs[] = ['label' => $label, 'url' => $url];
-        }
-
-        return $breadcrumbs;
+        return StructuredData::trailFromHome($trail);
     }
 
     /**
@@ -218,27 +213,16 @@ class CatalogLandingController extends Controller
      * the visitor sees, not the whole catalogue behind the pagination.
      *
      * @param  LengthAwarePaginator<int, Product>  $products
-     * @return array<string, mixed>
+     * @return array<string, mixed>|null
      */
-    private function productListSchema(string $name, LengthAwarePaginator $products): array
+    private function productListSchema(string $name, LengthAwarePaginator $products): ?array
     {
-        $offset = ($products->currentPage() - 1) * $products->perPage();
-
-        return [
-            '@context' => 'https://schema.org',
-            '@type' => 'ItemList',
-            'name' => $name,
-            'numberOfItems' => $products->total(),
-            'itemListElement' => $products->getCollection()
-                ->values()
-                ->map(fn (Product $product, int $index): array => [
-                    '@type' => 'ListItem',
-                    'position' => $offset + $index + 1,
-                    'name' => $product->name,
-                    'url' => route('shop.show', $product),
-                ])
-                ->all(),
-        ];
+        return StructuredData::productList(
+            $name,
+            $products->getCollection(),
+            ($products->currentPage() - 1) * $products->perPage(),
+            $products->total(),
+        );
     }
 
     /**

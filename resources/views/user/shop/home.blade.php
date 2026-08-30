@@ -2,6 +2,17 @@
 
 @section('meta_description', __('YallaSpare is an auto spare parts platform built for Iraq, helping customers find trusted parts, check vehicle compatibility, order easily, and get reliable support.'))
 
+@push('head')
+    {{-- The shop's own entry, on the home page and nowhere else: Google asks
+         for it once per site, and every other page points back at it by id. --}}
+    @include('partials.structured-data', [
+        'schemas' => [
+            \App\Support\Seo\StructuredData::organization(),
+            \App\Support\Seo\StructuredData::website(),
+        ],
+    ])
+@endpush
+
 @section('content')
     @php
         $heroVideoPath = trim((string) data_get($heroSettings ?? [], 'video', '')) ?: 'home/hero-video.mp4';

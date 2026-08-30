@@ -3490,5 +3490,6 @@
     ":count queued job(s) have failed since :since.": "فشلت :count مهمة في قائمة الانتظار منذ :since.",
     "Most recent error:": "آخر خطأ:",
     "Inspect them with `php artisan queue:failed`, and retry with `php artisan queue:retry all`.": "افحصها باستخدام `php artisan queue:failed`، وأعد المحاولة باستخدام `php artisan queue:retry all`.",
-    "Queued jobs are failing on :app": "مهام قائمة الانتظار تفشل على :app"
+    "Queued jobs are failing on :app": "مهام قائمة الانتظار تفشل على :app",
+    "Spare parts": "قطع غيار"
 }

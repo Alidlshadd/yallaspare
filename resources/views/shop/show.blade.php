@@ -84,43 +84,32 @@
     $seoTitle = trim($name . ' | ' . $brand . ' | ' . $siteName);
     $seoDescriptionSource = trim((string) ($description ?: "{$brand} {$name} {$categoryName} spare part with price, stock, SKU, warranty, and delivery details from {$siteName}."));
     $seoDescription = \Illuminate\Support\Str::limit(preg_replace('/\s+/', ' ', strip_tags($seoDescriptionSource)), 158, '');
-    $availabilityUrl = $inStock ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock';
-    $productSchema = [
-        '@context' => 'https://schema.org',
-        '@type' => 'Product',
-        'name' => $name,
-        'description' => $seoDescription,
-        'image' => $galleryImages->values()->all(),
-        'sku' => $product->sku ?: null,
-        'mpn' => $product->part_number ?: ($product->oem_number ?: null),
-        'brand' => [
-            '@type' => 'Brand',
-            'name' => $brand,
-        ],
-        'category' => $categoryName,
-        'offers' => [
-            '@type' => 'Offer',
-            'url' => $canonicalUrl,
-            'priceCurrency' => $currencySymbol,
-            'price' => number_format($currentPrice, 2, '.', ''),
-            'availability' => $availabilityUrl,
-            'itemCondition' => 'https://schema.org/NewCondition',
-            'seller' => [
-                '@type' => 'Organization',
-                'name' => $siteName,
-            ],
-        ],
+    // What this page says about itself, built by the one place that knows the
+    // shapes. The trail matches the links rendered below it, so the crumbs a
+    // visitor sees and the crumbs a search engine reads cannot drift apart.
+    $breadcrumbTrail = array_values(array_filter([
+        ['label' => __('Home'), 'url' => route('home')],
+        ['label' => __('Shop'), 'url' => route('shop.index')],
+        $product->category
+            ? ['label' => $categoryName, 'url' => route('shop.index', ['category' => $product->category->id])]
+            : null,
+        ['label' => $name, 'url' => ''],
+    ]));
+
+    $pageSchemas = [
+        \App\Support\Seo\StructuredData::product(
+            product: $product,
+            images: $galleryImages->values()->all(),
+            price: $currentPrice,
+            inStock: $inStock,
+            url: $canonicalUrl,
+            averageRating: isset($averageRating) ? (float) $averageRating : null,
+            reviewCount: (int) ($reviewCount ?? 0),
+            description: $seoDescription,
+            categoryName: $categoryName,
+        ),
+        \App\Support\Seo\StructuredData::breadcrumbs($breadcrumbTrail),
     ];
-
-    if (($reviewCount ?? 0) > 0 && ($averageRating ?? 0) > 0) {
-        $productSchema['aggregateRating'] = [
-            '@type' => 'AggregateRating',
-            'ratingValue' => number_format((float) $averageRating, 1, '.', ''),
-            'reviewCount' => (int) $reviewCount,
-        ];
-    }
-
-    $productSchema = array_filter($productSchema, fn ($value) => $value !== null && $value !== '');
 
 @endphp
 
@@ -141,9 +130,7 @@
     <meta name="twitter:title" content="{{ $seoTitle }}">
     <meta name="twitter:description" content="{{ $seoDescription }}">
     <meta name="twitter:image" content="{{ $imageUrl }}">
-    <script nonce="{{ $cspNonce }}" type="application/ld+json">
-        {!! json_encode($productSchema, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) !!}
-    </script>
+    @include('partials.structured-data', ['schemas' => $pageSchemas])
 @endpush
 
 @section('content')

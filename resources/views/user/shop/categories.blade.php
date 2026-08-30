@@ -3,6 +3,28 @@
 @section('title', __('Categories'))
 @section('meta_description', __('Browse all product categories and find the right spare parts faster.'))
 
+@push('head')
+    {{-- A board of links, so the list points at the category pages rather than
+         trying to describe the parts behind them. --}}
+    @include('partials.structured-data', [
+        'schemas' => [
+            \App\Support\Seo\StructuredData::breadcrumbs(
+                \App\Support\Seo\StructuredData::trailFromHome([
+                    __('Shop') => route('shop.index'),
+                    __('Categories') => route('categories.index'),
+                ])
+            ),
+            \App\Support\Seo\StructuredData::linkList(
+                __('Categories'),
+                $categories->map(fn ($category) => [
+                    'name' => $category->localizedName(),
+                    'url' => route('shop.index', ['category' => $category->slug ?: $category->id]),
+                ])->values()->all(),
+            ),
+        ],
+    ])
+@endpush
+
 @section('content')
     <div class="space-y-7">
         <section class="relative overflow-hidden rounded-3xl bg-primary p-6 text-white sm:p-8 lg:p-10">

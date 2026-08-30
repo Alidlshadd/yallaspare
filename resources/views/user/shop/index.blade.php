@@ -1,5 +1,21 @@
 @extends('layouts.user')
 
+@push('head')
+    @include('partials.structured-data', [
+        'schemas' => [
+            \App\Support\Seo\StructuredData::breadcrumbs(
+                \App\Support\Seo\StructuredData::trailFromHome([__('Shop') => route('shop.index')])
+            ),
+            \App\Support\Seo\StructuredData::productList(
+                __('Spare parts'),
+                $products->getCollection(),
+                ($products->currentPage() - 1) * $products->perPage(),
+                $products->total(),
+            ),
+        ],
+    ])
+@endpush
+
 @section('content')
     <div class="space-y-4 sm:space-y-5">
         @guest
