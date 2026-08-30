@@ -5,6 +5,7 @@ namespace App\Providers;
 use App\Http\View\Composers\HeaderComposer;
 use App\Models\CartItem;
 use App\Models\Category;
+use App\Models\Goal;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Setting;
@@ -65,14 +66,7 @@ class AppServiceProvider extends ServiceProvider
                 return $fallbackText;
             }
 
-            $label = str_contains($key, '.') ? Str::afterLast($key, '.') : $key;
-
-            return Str::of($label)
-                ->replace(['_', '-'], ' ')
-                ->replaceMatches('/\s+/', ' ')
-                ->trim()
-                ->ucfirst()
-                ->toString();
+            return $this->readableMissingTranslation($key);
         });
 
         Password::defaults(function (): Password {
@@ -94,6 +88,7 @@ class AppServiceProvider extends ServiceProvider
         Wishlist::observe(WishlistCacheObserver::class);
         Order::observe(AdminAuditObserver::class);
         Order::observe(OrderAnalyticsObserver::class);
+        Goal::observe(AdminAuditObserver::class);
 
         View::composer('layouts.user', HeaderComposer::class);
     }
@@ -114,6 +109,40 @@ class AppServiceProvider extends ServiceProvider
      * loaded, after which it never registers again and our binding is the last
      * word.
      */
+    /**
+     * Something readable to show when a translation is missing.
+     *
+     * Two kinds of key arrive here and they need opposite treatment. A nested
+     * key — `errors.inventory_product_not_found` — is a name, and its last
+     * segment spelled out is a fair stand-in for the sentence nobody wrote. A
+     * key that is itself an English sentence is already the text to show.
+     *
+     * Telling them apart used to be "does it contain a full stop", which every
+     * sentence that ends in one does. "No product carries this code." was cut
+     * at its last full stop, leaving nothing after it, and the screen showed an
+     * empty space — no error, no clue, just a missing sentence. So the test is
+     * now the shape of a key: dot-separated identifiers, each starting with a
+     * letter, and no spaces.
+     *
+     * Whatever happens, something comes back. An empty string is the one answer
+     * this must never give.
+     */
+    private function readableMissingTranslation(string $key): string
+    {
+        if (preg_match('/^[A-Za-z][A-Za-z0-9_-]*(\.[A-Za-z][A-Za-z0-9_-]*)+$/', $key) !== 1) {
+            return $key;
+        }
+
+        $label = Str::of(Str::afterLast($key, '.'))
+            ->replace(['_', '-'], ' ')
+            ->replaceMatches('/\s+/', ' ')
+            ->trim()
+            ->ucfirst()
+            ->toString();
+
+        return $label !== '' ? $label : $key;
+    }
+
     private function overrideUncompromisedVerifier(): void
     {
         if ($this->app->isDeferredService(UncompromisedVerifier::class)) {
