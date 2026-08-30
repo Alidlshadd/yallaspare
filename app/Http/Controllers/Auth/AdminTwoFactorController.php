@@ -120,19 +120,16 @@ class AdminTwoFactorController extends Controller
         $code = (string) random_int(100000, 999999);
         $ttl = max((int) config('security.admin_two_factor.code_ttl_minutes', 10), 1);
 
-        $request->session()->put('admin_2fa.challenge', [
-            'hash' => Hash::make($code),
-            'expires_at' => now()->addMinutes($ttl)->timestamp,
-        ]);
-        $request->session()->forget('admin_2fa.verified_user_id');
-
+        // Send first, and only then let the new code replace whatever the
+        // session holds. Writing it up front and clearing it in the catch
+        // looks equivalent and is not: a resend that fails would throw away a
+        // code the administrator had already received and could still have
+        // used, leaving them shut out of the panel by a mail outage rather
+        // than merely unable to ask for a new code. This is the order
+        // UserTwoFactorController already uses.
         try {
             $user->notify(new AdminTwoFactorCode($code, $ttl));
-            $request->session()->put('admin_2fa.last_sent_at', now()->timestamp);
-
-            return true;
         } catch (Throwable $e) {
-            $request->session()->forget('admin_2fa.challenge');
             $mailer = (string) config('mail.default');
             $mailerConfig = (array) config("mail.mailers.{$mailer}", []);
 
@@ -151,6 +148,15 @@ class AdminTwoFactorController extends Controller
 
             return false;
         }
+
+        $request->session()->put('admin_2fa.challenge', [
+            'hash' => Hash::make($code),
+            'expires_at' => now()->addMinutes($ttl)->timestamp,
+        ]);
+        $request->session()->forget('admin_2fa.verified_user_id');
+        $request->session()->put('admin_2fa.last_sent_at', now()->timestamp);
+
+        return true;
     }
 
     private function ensureChallenge(Request $request): bool
