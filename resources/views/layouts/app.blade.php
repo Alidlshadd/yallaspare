@@ -318,6 +318,7 @@
                 // Shared admin topbar page-title mapping — keeps every admin page header consistent
                 $adminPageTitlePatterns = [
                     'admin.dashboard'              => __('Dashboard'),
+                    'admin.goals.*'                => __('Progress Center'),
                     'admin.revenue.*'              => __('Revenue Analytics'),
                     'admin.analytics.*'            => __('Site Analytics'),
                     'admin.search-insights.*'      => __('Search Insights'),
@@ -427,6 +428,7 @@
                         };
                         $adminUserForNav = auth()->user();
                         $canDashboard  = $adminUserForNav?->can(\App\Models\User::PERMISSION_DASHBOARD_VIEW);
+                        $canGoals      = $adminUserForNav?->can(\App\Models\User::PERMISSION_GOALS_VIEW);
                         $canCatalog    = $adminUserForNav?->can(\App\Models\User::PERMISSION_PRODUCTS_MANAGE);
                         $canOrders     = $adminUserForNav?->can(\App\Models\User::PERMISSION_ORDERS_MANAGE);
                         $canFinance    = $adminUserForNav?->can(\App\Models\User::PERMISSION_FINANCE_VIEW);
@@ -454,6 +456,17 @@
                             <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-chart-line" aria-hidden="true"></i></span>
                             <span class="admin-nav-label">{{ __('Dashboard') }}</span>
                         </a>
+                        @if($canGoals)
+                            <a
+                                href="{{ route('admin.goals.index') }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.goals.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Progress Center') }}"
+                                @if(request()->routeIs('admin.goals.*')) aria-current="page" @endif
+                            >
+                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-bullseye" aria-hidden="true"></i></span>
+                                <span class="admin-nav-label">{{ __('Progress Center') }}</span>
+                            </a>
+                        @endif
                         @can(\App\Models\User::PERMISSION_ORDERS_MANAGE)
                             <a
                                 href="{{ route('admin.orders.index') }}"

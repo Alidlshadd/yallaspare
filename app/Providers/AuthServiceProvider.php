@@ -3,8 +3,10 @@
 namespace App\Providers;
 
 use App\Models\AdminActivityLog;
+use App\Models\Goal;
 use App\Models\User;
 use App\Policies\AdminActivityLogPolicy;
+use App\Policies\GoalPolicy;
 use App\Policies\UserPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
@@ -21,6 +23,7 @@ class AuthServiceProvider extends ServiceProvider
         User::class => UserPolicy::class,
         AdminActivityLog::class => AdminActivityLogPolicy::class,
         Activity::class => AdminActivityLogPolicy::class,
+        Goal::class => GoalPolicy::class,
     ];
 
     /**

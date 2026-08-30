@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\DealerController;
 use App\Http\Controllers\Admin\DiscountCouponController;
 use App\Http\Controllers\Admin\EmailController;
 use App\Http\Controllers\Admin\EmailTemplateController;
+use App\Http\Controllers\Admin\GoalController;
 use App\Http\Controllers\Admin\GovernorateShippingController;
 use App\Http\Controllers\Admin\InventoryMovementController;
 use App\Http\Controllers\Admin\LowStockController;
@@ -25,6 +26,7 @@ use App\Http\Controllers\Admin\ProductBrandController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductReviewController as AdminProductReviewController;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+use App\Http\Controllers\Admin\ProgressCenterController;
 use App\Http\Controllers\Admin\ReturnRequestController;
 use App\Http\Controllers\Admin\RevenueController;
 use App\Http\Controllers\Admin\SettingController;
@@ -370,6 +372,21 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::get('/dashboard', [DashboardController::class, 'index'])
             ->middleware('can:'.User::PERMISSION_DASHBOARD_VIEW)
             ->name('dashboard');
+        Route::get('/goals', [ProgressCenterController::class, 'index'])
+            ->middleware('can:'.User::PERMISSION_GOALS_VIEW)
+            ->name('goals.index');
+        Route::post('/goals', [GoalController::class, 'store'])
+            ->middleware(['can:'.User::PERMISSION_GOALS_MANAGE, 'throttle:admin-write'])
+            ->name('goals.store');
+        Route::put('/goals/{goal}', [GoalController::class, 'update'])
+            ->middleware(['can:'.User::PERMISSION_GOALS_MANAGE, 'throttle:admin-write'])
+            ->name('goals.update');
+        Route::patch('/goals/{goal}/progress', [GoalController::class, 'updateProgress'])
+            ->middleware(['can:'.User::PERMISSION_GOALS_MANAGE, 'throttle:admin-write'])
+            ->name('goals.progress');
+        Route::delete('/goals/{goal}', [GoalController::class, 'destroy'])
+            ->middleware(['can:'.User::PERMISSION_GOALS_MANAGE, 'throttle:admin-write'])
+            ->name('goals.destroy');
         Route::get('/profile', [AdminProfileController::class, 'edit'])
             ->name('profile.edit');
         Route::patch('/profile', [AdminProfileController::class, 'update'])

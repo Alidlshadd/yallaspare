@@ -64,6 +64,10 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
 
     public const PERMISSION_ACTIVITY_LOGS_VIEW = 'activity_logs.view';
 
+    public const PERMISSION_GOALS_VIEW = 'goals.view';
+
+    public const PERMISSION_GOALS_MANAGE = 'goals.manage';
+
     public const DEALER_STATUS_ACTIVE = 'active';
 
     public const DEALER_STATUS_INACTIVE = 'inactive';
@@ -346,6 +350,10 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
             __('General') => [
                 self::PERMISSION_DASHBOARD_VIEW => __('View admin dashboard'),
             ],
+            __('Goals') => [
+                self::PERMISSION_GOALS_VIEW => __('View business goals and progress'),
+                self::PERMISSION_GOALS_MANAGE => __('Create and manage business goals'),
+            ],
             __('Products') => [
                 self::PERMISSION_PRODUCTS_MANAGE => __('Manage products, categories, and vehicle fitments'),
             ],
@@ -415,6 +423,8 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
                 self::PERMISSION_STOCK_MANAGE,
                 self::PERMISSION_USERS_VIEW,
                 self::PERMISSION_DEALERS_MANAGE,
+                self::PERMISSION_GOALS_VIEW,
+                self::PERMISSION_GOALS_MANAGE,
             ],
             self::ROLE_PRODUCT_MANAGER => [
                 self::PERMISSION_DASHBOARD_VIEW,
