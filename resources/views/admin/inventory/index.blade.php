@@ -50,14 +50,6 @@
             'from' => $from !== '' ? $from : null,
             'to' => $to !== '' ? $to : null,
         ], fn ($param) => $param !== null));
-        $csvTemplateHref = 'data:text/csv;charset=utf-8,' . rawurlencode(
-            "product_sku,type,quantity,reference,note,performed_at
-"
-            . "BRK-1001,in,10,PO-1001,,
-"
-            . "FLT-2002,out,3,ORD-5001,damaged unit,
-"
-        );
     @endphp
 
     <style>
@@ -246,32 +238,26 @@
                         </form>
                     </section>
 
-                    {{-- Bulk CSV import (route existed without any UI) --}}
+                    {{-- Many products at once now lives on its own screen, where a
+                         run is reviewed before it is applied and a bad row stops
+                         the whole thing rather than half of it going through. --}}
                     <section class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
                         <div class="flex items-start justify-between gap-3">
                             <div>
                                 <p class="text-xs font-bold uppercase tracking-[0.16em] text-muted">{{ __('Bulk Delivery') }}</p>
-                                <h3 class="mt-1 text-lg font-semibold text-slate-800">{{ __('Import CSV') }}</h3>
+                                <h3 class="mt-1 text-lg font-semibold text-slate-800">{{ __('Many products at once') }}</h3>
                             </div>
                             <span class="rounded-full border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold text-slate-600">
                                 {{ __('Batch') }}
                             </span>
                         </div>
-                        <form method="POST" action="{{ route('admin.inventory.import') }}" enctype="multipart/form-data" class="mt-4 space-y-3">
-                            @csrf
-                            <input aria-label="{{ __('Import') }}" type="file" name="import_file" accept=".csv,.txt" required
-                                   class="block w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-navy-deep file:px-4 file:py-2 file:text-sm file:font-bold file:text-accent hover:file:bg-navy-raised">
-                            <button type="submit" class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800">
-                                {{ __('Upload & Import') }}
-                            </button>
-                            <p class="text-xs text-slate-500">
-                                {{ __('Required columns:') }} <code class="inv-mono">product_sku, type, quantity</code><br>
-                                {{ __('Optional:') }} <code class="inv-mono">reference, note, performed_at</code>
-                            </p>
-                            <a href="{{ $csvTemplateHref }}" download="inventory-import-template.csv" class="inline-flex items-center gap-1.5 text-xs font-bold text-accent underline decoration-accent underline-offset-2 transition hover:text-accent dark:text-accent dark:hover:text-accent">
-                                &#8681; {{ __('Download template CSV') }}
-                            </a>
-                        </form>
+                        <p class="mt-3 text-sm text-slate-600">
+                            {{ __('Paste a list or upload a file, see exactly what it would do, then apply it in one go.') }}
+                        </p>
+                        <a href="{{ route('admin.inventory.bulk-stock') }}"
+                           class="mt-4 inline-flex w-full items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 dark:border-slate-700 dark:hover:bg-slate-800">
+                            {{ __('Open bulk stock adjustment') }}
+                        </a>
                     </section>
                 </div>
 

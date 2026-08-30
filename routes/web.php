@@ -5,6 +5,7 @@ use App\Http\Controllers\Account\AccountCredentialsController;
 use App\Http\Controllers\Account\AccountOrdersController;
 use App\Http\Controllers\Admin\AdminActivityLogController;
 use App\Http\Controllers\Admin\AnalyticsController as AdminAnalyticsController;
+use App\Http\Controllers\Admin\BulkStockAdjustmentController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DealerController;
@@ -642,12 +643,22 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::post('/inventory/movements', [InventoryMovementController::class, 'store'])
             ->middleware(['can:'.User::PERMISSION_STOCK_MANAGE, 'throttle:admin-write'])
             ->name('inventory.store');
-        Route::post('/inventory/movements/import', [InventoryMovementController::class, 'import'])
-            ->middleware(['can:'.User::PERMISSION_STOCK_MANAGE, 'throttle:admin-write'])
-            ->name('inventory.import');
         Route::get('/inventory/movements/export', [InventoryMovementController::class, 'export'])
             ->middleware('can:'.User::PERMISSION_STOCK_MANAGE)
             ->name('inventory.export');
+
+        // Bulk stock adjustment. Reviewing costs nothing and reads only, so it
+        // sits behind the same permission but not the write throttle; applying
+        // does.
+        Route::get('/inventory/bulk-stock', [BulkStockAdjustmentController::class, 'create'])
+            ->middleware('can:'.User::PERMISSION_STOCK_MANAGE)
+            ->name('inventory.bulk-stock');
+        Route::post('/inventory/bulk-stock/preview', [BulkStockAdjustmentController::class, 'preview'])
+            ->middleware('can:'.User::PERMISSION_STOCK_MANAGE)
+            ->name('inventory.bulk-stock.preview');
+        Route::post('/inventory/bulk-stock', [BulkStockAdjustmentController::class, 'store'])
+            ->middleware(['can:'.User::PERMISSION_STOCK_MANAGE, 'throttle:admin-write'])
+            ->name('inventory.bulk-stock.apply');
 
         // System Settings
         Route::get('/settings', [SettingController::class, 'edit'])

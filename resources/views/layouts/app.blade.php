@@ -326,6 +326,7 @@
                     'admin.categories.*'           => __('Categories'),
                     'admin.vehicle-fitments.*'     => __('Vehicle Finder'),
                     'admin.reviews.*'              => __('Customer Reviews'),
+                    'admin.inventory.bulk-stock*'  => __('Bulk Stock Adjustment'),
                     'admin.inventory.*'            => __('Inventory Movements'),
                     'admin.purchase-planning.*'    => __('Purchase Planning'),
                     'admin.stock-requests.*'       => __('Product Requests'),
@@ -583,12 +584,21 @@
                             @can(\App\Models\User::PERMISSION_STOCK_MANAGE)
                                 <a
                                     href="{{ route('admin.inventory.index') }}"
-                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.inventory.*')) }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.inventory.index')) }}"
                                     data-admin-sidebar-tooltip="{{ __('Inventory') }}"
-                                    @if(request()->routeIs('admin.inventory.*')) aria-current="page" @endif
+                                    @if(request()->routeIs('admin.inventory.index')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-warehouse" aria-hidden="true"></i></span>
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-boxes-stacked" aria-hidden="true"></i></span>
                                     <span class="admin-nav-label">{{ __('Inventory') }}</span>
+                                </a>
+                                <a
+                                    href="{{ route('admin.inventory.bulk-stock') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.inventory.bulk-stock*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Bulk Stock') }}"
+                                    @if(request()->routeIs('admin.inventory.bulk-stock*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-layer-group" aria-hidden="true"></i></span>
+                                    <span class="admin-nav-label">{{ __('Bulk Stock') }}</span>
                                 </a>
                                 <a
                                     href="{{ route('admin.purchase-planning.index') }}"

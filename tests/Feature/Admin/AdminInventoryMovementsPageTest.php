@@ -67,7 +67,7 @@ class AdminInventoryMovementsPageTest extends TestCase
         $response->assertSee('Outbound');
         $response->assertSee('Dock Test Radiator');
         $response->assertSee('PO-7001');
-        $response->assertSee('Import CSV');
+        $response->assertSee('Open bulk stock adjustment');
     }
 
     public function test_type_filter_shows_single_lane(): void
