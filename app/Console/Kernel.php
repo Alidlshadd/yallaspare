@@ -29,6 +29,24 @@ class Kernel extends ConsoleKernel
             ->timezone('Asia/Baghdad')
             ->between('08:00', '21:00')
             ->withoutOverlapping();
+
+        // Everything else here can be fixed by deploying again. This is the
+        // one that cannot, so it runs before the day's traffic and is given
+        // room not to collide with itself on a slow night.
+        $schedule->command('db:backup')
+            ->dailyAt('02:00')
+            ->withoutOverlapping(120)
+            ->runInBackground();
+
+        // Failed jobs are kept long enough to be read and retried, then let
+        // go, so the table does not grow without end.
+        $schedule->command('queue:prune-failed --hours=336')
+            ->weeklyOn(1, '04:00')
+            ->withoutOverlapping();
+
+        $schedule->command('queue:alert-failed')
+            ->hourly()
+            ->withoutOverlapping();
     }
 
     /**
