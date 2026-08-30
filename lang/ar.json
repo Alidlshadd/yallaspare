@@ -3491,5 +3491,7 @@
     "Most recent error:": "آخر خطأ:",
     "Inspect them with `php artisan queue:failed`, and retry with `php artisan queue:retry all`.": "افحصها باستخدام `php artisan queue:failed`، وأعد المحاولة باستخدام `php artisan queue:retry all`.",
     "Queued jobs are failing on :app": "مهام قائمة الانتظار تفشل على :app",
-    "Spare parts": "قطع غيار"
+    "Spare parts": "قطع غيار",
+    "Track stock adjustments with product, user, date, and reference history.": "تتبع تعديلات المخزون مع سجل المنتج والمستخدم والتاريخ والمرجع.",
+    "Stock Dock": "منصة المخزون"
 }

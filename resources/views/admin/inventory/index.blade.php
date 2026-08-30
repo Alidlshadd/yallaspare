@@ -3,10 +3,10 @@
         <div class="flex flex-col gap-2 md:flex-row md:items-end md:justify-between">
             <div>
                 <h2 class="font-semibold text-2xl text-slate-800">{{ __('Inventory Movements') }}</h2>
-                <p class="text-sm text-slate-500">{{ __('Track stock adjustments with product, warehouse, user, date, and reference history.') }}</p>
+                <p class="text-sm text-slate-500">{{ __('Track stock adjustments with product, user, date, and reference history.') }}</p>
             </div>
             <span class="inline-flex w-fit rounded-full border border-slate-200 bg-white px-3 py-1 text-xs font-semibold text-slate-600 shadow-sm">
-                {{ __('Warehouse Dock') }}
+                {{ __('Stock Dock') }}
             </span>
         </div>
     </x-slot>
@@ -47,14 +47,16 @@
             'search' => $search !== '' ? $search : null,
             'type' => $type === $gateType ? null : $gateType,
             'product_id' => $productId > 0 ? $productId : null,
-            'warehouse_id' => $warehouseId > 0 ? $warehouseId : null,
             'from' => $from !== '' ? $from : null,
             'to' => $to !== '' ? $to : null,
         ], fn ($param) => $param !== null));
         $csvTemplateHref = 'data:text/csv;charset=utf-8,' . rawurlencode(
-            "product_sku,type,quantity,warehouse_code,reference,note,performed_at\n"
-            . "BRK-1001,in,10,,PO-1001,,\n"
-            . "FLT-2002,out,3,,ORD-5001,damaged unit,\n"
+            "product_sku,type,quantity,reference,note,performed_at
+"
+            . "BRK-1001,in,10,PO-1001,,
+"
+            . "FLT-2002,out,3,ORD-5001,damaged unit,
+"
         );
     @endphp
 
@@ -196,22 +198,6 @@
                                 </p>
                             </div>
 
-                            @if($hasWarehouseSupport)
-                                <div>
-                                    <label for="warehouse_id" class="block text-sm font-medium text-slate-700 mb-1">{{ __('Warehouse') }}</label>
-                                    <select id="warehouse_id" name="warehouse_id" class="w-full rounded-lg border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700">
-                                        <option value="">{{ __('General stock only') }}</option>
-                                        @foreach($warehouses as $warehouse)
-                                            <option value="{{ $warehouse->id }}" @selected((int) old('warehouse_id') === (int) $warehouse->id)>
-                                                {{ $warehouse->name }} ({{ $warehouse->code }}) - {{ $warehouse->city }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    <p class="mt-1 text-xs text-slate-500">
-                                        {{ $hasWarehouseStockSupport ? __('Selecting a warehouse also updates its warehouse stock balance.') : __('Selecting a warehouse records the warehouse on the movement history.') }}
-                                    </p>
-                                </div>
-                            @endif
 
                             <div>
                                 <label for="type" class="block text-sm font-medium text-slate-700 mb-1">{{ __('Direction') }}</label>
@@ -280,7 +266,7 @@
                             </button>
                             <p class="text-xs text-slate-500">
                                 {{ __('Required columns:') }} <code class="inv-mono">product_sku, type, quantity</code><br>
-                                {{ __('Optional:') }} <code class="inv-mono">warehouse_code, reference, note, performed_at</code>
+                                {{ __('Optional:') }} <code class="inv-mono">reference, note, performed_at</code>
                             </p>
                             <a href="{{ $csvTemplateHref }}" download="inventory-import-template.csv" class="inline-flex items-center gap-1.5 text-xs font-bold text-accent underline decoration-accent underline-offset-2 transition hover:text-accent dark:text-accent dark:hover:text-accent">
                                 &#8681; {{ __('Download template CSV') }}
@@ -305,14 +291,6 @@
                                     <option value="{{ $product->id }}" @selected((int) $productId === (int) $product->id)>{{ $product->name }}</option>
                                 @endforeach
                             </select>
-                            @if($hasWarehouseSupport)
-                                <select aria-label="{{ __('Warehouse') }}" name="warehouse_id" class="lg:col-span-3 rounded-lg border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700">
-                                    <option value="0">{{ __('All warehouses') }}</option>
-                                    @foreach($warehouses as $warehouse)
-                                        <option value="{{ $warehouse->id }}" @selected((int) $warehouseId === (int) $warehouse->id)>{{ $warehouse->name }}</option>
-                                    @endforeach
-                                </select>
-                            @endif
                             <input aria-label="{{ __('From') }}" type="date" name="from" value="{{ $from }}" class="lg:col-span-3 rounded-lg border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700">
                             <input aria-label="{{ __('To') }}" type="date" name="to" value="{{ $to }}" class="lg:col-span-3 rounded-lg border-slate-300 bg-white text-slate-900 focus:ring-2 focus:ring-accent dark:border-slate-700">
                             <div class="lg:col-span-6 flex flex-wrap gap-2">
@@ -339,7 +317,6 @@
                                                 <p class="truncate text-sm font-semibold text-slate-800">{{ $movement->product->name ?? __('Deleted Product') }}</p>
                                                 <p class="mt-0.5 truncate text-xs text-slate-500">
                                                     {{ $movement->product->sku ?? __('N/A') }}
-                                                    @if($hasWarehouseSupport && $movement->warehouse) &middot; {{ $movement->warehouse->name }} @endif
                                                     @if($movement->reference) &middot; {{ $movement->reference }} @endif
                                                 </p>
                                                 @if($movement->note)
@@ -375,7 +352,6 @@
                                                 <p class="truncate text-sm font-semibold text-slate-800">{{ $movement->product->name ?? __('Deleted Product') }}</p>
                                                 <p class="mt-0.5 truncate text-xs text-slate-500">
                                                     {{ $movement->product->sku ?? __('N/A') }}
-                                                    @if($hasWarehouseSupport && $movement->warehouse) &middot; {{ $movement->warehouse->name }} @endif
                                                     @if($movement->reference) &middot; {{ $movement->reference }} @endif
                                                 </p>
                                                 @if($movement->note)

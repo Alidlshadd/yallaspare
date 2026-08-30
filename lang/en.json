@@ -3491,5 +3491,7 @@
     "Most recent error:": "Most recent error:",
     "Inspect them with `php artisan queue:failed`, and retry with `php artisan queue:retry all`.": "Inspect them with `php artisan queue:failed`, and retry with `php artisan queue:retry all`.",
     "Queued jobs are failing on :app": "Queued jobs are failing on :app",
-    "Spare parts": "Spare parts"
+    "Spare parts": "Spare parts",
+    "Track stock adjustments with product, user, date, and reference history.": "Track stock adjustments with product, user, date, and reference history.",
+    "Stock Dock": "Stock Dock"
 }
