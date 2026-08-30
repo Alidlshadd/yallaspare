@@ -42,8 +42,12 @@ class PeriodRangeResolver
             ],
         };
 
-        $duration = $start->diffInDays($endExclusive);
         $displayEnd = $endExclusive->subDay();
+        $previousStart = match ($type) {
+            Goal::PERIOD_WEEKLY => $start->subWeek(),
+            Goal::PERIOD_YEARLY => $start->subYear(),
+            default => $start->subMonth(),
+        };
 
         return [
             'type' => $type,
@@ -51,7 +55,7 @@ class PeriodRangeResolver
             'start' => $start,
             'end_exclusive' => $endExclusive,
             'display_end' => $displayEnd,
-            'previous_start' => $start->subDays($duration),
+            'previous_start' => $previousStart,
             'previous_end_exclusive' => $start,
             'previous_anchor' => $previousAnchor->toDateString(),
             'next_anchor' => $nextAnchor->toDateString(),

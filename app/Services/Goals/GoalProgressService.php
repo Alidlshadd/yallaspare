@@ -44,6 +44,20 @@ class GoalProgressService
         return $span > 0 ? round(max(0, min(100, (($actual - $baseline) / $span) * 100)), 1) : 0.0;
     }
 
+    public function syncCompletion(Goal $goal, array $range): array
+    {
+        $evaluation = $this->evaluate($goal, $range);
+        $completedAt = $evaluation['status'] === 'completed'
+            ? ($goal->completed_at ?? CarbonImmutable::now((string) config('goals.timezone', 'Asia/Baghdad')))
+            : null;
+
+        if (($goal->completed_at?->toDateTimeString()) !== ($completedAt?->toDateTimeString())) {
+            $goal->updateQuietly(['completed_at' => $completedAt]);
+        }
+
+        return $evaluation;
+    }
+
     private function status(float $progress, float $actual, float $baseline, CarbonImmutable $start, CarbonImmutable $deadline, CarbonImmutable $now): string
     {
         if ($progress >= 100) {

@@ -22,7 +22,6 @@ class GoalAnalyticsService
             GoalMetricService::ORDERS => ['label' => __('Orders'), 'icon' => 'fa-box'],
             GoalMetricService::PRODUCTS_ADDED => ['label' => __('Products Added'), 'icon' => 'fa-layer-group'],
             GoalMetricService::NEW_CUSTOMERS => ['label' => __('New Customers'), 'icon' => 'fa-user-plus'],
-            GoalMetricService::DELIVERED_ORDERS => ['label' => __('Delivered Orders'), 'icon' => 'fa-truck-fast'],
         ];
         $cards = [];
         foreach ($definitions as $key => $meta) {

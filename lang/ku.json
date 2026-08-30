@@ -3626,21 +3626,4 @@
     "Keep every active product above its low-stock threshold.": "هەموو بەرهەمێکی چالاک لە سەرووی سنووری کەمی کۆگا ڕابگرە.",
     "Zero Pending Orders": "سفر داواکاری چاوەڕوان",
     "Clear the pending and processing order queue.": "ڕیزی داواکارییە چاوەڕوان و لەژێر کارەکان بەتاڵ بکە."
-,    "Day streak": "زنجیرەی ڕۆژان",
-    "Achievement score": "خاڵی دەستکەوت",
-    "Achievements": "دەستکەوتەکان",
-    "Business milestones": "قۆناغەکانی بازرگانی",
-    "Upcoming deadlines": "کۆتا وادەکانی داهاتوو",
-    "No deadlines in this period.": "لەو ماوەیەدا هیچ کۆتا وادەیەک نییە.",
-    "Current Streak": "زنجیرەی ئێستا",
-    "First 100 Orders": "یەکەم ١٠٠ داواکاری",
-    "Build a record of 100 active orders.": "تۆماری ١٠٠ داواکاری چالاک دروست بکە.",
-    "Revenue Champion": "پاڵەوانی داهات",
-    "Reach 10M IQD in delivered revenue.": "بگە بە ١٠ ملیۆن دیناری عێراقی داهاتی گەیەندراو.",
-    "7 Day Streak": "زنجیرەی ٧ ڕۆژ",
-    "Record orders on seven consecutive days.": "لە حەوت ڕۆژی بەردەوامدا داواکاری تۆمار بکە.",
-    "Inventory Master": "مامۆستای کۆگا",
-    "Keep every active product above its low-stock threshold.": "هەموو بەرهەمە چالاکەکان لە سەرووی سنووری کەمبوونی کۆگا بهێڵەوە.",
-    "Zero Pending Orders": "سفر داواکاری چاوەڕوان",
-    "Clear the pending and processing order queue.": "ڕیزی داواکارییە چاوەڕوان و لە ژێر پرۆسەداکان پاک بکەرەوە."
 }

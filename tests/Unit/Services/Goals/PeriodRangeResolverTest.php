@@ -28,6 +28,7 @@ class PeriodRangeResolverTest extends TestCase
         $this->assertSame('2026-09-01', $monthly['anchor']);
         $this->assertSame('2026-10-01', $monthly['next_anchor']);
         $this->assertSame('2026-01-01', $yearly['anchor']);
+        $this->assertSame('2025-01-01', $yearly['previous_start']->toDateString());
         $this->assertSame('Asia/Baghdad', $yearly['timezone']);
     }
 }

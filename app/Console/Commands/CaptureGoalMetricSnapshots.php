@@ -5,6 +5,8 @@ namespace App\Console\Commands;
 use App\Models\Goal;
 use App\Models\GoalMetricSnapshot;
 use App\Services\Goals\GoalMetricService;
+use App\Services\Goals\GoalMotivationService;
+use App\Services\Goals\GoalProgressService;
 use App\Services\Goals\PeriodRangeResolver;
 use Carbon\CarbonImmutable;
 use Illuminate\Console\Command;
@@ -17,7 +19,7 @@ class CaptureGoalMetricSnapshots extends Command
 
     protected $description = 'Capture daily business metrics used by the Goals Center';
 
-    public function handle(PeriodRangeResolver $periods, GoalMetricService $metrics): int
+    public function handle(PeriodRangeResolver $periods, GoalMetricService $metrics, GoalProgressService $progress, GoalMotivationService $motivation): int
     {
         if (! Schema::hasTable('goal_metric_snapshots')) {
             $this->warn('goal_metric_snapshots table is missing. Nothing captured.');
@@ -56,7 +58,13 @@ class CaptureGoalMetricSnapshots extends Command
             }
         }
 
-        $this->info("Captured {$captured} goal metric snapshot(s).");
+        Goal::query()->each(function (Goal $goal) use ($periods, $progress): void {
+            $range = $periods->resolve($goal->period_type, $goal->period_start->toDateString());
+            $progress->syncCompletion($goal, $range);
+        });
+        $unlocked = $motivation->captureUnlocks();
+
+        $this->info("Captured {$captured} goal metric snapshot(s); {$unlocked} achievement(s) unlocked.");
 
         return self::SUCCESS;
     }

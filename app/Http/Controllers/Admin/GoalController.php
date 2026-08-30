@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Goal;
 use App\Models\GoalProgressUpdate;
 use App\Services\Goals\GoalMetricService;
+use App\Services\Goals\GoalProgressService;
 use App\Services\Goals\PeriodRangeResolver;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -15,7 +16,7 @@ use Illuminate\Validation\Rule;
 
 class GoalController extends Controller
 {
-    public function store(Request $request, PeriodRangeResolver $periods, GoalMetricService $metrics): RedirectResponse
+    public function store(Request $request, PeriodRangeResolver $periods, GoalMetricService $metrics, GoalProgressService $progress): RedirectResponse
     {
         $this->authorize('create', Goal::class);
         $data = $this->validated($request, $metrics);
@@ -23,24 +24,26 @@ class GoalController extends Controller
         $data = $this->normalize($data, $period, $metrics);
         $data['created_by'] = $request->user()->id;
         $data['updated_by'] = $request->user()->id;
-        Goal::create($data);
+        $goal = Goal::create($data);
+        $progress->syncCompletion($goal, $period);
 
         return $this->backToPeriod($period)->with('status', __('Goal created successfully.'));
     }
 
-    public function update(Request $request, Goal $goal, PeriodRangeResolver $periods, GoalMetricService $metrics): RedirectResponse
+    public function update(Request $request, Goal $goal, PeriodRangeResolver $periods, GoalMetricService $metrics, GoalProgressService $progress): RedirectResponse
     {
         $this->authorize('update', $goal);
         $data = $this->validated($request, $metrics);
         $period = $periods->resolve($data['period_type'], $data['period_anchor'] ?? null);
-        $data = $this->normalize($data, $period, $metrics);
+        $data = $this->normalize($data, $period, $metrics, $goal);
         $data['updated_by'] = $request->user()->id;
         $goal->update($data);
+        $progress->syncCompletion($goal, $period);
 
         return $this->backToPeriod($period)->with('status', __('Goal updated successfully.'));
     }
 
-    public function updateProgress(Request $request, Goal $goal): RedirectResponse
+    public function updateProgress(Request $request, Goal $goal, PeriodRangeResolver $periods, GoalProgressService $progress): RedirectResponse
     {
         $this->authorize('update', $goal);
         abort_unless($goal->tracking_mode === Goal::TRACKING_MANUAL, 422);
@@ -53,6 +56,8 @@ class GoalController extends Controller
                 'recorded_by' => $request->user()->id, 'recorded_at' => now(),
             ]);
         });
+        $range = $periods->resolve($goal->period_type, $goal->period_start->toDateString());
+        $progress->syncCompletion($goal->fresh(), $range);
 
         return back()->with('status', __('Progress updated successfully.'));
     }
@@ -80,7 +85,7 @@ class GoalController extends Controller
         ]);
     }
 
-    private function normalize(array $data, array $period, GoalMetricService $metrics): array
+    private function normalize(array $data, array $period, GoalMetricService $metrics, ?Goal $existing = null): array
     {
         $start = $period['start']->toDateString();
         $end = $period['display_end']->toDateString();
@@ -88,6 +93,12 @@ class GoalController extends Controller
         $automatic = $data['tracking_mode'] === Goal::TRACKING_AUTOMATIC;
         $definition = $automatic ? $metrics->definitions()[$data['metric_key']] : null;
         $config = array_filter(Arr::only($data, ['category_id', 'product_brand_id', 'vehicle_brand_id']));
+        $keepsBaseline = $existing
+            && $existing->tracking_mode === Goal::TRACKING_AUTOMATIC
+            && $existing->metric_key === $data['metric_key']
+            && ($existing->metric_config ?? []) === $config
+            && $existing->period_type === $period['type']
+            && $existing->period_start->toDateString() === $period['anchor'];
 
         return [
             'name' => $data['name'], 'description' => $data['description'] ?? null,
@@ -95,7 +106,9 @@ class GoalController extends Controller
             'tracking_mode' => $data['tracking_mode'], 'metric_key' => $automatic ? $data['metric_key'] : null,
             'metric_config' => $automatic && $config !== [] ? $config : null,
             'direction' => $automatic ? $definition['direction'] : Goal::DIRECTION_INCREASE,
-            'baseline_value' => $automatic && $definition['direction'] === Goal::DIRECTION_DECREASE ? $metrics->valueFor($data['metric_key'], $config, $period) : 0,
+            'baseline_value' => $automatic && $definition['direction'] === Goal::DIRECTION_DECREASE
+                ? ($keepsBaseline ? $existing->baseline_value : $metrics->valueFor($data['metric_key'], $config, $period))
+                : 0,
             'target_value' => $data['target_value'], 'unit' => $automatic ? $definition['unit'] : $data['unit'],
             'priority' => $data['priority'], 'reward_points' => $data['reward_points'],
         ];

@@ -46,7 +46,7 @@
             <section class="overflow-hidden rounded-3xl bg-[#070740] p-6 text-white shadow-xl sm:p-8">
                 <div class="grid gap-8 lg:grid-cols-[1fr_auto] lg:items-center">
                     <div><p class="text-sm font-semibold text-orange-300">{{ $period['title'] }}</p><h3 class="mt-2 text-3xl font-bold sm:text-4xl">{{ $overall }}% {{ __('Complete') }}</h3><p class="mt-3 max-w-xl text-sm leading-6 text-indigo-100">{{ $needsAttention > 0 ? trans_choice(':count goals need attention before the period ends.|:count goals need attention before the period ends.', $needsAttention, ['count' => $needsAttention]) : __('Great progress. Your active goals are on track.') }}</p>
-                        <div class="mt-6 grid max-w-2xl grid-cols-3 gap-3"><div><p class="text-2xl font-bold">{{ $completed }} / {{ $goals->count() }}</p><p class="text-xs text-indigo-200">{{ __('Goals completed') }}</p></div><div><p class="text-2xl font-bold">{{ $period['days_remaining'] }}</p><p class="text-xs text-indigo-200">{{ __('Days remaining') }}</p></div><div><p class="text-2xl font-bold">{{ number_format($goals->where('evaluation.status', 'completed')->sum('reward_points')) }}</p><p class="text-xs text-indigo-200">{{ __('Points earned') }}</p></div></div>
+                        <div class="mt-6 grid max-w-3xl grid-cols-2 gap-4 sm:grid-cols-4"><div><p class="text-2xl font-bold">{{ $completed }} / {{ $goals->count() }}</p><p class="text-xs text-indigo-200">{{ __('Goals completed') }}</p></div><div><p class="text-2xl font-bold">{{ $period['days_remaining'] }}</p><p class="text-xs text-indigo-200">{{ __('Days remaining') }}</p></div><div><p class="text-2xl font-bold">{{ $motivation['streak'] }}</p><p class="text-xs text-indigo-200">{{ __('Day streak') }}</p></div><div><p class="text-2xl font-bold">{{ number_format($motivation['total_points']) }}</p><p class="text-xs text-indigo-200">{{ __('Achievement score') }}</p></div></div>
                     </div>
                     <div class="relative mx-auto h-36 w-36"><svg viewBox="0 0 42 42" class="h-full w-full -rotate-90"><circle cx="21" cy="21" r="16" fill="none" stroke="rgba(255,255,255,.12)" stroke-width="4"/><circle cx="21" cy="21" r="16" fill="none" stroke="#FF6A00" stroke-width="4" stroke-linecap="round" pathLength="100" stroke-dasharray="{{ $overall }} 100"/></svg><div class="absolute inset-0 grid place-items-center text-center"><span class="text-3xl font-bold">{{ $overall }}%</span></div></div>
                 </div>
@@ -108,6 +108,29 @@
                         <div class="col-span-full rounded-2xl border border-dashed border-slate-300 bg-white px-6 py-14 text-center dark:border-slate-700 dark:bg-slate-900"><i class="fas fa-bullseye text-3xl text-slate-300" aria-hidden="true"></i><h4 class="mt-4 font-bold text-slate-900 dark:text-white">{{ __('No goals for this period') }}</h4><p class="mt-1 text-sm text-slate-500">{{ __('Create a goal or move to another period.') }}</p></div>
                     @endforelse
                 </div>
+            </section>
+
+            <section class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_360px]">
+                <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                    <div class="flex items-end justify-between gap-4"><div><p class="text-xs font-semibold uppercase tracking-[.16em] text-orange-600">{{ __('Achievements') }}</p><h3 class="mt-1 font-bold text-slate-950 dark:text-white">{{ __('Business milestones') }}</h3></div><span class="text-xs font-semibold text-slate-500">{{ $motivation['achievements']->where('earned', true)->count() }} / {{ $motivation['achievements']->count() }}</span></div>
+                    <div class="mt-5 grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+                        @foreach($motivation['achievements'] as $achievement)
+                            <article class="rounded-xl border p-4 {{ $achievement['earned'] ? 'border-orange-200 bg-orange-50/60 dark:border-orange-900/60 dark:bg-orange-950/20' : 'border-slate-200 bg-slate-50 opacity-70 dark:border-slate-700 dark:bg-slate-800/60' }}">
+                                <div class="flex items-center gap-3"><span class="grid h-10 w-10 shrink-0 place-items-center rounded-lg {{ $achievement['earned'] ? 'bg-orange-600 text-white' : 'bg-slate-200 text-slate-500 dark:bg-slate-700' }}"><i class="fas {{ $achievement['icon'] }}" aria-hidden="true"></i></span><div class="min-w-0"><h4 class="text-sm font-bold text-slate-950 dark:text-white">{{ $achievement['name'] }}</h4><p class="mt-0.5 text-xs leading-5 text-slate-500">{{ $achievement['description'] }}</p></div></div>
+                            </article>
+                        @endforeach
+                    </div>
+                </div>
+                <aside class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                    <p class="text-xs font-semibold uppercase tracking-[.16em] text-orange-600">{{ __('Timeline') }}</p><h3 class="mt-1 font-bold text-slate-950 dark:text-white">{{ __('Upcoming deadlines') }}</h3>
+                    <ol class="relative mt-5 space-y-5 before:absolute before:inset-y-2 before:start-[5px] before:w-px before:bg-slate-200 dark:before:bg-slate-700">
+                        @forelse($timeline->take(5) as $item)
+                            <li class="relative ps-6"><span class="absolute start-0 top-1.5 h-3 w-3 rounded-full border-2 border-white bg-orange-600 ring-1 ring-orange-200 dark:border-slate-900"></span><time class="text-xs font-bold text-orange-600">{{ $item->deadline->isoFormat('MMM D') }}</time><p class="mt-0.5 text-sm font-semibold text-slate-900 dark:text-white">{{ $item->name }}</p><p class="text-xs text-slate-500">{{ $item->evaluation['status_label'] }}</p></li>
+                        @empty
+                            <li class="text-sm text-slate-500">{{ __('No deadlines in this period.') }}</li>
+                        @endforelse
+                    </ol>
+                </aside>
             </section>
         </div>
     </div>
