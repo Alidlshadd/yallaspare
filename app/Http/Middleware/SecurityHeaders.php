@@ -50,10 +50,10 @@ class SecurityHeaders
             "form-action 'self'",
             "frame-ancestors 'none'",
             "object-src 'none'",
-            "img-src 'self' data: blob:",
+            "img-src 'self' data: blob:".$this->measurementHosts('img'),
             "font-src 'self' data: https://fonts.bunny.net https://cdnjs.cloudflare.com",
             "style-src 'self' 'unsafe-inline' https://fonts.bunny.net https://cdnjs.cloudflare.com",
-            "connect-src 'self'",
+            "connect-src 'self'".$this->measurementHosts('connect'),
         ];
 
         // ENFORCED script-src (Faz 5B — nonce rollout complete).
@@ -68,7 +68,10 @@ class SecurityHeaders
         //   restricted parser instead of new Function(), so no eval is needed.
         // - 'unsafe-inline' is NOT listed — browsers ignore it when a nonce is
         //   present anyway; omitting it avoids misleading CSP evaluators.
-        $enforcedScriptSrc = "script-src 'nonce-{$nonce}' 'strict-dynamic' 'self' https://cdn.jsdelivr.net";
+        // - The measurement hosts join the CSP2 fallback list for the same
+        //   reason jsdelivr is on it, and only while a tag is configured.
+        $enforcedScriptSrc = "script-src 'nonce-{$nonce}' 'strict-dynamic' 'self' https://cdn.jsdelivr.net"
+            .$this->measurementHosts('script');
 
         $csp = array_merge($commonDirectives, [
             $enforcedScriptSrc,
@@ -93,6 +96,33 @@ class SecurityHeaders
         }
 
         return $response;
+    }
+
+    /**
+     * The extra hosts one CSP directive needs so a configured measurement tag
+     * can actually report.
+     *
+     * Widened per tag and only while that tag has an id: a shop running
+     * neither keeps exactly the policy it had before they existed. This is
+     * also the failure nobody notices — the script loads under
+     * 'strict-dynamic' either way, and it is the beacon that gets blocked, so
+     * the symptom is an empty report rather than an error.
+     */
+    private function measurementHosts(string $directive): string
+    {
+        $hosts = [];
+
+        foreach (['ga4' => 'analytics.ga4.measurement_id', 'meta' => 'analytics.meta.pixel_id'] as $tag => $idKey) {
+            if (trim((string) config($idKey, '')) === '') {
+                continue;
+            }
+
+            $hosts = array_merge($hosts, (array) config("analytics.csp.{$tag}.{$directive}", []));
+        }
+
+        $hosts = array_values(array_unique(array_filter($hosts)));
+
+        return $hosts === [] ? '' : ' '.implode(' ', $hosts);
     }
 
     private function isSensitivePath(Request $request): bool

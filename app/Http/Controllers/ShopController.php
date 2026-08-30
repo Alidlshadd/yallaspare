@@ -10,6 +10,8 @@ use App\Models\RecentlyViewedProduct;
 use App\Models\Setting;
 use App\Models\User;
 use App\Models\Wishlist;
+use App\Services\Analytics\ClientAnalytics;
+use App\Services\Analytics\MeasurementPayload;
 use App\Services\Analytics\ProductViewTracker;
 use App\Support\DbSchema;
 use App\Support\SqlSafe;
@@ -56,6 +58,13 @@ class ShopController extends Controller
 
         $product->load($productRelations);
         $productViews->record($request, $product);
+
+        // Reported on every view, unlike the tracker above, which dedupes to
+        // keep our own tables honest. An ad platform counts occurrences.
+        app(ClientAnalytics::class)->record(
+            'view_item',
+            MeasurementPayload::forProduct($product, 1, $request->user())
+        );
 
         $currencyLabel = (string) Setting::getValue('currency_code', 'IQD');
 

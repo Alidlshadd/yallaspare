@@ -6,6 +6,8 @@ use App\Models\CartItem;
 use App\Models\Product;
 use App\Models\Setting;
 use App\Services\Analytics\AddToCartTracker;
+use App\Services\Analytics\ClientAnalytics;
+use App\Services\Analytics\MeasurementPayload;
 use App\Services\Cart\CartService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -78,7 +80,7 @@ class CartController extends Controller
         $cart = $this->carts->currentOrCreate();
 
         try {
-            [$wasLimited, $cartQuantity] = $this->carts->addProduct($cart, $product, $quantity);
+            [$wasLimited, $cartQuantity, $addedQuantity] = $this->carts->addProduct($cart, $product, $quantity);
         } catch (\RuntimeException $exception) {
             if ($request->expectsJson() || $request->ajax()) {
                 return response()->json([
@@ -91,6 +93,17 @@ class CartController extends Controller
         }
 
         app(AddToCartTracker::class)->record($request, $product, $quantity);
+
+        // The response is a redirect (or JSON), so this rides the session and
+        // reports on whatever page the visitor lands on next. A request that
+        // added nothing — the cart was already holding the whole shelf — is
+        // not an add.
+        if ($addedQuantity > 0) {
+            app(ClientAnalytics::class)->record(
+                'add_to_cart',
+                MeasurementPayload::forProduct($product, $addedQuantity, $request->user())
+            );
+        }
 
         $message = $wasLimited
             ? __('Only :quantity available. Cart quantity was set to :quantity.', ['quantity' => $cartQuantity])

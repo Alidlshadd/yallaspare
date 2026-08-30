@@ -63,7 +63,9 @@ class CartService
      * Add a product, or raise the quantity of one already in the cart, never
      * past what is actually on the shelf.
      *
-     * @return array{0: bool, 1: int} whether the request was trimmed, and the resulting quantity
+     * @return array{0: bool, 1: int, 2: int} whether the request was trimmed,
+     *                                        the resulting quantity, and how
+     *                                        many were actually added
      */
     public function addProduct(Cart $cart, Product $product, int $quantity): array
     {
@@ -85,7 +87,11 @@ class CartService
             $item->quantity = min($maxQuantity, $requestedTotal);
             $item->save();
 
-            return [$item->quantity < $requestedTotal, (int) $item->quantity];
+            return [
+                $item->quantity < $requestedTotal,
+                (int) $item->quantity,
+                (int) $item->quantity - $currentQuantity,
+            ];
         });
 
         $this->forgetSummaryCache($cart);

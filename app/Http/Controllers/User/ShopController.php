@@ -12,6 +12,7 @@ use App\Models\Setting;
 use App\Models\VehicleBrand;
 use App\Models\VehicleModel;
 use App\Models\Wishlist;
+use App\Services\Analytics\ClientAnalytics;
 use App\Services\Analytics\SearchTracker;
 use App\Support\DbSchema;
 use App\Support\LocalizedText;
@@ -283,6 +284,7 @@ class ShopController extends Controller
 
         if ($search !== '') {
             app(SearchTracker::class)->record($request, $search, (int) $products->total());
+            app(ClientAnalytics::class)->record('search', ['search_term' => $search]);
         }
 
         $wishlistedProductIds = [];

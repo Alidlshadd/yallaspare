@@ -7,6 +7,8 @@ use App\Models\Setting;
 use App\Models\User;
 use App\Models\UserAddress;
 use App\Rules\IraqiMobileNumber;
+use App\Services\Analytics\ClientAnalytics;
+use App\Services\Analytics\MeasurementPayload;
 use App\Services\Cart\CartService;
 use App\Services\Checkout\CheckoutService;
 use App\Services\Payments\PaymentService;
@@ -66,6 +68,8 @@ class ExpressCheckoutController extends Controller
         $subtotal = (float) $items->sum(
             fn ($item): float => $item->product ? (float) $item->product->priceFor(null) * (int) $item->quantity : 0.0
         );
+
+        app(ClientAnalytics::class)->record('begin_checkout', MeasurementPayload::forCart($items));
 
         return view('shop.checkout-express', [
             'items' => $items,

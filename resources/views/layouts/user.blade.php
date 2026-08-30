@@ -666,6 +666,7 @@
         </div>
         @include('partials.store-popup')
         @include('partials.cart-feedback-script')
+        @include('partials.web-analytics')
         @stack('scripts')
     </body>
 </html>

@@ -8,6 +8,8 @@ use App\Models\Product;
 use App\Models\Setting;
 use App\Models\UserAddress;
 use App\Services\Analytics\CheckoutStartTracker;
+use App\Services\Analytics\ClientAnalytics;
+use App\Services\Analytics\MeasurementPayload;
 use App\Services\Checkout\CheckoutService;
 use App\Services\CouponService;
 use App\Services\Payments\PaymentService;
@@ -50,6 +52,10 @@ class CheckoutController extends Controller
         }
 
         app(CheckoutStartTracker::class)->record($request, $product, $quantity);
+        app(ClientAnalytics::class)->record(
+            'begin_checkout',
+            MeasurementPayload::forProduct($product, $quantity, $request->user())
+        );
 
         return $this->showBuyNowReview($request, $product, $quantity, $data);
     }
@@ -72,6 +78,10 @@ class CheckoutController extends Controller
         }
 
         app(CheckoutStartTracker::class)->record($request, $product, $quantity);
+        app(ClientAnalytics::class)->record(
+            'begin_checkout',
+            MeasurementPayload::forProduct($product, $quantity, $request->user())
+        );
 
         return $this->showBuyNowReview($request, $product, $quantity, $data);
     }
@@ -164,6 +174,8 @@ class CheckoutController extends Controller
 
             return $product ? $product->priceFor($user) * $item->quantity : 0;
         });
+
+        app(ClientAnalytics::class)->record('begin_checkout', MeasurementPayload::forCart($items, $user));
 
         $addresses = $user->addresses()->with('governorate')->latest('is_default')->latest('id')->get();
         $defaultAddress = $addresses->firstWhere('is_default', true) ?? $addresses->first();
@@ -415,6 +427,13 @@ class CheckoutController extends Controller
     public function success(Order $order): View
     {
         abort_unless($order->user_id === auth()->id(), 403);
+
+        // Reloading the confirmation page must not sell the order twice. The
+        // order number doubles as the tag's own dedupe key.
+        app(ClientAnalytics::class)->recordPurchaseOnce(
+            (string) ($order->order_number ?: $order->id),
+            MeasurementPayload::forOrder($order)
+        );
 
         $currencyLabel = (string) Setting::getValue('currency_code', 'IQD');
         $subtotal = (float) ($order->subtotal_amount ?: $order->items()->sum('subtotal'));
