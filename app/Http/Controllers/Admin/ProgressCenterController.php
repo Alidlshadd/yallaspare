@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Goal;
 use App\Models\ProductBrand;
 use App\Models\VehicleBrand;
+use App\Services\Goals\GoalAnalyticsService;
 use App\Services\Goals\GoalMetricService;
 use App\Services\Goals\GoalProgressService;
 use App\Services\Goals\PeriodRangeResolver;
@@ -16,7 +17,7 @@ use Throwable;
 
 class ProgressCenterController extends Controller
 {
-    public function index(Request $request, PeriodRangeResolver $periods, GoalMetricService $metrics, GoalProgressService $progress): View
+    public function index(Request $request, PeriodRangeResolver $periods, GoalMetricService $metrics, GoalProgressService $progress, GoalAnalyticsService $analytics): View
     {
         try {
             $period = $periods->resolve($request->query('period'), $request->query('anchor'));
@@ -39,6 +40,7 @@ class ProgressCenterController extends Controller
         $completed = $goals->filter(fn (Goal $goal) => $goal->evaluation['status'] === 'completed')->count();
         $overall = $goals->isEmpty() ? 0 : round((float) $goals->avg(fn (Goal $goal) => $goal->evaluation['progress']));
         $needsAttention = $goals->filter(fn (Goal $goal) => in_array($goal->evaluation['status'], ['at_risk', 'failed'], true))->count();
+        $analyticsData = $analytics->dashboard($period, $goals);
 
         return view('admin.goals.index', [
             'period' => $period,
@@ -50,6 +52,9 @@ class ProgressCenterController extends Controller
             'categories' => Category::query()->orderBy('name_en')->get(['id', 'name_en', 'name_ar', 'name_ku']),
             'productBrands' => ProductBrand::query()->orderBy('name')->get(['id', 'name']),
             'vehicleBrands' => VehicleBrand::query()->orderBy('name')->get(['id', 'name']),
+            'kpis' => $analyticsData['cards'],
+            'trend' => $analyticsData['trend'],
+            'insights' => $analyticsData['insights'],
         ]);
     }
 }

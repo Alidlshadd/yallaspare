@@ -52,6 +52,36 @@
                 </div>
             </section>
 
+            <section class="grid gap-3 sm:grid-cols-2 xl:grid-cols-6">
+                @foreach($kpis as $key => $card)
+                    @php
+                        $isMoney = $card['unit'] === 'iqd';
+                    @endphp
+                    <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                        <div class="flex items-center justify-between gap-3"><span class="grid h-9 w-9 place-items-center rounded-lg bg-slate-100 text-[#070740] dark:bg-slate-800 dark:text-white"><i class="fas {{ $card['icon'] }}" aria-hidden="true"></i></span>@if($card['change'] !== null)<span class="text-xs font-bold {{ $card['change'] >= 0 ? 'text-emerald-600' : 'text-red-600' }}">{{ sprintf('%+.1f%%', $card['change']) }}</span>@else<span class="text-xs font-semibold text-slate-400">{{ __('New') }}</span>@endif</div>
+                        <p class="mt-4 text-xs font-semibold text-slate-500">{{ $card['label'] }}</p>
+                        <p class="mt-1 text-lg font-bold text-slate-950 dark:text-white">{{ number_format($card['value'], $isMoney ? 0 : 1) }} @if($isMoney)<span class="text-xs text-slate-400">IQD</span>@endif</p>
+                        <p class="mt-1 text-[11px] text-slate-400">{{ __('vs previous period') }}</p>
+                    </div>
+                @endforeach
+            </section>
+
+            <section class="grid gap-5 lg:grid-cols-[minmax(0,1fr)_320px]">
+                <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                    <div class="mb-5"><h3 class="font-bold text-slate-950 dark:text-white">{{ __('Performance trend') }}</h3><p class="text-sm text-slate-500">{{ $period['type'] === 'yearly' ? __('Monthly revenue and order movement') : __('Daily revenue and order movement') }}</p></div>
+                    <div class="h-72"><canvas id="goalsTrendChart" data-series='@json($trend)' data-labels='@json(['orders' => __('Orders'), 'revenue' => __('Revenue')])'></canvas></div>
+                </div>
+                <aside class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+                    <p class="text-xs font-semibold uppercase tracking-[.16em] text-orange-600">{{ __('Insights') }}</p><h3 class="mt-1 font-bold text-slate-950 dark:text-white">{{ __('Period signals') }}</h3>
+                    <dl class="mt-5 divide-y divide-slate-100 dark:divide-slate-800">
+                        <div class="py-4 first:pt-0"><dt class="text-xs text-slate-500">{{ __('Best performing day') }}</dt><dd class="mt-1 font-bold text-slate-950 dark:text-white">{{ $insights['best_day'] }}</dd></div>
+                        <div class="py-4"><dt class="text-xs text-slate-500">{{ __('Average daily orders') }}</dt><dd class="mt-1 font-bold text-slate-950 dark:text-white">{{ number_format($insights['average_daily_orders'], 1) }}</dd></div>
+                        <div class="py-4"><dt class="text-xs text-slate-500">{{ __('Projected period-end orders') }}</dt><dd class="mt-1 font-bold text-slate-950 dark:text-white">{{ number_format($insights['projected_orders']) }}</dd></div>
+                        <div class="py-4 pb-0"><dt class="text-xs text-slate-500">{{ __('Most improved metric') }}</dt><dd class="mt-1 font-bold text-slate-950 dark:text-white">{{ $insights['most_improved'] }}</dd></div>
+                    </dl>
+                </aside>
+            </section>
+
             <section>
                 <div class="mb-4 flex items-end justify-between"><div><h3 class="text-lg font-bold text-slate-950 dark:text-white">{{ __('Active goals') }}</h3><p class="text-sm text-slate-500">{{ __('Progress is calculated in the business timezone: Asia/Baghdad.') }}</p></div><span class="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 dark:bg-slate-800 dark:text-slate-300">{{ $goals->count() }} {{ __('goals') }}</span></div>
                 <div class="grid gap-4 xl:grid-cols-2">
@@ -81,4 +111,5 @@
             </section>
         </div>
     </div>
+    @vite('resources/js/admin-goals.js')
 </x-app-layout>

@@ -1,4 +1,6 @@
-@php($editing = $goal !== null)
+@php
+    $editing = $goal !== null;
+@endphp
 <form method="POST" action="{{ $action }}" class="grid gap-4 sm:grid-cols-2">
     @csrf
     @if($method !== 'POST') @method($method) @endif

@@ -3596,4 +3596,17 @@
     "Low-stock products": "Low-stock products",
     "Out-of-stock products": "Out-of-stock products",
     ":count goals need attention before the period ends.|:count goals need attention before the period ends.": ":count goals need attention before the period ends.|:count goals need attention before the period ends."
+,    "Performance trend": "Performance trend",
+    "Monthly revenue and order movement": "Monthly revenue and order movement",
+    "Daily revenue and order movement": "Daily revenue and order movement",
+    "Insights": "Insights",
+    "Period signals": "Period signals",
+    "Best performing day": "Best performing day",
+    "Average daily orders": "Average daily orders",
+    "Projected period-end orders": "Projected period-end orders",
+    "Most improved metric": "Most improved metric",
+    "Products Added": "Products Added",
+    "Completed Goals": "Completed Goals",
+    "No order data yet": "No order data yet",
+    "Not enough comparison data": "Not enough comparison data"
 }

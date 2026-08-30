@@ -20,6 +20,11 @@ class Kernel extends ConsoleKernel
             ->dailyAt('03:00')
             ->withoutOverlapping();
 
+        $schedule->command('goals:capture-snapshots')
+            ->dailyAt('00:15')
+            ->timezone('Asia/Baghdad')
+            ->withoutOverlapping();
+
         // Hourly rather than to the minute: the delays are measured in hours,
         // so an hour of slack costs nothing. The window is in Baghdad time,
         // not the application's UTC, because it exists to keep a marketing
