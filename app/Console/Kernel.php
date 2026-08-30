@@ -19,6 +19,16 @@ class Kernel extends ConsoleKernel
         $schedule->command('analytics:prune')
             ->dailyAt('03:00')
             ->withoutOverlapping();
+
+        // Hourly rather than to the minute: the delays are measured in hours,
+        // so an hour of slack costs nothing. The window is in Baghdad time,
+        // not the application's UTC, because it exists to keep a marketing
+        // mail from arriving at four in the morning where the customer is.
+        $schedule->command('carts:remind-abandoned')
+            ->hourly()
+            ->timezone('Asia/Baghdad')
+            ->between('08:00', '21:00')
+            ->withoutOverlapping();
     }
 
     /**

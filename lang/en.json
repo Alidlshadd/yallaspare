@@ -3479,5 +3479,12 @@
     "optional": "optional",
     "Save password": "Save password",
     "Your account is ready. You can sign in with your phone number and password from now on.": "Your account is ready. You can sign in with your phone number and password from now on.",
-    "You already have an account with this phone number. Sign in and your cart will be waiting.": "You already have an account with this phone number. Sign in and your cart will be waiting."
+    "You already have an account with this phone number. Sign in and your cart will be waiting.": "You already have an account with this phone number. Sign in and your cart will be waiting.",
+    "You left something in your cart": "You left something in your cart",
+    "The parts you picked are still waiting in your cart.": "The parts you picked are still waiting in your cart.",
+    "Finish whenever you are ready — stock is not held.": "Finish whenever you are ready — stock is not held.",
+    "Return to your cart": "Return to your cart",
+    "Your cart": "Your cart",
+    "Nothing in a cart is reserved. Parts sell out.": "Nothing in a cart is reserved. Parts sell out.",
+    "You are receiving this because you allowed marketing messages. You can turn them off any time in your account settings.": "You are receiving this because you allowed marketing messages. You can turn them off any time in your account settings."
 }

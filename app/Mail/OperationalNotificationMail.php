@@ -69,6 +69,10 @@ class OperationalNotificationMail extends Mailable implements ShouldQueue
             return array_merge($data, $this->buildOrderViewData($type));
         }
 
+        if ($type === 'cart_reminder') {
+            return array_merge($data, $this->buildCartReminderViewData());
+        }
+
         if ($type === 'back_in_stock') {
             $data['eyebrow'] = __('Back in stock');
         } elseif (str_contains($type, 'stock') || str_contains($type, 'inventory')) {
@@ -83,6 +87,45 @@ class OperationalNotificationMail extends Mailable implements ShouldQueue
         }
 
         return $data;
+    }
+
+    /**
+     * The cart as the customer left it.
+     *
+     * Rendered from the snapshot the reminder took, not from the cart as it
+     * stands now: by the time a queued message is delivered the cart may have
+     * been emptied, and a mail describing nothing is worse than no mail.
+     *
+     * @return array<string, mixed>
+     */
+    private function buildCartReminderViewData(): array
+    {
+        $rows = array_values(array_filter(
+            (array) ($this->context['cart_rows'] ?? []),
+            static fn ($row): bool => is_array($row)
+        ));
+
+        $total = (string) ($this->context['cart_total'] ?? '');
+
+        return [
+            'view' => 'emails.cart.reminder',
+            'eyebrow' => __('Your cart'),
+            'title' => __('You left something in your cart'),
+            'intro' => (string) ($this->context['intro'] ?? __('The parts you picked are still waiting in your cart.')),
+            'metaItems' => array_values(array_filter([
+                ['label' => __('Items'), 'value' => (string) count($rows)],
+                $total === '' ? null : ['label' => __('Total'), 'value' => $total],
+            ])),
+            'orderRows' => array_map(static fn (array $row): array => [
+                'name' => (string) ($row['name'] ?? __('Product')),
+                'sku' => (string) ($row['sku'] ?? ''),
+                'quantity' => (int) ($row['quantity'] ?? 1),
+                'subtotal' => (string) ($row['subtotal'] ?? ''),
+            ], $rows),
+            'totals' => $total === '' ? [] : [['label' => __('Total'), 'value' => $total]],
+            'actionUrl' => (string) ($this->context['action_url'] ?? url('/cart')),
+            'actionText' => (string) ($this->context['action_text'] ?? __('Return to your cart')),
+        ];
     }
 
     private function buildOrderViewData(string $type): array
@@ -142,7 +185,7 @@ class OperationalNotificationMail extends Mailable implements ShouldQueue
     private function metaItemsFromContext(): array
     {
         return collect($this->context)
-            ->except(['type', 'locale', 'order_id', 'broadcast_id', 'purpose', 'action_url', 'action_text'])
+            ->except(['type', 'locale', 'order_id', 'broadcast_id', 'purpose', 'action_url', 'action_text', 'cart_id', 'cart_rows', 'cart_total', 'item_count', 'intro'])
             ->take(6)
             ->map(fn ($value, $key) => [
                 'label' => __(Str::headline((string) $key)),

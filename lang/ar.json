@@ -3479,5 +3479,12 @@
     "optional": "اختياري",
     "Save password": "حفظ كلمة المرور",
     "Your account is ready. You can sign in with your phone number and password from now on.": "حسابك جاهز. يمكنك تسجيل الدخول برقم هاتفك وكلمة المرور من الآن فصاعدًا.",
-    "You already have an account with this phone number. Sign in and your cart will be waiting.": "لديك حساب بالفعل بهذا الرقم. سجّل الدخول وستجد سلتك كما هي."
+    "You already have an account with this phone number. Sign in and your cart will be waiting.": "لديك حساب بالفعل بهذا الرقم. سجّل الدخول وستجد سلتك كما هي.",
+    "You left something in your cart": "تركت شيئًا في سلتك",
+    "The parts you picked are still waiting in your cart.": "القطع التي اخترتها ما زالت في انتظارك داخل السلة.",
+    "Finish whenever you are ready — stock is not held.": "أكمل طلبك متى شئت — لا يتم حجز الكمية.",
+    "Return to your cart": "العودة إلى السلة",
+    "Your cart": "سلتك",
+    "Nothing in a cart is reserved. Parts sell out.": "لا شيء في السلة محجوز. القطع تنفد.",
+    "You are receiving this because you allowed marketing messages. You can turn them off any time in your account settings.": "تصلك هذه الرسالة لأنك سمحت باستقبال الرسائل التسويقية. يمكنك إيقافها في أي وقت من إعدادات حسابك."
 }

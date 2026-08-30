@@ -3479,5 +3479,12 @@
     "optional": "هەڵبژاردە",
     "Save password": "پاشەکەوتکردنی وشەی نهێنی",
     "Your account is ready. You can sign in with your phone number and password from now on.": "هەژمارەکەت ئامادەیە. لەمەودوا دەتوانیت بە ژمارەی تەلەفۆن و وشەی نهێنییەکەت بچیتە ژوورەوە.",
-    "You already have an account with this phone number. Sign in and your cart will be waiting.": "پێشتر بەم ژمارەیە هەژمارت هەیە. بچۆ ژوورەوە و سەبەتەکەت وەک خۆی چاوەڕێتە."
+    "You already have an account with this phone number. Sign in and your cart will be waiting.": "پێشتر بەم ژمارەیە هەژمارت هەیە. بچۆ ژوورەوە و سەبەتەکەت وەک خۆی چاوەڕێتە.",
+    "You left something in your cart": "شتێکت لە سەبەتەکەت بەجێهێشتووە",
+    "The parts you picked are still waiting in your cart.": "ئەو پارچانەی هەڵتبژاردوون هێشتا لە سەبەتەکەتدا چاوەڕوانن.",
+    "Finish whenever you are ready — stock is not held.": "کاتێک ئامادەیت تەواوی بکە — بڕەکە نەگیراوە.",
+    "Return to your cart": "گەڕانەوە بۆ سەبەتەکەت",
+    "Your cart": "سەبەتەکەت",
+    "Nothing in a cart is reserved. Parts sell out.": "هیچ شتێک لە سەبەتەدا نەگیراوە. پارچەکان تەواو دەبن.",
+    "You are receiving this because you allowed marketing messages. You can turn them off any time in your account settings.": "ئەم نامەیەت بۆ دێت چونکە ڕێگەت بە نامە بازرگانییەکان داوە. هەر کاتێک بتەوێت لە ڕێکخستنەکانی هەژمارەکەتدا دەتوانیت بیانکوژێنیتەوە."
 }

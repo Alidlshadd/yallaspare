@@ -3,6 +3,7 @@
 namespace App\Support;
 
 use App\Mail\OperationalNotificationMail;
+use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Setting;
@@ -195,6 +196,104 @@ class UserCommunication
     }
 
     /**
+     * Remind a customer of the cart they filled and walked away from.
+     *
+     * The only message here the customer did not ask for, so it is the only
+     * one gated on marketing consent rather than on a notification toggle.
+     * The cart is written into the message as it stands now — a snapshot, not
+     * a reference — so a queued reminder cannot arrive describing a cart that
+     * has since changed.
+     */
+    public static function sendAbandonedCart(User $user, Cart $cart): array
+    {
+        if (! (bool) ($user->marketing_consent ?? false)) {
+            return [];
+        }
+
+        return self::withUserLocale($user, function () use ($user, $cart) {
+            $rows = self::cartRows($cart, $user);
+
+            if ($rows === []) {
+                return [];
+            }
+
+            $total = array_sum(array_column($rows, 'amount'));
+            $context = [
+                'cart_id' => $cart->getKey(),
+                'cart_rows' => $rows,
+                'cart_total' => self::formatMoney($total),
+                'item_count' => count($rows),
+                'customer_name' => $user->name,
+                // The HTML mail lists the cart as rows of its own, so it takes
+                // this line rather than the message body, which repeats them
+                // for SMS and for plain-text readers.
+                'intro' => __('The parts you picked are still waiting in your cart.'),
+                'action_url' => route('cart.index'),
+                'action_text' => __('Return to your cart'),
+            ];
+
+            $lines = array_map(
+                static fn (array $row): string => '- '.$row['name'].' × '.$row['quantity'].' — '.$row['subtotal'],
+                $rows
+            );
+
+            [$subject, $message] = self::renderTemplate(
+                $user,
+                'cart_reminder',
+                __('You left something in your cart'),
+                implode(PHP_EOL, [
+                    __('The parts you picked are still waiting in your cart.'),
+                    ...$lines,
+                    __('Total: :total', ['total' => $context['cart_total']]),
+                    __('Finish whenever you are ready — stock is not held.'),
+                ]),
+                $context
+            );
+
+            return self::dispatch($user, 'cart_reminder', $subject, $message, $context);
+        });
+    }
+
+    /**
+     * The cart as message lines: what it holds, at the price this customer
+     * would actually pay.
+     *
+     * @return array<int, array{name: string, sku: string, quantity: int, amount: float, subtotal: string}>
+     */
+    private static function cartRows(Cart $cart, User $user): array
+    {
+        $cart->loadMissing('items.product');
+        $rows = [];
+
+        foreach ($cart->items as $item) {
+            $product = $item->product;
+
+            if (! $product) {
+                continue;
+            }
+
+            $quantity = max(1, (int) $item->quantity);
+            $amount = (float) $product->priceFor($user) * $quantity;
+
+            $rows[] = [
+                'name' => $product->localizedName($user->preferredLocale()),
+                'sku' => (string) ($product->sku ?? ''),
+                'quantity' => $quantity,
+                'amount' => $amount,
+                'subtotal' => self::formatMoney($amount),
+            ];
+        }
+
+        return $rows;
+    }
+
+    private static function formatMoney(float $amount): string
+    {
+        return number_format($amount, (int) Setting::getValue('currency_decimals', 0))
+            .' '.(string) Setting::getValue('currency_code', 'IQD');
+    }
+
+    /**
      * Run the given callback with Laravel's active locale temporarily set to
      * the user's preferred locale. Restores the previous locale even if the
      * callback throws. Used so __() and view rendering inside the callback
@@ -337,6 +436,13 @@ class UserCommunication
         $body = trim($body) !== '' ? $body : $fallbackBody;
 
         foreach ($context as $key => $value) {
+            // Only values that have a sensible text form are substitutable.
+            // Structured context — a cart's rows, say — is for the message
+            // template to lay out, not for a placeholder to stringify.
+            if (! is_scalar($value) && $value !== null) {
+                continue;
+            }
+
             $subject = str_replace('{{'.$key.'}}', (string) $value, $subject);
             $body = str_replace('{{'.$key.'}}', (string) $value, $body);
         }
