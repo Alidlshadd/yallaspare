@@ -35,6 +35,7 @@ class BulkStockAdjustmentController extends Controller
             'preview' => null,
             'parseErrors' => [],
             'reason' => '',
+            'inputRows' => $this->emptyInputRows(),
         ]);
     }
 
@@ -43,6 +44,10 @@ class BulkStockAdjustmentController extends Controller
         $data = $request->validate([
             'reason' => ['required', 'string', 'min:3', 'max:200'],
             'rows' => ['nullable', 'string', 'max:200000'],
+            'items' => ['nullable', 'array', 'max:'.BulkStockParser::MAX_ROWS],
+            'items.*.code' => ['nullable', 'string', 'max:120'],
+            'items.*.operation' => ['nullable', 'string', 'in:in,out,+,-'],
+            'items.*.quantity' => ['nullable', 'string', 'max:20'],
             'file' => ['nullable', 'file', 'max:5120', 'mimes:csv,txt,xlsx,xls'],
         ]);
 
@@ -51,12 +56,14 @@ class BulkStockAdjustmentController extends Controller
 
         if ($request->hasFile('file')) {
             $parsed = $this->parser->fromFile($request->file('file'));
+        } elseif ($this->hasStructuredRows((array) ($data['items'] ?? []))) {
+            $parsed = $this->parser->fromStructuredRows((array) $data['items']);
         } elseif ($pasted !== '') {
             $parsed = $this->parser->fromText($pasted);
         } else {
             return back()
                 ->withInput()
-                ->withErrors(['rows' => __('Paste some rows or choose a file.')]);
+                ->withErrors(['items' => __('Add at least one stock row or choose a file.')]);
         }
 
         $preview = $this->adjustment->preview($parsed['rows']);
@@ -78,6 +85,7 @@ class BulkStockAdjustmentController extends Controller
             'parseErrors' => $parsed['errors'],
             'reason' => $reason,
             'token' => $request->session()->get(self::SESSION_KEY)['token'],
+            'inputRows' => $this->inputRows((array) ($data['items'] ?? [])),
         ]);
     }
 
@@ -119,5 +127,46 @@ class BulkStockAdjustmentController extends Controller
                 'count' => $result['applied'],
                 'reference' => $result['reference'],
             ]));
+    }
+
+    /**
+     * @param  array<int, array<string, mixed>>  $items
+     */
+    private function hasStructuredRows(array $items): bool
+    {
+        foreach ($items as $item) {
+            if (trim((string) ($item['code'] ?? '')) !== '' || trim((string) ($item['quantity'] ?? '')) !== '') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param  array<int, array<string, mixed>>  $items
+     * @return array<int, array{code: string, operation: string, quantity: string}>
+     */
+    private function inputRows(array $items): array
+    {
+        $rows = array_map(static fn (array $item): array => [
+            'code' => (string) ($item['code'] ?? ''),
+            'operation' => in_array(($item['operation'] ?? 'in'), ['in', 'out'], true)
+                ? (string) $item['operation']
+                : 'in',
+            'quantity' => (string) ($item['quantity'] ?? ''),
+        ], array_values(array_filter($items, 'is_array')));
+
+        while (count($rows) < 3) {
+            $rows[] = ['code' => '', 'operation' => 'in', 'quantity' => ''];
+        }
+
+        return $rows;
+    }
+
+    /** @return array<int, array{code: string, operation: string, quantity: string}> */
+    private function emptyInputRows(): array
+    {
+        return $this->inputRows([]);
     }
 }

@@ -39,6 +39,66 @@ class BulkStockParser
     private const CHANGE_HEADERS = ['quantity_change', 'change', 'qty_change'];
 
     /**
+     * Read the row builder used by the admin screen.
+     *
+     * @param  array<int, array<string, mixed>>  $items
+     * @return array{rows: array<int, array{sku: string, change: int, reference: ?string, note: ?string, line: int}>, errors: array<int, array{line: int, raw: string, message: string}>}
+     */
+    public function fromStructuredRows(array $items): array
+    {
+        $rows = [];
+        $errors = [];
+
+        foreach ($items as $index => $item) {
+            $line = (int) $index + 1;
+            $sku = trim((string) ($item['code'] ?? ''));
+            $operation = strtolower(trim((string) ($item['operation'] ?? 'in')));
+            $quantityRaw = trim((string) ($item['quantity'] ?? ''));
+
+            // The row builder starts with a few empty lines. Empty lines are
+            // placeholders, not malformed stock changes.
+            if ($sku === '' && $quantityRaw === '') {
+                continue;
+            }
+
+            if (count($rows) + count($errors) >= self::MAX_ROWS) {
+                $errors[] = $this->error($line, $sku, __('Only :max rows can be adjusted at once. Split the list and run it again.', ['max' => self::MAX_ROWS]));
+                break;
+            }
+
+            if ($sku === '') {
+                $errors[] = $this->error($line, $quantityRaw, __('This row has no product code.'));
+
+                continue;
+            }
+
+            $quantity = $this->toChange($quantityRaw);
+
+            if ($quantity === null || $quantity <= 0) {
+                $errors[] = $this->error($line, $sku.' '.$quantityRaw, __('Quantity must be a whole number greater than zero.'));
+
+                continue;
+            }
+
+            if (! in_array($operation, ['in', 'out', '+', '-'], true)) {
+                $errors[] = $this->error($line, $sku.' '.$operation.' '.$quantityRaw, __('Choose + to add stock or − to remove stock.'));
+
+                continue;
+            }
+
+            $rows[] = [
+                'sku' => $sku,
+                'change' => in_array($operation, ['in', '+'], true) ? $quantity : -$quantity,
+                'reference' => null,
+                'note' => null,
+                'line' => $line,
+            ];
+        }
+
+        return ['rows' => $rows, 'errors' => $errors];
+    }
+
+    /**
      * @return array{rows: array<int, array{sku: string, change: int, reference: ?string, note: ?string, line: int}>, errors: array<int, array{line: int, raw: string, message: string}>}
      */
     public function fromText(string $text): array

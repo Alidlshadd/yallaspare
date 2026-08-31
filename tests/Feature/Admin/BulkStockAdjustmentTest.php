@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Services\Inventory\BulkStockParser;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
 class BulkStockAdjustmentTest extends TestCase
@@ -142,6 +143,84 @@ class BulkStockAdjustmentTest extends TestCase
         $this->assertSame(20, (int) $pad->fresh()->stock_quantity);
     }
 
+    public function test_structured_rows_keep_direction_separate_from_quantity(): void
+    {
+        $pad = $this->product('BRK-1001', 14);
+        $filter = $this->product('FLT-2002', 9);
+
+        $this->reviewItems([
+            ['code' => 'BRK-1001', 'operation' => 'in', 'quantity' => '6'],
+            ['code' => 'FLT-2002', 'operation' => 'out', 'quantity' => '4'],
+            ['code' => '', 'operation' => 'in', 'quantity' => ''],
+        ])->assertOk();
+
+        $this->apply()->assertRedirect();
+
+        $this->assertSame(20, (int) $pad->fresh()->stock_quantity);
+        $this->assertSame(5, (int) $filter->fresh()->stock_quantity);
+    }
+
+    public function test_a_numeric_code_copied_from_an_rtl_screen_still_matches(): void
+    {
+        $product = $this->product(' 6731803009 ', 5);
+
+        $this->assertSame(1, Product::query()->whereIn(DB::raw('LOWER(TRIM(sku))'), ['6731803009'])->count());
+
+        $this->reviewItems([
+            ['code' => "\u{200E}6731803009\u{200F}", 'operation' => 'in', 'quantity' => '60'],
+        ])->assertOk()->assertSee('Will apply', false);
+
+        $this->apply()->assertRedirect();
+
+        $this->assertSame(65, (int) $product->fresh()->stock_quantity);
+    }
+
+    public function test_a_linked_catalogue_part_number_can_resolve_the_product(): void
+    {
+        $product = $this->product('FILTER-100', 5);
+        $numberId = DB::table('part_numbers')->insertGetId([
+            'type' => 'interchange',
+            'number' => '673-180-3009',
+            'normalized_number' => '6731803009',
+            'product_brand_id' => null,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        DB::table('product_part_numbers')->insert([
+            'product_id' => $product->id,
+            'part_number_id' => $numberId,
+            'is_primary' => false,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $this->assertSame(1, DB::table('product_part_numbers as product_numbers')
+            ->join('part_numbers as numbers', 'numbers.id', '=', 'product_numbers.part_number_id')
+            ->whereIn(DB::raw('LOWER(TRIM(numbers.normalized_number))'), ['6731803009'])
+            ->count());
+
+        $this->reviewItems([
+            ['code' => '6731803009', 'operation' => 'in', 'quantity' => '60'],
+        ])->assertOk()->assertSee('Will apply', false);
+
+        $this->apply()->assertRedirect();
+
+        $this->assertSame(65, (int) $product->fresh()->stock_quantity);
+    }
+
+    public function test_the_page_uses_a_code_direction_quantity_row_builder(): void
+    {
+        $this->actingAs($this->adminUser())
+            ->withSession(['admin_2fa.verified_user_id' => $this->adminUser()->id])
+            ->get(route('admin.inventory.bulk-stock'))
+            ->assertOk()
+            ->assertSee('Manual stock entries', false)
+            ->assertSee('01 · Code', false)
+            ->assertSee('02 · Direction', false)
+            ->assertSee('03 · Quantity', false)
+            ->assertSee('x-data="bulkStockRows"', false);
+    }
+
     public function test_a_reason_is_required(): void
     {
         $this->product('BRK-1001', 14);
@@ -248,6 +327,17 @@ class BulkStockAdjustmentTest extends TestCase
             ->post(route('admin.inventory.bulk-stock.preview'), [
                 'reason' => $reason,
                 'file' => UploadedFile::fake()->createWithContent('stock.csv', $contents),
+            ]);
+    }
+
+    /** @param  array<int, array{code: string, operation: string, quantity: string}>  $items */
+    private function reviewItems(array $items, string $reason = 'Stock count')
+    {
+        return $this->actingAs($this->adminUser())
+            ->withSession(['admin_2fa.verified_user_id' => $this->adminUser()->id])
+            ->post(route('admin.inventory.bulk-stock.preview'), [
+                'reason' => $reason,
+                'items' => $items,
             ]);
     }
 

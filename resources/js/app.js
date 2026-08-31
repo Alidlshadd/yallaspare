@@ -751,6 +751,55 @@ Alpine.data('inventoryForm', () => ({
     },
 }));
 
+// Bulk stock manual-entry grid. Each row keeps direction separate from the
+// quantity so admins never have to remember signed-number syntax.
+Alpine.data('bulkStockRows', () => ({
+    rows: [],
+    nextKey: 1,
+    init() {
+        let config = {};
+        try { config = JSON.parse(this.$el.dataset.config || '{}'); } catch (e) { config = {}; }
+
+        const inputRows = Array.isArray(config.rows) ? config.rows : [];
+        this.rows = inputRows.map((row) => this.newRow(row));
+
+        while (this.rows.length < 3) {
+            this.rows.push(this.newRow());
+        }
+    },
+    newRow(row = {}) {
+        return {
+            key: this.nextKey++,
+            code: String(row.code || ''),
+            operation: row.operation === 'out' ? 'out' : 'in',
+            quantity: row.quantity == null ? '' : String(row.quantity),
+        };
+    },
+    addRow() {
+        this.rows.push(this.newRow());
+        this.$nextTick(() => {
+            const inputs = this.$el.querySelectorAll('[data-bulk-code]');
+            inputs[inputs.length - 1]?.focus();
+        });
+    },
+    removeRow(event) {
+        const key = Number(event.currentTarget.dataset.rowKey);
+        if (this.rows.length <= 1) {
+            this.rows = [this.newRow()];
+            return;
+        }
+        this.rows = this.rows.filter((row) => row.key !== key);
+    },
+    codeName(index) { return `items[${index}][code]`; },
+    operationName(index) { return `items[${index}][operation]`; },
+    quantityName(index) { return `items[${index}][quantity]`; },
+    rowNumber(index) { return String(index + 1).padStart(2, '0'); },
+    get filledCount() {
+        return this.rows.filter((row) => row.code.trim() !== '' || row.quantity.trim() !== '').length;
+    },
+    get filledCountText() { return String(this.filledCount); },
+}));
+
 // Shared localStorage key for admin purchase lists: written by the Purchase
 // Planning builder below and by the Stock Requests board's "Add to Purchase
 // List" action, so both pages operate on the same lists.

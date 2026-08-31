@@ -9,6 +9,7 @@ use App\Support\AdminLogger;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use RuntimeException;
 
@@ -40,14 +41,18 @@ class BulkStockAdjustment
     public function preview(array $rows): array
     {
         $merged = $this->mergeBySku($rows);
-        $products = $this->resolve(array_keys($merged));
+        $products = $this->resolve(array_values(array_unique(array_map(
+            fn (array $row): string => $this->key($row['sku']),
+            $merged,
+        ))));
 
         $resolved = [];
         $blocked = 0;
         $added = 0;
         $removed = 0;
 
-        foreach ($merged as $key => $row) {
+        foreach ($merged as $row) {
+            $key = $this->key($row['sku']);
             $match = $products[$key] ?? null;
             $entry = [
                 'sku' => $row['sku'],
@@ -236,9 +241,13 @@ class BulkStockAdjustment
 
         foreach ($rows as $row) {
             $key = $this->key($row['sku']);
+            // PHP converts a decimal-looking string used as an array key to
+            // an integer. Prefixing the internal bucket keeps a code such as
+            // 6731803009 a string all the way through strict matching.
+            $bucket = 'code:'.$key;
 
-            if (! isset($merged[$key])) {
-                $merged[$key] = [
+            if (! isset($merged[$bucket])) {
+                $merged[$bucket] = [
                     'sku' => $row['sku'],
                     'change' => 0,
                     'lines' => [],
@@ -247,10 +256,10 @@ class BulkStockAdjustment
                 ];
             }
 
-            $merged[$key]['change'] += (int) $row['change'];
-            $merged[$key]['lines'][] = (int) $row['line'];
-            $merged[$key]['reference'] ??= $row['reference'];
-            $merged[$key]['note'] ??= $row['note'];
+            $merged[$bucket]['change'] += (int) $row['change'];
+            $merged[$bucket]['lines'][] = (int) $row['line'];
+            $merged[$bucket]['reference'] ??= $row['reference'];
+            $merged[$bucket]['note'] ??= $row['note'];
         }
 
         return $merged;
@@ -274,23 +283,61 @@ class BulkStockAdjustment
         }
 
         $found = [];
+        $linkedCodes = [];
+        $linkedProductIds = [];
+
+        if (Schema::hasTable('part_numbers') && Schema::hasTable('product_part_numbers')) {
+            $lookupKeys = array_values(array_unique(array_merge(
+                $keys,
+                array_map(fn (string $key): string => $this->compactKey($key), $keys),
+            )));
+
+            DB::table('product_part_numbers as product_numbers')
+                ->join('part_numbers as numbers', 'numbers.id', '=', 'product_numbers.part_number_id')
+                ->whereNull('numbers.deleted_at')
+                ->where(function ($query) use ($lookupKeys): void {
+                    $query
+                        ->whereIn(DB::raw('LOWER(TRIM(numbers.number))'), $lookupKeys)
+                        ->orWhereIn(DB::raw('LOWER(TRIM(numbers.normalized_number))'), $lookupKeys);
+                })
+                ->get(['product_numbers.product_id', 'numbers.number', 'numbers.normalized_number'])
+                ->each(function (object $number) use ($keys, &$linkedCodes, &$linkedProductIds): void {
+                    $productId = (int) $number->product_id;
+
+                    foreach ([(string) $number->number, (string) $number->normalized_number] as $candidate) {
+                        $strict = $this->key($candidate);
+                        $compact = $this->compactKey($candidate);
+
+                        foreach ($keys as $requested) {
+                            if ($strict === $requested || ($compact !== '' && $compact === $this->compactKey($requested))) {
+                                $linkedCodes[$productId][$requested] = true;
+                                $linkedProductIds[$productId] = true;
+                            }
+                        }
+                    }
+                });
+        }
 
         Product::query()
             ->select(['id', 'sku', 'part_number', 'oem_number', 'stock_quantity', 'name_en', 'name_ar', 'name_ku'])
-            ->where(fn ($query) => $query
-                ->whereIn(DB::raw('LOWER(sku)'), $keys)
-                ->orWhereIn(DB::raw('LOWER(part_number)'), $keys)
-                ->orWhereIn(DB::raw('LOWER(oem_number)'), $keys))
+            ->where(function ($query) use ($keys, $linkedProductIds): void {
+                $query
+                    ->whereIn(DB::raw('LOWER(TRIM(sku))'), $keys)
+                    ->orWhereIn(DB::raw('LOWER(TRIM(part_number))'), $keys)
+                    ->orWhereIn(DB::raw('LOWER(TRIM(oem_number))'), $keys);
+
+                if ($linkedProductIds !== []) {
+                    $query->orWhereIn('id', array_keys($linkedProductIds));
+                }
+            })
             ->get()
-            ->each(function (Product $product) use ($keys, &$found): void {
+            ->each(function (Product $product) use ($keys, $linkedCodes, &$found): void {
                 $sku = $this->key((string) $product->sku);
 
                 if (in_array($sku, $keys, true)) {
                     // An exact SKU beats anything the same string matched
                     // through the looser columns.
                     $found[$sku] = ['exact' => $product, 'loose' => $found[$sku]['loose'] ?? collect()];
-
-                    return;
                 }
 
                 foreach ([(string) $product->part_number, (string) $product->oem_number] as $alternate) {
@@ -299,6 +346,10 @@ class BulkStockAdjustment
                     if ($key !== '' && in_array($key, $keys, true)) {
                         $found[$key]['loose'] = ($found[$key]['loose'] ?? collect())->push($product);
                     }
+                }
+
+                foreach (array_keys($linkedCodes[(int) $product->id] ?? []) as $key) {
+                    $found[$key]['loose'] = ($found[$key]['loose'] ?? collect())->push($product);
                 }
             });
 
@@ -329,6 +380,17 @@ class BulkStockAdjustment
 
     private function key(string $code): string
     {
-        return mb_strtolower(trim($code));
+        // Codes copied from RTL screens can carry invisible direction marks;
+        // spreadsheet cells often carry non-breaking spaces. They look
+        // identical in the review table but prevent an exact DB match unless
+        // removed here.
+        $clean = preg_replace('/[\p{Cf}\x{00A0}\x{2007}\x{202F}]/u', '', $code) ?? $code;
+
+        return mb_strtolower(trim($clean));
+    }
+
+    private function compactKey(string $code): string
+    {
+        return preg_replace('/[^\p{L}\p{N}]+/u', '', $this->key($code)) ?? '';
     }
 }
