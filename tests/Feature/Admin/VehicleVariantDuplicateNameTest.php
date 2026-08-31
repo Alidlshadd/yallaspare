@@ -8,6 +8,7 @@ use App\Models\ProductVehicleFitment;
 use App\Models\User;
 use App\Models\VehicleBrand;
 use App\Models\VehicleModel;
+use App\Models\VehicleModelFamily;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -142,6 +143,76 @@ class VehicleVariantDuplicateNameTest extends TestCase
         $fitment->refresh();
         $this->assertSame($variant->id, (int) $fitment->vehicle_model_id);
         $this->assertSame('tivoli-xlv', $variant->fresh()->slug, 'A rename should not move the variant to a new URL.');
+    }
+
+    public function test_naming_a_family_that_already_exists_joins_it_instead_of_failing(): void
+    {
+        $brand = VehicleBrand::query()->create(['name' => 'KGM', 'slug' => 'kgm']);
+
+        $this->actingAsAdmin()->post(route('admin.vehicle-fitments.models.store'), [
+            'vehicle_brand_id' => $brand->id,
+            'new_family_name_en' => 'Tivoli',
+            'name_en' => 'Tivoli',
+            'production_start_year' => 2015,
+            'production_end_year' => 2019,
+        ])->assertSessionHasNoErrors();
+
+        // The same family name again: the second variant joins the first
+        // family rather than being refused.
+        $this->actingAsAdmin()->post(route('admin.vehicle-fitments.models.store'), [
+            'vehicle_brand_id' => $brand->id,
+            'new_family_name_en' => 'Tivoli',
+            'name_en' => 'Tivoli',
+            'production_start_year' => 2020,
+            'production_end_year' => 2023,
+        ])->assertSessionHasNoErrors();
+
+        $families = VehicleModelFamily::query()->where('vehicle_brand_id', $brand->id)->get();
+
+        $this->assertCount(1, $families, 'The family should have been reused, not duplicated.');
+        $this->assertSame(2, VehicleModel::query()->where('vehicle_model_family_id', $families->first()->id)->count());
+    }
+
+    public function test_joining_a_family_does_not_wipe_the_translations_it_already_had(): void
+    {
+        // firstOrCreate hands back the existing family, and the form's Arabic
+        // and Kurdish fields are usually left empty when somebody is adding a
+        // variant. Writing those blanks over real translations is silent damage.
+        $brand = VehicleBrand::query()->create(['name' => 'KGM', 'slug' => 'kgm']);
+        $family = VehicleModelFamily::query()->create([
+            'vehicle_brand_id' => $brand->id,
+            'name' => 'Tivoli',
+            'name_en' => 'Tivoli',
+            'name_ar' => 'تيفولي',
+            'name_ku' => 'تیڤۆلی',
+            'slug' => 'tivoli',
+        ]);
+
+        $this->actingAsAdmin()->post(route('admin.vehicle-fitments.models.store'), [
+            'vehicle_brand_id' => $brand->id,
+            'new_family_name_en' => 'Tivoli',
+            'name_en' => 'Tivoli',
+            'production_start_year' => 2020,
+            'production_end_year' => 2023,
+        ])->assertSessionHasNoErrors();
+
+        $family->refresh();
+
+        $this->assertSame('تيفولي', $family->name_ar);
+        $this->assertSame('تیڤۆلی', $family->name_ku);
+    }
+
+    public function test_a_family_can_be_renamed_to_a_name_another_family_uses(): void
+    {
+        $brand = VehicleBrand::query()->create(['name' => 'KGM', 'slug' => 'kgm']);
+        VehicleModelFamily::query()->create(['vehicle_brand_id' => $brand->id, 'name' => 'Tivoli', 'name_en' => 'Tivoli', 'slug' => 'tivoli']);
+        $second = VehicleModelFamily::query()->create(['vehicle_brand_id' => $brand->id, 'name' => 'Korando', 'name_en' => 'Korando', 'slug' => 'korando']);
+
+        $this->actingAsAdmin()
+            ->patch(route('admin.vehicle-fitments.families.update', $second), ['name_en' => 'Tivoli'])
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame('Tivoli', $second->fresh()->name);
     }
 
     // ------------------------------------------------------------------ setup

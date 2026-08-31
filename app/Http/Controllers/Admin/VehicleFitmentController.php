@@ -213,12 +213,11 @@ class VehicleFitmentController extends Controller
         $validator = Validator::make($request->all(), [
             'vehicle_brand_id' => ['required', 'exists:vehicle_brands,id'],
             'vehicle_model_family_id' => ['nullable', 'integer', 'exists:vehicle_model_families,id'],
-            'new_family_name_en' => [
-                'nullable',
-                'string',
-                'max:120',
-                Rule::unique('vehicle_model_families', 'name')->where(fn ($query) => $query->where('vehicle_brand_id', $request->input('vehicle_brand_id'))),
-            ],
+            // Typing a family that already exists is not a mistake: the variant
+            // joins that family rather than creating a second one with the same
+            // name. Refusing it only made the administrator go and find the
+            // dropdown entry themselves.
+            'new_family_name_en' => ['nullable', 'string', 'max:120'],
             'new_family_name_ar' => ['nullable', 'string', 'max:120'],
             'new_family_name_ku' => ['nullable', 'string', 'max:120'],
             // Deliberately not unique. One name covers several cars: a Tivoli
@@ -271,11 +270,15 @@ class VehicleFitmentController extends Controller
                         ],
                         ['slug' => $this->uniqueFamilySlug($brandId, $familyName)],
                     );
-                    $family->fill([
+                    // firstOrCreate may have handed back a family that already
+                    // existed, translations and all. Only what was actually
+                    // typed is written, so adding a variant to a family cannot
+                    // wipe the Arabic and Kurdish names it already carried.
+                    $family->fill(array_filter([
                         'name_en' => $familyName,
                         'name_ar' => $this->nullableText($data['new_family_name_ar'] ?? null),
                         'name_ku' => $this->nullableText($data['new_family_name_ku'] ?? null),
-                    ])->save();
+                    ], static fn ($value): bool => $value !== null && $value !== ''))->save();
                 }
 
                 $model = VehicleModel::query()->create([
@@ -531,14 +534,8 @@ class VehicleFitmentController extends Controller
         ]);
 
         $data = $request->validate([
-            'name_en' => [
-                'required',
-                'string',
-                'max:120',
-                Rule::unique('vehicle_model_families', 'name')
-                    ->where(fn ($query) => $query->where('vehicle_brand_id', $family->vehicle_brand_id))
-                    ->ignore($family->id),
-            ],
+            // Not unique, for the same reason as the variant names below it.
+            'name_en' => ['required', 'string', 'max:120'],
             'name_ar' => ['nullable', 'string', 'max:120'],
             'name_ku' => ['nullable', 'string', 'max:120'],
         ]);
