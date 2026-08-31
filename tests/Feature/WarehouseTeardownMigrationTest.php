@@ -57,15 +57,33 @@ class WarehouseTeardownMigrationTest extends TestCase
         $source = $this->migrationSource();
 
         $this->assertStringContainsString(
-            'REFERENCED_TABLE_NAME',
+            'foreignKeysBlockingTeardown',
             $source,
-            'Foreign keys pointing at warehouses have to be discovered, not guessed from Laravel naming.'
+            'Foreign keys blocking any warehouse table drop have to be discovered, not guessed from Laravel naming.'
+        );
+
+        $this->assertStringContainsString(
+            'REFERENCED_TABLE_SCHEMA = DATABASE()',
+            $source,
+            'A warehouse table with the same name in another database must never be mistaken for this application schema.'
+        );
+
+        $this->assertStringContainsString(
+            'COLUMN_NAME = ?',
+            $source,
+            'A foreign key owning warehouse_id must be removed even if schema drift made it reference a different table.'
         );
 
         $this->assertStringContainsString(
             'information_schema.COLUMNS',
             $source,
             'The tables carrying warehouse_id have to be discovered too.'
+        );
+
+        $this->assertStringNotContainsString(
+            'ORDER BY CONSTRAINT_SCHEMA',
+            $source,
+            'MySQL 8 rejects the unaliased information_schema column in this DISTINCT query (error 3065).'
         );
     }
 
@@ -96,6 +114,30 @@ class WarehouseTeardownMigrationTest extends TestCase
         ] as $needle => $why) {
             $this->assertStringContainsString($needle, $source, "Re-running is unsafe: {$why}.");
         }
+    }
+
+    public function test_all_preflight_checks_run_before_the_first_warehouse_ddl(): void
+    {
+        $source = $this->migrationSource();
+        $up = substr($source, strpos($source, 'public function up(): void'));
+        $firstDrop = strpos($up, "'ALTER TABLE %s.%s DROP FOREIGN KEY %s'");
+
+        $this->assertIsInt($firstDrop, 'The test could not locate the first warehouse DDL statement.');
+
+        foreach (['refuseUnlessWarehousesAreEmpty', 'refuseCrossDatabaseForeignKeys', 'guardProductStock'] as $check) {
+            $position = strpos($up, '$this->'.$check.'(');
+
+            $this->assertIsInt($position, "The {$check} preflight is missing.");
+            $this->assertLessThan($firstDrop, $position, "{$check} must run before warehouse DDL starts.");
+        }
+    }
+
+    public function test_schema_identifiers_are_quoted_before_dynamic_ddl(): void
+    {
+        $migration = require base_path(self::MIGRATION);
+        $method = (new \ReflectionClass($migration))->getMethod('quoteIdentifier');
+
+        $this->assertSame('`order``archive`', $method->invoke($migration, 'order`archive'));
     }
 
     public function test_it_does_nothing_at_all_on_a_database_that_is_not_mysql(): void

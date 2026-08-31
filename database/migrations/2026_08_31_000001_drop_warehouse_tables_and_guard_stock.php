@@ -15,12 +15,12 @@ use Illuminate\Support\Facades\Schema;
  * as one number on the product, and that stays the only stock there is.
  *
  * The first version of this migration named the tables it expected to find and
- * missed four — orders, order_items and purchase_invoices all carry a
+ * missed three — orders, order_items and purchase_invoices all carry a
  * warehouse_id, and production stopped mid-way with `Cannot drop table
  * 'warehouses' referenced by foreign key`. So nothing is named here any more.
- * Every foreign key pointing at `warehouses`, and every column called
- * warehouse_id, is found in the live schema and removed in dependency order.
- * A list written by hand can be short; the schema cannot.
+ * Every foreign key that can block one of the warehouse table drops, and every
+ * column called warehouse_id, is found in the live schema and removed in
+ * dependency order. A list written by hand can be short; the schema cannot.
  *
  * It is also safe to run again. MySQL commits each DDL statement as it goes, so
  * a migration that fails half way leaves the finished half behind and is never
@@ -53,14 +53,27 @@ return new class extends Migration
         // Read the shape of things before anything is touched, so the columns
         // are known even after the keys that point at them are gone.
         $columnOwners = array_values(array_diff($this->tablesWithWarehouseColumn(), self::TABLES));
+        $foreignKeys = $this->foreignKeysBlockingTeardown();
 
         $this->refuseUnlessWarehousesAreEmpty($columnOwners);
+        $this->refuseCrossDatabaseForeignKeys($foreignKeys);
 
-        // 1. Every key that points at `warehouses`, wherever it lives. Until
-        //    these are gone the parent table cannot be dropped, which is
-        //    exactly what stopped the first deploy.
-        foreach ($this->foreignKeysReferencingWarehouses() as $key) {
-            DB::statement("ALTER TABLE `{$key->table}` DROP FOREIGN KEY `{$key->name}`");
+        // Validate and install the surviving stock guard before any warehouse
+        // DDL. MySQL commits ALTER/DROP statements one by one, so discovering a
+        // negative stock only after the teardown would leave another partial
+        // migration behind.
+        $this->guardProductStock();
+
+        // 1. Every key that can block the teardown: keys pointing at any table
+        //    being removed, plus keys owning a warehouse_id column. The latter
+        //    covers schema drift where that column was constrained elsewhere.
+        foreach ($foreignKeys as $key) {
+            DB::statement(sprintf(
+                'ALTER TABLE %s.%s DROP FOREIGN KEY %s',
+                $this->quoteIdentifier((string) $key->schema),
+                $this->quoteIdentifier((string) $key->table),
+                $this->quoteIdentifier((string) $key->name),
+            ));
         }
 
         // 2. The columns themselves, on the tables that survive. MySQL takes a
@@ -79,7 +92,6 @@ return new class extends Migration
             Schema::dropIfExists($table);
         }
 
-        $this->guardProductStock();
     }
 
     public function down(): void
@@ -145,26 +157,59 @@ return new class extends Migration
     }
 
     /**
-     * Every foreign key in this database that points at `warehouses`.
+     * Every foreign key that could block this teardown.
      *
      * Read from the schema rather than guessed from Laravel's naming
      * convention: a key created by hand, or renamed, would be missed by a
-     * guess and would block the drop all the same.
+     * guess and would block the drop all the same. REFERENCED_TABLE_SCHEMA is
+     * deliberately checked as well: a same-named table in another database is
+     * unrelated and its key must never be touched.
      *
-     * @return array<int, object{table: string, name: string}>
+     * @return array<int, object{schema: string, table: string, name: string}>
      */
-    private function foreignKeysReferencingWarehouses(): array
+    private function foreignKeysBlockingTeardown(): array
     {
-        /** @var array<int, object{table: string, name: string}> $keys */
+        $placeholders = implode(', ', array_fill(0, count(self::TABLES), '?'));
+
+        /** @var array<int, object{schema: string, table: string, name: string}> $keys */
         $keys = DB::select(
-            'SELECT DISTINCT TABLE_NAME AS `table`, CONSTRAINT_NAME AS `name`
+            'SELECT DISTINCT CONSTRAINT_SCHEMA AS `schema`, TABLE_NAME AS `table`, CONSTRAINT_NAME AS `name`
              FROM information_schema.KEY_COLUMN_USAGE
-             WHERE CONSTRAINT_SCHEMA = DATABASE()
-               AND REFERENCED_TABLE_NAME = ?',
-            ['warehouses']
+             WHERE REFERENCED_TABLE_NAME IS NOT NULL
+               AND (
+                    (REFERENCED_TABLE_SCHEMA = DATABASE() AND REFERENCED_TABLE_NAME IN ('.$placeholders.'))
+                    OR (CONSTRAINT_SCHEMA = DATABASE() AND COLUMN_NAME = ?)
+               )',
+            [...self::TABLES, 'warehouse_id']
         );
 
         return $keys;
+    }
+
+    /**
+     * A foreign key in another database cannot be removed safely by an
+     * application migration. More importantly, starting local DDL before
+     * discovering it would leave the migration half applied again.
+     *
+     * @param  array<int, object{schema: string, table: string, name: string}>  $foreignKeys
+     */
+    private function refuseCrossDatabaseForeignKeys(array $foreignKeys): void
+    {
+        $database = (string) DB::connection()->getDatabaseName();
+        $external = [];
+
+        foreach ($foreignKeys as $key) {
+            if ((string) $key->schema !== $database) {
+                $external[] = sprintf('%s.%s (%s)', $key->schema, $key->table, $key->name);
+            }
+        }
+
+        if ($external !== []) {
+            throw new RuntimeException(
+                'Refusing to remove the warehouse tables: foreign keys from another database still reference them: '.
+                implode(', ', $external).'. Remove those dependencies explicitly before deploying. Nothing has been changed.'
+            );
+        }
     }
 
     /**
@@ -222,5 +267,13 @@ return new class extends Migration
         );
 
         return $found !== [];
+    }
+
+    /**
+     * Quote a MySQL identifier discovered from information_schema.
+     */
+    private function quoteIdentifier(string $identifier): string
+    {
+        return '`'.str_replace('`', '``', $identifier).'`';
     }
 };
