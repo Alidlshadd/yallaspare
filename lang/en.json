@@ -3625,5 +3625,7 @@
     "Inventory Master": "Inventory Master",
     "Keep every active product above its low-stock threshold.": "Keep every active product above its low-stock threshold.",
     "Zero Pending Orders": "Zero Pending Orders",
-    "Clear the pending and processing order queue.": "Clear the pending and processing order queue."
+    "Clear the pending and processing order queue.": "Clear the pending and processing order queue.",
+    "Reports": "Reports",
+    "Administration": "Administration"
 }

@@ -159,37 +159,34 @@
                 .admin-shell .admin-nav { flex: 1 0 auto; }
 
                 /* Section headers between nav groups */
+                /* A section header names a group; it is not the thing you are
+                   looking for. Grey, and large enough to read — the accent is
+                   spent on the one row that says where you are. */
                 .admin-nav-section {
-                    display: flex; align-items: center; gap: 8px;
-                    padding: 16px 18px 8px;
-                    font-size: 9px; font-weight: 700; letter-spacing: 0.28em;
-                    text-transform: uppercase; color: #ffb27a;
+                    display: flex; align-items: center; gap: 10px;
+                    padding: 18px 18px 6px;
+                    font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+                    text-transform: uppercase; color: rgba(255,255,255,0.42);
                     font-family: ui-monospace, 'JetBrains Mono', monospace;
                     user-select: none;
                 }
                 .admin-nav-section::after {
                     content: ""; flex: 1; height: 1px;
-                    background: linear-gradient(90deg, rgb(255 138 61 / 0.35), transparent);
-                }
-                [dir='rtl'] .admin-nav-section::after {
-                    background: linear-gradient(270deg, rgb(255 138 61 / 0.35), transparent);
+                    background: rgba(255,255,255,0.08);
                 }
                 .admin-nav > .admin-nav-section:first-child { padding-top: 6px; }
 
-                /* Override existing cyan active state → amber instrument bar + soft halo */
+                /* The current page: a plain lighter row. The orange edge beside
+                   it is the signal, and it is the only orange in the list. */
                 .admin-shell .admin-nav-link.is-active {
-                    background: linear-gradient(90deg, rgb(255 138 61 / 0.18), rgb(255 138 61 / 0.04)) !important;
+                    background: rgba(255,255,255,0.07) !important;
                     color: #fff !important;
-                    box-shadow:
-                        inset 0 1px 0 rgba(255,255,255,0.06),
-                        0 6px 20px -8px rgb(255 138 61 / 0.35);
                 }
                 .admin-shell .admin-nav-link.is-active::before {
-                    background: linear-gradient(180deg, #ff8a3d, #e65c00) !important;
+                    background: #ff8a3d !important;
                     width: 3px !important;
-                    inset-block: 0.5rem !important;
-                    box-shadow: 0 0 10px rgb(255 138 61 / 0.65);
-                    border-radius: 0 2px 2px 0 !important;
+                    inset-block: 0.4rem !important;
+                    border-radius: 0 3px 3px 0 !important;
                 }
                 /* Simpler icon treatment — no cyan tile, just amber-cream icon */
                 .admin-shell .admin-nav-icon {
@@ -197,49 +194,16 @@
                     color: rgba(255,255,255,0.55) !important;
                     width: 1.75rem !important; height: 1.75rem !important; flex-basis: 1.75rem !important;
                 }
-                .admin-shell .admin-nav-link:hover .admin-nav-icon,
+                .admin-shell .admin-nav-link:hover .admin-nav-icon {
+                    background-color: transparent !important;
+                    color: rgba(255,255,255,0.9) !important;
+                }
                 .admin-shell .admin-nav-link.is-active .admin-nav-icon {
                     background-color: transparent !important;
-                    color: #ffb27a !important;
+                    color: #ff8a3d !important;
                 }
                 .admin-shell .admin-nav-link:hover {
                     background-color: rgba(255,255,255,0.05) !important;
-                }
-
-                /* ─────── CLICK SWEEP ANIMATION (subtle amber light, left → right) ─────── */
-                .admin-nav-sweep-clip {
-                    position: absolute; inset: 0;
-                    overflow: hidden; pointer-events: none;
-                    border-radius: inherit;
-                }
-                .admin-nav-sweep {
-                    position: absolute; top: 0; left: -60%; width: 60%; height: 100%;
-                    background: linear-gradient(90deg, transparent, rgb(255 138 61 / 0.32), transparent);
-                    opacity: 0;
-                    will-change: left, opacity;
-                }
-                .admin-nav-link.admin-nav-sweep-active .admin-nav-sweep {
-                    animation: admin-nav-sweep 650ms ease-out forwards;
-                }
-                @keyframes admin-nav-sweep {
-                    0%   { left: -60%; opacity: 0; }
-                    12%  { opacity: 1; }
-                    88%  { opacity: 1; }
-                    100% { left: 100%; opacity: 0; }
-                }
-                /* RTL — sweep travels right → left */
-                [dir='rtl'] .admin-nav-sweep { left: auto; right: -60%; }
-                [dir='rtl'] .admin-nav-link.admin-nav-sweep-active .admin-nav-sweep {
-                    animation-name: admin-nav-sweep-rtl;
-                }
-                @keyframes admin-nav-sweep-rtl {
-                    0%   { right: -60%; opacity: 0; }
-                    12%  { opacity: 1; }
-                    88%  { opacity: 1; }
-                    100% { right: 100%; opacity: 0; }
-                }
-                @media (prefers-reduced-motion: reduce) {
-                    .admin-nav-link.admin-nav-sweep-active .admin-nav-sweep { animation: none; }
                 }
 
                 /* ─────── SIDEBAR FOOTER ─────── */
@@ -440,12 +404,15 @@
                         $canWhatsapp   = $adminUserForNav?->can('manage-whatsapp-webhooks');
                         $canUsersView  = $adminUserForNav?->can('viewAny', \App\Models\User::class);
                         $canActLogs    = $adminUserForNav?->can(\App\Models\User::PERMISSION_ACTIVITY_LOGS_VIEW);
-                        $hasAnalytics  = $canDashboard || $canFinance || $canStock;
+                        // A section header with nothing under it is noise, so each
+                        // one asks whether any of its links survived the permissions.
+                        $hasStock      = $canStock || $canCatalog;
                         $hasMarketing  = $canFinanceMgr || $canSettings || $canWhatsapp;
-                        $hasAdminGrp   = $canUsersView || $canSettings || $canActLogs;
+                        $hasReports    = $canGoals || $canFinance || $canDashboard;
+                        $hasAdminGrp   = $canUsersView || $canSettings || $canActLogs || $canDealers;
                     @endphp
                     <nav class="admin-nav space-y-1.5" aria-label="{{ __('Admin sections') }}">
-                        {{-- ── OPERATIONS ── --}}
+                        {{-- ── OPERATIONS ── what the day is actually spent on --}}
                         <div class="admin-nav-section" aria-hidden="true"><span>{{ __('Operations') }}</span></div>
                         <a
                             href="{{ route('admin.dashboard') }}"
@@ -453,20 +420,9 @@
                             data-admin-sidebar-tooltip="{{ __('Dashboard') }}"
                             @if(request()->routeIs('admin.dashboard')) aria-current="page" @endif
                         >
-                            <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-chart-line" aria-hidden="true"></i></span>
+                            <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-gauge-high" aria-hidden="true"></i></span>
                             <span class="admin-nav-label">{{ __('Dashboard') }}</span>
                         </a>
-                        @if($canGoals)
-                            <a
-                                href="{{ route('admin.goals.index') }}"
-                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.goals.*')) }}"
-                                data-admin-sidebar-tooltip="{{ __('Progress Center') }}"
-                                @if(request()->routeIs('admin.goals.*')) aria-current="page" @endif
-                            >
-                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-bullseye" aria-hidden="true"></i></span>
-                                <span class="admin-nav-label">{{ __('Progress Center') }}</span>
-                            </a>
-                        @endif
                         @can(\App\Models\User::PERMISSION_ORDERS_MANAGE)
                             <a
                                 href="{{ route('admin.orders.index') }}"
@@ -487,8 +443,20 @@
                                 <span class="admin-nav-label">{{ __('Returns & Refunds') }}</span>
                             </a>
                         @endcan
+                        {{-- Was a section of its own, "Customer Demand", holding this one link. --}}
+                        @if($canStockRequests)
+                            <a
+                                href="{{ route('admin.stock-requests.index') }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.stock-requests.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Product Requests') }}"
+                                @if(request()->routeIs('admin.stock-requests.*')) aria-current="page" @endif
+                            >
+                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-bell-concierge" aria-hidden="true"></i></span>
+                                <span class="admin-nav-label">{{ __('Product Requests') }}</span>
+                            </a>
+                        @endif
 
-                        {{-- ── CATALOG ── --}}
+                        {{-- ── CATALOG ── what the shop sells --}}
                         @if($canCatalog)
                             <div class="admin-nav-section" aria-hidden="true"><span>{{ __('Catalog') }}</span></div>
                             <a
@@ -536,64 +504,13 @@
                                 <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-star" aria-hidden="true"></i></span>
                                 <span class="admin-nav-label">{{ __('Customer Reviews') }}</span>
                             </a>
-                            <a
-                                href="{{ route('admin.dead-stock.index') }}"
-                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.dead-stock.*')) }}"
-                                data-admin-sidebar-tooltip="{{ __('Dead Stock') }}"
-                                @if(request()->routeIs('admin.dead-stock.*')) aria-current="page" @endif
-                            >
-                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-boxes-stacked" aria-hidden="true"></i></span>
-                                <span class="admin-nav-label">{{ __('Dead Stock') }}</span>
-                            </a>
                         @endif
 
-                        {{-- ── ANALYTICS ── --}}
-                        @if($canStockRequests)
-                            <div class="admin-nav-section" aria-hidden="true"><span>{{ __('Customer Demand') }}</span></div>
-                            <a
-                                href="{{ route('admin.stock-requests.index') }}"
-                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.stock-requests.*')) }}"
-                                data-admin-sidebar-tooltip="{{ __('Product Requests') }}"
-                                @if(request()->routeIs('admin.stock-requests.*')) aria-current="page" @endif
-                            >
-                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-bell-concierge" aria-hidden="true"></i></span>
-                                <span class="admin-nav-label">{{ __('Product Requests') }}</span>
-                            </a>
-                        @endif
-
-                        @if($hasAnalytics)
-                            <div class="admin-nav-section" aria-hidden="true"><span>{{ __('Analytics') }}</span></div>
-                            @can(\App\Models\User::PERMISSION_FINANCE_VIEW)
-                                <a
-                                    href="{{ route('admin.revenue.index') }}"
-                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.revenue.*')) }}"
-                                    data-admin-sidebar-tooltip="{{ __('Revenue') }}"
-                                    @if(request()->routeIs('admin.revenue.*')) aria-current="page" @endif
-                                >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-sack-dollar" aria-hidden="true"></i></span>
-                                    <span class="admin-nav-label">{{ __('Revenue') }}</span>
-                                </a>
-                            @endcan
-                            @can(\App\Models\User::PERMISSION_DASHBOARD_VIEW)
-                                <a
-                                    href="{{ route('admin.analytics.index') }}"
-                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.analytics.*')) }}"
-                                    data-admin-sidebar-tooltip="{{ __('Site Analytics') }}"
-                                    @if(request()->routeIs('admin.analytics.*')) aria-current="page" @endif
-                                >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-chart-line" aria-hidden="true"></i></span>
-                                    <span class="admin-nav-label">{{ __('Site Analytics') }}</span>
-                                </a>
-                                <a
-                                    href="{{ route('admin.search-insights.index') }}"
-                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.search-insights.*')) }}"
-                                    data-admin-sidebar-tooltip="{{ __('Search Insights') }}"
-                                    @if(request()->routeIs('admin.search-insights.*')) aria-current="page" @endif
-                                >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-magnifying-glass-chart" aria-hidden="true"></i></span>
-                                    <span class="admin-nav-label">{{ __('Search Insights') }}</span>
-                                </a>
-                            @endcan
+                        {{-- ── STOCK ── how much of it there is. These four were split between
+                             "Analytics" and "Catalog": none of them is analysis, and only one
+                             of them is about the catalogue. --}}
+                        @if($hasStock)
+                            <div class="admin-nav-section" aria-hidden="true"><span>{{ __('Stock') }}</span></div>
                             @can(\App\Models\User::PERMISSION_STOCK_MANAGE)
                                 <a
                                     href="{{ route('admin.inventory.index') }}"
@@ -610,9 +527,24 @@
                                     data-admin-sidebar-tooltip="{{ __('Bulk Stock') }}"
                                     @if(request()->routeIs('admin.inventory.bulk-stock*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-layer-group" aria-hidden="true"></i></span>
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-list-check" aria-hidden="true"></i></span>
                                     <span class="admin-nav-label">{{ __('Bulk Stock') }}</span>
                                 </a>
+                            @endcan
+                            {{-- Dead Stock keeps the catalogue permission it has always had; only
+                                 where it is listed has changed. --}}
+                            @if($canCatalog)
+                                <a
+                                    href="{{ route('admin.dead-stock.index') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.dead-stock.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Dead Stock') }}"
+                                    @if(request()->routeIs('admin.dead-stock.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-box-archive" aria-hidden="true"></i></span>
+                                    <span class="admin-nav-label">{{ __('Dead Stock') }}</span>
+                                </a>
+                            @endif
+                            @can(\App\Models\User::PERMISSION_STOCK_MANAGE)
                                 <a
                                     href="{{ route('admin.purchase-planning.index') }}"
                                     class="admin-nav-link {{ $navItem(request()->routeIs('admin.purchase-planning.*')) }}"
@@ -625,21 +557,8 @@
                             @endcan
                         @endif
 
-                        {{-- ── PARTNERS ── --}}
-                        @if($canDealers)
-                            <div class="admin-nav-section" aria-hidden="true"><span>{{ __('Partners') }}</span></div>
-                            <a
-                                href="{{ route('admin.dealers.index') }}"
-                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.dealers.*')) }}"
-                                data-admin-sidebar-tooltip="{{ __('Dealers') }}"
-                                @if(request()->routeIs('admin.dealers.*')) aria-current="page" @endif
-                            >
-                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-handshake" aria-hidden="true"></i></span>
-                                <span class="admin-nav-label">{{ __('Dealers') }}</span>
-                            </a>
-                        @endif
-
-                        {{-- ── MARKETING ── --}}
+                        {{-- ── MARKETING ── reaching customers. WAYL Payments used to sit here;
+                             taking money is not marketing. --}}
                         @if($hasMarketing)
                             <div class="admin-nav-section" aria-hidden="true"><span>{{ __('Marketing') }}</span></div>
                             @can(\App\Models\User::PERMISSION_FINANCE_MANAGE)
@@ -649,7 +568,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Coupon Management') }}"
                                     @if(request()->routeIs('admin.discounts.edit') || request()->routeIs('admin.discounts.coupons.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-tags" aria-hidden="true"></i></span>
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-ticket" aria-hidden="true"></i></span>
                                     <span class="admin-nav-label">{{ __('Coupon Management') }}</span>
                                 </a>
                                 <a
@@ -681,19 +600,6 @@
                                     <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-comments" aria-hidden="true"></i></span>
                                     <span class="admin-nav-label">{{ config('services.otpiq.whatsapp.admin_visible', true) ? __('SMS & WhatsApp Center') : __('SMS Center') }}</span>
                                 </a>
-                            @endcan
-                            @can(\App\Models\User::PERMISSION_FINANCE_VIEW)
-                                <a
-                                    href="{{ route('admin.wayl.index') }}"
-                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.wayl.*')) }}"
-                                    data-admin-sidebar-tooltip="{{ __('WAYL Payments') }}"
-                                    @if(request()->routeIs('admin.wayl.*')) aria-current="page" @endif
-                                >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-credit-card" aria-hidden="true"></i></span>
-                                    <span class="admin-nav-label">{{ __('WAYL Payments') }}</span>
-                                </a>
-                            @endcan
-                            @can(\App\Models\User::PERMISSION_SETTINGS_MANAGE)
                                 <a
                                     href="{{ route('admin.popups.index') }}"
                                     class="admin-nav-link {{ $navItem(request()->routeIs('admin.popups.*')) }}"
@@ -704,7 +610,7 @@
                                     <span class="admin-nav-label">{{ __('Popups') }}</span>
                                 </a>
                             @endcan
-                            @if(config('services.otpiq.whatsapp.admin_visible', true) && $canWhatsapp)
+                            @if($canWhatsapp)
                                 <a
                                     href="{{ route('admin.whatsapp.index') }}"
                                     class="admin-nav-link {{ $navItem(request()->routeIs('admin.whatsapp.*')) }}"
@@ -717,9 +623,79 @@
                             @endif
                         @endif
 
-                        {{-- ── ADMIN ── --}}
+                        {{-- ── REPORTS ── looking back at what happened --}}
+                        @if($hasReports)
+                            <div class="admin-nav-section" aria-hidden="true"><span>{{ __('Reports') }}</span></div>
+                            @if($canGoals)
+                                <a
+                                    href="{{ route('admin.goals.index') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.goals.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Progress Center') }}"
+                                    @if(request()->routeIs('admin.goals.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-bullseye" aria-hidden="true"></i></span>
+                                    <span class="admin-nav-label">{{ __('Progress Center') }}</span>
+                                </a>
+                            @endif
+                            @can(\App\Models\User::PERMISSION_FINANCE_VIEW)
+                                <a
+                                    href="{{ route('admin.revenue.index') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.revenue.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Revenue') }}"
+                                    @if(request()->routeIs('admin.revenue.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-sack-dollar" aria-hidden="true"></i></span>
+                                    <span class="admin-nav-label">{{ __('Revenue') }}</span>
+                                </a>
+                            @endcan
+                            @can(\App\Models\User::PERMISSION_DASHBOARD_VIEW)
+                                <a
+                                    href="{{ route('admin.analytics.index') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.analytics.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Site Analytics') }}"
+                                    @if(request()->routeIs('admin.analytics.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-chart-line" aria-hidden="true"></i></span>
+                                    <span class="admin-nav-label">{{ __('Site Analytics') }}</span>
+                                </a>
+                                <a
+                                    href="{{ route('admin.search-insights.index') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.search-insights.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Search Insights') }}"
+                                    @if(request()->routeIs('admin.search-insights.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-magnifying-glass-chart" aria-hidden="true"></i></span>
+                                    <span class="admin-nav-label">{{ __('Search Insights') }}</span>
+                                </a>
+                            @endcan
+                            @can(\App\Models\User::PERMISSION_FINANCE_VIEW)
+                                <a
+                                    href="{{ route('admin.wayl.index') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.wayl.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('WAYL Payments') }}"
+                                    @if(request()->routeIs('admin.wayl.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-credit-card" aria-hidden="true"></i></span>
+                                    <span class="admin-nav-label">{{ __('WAYL Payments') }}</span>
+                                </a>
+                            @endcan
+                        @endif
+
+                        {{-- ── ADMINISTRATION ── running the panel itself. Dealers had a section
+                             of its own, "Partners", for one link. --}}
                         @if($hasAdminGrp)
-                            <div class="admin-nav-section" aria-hidden="true"><span>{{ __('Admin') }}</span></div>
+                            <div class="admin-nav-section" aria-hidden="true"><span>{{ __('Administration') }}</span></div>
+                            @if($canDealers)
+                                <a
+                                    href="{{ route('admin.dealers.index') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.dealers.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('Dealers') }}"
+                                    @if(request()->routeIs('admin.dealers.*')) aria-current="page" @endif
+                                >
+                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-handshake" aria-hidden="true"></i></span>
+                                    <span class="admin-nav-label">{{ __('Dealers') }}</span>
+                                </a>
+                            @endif
                             @can('viewAny', \App\Models\User::class)
                                 <a
                                     href="{{ route('admin.users.index') }}"
@@ -1326,48 +1302,6 @@
                     }, true);
                 })();
 
-                /* Sidebar click sweep — adds a brief amber light pass on click,
-                   restarts on each click, removes itself when the animation ends. */
-                (function () {
-                    const SWEEP_CLASS = 'admin-nav-sweep-active';
-                    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-                    const ensureSweepNode = (link) => {
-                        if (link.querySelector(':scope > .admin-nav-sweep-clip')) return;
-                        const clip = document.createElement('span');
-                        clip.className = 'admin-nav-sweep-clip';
-                        clip.setAttribute('aria-hidden', 'true');
-                        const sweep = document.createElement('span');
-                        sweep.className = 'admin-nav-sweep';
-                        clip.appendChild(sweep);
-                        link.insertBefore(clip, link.firstChild);
-                    };
-
-                    document.querySelectorAll('.admin-nav-link').forEach(ensureSweepNode);
-
-                    if (reduceMotion) {
-                        return;
-                    }
-
-                    document.addEventListener('click', (event) => {
-                        const target = event.target instanceof Element ? event.target : null;
-                        if (!target) return;
-                        const link = target.closest('.admin-nav-link');
-                        if (!link) return;
-                        ensureSweepNode(link);
-                        link.classList.remove(SWEEP_CLASS);
-                        // Force reflow so the animation restarts on rapid re-clicks.
-                        void link.offsetWidth;
-                        link.classList.add(SWEEP_CLASS);
-                        const clear = () => {
-                            link.classList.remove(SWEEP_CLASS);
-                            link.removeEventListener('animationend', clear);
-                        };
-                        link.addEventListener('animationend', clear);
-                        // Fallback in case the page navigates before animationend fires.
-                        setTimeout(clear, 800);
-                    });
-                })();
             </script>
         @endif
         @stack('scripts')

@@ -3625,5 +3625,7 @@
     "Inventory Master": "سيد المخزون",
     "Keep every active product above its low-stock threshold.": "أبقِ كل منتج نشط فوق حد المخزون المنخفض.",
     "Zero Pending Orders": "صفر طلبات معلّقة",
-    "Clear the pending and processing order queue.": "أفرغ قائمة الطلبات المعلّقة وقيد المعالجة."
+    "Clear the pending and processing order queue.": "أفرغ قائمة الطلبات المعلّقة وقيد المعالجة.",
+    "Reports": "التقارير",
+    "Administration": "الإدارة"
 }

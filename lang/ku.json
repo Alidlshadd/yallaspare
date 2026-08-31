@@ -3625,5 +3625,7 @@
     "Inventory Master": "شارەزای کۆگا",
     "Keep every active product above its low-stock threshold.": "هەموو بەرهەمێکی چالاک لە سەرووی سنووری کەمی کۆگا ڕابگرە.",
     "Zero Pending Orders": "سفر داواکاری چاوەڕوان",
-    "Clear the pending and processing order queue.": "ڕیزی داواکارییە چاوەڕوان و لەژێر کارەکان بەتاڵ بکە."
+    "Clear the pending and processing order queue.": "ڕیزی داواکارییە چاوەڕوان و لەژێر کارەکان بەتاڵ بکە.",
+    "Reports": "ڕاپۆرتەکان",
+    "Administration": "بەڕێوەبردن"
 }
