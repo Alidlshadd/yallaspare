@@ -235,7 +235,15 @@ class ShopController extends Controller
                 }
 
                 if ($model !== '' && DbSchema::hasTable('vehicle_models')) {
-                    $fitmentQuery->whereHas('model', fn ($modelQuery) => $modelQuery->where('name', $model));
+                    // The finder sends a variant id, which names one car exactly.
+                    // A name is still accepted because older links, bookmarks and
+                    // the catalogue landing pages carry one — but a name can now
+                    // belong to more than one variant, so it matches all of them.
+                    if (ctype_digit($model)) {
+                        $fitmentQuery->where('vehicle_model_id', (int) $model);
+                    } else {
+                        $fitmentQuery->whereHas('model', fn ($modelQuery) => $modelQuery->where('name', $model));
+                    }
                 }
 
                 if ($year !== null) {
@@ -434,10 +442,13 @@ class ShopController extends Controller
                     ->flatMap(fn (VehicleBrand $brand) => $brand->models->pluck('engineTypes')->flatten())
                     ->mapWithKeys(fn ($engine) => [(string) $engine->name => $engine->localizedName()]);
                 $brandOptions = $vehicleBrandRows->pluck('name')->filter()->values();
+                // Keyed by variant id, not by name. Two variants can share a
+                // name — a Tivoli built 2015-2019 and one built 2020-2023 — and
+                // a map keyed by name would quietly keep only one of them.
                 $modelOptionsByBrand = $vehicleBrandRows
                     ->mapWithKeys(fn (VehicleBrand $brand) => [
                         (string) $brand->name => $brand->models
-                            ->map(fn (VehicleModel $model) => ['value' => (string) $model->name, 'label' => $model->localizedName()])
+                            ->map(fn (VehicleModel $model) => ['value' => (string) $model->id, 'label' => $model->listLabel()])
                             ->values()
                             ->all(),
                     ])
@@ -446,9 +457,9 @@ class ShopController extends Controller
                     ->mapWithKeys(fn (VehicleBrand $brand) => [
                         (string) $brand->name => $brand->models
                             ->mapWithKeys(fn (VehicleModel $model) => [
-                                (string) $model->name => [
+                                (string) $model->id => [
                                     'model_id' => (int) $model->id,
-                                    'label' => $model->localizedName(),
+                                    'label' => $model->listLabel(),
                                     'family' => $model->family?->localizedName(),
                                     'engines' => $model->engineTypes->pluck('name')->filter()->unique()->values()->all(),
                                     'year_from' => $model->production_start_year ? (int) $model->production_start_year : null,
@@ -464,13 +475,13 @@ class ShopController extends Controller
         if (DbSchema::hasTable('vehicle_models')) {
             $vehicleModels = VehicleModel::query()
                 ->orderBy('name')
-                ->get(['id', 'name', 'name_en', 'name_ar', 'name_ku'])
-                ->map(fn (VehicleModel $model) => ['value' => (string) $model->name, 'label' => $model->localizedName()])
+                ->get(['id', 'name', 'name_en', 'name_ar', 'name_ku', 'production_start_year', 'production_end_year'])
+                ->map(fn (VehicleModel $model) => ['value' => (string) $model->id, 'label' => $model->listLabel()])
                 ->values();
 
             if ($vehicleModels->isNotEmpty()) {
                 $hasStructuredVehicleData = true;
-                $modelOptions = $vehicleModels->unique()->values();
+                $modelOptions = $vehicleModels->unique('value')->values();
             }
         }
 

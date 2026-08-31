@@ -28,8 +28,8 @@ class ShopVehicleFilterTest extends TestCase
 
     public function test_vehicle_option_map_keeps_engines_and_years_scoped_to_each_model(): void
     {
-        [$brand] = $this->vehicle('KGM', 'Actyon', 2007, 2011, ['2.0 T', '2.3']);
-        $this->vehicle('KGM', 'Rexton', 2013, 2017, ['3.2'], $brand);
+        [$brand, $actyon] = $this->vehicle('KGM', 'Actyon', 2007, 2011, ['2.0 T', '2.3']);
+        [, $rexton] = $this->vehicle('KGM', 'Rexton', 2013, 2017, ['3.2'], $brand);
 
         $response = $this->get(route('shop.index'))->assertOk();
         $response->assertSee('name="engine"', false);
@@ -40,11 +40,16 @@ class ShopVehicleFilterTest extends TestCase
 
         $optionMap = json_decode(html_entity_decode($matches[1], ENT_QUOTES), true, 512, JSON_THROW_ON_ERROR);
 
-        $this->assertSame(['2.0 T', '2.3'], array_column($optionMap['KGM']['Actyon']['engines'], 'value'));
-        $this->assertSame(2007, $optionMap['KGM']['Actyon']['year_from']);
-        $this->assertSame(2011, $optionMap['KGM']['Actyon']['year_to']);
-        $this->assertNotContains('3.2', array_column($optionMap['KGM']['Actyon']['engines'], 'value'));
-        $this->assertSame(['3.2'], array_column($optionMap['KGM']['Rexton']['engines'], 'value'));
+        // Keyed by variant id: two variants may share a name, and a map keyed
+        // by name would hold only one of them.
+        $actyonKey = (string) $actyon->id;
+        $rextonKey = (string) $rexton->id;
+
+        $this->assertSame(['2.0 T', '2.3'], array_column($optionMap['KGM'][$actyonKey]['engines'], 'value'));
+        $this->assertSame(2007, $optionMap['KGM'][$actyonKey]['year_from']);
+        $this->assertSame(2011, $optionMap['KGM'][$actyonKey]['year_to']);
+        $this->assertNotContains('3.2', array_column($optionMap['KGM'][$actyonKey]['engines'], 'value'));
+        $this->assertSame(['3.2'], array_column($optionMap['KGM'][$rextonKey]['engines'], 'value'));
     }
 
     public function test_model_and_engine_must_match_the_same_product_fitment(): void

@@ -609,7 +609,15 @@ class MobileController extends Controller
                     $fitment->whereHas('model.family', fn ($family) => $family->where('name', $vehicleFamily)->orWhere('slug', $vehicleFamily));
                 }
                 if ($vehicleModel !== '') {
-                    $fitment->whereHas('model', fn ($model) => $model->where('name', $vehicleModel)->orWhere('slug', $vehicleModel));
+                    // A variant id names one car exactly. A name may now belong
+                    // to more than one — a Tivoli built 2015-2019 and one built
+                    // 2020-2023 — so it matches every variant that carries it,
+                    // while the slug stays unique per brand.
+                    if (ctype_digit($vehicleModel)) {
+                        $fitment->where('vehicle_model_id', (int) $vehicleModel);
+                    } else {
+                        $fitment->whereHas('model', fn ($model) => $model->where('name', $vehicleModel)->orWhere('slug', $vehicleModel));
+                    }
                 }
                 if ($year > 0) {
                     $fitment->where(function ($yearQuery) use ($year): void {

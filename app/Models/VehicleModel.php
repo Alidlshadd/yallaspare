@@ -60,4 +60,38 @@ class VehicleModel extends Model
     {
         return $this->localizedName();
     }
+
+    /**
+     * The name with the years it was built, for lists an administrator or a
+     * customer has to choose from.
+     *
+     * Two variants may share a name — a Tivoli built 2015-2019 and one built
+     * 2020-2023 are different cars taking different parts — so the years are
+     * what tells them apart in a dropdown. A variant with no years recorded
+     * simply reads as its name.
+     */
+    public function listLabel(?string $locale = null): string
+    {
+        $name = $this->localizedName($locale);
+        $years = $this->productionYears();
+
+        return $years === null ? $name : $name.' — '.$years;
+    }
+
+    /**
+     * "2015–2019", "2020–" or null when nothing is recorded.
+     */
+    public function productionYears(): ?string
+    {
+        $from = $this->production_start_year ? (int) $this->production_start_year : null;
+        $to = $this->production_end_year ? (int) $this->production_end_year : null;
+
+        return match (true) {
+            $from !== null && $to !== null && $from === $to => (string) $from,
+            $from !== null && $to !== null => $from.'–'.$to,
+            $from !== null => $from.'–',
+            $to !== null => '–'.$to,
+            default => null,
+        };
+    }
 }

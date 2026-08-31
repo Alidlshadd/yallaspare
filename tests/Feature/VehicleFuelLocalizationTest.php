@@ -82,8 +82,9 @@ class VehicleFuelLocalizationTest extends TestCase
         $this->app->setLocale('ar');
         $response = $this->get(route('shop.index'))->assertOk();
 
+        // Keyed by variant id: a name can belong to more than one variant.
         $map = $this->vehicleOptionMap($response->getContent());
-        $engines = $map['SSANGYONG / KGM']['Rexton W']['engines'];
+        $engines = $map['SSANGYONG / KGM'][(string) $variant->id]['engines'];
 
         $this->assertSame('2.2 Diesel', $engines[0]['value']);
         $this->assertSame('2.2 ديزل', $engines[0]['label']);

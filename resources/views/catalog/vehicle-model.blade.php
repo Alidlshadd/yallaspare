@@ -41,7 +41,7 @@
             </div>
 
             <div class="mt-5 flex flex-wrap gap-2">
-                <a href="{{ route('shop.index', ['brand' => $make->name, 'model' => $model->name]) }}" class="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:bg-slate-950 dark:hover:bg-slate-800">
+                <a href="{{ route('shop.index', ['brand' => $make->name, 'model' => $model->id]) }}" class="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:bg-slate-950 dark:hover:bg-slate-800">
                     {{ __('Filter this car in the shop') }}
                 </a>
                 <a href="{{ route('catalog.vehicle-brand', $make->slug) }}" class="inline-flex items-center justify-center rounded-2xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 dark:bg-slate-950 dark:hover:bg-slate-800">

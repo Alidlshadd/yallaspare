@@ -221,12 +221,13 @@ class VehicleFitmentController extends Controller
             ],
             'new_family_name_ar' => ['nullable', 'string', 'max:120'],
             'new_family_name_ku' => ['nullable', 'string', 'max:120'],
-            'name_en' => [
-                'required',
-                'string',
-                'max:120',
-                Rule::unique('vehicle_models', 'name')->where(fn ($query) => $query->where('vehicle_brand_id', $request->input('vehicle_brand_id'))),
-            ],
+            // Deliberately not unique. One name covers several cars: a Tivoli
+            // built 2015-2019 and a Tivoli built 2020-2023 are different
+            // variants with different engines and different parts, and the
+            // shop has to be able to hold both. The slug is what has to stay
+            // unique, and uniqueModelSlug() sees to that without asking the
+            // administrator to invent a different name.
+            'name_en' => ['required', 'string', 'max:120'],
             'name_ar' => ['nullable', 'string', 'max:120'],
             'name_ku' => ['nullable', 'string', 'max:120'],
             'engine_types' => ['nullable', 'array'],
@@ -329,14 +330,8 @@ class VehicleFitmentController extends Controller
 
         $data = $request->validate([
             'vehicle_model_family_id' => ['nullable', 'integer', Rule::exists('vehicle_model_families', 'id')->where(fn ($query) => $query->where('vehicle_brand_id', $model->vehicle_brand_id))],
-            'name_en' => [
-                'required',
-                'string',
-                'max:120',
-                Rule::unique('vehicle_models', 'name')
-                    ->where(fn ($query) => $query->where('vehicle_brand_id', $model->vehicle_brand_id))
-                    ->ignore($model->id),
-            ],
+            // Not unique — see the note on the create rule.
+            'name_en' => ['required', 'string', 'max:120'],
             'name_ar' => ['nullable', 'string', 'max:120'],
             'name_ku' => ['nullable', 'string', 'max:120'],
             'engine_types' => ['nullable', 'array'],
