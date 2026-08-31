@@ -75,13 +75,23 @@ class AdminSidebarTest extends TestCase
         // Categories and Bulk Stock, Product Brands and Coupon Management.
         $html = $this->sidebarFor($this->superAdmin());
 
-        preg_match_all('/<i class="(fa[sb] fa-[a-z0-9-]+)" aria-hidden="true"><\/i><\/span>\s*<span class="admin-nav-label">/', $html, $matches);
+        preg_match_all('/data-ph="([a-z0-9-]+)"/', $html, $matches);
 
         $icons = $matches[1];
         $duplicates = array_keys(array_filter(array_count_values($icons), static fn (int $n): bool => $n > 1));
 
         $this->assertSame([], $duplicates, 'These icons are used by more than one link: '.implode(', ', $duplicates));
         $this->assertCount(29, $icons, 'Every link should carry an icon.');
+
+        // One family, one geometry. A stray Font Awesome glyph in the panel
+        // would put two drawing styles side by side.
+        $nav = $this->between($html, '<nav class="admin-nav', '</nav>');
+        $this->assertStringNotContainsString('class="fa', $nav, 'The navigation should carry Phosphor icons only.');
+
+        // Each icon ships both weights so the current page can wear the
+        // heavier one without another request.
+        $this->assertSame(29, substr_count($nav, 'ph-regular'));
+        $this->assertSame(29, substr_count($nav, 'ph-fill'));
     }
 
     public function test_the_accent_marks_the_current_page_and_nothing_else(): void

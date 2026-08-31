@@ -3,11 +3,10 @@
 // rather than clobber — any existing Tailwind `transform` utilities.
 import { animate } from 'motion/mini';
 import { hover, press } from 'motion';
-import { isRtl, softSpring, snappySpring } from './config';
+import { softSpring, snappySpring } from './config';
 
 const PRESS_TARGETS = '.admin-content button, .topbar-action, .topbar-profile, [data-motion-press]';
 const LIFT_TARGETS = '[data-motion-lift]';
-const NAV_TARGETS = '.admin-nav-link';
 
 export const initInteractions = () => {
     if (document.querySelector(PRESS_TARGETS)) {
@@ -23,19 +22,6 @@ export const initInteractions = () => {
     if (document.querySelector(LIFT_TARGETS)) {
         hover(LIFT_TARGETS, (element) => {
             animate(element, { translate: '0px -3px' }, softSpring);
-
-            return () => {
-                animate(element, { translate: '0px 0px' }, softSpring);
-            };
-        });
-    }
-
-    if (document.querySelector(NAV_TARGETS)) {
-        // Nudge toward the label's reading direction — flipped under RTL.
-        const shift = isRtl() ? '-3px' : '3px';
-
-        hover(NAV_TARGETS, (element) => {
-            animate(element, { translate: `${shift} 0px` }, softSpring);
 
             return () => {
                 animate(element, { translate: '0px 0px' }, softSpring);

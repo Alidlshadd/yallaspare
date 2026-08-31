@@ -127,113 +127,414 @@
                 }
                 @keyframes tb-ring { 0% { transform: scale(0.6); opacity: 0.6; } 100% { transform: scale(1.6); opacity: 0; } }
 
-                /* ─────── ADMIN SIDEBAR — INSTRUMENT STACK ─────── */
+                /* ═══════════ ADMIN SIDEBAR — COMMAND CENTER ═══════════
+                   One dark navy field, not a stack of cards. Depth comes from
+                   light: a slow gradient down the panel, a cool wash at the
+                   top corner, and a cursor-following highlight that is felt
+                   more than seen. Orange is spent on one thing only — the rail
+                   that marks where you are. */
                 .admin-shell .admin-sidebar {
-                    background:
-                        linear-gradient(180deg, #04041f 0%, #06063a 50%, #08084a 100%) !important;
+                    --sb-pad: 14px;
+                    --sb-row-h: 44px;
+                    --sb-radius: 10px;
+                    --sb-line: rgba(255, 255, 255, 0.07);
+                    --sb-text: rgba(236, 238, 251, 0.78);
+                    --sb-text-dim: rgba(236, 238, 251, 0.42);
+                    --sb-flame: #ff8a3d;
+                    --sb-ease: cubic-bezier(0.16, 1, 0.3, 1);
+                    --sb-ease-micro: cubic-bezier(0.2, 0, 0, 1);
+                    /* Spotlight origin, written by the motion module. */
+                    --sb-x: 50%;
+                    --sb-y: -200px;
+
+                    position: fixed;
                     display: flex;
                     flex-direction: column;
+                    isolation: isolate;
+                    background:
+                        radial-gradient(120% 55% at 0% 0%, #12124f 0%, rgba(18, 18, 79, 0) 62%),
+                        linear-gradient(180deg, #070740 0%, #06062f 58%, #04041f 100%) !important;
                 }
-                /* Thin amber hairline on the trailing edge — matches topbar's left amber bar */
-                .admin-shell .admin-sidebar::after {
-                    content: ""; position: absolute; top: 0; bottom: 0; right: 0; width: 1px;
-                    background: linear-gradient(180deg, transparent, rgb(255 138 61 / 0.35), transparent);
+
+                /* The cursor highlight. A separate layer so it can be moved
+                   without repainting anything that carries text. */
+                .admin-shell .admin-sidebar::before {
+                    content: "";
+                    position: absolute;
+                    inset: 0;
+                    z-index: 0;
                     pointer-events: none;
+                    opacity: 0;
+                    transition: opacity 260ms var(--sb-ease-micro);
+                    background: radial-gradient(
+                        circle 190px at var(--sb-x) var(--sb-y),
+                        rgba(255, 255, 255, 0.038),
+                        transparent 70%
+                    );
                 }
-                [dir='rtl'] .admin-shell .admin-sidebar::after {
-                    right: auto; left: 0;
+                .admin-shell .admin-sidebar.is-lit::before { opacity: 1; }
+
+                /* Separation from the content: a hairline, not a border. */
+                .admin-shell .admin-sidebar::after {
+                    content: "";
+                    position: absolute;
+                    top: 0;
+                    bottom: 0;
+                    inset-inline-end: 0;
+                    width: 1px;
+                    z-index: 2;
+                    pointer-events: none;
+                    background: linear-gradient(
+                        180deg,
+                        rgba(255, 255, 255, 0.12),
+                        rgba(255, 255, 255, 0.05) 40%,
+                        rgba(255, 255, 255, 0.02)
+                    );
                 }
+
+                .admin-shell .admin-sidebar > * { position: relative; z-index: 1; }
+
+                /* ── brand ─────────────────────────────────────────────── */
                 .admin-shell .admin-sidebar-header {
-                    border-bottom-color: rgba(255,255,255,0.06) !important;
+                    padding: 18px var(--sb-pad) 14px;
+                    border-bottom: 1px solid var(--sb-line) !important;
                 }
-                .admin-shell .admin-sidebar-meta {
-                    color: #ffb27a !important;
-                    font-family: ui-monospace, 'JetBrains Mono', monospace;
-                    letter-spacing: 0.22em !important;
+                .admin-shell .admin-sidebar-logo {
+                    border-radius: var(--sb-radius);
+                    transition: background-color 200ms var(--sb-ease-micro);
                 }
                 .admin-shell .admin-sidebar-logo:hover {
-                    background-color: rgb(255 138 61 / 0.06) !important;
+                    background-color: rgba(255, 255, 255, 0.045) !important;
+                }
+                .admin-shell .admin-sidebar-brand-copy {
+                    font-size: 15px;
+                    letter-spacing: -0.012em;
+                }
+                .admin-shell .admin-sidebar-meta {
+                    color: var(--sb-text-dim) !important;
+                    font-family: ui-monospace, 'JetBrains Mono', monospace;
+                    font-size: 9.5px !important;
+                    letter-spacing: 0.15em !important;
                 }
 
-                /* Nav layout — let footer be pushed to the bottom */
-                .admin-shell .admin-nav { flex: 1 0 auto; }
+                /* ── nav ───────────────────────────────────────────────── */
+                .admin-shell .admin-nav {
+                    flex: 1 0 auto;
+                    position: relative;
+                    padding: 6px 8px 14px;
+                }
 
-                /* Section headers between nav groups */
-                /* A section header names a group; it is not the thing you are
-                   looking for. Grey, and large enough to read — the accent is
-                   spent on the one row that says where you are. */
+                /* The rail. One element for the whole list; the motion module
+                   moves it between rows so the eye can follow it there. */
+                .admin-shell .admin-nav-rail {
+                    position: absolute;
+                    inset-inline-start: 0;
+                    top: 0;
+                    width: 3px;
+                    height: var(--sb-row-h);
+                    border-radius: 0 3px 3px 0;
+                    background: linear-gradient(180deg, var(--sb-flame), #e65c00);
+                    transform-origin: center;
+                    opacity: 0;
+                    pointer-events: none;
+                    z-index: 2;
+                }
+                [dir='rtl'] .admin-shell .admin-nav-rail { border-radius: 3px 0 0 3px; }
+                .admin-shell .admin-nav-rail.is-ready { opacity: 1; }
+
+                /* ── section headings ──────────────────────────────────── */
                 .admin-nav-section {
-                    display: flex; align-items: center; gap: 10px;
-                    padding: 18px 18px 6px;
-                    font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
-                    text-transform: uppercase; color: rgba(255,255,255,0.42);
-                    font-family: ui-monospace, 'JetBrains Mono', monospace;
+                    display: block;
+                    padding: 18px 10px 6px;
+                    font-size: 10.5px;
+                    font-weight: 600;
+                    letter-spacing: 0.09em;
+                    text-transform: uppercase;
+                    color: var(--sb-text-dim);
                     user-select: none;
                 }
-                .admin-nav-section::after {
-                    content: ""; flex: 1; height: 1px;
-                    background: rgba(255,255,255,0.08);
-                }
                 .admin-nav > .admin-nav-section:first-child { padding-top: 6px; }
+                .admin-nav-section::after { content: none; }
 
-                /* The current page: a plain lighter row. The orange edge beside
-                   it is the signal, and it is the only orange in the list. */
-                .admin-shell .admin-nav-link.is-active {
-                    background: rgba(255,255,255,0.07) !important;
-                    color: #fff !important;
-                }
-                .admin-shell .admin-nav-link.is-active::before {
-                    background: #ff8a3d !important;
-                    width: 3px !important;
-                    inset-block: 0.4rem !important;
-                    border-radius: 0 3px 3px 0 !important;
-                }
-                /* Simpler icon treatment — no cyan tile, just amber-cream icon */
-                .admin-shell .admin-nav-icon {
+                /* ── rows ──────────────────────────────────────────────── */
+                .admin-shell .admin-nav-link {
+                    display: flex;
+                    align-items: center;
+                    gap: 11px;
+                    min-height: var(--sb-row-h);
+                    padding: 0 10px;
+                    border-radius: var(--sb-radius);
+                    color: var(--sb-text) !important;
+                    font-size: 13.5px;
+                    font-weight: 500;
+                    letter-spacing: -0.004em;
+                    position: relative;
                     background-color: transparent !important;
-                    color: rgba(255,255,255,0.55) !important;
-                    width: 1.75rem !important; height: 1.75rem !important; flex-basis: 1.75rem !important;
-                }
-                .admin-shell .admin-nav-link:hover .admin-nav-icon {
-                    background-color: transparent !important;
-                    color: rgba(255,255,255,0.9) !important;
-                }
-                .admin-shell .admin-nav-link.is-active .admin-nav-icon {
-                    background-color: transparent !important;
-                    color: #ff8a3d !important;
+                    transition: background-color 180ms var(--sb-ease-micro),
+                                color 180ms var(--sb-ease-micro);
                 }
                 .admin-shell .admin-nav-link:hover {
-                    background-color: rgba(255,255,255,0.05) !important;
+                    background-color: rgba(255, 255, 255, 0.05) !important;
+                    color: #fff !important;
+                }
+                .admin-shell .admin-nav-link:focus-visible {
+                    outline: 2px solid var(--sb-flame);
+                    outline-offset: -2px;
                 }
 
-                /* ─────── SIDEBAR FOOTER ─────── */
-                .admin-sidebar-footer {
-                    flex: 0 0 auto;
-                    margin-top: auto;
-                    padding: 12px 18px;
-                    border-top: 1px solid rgba(255,255,255,0.06);
-                    display: flex; align-items: center; justify-content: space-between; gap: 8px;
-                    font-family: ui-monospace, 'JetBrains Mono', monospace;
-                    font-size: 10px; color: rgba(255,255,255,0.45);
+                /* The current page. The rail carries the accent; the row only
+                   lifts off the ground. */
+                .admin-shell .admin-nav-link.is-active {
+                    background-color: rgba(255, 255, 255, 0.055) !important;
+                    background-image: linear-gradient(
+                        90deg,
+                        rgba(255, 138, 61, 0.07),
+                        rgba(255, 138, 61, 0)
+                    ) !important;
+                    color: #fff !important;
+                    font-weight: 600;
+                    box-shadow: none;
                 }
-                .admin-sidebar-status {
-                    display: inline-flex; align-items: center; gap: 6px;
-                    padding: 4px 8px; border-radius: 999px;
-                    background: rgba(16,185,129,0.10); color: #6ee7b7;
-                    border: 1px solid rgba(16,185,129,0.25);
-                    font-size: 9px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+                [dir='rtl'] .admin-shell .admin-nav-link.is-active {
+                    background-image: linear-gradient(
+                        270deg,
+                        rgba(255, 138, 61, 0.07),
+                        rgba(255, 138, 61, 0)
+                    ) !important;
+                }
+                /* Without the moving rail — reduced motion, or before the
+                   script is up — the current row keeps a plain bar of its own.
+                   The panel must never be left with no answer to "where am I". */
+                .admin-shell .admin-nav-link.is-active::before {
+                    content: "";
+                    position: absolute;
+                    inset-inline-start: -8px;
+                    top: 8px;
+                    bottom: 8px;
+                    width: 3px;
+                    border-radius: 0 3px 3px 0;
+                    background: var(--sb-flame);
+                }
+                [dir='rtl'] .admin-shell .admin-nav-link.is-active::before {
+                    border-radius: 3px 0 0 3px;
+                }
+                .admin-shell .admin-nav.rail-on .admin-nav-link.is-active::before {
+                    content: none;
+                }
+
+                .admin-nav-label {
+                    min-width: 0;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
                     white-space: nowrap;
                 }
-                .admin-sidebar-status-dot {
-                    width: 6px; height: 6px; border-radius: 999px; background: #34d399;
-                    box-shadow: 0 0 6px rgba(52,211,153,0.7);
+
+                /* ── icons ─────────────────────────────────────────────── */
+                /* Phosphor, one family, two weights layered and cross-faded.
+                   No tile, no circle: the glyph sits directly on the panel. */
+                .admin-shell .admin-nav-icon.ph {
+                    position: relative;
+                    display: inline-grid;
+                    place-items: center;
+                    width: var(--ph-size, 20px);
+                    height: var(--ph-size, 20px);
+                    flex: none;
+                    background: none !important;
+                    color: rgba(255, 255, 255, 0.62) !important;
+                    transition: color 180ms var(--sb-ease-micro);
                 }
-                /* Hide section headers and footer in collapsed sidebar */
+                .admin-shell .ph-glyph {
+                    grid-area: 1 / 1;
+                    width: 100%;
+                    height: 100%;
+                    transition: opacity 200ms var(--sb-ease-micro);
+                }
+                .admin-shell .ph-fill { opacity: 0; }
+                .admin-shell .admin-nav-link:hover .admin-nav-icon.ph {
+                    color: rgba(255, 255, 255, 0.95) !important;
+                }
+                .admin-shell .admin-nav-link.is-active .admin-nav-icon.ph {
+                    color: var(--sb-flame) !important;
+                }
+                .admin-shell .admin-nav-link.is-active .ph-regular { opacity: 0; }
+                .admin-shell .admin-nav-link.is-active .ph-fill { opacity: 1; }
+
+                /* ── badges ────────────────────────────────────────────── */
+                .admin-nav-badge {
+                    margin-inline-start: auto;
+                    flex: none;
+                    min-width: 20px;
+                    padding: 1px 6px;
+                    border-radius: 6px;
+                    font-family: ui-monospace, 'JetBrains Mono', monospace;
+                    font-size: 10.5px;
+                    font-weight: 600;
+                    line-height: 1.5;
+                    text-align: center;
+                    color: var(--sb-text-dim);
+                    background: rgba(255, 255, 255, 0.07);
+                }
+                .admin-nav-badge[data-tone='accent'] {
+                    color: #ffc08a;
+                    background: rgba(255, 138, 61, 0.16);
+                }
+
+                /* ── footer ────────────────────────────────────────────── */
+                .admin-sidebar-footer {
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 8px;
+                    padding: 10px var(--sb-pad);
+                    border-top: 1px solid var(--sb-line);
+                }
+                .admin-sidebar-version {
+                    font-family: ui-monospace, 'JetBrains Mono', monospace;
+                    font-size: 10px;
+                    color: var(--sb-text-dim);
+                }
+                .admin-sidebar-status {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 6px;
+                    padding: 3px 8px;
+                    border-radius: 999px;
+                    font-size: 10.5px;
+                    font-weight: 600;
+                    color: #6ee7b7;
+                    background: rgba(16, 185, 129, 0.1);
+                }
+                .admin-sidebar-status-dot {
+                    width: 5px;
+                    height: 5px;
+                    border-radius: 999px;
+                    background: #34d399;
+                }
+
+                /* ── collapsed ─────────────────────────────────────────── */
                 .admin-shell.admin-sidebar-collapsed .admin-nav-section,
                 .admin-sidebar-precollapsed .admin-shell .admin-nav-section,
+                .admin-shell.admin-sidebar-collapsed .admin-nav-badge,
+                .admin-sidebar-precollapsed .admin-shell .admin-nav-badge {
+                    display: none;
+                }
+                .admin-shell.admin-sidebar-collapsed .admin-nav-label,
+                .admin-sidebar-precollapsed .admin-shell .admin-nav-label,
+                .admin-shell.admin-sidebar-collapsed .admin-sidebar-brand-block,
+                .admin-sidebar-precollapsed .admin-shell .admin-sidebar-brand-block {
+                    opacity: 0;
+                    width: 0;
+                    overflow: hidden;
+                    pointer-events: none;
+                }
+                .admin-shell.admin-sidebar-collapsed .admin-nav-link,
+                .admin-sidebar-precollapsed .admin-shell .admin-nav-link {
+                    justify-content: center;
+                    padding-inline: 0;
+                    gap: 0;
+                }
+                .admin-shell.admin-sidebar-collapsed .admin-sidebar-logo,
+                .admin-sidebar-precollapsed .admin-shell .admin-sidebar-logo {
+                    justify-content: center;
+                }
+                .admin-shell.admin-sidebar-collapsed .admin-sidebar-version,
+                .admin-sidebar-precollapsed .admin-shell .admin-sidebar-version {
+                    display: none;
+                }
                 .admin-shell.admin-sidebar-collapsed .admin-sidebar-footer,
                 .admin-sidebar-precollapsed .admin-shell .admin-sidebar-footer {
+                    justify-content: center;
+                }
+                .admin-shell.admin-sidebar-collapsed .admin-sidebar-status span:last-child,
+                .admin-sidebar-precollapsed .admin-shell .admin-sidebar-status span:last-child {
                     display: none;
+                }
+
+                /* ── collapsed tooltip ─────────────────────────────────── */
+                /* Fixed, so the sidebar's own overflow cannot clip it. */
+                .admin-sidebar-tip {
+                    position: fixed;
+                    z-index: 200;
+                    pointer-events: none;
+                    padding: 6px 10px;
+                    border-radius: 9px;
+                    border: 1px solid rgba(255, 255, 255, 0.1);
+                    background: #0b0b2e;
+                    box-shadow: 0 12px 30px -12px rgba(0, 0, 0, 0.7);
+                    color: #eceefb;
+                    font-size: 12.5px;
+                    font-weight: 500;
+                    white-space: nowrap;
+                    opacity: 0;
+                }
+
+                /* ── edge control ──────────────────────────────────────── */
+                .admin-shell .admin-sidebar-toggle {
+                    display: inline-flex;
+                    align-items: center;
+                    justify-content: center;
+                    height: 28px;
+                    width: 28px;
+                    border-radius: 999px;
+                    border: 1px solid rgba(255, 255, 255, 0.12);
+                    background: rgba(255, 255, 255, 0.06);
+                    color: rgba(236, 238, 251, 0.75);
+                    transition: width 220ms var(--sb-ease),
+                                background-color 200ms var(--sb-ease-micro),
+                                border-color 200ms var(--sb-ease-micro),
+                                color 200ms var(--sb-ease-micro);
+                }
+                .admin-shell .admin-sidebar-toggle:hover {
+                    width: 34px;
+                    background: rgba(255, 255, 255, 0.11);
+                    border-color: rgba(255, 255, 255, 0.2);
+                    color: #fff;
+                }
+                .admin-shell .admin-sidebar-toggle svg {
+                    width: 14px;
+                    height: 14px;
+                    transition: translate 200ms var(--sb-ease-micro), rotate 300ms var(--sb-ease);
+                }
+                .admin-shell .admin-sidebar-toggle:hover svg { translate: 2px 0; }
+                [dir='rtl'] .admin-shell .admin-sidebar-toggle:hover svg { translate: -2px 0; }
+                .admin-shell.admin-sidebar-collapsed .admin-sidebar-toggle svg,
+                .admin-sidebar-precollapsed .admin-shell .admin-sidebar-toggle svg {
+                    rotate: 180deg;
+                }
+
+                /* The control sits on the seam between panel and content, a
+                   sibling of both, so the panel's own scrolling cannot clip it
+                   and it rides the width variable without being told to. */
+                .admin-sidebar-edge {
+                    display: none;
+                }
+                @media (min-width: 768px) {
+                    .admin-sidebar-edge {
+                        position: fixed;
+                        top: 92px;
+                        inset-inline-start: calc(var(--sidebar-width) - 14px);
+                        z-index: 95;
+                        display: inline-flex;
+                        background: #0b0b33;
+                        transition: inset-inline-start 460ms cubic-bezier(0.16, 1, 0.3, 1),
+                                    width 220ms cubic-bezier(0.16, 1, 0.3, 1),
+                                    background-color 200ms cubic-bezier(0.2, 0, 0, 1),
+                                    border-color 200ms cubic-bezier(0.2, 0, 0, 1),
+                                    color 200ms cubic-bezier(0.2, 0, 0, 1);
+                    }
+                    .admin-sidebar-edge:hover { background: #14144a; }
+                }
+                /* The glyph points at the panel in either writing direction. */
+                [dir='rtl'] .admin-sidebar-edge svg { scale: -1 1; }
+
+                /* ── motion off ────────────────────────────────────────── */
+                @media (prefers-reduced-motion: reduce) {
+                    .admin-shell .admin-sidebar::before { display: none; }
+                    .admin-shell .admin-sidebar *,
+                    .admin-shell .admin-sidebar-toggle,
+                    .admin-shell .admin-sidebar-toggle svg {
+                        transition-duration: 1ms !important;
+                    }
                 }
             </style>
             <script nonce="{{ $cspNonce }}">
@@ -356,23 +657,9 @@
                             />
                             <span class="admin-sidebar-brand-block">
                                 <x-brand-wordmark :brand="$systemSettings['site_name'] ?? 'YallaSpare'" class="admin-sidebar-brand-copy app-logo-text truncate" data-admin-sidebar-logo-text />
-                                <span class="admin-sidebar-meta text-[10px] uppercase tracking-widest" data-admin-sidebar-meta>{{ __('Admin · Live') }}</span>
+                                <span class="admin-sidebar-meta uppercase" data-admin-sidebar-meta>{{ __('Command Center') }}</span>
                             </span>
                         </a>
-                        <button
-                            type="button"
-                            class="admin-sidebar-toggle hidden h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-slate-100 transition hover:border-white/20 hover:bg-white/15 hover:text-white lg:inline-flex"
-                            aria-expanded="true"
-                            aria-label="{{ __('Collapse sidebar') }}"
-                            title="{{ __('Collapse sidebar') }}"
-                            aria-controls="admin-sidebar"
-                            data-expand-label="{{ __('Expand sidebar') }}"
-                            data-collapse-label="{{ __('Collapse sidebar') }}"
-                            data-admin-sidebar-toggle
-                        >
-                            <i class="fas {{ $isRtl ? 'fa-angles-right' : 'fa-angles-left' }} text-sm admin-toggle-collapse-icon" aria-hidden="true"></i>
-                            <i class="fas {{ $isRtl ? 'fa-angles-left' : 'fa-angles-right' }} text-sm admin-toggle-expand-icon" aria-hidden="true"></i>
-                        </button>
                         <button
                             type="button"
                             class="admin-sidebar-toggle inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-slate-100 transition hover:bg-white/15 lg:hidden"
@@ -412,6 +699,10 @@
                         $hasAdminGrp   = $canUsersView || $canSettings || $canActLogs || $canDealers;
                     @endphp
                     <nav class="admin-nav space-y-1.5" aria-label="{{ __('Admin sections') }}">
+                        {{-- Marks the current page. One element for the list, moved
+                             between rows by the motion module so the eye can follow
+                             it rather than find it again. --}}
+                        <span class="admin-nav-rail" data-admin-nav-rail aria-hidden="true"></span>
                         {{-- ── OPERATIONS ── what the day is actually spent on --}}
                         <div class="admin-nav-section" aria-hidden="true"><span>{{ __('Operations') }}</span></div>
                         <a
@@ -420,7 +711,7 @@
                             data-admin-sidebar-tooltip="{{ __('Dashboard') }}"
                             @if(request()->routeIs('admin.dashboard')) aria-current="page" @endif
                         >
-                            <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-gauge-high" aria-hidden="true"></i></span>
+                            <x-ph-icon name="gauge" class="admin-nav-icon" />
                             <span class="admin-nav-label">{{ __('Dashboard') }}</span>
                         </a>
                         @can(\App\Models\User::PERMISSION_ORDERS_MANAGE)
@@ -430,7 +721,7 @@
                                 data-admin-sidebar-tooltip="{{ __('Orders Management') }}"
                                 @if(request()->routeIs('admin.orders.*')) aria-current="page" @endif
                             >
-                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-receipt" aria-hidden="true"></i></span>
+                                <x-ph-icon name="receipt" class="admin-nav-icon" />
                                 <span class="admin-nav-label">{{ __('Orders Management') }}</span>
                             </a>
                             <a
@@ -439,7 +730,7 @@
                                 data-admin-sidebar-tooltip="{{ __('Returns & Refunds') }}"
                                 @if(request()->routeIs('admin.returns.*')) aria-current="page" @endif
                             >
-                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-rotate-left" aria-hidden="true"></i></span>
+                                <x-ph-icon name="arrow-u-down-left" class="admin-nav-icon" />
                                 <span class="admin-nav-label">{{ __('Returns & Refunds') }}</span>
                             </a>
                         @endcan
@@ -451,7 +742,7 @@
                                 data-admin-sidebar-tooltip="{{ __('Product Requests') }}"
                                 @if(request()->routeIs('admin.stock-requests.*')) aria-current="page" @endif
                             >
-                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-bell-concierge" aria-hidden="true"></i></span>
+                                <x-ph-icon name="bell-ringing" class="admin-nav-icon" />
                                 <span class="admin-nav-label">{{ __('Product Requests') }}</span>
                             </a>
                         @endif
@@ -465,7 +756,7 @@
                                 data-admin-sidebar-tooltip="{{ __('Products') }}"
                                 @if(request()->routeIs('admin.products.*')) aria-current="page" @endif
                             >
-                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-box" aria-hidden="true"></i></span>
+                                <x-ph-icon name="cube" class="admin-nav-icon" />
                                 <span class="admin-nav-label">{{ __('Products') }}</span>
                             </a>
                             <a
@@ -474,7 +765,7 @@
                                 data-admin-sidebar-tooltip="{{ __('Categories') }}"
                                 @if(request()->routeIs('admin.categories.*')) aria-current="page" @endif
                             >
-                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-layer-group" aria-hidden="true"></i></span>
+                                <x-ph-icon name="grid-four" class="admin-nav-icon" />
                                 <span class="admin-nav-label">{{ __('Categories') }}</span>
                             </a>
                             <a
@@ -483,7 +774,7 @@
                                 data-admin-sidebar-tooltip="{{ __('Product Brands') }}"
                                 @if(request()->routeIs('admin.product-brands.*')) aria-current="page" @endif
                             >
-                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-tags" aria-hidden="true"></i></span>
+                                <x-ph-icon name="tag" class="admin-nav-icon" />
                                 <span class="admin-nav-label">{{ __('Product Brands') }}</span>
                             </a>
                             <a
@@ -492,7 +783,7 @@
                                 data-admin-sidebar-tooltip="{{ __('Vehicle Finder') }}"
                                 @if(request()->routeIs('admin.vehicle-fitments.*')) aria-current="page" @endif
                             >
-                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-car-side" aria-hidden="true"></i></span>
+                                <x-ph-icon name="car-profile" class="admin-nav-icon" />
                                 <span class="admin-nav-label">{{ __('Vehicle Finder') }}</span>
                             </a>
                             <a
@@ -501,7 +792,7 @@
                                 data-admin-sidebar-tooltip="{{ __('Customer Reviews') }}"
                                 @if(request()->routeIs('admin.reviews.*')) aria-current="page" @endif
                             >
-                                <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-star" aria-hidden="true"></i></span>
+                                <x-ph-icon name="star" class="admin-nav-icon" />
                                 <span class="admin-nav-label">{{ __('Customer Reviews') }}</span>
                             </a>
                         @endif
@@ -518,7 +809,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Inventory') }}"
                                     @if(request()->routeIs('admin.inventory.index')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-boxes-stacked" aria-hidden="true"></i></span>
+                                    <x-ph-icon name="stack" class="admin-nav-icon" />
                                     <span class="admin-nav-label">{{ __('Inventory') }}</span>
                                 </a>
                                 <a
@@ -527,7 +818,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Bulk Stock') }}"
                                     @if(request()->routeIs('admin.inventory.bulk-stock*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-list-check" aria-hidden="true"></i></span>
+                                    <x-ph-icon name="list-checks" class="admin-nav-icon" />
                                     <span class="admin-nav-label">{{ __('Bulk Stock') }}</span>
                                 </a>
                             @endcan
@@ -540,7 +831,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Dead Stock') }}"
                                     @if(request()->routeIs('admin.dead-stock.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-box-archive" aria-hidden="true"></i></span>
+                                    <x-ph-icon name="archive" class="admin-nav-icon" />
                                     <span class="admin-nav-label">{{ __('Dead Stock') }}</span>
                                 </a>
                             @endif
@@ -551,7 +842,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Purchase Planning') }}"
                                     @if(request()->routeIs('admin.purchase-planning.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-cart-flatbed" aria-hidden="true"></i></span>
+                                    <x-ph-icon name="clipboard-text" class="admin-nav-icon" />
                                     <span class="admin-nav-label">{{ __('Purchase Planning') }}</span>
                                 </a>
                             @endcan
@@ -568,7 +859,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Coupon Management') }}"
                                     @if(request()->routeIs('admin.discounts.edit') || request()->routeIs('admin.discounts.coupons.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-ticket" aria-hidden="true"></i></span>
+                                    <x-ph-icon name="ticket" class="admin-nav-icon" />
                                     <span class="admin-nav-label">{{ __('Coupon Management') }}</span>
                                 </a>
                                 <a
@@ -577,7 +868,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Discount Rules') }}"
                                     @if(request()->routeIs('admin.discounts.rules')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-percent" aria-hidden="true"></i></span>
+                                    <x-ph-icon name="percent" class="admin-nav-icon" />
                                     <span class="admin-nav-label">{{ __('Discount Rules') }}</span>
                                 </a>
                             @endcan
@@ -588,7 +879,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Email Center') }}"
                                     @if(request()->routeIs('admin.email.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-envelope-open-text" aria-hidden="true"></i></span>
+                                    <x-ph-icon name="envelope-simple" class="admin-nav-icon" />
                                     <span class="admin-nav-label">{{ __('Email Center') }}</span>
                                 </a>
                                 <a
@@ -597,7 +888,7 @@
                                     data-admin-sidebar-tooltip="{{ config('services.otpiq.whatsapp.admin_visible', true) ? __('SMS & WhatsApp Center') : __('SMS Center') }}"
                                     @if(request()->routeIs('admin.messaging.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-comments" aria-hidden="true"></i></span>
+                                    <x-ph-icon name="chat-circle-dots" class="admin-nav-icon" />
                                     <span class="admin-nav-label">{{ config('services.otpiq.whatsapp.admin_visible', true) ? __('SMS & WhatsApp Center') : __('SMS Center') }}</span>
                                 </a>
                                 <a
@@ -606,7 +897,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Popups') }}"
                                     @if(request()->routeIs('admin.popups.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-bullhorn" aria-hidden="true"></i></span>
+                                    <x-ph-icon name="megaphone-simple" class="admin-nav-icon" />
                                     <span class="admin-nav-label">{{ __('Popups') }}</span>
                                 </a>
                             @endcan
@@ -617,7 +908,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Inbound WhatsApp') }}"
                                     @if(request()->routeIs('admin.whatsapp.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fab fa-whatsapp" aria-hidden="true"></i></span>
+                                    <x-ph-icon name="whatsapp-logo" class="admin-nav-icon" />
                                     <span class="admin-nav-label">{{ __('Inbound WhatsApp') }}</span>
                                 </a>
                             @endif
@@ -633,7 +924,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Progress Center') }}"
                                     @if(request()->routeIs('admin.goals.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-bullseye" aria-hidden="true"></i></span>
+                                    <x-ph-icon name="target" class="admin-nav-icon" />
                                     <span class="admin-nav-label">{{ __('Progress Center') }}</span>
                                 </a>
                             @endif
@@ -644,7 +935,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Revenue') }}"
                                     @if(request()->routeIs('admin.revenue.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-sack-dollar" aria-hidden="true"></i></span>
+                                    <x-ph-icon name="coins" class="admin-nav-icon" />
                                     <span class="admin-nav-label">{{ __('Revenue') }}</span>
                                 </a>
                             @endcan
@@ -655,7 +946,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Site Analytics') }}"
                                     @if(request()->routeIs('admin.analytics.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-chart-line" aria-hidden="true"></i></span>
+                                    <x-ph-icon name="chart-line-up" class="admin-nav-icon" />
                                     <span class="admin-nav-label">{{ __('Site Analytics') }}</span>
                                 </a>
                                 <a
@@ -664,7 +955,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Search Insights') }}"
                                     @if(request()->routeIs('admin.search-insights.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-magnifying-glass-chart" aria-hidden="true"></i></span>
+                                    <x-ph-icon name="magnifying-glass" class="admin-nav-icon" />
                                     <span class="admin-nav-label">{{ __('Search Insights') }}</span>
                                 </a>
                             @endcan
@@ -675,7 +966,7 @@
                                     data-admin-sidebar-tooltip="{{ __('WAYL Payments') }}"
                                     @if(request()->routeIs('admin.wayl.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-credit-card" aria-hidden="true"></i></span>
+                                    <x-ph-icon name="credit-card" class="admin-nav-icon" />
                                     <span class="admin-nav-label">{{ __('WAYL Payments') }}</span>
                                 </a>
                             @endcan
@@ -692,7 +983,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Dealers') }}"
                                     @if(request()->routeIs('admin.dealers.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-handshake" aria-hidden="true"></i></span>
+                                    <x-ph-icon name="handshake" class="admin-nav-icon" />
                                     <span class="admin-nav-label">{{ __('Dealers') }}</span>
                                 </a>
                             @endif
@@ -703,7 +994,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Users') }}"
                                     @if(request()->routeIs('admin.users.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-users" aria-hidden="true"></i></span>
+                                    <x-ph-icon name="users-three" class="admin-nav-icon" />
                                     <span class="admin-nav-label">{{ __('Users') }}</span>
                                 </a>
                             @endcan
@@ -714,7 +1005,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Settings') }}"
                                     @if(request()->routeIs('admin.settings.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-gear" aria-hidden="true"></i></span>
+                                    <x-ph-icon name="gear-six" class="admin-nav-icon" />
                                     <span class="admin-nav-label">{{ __('Settings') }}</span>
                                 </a>
                                 <a
@@ -723,7 +1014,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Shipping') }}"
                                     @if(request()->routeIs('admin.shipping.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-truck-fast" aria-hidden="true"></i></span>
+                                    <x-ph-icon name="truck" class="admin-nav-icon" />
                                     <span class="admin-nav-label">{{ __('Shipping') }}</span>
                                 </a>
                             @endcan
@@ -734,7 +1025,7 @@
                                     data-admin-sidebar-tooltip="{{ __('Activity Logs') }}"
                                     @if(request()->routeIs('admin.activity-logs.*')) aria-current="page" @endif
                                 >
-                                    <span class="admin-nav-icon" aria-hidden="true"><i class="fas fa-clipboard-list" aria-hidden="true"></i></span>
+                                    <x-ph-icon name="clock-counter-clockwise" class="admin-nav-icon" />
                                     <span class="admin-nav-label">{{ __('Activity Logs') }}</span>
                                 </a>
                             @endcan
@@ -750,6 +1041,23 @@
                         </span>
                     </div>
                 </aside>
+
+                <button
+                    type="button"
+                    class="admin-sidebar-toggle admin-sidebar-edge"
+                    aria-expanded="true"
+                    aria-label="{{ __('Collapse sidebar') }}"
+                    title="{{ __('Collapse sidebar') }}"
+                    aria-controls="admin-sidebar"
+                    data-expand-label="{{ __('Expand sidebar') }}"
+                    data-collapse-label="{{ __('Collapse sidebar') }}"
+                    data-admin-sidebar-toggle
+                >
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                         stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                        <path d="M15 5l-7 7 7 7" />
+                    </svg>
+                </button>
 
                 <!-- Main Content -->
                 <div

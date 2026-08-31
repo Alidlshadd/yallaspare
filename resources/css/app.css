@@ -1898,8 +1898,8 @@
         --surface-1: var(--admin-surface-strong);
         --surface-2: var(--admin-card);
 
-        --sidebar-width-expanded: 16rem;
-        --sidebar-width-collapsed: 5.5rem;
+        --sidebar-width-expanded: 17.25rem;
+        --sidebar-width-collapsed: 5rem;
         --sidebar-width: var(--sidebar-width-expanded);
         --admin-sidebar-expanded: var(--sidebar-width-expanded);
         --admin-sidebar-collapsed: var(--sidebar-width-collapsed);
@@ -1930,7 +1930,7 @@
         backface-visibility: hidden;
         -webkit-overflow-scrolling: touch;
         box-shadow: 18px 0 50px -35px rgba(15, 23, 42, 0.75);
-        transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1), width 240ms cubic-bezier(0.22, 1, 0.36, 1);
+        transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1), width 460ms cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     [dir='rtl'] .admin-sidebar {
@@ -1941,7 +1941,8 @@
     }
 
     [dir='rtl'] .admin-shell {
-        --sidebar-width-expanded: 18.5rem;
+        /* Arabic and Kurdish labels run longer than their English source. */
+        --sidebar-width-expanded: 19rem;
         --admin-sidebar-expanded: var(--sidebar-width-expanded);
     }
 

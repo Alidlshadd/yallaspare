@@ -4,6 +4,7 @@
 import { prefersReducedMotion } from './config';
 import { initReveal } from './reveal';
 import { initInteractions } from './interactions';
+import { initSidebar } from './sidebar';
 
 const boot = () => {
     if (prefersReducedMotion() || !document.querySelector('[data-admin-shell]')) {
@@ -12,6 +13,7 @@ const boot = () => {
 
     initReveal();
     initInteractions();
+    initSidebar();
 };
 
 if (document.readyState === 'loading') {
