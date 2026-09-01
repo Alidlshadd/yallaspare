@@ -44,8 +44,15 @@ class ShopController extends Controller
             $productRelations['vehicleFitments'] = fn ($query) => $query
                 ->with([
                     'brand:id,name,slug',
-                    'model:id,name,slug,name_en,name_ar,name_ku,vehicle_brand_id,vehicle_model_family_id,image_path',
+                    // The build years belong to the variant, and the fitment's
+                    // own year columns only narrow them. Leaving them out of
+                    // this list is what made the page say "Any year" over a
+                    // variant whose years were recorded all along.
+                    'model:id,name,slug,name_en,name_ar,name_ku,vehicle_brand_id,vehicle_model_family_id,image_path,production_start_year,production_end_year',
                     'model.family:id,name,name_en,name_ar,name_ku',
+                    // What the engine actually is, rather than the text it was
+                    // chosen by. One query for the page, not one per row.
+                    'model.engineTypes:id,vehicle_model_id,name,fuel_type,engine_size,aspiration',
                     // The vehicle landing links on the page are built from the
                     // model's own make, so it has to come along rather than be
                     // fetched once per fitment row.

@@ -121,6 +121,25 @@ class VehicleFuelType
     }
 
     /**
+     * Displacement as engines are actually written: one decimal, always.
+     *
+     * This used to trim the trailing zero, so a 2.0 stored in the column came
+     * out as a bare "2" and a customer reading "2 Turbo Petrol" could not tell
+     * which engine was meant. The stored number is unchanged — only how it is
+     * written down.
+     *
+     * An electric drivetrain has no displacement, so it gets none here.
+     */
+    public static function displacement(int|float|string|null $engineSize, ?string $fuelType = null): string
+    {
+        if ($engineSize === null || $engineSize === '' || ! self::hasDisplacement($fuelType)) {
+            return '';
+        }
+
+        return number_format((float) $engineSize, 1, '.', '');
+    }
+
+    /**
      * Build the display string for an engine from its structured parts, so the
      * same engine reads correctly in every locale without storing three copies.
      *
@@ -135,8 +154,9 @@ class VehicleFuelType
     ): string {
         $parts = [];
 
-        if ($engineSize !== null && $engineSize !== '' && self::hasDisplacement($fuelType)) {
-            $parts[] = rtrim(rtrim(number_format((float) $engineSize, 1, '.', ''), '0'), '.') ?: (string) $engineSize;
+        $displacement = self::displacement($engineSize, $fuelType);
+        if ($displacement !== '') {
+            $parts[] = $displacement;
         }
 
         if ($aspiration !== null && trim($aspiration) !== '' && self::hasDisplacement($fuelType)) {

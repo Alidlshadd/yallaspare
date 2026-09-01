@@ -93,6 +93,10 @@ return [
         'default_country_code' => env('OTPIQ_DEFAULT_COUNTRY_CODE', '964'),
         'verification_ttl' => (int) env('OTPIQ_VERIFICATION_TTL', 5),
         'whatsapp' => [
+            // The number a customer writes to. It was written into the footer
+            // markup, so anywhere else that wanted it had to copy it; it lives
+            // here now and both places read the one value.
+            'contact_number' => (string) env('CONTACT_WHATSAPP_NUMBER', '9647704488315'),
             // Admins can keep configuring and monitoring WhatsApp while the
             // customer-facing delivery option remains hidden.
             'admin_visible' => (bool) env('OTPIQ_WHATSAPP_ADMIN_VISIBLE', true),

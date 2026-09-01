@@ -13,58 +13,51 @@
         : collect([$imageUrl])->values();
     $imageUrl = $galleryImages->first() ?: $imageUrl;
 
+    // What this part fits, resolved once from the records rather than pieced
+    // together in the markup. The fitment row narrows; the variant supplies the
+    // build years and the engine it left open.
+    $fitmentBoard = \App\Support\Vehicle\FitmentBoard::forProduct($product);
+
     // The landing pages this part belongs to. Linking them from here is what
     // lets a search engine — and a customer browsing for their car — walk from
     // one part to everything else that fits.
+    //
+    // Two variants of one car share a name and differ only by the years they
+    // were built, so a bare name produced two chips reading the same thing.
+    // Every page still gets its link; the years are what tell them apart.
     $vehicleLandingPages = $product->relationLoaded('vehicleFitments')
         ? $product->vehicleFitments
             ->filter(fn ($fitment) => $fitment->model?->slug && $fitment->model->brand?->slug)
             ->map(fn ($fitment) => [
-                'label' => trim($fitment->model->brand->name.' '.$fitment->model->localizedName()),
+                'name' => trim($fitment->model->brand->name.' '.$fitment->model->localizedName()),
+                'years' => $fitment->model->productionYears(),
                 'url' => route('catalog.vehicle-model', [$fitment->model->brand->slug, $fitment->model->slug]),
             ])
             ->unique('url')
-            ->take(8)
             ->values()
         : collect();
+
+    $duplicateVehicleNames = $vehicleLandingPages
+        ->groupBy('name')
+        ->filter(fn ($group) => $group->count() > 1)
+        ->keys();
+
+    $vehicleLandingPages = $vehicleLandingPages
+        ->map(function (array $page) use ($duplicateVehicleNames) {
+            $page['label'] = $duplicateVehicleNames->contains($page['name']) && $page['years']
+                ? $page['name'].' '.$page['years']
+                : $page['name'];
+
+            return $page;
+        })
+        ->sortBy('label')
+        ->take(8)
+        ->values();
 
     $compatibleModels = collect($product->compatible_models ?? [])
         ->map(fn ($item) => is_array($item) ? ($item['name'] ?? reset($item)) : $item)
         ->filter()
         ->values();
-    $vehicleFitments = $product->relationLoaded('vehicleFitments')
-        ? $product->vehicleFitments
-            ->map(function ($fitment) {
-                $yearFrom = $fitment->year_from ? (int) $fitment->year_from : null;
-                $yearTo = $fitment->year_to ? (int) $fitment->year_to : null;
-                $yearLabel = match (true) {
-                    $yearFrom !== null && $yearTo !== null && $yearFrom === $yearTo => (string) $yearFrom,
-                    $yearFrom !== null && $yearTo !== null => $yearFrom.'–'.$yearTo,
-                    $yearFrom !== null => $yearFrom.'+',
-                    $yearTo !== null => '≤ '.$yearTo,
-                    default => __('Any year'),
-                };
-
-                return [
-                    'brand' => (string) ($fitment->brand?->name ?: __('Any brand')),
-                    'family' => (string) ($fitment->model?->family?->localizedName() ?: $fitment->model?->localizedName() ?: __('Other')),
-                    'model' => (string) ($fitment->model?->localizedName() ?: __('Any model')),
-                    'image' => $fitment->model?->image_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($fitment->model->image_path)
-                        ? asset('storage/'.ltrim($fitment->model->image_path, '/'))
-                        : null,
-                    'years' => $yearLabel,
-                    'engine' => (string) ($fitment->engine ? \App\Support\VehicleLocalization::engine($fitment->engine) : __('Any engine')),
-                    'notes' => trim((string) $fitment->notes),
-                    // Numeric bounds for the fitment board: null on both means the
-                    // whole model is covered rather than that data is missing.
-                    'from' => $yearFrom,
-                    'to' => $yearTo,
-                    'engineRaw' => \App\Support\VehicleLocalization::engine($fitment->engine),
-                ];
-            })
-            ->unique(fn (array $fitment) => implode('|', $fitment))
-            ->values()
-        : collect();
 
     $pricing = $product->pricingFor(auth()->user());
     $currentPrice = (float) $pricing['price'];
@@ -216,8 +209,8 @@
                     </div>
 
                     {{-- Read-only product compatibility. No saved vehicle or garage state. --}}
-                    @if ($vehicleFitments->isNotEmpty())
-                        <x-shop.fitment :fitments="$vehicleFitments" />
+                    @if (! $fitmentBoard->isEmpty())
+                        <x-shop.fitment :board="$fitmentBoard" />
                     @else
                     <section data-product-compatibility class="rounded-2xl border border-app bg-surface-2 p-5">
                         <p class="text-[11px] font-semibold uppercase tracking-[0.16em] text-muted">{{ __('Compatibility') }}</p>

@@ -48,7 +48,11 @@ class VehicleFuelTypeTest extends TestCase
 
     public function test_display_name_joins_the_parts(): void
     {
-        $this->assertSame('2 Turbo Petrol', VehicleFuelType::displayName('petrol', 2.0, 'turbo', 'en'));
+        // A whole number of litres keeps its decimal. Trimming it wrote a 2.0
+        // as a bare "2", and a customer reading "2 Turbo Petrol" on a product
+        // page could not tell which engine was meant.
+        $this->assertSame('2.0 Turbo Petrol', VehicleFuelType::displayName('petrol', 2.0, 'turbo', 'en'));
+        $this->assertSame('3.0 Petrol', VehicleFuelType::displayName('petrol', 3, null, 'en'));
         $this->assertSame('1.5 Petrol', VehicleFuelType::displayName('petrol', 1.5, null, 'en'));
         $this->assertSame('2.2 Diesel', VehicleFuelType::displayName('diesel', '2.2', null, 'en'));
         $this->assertSame('1.6 تيربو هجين', VehicleFuelType::displayName('hybrid', 1.6, 'turbo', 'ar'));

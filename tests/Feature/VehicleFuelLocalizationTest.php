@@ -37,8 +37,8 @@ class VehicleFuelLocalizationTest extends TestCase
             'aspiration' => 'turbo',
         ]);
 
-        $this->assertSame('2 Turbo Petrol', $engine->localizedName('en'));
-        $this->assertSame('2 تيربو بنزين', $engine->localizedName('ar'));
+        $this->assertSame('2.0 Turbo Petrol', $engine->localizedName('en'));
+        $this->assertSame('2.0 تيربو بنزين', $engine->localizedName('ar'));
         $this->assertSame('بنزين', $engine->localizedFuelLabel('ar'));
     }
 
