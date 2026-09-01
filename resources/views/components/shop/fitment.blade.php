@@ -48,27 +48,37 @@
                             <h4 class="fitment-card-name"><bdi>{{ $configuration['variant'] }}</bdi></h4>
                             <p class="fitment-card-years"><bdi>{{ $configuration['years'] }}</bdi></p>
 
-                            <div class="fitment-chips">
-                                @if($configuration['engine']['known'])
-                                    @if($configuration['engine']['displacement'] !== '')
-                                        {{-- A displacement reads left to right in every language. --}}
-                                        <span class="fitment-chip strong" dir="ltr">{{ $configuration['engine']['displacement'] }}L</span>
-                                    @endif
-                                    @if($configuration['engine']['aspiration'] !== '')
-                                        <span class="fitment-chip">{{ $configuration['engine']['aspiration'] }}</span>
-                                    @endif
-                                    @if($configuration['engine']['fuel'] !== '')
-                                        <span class="fitment-chip">{{ $configuration['engine']['fuel'] }}</span>
-                                    @endif
-                                    @if($configuration['engine']['displacement'] === '' && $configuration['engine']['fuel'] === '')
-                                        {{-- Free text with no structured columns behind it: shown
-                                             exactly as recorded rather than re-read for parts. --}}
-                                        <span class="fitment-chip"><bdi>{{ $configuration['engine']['label'] }}</bdi></span>
-                                    @endif
-                                @else
+                            {{-- The engines this part was recorded against for
+                                 this car. Each is one option on the same
+                                 vehicle, so they sit inside the card rather
+                                 than each getting a card of their own. --}}
+                            @if($configuration['engines']->isNotEmpty())
+                                <ul class="fitment-engines" role="list">
+                                    @foreach($configuration['engines'] as $engine)
+                                        <li class="fitment-chips">
+                                            @if($engine['displacement'] !== '')
+                                                {{-- A displacement reads left to right in every language. --}}
+                                                <span class="fitment-chip strong" dir="ltr">{{ $engine['displacement'] }}L</span>
+                                            @endif
+                                            @if($engine['aspiration'] !== '')
+                                                <span class="fitment-chip">{{ $engine['aspiration'] }}</span>
+                                            @endif
+                                            @if($engine['fuel'] !== '')
+                                                <span class="fitment-chip">{{ $engine['fuel'] }}</span>
+                                            @endif
+                                            @if($engine['displacement'] === '' && $engine['fuel'] === '')
+                                                {{-- Free text with no structured columns behind it: shown
+                                                     exactly as recorded rather than re-read for parts. --}}
+                                                <span class="fitment-chip"><bdi>{{ $engine['label'] }}</bdi></span>
+                                            @endif
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <div class="fitment-chips">
                                     <span class="fitment-chip muted">{{ __('Engine not recorded') }}</span>
-                                @endif
-                            </div>
+                                </div>
+                            @endif
 
                             @if($configuration['notes'] !== '')
                                 <p class="fitment-card-note"><bdi>{{ $configuration['notes'] }}</bdi></p>
@@ -218,6 +228,15 @@
                 font-variant-numeric: tabular-nums;
                 color: #55557a;
             }
+
+            .fitment-engines {
+                display: flex;
+                flex-direction: column;
+                gap: 0.25rem;
+                margin-top: 0.4rem;
+            }
+
+            .fitment-engines .fitment-chips { margin-top: 0; }
 
             .fitment-chips {
                 display: flex;

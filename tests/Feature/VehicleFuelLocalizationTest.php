@@ -77,7 +77,7 @@ class VehicleFuelLocalizationTest extends TestCase
     public function test_the_shop_engine_filter_offers_a_localized_label_per_canonical_value(): void
     {
         $variant = $this->variant();
-        $variant->engineTypes()->create(['name' => '2.2 Diesel', 'fuel_type' => 'diesel', 'engine_size' => 2.2]);
+        $variant->engineTypes()->create(['name' => '2.0 Petrol', 'fuel_type' => 'petrol', 'engine_size' => 2.0]);
 
         $this->app->setLocale('ar');
         $response = $this->get(route('shop.index'))->assertOk();
@@ -86,8 +86,23 @@ class VehicleFuelLocalizationTest extends TestCase
         $map = $this->vehicleOptionMap($response->getContent());
         $engines = $map['SSANGYONG / KGM'][(string) $variant->id]['engines'];
 
-        $this->assertSame('2.2 Diesel', $engines[0]['value']);
-        $this->assertSame('2.2 ديزل', $engines[0]['label']);
+        $this->assertSame('2.0 Petrol', $engines[0]['value']);
+        $this->assertSame('2.0 بنزين', $engines[0]['label']);
+    }
+
+    public function test_the_shop_engine_filter_leaves_out_a_fuel_the_shop_does_not_sell_for(): void
+    {
+        $variant = $this->variant();
+        $variant->engineTypes()->create(['name' => '2.0 Petrol', 'fuel_type' => 'petrol', 'engine_size' => 2.0]);
+        $variant->engineTypes()->create(['name' => '2.2 Diesel', 'fuel_type' => 'diesel', 'engine_size' => 2.2]);
+
+        $map = $this->vehicleOptionMap($this->get(route('shop.index'))->assertOk()->getContent());
+        $engines = collect($map['SSANGYONG / KGM'][(string) $variant->id]['engines'])->pluck('value')->all();
+
+        // The car keeps its diesel engine on record; the customer is simply
+        // not offered an engine the shop has no parts for.
+        $this->assertSame(['2.0 Petrol'], $engines);
+        $this->assertSame(2, $variant->engineTypes()->count());
     }
 
     public function test_a_diesel_search_is_no_longer_forced_to_return_nothing(): void

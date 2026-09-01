@@ -89,7 +89,7 @@ class ProductFitmentDetailTest extends TestCase
         $this->assertSame(2, substr_count($section, 'Rexton G4'));
     }
 
-    public function test_one_variant_with_two_engines_is_two_configurations(): void
+    public function test_one_car_with_two_engines_is_one_card_listing_both(): void
     {
         $product = Product::factory()->create(['compatible_models' => null]);
         $brand = $this->brand();
@@ -104,9 +104,73 @@ class ProductFitmentDetailTest extends TestCase
         $response = $this->get(route('shop.show', $product))->assertOk();
         $section = $this->section($response->getContent());
 
-        $this->assertSame(2, substr_count($section, 'Rexton W'));
+        // An engine is an option on a car, not another car.
+        $this->assertSame(1, substr_count($section, 'Rexton W'));
+        $this->assertSame(1, substr_count($section, '<li class="fitment-card'));
         $response->assertSeeText('3.2L');
         $response->assertSeeText('2.0L');
+        $response->assertSeeText('Turbo');
+        $response->assertSeeText('1 compatible configuration');
+    }
+
+    public function test_a_product_fitting_only_one_engine_does_not_list_the_other(): void
+    {
+        $product = Product::factory()->create(['compatible_models' => null]);
+        $brand = $this->brand();
+        $variant = $this->variant($brand, $this->family($brand, 'Tivoli'), 'Tivoli', 2015, 2019);
+        $this->engine($variant, 'petrol', 1.6);
+        $this->engine($variant, 'diesel', 1.6, 'turbo');
+
+        // The part was only ever recorded against the petrol car.
+        $this->fit($product, $brand, $variant, null, null, '1.6 Petrol');
+
+        $section = $this->section($this->pageIn('en', $product));
+
+        $this->assertStringContainsString('1.6L', $section);
+        $this->assertStringContainsString('Petrol', $section);
+        $this->assertStringNotContainsString('Diesel', $section);
+    }
+
+    public function test_an_engine_the_shop_does_not_sell_for_is_not_listed(): void
+    {
+        $product = Product::factory()->create(['compatible_models' => null]);
+        $brand = $this->brand();
+        $variant = $this->variant($brand, $this->family($brand, 'Tivoli'), 'Tivoli', 2015, 2019);
+        $this->engine($variant, 'petrol', 1.6);
+        $this->engine($variant, 'diesel', 1.6, 'turbo');
+
+        $this->fit($product, $brand, $variant, null, null, '1.6 Petrol');
+        $this->fit($product, $brand, $variant, null, null, '1.6 Turbo Diesel');
+
+        $section = $this->section($this->pageIn('en', $product));
+
+        // One car, and only the engine a customer here can buy parts for.
+        $this->assertSame(1, substr_count($section, '<li class="fitment-card'));
+        $this->assertStringContainsString('1.6L', $section);
+        $this->assertStringContainsString('Petrol', $section);
+        $this->assertStringNotContainsString('Diesel', $section);
+        // The record still holds both.
+        $this->assertSame(2, $variant->engineTypes()->count());
+    }
+
+    public function test_two_year_ranges_are_never_folded_into_one_card(): void
+    {
+        $product = Product::factory()->create(['compatible_models' => null]);
+        $brand = $this->brand();
+        $family = $this->family($brand, 'Rexton');
+
+        foreach ([['rexton-g4-2022', 2022, 2026], ['rexton-g4-2018', 2018, 2021]] as [$slug, $from, $to]) {
+            $variant = $this->variant($brand, $family, 'Rexton G4', $from, $to, $slug);
+            $this->engine($variant, 'petrol', 2.0, 'turbo');
+            $this->fit($product, $brand, $variant, null, null, '2.0 Turbo Petrol');
+        }
+
+        $section = $this->section($this->pageIn('en', $product));
+
+        $this->assertSame(2, substr_count($section, '<li class="fitment-card'));
+        $this->assertStringContainsString('2022–2026', $section);
+        $this->assertStringContainsString('2018–2021', $section);
+        $this->assertStringNotContainsString('2018–2026', $section);
     }
 
     public function test_a_two_litre_engine_is_not_written_as_a_bare_two(): void

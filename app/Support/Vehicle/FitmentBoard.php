@@ -55,23 +55,28 @@ class FitmentBoard
             return self::empty();
         }
 
-        $configurations = $product->vehicleFitments
+        $rows = $product->vehicleFitments
             ->filter(fn (ProductVehicleFitment $fitment): bool => $fitment->model !== null)
-            ->map(fn (ProductVehicleFitment $fitment): array => self::configuration($fitment, $locale))
-            // Two identical rows say nothing twice. Anything that differs by a
-            // year or an engine is a separate fit and stays.
-            ->unique('key')
+            ->map(fn (ProductVehicleFitment $fitment): array => self::row($fitment, $locale))
             ->values();
 
-        if ($configurations->isEmpty()) {
+        if ($rows->isEmpty()) {
             return self::empty();
         }
 
+        // One car is one card. An engine is an option on a car, not another
+        // car, so two fitments that differ only by engine belong together —
+        // while two year ranges are two different vehicles and never do.
+        $configurations = $rows
+            ->groupBy('card_key')
+            ->map(fn (Collection $group): array => self::configuration($group))
+            ->values();
+
         $families = $configurations
             ->groupBy('family')
-            ->map(fn (Collection $rows, string $family): array => [
+            ->map(fn (Collection $cards, string $family): array => [
                 'name' => $family,
-                'configurations' => $rows
+                'configurations' => $cards
                     ->sortBy([
                         fn (array $row) => $row['variant'],
                         // Newest first within a variant: the car most likely to
@@ -97,11 +102,50 @@ class FitmentBoard
     }
 
     /**
+     * Fold the fitments for one car into the card a customer reads.
+     *
+     * Every engine the product was recorded against is listed; the card is
+     * confirmed when the car is pinned down by years and at least one of those
+     * engines is known.
+     *
+     * @param  Collection<int, array<string, mixed>>  $group
+     * @return array<string, mixed>
+     */
+    private static function configuration(Collection $group): array
+    {
+        $first = $group->first();
+
+        $engines = $group
+            ->pluck('engine')
+            ->filter(fn (array $engine): bool => $engine['known'])
+            ->unique(fn (array $engine): string => $engine['label'])
+            ->sortBy(fn (array $engine): string => $engine['label'])
+            ->values();
+
+        return [
+            'family' => $first['family'],
+            'variant' => $first['variant'],
+            'year_from' => $first['year_from'],
+            'year_to' => $first['year_to'],
+            'years' => $first['years'],
+            'has_years' => $first['has_years'],
+            'engines' => $engines,
+            // A card only claims a confirmed fit when it says enough for a
+            // customer to recognise their own car in it. Years and an engine
+            // are what separate one Rexton from the next; without them the
+            // record is a lead, not an answer, and saying "confirmed" over it
+            // would be a promise the data cannot keep.
+            'complete' => $first['has_years'] && $engines->isNotEmpty(),
+            'notes' => $group->pluck('notes')->filter()->unique()->values()->implode(' · '),
+        ];
+    }
+
+    /**
      * One fitment row, resolved against the variant it points at.
      *
      * @return array<string, mixed>
      */
-    private static function configuration(ProductVehicleFitment $fitment, ?string $locale): array
+    private static function row(ProductVehicleFitment $fitment, ?string $locale): array
     {
         /** @var VehicleModel $model */
         $model = $fitment->model;
@@ -114,12 +158,9 @@ class FitmentBoard
         $engine = self::engine($fitment, $model, $locale);
 
         return [
-            'key' => implode('|', [
-                (int) $model->id,
-                $from ?? '',
-                $to ?? '',
-                $engine['label'],
-            ]),
+            // What makes one card: the car and the years it covers. The engine
+            // is deliberately absent — it is what the card lists inside.
+            'card_key' => implode('|', [(int) $model->id, $from ?? '', $to ?? '']),
             'family' => (string) ($model->family?->localizedName($locale) ?: $model->localizedName($locale)),
             'variant' => $model->localizedName($locale),
             'year_from' => $from,
@@ -127,12 +168,6 @@ class FitmentBoard
             'years' => self::yearLabel($from, $to),
             'has_years' => $from !== null || $to !== null,
             'engine' => $engine,
-            // A card only claims a confirmed fit when it says enough for a
-            // customer to recognise their own car in it. Years and an engine
-            // are what separate one Rexton from the next; without them the
-            // record is a lead, not an answer, and saying "confirmed" over it
-            // would be a promise the data cannot keep.
-            'complete' => ($from !== null || $to !== null) && $engine['known'],
             'notes' => trim((string) $fitment->notes),
         ];
     }
@@ -169,6 +204,13 @@ class FitmentBoard
                 'fuel' => '',
                 'known' => true,
             ];
+        }
+
+        // The same rule the finder applies: a customer is not shown an engine
+        // the shop has no parts for. The record keeps it either way, and one
+        // config line brings it back.
+        if (! $type->isOfferedInStorefront()) {
+            return self::unknownEngine();
         }
 
         $displacement = VehicleFuelType::displacement($type->engine_size, $type->fuel_type);

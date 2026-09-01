@@ -49,6 +49,26 @@ class VehicleModelEngineType extends Model
         return VehicleLocalization::engine($this->name, $locale);
     }
 
+    /**
+     * Whether a customer should be offered this engine.
+     *
+     * Read off the structured fuel type rather than the display text, so the
+     * rule holds whatever the engine happens to be called. An engine with no
+     * fuel type recorded is shown: it cannot be ruled out, and hiding a car on
+     * a guess is worse than showing one engine too many.
+     */
+    public function isOfferedInStorefront(): bool
+    {
+        if (! VehicleFuelType::isValid($this->fuel_type)) {
+            return true;
+        }
+
+        /** @var array<int, string> $offered */
+        $offered = (array) config('vehicles.storefront_fuel_types', [VehicleFuelType::PETROL]);
+
+        return in_array((string) $this->fuel_type, $offered, true);
+    }
+
     public function localizedFuelLabel(?string $locale = null): string
     {
         return VehicleFuelType::label($this->fuel_type, $locale);

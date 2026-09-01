@@ -417,6 +417,7 @@ class ShopController extends Controller
             return $this->vehicleFilterPayload($brandOptions, $modelOptions, $engineOptions, $modelOptionsByBrand, $vehicleOptionsByModel, false, false);
         }
 
+        $withheldEngineNames = [];
         $brands = Product::query()
             ->whereNotNull('brand')
             ->where('brand', '!=', '')
@@ -438,9 +439,26 @@ class ShopController extends Controller
                 $hasStructuredVehicleData = true;
                 // Engines configured on a variant carry a fuel type, so their
                 // label is built from those parts rather than from the string.
-                $engineLabels = $vehicleBrandRows
+                // Diesel cars stay on record, but a shop that sells petrol
+                // parts should not ask a customer to pick a diesel engine. The
+                // rule reads the structured fuel type, never the label.
+                $offeredEngines = $vehicleBrandRows
                     ->flatMap(fn (VehicleBrand $brand) => $brand->models->pluck('engineTypes')->flatten())
+                    ->filter(fn ($engine) => $engine->isOfferedInStorefront())
+                    ->values();
+                $engineLabels = $offeredEngines
                     ->mapWithKeys(fn ($engine) => [(string) $engine->name => $engine->localizedName()]);
+                // The inverse list, for the engines a fitment names as free
+                // text: only a name that is known and known not to be offered
+                // is dropped. An unrecognised one is left alone rather than
+                // ruled out on a guess.
+                $withheldEngineNames = $vehicleBrandRows
+                    ->flatMap(fn (VehicleBrand $brand) => $brand->models->pluck('engineTypes')->flatten())
+                    ->reject(fn ($engine) => $engine->isOfferedInStorefront())
+                    ->pluck('name')
+                    ->map(fn ($name) => mb_strtolower(trim((string) $name)))
+                    ->unique()
+                    ->all();
                 $brandOptions = $vehicleBrandRows->pluck('name')->filter()->values();
                 // Keyed by variant id, not by name. Two variants can share a
                 // name — a Tivoli built 2015-2019 and one built 2020-2023 — and
@@ -461,7 +479,13 @@ class ShopController extends Controller
                                     'model_id' => (int) $model->id,
                                     'label' => $model->listLabel(),
                                     'family' => $model->family?->localizedName(),
-                                    'engines' => $model->engineTypes->pluck('name')->filter()->unique()->values()->all(),
+                                    'engines' => $model->engineTypes
+                                        ->filter(fn ($engine) => $engine->isOfferedInStorefront())
+                                        ->pluck('name')
+                                        ->filter()
+                                        ->unique()
+                                        ->values()
+                                        ->all(),
                                     'year_from' => $model->production_start_year ? (int) $model->production_start_year : null,
                                     'year_to' => $model->production_end_year ? (int) $model->production_end_year : null,
                                 ],
@@ -493,6 +517,7 @@ class ShopController extends Controller
                 ->pluck('engine')
                 ->map(fn ($engine) => trim((string) $engine))
                 ->filter()
+                ->reject(fn (string $engine) => in_array(mb_strtolower($engine), $withheldEngineNames, true))
                 ->unique()
                 ->values();
 
@@ -515,6 +540,7 @@ class ShopController extends Controller
                         ->pluck('engine')
                         ->map(fn ($engine) => trim((string) $engine))
                         ->filter()
+                        ->reject(fn (string $engine) => in_array(mb_strtolower($engine), $withheldEngineNames, true))
                         ->unique()
                         ->values()
                         ->all();

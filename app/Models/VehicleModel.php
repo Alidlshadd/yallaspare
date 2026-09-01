@@ -79,6 +79,72 @@ class VehicleModel extends Model
     }
 
     /**
+     * What makes this variant a different car from the next one.
+     *
+     * A name alone is not enough — a Tivoli built 2015-2019 and one built
+     * 2020-2023 share a name and take different parts — and an engine is not
+     * part of it at all: a 1.6 petrol Tivoli and a 1.6 diesel Tivoli of the
+     * same years are one car with two engines, not two cars. Two rows that
+     * agree on everything below are the same vehicle recorded twice.
+     */
+    public function identityKey(): string
+    {
+        return implode('|', [
+            (int) $this->vehicle_brand_id,
+            (int) $this->vehicle_model_family_id,
+            self::normalizeName((string) ($this->name_en ?: $this->name)),
+            (int) $this->production_start_year,
+            (int) $this->production_end_year,
+        ]);
+    }
+
+    /**
+     * Spelling differences that do not make a different car.
+     */
+    public static function normalizeName(string $name): string
+    {
+        return (string) preg_replace('/\s+/u', ' ', mb_strtolower(trim($name)));
+    }
+
+    /**
+     * Both bounds recorded.
+     *
+     * Nothing is merged on a partial identity. A variant with no years may be
+     * the same car as one with years, or a different generation nobody has
+     * filled in yet, and guessing between those would silently rewrite what a
+     * part is sold as fitting.
+     */
+    public function hasCompleteYears(): bool
+    {
+        return (int) $this->production_start_year > 0 && (int) $this->production_end_year > 0;
+    }
+
+    /**
+     * The sibling that already records this exact car, if there is one.
+     */
+    public static function findByIdentity(
+        int $brandId,
+        ?int $familyId,
+        string $name,
+        ?int $startYear,
+        ?int $endYear,
+        ?int $ignoreId = null,
+    ): ?self {
+        if (! $startYear || ! $endYear) {
+            return null;
+        }
+
+        return self::query()
+            ->where('vehicle_brand_id', $brandId)
+            ->where('vehicle_model_family_id', $familyId)
+            ->where('production_start_year', $startYear)
+            ->where('production_end_year', $endYear)
+            ->when($ignoreId !== null, fn ($query) => $query->whereKeyNot($ignoreId))
+            ->get(['id', 'name', 'name_en', 'production_start_year', 'production_end_year'])
+            ->first(fn (self $model) => self::normalizeName((string) ($model->name_en ?: $model->name)) === self::normalizeName($name));
+    }
+
+    /**
      * "2015–2019", "2020–" or null when nothing is recorded.
      */
     public function productionYears(): ?string

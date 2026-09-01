@@ -255,9 +255,10 @@ class VehicleFitmentController extends Controller
         $imagePath = $request->hasFile('image')
             ? SecureImageStorage::store($request->file('image'), 'vehicle-variants')
             : null;
+        $attached = false;
 
         try {
-            DB::transaction(function () use ($data, $engineTypes, $imagePath): void {
+            DB::transaction(function () use ($data, $engineTypes, $imagePath, &$attached): void {
                 $brandId = (int) $data['vehicle_brand_id'];
                 if (! empty($data['vehicle_model_family_id'])) {
                     $family = VehicleModelFamily::query()->findOrFail((int) $data['vehicle_model_family_id']);
@@ -281,16 +282,40 @@ class VehicleFitmentController extends Controller
                     ], static fn ($value): bool => $value !== null && $value !== ''))->save();
                 }
 
+                $name = trim((string) $data['name_en']);
+                $startYear = $data['production_start_year'] ?? null;
+                $endYear = $data['production_end_year'] ?? null;
+
+                // The same car, entered again. An operator adding a second
+                // engine has no other way in — there is one form, and it makes
+                // a variant — so this used to leave two Tivoli 2015-2019 rows
+                // that the storefront then offered as two identical choices.
+                // The engine belongs to the car that is already recorded.
+                $existing = VehicleModel::findByIdentity(
+                    $brandId,
+                    (int) $family->id,
+                    $name,
+                    $startYear ? (int) $startYear : null,
+                    $endYear ? (int) $endYear : null,
+                );
+
+                if ($existing !== null) {
+                    $this->attachEngineTypes($existing, $engineTypes);
+                    $attached = true;
+
+                    return;
+                }
+
                 $model = VehicleModel::query()->create([
                     'vehicle_brand_id' => $brandId,
                     'vehicle_model_family_id' => $family->id,
-                    'name' => trim((string) $data['name_en']),
-                    'name_en' => trim((string) $data['name_en']),
+                    'name' => $name,
+                    'name_en' => $name,
                     'name_ar' => $this->nullableText($data['name_ar'] ?? null),
                     'name_ku' => $this->nullableText($data['name_ku'] ?? null),
-                    'slug' => $this->uniqueModelSlug($brandId, (string) $data['name_en']),
-                    'production_start_year' => $data['production_start_year'] ?? null,
-                    'production_end_year' => $data['production_end_year'] ?? null,
+                    'slug' => $this->uniqueModelSlug($brandId, $name),
+                    'production_start_year' => $startYear,
+                    'production_end_year' => $endYear,
                     'image_path' => $imagePath,
                 ]);
 
@@ -303,11 +328,59 @@ class VehicleFitmentController extends Controller
             throw $exception;
         }
 
+        if ($attached) {
+            if ($imagePath) {
+                Storage::disk('public')->delete($imagePath);
+            }
+
+            return redirect()
+                ->route('admin.vehicle-fitments.index')
+                ->with('success', __('This vehicle was already on record, so the engines were added to it.'));
+        }
+
         return redirect()
             ->route('admin.vehicle-fitments.index')
             ->with('success', $engineTypes === []
                 ? __('Vehicle model created.')
                 : __('Vehicle model and engine types created.'));
+    }
+
+    /**
+     * Add engines a variant does not already have.
+     *
+     * Compared on what an engine is — fuel, displacement, aspiration — rather
+     * than on the text it is displayed by, so re-entering the same engine after
+     * a labelling change does not leave the car with two of it.
+     *
+     * @param  array<int, array{name: string, fuel_type: string|null, engine_size: float|null, aspiration: string|null}>  $engineTypes
+     */
+    private function attachEngineTypes(VehicleModel $model, array $engineTypes): void
+    {
+        $model->loadMissing('engineTypes');
+
+        $known = $model->engineTypes
+            ->map(fn ($engine) => $this->engineSignature($engine->fuel_type, $engine->engine_size, $engine->aspiration))
+            ->all();
+
+        foreach ($engineTypes as $engine) {
+            $signature = $this->engineSignature($engine['fuel_type'], $engine['engine_size'], $engine['aspiration']);
+
+            if (in_array($signature, $known, true)) {
+                continue;
+            }
+
+            $model->engineTypes()->firstOrCreate(['name' => $engine['name']], $engine);
+            $known[] = $signature;
+        }
+    }
+
+    private function engineSignature(?string $fuelType, int|float|string|null $engineSize, ?string $aspiration): string
+    {
+        return implode('|', [
+            (string) $fuelType,
+            $engineSize === null || $engineSize === '' ? '' : number_format((float) $engineSize, 1, '.', ''),
+            strtolower(trim((string) $aspiration)),
+        ]);
     }
 
     public function updateBrand(Request $request, VehicleBrand $brand): RedirectResponse
@@ -351,6 +424,25 @@ class VehicleFitmentController extends Controller
         ]);
 
         $name = trim((string) $data['name_en']);
+
+        // Editing must not walk a variant onto another one's identity. Merging
+        // silently here would move a car's parts under a different row without
+        // anyone asking for it; the merge command exists for that, deliberately.
+        $clash = VehicleModel::findByIdentity(
+            (int) $model->vehicle_brand_id,
+            (int) ($data['vehicle_model_family_id'] ?? $model->vehicle_model_family_id),
+            $name,
+            isset($data['production_start_year']) ? (int) $data['production_start_year'] : null,
+            isset($data['production_end_year']) ? (int) $data['production_end_year'] : null,
+            $model->id,
+        );
+
+        if ($clash !== null) {
+            return back()
+                ->withInput()
+                ->withErrors(['name_en' => __('Another variant already covers these years. Add the engine to it instead of creating a second one.')]);
+        }
+
         $shouldSyncEngineTypes = $request->exists('engine_types') || $request->exists('engine_types_text') || $request->exists('engines');
         $engineTypes = $shouldSyncEngineTypes ? $this->validatedEngineTypes($data) : [];
 
