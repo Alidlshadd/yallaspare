@@ -475,8 +475,13 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
 
         // Products
         Route::resource('products', ProductController::class)
-            ->except(['show'])
+            ->except(['show', 'destroy'])
             ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write']);
+        // Deleting is not part of managing: it answers to its own gate, and the
+        // controller asks again so a future route change cannot open it up.
+        Route::delete('/products/{product}', [ProductController::class, 'destroy'])
+            ->middleware(['can:products.delete', 'throttle:admin-write'])
+            ->name('products.destroy');
         Route::post('/products/import', [ProductController::class, 'import'])
             ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('products.import');

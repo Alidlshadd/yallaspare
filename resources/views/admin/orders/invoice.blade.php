@@ -431,13 +431,13 @@
                 <tr>
                     <td>
                         <div class="product-name">
-                            {{ $item->product?->localizedName($locale ?? app()->getLocale()) ?? __('invoice.product_unavailable') }}
+                            {{ $item->product?->localizedName($locale ?? app()->getLocale()) ?: $item->soldName() }}
                         </div>
                         @if ($item->product?->brand)
                             <div class="sku"><span>{{ __('invoice.brand') }}</span>: {{ $item->product->brand }}</div>
                         @endif
                     </td>
-                    <td class="sku">{{ $item->product?->sku ?? __('invoice.not_available') }}</td>
+                    <td class="sku">{{ $item->soldSku() ?: __('invoice.not_available') }}</td>
                     <td class="text-center">{{ number_format((int) $item->quantity) }}</td>
                     <td class="text-right">{{ number_format((float) $item->unit_price) }} {{ $currency }}</td>
                     <td class="text-right">{{ number_format((float) $item->subtotal) }} {{ $currency }}</td>

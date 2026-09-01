@@ -1234,9 +1234,35 @@
                                     <p id="adminDangerDescription" class="mt-1 text-sm text-slate-600 dark:text-slate-400">{{ __('This action is permanent and cannot be undone.') }}</p>
                                 </div>
                             </div>
+
+                            {{--
+                                Naming the record, for actions where getting the
+                                wrong row would be expensive. Hidden unless the
+                                form supplies a subject.
+                            --}}
+                            <div id="adminDangerSubject" class="mt-4 hidden rounded-xl border border-slate-200 bg-slate-50 px-3.5 py-3 dark:border-slate-800 dark:bg-slate-950/40">
+                                <div id="adminDangerSubjectName" class="truncate text-sm font-semibold text-slate-900 dark:text-slate-100"></div>
+                                <div id="adminDangerSubjectMeta" class="mt-0.5 font-mono text-[11px] text-slate-500 dark:text-slate-400"></div>
+                            </div>
+
+                            {{--
+                                The second stage. A single click is too cheap for
+                                something that cannot be undone, so the button
+                                stays inert until the record's own code is typed
+                                back — deliberate, and impossible to hit by
+                                muscle memory on the wrong row.
+                            --}}
+                            <div id="adminDangerPhraseWrap" class="mt-4 hidden">
+                                <label for="adminDangerPhrase" id="adminDangerPhraseLabel"
+                                       data-template="{{ __('Type :phrase to confirm.') }}"
+                                       class="block text-[12px] font-semibold text-slate-600 dark:text-slate-300"></label>
+                                <input type="text" id="adminDangerPhrase" autocomplete="off" spellcheck="false"
+                                       class="mt-1.5 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 font-mono text-sm text-slate-900 outline-none transition focus:border-rose-400 focus:ring-2 focus:ring-rose-200 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:focus:ring-rose-900/50">
+                            </div>
+
                             <div class="mt-5 flex justify-end gap-2">
                                 <button type="button" id="adminDangerCancel" class="rounded-xl border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">{{ __('Cancel') }}</button>
-                                <button type="button" id="adminDangerConfirm" class="rounded-xl bg-rose-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-rose-700">{{ __('Confirm Delete') }}</button>
+                                <button type="button" id="adminDangerConfirm" class="rounded-xl bg-rose-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-rose-700 disabled:cursor-not-allowed disabled:opacity-40">{{ __('Confirm Delete') }}</button>
                             </div>
                         </div>
                     </div>
@@ -1538,19 +1564,42 @@
                     const descriptionEl = document.getElementById('adminDangerDescription');
                     const cancelBtn = document.getElementById('adminDangerCancel');
                     const confirmBtn = document.getElementById('adminDangerConfirm');
+                    const subjectEl = document.getElementById('adminDangerSubject');
+                    const subjectNameEl = document.getElementById('adminDangerSubjectName');
+                    const subjectMetaEl = document.getElementById('adminDangerSubjectMeta');
+                    const phraseWrap = document.getElementById('adminDangerPhraseWrap');
+                    const phraseLabel = document.getElementById('adminDangerPhraseLabel');
+                    const phraseInput = document.getElementById('adminDangerPhrase');
 
                     if (!modal || !titleEl || !descriptionEl || !cancelBtn || !confirmBtn) {
                         return;
                     }
 
                     let resolver = null;
+                    let requiredPhrase = '';
+                    const defaultConfirmLabel = confirmBtn.textContent;
 
                     const setVisible = (visible) => {
                         modal.classList.toggle('hidden', !visible);
                         modal.classList.toggle('flex', visible);
                     };
 
+                    const syncConfirmState = () => {
+                        if (requiredPhrase === '') {
+                            confirmBtn.disabled = false;
+
+                            return;
+                        }
+
+                        const typed = (phraseInput?.value || '').trim();
+                        confirmBtn.disabled = typed.toLowerCase() !== requiredPhrase.toLowerCase();
+                    };
+
                     const resolveAndClose = (value) => {
+                        if (value === true && confirmBtn.disabled) {
+                            return;
+                        }
+
                         setVisible(false);
                         if (resolver) {
                             resolver(value);
@@ -1558,15 +1607,46 @@
                         }
                     };
 
-                    window.adminDangerConfirm = ({ title, description } = {}) => {
+                    window.adminDangerConfirm = ({ title, description, subject, meta, phrase, actionLabel } = {}) => {
                         titleEl.textContent = title || 'Delete Coupon';
                         descriptionEl.textContent = description || 'This action is permanent and cannot be undone.';
+                        confirmBtn.textContent = actionLabel || defaultConfirmLabel;
+
+                        if (subjectEl && subjectNameEl && subjectMetaEl) {
+                            subjectNameEl.textContent = subject || '';
+                            subjectMetaEl.textContent = meta || '';
+                            subjectEl.classList.toggle('hidden', !subject && !meta);
+                        }
+
+                        requiredPhrase = (phrase || '').trim();
+
+                        if (phraseWrap && phraseLabel && phraseInput) {
+                            phraseInput.value = '';
+                            phraseLabel.textContent = phraseLabel.dataset.template
+                                ? phraseLabel.dataset.template.replace(':phrase', requiredPhrase)
+                                : requiredPhrase;
+                            phraseWrap.classList.toggle('hidden', requiredPhrase === '');
+                        }
+
+                        syncConfirmState();
                         setVisible(true);
+
+                        if (requiredPhrase !== '' && phraseInput) {
+                            window.setTimeout(() => phraseInput.focus(), 30);
+                        }
 
                         return new Promise((resolve) => {
                             resolver = resolve;
                         });
                     };
+
+                    phraseInput?.addEventListener('input', syncConfirmState);
+                    phraseInput?.addEventListener('keydown', (event) => {
+                        if (event.key === 'Enter') {
+                            event.preventDefault();
+                            resolveAndClose(true);
+                        }
+                    });
 
                     cancelBtn.addEventListener('click', () => resolveAndClose(false));
                     confirmBtn.addEventListener('click', () => resolveAndClose(true));
@@ -1595,9 +1675,14 @@
 
                         event.preventDefault();
                         const submitter = event.submitter instanceof HTMLButtonElement ? event.submitter : null;
+                        const read = (key) => submitter?.dataset[key] || form.dataset[key] || '';
                         window.adminDangerConfirm({
-                            title: submitter?.dataset.dangerTitle || form.dataset.dangerTitle || 'Delete Coupon',
-                            description: submitter?.dataset.dangerDescription || form.dataset.dangerDescription || 'This action is permanent and cannot be undone.',
+                            title: read('dangerTitle') || 'Delete Coupon',
+                            description: read('dangerDescription') || 'This action is permanent and cannot be undone.',
+                            subject: read('dangerSubject'),
+                            meta: read('dangerMeta'),
+                            phrase: read('dangerPhrase'),
+                            actionLabel: read('dangerAction'),
                         }).then((confirmed) => {
                             if (!confirmed) return;
                             form.dataset.dangerConfirmed = '1';

@@ -40,6 +40,11 @@ class AuthServiceProvider extends ServiceProvider
             User::PERMISSION_PRODUCTS_MANAGE,
         ]));
 
+        // Deleting a product destroys a catalogue record for good. Managing
+        // products is not enough for that — it is the owner's decision, not a
+        // day-to-day one.
+        Gate::define('products.delete', fn (User $user): bool => $user->isSuperAdmin());
+
         Gate::define('manage-users', [UserPolicy::class, 'manageUsers']);
         Gate::define('manage-dealers', [UserPolicy::class, 'manageDealers']);
         Gate::define('manage-whatsapp-webhooks', fn (User $user): bool => $user->isAdmin());

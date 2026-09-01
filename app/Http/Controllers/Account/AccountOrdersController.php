@@ -73,7 +73,7 @@ class AccountOrdersController extends Controller
             ->with([
                 'user:id,name,email,phone,locale_preference',
                 'items' => fn ($query) => $query
-                    ->select(['id', 'order_id', 'product_id', 'quantity', 'unit_price', 'subtotal'])
+                    ->select(['id', 'order_id', 'product_id', 'product_name', 'product_sku', 'quantity', 'unit_price', 'subtotal'])
                     ->with(['product:id,name_en,name_ar,name_ku,sku,brand']),
             ])
             ->firstOrFail();

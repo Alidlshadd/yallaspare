@@ -2,15 +2,24 @@
 
 namespace Tests\Feature\Admin;
 
+use App\Models\Cart;
+use App\Models\CartItem;
 use App\Models\Category;
+use App\Models\InventoryMovement;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\ProductImage;
 use App\Models\ProductReview;
+use App\Models\ProductView;
 use App\Models\Setting;
 use App\Models\User;
+use App\Models\Wishlist;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class AdminProductsCrudTest extends TestCase
@@ -21,6 +30,14 @@ class AdminProductsCrudTest extends TestCase
     {
         return User::factory()->create([
             'role' => User::ROLE_ADMIN,
+            'email_verified_at' => now(),
+        ]);
+    }
+
+    private function superAdminUser(): User
+    {
+        return User::factory()->create([
+            'role' => User::ROLE_SUPER_ADMIN,
             'email_verified_at' => now(),
         ]);
     }
@@ -499,9 +516,9 @@ class AdminProductsCrudTest extends TestCase
         $response->assertRedirect(route('admin.products.index'));
     }
 
-    public function test_admin_can_delete_product(): void
+    public function test_super_admin_can_permanently_delete_product(): void
     {
-        $user = $this->adminUser();
+        $user = $this->superAdminUser();
         $category = $this->createCategory();
         $product = Product::factory()->create([
             'category_id' => $category->id,
@@ -511,33 +528,90 @@ class AdminProductsCrudTest extends TestCase
         $response = $this->actingAs($user)->delete(route('admin.products.destroy', $product));
 
         $response->assertRedirect(route('admin.products.index'));
+        $response->assertSessionHas('success', 'Product deleted permanently.');
         $this->assertDatabaseMissing('products', [
             'id' => $product->id,
         ]);
     }
 
-    public function test_admin_delete_returns_to_original_products_filter(): void
+    public function test_admin_cannot_delete_product(): void
     {
         $user = $this->adminUser();
         $category = $this->createCategory();
         $product = Product::factory()->create([
             'category_id' => $category->id,
-            'sku' => 'SKU-TEST-RETURN-DELETE',
+            'sku' => 'SKU-TEST-ADMIN-DENIED',
         ]);
 
-        $response = $this->actingAs($user)->delete(route('admin.products.destroy', $product), [
-            'return_to' => route('admin.products.index', ['status' => 'active']),
-        ]);
+        $response = $this->actingAs($user)->delete(route('admin.products.destroy', $product));
 
-        $response->assertRedirect('/admin/products?status=active');
+        $response->assertForbidden();
+        $this->assertDatabaseHas('products', ['id' => $product->id]);
     }
 
-    public function test_admin_archives_product_when_it_has_order_history(): void
+    public function test_dealer_cannot_delete_product(): void
     {
-        $user = $this->adminUser();
+        $user = User::factory()->create([
+            'role' => User::ROLE_DEALER,
+            'email_verified_at' => now(),
+        ]);
         $category = $this->createCategory();
         $product = Product::factory()->create([
             'category_id' => $category->id,
+            'sku' => 'SKU-TEST-DEALER-DENIED',
+        ]);
+
+        $response = $this->actingAs($user)->delete(route('admin.products.destroy', $product));
+
+        $this->assertContains($response->status(), [403, 302]);
+        $this->assertDatabaseHas('products', ['id' => $product->id]);
+    }
+
+    public function test_user_cannot_delete_product(): void
+    {
+        $user = User::factory()->create([
+            'role' => User::ROLE_USER,
+            'email_verified_at' => now(),
+        ]);
+        $category = $this->createCategory();
+        $product = Product::factory()->create([
+            'category_id' => $category->id,
+            'sku' => 'SKU-TEST-USER-DENIED',
+        ]);
+
+        $response = $this->actingAs($user)->delete(route('admin.products.destroy', $product));
+
+        $this->assertContains($response->status(), [403, 302]);
+        $this->assertDatabaseHas('products', ['id' => $product->id]);
+    }
+
+    public function test_products_index_hides_the_delete_control_from_a_plain_admin(): void
+    {
+        $category = $this->createCategory();
+        Product::factory()->create([
+            'category_id' => $category->id,
+            'name_en' => 'Gated Product',
+            'sku' => 'SKU-TEST-GATE',
+        ]);
+
+        $this->actingAs($this->adminUser())
+            ->get(route('admin.products.index'))
+            ->assertOk()
+            ->assertDontSee('Delete Permanently');
+
+        $this->actingAs($this->superAdminUser())
+            ->get(route('admin.products.index'))
+            ->assertOk()
+            ->assertSee('Delete Permanently');
+    }
+
+    public function test_deleting_a_product_leaves_its_order_history_intact(): void
+    {
+        $user = $this->superAdminUser();
+        $category = $this->createCategory();
+        $product = Product::factory()->create([
+            'category_id' => $category->id,
+            'name_en' => 'Sold Once Brake Pad',
             'sku' => 'SKU-TEST-04',
             'is_active' => true,
         ]);
@@ -552,9 +626,11 @@ class AdminProductsCrudTest extends TestCase
             'delivery_city' => 'Baghdad',
             'delivery_phone' => '123456789',
         ]);
-        OrderItem::query()->create([
+        $item = OrderItem::query()->create([
             'order_id' => $order->id,
             'product_id' => $product->id,
+            'product_name' => $product->name_en,
+            'product_sku' => $product->sku,
             'quantity' => 1,
             'unit_price' => 100,
             'subtotal' => 100,
@@ -563,45 +639,173 @@ class AdminProductsCrudTest extends TestCase
         $response = $this->actingAs($user)->delete(route('admin.products.destroy', $product));
 
         $response->assertRedirect(route('admin.products.index'));
-        $response->assertSessionHas('success', 'Product is linked to existing orders, so it was archived instead of deleted.');
-        $this->assertDatabaseHas('products', [
-            'id' => $product->id,
-            'is_active' => false,
-        ]);
-        $this->assertDatabaseHas('order_items', [
-            'order_id' => $order->id,
-            'product_id' => $product->id,
-        ]);
+        $response->assertSessionHas('success', 'Product deleted permanently.');
+        $this->assertDatabaseMissing('products', ['id' => $product->id]);
+
+        // The sale still says what was sold, at what price, to which order.
+        $item->refresh();
+        $this->assertNull($item->product_id);
+        $this->assertSame('Sold Once Brake Pad', $item->soldName());
+        $this->assertSame('SKU-TEST-04', $item->soldSku());
+        $this->assertEquals(100, $item->unit_price);
+        $this->assertSame($order->id, $item->order_id);
+
+        // And the screens that read that history still open, still naming the
+        // part that was sold.
+        $this->actingAs($user)->get(route('admin.orders.show', $order))
+            ->assertOk()
+            ->assertSee('Sold Once Brake Pad');
+
+        // The invoice comes back as a PDF, so this only proves it still renders
+        // — the name it prints comes from the same snapshot as the page above.
+        $this->actingAs($user)->get(route('admin.orders.invoice', $order))
+            ->assertOk();
+
+        $this->actingAs($customer)->get(route('account.orders.show', $order))
+            ->assertOk()
+            ->assertSee('Sold Once Brake Pad');
     }
 
-    public function test_admin_can_view_reviews_module(): void
+    public function test_deleting_a_product_clears_every_row_that_pointed_at_it(): void
     {
-        $admin = $this->adminUser();
-        $customer = User::factory()->create(['name' => 'Review Customer']);
+        Storage::fake('public');
+
+        $user = $this->superAdminUser();
         $category = $this->createCategory();
         $product = Product::factory()->create([
             'category_id' => $category->id,
-            'sku' => 'SKU-REVIEWS-MODULE',
-            'name_en' => 'Module Review Product',
+            'sku' => 'SKU-TEST-WIRED',
+            'image' => 'products/wired-main.jpg',
         ]);
+        $customer = User::factory()->create();
 
+        Storage::disk('public')->put('products/wired-main.jpg', 'main');
+        Storage::disk('public')->put('products/wired-gallery.jpg', 'gallery');
+
+        ProductImage::query()->create([
+            'product_id' => $product->id,
+            'path' => 'products/wired-gallery.jpg',
+            'disk' => 'public',
+            'sort_order' => 1,
+        ]);
+        Wishlist::query()->create(['user_id' => $customer->id, 'product_id' => $product->id]);
         ProductReview::query()->create([
             'product_id' => $product->id,
             'user_id' => $customer->id,
-            'rating' => 4,
-            'title' => 'Module visible review',
-            'comment' => 'This review appears in the admin reviews module.',
+            'rating' => 5,
+            'title' => 'Good part',
+            'comment' => 'Fitted first time.',
             'is_approved' => true,
-            'reviewed_at' => now(),
+        ]);
+        ProductView::query()->create([
+            'product_id' => $product->id,
+            'user_id' => $customer->id,
+            'viewed_at' => now(),
+        ]);
+        InventoryMovement::query()->create([
+            'product_id' => $product->id,
+            'user_id' => $user->id,
+            'type' => 'adjustment',
+            'quantity' => 3,
+            'stock_before' => 1,
+            'stock_after' => 4,
+            'note' => 'Stock count',
+            'performed_at' => now(),
+        ]);
+        $cart = Cart::query()->create(['user_id' => $customer->id]);
+        CartItem::query()->create([
+            'cart_id' => $cart->id,
+            'product_id' => $product->id,
+            'quantity' => 1,
         ]);
 
-        $response = $this->actingAs($admin)->get(route('admin.reviews.index'));
+        $this->actingAs($user)
+            ->delete(route('admin.products.destroy', $product))
+            ->assertRedirect(route('admin.products.index'));
 
-        $response->assertOk();
-        $response->assertSee('Customer Reviews');
-        $response->assertSee('Module visible review');
-        $response->assertSee('Module Review Product');
-        $response->assertSee('Review Customer');
+        $this->assertDatabaseMissing('products', ['id' => $product->id]);
+
+        // Nothing anywhere still points at the id — checked against the live
+        // schema rather than a hand-written list, because a hand-written list
+        // is exactly what goes stale when a table is added later.
+        foreach ($this->tablesReferencingProducts() as $table) {
+            $this->assertSame(
+                0,
+                DB::table($table)->where('product_id', $product->id)->count(),
+                "{$table} still has rows pointing at the deleted product"
+            );
+        }
+
+        // Its pictures went with it.
+        Storage::disk('public')->assertMissing('products/wired-main.jpg');
+        Storage::disk('public')->assertMissing('products/wired-gallery.jpg');
+    }
+
+    public function test_a_shared_image_survives_when_one_of_its_products_is_deleted(): void
+    {
+        Storage::fake('public');
+
+        $user = $this->superAdminUser();
+        $category = $this->createCategory();
+        $shared = 'products/shared.jpg';
+
+        Storage::disk('public')->put($shared, 'shared');
+
+        $doomed = Product::factory()->create([
+            'category_id' => $category->id,
+            'sku' => 'SKU-TEST-SHARED-A',
+            'image' => $shared,
+        ]);
+        Product::factory()->create([
+            'category_id' => $category->id,
+            'sku' => 'SKU-TEST-SHARED-B',
+            'image' => $shared,
+        ]);
+
+        $this->actingAs($user)->delete(route('admin.products.destroy', $doomed));
+
+        $this->assertDatabaseMissing('products', ['id' => $doomed->id]);
+        Storage::disk('public')->assertExists($shared);
+    }
+
+    /**
+     * Every table the database itself says carries a product_id.
+     *
+     * @return array<int, string>
+     */
+    private function tablesReferencingProducts(): array
+    {
+        $tables = [];
+
+        foreach (DB::select("SELECT name FROM sqlite_master WHERE type = 'table'") as $row) {
+            $table = (string) $row->name;
+
+            if (str_starts_with($table, 'sqlite_')) {
+                continue;
+            }
+
+            if (Schema::hasColumn($table, 'product_id')) {
+                $tables[] = $table;
+            }
+        }
+
+        return $tables;
+    }
+
+    public function test_super_admin_delete_returns_to_original_products_filter(): void
+    {
+        $user = $this->superAdminUser();
+        $category = $this->createCategory();
+        $product = Product::factory()->create([
+            'category_id' => $category->id,
+            'sku' => 'SKU-TEST-RETURN-DELETE',
+        ]);
+
+        $response = $this->actingAs($user)->delete(route('admin.products.destroy', $product), [
+            'return_to' => route('admin.products.index', ['status' => 'active']),
+        ]);
+
+        $response->assertRedirect('/admin/products?status=active');
     }
 
     public function test_admin_can_delete_review_from_reviews_module(): void

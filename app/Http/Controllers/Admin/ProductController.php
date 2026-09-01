@@ -11,6 +11,7 @@ use App\Models\Product;
 use App\Models\ProductBrand;
 use App\Models\ProductImage;
 use App\Models\Setting;
+use App\Support\AdminLogger;
 use App\Support\SecureImageStorage;
 use App\Support\SqlSafe;
 use Illuminate\Database\QueryException;
@@ -18,6 +19,8 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
@@ -377,29 +380,132 @@ class ProductController extends Controller
         return $redirect;
     }
 
+    /**
+     * Remove a product from the catalogue for good.
+     *
+     * This used to be a delete in name only: a product that had ever been sold
+     * was flipped inactive and reported as "archived", because an order line
+     * held nothing but its id and the database was told to refuse. Order lines
+     * now carry their own copy of what was sold, so the catalogue and the sales
+     * history are separate records and this can do what it says.
+     *
+     * Only a super admin reaches here — see the gate on the route.
+     */
     public function destroy(Request $request, Product $product)
     {
+        Gate::authorize('products.delete');
+
         $returnTo = $this->productsIndexReturnUrl($request);
+        $name = (string) $product->name_en;
+        $sku = (string) $product->sku;
 
-        if ($product->orderItems()->exists()) {
-            $product->forceFill(['is_active' => false])->save();
-
-            return redirect()->to($returnTo)
-                ->with('success', __('Product is linked to existing orders, so it was archived instead of deleted.'));
-        }
+        // Read before the delete: the image rows go with the product.
+        $imagePaths = $this->productImagePaths($product);
 
         try {
-            if ($product->image) {
-                Storage::disk('public')->delete($product->image);
-            }
-            $product->delete();
+            DB::transaction(function () use ($product): void {
+                $this->releaseHistoricalReferences($product);
+                $product->delete();
+            });
         } catch (QueryException $e) {
+            Log::error('Product could not be deleted', [
+                'product_id' => $product->id,
+                'sku' => $sku,
+                'error' => $e->getMessage(),
+            ]);
+
             return redirect()->to($returnTo)
                 ->with('error', __('Product could not be deleted because it is linked to existing records.'));
         }
 
+        // Files come last, and only once the row is really gone. A failed
+        // transaction must not leave a product pointing at pictures that were
+        // already thrown away.
+        $this->deleteImageFiles($imagePaths);
+
+        AdminLogger::log('product.deleted', null, [
+            'product_id' => $product->id,
+            'name' => $name,
+            'sku' => $sku,
+        ]);
+
         return redirect()->to($returnTo)
-            ->with('success', __('Product deleted successfully'));
+            ->with('success', __('Product deleted permanently.'));
+    }
+
+    /**
+     * Cut the product loose from records that outlive it.
+     *
+     * Two kinds of row point at a product, and they need opposite treatment.
+     * An order line is history — it says what a customer bought and must
+     * survive, so its product_id is cleared and its own snapshot carries the
+     * name and code. Everything else here belongs to the product itself and
+     * has no meaning without it.
+     *
+     * Rows the schema already cascades — cart items, wishlists, reviews,
+     * images, fitments, stock movements, analytics — are left to the database.
+     */
+    private function releaseHistoricalReferences(Product $product): void
+    {
+        // History: kept, and let go of the product.
+        DB::table('order_items')
+            ->where('product_id', $product->id)
+            ->update(['product_id' => null]);
+
+        // These belong to the dead enterprise layer: nothing in the application
+        // reads them, and each one is a record *about* this product rather than
+        // a record of a transaction with a customer. They are refused by the
+        // database on delete, so they go first.
+        foreach (['price_histories', 'stock_transactions', 'purchase_invoice_items'] as $table) {
+            if (Schema::hasTable($table) && Schema::hasColumn($table, 'product_id')) {
+                DB::table($table)->where('product_id', $product->id)->delete();
+            }
+        }
+    }
+
+    /**
+     * Every file this product owns, gallery and main picture alike.
+     *
+     * @return array<int, string>
+     */
+    private function productImagePaths(Product $product): array
+    {
+        $paths = [];
+
+        if ($product->image) {
+            $paths[] = (string) $product->image;
+        }
+
+        if (Schema::hasTable('product_images')) {
+            foreach ($product->images()->get(['path']) as $image) {
+                $paths[] = (string) $image->path;
+            }
+        }
+
+        return array_values(array_unique(array_filter($paths)));
+    }
+
+    /**
+     * Delete the files, unless another product is still using one.
+     *
+     * An image can be shared — an import that reuses one path across a range,
+     * for instance — and removing it would blank a product nobody touched.
+     *
+     * @param  array<int, string>  $paths
+     */
+    private function deleteImageFiles(array $paths): void
+    {
+        foreach ($paths as $path) {
+            $stillUsed = Product::query()->where('image', $path)->exists()
+                || (Schema::hasTable('product_images')
+                    && DB::table('product_images')->where('path', $path)->exists());
+
+            if ($stillUsed) {
+                continue;
+            }
+
+            Storage::disk('public')->delete($path);
+        }
     }
 
     public function exportExcel()

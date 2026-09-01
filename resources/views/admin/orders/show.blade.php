@@ -101,7 +101,7 @@
                                                 <div class="flex items-center gap-3">
                                                     <div class="h-12 w-12 overflow-hidden rounded-lg bg-slate-100">
                                                         @if($item->product?->image)
-                                                            <img src="{{ asset('storage/' . $item->product->image) }}" alt="{{ $item->product?->name ?? __('Product') }}" class="h-full w-full object-cover">
+                                                            <img src="{{ asset('storage/' . $item->product->image) }}" alt="{{ $item->soldName() }}" class="h-full w-full object-cover">
                                                         @else
                                                             <div class="flex h-full w-full items-center justify-center text-muted">
                                                                 <i class="fas fa-image" aria-hidden="true"></i>
@@ -109,12 +109,12 @@
                                                         @endif
                                                     </div>
                                                     <div>
-                                                        <p class="text-sm font-medium text-slate-900">{{ $item->product?->name ?? __('Deleted product') }}</p>
+                                                        <p class="text-sm font-medium text-slate-900">{{ $item->soldName() }}</p>
                                                         <p class="text-xs text-slate-500">{{ $item->product?->brand ?? '-' }}</p>
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td class="px-6 py-4 text-sm text-slate-600">{{ $item->product?->sku ?? '-' }}</td>
+                                            <td class="px-6 py-4 text-sm text-slate-600">{{ $item->soldSku() ?: '-' }}</td>
                                             <td class="px-6 py-4 text-sm text-slate-900">{{ $item->quantity }}</td>
                                             <td class="px-6 py-4 text-sm text-slate-900">{{ $currencyLabel }} {{ number_format((float) $item->unit_price, $currencyDecimals) }}</td>
                                             <td class="px-6 py-4 text-sm font-semibold text-slate-900">{{ $currencyLabel }} {{ number_format((float) $item->subtotal, $currencyDecimals) }}</td>

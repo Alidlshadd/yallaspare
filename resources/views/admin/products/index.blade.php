@@ -704,19 +704,32 @@
                                class="btn primary" title="{{ __('Edit') }}">
                                 <i class="fas fa-pen" aria-hidden="true"></i> {{ __('Edit') }}
                             </a>
-                            <form action="{{ route('admin.products.destroy', $product) }}"
-                                  method="POST"
-                                  data-danger-confirm
-                                  data-danger-title="{{ __('Delete Product') }}"
-                                  data-danger-description="{{ __('This action is permanent. The selected product will be removed and cannot be restored.') }}"
-                                  class="flex-1">
-                                @csrf
-                                @method('DELETE')
-                                <input type="hidden" name="return_to" value="{{ $currentProductsUrl }}">
-                                <button type="submit" class="btn danger w-full" title="{{ __('Delete') }}">
-                                    <i class="fas fa-trash" aria-hidden="true"></i>
-                                </button>
-                            </form>
+                            @can('products.delete')
+                                {{--
+                                    Permanent, and owner-only. The confirmation
+                                    names the product and asks for its code back
+                                    before it will arm, because the row under the
+                                    cursor is not always the row in mind.
+                                --}}
+                                <form action="{{ route('admin.products.destroy', $product) }}"
+                                      method="POST"
+                                      data-danger-confirm
+                                      data-danger-title="{{ __('Delete Product') }}"
+                                      data-danger-description="{{ __('This product will be permanently removed from the catalogue. Past orders keep their record of the sale. This action cannot be undone.') }}"
+                                      data-danger-subject="{{ $product->name }}"
+                                      data-danger-meta="{{ $product->sku ?? '—' }}"
+                                      data-danger-phrase="{{ $product->sku ?: 'DELETE' }}"
+                                      data-danger-action="{{ __('Delete Permanently') }}"
+                                      class="flex-1">
+                                    @csrf
+                                    @method('DELETE')
+                                    <input type="hidden" name="return_to" value="{{ $currentProductsUrl }}">
+                                    <button type="submit" class="btn danger w-full" title="{{ __('Delete Permanently') }}">
+                                        <i class="fas fa-trash" aria-hidden="true"></i>
+                                        <span class="sr-only">{{ __('Delete Permanently') }}</span>
+                                    </button>
+                                </form>
+                            @endcan
                         </div>
                     </div>
                 @endforeach

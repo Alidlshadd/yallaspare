@@ -151,7 +151,7 @@ class OrderController extends Controller
     {
         $relations = [
             'user:id,name,email,phone,role,dealer_status,dealer_discount',
-            'items' => fn ($q) => $q->select(['id', 'order_id', 'product_id', 'quantity', 'unit_price', 'subtotal'])
+            'items' => fn ($q) => $q->select(['id', 'order_id', 'product_id', 'product_name', 'product_sku', 'quantity', 'unit_price', 'subtotal'])
                 ->with(['product:id,name_en,name_ar,name_ku,sku,brand,image']),
         ];
 

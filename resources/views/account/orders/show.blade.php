@@ -404,8 +404,10 @@
                             @foreach ($order->items as $item)
                                 @php
                                     $itemProduct = $item->product;
-                                    $itemName = (string) ($itemProduct?->name ?: __('Product unavailable'));
-                                    $itemSku = trim((string) ($itemProduct?->sku ?? ''));
+                                    // What was bought is read off the line, not the catalogue:
+                                    // the part may have been renamed or removed since.
+                                    $itemName = $item->soldName();
+                                    $itemSku = $item->soldSku();
                                     $itemImage = $itemProduct?->image
                                         ? asset('storage/' . ltrim((string) $itemProduct->image, '/'))
                                         : null;

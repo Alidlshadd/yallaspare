@@ -81,7 +81,7 @@ class MeasurementPayload
         foreach ($order->items as $item) {
             $lines[] = array_filter([
                 'id' => (int) $item->product_id,
-                'name' => $item->product?->localizedName() ?? '',
+                'name' => $item->product?->localizedName() ?: $item->soldName(),
                 'price' => round((float) $item->unit_price, 2),
                 'quantity' => max(1, (int) $item->quantity),
             ], fn ($value): bool => $value !== '');

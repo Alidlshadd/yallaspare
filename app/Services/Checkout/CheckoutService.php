@@ -190,6 +190,11 @@ class CheckoutService
             OrderItem::query()->create([
                 'order_id' => $order->id,
                 'product_id' => $line['product_id'],
+                // What was sold, written down at the moment of sale. The
+                // catalogue may rename or drop this part later; an invoice
+                // must still say what the customer actually bought.
+                'product_name' => $line['product']->name_en,
+                'product_sku' => $line['product']->sku,
                 'quantity' => $line['quantity'],
                 'unit_price' => $line['unit_price'],
                 'subtotal' => $line['subtotal'],
