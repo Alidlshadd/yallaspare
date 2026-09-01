@@ -39,6 +39,19 @@ class Goal extends Model
         'completed_at', 'created_by', 'updated_by',
     ];
 
+    /**
+     * How this goal is doing over some period.
+     *
+     * Not a column and never saved: the progress service works it out and hangs
+     * it here so a list can be rendered without evaluating each goal again from
+     * inside the view. It used to be pushed in with setAttribute, which put a
+     * column that does not exist into the model's own attributes — harmless
+     * only for as long as nobody saved a goal after reading its progress.
+     *
+     * @var array<string, mixed>
+     */
+    public array $evaluation = [];
+
     protected $casts = [
         'period_start' => 'date',
         'start_date' => 'date',
@@ -50,6 +63,18 @@ class Goal extends Model
         'reward_points' => 'integer',
         'completed_at' => 'datetime',
     ];
+
+    /**
+     * Attach a worked-out evaluation, and hand the goal back for chaining.
+     *
+     * @param  array<string, mixed>  $evaluation
+     */
+    public function withEvaluation(array $evaluation): static
+    {
+        $this->evaluation = $evaluation;
+
+        return $this;
+    }
 
     public static function periodTypes(): array
     {

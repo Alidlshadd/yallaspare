@@ -41,9 +41,8 @@ class ProgressCenterController extends Controller
                     'in_progress' => __('In Progress'),
                     default => __('Not Started'),
                 };
-                $goal->setAttribute('evaluation', $evaluation);
 
-                return $goal;
+                return $goal->withEvaluation($evaluation);
             });
 
         $completed = $goals->filter(fn (Goal $goal) => $goal->evaluation['status'] === 'completed')->count();
