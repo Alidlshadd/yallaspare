@@ -425,22 +425,42 @@ class VehicleFitmentController extends Controller
 
         $name = trim((string) $data['name_en']);
 
+        // Nullable, and it has to stay that way: a variant may have no family,
+        // and casting that to 0 writes a foreign key pointing at nothing.
+        $familyId = $data['vehicle_model_family_id'] ?? $model->vehicle_model_family_id;
+        $familyId = $familyId === null || $familyId === '' ? null : (int) $familyId;
+        $startYear = isset($data['production_start_year']) ? (int) $data['production_start_year'] : null;
+        $endYear = isset($data['production_end_year']) ? (int) $data['production_end_year'] : null;
+
+        // Only an edit that changes which car this is can create a collision.
+        // Leaving the name, the family and the years alone — to add an engine,
+        // to fix a translation — cannot, so it is never checked: a copy already
+        // sitting in the table is not this operator's doing, and blocking every
+        // unrelated edit until somebody merges it would strand the record.
+        $identityChanged = $familyId !== ($model->vehicle_model_family_id === null ? null : (int) $model->vehicle_model_family_id)
+            || VehicleModel::normalizeName($name) !== VehicleModel::normalizeName((string) ($model->name_en ?: $model->name))
+            || $startYear !== ($model->production_start_year === null ? null : (int) $model->production_start_year)
+            || $endYear !== ($model->production_end_year === null ? null : (int) $model->production_end_year);
+
         // Editing must not walk a variant onto another one's identity. Merging
         // silently here would move a car's parts under a different row without
         // anyone asking for it; the merge command exists for that, deliberately.
-        $clash = VehicleModel::findByIdentity(
-            (int) $model->vehicle_brand_id,
-            (int) ($data['vehicle_model_family_id'] ?? $model->vehicle_model_family_id),
-            $name,
-            isset($data['production_start_year']) ? (int) $data['production_start_year'] : null,
-            isset($data['production_end_year']) ? (int) $data['production_end_year'] : null,
-            $model->id,
-        );
+        $clash = $identityChanged
+            ? VehicleModel::findByIdentity($model->vehicle_brand_id, $familyId, $name, $startYear, $endYear, $model->id)
+            : null;
 
         if ($clash !== null) {
+            // Naming it matters. Without the id there is no way to tell a
+            // record colliding with itself from a leftover copy still in the
+            // table, and the operator is left with an edit they cannot save
+            // and nothing to act on.
             return back()
                 ->withInput()
-                ->withErrors(['name_en' => __('Another variant already covers these years. Add the engine to it instead of creating a second one.')]);
+                ->withErrors(['name_en' => __('Vehicle :name (:years) is already recorded as #:id. Merge the two records instead of keeping both.', [
+                    'name' => $clash->name_en ?: $clash->name,
+                    'years' => $clash->production_start_year.'–'.$clash->production_end_year,
+                    'id' => $clash->id,
+                ])]);
         }
 
         $shouldSyncEngineTypes = $request->exists('engine_types') || $request->exists('engine_types_text') || $request->exists('engines');
@@ -453,15 +473,15 @@ class VehicleFitmentController extends Controller
         $imagePath = $newImagePath ?: ($request->boolean('remove_image') ? null : $oldImagePath);
 
         try {
-            DB::transaction(function () use ($data, $model, $name, $shouldSyncEngineTypes, $engineTypes, $imagePath): void {
+            DB::transaction(function () use ($data, $model, $name, $familyId, $startYear, $endYear, $shouldSyncEngineTypes, $engineTypes, $imagePath): void {
                 $model->update([
-                    'vehicle_model_family_id' => $data['vehicle_model_family_id'] ?? $model->vehicle_model_family_id,
+                    'vehicle_model_family_id' => $familyId,
                     'name' => $name,
                     'name_en' => $name,
                     'name_ar' => $this->nullableText($data['name_ar'] ?? null),
                     'name_ku' => $this->nullableText($data['name_ku'] ?? null),
-                    'production_start_year' => $data['production_start_year'] ?? null,
-                    'production_end_year' => $data['production_end_year'] ?? null,
+                    'production_start_year' => $startYear,
+                    'production_end_year' => $endYear,
                     'image_path' => $imagePath,
                 ]);
 

@@ -141,6 +141,172 @@ class VehicleModelIdentityTest extends TestCase
         $this->assertSame(2022, (int) $other->refresh()->production_start_year);
     }
 
+    public function test_saving_a_car_unchanged_is_not_taken_for_a_duplicate(): void
+    {
+        $brand = $this->brand();
+        $family = $this->family($brand, 'Tivoli');
+        $tivoli = $this->variant($brand, $family, 'Tivoli', 2015, 2019);
+        $this->engine($tivoli, 'petrol', 1.6);
+        $this->engine($tivoli, 'diesel', 1.6, 'turbo');
+
+        $this->actingAs($this->admin())
+            ->from(route('admin.vehicle-fitments.models.edit', $tivoli))
+            ->patch(route('admin.vehicle-fitments.models.update', $tivoli), [
+                'vehicle_model_family_id' => $family->id,
+                'name_en' => 'Tivoli',
+                'production_start_year' => 2015,
+                'production_end_year' => 2019,
+                'engines' => [
+                    ['fuel_type' => 'petrol', 'engine_size' => '1.6', 'aspiration' => null],
+                    ['fuel_type' => 'diesel', 'engine_size' => '1.6', 'aspiration' => 'turbo'],
+                ],
+            ])
+            ->assertSessionHasNoErrors()
+            ->assertRedirect(route('admin.vehicle-fitments.index'));
+
+        $this->assertSame(2, $tivoli->refresh()->engineTypes()->count());
+    }
+
+    public function test_editing_only_the_engines_of_a_recorded_car_is_allowed(): void
+    {
+        $brand = $this->brand();
+        $family = $this->family($brand, 'Tivoli');
+        $tivoli = $this->variant($brand, $family, 'Tivoli', 2015, 2019);
+        $this->engine($tivoli, 'petrol', 1.6);
+
+        $this->actingAs($this->admin())
+            ->patch(route('admin.vehicle-fitments.models.update', $tivoli), [
+                'vehicle_model_family_id' => $family->id,
+                'name_en' => 'Tivoli',
+                'production_start_year' => 2015,
+                'production_end_year' => 2019,
+                'engines' => [
+                    ['fuel_type' => 'petrol', 'engine_size' => '1.6', 'aspiration' => null],
+                    ['fuel_type' => 'diesel', 'engine_size' => '1.6', 'aspiration' => 'turbo'],
+                ],
+            ])
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame(2, $tivoli->engineTypes()->count());
+        $this->assertEqualsCanonicalizing(['petrol', 'diesel'], $tivoli->engineTypes()->pluck('fuel_type')->all());
+    }
+
+    public function test_removing_an_engine_from_a_recorded_car_is_allowed(): void
+    {
+        $brand = $this->brand();
+        $family = $this->family($brand, 'Tivoli');
+        $tivoli = $this->variant($brand, $family, 'Tivoli', 2015, 2019);
+        $this->engine($tivoli, 'petrol', 1.6);
+        $this->engine($tivoli, 'diesel', 1.6, 'turbo');
+
+        $this->actingAs($this->admin())
+            ->patch(route('admin.vehicle-fitments.models.update', $tivoli), [
+                'vehicle_model_family_id' => $family->id,
+                'name_en' => 'Tivoli',
+                'production_start_year' => 2015,
+                'production_end_year' => 2019,
+                'engines' => [['fuel_type' => 'petrol', 'engine_size' => '1.6', 'aspiration' => null]],
+            ])
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame(['petrol'], $tivoli->engineTypes()->pluck('fuel_type')->all());
+    }
+
+    public function test_editing_only_the_translations_of_a_recorded_car_is_allowed(): void
+    {
+        $brand = $this->brand();
+        $family = $this->family($brand, 'Tivoli');
+        $tivoli = $this->variant($brand, $family, 'Tivoli', 2015, 2019);
+        $this->engine($tivoli, 'petrol', 1.6);
+
+        $this->actingAs($this->admin())
+            ->patch(route('admin.vehicle-fitments.models.update', $tivoli), [
+                'vehicle_model_family_id' => $family->id,
+                'name_en' => 'Tivoli',
+                'name_ar' => "\u{62A}\u{64A}\u{641}\u{648}\u{644}\u{64A}",
+                'name_ku' => "\u{62A}\u{6CE}\u{6A4}\u{6C6}\u{644}\u{6CC}",
+                'production_start_year' => 2015,
+                'production_end_year' => 2019,
+            ])
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame("\u{62A}\u{64A}\u{641}\u{648}\u{644}\u{64A}", $tivoli->refresh()->name_ar);
+        // Engines were not part of this submission, so they stay put.
+        $this->assertSame(1, $tivoli->engineTypes()->count());
+    }
+
+    public function test_a_copy_already_in_the_table_does_not_block_editing_either_of_them(): void
+    {
+        // Two Tivoli 2015-2019 rows, left by the form as it used to behave. The
+        // operator has done nothing wrong by opening one of them, so an edit
+        // that leaves the identity alone has to go through.
+        [$keep, $duplicate] = $this->duplicatedTivoli();
+
+        $this->actingAs($this->admin())
+            ->patch(route('admin.vehicle-fitments.models.update', $duplicate), [
+                'vehicle_model_family_id' => $duplicate->vehicle_model_family_id,
+                'name_en' => 'Tivoli',
+                'production_start_year' => 2015,
+                'production_end_year' => 2019,
+                'engines' => [
+                    ['fuel_type' => 'diesel', 'engine_size' => '1.6', 'aspiration' => 'turbo'],
+                    ['fuel_type' => 'petrol', 'engine_size' => '1.6', 'aspiration' => null],
+                ],
+            ])
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame(2, $duplicate->engineTypes()->count());
+        $this->assertDatabaseHas('vehicle_models', ['id' => $keep->id]);
+    }
+
+    public function test_moving_a_variant_onto_another_ones_years_names_the_row_it_hit(): void
+    {
+        $brand = $this->brand();
+        $family = $this->family($brand, 'Rexton');
+        $older = $this->variant($brand, $family, 'Rexton G4', 2018, 2021, 'rexton-g4-2018');
+        $newer = $this->variant($brand, $family, 'Rexton G4', 2022, 2026, 'rexton-g4-2022');
+
+        $this->actingAs($this->admin())
+            ->from(route('admin.vehicle-fitments.models.edit', $newer))
+            ->patch(route('admin.vehicle-fitments.models.update', $newer), [
+                'vehicle_model_family_id' => $family->id,
+                'name_en' => 'Rexton G4',
+                'production_start_year' => 2018,
+                'production_end_year' => 2021,
+            ])
+            ->assertSessionHasErrors('name_en');
+
+        $message = session('errors')->get('name_en')[0];
+        // The row it collided with, not the one being edited.
+        $this->assertStringContainsString('#'.$older->id, $message);
+        $this->assertStringNotContainsString('#'.$newer->id, $message);
+        $this->assertSame(2022, (int) $newer->refresh()->production_start_year);
+    }
+
+    public function test_a_variant_with_no_family_can_still_be_saved(): void
+    {
+        $brand = $this->brand();
+        // Variants predating families have none, and an edit must not invent
+        // one — a zero here is a foreign key pointing at nothing.
+        $torres = VehicleModel::query()->create([
+            'vehicle_brand_id' => $brand->id,
+            'name' => 'Torres',
+            'name_en' => 'Torres',
+            'slug' => 'torres',
+        ]);
+
+        $this->actingAs($this->admin())
+            ->patch(route('admin.vehicle-fitments.models.update', $torres), [
+                'name_en' => 'Torres',
+                'production_start_year' => 2023,
+                'production_end_year' => 2026,
+            ])
+            ->assertSessionHasNoErrors();
+
+        $this->assertNull($torres->refresh()->vehicle_model_family_id);
+        $this->assertSame(2023, (int) $torres->production_start_year);
+    }
+
     public function test_the_merge_command_reports_without_changing_anything(): void
     {
         [$keep, $duplicate] = $this->duplicatedTivoli();
