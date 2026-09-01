@@ -201,6 +201,53 @@ class ProductFitmentBatchTest extends TestCase
         $this->assertDatabaseCount('product_vehicle_fitments', 0);
     }
 
+    /**
+     * The batch form's script has to be able to see the data it reads.
+     *
+     * The page carries two initialisers in one script tag and each is its own
+     * function scope. The batch one read the family map without declaring it,
+     * so picking a brand threw a ReferenceError and the Model Family control
+     * was left disabled with no way to open it — the fitment could never be
+     * completed, and nothing on screen said why.
+     */
+    public function test_the_batch_fitment_script_declares_the_data_it_reads(): void
+    {
+        [$brand] = $this->vehicle('Toyota', 'Corolla');
+
+        $html = (string) $this->actingAs($this->admin())
+            ->get(route('admin.vehicle-fitments.index'))
+            ->assertOk()
+            ->getContent();
+
+        $script = $this->batchFitmentScript($html);
+
+        foreach (['familyMap', 'modelMap', 'noFamilyLabel', 'noModelLabel'] as $name) {
+            $this->assertMatchesRegularExpression(
+                '/\bconst '.$name.'\b/',
+                $script,
+                "The batch fitment initialiser reads {$name} but never declares it in its own scope."
+            );
+        }
+
+        // And the map it reads has to actually be on the form.
+        $this->assertStringContainsString('data-family-map=', $html);
+        $this->assertStringContainsString('"'.$brand->id.'":[{', str_replace(['&quot;', ' '], ['"', ''], $html));
+    }
+
+    /**
+     * The batch initialiser only, so a declaration in the neighbouring block
+     * cannot stand in for a missing one here.
+     */
+    private function batchFitmentScript(string $html): string
+    {
+        $marker = "document.querySelectorAll('[data-admin-vehicle-fitment]')";
+        $start = strpos($html, $marker);
+
+        $this->assertNotFalse($start, 'The batch fitment initialiser is missing from the page.');
+
+        return substr($html, $start);
+    }
+
     private function admin(): User
     {
         return User::factory()->create([

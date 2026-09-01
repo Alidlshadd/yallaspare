@@ -501,6 +501,7 @@
                 data-engine-types='@json($allEngineTypes)'
                 data-any-model-label="{{ __('Any model') }}"
                 data-no-model-label="{{ __('No models for this brand yet') }}"
+                data-no-family-label="{{ __('No families for this brand yet') }}"
                 data-any-engine-label="{{ __('Any engine') }}"
                 data-any-year-label="{{ __('Any year') }}"
                 data-vehicle-label="{{ __('vehicle') }}"
@@ -956,9 +957,13 @@
             if (!productSelect || !rowsContainer || !rowTemplate) return;
 
             const modelMap = JSON.parse(form.dataset.modelMap || '{}');
+            // Read here as well as in the row helpers below: each of these
+            // blocks is its own scope, and setFamilyOptions reaches for this.
+            const familyMap = JSON.parse(form.dataset.familyMap || '{}');
             const allEngineTypes = JSON.parse(form.dataset.engineTypes || '[]');
             const anyModelLabel = form.dataset.anyModelLabel || 'Any model';
             const noModelLabel = form.dataset.noModelLabel || 'No models for this brand yet';
+            const noFamilyLabel = form.dataset.noFamilyLabel || 'No families for this brand yet';
             const anyEngineLabel = form.dataset.anyEngineLabel || 'Any engine';
             const anyYearLabel = form.dataset.anyYearLabel || 'Any year';
             const vehicleLabel = form.dataset.vehicleLabel || 'vehicle';
@@ -1097,7 +1102,11 @@
                     familySelect.innerHTML = '';
                     const placeholder = document.createElement('option');
                     placeholder.value = '';
-                    placeholder.textContent = @json(__('Select family'));
+                    // A brand with nothing under it yet leaves this control
+                    // disabled, so it has to say why rather than look broken.
+                    placeholder.textContent = !brandId || families.length > 0
+                        ? @json(__('Select family'))
+                        : noFamilyLabel;
                     familySelect.appendChild(placeholder);
                     families.forEach((family) => {
                         const option = document.createElement('option');
