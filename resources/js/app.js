@@ -1819,6 +1819,9 @@ const initAdminSidebarShell = (shell) => {
     const desktopExpand = shell.querySelector('[data-admin-sidebar-expand]');
     const mobileToggle = shell.querySelector('[data-admin-mobile-sidebar-toggle]');
     const mobileClose = shell.querySelector('[data-admin-mobile-sidebar-close]');
+    // The control in the panel's own header. On a desktop it collapses the
+    // column; on a phone the panel is a drawer, so it closes it instead.
+    const panelToggle = shell.querySelector('[data-admin-sidebar-panel-toggle]');
 
     if (!sidebar || !main) {
         return;
@@ -1863,6 +1866,21 @@ const initAdminSidebarShell = (shell) => {
 
         if (mobileClose) {
             mobileClose.setAttribute('aria-expanded', String(mobileSidebarOpen));
+        }
+
+        if (panelToggle) {
+            const label = isDesktop()
+                ? (sidebarCollapsed
+                    ? panelToggle.dataset.expandLabel || 'Expand sidebar'
+                    : panelToggle.dataset.collapseLabel || 'Collapse sidebar')
+                : panelToggle.dataset.closeLabel || 'Close menu';
+
+            panelToggle.setAttribute(
+                'aria-expanded',
+                String(isDesktop() ? !sidebarCollapsed : mobileSidebarOpen),
+            );
+            panelToggle.setAttribute('aria-label', label);
+            panelToggle.setAttribute('title', label);
         }
     };
 
@@ -1927,6 +1945,19 @@ const initAdminSidebarShell = (shell) => {
     const handleClick = (event) => {
         const target = event.target instanceof Element ? event.target : null;
         if (!target) {
+            return;
+        }
+
+        if (target.closest('[data-admin-sidebar-panel-toggle]')) {
+            event.preventDefault();
+            event.stopPropagation();
+
+            if (isDesktop()) {
+                toggleDesktopCollapsed();
+            } else {
+                closeMobileSidebar();
+            }
+
             return;
         }
 

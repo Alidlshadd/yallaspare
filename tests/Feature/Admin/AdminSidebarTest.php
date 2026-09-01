@@ -144,6 +144,39 @@ class AdminSidebarTest extends TestCase
         return substr($haystack, $from, $to - $from);
     }
 
+    /**
+     * The control in the panel header has to answer to something.
+     *
+     * It was drawn as a close cross carrying only the drawer-close hook, and a
+     * custom rule outweighed the utility class meant to keep it on phones — so
+     * on a desktop it was on screen with nothing to close, and clicking it did
+     * nothing at all.
+     */
+    public function test_the_panel_header_control_is_wired_to_the_sidebar(): void
+    {
+        $html = $this->sidebarFor($this->superAdmin());
+
+        $this->assertStringContainsString(
+            'data-admin-sidebar-panel-toggle',
+            $html,
+            'The sidebar header control has no hook for the script to bind to.'
+        );
+
+        $this->assertStringNotContainsString(
+            'data-admin-mobile-sidebar-close',
+            $html,
+            'The header control still carries the drawer-only hook that did nothing on a desktop.'
+        );
+
+        foreach (['data-expand-label', 'data-collapse-label', 'data-close-label'] as $attribute) {
+            $this->assertStringContainsString(
+                $attribute,
+                $html,
+                "The header control is missing its {$attribute}, so its label cannot follow the panel."
+            );
+        }
+    }
+
     private function sidebarFor(User $admin): string
     {
         return (string) $this->actingAs($admin)

@@ -525,7 +525,17 @@
                     .admin-sidebar-edge:hover { background: #14144a; }
                 }
                 /* The glyph points at the panel in either writing direction. */
-                [dir='rtl'] .admin-sidebar-edge svg { scale: -1 1; }
+                [dir='rtl'] .admin-sidebar-edge svg,
+                [dir='rtl'] .admin-shell .admin-sidebar-header-toggle svg { scale: -1 1; }
+
+                /* The header control sits beneath the mark once the column is
+                   narrow, which is where the eye already is when looking for a
+                   way back out. */
+                .admin-shell .admin-sidebar-header-toggle { margin-inline-start: auto; }
+                .admin-shell.admin-sidebar-collapsed .admin-sidebar-header-toggle,
+                .admin-sidebar-precollapsed .admin-shell .admin-sidebar-header-toggle {
+                    margin-inline: auto;
+                }
 
                 /* ── motion off ────────────────────────────────────────── */
                 @media (prefers-reduced-motion: reduce) {
@@ -660,15 +670,30 @@
                                 <span class="admin-sidebar-meta uppercase" data-admin-sidebar-meta>{{ __('Command Center') }}</span>
                             </span>
                         </a>
+                        {{--
+                            One control, two jobs, because the panel means
+                            different things on either side of the breakpoint:
+                            on a phone it is a drawer and this closes it, on a
+                            desktop it is a column and this narrows it. The
+                            chevron points the way the panel is about to go and
+                            turns around once it has gone.
+                        --}}
                         <button
                             type="button"
-                            class="admin-sidebar-toggle inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/10 text-slate-100 transition hover:bg-white/15 lg:hidden"
+                            class="admin-sidebar-toggle admin-sidebar-header-toggle shrink-0"
                             aria-controls="admin-sidebar"
+                            aria-expanded="true"
                             aria-label="{{ __('Collapse sidebar') }}"
                             title="{{ __('Collapse sidebar') }}"
-                            data-admin-mobile-sidebar-close
+                            data-expand-label="{{ __('Expand sidebar') }}"
+                            data-collapse-label="{{ __('Collapse sidebar') }}"
+                            data-close-label="{{ __('Close menu') }}"
+                            data-admin-sidebar-panel-toggle
                         >
-                            <i class="fas fa-xmark text-sm" aria-hidden="true"></i>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"
+                                 stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+                                <path d="M15 5l-7 7 7 7" />
+                            </svg>
                         </button>
                     </div>
                     @php
