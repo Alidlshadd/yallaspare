@@ -53,9 +53,12 @@ return [
     */
 
     'channels' => [
+        // 'daily', not 'single': the default channel writes every request's
+        // worth of logging, and one unrotated laravel.log fills the disk on a
+        // long-running server. Both channels carry the same redaction tap.
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => ['daily'],
             'ignore_exceptions' => false,
         ],
 
