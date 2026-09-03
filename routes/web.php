@@ -38,6 +38,7 @@ use App\Http\Controllers\CatalogLandingController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CspReportController;
 use App\Http\Controllers\ExpressCheckoutController;
+use App\Http\Controllers\HealthController;
 use App\Http\Controllers\LegalController;
 use App\Http\Controllers\PaymentReturnController;
 use App\Http\Controllers\ProductReviewController;
@@ -50,14 +51,23 @@ use App\Http\Controllers\User\ShopController as UserShopController;
 use App\Http\Controllers\User\UserAccountController;
 use App\Http\Controllers\User\UserSettingsController;
 use App\Http\Controllers\User\WishlistController;
+use App\Http\Middleware\ApplyUserPreferences;
+use App\Http\Middleware\EnsureUserNotBanned;
+use App\Http\Middleware\MinifyHtmlResponse;
+use App\Http\Middleware\RecordAnalyticsEvent;
+use App\Http\Middleware\SetLocale;
+use App\Http\Middleware\VerifyCsrfToken;
 use App\Models\Setting;
 use App\Models\User;
 use App\Support\BrandIcon;
 use App\Support\Branding;
 use Illuminate\Http\Request;
+use Illuminate\Session\Middleware\AuthenticateSession;
+use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
 
 /*
 |--------------------------------------------------------------------------
@@ -70,6 +80,24 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+
+// A monitor polls this every minute or so, and it must cost almost nothing.
+// The session middleware would write a session file per probe and the
+// analytics middleware a database row per probe, so both are dropped along
+// with everything downstream of them that reads the session.
+Route::get('/up', HealthController::class)
+    ->withoutMiddleware([
+        AuthenticateSession::class,
+        StartSession::class,
+        ShareErrorsFromSession::class,
+        ApplyUserPreferences::class,
+        EnsureUserNotBanned::class,
+        MinifyHtmlResponse::class,
+        RecordAnalyticsEvent::class,
+        SetLocale::class,
+        VerifyCsrfToken::class,
+    ])
+    ->name('health');
 
 Route::post('/language/{locale}', function (Request $request, string $locale) {
     abort_unless(in_array($locale, ['en', 'ar', 'ku'], true), 404);
