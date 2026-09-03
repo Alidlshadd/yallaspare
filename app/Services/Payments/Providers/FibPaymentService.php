@@ -7,6 +7,7 @@ use App\Models\Payment;
 use App\Services\Payments\PaymentProviderInterface;
 use App\Services\Payments\PaymentRedirectData;
 use App\Services\Payments\PaymentVerificationResult;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -19,8 +20,8 @@ class FibPaymentService implements PaymentProviderInterface
 
     public function createPayment(Order $order, Payment $payment): PaymentRedirectData
     {
-        $response = Http::withToken($this->accessToken())
-            ->acceptJson()
+        $response = $this->request()
+            ->withToken($this->accessToken())
             ->asJson()
             ->post($this->url('/protected/v1/payments'), [
                 'monetaryValue' => [
@@ -52,8 +53,8 @@ class FibPaymentService implements PaymentProviderInterface
             return new PaymentVerificationResult(Payment::STATUS_FAILED, failureReason: 'missing_provider_payment_id');
         }
 
-        $response = Http::withToken($this->accessToken())
-            ->acceptJson()
+        $response = $this->request()
+            ->withToken($this->accessToken())
             ->get($this->url('/protected/v1/payments/'.rawurlencode((string) $payment->provider_payment_id).'/status'))
             ->throw()
             ->json();
@@ -101,8 +102,8 @@ class FibPaymentService implements PaymentProviderInterface
 
     private function accessToken(): string
     {
-        $response = Http::asForm()
-            ->acceptJson()
+        $response = $this->request()
+            ->asForm()
             ->post($this->url('/auth/realms/fib-online-shop/protocol/openid-connect/token'), [
                 'grant_type' => 'client_credentials',
                 'client_id' => (string) config('services.fib.client_id'),
@@ -117,6 +118,19 @@ class FibPaymentService implements PaymentProviderInterface
         }
 
         return $token;
+    }
+
+    /**
+     * Every FIB call is made from inside a checkout request, so it gets an
+     * explicit ceiling rather than the client's 30-second default. Note that
+     * createPayment and verifyPayment each authorize first, so a fully
+     * unresponsive FIB costs two of these, not one.
+     */
+    private function request(): PendingRequest
+    {
+        return Http::acceptJson()
+            ->connectTimeout(5)
+            ->timeout(15);
     }
 
     private function url(string $path): string

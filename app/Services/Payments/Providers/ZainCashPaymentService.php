@@ -8,6 +8,7 @@ use App\Services\Payments\Concerns\BuildsJwt;
 use App\Services\Payments\PaymentProviderInterface;
 use App\Services\Payments\PaymentRedirectData;
 use App\Services\Payments\PaymentVerificationResult;
+use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
 
@@ -32,8 +33,7 @@ class ZainCashPaymentService implements PaymentProviderInterface
             'exp' => now()->addHour()->timestamp,
         ];
 
-        $response = Http::asForm()
-            ->acceptJson()
+        $response = $this->request()
             ->post($this->url('/transaction/init'), [
                 'token' => $this->encodeJwt($payload, $this->secret()),
                 'merchantId' => (string) config('services.zaincash.merchant_id'),
@@ -68,8 +68,7 @@ class ZainCashPaymentService implements PaymentProviderInterface
             'exp' => now()->addHour()->timestamp,
         ], $this->secret());
 
-        $response = Http::asForm()
-            ->acceptJson()
+        $response = $this->request()
             ->post($this->url('/transaction/get'), [
                 'token' => $token,
                 'merchantId' => (string) config('services.zaincash.merchant_id'),
@@ -136,6 +135,18 @@ class ZainCashPaymentService implements PaymentProviderInterface
         }
 
         return $secret;
+    }
+
+    /**
+     * Both ZainCash calls sit inside a checkout request, so they get an
+     * explicit ceiling instead of the client's 30-second default.
+     */
+    private function request(): PendingRequest
+    {
+        return Http::asForm()
+            ->acceptJson()
+            ->connectTimeout(5)
+            ->timeout(15);
     }
 
     private function url(string $path): string
