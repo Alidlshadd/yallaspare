@@ -1,6 +1,9 @@
 ; Copy to /etc/supervisor/conf.d/yallaspare-worker.conf on the VPS.
 ; Replace the user and path values before enabling.
 
+; --timeout must stay BELOW queue.connections.database.retry_after (120s in
+; config/queue.php). If you raise it here, raise that too, or the queue can
+; hand a still-running job to a second worker and send the mail twice.
 [program:yallaspare-worker]
 process_name=%(program_name)s_%(process_num)02d
 command=/usr/bin/php /var/www/yallaspare/artisan queue:work database --queue=mail,default --sleep=3 --tries=3 --timeout=90 --max-time=3600

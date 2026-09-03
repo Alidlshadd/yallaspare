@@ -38,7 +38,12 @@ return [
             'driver' => 'database',
             'table' => 'jobs',
             'queue' => 'default',
-            'retry_after' => 90,
+            // Must stay longer than the worker's --timeout (90s in
+            // deploy/supervisor/yallaspare-worker.conf.example). When the two
+            // are equal the queue can hand a job to a second worker while the
+            // first is still inside its final second of work, and a customer
+            // gets the same mail twice.
+            'retry_after' => 120,
             // Jobs that notify customers or mutate external state should only
             // run after the database transaction that created them is committed.
             'after_commit' => true,
