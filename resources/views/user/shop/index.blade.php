@@ -299,8 +299,39 @@
 
         @if ($products->isEmpty())
             <section class="rounded-2xl border border-slate-200/80 bg-white p-5 text-center shadow-sm shadow-slate-900/5 dark:bg-slate-900 dark:shadow-black/10 sm:rounded-3xl sm:p-8">
-                <h2 class="text-xl font-semibold tracking-[-0.03em] text-slate-950 sm:text-2xl">{{ __('No products found') }}</h2>
+                <h2 class="text-xl font-semibold tracking-[-0.03em] text-slate-950 sm:text-2xl">
+                    @if ($search !== '')
+                        {{ __('No products found for ":query"', ['query' => $search]) }}
+                    @else
+                        {{ __('No products found') }}
+                    @endif
+                </h2>
                 <p class="mt-3 text-sm leading-6 text-slate-600">{{ __('Try changing the filter or clearing your search.') }}</p>
+
+                {{-- Offered, never applied on the shopper's behalf, and only
+                     ever a name the catalogue actually holds. --}}
+                @if ($searchSuggestion)
+                    <p class="mt-4 text-sm text-slate-600">
+                        {{ __('Did you mean') }}:
+                        <a
+                            href="{{ route('shop.index', array_merge(request()->except(['search', 'q', 'page']), ['search' => $searchSuggestion['query']])) }}"
+                            class="font-semibold text-primary underline decoration-accent/40 underline-offset-4 transition hover:text-navy-raised focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 dark:text-slate-200 dark:hover:text-white"
+                        >{{ $searchSuggestion['suggestion'] }}</a>?
+                    </p>
+                @endif
+
+                @if ($search !== '')
+                    <div class="mt-5 flex flex-wrap items-center justify-center gap-2">
+                        <a
+                            href="{{ route('shop.index', request()->except(['search', 'q', 'page'])) }}"
+                            class="inline-flex items-center rounded-full border border-slate-200/80 px-3.5 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 dark:border-slate-800 dark:text-slate-200 dark:hover:bg-slate-800"
+                        >{{ __('Clear search') }}</a>
+                        <a
+                            href="{{ route('shop.index') }}"
+                            class="inline-flex items-center rounded-full border border-slate-200/80 px-3.5 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent/30 dark:border-slate-800 dark:text-slate-200 dark:hover:bg-slate-800"
+                        >{{ __('Browse all parts') }}</a>
+                    </div>
+                @endif
             </section>
         @else
             <div class="flex flex-wrap items-center justify-between gap-2 px-1">

@@ -17,6 +17,8 @@ use App\Services\Analytics\SearchTracker;
 use App\Support\DbSchema;
 use App\Support\ImageVariants;
 use App\Support\LocalizedText;
+use App\Support\Search\SearchQuery;
+use App\Support\Search\SearchSuggestions;
 use App\Support\SqlSafe;
 use App\Support\VehicleFilterCache;
 use App\Support\VehicleLocalization;
@@ -276,6 +278,13 @@ class ShopController extends Controller
         }
 
         $sort = (string) $request->input('sort', 'latest');
+
+        // A search asks a question, and the best answer belongs at the top. An
+        // explicit sort is still the shopper's own choice and wins.
+        if ($search !== '' && ! in_array($sort, ['price_asc', 'price_desc', 'stock_desc'], true)) {
+            $productsQuery->orderBySearchRelevance($search);
+        }
+
         match ($sort) {
             'price_asc' => $productsQuery->orderBy('price'),
             'price_desc' => $productsQuery->orderByDesc('price'),
@@ -289,6 +298,13 @@ class ShopController extends Controller
             app(SearchTracker::class)->record($request, $search, (int) $products->total());
             app(ClientAnalytics::class)->record('search', ['search_term' => $search]);
         }
+
+        // Only worth the lookup when the shopper is looking at nothing. A
+        // suggestion beside a page of results is noise; beside an empty page it
+        // is the only thing that helps.
+        $searchSuggestion = $search !== '' && $products->total() === 0
+            ? SearchSuggestions::forQuery(SearchQuery::parse($search))
+            : null;
 
         $wishlistedProductIds = [];
         if ($customerUser && DbSchema::hasTable('wishlists')) {
@@ -314,6 +330,7 @@ class ShopController extends Controller
             'activeCategory' => $activeCategory,
             'wishlistedProductIds' => $wishlistedProductIds,
             'search' => $search,
+            'searchSuggestion' => $searchSuggestion,
             'sort' => $sort,
             'brand' => $brand,
             'model' => $model,

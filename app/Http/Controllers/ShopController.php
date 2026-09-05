@@ -159,6 +159,9 @@ class ShopController extends Controller
             // can never disagree with the results page it leads to.
             ->matchingSearchTerm($term)
             ->orderByRaw('CASE WHEN stock_quantity > 0 THEN 0 ELSE 1 END')
+            // The same ladder the results page uses, so a suggestion and the
+            // page it leads to cannot disagree about what the best answer is.
+            ->orderBySearchRelevance($term)
             ->latest('id')
             ->limit($limit)
             ->get()

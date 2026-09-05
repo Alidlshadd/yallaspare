@@ -3708,5 +3708,8 @@
     "Products could not be loaded. Try again.": "تعذّر تحميل المنتجات. حاول مرة أخرى.",
     "OEM": "OEM",
     "units": "قطعة",
-    "Archived": "مؤرشف"
+    "Archived": "مؤرشف",
+    "No products found for \":query\"": "لا توجد منتجات لـ \":query\"",
+    "Did you mean": "هل تقصد",
+    "Clear search": "مسح البحث"
 }

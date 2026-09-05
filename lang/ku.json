@@ -3708,5 +3708,8 @@
     "Products could not be loaded. Try again.": "بەرهەمەکان بار نەکران. دووبارە هەوڵ بدەرەوە.",
     "OEM": "OEM",
     "units": "دانە",
-    "Archived": "ئەرشیفکراو"
+    "Archived": "ئەرشیفکراو",
+    "No products found for \":query\"": "هیچ بەرهەمێک بۆ \":query\" نەدۆزرایەوە",
+    "Did you mean": "مەبەستت ئەمە بوو",
+    "Clear search": "سڕینەوەی گەڕان"
 }

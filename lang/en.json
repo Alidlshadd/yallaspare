@@ -3708,5 +3708,8 @@
     "Products could not be loaded. Try again.": "Products could not be loaded. Try again.",
     "OEM": "OEM",
     "units": "units",
-    "Archived": "Archived"
+    "Archived": "Archived",
+    "No products found for \":query\"": "No products found for \":query\"",
+    "Did you mean": "Did you mean",
+    "Clear search": "Clear search"
 }

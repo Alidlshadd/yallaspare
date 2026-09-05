@@ -6,6 +6,8 @@ use App\Support\CatalogLandingCache;
 use App\Support\DbSchema;
 use App\Support\ImageVariants;
 use App\Support\LocalizedText;
+use App\Support\Search\SearchQuery;
+use App\Support\Search\Token;
 use App\Support\SqlSafe;
 use App\Support\VehicleFilterCache;
 use Illuminate\Database\Eloquent\Builder;
@@ -242,138 +244,319 @@ class Product extends Model
     /**
      * Everything a shopper might type into the search box.
      *
-     * A part's own columns are only half of what identifies it. The other half
-     * is what it fits, and that lives in the fitment relation on purpose — the
-     * product is called "Engine Oil Filter", not "Tivoli Engine Oil Filter",
-     * because the same filter fits several cars. A search that read only the
-     * products table therefore returned nothing for "Tivoli" even though the
-     * admin list and the product page both showed the compatibility.
+     * The old version handed the whole query to a LIKE, which meant one column
+     * had to contain the entire phrase. "ssangyong rexton" therefore found
+     * nothing: the brand is on the vehicle brand, the model on the variant, and
+     * no single column holds both. A four-digit year was worse still, because a
+     * year is stored as a range and never as text.
      *
-     * The whole thing is wrapped in one closure, so callers keep their own
-     * constraints. `whereHas` is used rather than a join throughout: it compiles
-     * to an EXISTS subquery, so a product with five matching fitment rows is
-     * still one row in the result and needs no distinct.
+     * So the query is split into words, and a product has to answer *every*
+     * word — but each word may be answered by whatever part of the catalogue
+     * knows about it. "ssangyong rexton 2024 oil filter" is satisfied by the
+     * brand relation, the variant, a year range and the product name working
+     * together on the same product.
+     *
+     * The whole thing sits in one closure, so callers keep their own active and
+     * visibility constraints. Every relation is reached with `whereHas`, which
+     * compiles to EXISTS: a product with five matching fitment rows is still
+     * one row and needs no distinct.
      */
     public function scopeMatchingSearchTerm(Builder $query, string $term): Builder
     {
-        $term = SqlSafe::searchTerm($term);
+        $search = SearchQuery::parse($term);
 
-        if ($term === '') {
+        if ($search->isEmpty()) {
             return $query;
         }
 
-        // A four-digit number is read as a model year as well as ordinary text,
-        // so "2017" finds the parts recorded as fitting a car built that year.
-        $year = preg_match('/^\d{4}$/', $term) === 1 ? (int) $term : null;
+        return $query->where(function (Builder $all) use ($search): void {
+            // AND between words, OR inside each one. Every word must land
+            // somewhere on the product or on what it fits.
+            foreach ($search->tokens as $token) {
+                $all->where(function (Builder $any) use ($token): void {
+                    $this->matchTokenAgainstProduct($any, $token);
+                    $this->matchTokenAgainstCategory($any, $token);
+                    $this->matchTokenAgainstFitments($any, $token);
+                });
+            }
+        });
+    }
 
-        return $query->where(function (Builder $group) use ($term, $year): void {
-            SqlSafe::whereLike($group, 'name_en', $term);
-            SqlSafe::orWhereLike($group, 'name_ar', $term);
-            SqlSafe::orWhereLike($group, 'name_ku', $term);
-            SqlSafe::orWhereLike($group, 'brand', $term);
-            SqlSafe::orWhereLike($group, 'sku', $term);
+    /**
+     * The product's own columns.
+     */
+    private function matchTokenAgainstProduct(Builder $any, Token $token): void
+    {
+        $first = true;
 
-            foreach (['oem_number', 'part_number'] as $column) {
-                if (DbSchema::hasColumn('products', $column)) {
-                    SqlSafe::orWhereLike($group, $column, $term);
+        foreach ($token->variants as $variant) {
+            foreach (['name_en', 'name_ar', 'name_ku', 'brand', 'sku'] as $column) {
+                if ($first) {
+                    SqlSafe::whereLike($any, $column, $variant);
+                    $first = false;
+                } else {
+                    SqlSafe::orWhereLike($any, $column, $variant);
                 }
             }
 
-            $group->orWhereHas('category', function (Builder $category) use ($term): void {
-                $category->where(function (Builder $names) use ($term): void {
-                    SqlSafe::whereLike($names, 'name_en', $term);
-                    SqlSafe::orWhereLike($names, 'name_ar', $term);
-                    SqlSafe::orWhereLike($names, 'name_ku', $term);
-                });
-            });
-
-            if (! DbSchema::hasTable('product_vehicle_fitments')) {
-                return;
+            foreach (['oem_number', 'part_number'] as $column) {
+                if (DbSchema::hasColumn('products', $column)) {
+                    SqlSafe::orWhereLike($any, $column, $variant);
+                }
             }
 
-            $group->orWhereHas('vehicleFitments', function (Builder $fitment) use ($term, $year): void {
-                $fitment->where(function (Builder $any) use ($term, $year): void {
-                    // The fitment row's own columns. `notes` is left out: it is
-                    // where an operator writes internal remarks, and a search
-                    // has no business surfacing a product because of them.
-                    SqlSafe::whereLike($any, 'engine', $term);
+            // A description match is real but weak; it is included so a part
+            // described as fitting something is findable, and ranked last.
+            foreach (['description_en', 'description_ar', 'description_ku'] as $column) {
+                SqlSafe::orWhereLike($any, $column, $variant);
+            }
+        }
 
-                    if ($year !== null) {
-                        $any->orWhere(function (Builder $years) use ($year): void {
-                            $years->where('year_from', '<=', $year)
-                                ->where(function (Builder $end) use ($year): void {
-                                    $end->whereNull('year_to')->orWhere('year_to', '>=', $year);
-                                });
+        // "SY-1721840025" typed for a "SY1721840025" on file, and the reverse.
+        // Only for tokens that look like a part number: this strips separators
+        // from the column as well, which no index can help with, and a word
+        // like "filter" has nothing to gain from it.
+        if ($token->looksLikePartNumber()) {
+            foreach (['sku', 'oem_number', 'part_number'] as $column) {
+                if ($column === 'sku' || DbSchema::hasColumn('products', $column)) {
+                    SqlSafe::orWhereLikeIgnoringPunctuation($any, $column, $token->text);
+                }
+            }
+        }
+    }
+
+    private function matchTokenAgainstCategory(Builder $any, Token $token): void
+    {
+        $any->orWhereHas('category', function (Builder $category) use ($token): void {
+            $category->where(function (Builder $names) use ($token): void {
+                $first = true;
+
+                foreach ($token->variants as $variant) {
+                    foreach (['name_en', 'name_ar', 'name_ku'] as $column) {
+                        if ($first) {
+                            SqlSafe::whereLike($names, $column, $variant);
+                            $first = false;
+                        } else {
+                            SqlSafe::orWhereLike($names, $column, $variant);
+                        }
+                    }
+                }
+            });
+        });
+    }
+
+    /**
+     * What the part is recorded as fitting: the car, its years, its engines.
+     */
+    private function matchTokenAgainstFitments(Builder $any, Token $token): void
+    {
+        if (! DbSchema::hasTable('product_vehicle_fitments')) {
+            return;
+        }
+
+        $any->orWhereHas('vehicleFitments', function (Builder $fitment) use ($token): void {
+            $fitment->where(function (Builder $inner) use ($token): void {
+                $first = true;
+
+                foreach ($token->variants as $variant) {
+                    if ($first) {
+                        SqlSafe::whereLike($inner, 'engine', $variant);
+                        $first = false;
+                    } else {
+                        SqlSafe::orWhereLike($inner, 'engine', $variant);
+                    }
+                }
+
+                // A year is a range here, not a string: "2024" has to fall
+                // inside the row rather than appear in it. A row that records
+                // its own years answers from those alone — a part listed for
+                // 2022-2023 must not answer 2026 just because the car is built
+                // that long.
+                if ($token->year !== null) {
+                    $year = $token->year;
+
+                    $inner->orWhere(function (Builder $years) use ($year): void {
+                        $years->where(function (Builder $from) use ($year): void {
+                            $from->whereNull('year_from')->orWhere('year_from', '<=', $year);
+                        })->where(function (Builder $to) use ($year): void {
+                            $to->whereNull('year_to')->orWhere('year_to', '>=', $year);
+                        })->where(function (Builder $recorded): void {
+                            $recorded->whereNotNull('year_from')->orWhereNotNull('year_to');
                         });
-                    }
+                    });
+                }
 
-                    if (DbSchema::hasTable('vehicle_brands')) {
-                        $any->orWhereHas('brand', function (Builder $brand) use ($term): void {
-                            SqlSafe::whereLike($brand, 'name', $term);
-                        });
-                    }
+                if (DbSchema::hasTable('vehicle_brands')) {
+                    $inner->orWhereHas('brand', function (Builder $brand) use ($token): void {
+                        $brand->where(function (Builder $names) use ($token): void {
+                            $first = true;
 
-                    if (! DbSchema::hasTable('vehicle_models')) {
-                        return;
-                    }
-
-                    $any->orWhereHas('model', function (Builder $model) use ($term, $year): void {
-                        $model->where(function (Builder $variant) use ($term, $year): void {
-                            SqlSafe::whereLike($variant, 'name', $term);
-
-                            foreach (['name_en', 'name_ar', 'name_ku'] as $column) {
-                                if (DbSchema::hasColumn('vehicle_models', $column)) {
-                                    SqlSafe::orWhereLike($variant, $column, $term);
+                            foreach ($token->variants as $variant) {
+                                if ($first) {
+                                    SqlSafe::whereLike($names, 'name', $variant);
+                                    $first = false;
+                                } else {
+                                    SqlSafe::orWhereLike($names, 'name', $variant);
                                 }
-                            }
-
-                            if ($year !== null && DbSchema::hasColumn('vehicle_models', 'production_start_year')) {
-                                $variant->orWhere(function (Builder $years) use ($year): void {
-                                    $years->where('production_start_year', '<=', $year)
-                                        ->where(function (Builder $end) use ($year): void {
-                                            $end->whereNull('production_end_year')
-                                                ->orWhere('production_end_year', '>=', $year);
-                                        });
-                                });
-                            }
-
-                            // The family is the car's shared name across its
-                            // variants — a shopper types "Tivoli", not the
-                            // particular 2015-2019 variant.
-                            if (DbSchema::hasTable('vehicle_model_families')) {
-                                $variant->orWhereHas('family', function (Builder $family) use ($term): void {
-                                    $family->where(function (Builder $names) use ($term): void {
-                                        SqlSafe::whereLike($names, 'name', $term);
-
-                                        foreach (['name_en', 'name_ar', 'name_ku'] as $column) {
-                                            if (DbSchema::hasColumn('vehicle_model_families', $column)) {
-                                                SqlSafe::orWhereLike($names, $column, $term);
-                                            }
-                                        }
-                                    });
-                                });
-                            }
-
-                            // Engine size and fuel: "1.6" and "Petrol" are both
-                            // things people search by.
-                            if (DbSchema::hasTable('vehicle_model_engine_types')) {
-                                $variant->orWhereHas('engineTypes', function (Builder $engine) use ($term): void {
-                                    $engine->where(function (Builder $names) use ($term): void {
-                                        SqlSafe::whereLike($names, 'name', $term);
-
-                                        foreach (['fuel_type', 'engine_size', 'aspiration'] as $column) {
-                                            if (DbSchema::hasColumn('vehicle_model_engine_types', $column)) {
-                                                SqlSafe::orWhereLike($names, $column, $term);
-                                            }
-                                        }
-                                    });
-                                });
                             }
                         });
                     });
-                });
+                }
+
+                if (DbSchema::hasTable('vehicle_models')) {
+                    $inner->orWhere(function (Builder $viaVariant) use ($token): void {
+                        // A year asked of the variant is only meaningful for a
+                        // fitment row that left its own years open; a row with
+                        // years has already had its say above.
+                        if ($token->year !== null) {
+                            $viaVariant->whereNull('year_from')->whereNull('year_to');
+                        }
+
+                        $viaVariant->whereHas(
+                            'model',
+                            fn (Builder $model) => $this->matchTokenAgainstVariant($model, $token)
+                        );
+                    });
+                }
             });
         });
+    }
+
+    private function matchTokenAgainstVariant(Builder $model, Token $token): void
+    {
+        $model->where(function (Builder $variant) use ($token): void {
+            $first = true;
+
+            foreach ($token->variants as $spelling) {
+                foreach (['name', 'name_en', 'name_ar', 'name_ku'] as $column) {
+                    if ($column !== 'name' && ! DbSchema::hasColumn('vehicle_models', $column)) {
+                        continue;
+                    }
+
+                    if ($first) {
+                        SqlSafe::whereLike($variant, $column, $spelling);
+                        $first = false;
+                    } else {
+                        SqlSafe::orWhereLike($variant, $column, $spelling);
+                    }
+                }
+            }
+
+            // The car's own build years, for a variant whose fitment rows left
+            // the years open.
+            if ($token->year !== null && DbSchema::hasColumn('vehicle_models', 'production_start_year')) {
+                $year = $token->year;
+
+                $variant->orWhere(function (Builder $years) use ($year): void {
+                    $years->where('production_start_year', '<=', $year)
+                        ->where(function (Builder $end) use ($year): void {
+                            $end->whereNull('production_end_year')->orWhere('production_end_year', '>=', $year);
+                        });
+                });
+            }
+
+            // The family is the name shared across a car's variants — a shopper
+            // types "Rexton", not the 2022-2026 variant of it.
+            if (DbSchema::hasTable('vehicle_model_families')) {
+                $variant->orWhereHas('family', function (Builder $family) use ($token): void {
+                    $family->where(function (Builder $names) use ($token): void {
+                        $first = true;
+
+                        foreach ($token->variants as $spelling) {
+                            foreach (['name', 'name_en', 'name_ar', 'name_ku'] as $column) {
+                                if ($column !== 'name' && ! DbSchema::hasColumn('vehicle_model_families', $column)) {
+                                    continue;
+                                }
+
+                                if ($first) {
+                                    SqlSafe::whereLike($names, $column, $spelling);
+                                    $first = false;
+                                } else {
+                                    SqlSafe::orWhereLike($names, $column, $spelling);
+                                }
+                            }
+                        }
+                    });
+                });
+            }
+
+            // "1.6" and "petrol" are both things people search by.
+            if (DbSchema::hasTable('vehicle_model_engine_types')) {
+                $variant->orWhereHas('engineTypes', function (Builder $engine) use ($token): void {
+                    $engine->where(function (Builder $names) use ($token): void {
+                        $first = true;
+
+                        foreach ($token->variants as $spelling) {
+                            foreach (['name', 'fuel_type', 'engine_size', 'aspiration'] as $column) {
+                                if ($column !== 'name' && ! DbSchema::hasColumn('vehicle_model_engine_types', $column)) {
+                                    continue;
+                                }
+
+                                if ($first) {
+                                    SqlSafe::whereLike($names, $column, $spelling);
+                                    $first = false;
+                                } else {
+                                    SqlSafe::orWhereLike($names, $column, $spelling);
+                                }
+                            }
+                        }
+                    });
+                });
+            }
+        });
+    }
+
+    /**
+     * Best answer first, rather than newest first.
+     *
+     * A shopper who types a part number wants that part at the top, not the
+     * most recently added thing that happens to mention it. The ladder is
+     * built from the query rather than from the row, so it costs one CASE over
+     * the page being returned and no extra queries.
+     */
+    public function scopeOrderBySearchRelevance(Builder $query, string $term): Builder
+    {
+        $search = SearchQuery::parse($term);
+
+        if ($search->isEmpty()) {
+            return $query;
+        }
+
+        $grammar = $query->getQuery()->getGrammar();
+        $phrase = $search->normalized;
+
+        $cases = [];
+        $bindings = [];
+
+        $exact = static function (string $column, int $rank) use (&$cases, &$bindings, $grammar, $phrase): void {
+            // LOWER() on both sides: MySQL's default collation folds case and
+            // SQLite's `=` does not, and a ranking must not depend on which.
+            $cases[] = 'WHEN LOWER('.$grammar->wrap($column).') = ? THEN '.$rank;
+            $bindings[] = $phrase;
+        };
+
+        // 1-2: the shopper knows the number.
+        $exact('sku', 1);
+
+        if (DbSchema::hasColumn('products', 'oem_number')) {
+            $exact('oem_number', 2);
+        }
+
+        if (DbSchema::hasColumn('products', 'part_number')) {
+            $exact('part_number', 2);
+        }
+
+        // 3-4: the name, whole and then as a beginning.
+        $exact('name_en', 3);
+
+        $cases[] = 'WHEN LOWER('.$grammar->wrap('name_en').") LIKE ? ESCAPE '!' THEN 4";
+        $bindings[] = SqlSafe::startsWithPattern($phrase);
+
+        // 5: the query appears somewhere in the name.
+        $cases[] = 'WHEN LOWER('.$grammar->wrap('name_en').") LIKE ? ESCAPE '!' THEN 5";
+        $bindings[] = SqlSafe::containsPattern($phrase);
+
+        return $query->orderByRaw('CASE '.implode(' ', $cases).' ELSE 9 END', $bindings);
     }
 
     public function scopeLowStock(Builder $query): Builder
