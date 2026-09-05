@@ -34,6 +34,14 @@
                     ->map(fn ($model) => [
                         'id' => (int) $model->id,
                         'name' => $model->localizedName(),
+                        // What tells two same-named variants apart. Built by the
+                        // model so the server-rendered row, this map and the
+                        // storefront cannot drift into three different formats.
+                        'label' => $model->shortSelectionLabel(),
+                        'long_label' => $model->selectionLabel(),
+                        'years' => $model->productionYears(),
+                        'engine_labels' => $model->engineLabels(),
+                        'search' => $model->selectionHaystack(),
                         'family_id' => (int) $model->vehicle_model_family_id,
                         'family_name' => (string) ($model->family?->localizedName() ?? ''),
                         'engines' => $model->engineTypes
@@ -1035,6 +1043,35 @@
                 const removeButton = row.querySelector('[data-remove-fitment-row]');
                 if (!brandSelect || !familySelect || !modelSelect) return;
 
+                const engineHelp = row.querySelector('[data-admin-engine-help]');
+                const summary = row.querySelector('[data-admin-variant-summary]');
+                const summaryName = row.querySelector('[data-admin-variant-summary-name]');
+                const summaryYears = row.querySelector('[data-admin-variant-summary-years]');
+                const summaryEngines = row.querySelector('[data-admin-variant-summary-engines]');
+                const variantFilter = row.querySelector('[data-admin-variant-filter]');
+
+                // Confirms which of two same-named cars is attached, and lists
+                // every engine the short option label had to summarise.
+                const updateVariantSummary = () => {
+                    if (!summary) return;
+                    const selected = modelSelect.selectedOptions?.[0];
+
+                    if (!selected || selected.value === '') {
+                        summary.hidden = true;
+                        return;
+                    }
+
+                    const engines = selected.dataset.engineLabels || '';
+                    if (summaryName) summaryName.textContent = selected.dataset.name || selected.textContent.trim();
+                    if (summaryYears) summaryYears.textContent = selected.dataset.years || '';
+                    if (summaryEngines) {
+                        summaryEngines.textContent = engines === ''
+                            ? @json(__('No engines recorded for this variant'))
+                            : @json(__('Available engines:')) + ' ' + engines;
+                    }
+                    summary.hidden = false;
+                };
+
                 const updateEngineOptions = () => {
                     if (!engineInput) return;
                     const selected = modelSelect.selectedOptions?.[0];
@@ -1051,10 +1088,17 @@
                         option.textContent = typeof engine === 'object' ? engine.label : engine;
                         engineInput.appendChild(option);
                     });
+                    // A previous choice survives only if the new variant offers
+                    // it too; otherwise the field falls back to the placeholder
+                    // rather than carrying an engine this car never had.
                     if (modelEngines.some((engine) => String(typeof engine === 'object' ? engine.value : engine) === String(previousValue))) {
                         engineInput.value = previousValue;
                     }
                     engineInput.disabled = !modelSelect.value;
+
+                    if (engineHelp) {
+                        engineHelp.hidden = Boolean(modelSelect.value);
+                    }
                 };
 
                 const updateModelYearHints = () => {
@@ -1079,8 +1123,12 @@
                     models.forEach((model) => {
                         const option = document.createElement('option');
                         option.value = model.id;
-                        option.textContent = model.name;
+                        option.textContent = model.label || model.name;
                         option.dataset.engines = JSON.stringify(model.engines || []);
+                        option.dataset.name = model.name || '';
+                        option.dataset.years = model.years || '';
+                        option.dataset.engineLabels = (model.engine_labels || []).join(', ');
+                        option.dataset.search = model.search || '';
                         option.dataset.yearFrom = model.year_from || '';
                         option.dataset.yearTo = model.year_to || '';
                         modelSelect.appendChild(option);
@@ -1092,6 +1140,8 @@
                     modelSelect.disabled = brandId !== '' && models.length === 0;
                     updateEngineOptions();
                     updateModelYearHints();
+                    updateVariantSummary();
+                    filterVariants();
                     updatePreview(row);
                 };
 
@@ -1121,12 +1171,35 @@
                     setModelOptions();
                 };
 
+                // Same shape as the product filter above: hide what does not
+                // match rather than pull in a select library for one field.
+                const filterVariants = () => {
+                    if (!variantFilter) return;
+                    const needle = variantFilter.value.trim().toLowerCase();
+
+                    Array.from(modelSelect.options).forEach((option) => {
+                        if (option.value === '') {
+                            option.hidden = false;
+                            return;
+                        }
+
+                        const haystack = option.dataset.search || option.textContent.toLowerCase();
+                        option.hidden = needle !== '' && !haystack.includes(needle);
+                    });
+
+                    // Never let the filter hide what is already chosen.
+                    const selected = modelSelect.selectedOptions?.[0];
+                    if (selected) selected.hidden = false;
+                };
+
                 const activate = () => updatePreview(row);
                 brandSelect.addEventListener('change', setFamilyOptions);
                 familySelect.addEventListener('change', setModelOptions);
+                variantFilter?.addEventListener('input', filterVariants);
                 modelSelect.addEventListener('change', () => {
                     updateEngineOptions();
                     updateModelYearHints();
+                    updateVariantSummary();
                     activate();
                 });
                 yearFrom?.addEventListener('input', activate);
@@ -1143,6 +1216,7 @@
                 });
 
                 setFamilyOptions();
+                updateVariantSummary();
             };
 
             addRowButton?.addEventListener('click', () => {

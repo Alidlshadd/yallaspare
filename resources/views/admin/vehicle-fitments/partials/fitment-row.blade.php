@@ -40,27 +40,55 @@
         </div>
         <div>
             <label class="vf-lbl">{{ __('Vehicle Variant') }}</label>
+            {{-- Two variants may share a name, so the list can get long and
+                 look repetitive. This narrows it by anything printed on the
+                 option — a name, a year, a displacement, a fuel. It carries no
+                 name attribute: it filters, it is not submitted. --}}
+            <input
+                type="search"
+                class="vf-inp vf-variant-filter"
+                data-admin-variant-filter
+                autocomplete="off"
+                placeholder="{{ __('Search name, year, engine or fuel') }}"
+                aria-label="{{ __('Filter vehicle variants') }}"
+            >
             <select aria-label="{{ __('Vehicle Variant') }}" name="fitments[{{ $rowIndex }}][vehicle_model_id]" required data-admin-vehicle-model class="vf-sel">
                 <option value="">{{ __('Select variant') }}</option>
                 @foreach($brands as $brand)
                     @foreach($brand->models as $model)
                         <option value="{{ $model->id }}" @selected($selectedModelId === (string) $model->id)
-                                data-family-id="{{ $model->vehicle_model_family_id }}" data-engines='@json($model->engineTypes->pluck('name')->values())'
+                                data-family-id="{{ $model->vehicle_model_family_id }}"
+                                data-engines='@json($model->engineTypes->map(fn ($engine) => ['value' => (string) $engine->name, 'label' => $engine->localizedName()])->values())'
+                                data-name="{{ $model->localizedName() }}"
+                                data-years="{{ $model->productionYears() }}"
+                                data-engine-labels="{{ implode(', ', $model->engineLabels()) }}"
+                                data-search="{{ $model->selectionHaystack() }}"
                                 data-year-from="{{ $model->production_start_year }}" data-year-to="{{ $model->production_end_year }}">
-                            {{ $model->name }}
+                            {{ $model->shortSelectionLabel() }}
                         </option>
                     @endforeach
                 @endforeach
             </select>
+            {{-- Small on purpose: it confirms the choice, it is not a card. --}}
+            <div class="vf-selected-vehicle" data-admin-variant-summary hidden>
+                <span class="vf-selected-vehicle-caption">{{ __('Selected vehicle') }}</span>
+                <span class="vf-selected-vehicle-name" data-admin-variant-summary-name></span>
+                <span class="vf-selected-vehicle-meta" data-admin-variant-summary-years></span>
+                <span class="vf-selected-vehicle-meta" data-admin-variant-summary-engines></span>
+            </div>
         </div>
         <div>
             <label class="vf-lbl">{{ __('Engine') }}</label>
-            <select aria-label="{{ __('Engine') }}" name="fitments[{{ $rowIndex }}][engine]" class="vf-sel" data-admin-engine>
+            <select aria-label="{{ __('Engine') }}" name="fitments[{{ $rowIndex }}][engine]" class="vf-sel" data-admin-engine
+                    @disabled($selectedModelId === '')>
                 <option value="">{{ __('Any configured petrol engine') }}</option>
                 @if(trim((string) ($row['engine'] ?? '')) !== '')
                     <option value="{{ $row['engine'] }}" selected>{{ $row['engine'] }}</option>
                 @endif
             </select>
+            <p class="vf-help" data-admin-engine-help @if($selectedModelId !== '') hidden @endif>
+                {{ __('Select a vehicle variant first') }}
+            </p>
         </div>
         <div>
             <label class="vf-lbl">{{ __('Year From') }}</label>

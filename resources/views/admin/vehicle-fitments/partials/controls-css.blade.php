@@ -78,3 +78,28 @@
     letter-spacing: .12em; color: var(--text-muted); margin-bottom: 5px;
 }
 .dark .vf-lbl { color: var(--text-muted); }
+
+/* The variant filter sits above its select and reads as part of it. */
+.vf-variant-filter { margin-bottom: 5px; }
+
+/* Helper text under a control that is waiting on another one. */
+.vf-help {
+    margin-top: 5px; font-size: 10.5px; line-height: 1.35; color: var(--text-muted);
+}
+
+/* Confirms which of two same-named cars is selected. Deliberately a few lines
+   of text rather than a card: the form is long enough already. */
+.vf-selected-vehicle {
+    display: flex; flex-direction: column; gap: 1px; margin-top: 6px;
+    padding: 7px 9px; border-radius: 9px;
+    background: var(--surface-sunk); border: 1px solid var(--border);
+    /* Long engine lists must wrap inside the column, never widen the row. */
+    min-width: 0; overflow-wrap: anywhere;
+}
+.vf-selected-vehicle-caption {
+    font-size: 9px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .12em; color: var(--text-muted);
+}
+.vf-selected-vehicle-name { font-size: 12px; font-weight: 700; color: var(--text); }
+.vf-selected-vehicle-meta { font-size: 10.5px; line-height: 1.4; color: var(--text-muted); }
+.vf-selected-vehicle-meta:empty { display: none; }

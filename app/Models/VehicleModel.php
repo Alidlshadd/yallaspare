@@ -160,4 +160,107 @@ class VehicleModel extends Model
             default => null,
         };
     }
+
+    /**
+     * The engines recorded for this variant, as an operator would read them.
+     *
+     * Nothing is queried: a caller that did not eager load engineTypes gets an
+     * empty list rather than one query per row in a dropdown.
+     *
+     * @return list<string>
+     */
+    public function engineLabels(?string $locale = null): array
+    {
+        if (! $this->relationLoaded('engineTypes')) {
+            return [];
+        }
+
+        return $this->engineTypes
+            ->map(fn (VehicleModelEngineType $engine): string => $engine->localizedName($locale))
+            ->filter(fn (string $label): bool => trim($label) !== '')
+            ->unique()
+            ->values()
+            ->all();
+    }
+
+    /**
+     * The full identity of the variant, for somewhere with room to print it:
+     *
+     *   "Tivoli • 2015–2019 • 1.6 Petrol / 1.6 Turbo Diesel"
+     *
+     * Two variants may legitimately share a name — that is the whole point of
+     * the variant table — so a dropdown that prints only the name leaves an
+     * operator choosing between two identical lines.
+     */
+    public function selectionLabel(?string $locale = null): string
+    {
+        $parts = [$this->localizedName($locale)];
+
+        $years = $this->productionYears();
+        if ($years !== null) {
+            $parts[] = $years;
+        }
+
+        $engines = $this->engineLabels($locale);
+        if ($engines !== []) {
+            $parts[] = implode(' / ', $engines);
+        }
+
+        return implode(' • ', $parts);
+    }
+
+    /**
+     * The same identity, short enough for a narrow control:
+     *
+     *   "Tivoli (2015–2019) — 1.6 Petrol +1"
+     *
+     * A native select truncates its own text on a phone, and there is no
+     * per-breakpoint option label to swap in, so this is what the dropdown
+     * shows on every screen. The trailing count is what keeps it honest: the
+     * other engines are summarised, never hidden, and the summary beside the
+     * control names them in full.
+     */
+    public function shortSelectionLabel(?string $locale = null): string
+    {
+        $label = $this->localizedName($locale);
+
+        $years = $this->productionYears();
+        if ($years !== null) {
+            $label .= ' ('.$years.')';
+        }
+
+        $engines = $this->engineLabels($locale);
+        if ($engines === []) {
+            return $label;
+        }
+
+        $label .= ' — '.$engines[0];
+        $remaining = count($engines) - 1;
+
+        return $remaining > 0 ? $label.' +'.$remaining : $label;
+    }
+
+    /**
+     * Lower-cased text a filter box can match a variant against: its name in
+     * every language it has one, its years, and its engines — so "2019",
+     * "diesel" and "1.6" all find the right row.
+     */
+    public function selectionHaystack(?string $locale = null): string
+    {
+        $parts = array_filter([
+            (string) $this->name,
+            (string) $this->name_en,
+            (string) $this->name_ar,
+            (string) $this->name_ku,
+            (string) $this->localizedName($locale),
+            (string) $this->production_start_year,
+            (string) $this->production_end_year,
+            implode(' ', $this->engineLabels($locale)),
+            $this->relationLoaded('engineTypes')
+                ? $this->engineTypes->map(fn (VehicleModelEngineType $engine): string => trim($engine->name.' '.$engine->fuel_type.' '.$engine->engine_size))->implode(' ')
+                : '',
+        ], fn (string $part): bool => trim($part) !== '');
+
+        return mb_strtolower(implode(' ', $parts));
+    }
 }

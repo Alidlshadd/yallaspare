@@ -542,6 +542,21 @@ class VehicleFitmentController extends Controller
             'fitments.*.year_to' => ['nullable', 'integer', 'min:1900', 'max:2100'],
             'fitments.*.engine' => ['nullable', 'string', 'max:120'],
             'fitments.*.notes' => ['nullable', 'string', 'max:255'],
+        ], [
+            // Laravel names the field by its array path, so the default read
+            // "The fitments.0.vehicle_model_id field is required." — an index
+            // and a column name tell an operator nothing about what to fix.
+            'product_id.required' => __('Please choose a product.'),
+            'product_id.exists' => __('That product is no longer available.'),
+            'fitments.*.vehicle_brand_id.required' => __('Please select a vehicle brand.'),
+            'fitments.*.vehicle_brand_id.exists' => __('That vehicle brand no longer exists.'),
+            'fitments.*.vehicle_model_family_id.exists' => __('That model family no longer exists.'),
+            'fitments.*.vehicle_model_id.required' => __('Please select a vehicle variant.'),
+            'fitments.*.vehicle_model_id.exists' => __('That vehicle variant no longer exists.'),
+            'fitments.*.year_from.integer' => __('The starting year must be a four-digit year.'),
+            'fitments.*.year_to.integer' => __('The ending year must be a four-digit year.'),
+            'fitments.*.engine.max' => __('That engine name is too long.'),
+            'fitments.*.notes.max' => __('Fitment notes may not be longer than 255 characters.'),
         ]);
 
         $validator->after(function ($validator) use ($payload): void {
@@ -569,7 +584,20 @@ class VehicleFitmentController extends Controller
 
                 $engine = trim((string) ($row['engine'] ?? ''));
                 if ($engine !== '' && $model && ! $model->engineTypes->contains('name', $engine)) {
-                    $validator->errors()->add("fitments.{$index}.engine", __('The selected engine is not configured for this variant.') ?: 'The selected engine is not configured for this variant.');
+                    // Name the engines this car does have. The operator picked
+                    // one that belongs to the other variant of the same name,
+                    // which is exactly the mistake this screen has to prevent.
+                    $available = $model->engineTypes
+                        ->map(fn ($engineType): string => $engineType->localizedName())
+                        ->filter()
+                        ->implode(', ');
+
+                    $validator->errors()->add(
+                        "fitments.{$index}.engine",
+                        $available === ''
+                            ? __('Please select an engine compatible with the selected variant. This variant has no engines recorded yet.')
+                            : __('Please select an engine compatible with the selected variant. Available: :engines', ['engines' => $available]),
+                    );
                 }
 
                 $yearFrom = isset($row['year_from']) && $row['year_from'] !== '' ? (int) $row['year_from'] : null;
