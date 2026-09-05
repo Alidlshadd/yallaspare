@@ -134,8 +134,6 @@
                         data-vehicle-brand
                         data-fancy-select
                         data-fancy-icon="car"
-                        data-fancy-search-label="{{ __('Search brand') }}"
-                        data-fancy-empty-label="{{ __('No matching brands found') }}"
                         class="h-11 w-full rounded-xl border-0 bg-white px-3.5 text-sm font-medium text-slate-900 outline-none transition duration-200 focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-[#070740] disabled:cursor-not-allowed disabled:bg-[#E6E8EC] disabled:text-slate-600 disabled:opacity-100"
                     >
                         <option value="">{{ __('Select brand') }}</option>
@@ -154,8 +152,6 @@
                         data-vehicle-model
                         data-fancy-select
                         data-fancy-icon="vehicle"
-                        data-fancy-search-label="{{ __('Search model or year') }}"
-                        data-fancy-empty-label="{{ __('No matching vehicles found') }}"
                         class="h-11 w-full rounded-xl border-0 bg-white px-3.5 text-sm font-medium text-slate-900 outline-none transition duration-200 focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-[#070740] disabled:cursor-not-allowed disabled:bg-[#E6E8EC] disabled:text-slate-600 disabled:opacity-100"
                     >
                         <option value="">{{ __('Select a brand first') }}</option>
@@ -165,7 +161,6 @@
                                 @if (is_array($option))
                                     data-primary="{{ $option['primary'] ?? $option['label'] }}"
                                     data-secondary="{{ $option['secondary'] ?? '' }}"
-                                    data-search="{{ $option['search'] ?? '' }}"
                                 @endif
                             >{{ is_array($option) ? $option['label'] : $option }}</option>
                         @endforeach
@@ -177,8 +172,6 @@
                         data-vehicle-engine
                         data-fancy-select
                         data-fancy-icon="engine"
-                        data-fancy-search-label="{{ __('Search engine') }}"
-                        data-fancy-empty-label="{{ __('No matching engines found') }}"
                         @disabled($vehicleOptionsByModel !== [])
                         class="h-11 w-full rounded-xl border-0 bg-white px-3.5 text-sm font-medium text-slate-900 outline-none transition duration-200 focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-[#070740] disabled:cursor-not-allowed disabled:bg-[#E6E8EC] disabled:text-slate-600 disabled:opacity-100"
                     >
@@ -196,8 +189,6 @@
                         data-vehicle-year
                         data-fancy-select
                         data-fancy-icon="calendar"
-                        data-fancy-search-label="{{ __('Search year') }}"
-                        data-fancy-empty-label="{{ __('No matching years found') }}"
                         disabled
                         class="h-11 w-full rounded-xl border-0 bg-white px-3.5 text-sm font-medium text-slate-900 outline-none transition duration-200 focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-[#070740] disabled:cursor-not-allowed disabled:bg-[#E6E8EC] disabled:text-slate-600 disabled:opacity-100"
                     >

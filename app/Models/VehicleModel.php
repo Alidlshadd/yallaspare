@@ -274,7 +274,7 @@ class VehicleModel extends Model
      * offer, so both are built from the same filtered collection.
      *
      * @param  Collection<int, VehicleModelEngineType>  $engines
-     * @return array{value: string, label: string, primary: string, secondary: string, search: string}
+     * @return array{value: string, label: string, primary: string, secondary: string}
      */
     public function finderOption(Collection $engines, ?string $locale = null): array
     {
@@ -307,16 +307,6 @@ class VehicleModel extends Model
             'label' => $this->listLabel($locale),
             'primary' => $this->localizedName($locale),
             'secondary' => implode(' · ', $secondary),
-            'search' => mb_strtolower(implode(' ', array_filter([
-                (string) $this->name,
-                (string) $this->name_en,
-                (string) $this->name_ar,
-                (string) $this->name_ku,
-                $this->localizedName($locale),
-                (string) $this->production_start_year,
-                (string) $this->production_end_year,
-                $engineLabels->implode(' '),
-            ], fn (string $part): bool => trim($part) !== ''))),
         ];
     }
 }

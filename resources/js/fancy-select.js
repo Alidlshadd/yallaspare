@@ -13,9 +13,21 @@
 // Enhancement only: without JavaScript the native control is still there and
 // still works.
 
-const SEARCH_THRESHOLD = 8;
-const PANEL_MIN_HEIGHT = 180;
-const PANEL_MAX_HEIGHT = 320;
+// How tall the panel is allowed to get, and the least it can be and still be
+// worth opening: one whole option plus a little of the next, so it reads as
+// scrollable. Below that the panel opens the other way instead.
+const PANEL_MAX_HEIGHT = 250;
+const PANEL_MIN_USEFUL_HEIGHT = 110;
+
+// A phone gets a share of the viewport rather than a fixed number, so the
+// keyboard cannot leave the panel taller than what is left of the screen.
+const PANEL_VIEWPORT_SHARE = 0.45;
+
+// The panel sits 6px off the field (CSS), and wants a little room before the
+// edge of whatever is clipping it — otherwise the last row ends flush against
+// the card and reads as cut off rather than scrollable.
+const PANEL_OFFSET = 6;
+const PANEL_EDGE_GAP = 10;
 
 // Markup never comes from a data attribute. A field names an icon and the
 // drawing lives here, so nothing built from page data is ever parsed as HTML.
@@ -94,7 +106,6 @@ export const initFancySelects = () => {
             item.id = `${instance.id}-option-${index}`;
             item.setAttribute('role', 'option');
             item.dataset.value = option.value;
-            item.dataset.search = (option.dataset.search || option.textContent || '').toLowerCase();
 
             // A placeholder is the way back to "no choice", not a vehicle.
             if (option.value === '') {
@@ -127,10 +138,6 @@ export const initFancySelects = () => {
             list.appendChild(item);
             instance.items.push(item);
         });
-
-        // A search box earns its place only once scanning the list stops being
-        // instant. Below that it is one more thing between a tap and an answer.
-        instance.searchWrap.hidden = instance.items.length <= instance.searchThreshold;
     };
 
     const syncTrigger = (instance) => {
@@ -166,36 +173,60 @@ export const initFancySelects = () => {
         active.scrollIntoView({ block: 'nearest' });
     };
 
-    const applyFilter = (instance) => {
-        const needle = instance.search.value.trim().toLowerCase();
+    // What actually clips this panel.
+    //
+    // The hero section carries overflow:hidden for its rounded corners and its
+    // background video, so a panel measured only against the viewport is
+    // cheerfully sized into a region that is then cut off. Walking up to the
+    // nearest scroll-or-clip ancestor and intersecting it with the viewport is
+    // what keeps the list inside the card it belongs to — without touching the
+    // hero's overflow, which is doing a job.
+    const clippingBounds = (element) => {
+        let top = 0;
+        let bottom = window.innerHeight;
 
-        instance.items.forEach((item) => {
-            if (item.classList.contains('is-placeholder')) {
-                // The placeholder is navigation, not a result. Hiding it while
-                // filtering is what keeps "no matches" honest.
-                item.hidden = needle !== '';
-                return;
+        let node = element.parentElement;
+        while (node && node !== document.body) {
+            const style = window.getComputedStyle(node);
+
+            if (style.overflow !== 'visible' || style.overflowY !== 'visible') {
+                const rect = node.getBoundingClientRect();
+                top = Math.max(top, rect.top);
+                bottom = Math.min(bottom, rect.bottom);
             }
 
-            item.hidden = needle !== '' && !item.dataset.search.includes(needle);
-        });
+            node = node.parentElement;
+        }
 
-        instance.empty.hidden = visibleItems(instance).length > 0;
-        setActive(instance, 0);
+        return { top, bottom };
     };
 
     const placePanel = (instance) => {
-        // Below by default; above when there is not enough room under the
-        // field, so the list never runs off the bottom of a phone.
         const rect = instance.trigger.getBoundingClientRect();
-        const spaceBelow = window.innerHeight - rect.bottom;
-        const spaceAbove = rect.top;
-        const wantsAbove = spaceBelow < 240 && spaceAbove > spaceBelow;
+        const bounds = clippingBounds(instance.wrapper);
+
+        const margin = PANEL_OFFSET + PANEL_EDGE_GAP;
+        const spaceBelow = bounds.bottom - rect.bottom - margin;
+        const spaceAbove = rect.top - bounds.top - margin;
+
+        // A phone's share of the screen, never more than the desktop cap.
+        const ceiling = Math.min(
+            PANEL_MAX_HEIGHT,
+            Math.round(window.innerHeight * PANEL_VIEWPORT_SHARE)
+        );
+
+        // Down unless down cannot hold a readable list, and up can do better.
+        // Flipping for a few pixels would be worse than scrolling.
+        const wantsAbove = spaceBelow < PANEL_MIN_USEFUL_HEIGHT && spaceAbove > spaceBelow;
+        const available = wantsAbove ? spaceAbove : spaceBelow;
 
         instance.wrapper.classList.toggle('is-above', wantsAbove);
+
+        // menuMaxHeight = min(configured, available), floored at something that
+        // can still be read and scrolled when a field sits near an edge.
         instance.panel.style.maxHeight = `${Math.max(
-            PANEL_MIN_HEIGHT,
-            Math.min(PANEL_MAX_HEIGHT, (wantsAbove ? spaceAbove : spaceBelow) - 16)
+            PANEL_MIN_USEFUL_HEIGHT,
+            Math.min(ceiling, available)
         )}px`;
     };
 
@@ -210,17 +241,13 @@ export const initFancySelects = () => {
         instance.panel.hidden = false;
         instance.trigger.setAttribute('aria-expanded', 'true');
         instance.wrapper.classList.add('is-open');
-        instance.search.value = '';
-        applyFilter(instance);
         placePanel(instance);
 
+        // Focus stays on the trigger, which is where aria-activedescendant
+        // lives, so the arrow keys drive the list without a second tab stop.
         const selectedIndex = visibleItems(instance)
             .findIndex((item) => item.dataset.value === instance.select.value);
         setActive(instance, selectedIndex >= 0 ? selectedIndex : 0);
-
-        if (!instance.searchWrap.hidden) {
-            instance.search.focus({ preventScroll: true });
-        }
     };
 
     const choose = (instance, item) => {
@@ -287,17 +314,6 @@ export const initFancySelects = () => {
         panel.className = 'ys-select-panel';
         panel.hidden = true;
 
-        const searchWrap = document.createElement('div');
-        searchWrap.className = 'ys-select-search';
-        const search = document.createElement('input');
-        search.type = 'text';
-        search.className = 'ys-select-search-input';
-        search.setAttribute('autocomplete', 'off');
-        search.setAttribute('aria-label', select.dataset.fancySearchLabel || 'Search');
-        search.placeholder = select.dataset.fancySearchLabel || 'Search';
-        searchWrap.appendChild(search);
-        panel.appendChild(searchWrap);
-
         const list = document.createElement('ul');
         list.className = 'ys-select-list';
         list.id = `${id}-listbox`;
@@ -306,12 +322,6 @@ export const initFancySelects = () => {
             list.setAttribute('aria-label', accessibleName);
         }
         panel.appendChild(list);
-
-        const empty = document.createElement('p');
-        empty.className = 'ys-select-empty';
-        empty.hidden = true;
-        empty.textContent = select.dataset.fancyEmptyLabel || 'No matches found';
-        panel.appendChild(empty);
 
         select.parentNode.insertBefore(wrapper, select);
         wrapper.appendChild(trigger);
@@ -333,13 +343,9 @@ export const initFancySelects = () => {
             value,
             panel,
             list,
-            search,
-            searchWrap,
-            empty,
             isOpen: false,
             activeIndex: -1,
             items: [],
-            searchThreshold: Number(select.dataset.fancySearchThreshold || SEARCH_THRESHOLD),
         };
     };
 
@@ -357,7 +363,7 @@ export const initFancySelects = () => {
             renderOptions(instance);
             syncTrigger(instance);
             if (instance.isOpen) {
-                applyFilter(instance);
+                placePanel(instance);
             }
         });
         observer.observe(select, {
@@ -413,23 +419,6 @@ export const initFancySelects = () => {
             } else if (event.key === 'End') {
                 event.preventDefault();
                 setActive(instance, visibleItems(instance).length - 1);
-            }
-        });
-
-        instance.search.addEventListener('input', () => applyFilter(instance));
-        instance.search.addEventListener('keydown', (event) => {
-            if (event.key === 'ArrowDown') {
-                event.preventDefault();
-                setActive(instance, instance.activeIndex + 1);
-            } else if (event.key === 'ArrowUp') {
-                event.preventDefault();
-                setActive(instance, instance.activeIndex - 1);
-            } else if (event.key === 'Enter') {
-                event.preventDefault();
-                choose(instance, visibleItems(instance)[instance.activeIndex]);
-            } else if (event.key === 'Escape') {
-                event.preventDefault();
-                closeInstance(instance, { focusTrigger: true });
             }
         });
 

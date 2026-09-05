@@ -3697,14 +3697,6 @@
     "Select model": "مۆدێل هەڵبژێرە",
     "Select a brand first": "سەرەتا براند هەڵبژێرە",
     "Select a model first": "سەرەتا مۆدێل هەڵبژێرە",
-    "Search brand": "بەدوای براند بگەڕێ",
-    "No matching brands found": "هیچ براندێکی هاوتا نەدۆزرایەوە",
-    "Search model or year": "بە مۆدێل یان ساڵ بگەڕێ",
-    "No matching vehicles found": "هیچ ئۆتۆمبێلێکی هاوتا نەدۆزرایەوە",
-    "Search engine": "بەدوای بزوێنەر بگەڕێ",
-    "No matching engines found": "هیچ بزوێنەرێکی هاوتا نەدۆزرایەوە",
-    "Search year": "بەدوای ساڵ بگەڕێ",
-    "No matching years found": "هیچ ساڵێکی هاوتا نەدۆزرایەوە",
     "Searching": "گەڕان",
     "+:count engine|+:count engines": "+:count بزوێنەر|+:count بزوێنەر"
 }

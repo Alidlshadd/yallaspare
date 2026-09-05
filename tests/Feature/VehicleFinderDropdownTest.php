@@ -77,16 +77,11 @@ class VehicleFinderDropdownTest extends TestCase
         $this->assertStringContainsString('2020–2026', $content);
     }
 
-    public function test_an_option_carries_its_two_lines_and_its_search_text(): void
+    public function test_an_option_carries_its_two_lines(): void
     {
         [$older] = $this->twoTivolis();
 
         $content = $this->get(route('user.shop.home'))->assertOk()->getContent();
-
-        $this->assertMatchesRegularExpression(
-            '/value="'.$older->id.'"\s+data-primary="Tivoli"\s+data-secondary="([^"]+)"\s+data-search="([^"]+)"/s',
-            $content
-        );
 
         preg_match('/value="'.$older->id.'"\s+data-primary="Tivoli"\s+data-secondary="([^"]+)"/s', $content, $matches);
         $secondary = html_entity_decode($matches[1], ENT_QUOTES);
@@ -129,20 +124,6 @@ class VehicleFinderDropdownTest extends TestCase
             'fuel_type' => 'diesel',
         ]);
         $this->assertStringNotContainsString('Diesel', $option['secondary']);
-        $this->assertStringNotContainsString('diesel', $option['search']);
-    }
-
-    public function test_the_search_text_covers_the_name_the_years_and_the_engine(): void
-    {
-        [$older] = $this->twoTivolis();
-
-        $option = $older->finderOption(
-            $older->engineTypes->filter(fn ($engine) => $engine->isOfferedInStorefront())->values()
-        );
-
-        foreach (['tivoli', '2015', '2019', 'petrol', '1.6'] as $needle) {
-            $this->assertStringContainsString($needle, $option['search'], "The filter cannot find '{$needle}'.");
-        }
     }
 
     public function test_the_native_control_keeps_its_name_so_the_form_still_submits(): void
