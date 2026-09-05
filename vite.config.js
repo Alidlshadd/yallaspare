@@ -10,6 +10,7 @@ export default defineConfig({
                 'resources/js/storefront.js',
                 'resources/js/admin-analytics.js',
                 'resources/js/admin-goals.js',
+                'resources/js/admin-product-picker.js',
                 'resources/js/motion/admin.js',
             ],
             refresh: true,

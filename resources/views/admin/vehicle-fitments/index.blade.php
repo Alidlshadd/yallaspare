@@ -1,6 +1,11 @@
 <x-app-layout>
     <x-slot name="header">{{ __('Vehicle Finder') }}</x-slot>
 
+    {{-- Loaded only here: no other admin screen has a product picker. --}}
+    @push('scripts')
+        @vite('resources/js/admin-product-picker.js')
+    @endpush
+
     @php
         $totalProducts = max(0, (int) ($stats['total_products'] ?? 0));
         $coveredProducts = max(0, (int) ($stats['covered_products'] ?? 0));
@@ -521,17 +526,32 @@
                 <div class="space-y-5">
                     <div>
                         <label class="vf-lbl">{{ __('Product') }}</label>
-                        <div class="grid gap-2 sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)]">
-                            <input
-                                type="search"
-                                placeholder="{{ __('Filter by product name, SKU, or brand') }}"
-                                class="vf-inp"
-                                data-admin-product-filter
-                            >
-                            <select aria-label="{{ __('Product') }}" name="product_id" required class="vf-sel" data-admin-product-select>
+                        {{-- One control instead of a filter box beside a native
+                             dropdown. Several products share a name, so the
+                             results carry the photo and the numbers. The native
+                             control below is still what submits, and still posts
+                             a product id; only the current selection is rendered
+                             into it, the rest arrive from the search endpoint. --}}
+                        <div
+                            data-product-picker
+                            data-search-url="{{ route('admin.vehicle-fitments.products.search') }}"
+                            data-placeholder-label="{{ __('Search and select a product') }}"
+                            data-search-label="{{ __('Search products') }}"
+                            data-searching-label="{{ __('Searching products...') }}"
+                            data-empty-label="{{ __('No matching products found') }}"
+                            data-empty-hint-label="{{ __('Try a product name, SKU or OEM number.') }}"
+                            data-initial-label="{{ __('Start typing to find a product') }}"
+                            data-error-label="{{ __('Products could not be loaded. Try again.') }}"
+                            data-change-label="{{ __('Change') }}"
+                            data-clear-label="{{ __('Clear') }}"
+                            data-sku-label="{{ __('SKU') }}"
+                            data-oem-label="{{ __('OEM') }}"
+                            data-units-label="{{ __('units') }}"
+                        >
+                            <select aria-label="{{ __('Product') }}" name="product_id" required class="vf-sel" data-product-picker-select>
                                 <option value="">{{ __('Select product') }}</option>
                                 @foreach($products as $product)
-                                    <option value="{{ $product->id }}" @selected(old('product_id') == $product->id) data-search="{{ Str::lower(trim($product->name . ' ' . $product->sku . ' ' . $product->brand)) }}">
+                                    <option value="{{ $product->id }}" @selected(old('product_id') == $product->id)>
                                         {{ $product->name }} @if($product->sku) ({{ $product->sku }}) @endif @if($product->brand) - {{ $product->brand }} @endif
                                     </option>
                                 @endforeach
@@ -578,8 +598,11 @@
                     <div class="p-4 space-y-3 bg-white">
                         <div class="flex gap-3">
                             <span class="w-[74px] shrink-0 text-[10px] font-bold uppercase tracking-widest text-muted pt-0.5">{{ __('Product') }}</span>
-                            <span class="text-[13px] font-bold text-slate-900" data-admin-preview-product>{{ __('Select product') }}</span>
+                            <span class="min-w-0 text-[13px] font-bold text-slate-900" data-admin-preview-product data-empty-label="{{ __('Select product') }}">{{ __('Select product') }}</span>
                         </div>
+                        {{-- The same picture the picker shows, so the part being
+                             worked on is visible without opening the dropdown. --}}
+                        <div class="ys-picker-preview" data-admin-preview-product-media hidden></div>
                         <div class="flex gap-3">
                             <span class="w-[74px] shrink-0 text-[10px] font-bold uppercase tracking-widest text-muted pt-0.5">{{ __('Vehicle') }}</span>
                             <span class="text-[13px] font-bold text-slate-900" data-admin-preview-vehicle>{{ __('Select brand') }} / {{ __('Any model') }}</span>
@@ -739,7 +762,7 @@
                 btn.addEventListener('click', () => {
                     panel.hidden = false;
                     panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    panel.querySelector('[data-admin-product-filter]')?.focus({ preventScroll: true });
+                    panel.querySelector('.ys-picker-trigger')?.focus({ preventScroll: true });
                 });
             });
             document.querySelectorAll('[data-vf-close-fitment]').forEach((btn) => {
@@ -747,212 +770,11 @@
             });
         })();
 
-        // Legacy single-row initializer retained for markup compatibility.
-        document.querySelectorAll('[data-admin-vehicle-fitment-legacy]').forEach((form) => {
-            const productFilter = form.querySelector('[data-admin-product-filter]');
-            const productSelect = form.querySelector('[data-admin-product-select]');
-            const brandSelect = form.querySelector('[data-admin-vehicle-brand]');
-            const modelSelect = form.querySelector('[data-admin-vehicle-model]');
-            const yearFrom = form.querySelector('[data-admin-year-from]');
-            const yearTo = form.querySelector('[data-admin-year-to]');
-            const engineInput = form.querySelector('[data-admin-engine]');
-            const engineOptions = form.querySelector('[data-admin-engine-options]');
-            const previewProduct = form.querySelector('[data-admin-preview-product]');
-            const previewVehicle = form.querySelector('[data-admin-preview-vehicle]');
-            const previewYears = form.querySelector('[data-admin-preview-years]');
-            const previewEngine = form.querySelector('[data-admin-preview-engine]');
-
-            if (!brandSelect || !modelSelect) {
-                return;
-            }
-
-            const modelMap = JSON.parse(form.dataset.modelMap || '{}');
-            const familyMap = JSON.parse(form.dataset.familyMap || '{}');
-            const anyModelLabel = form.dataset.anyModelLabel || 'Any model';
-            const noModelLabel = form.dataset.noModelLabel || 'No models for this brand yet';
-            const anyEngineLabel = form.dataset.anyEngineLabel || 'Any engine';
-            const anyYearLabel = form.dataset.anyYearLabel || 'Any year';
-
-            const selectedOptionLabel = (select, fallback) => {
-                const option = select?.selectedOptions?.[0];
-                if (!option || option.value === '') {
-                    return fallback;
-                }
-
-                return option.textContent.trim();
-            };
-
-            const updatePreview = () => {
-                const productLabel = selectedOptionLabel(productSelect, productSelect?.querySelector('option[value=""]')?.textContent.trim() || 'Select product');
-                const brandLabel = selectedOptionLabel(brandSelect, brandSelect?.querySelector('option[value=""]')?.textContent.trim() || 'Select brand');
-                const modelLabel = selectedOptionLabel(modelSelect, anyModelLabel);
-                const from = yearFrom?.value?.trim() || '';
-                const to = yearTo?.value?.trim() || '';
-                const engine = engineInput?.value?.trim() || '';
-
-                if (previewProduct) {
-                    previewProduct.textContent = productLabel;
-                }
-
-                if (previewVehicle) {
-                    previewVehicle.textContent = `${brandLabel} / ${modelLabel}`;
-                }
-
-                if (previewYears) {
-                    previewYears.textContent = from || to ? `${from || '*'} - ${to || '*'}` : anyYearLabel;
-                }
-
-                if (previewEngine) {
-                    previewEngine.textContent = engine || anyEngineLabel;
-                }
-            };
-
-            // Hybrid product filter: client-side hide for the initial 100
-            // rendered options (instant feedback) + debounced AJAX fetch
-            // against the search endpoint so operators can find any product
-            // in the catalog without the legacy limit(500) cap.
-            const productSearchUrl = form.dataset.productSearchUrl || '';
-            let productSearchTimer = null;
-            let productSearchAbort = null;
-
-            const filterRenderedOptions = (needle) => {
-                Array.from(productSelect.options).forEach((option) => {
-                    if (option.value === '') {
-                        option.hidden = false;
-                        return;
-                    }
-                    option.hidden = needle !== ''
-                        && !(option.dataset.search || option.textContent).toLowerCase().includes(needle);
-                });
-            };
-
-            const mergeAjaxResults = (results) => {
-                if (!Array.isArray(results)) return;
-                const previousValue = productSelect.value;
-                const existingIds = new Set(
-                    Array.from(productSelect.options).map((o) => o.value)
-                );
-                results.forEach((row) => {
-                    if (existingIds.has(String(row.id))) return;
-                    const labelParts = [row.name];
-                    if (row.sku) labelParts.push(`(${row.sku})`);
-                    if (row.brand) labelParts.push(`- ${row.brand}`);
-                    const label = labelParts.join(' ');
-                    const searchAttr = (row.name + ' ' + row.sku + ' ' + row.brand).toLowerCase();
-                    const opt = document.createElement('option');
-                    opt.value = String(row.id);
-                    opt.dataset.search = searchAttr;
-                    opt.textContent = label;
-                    productSelect.appendChild(opt);
-                });
-                if (previousValue) productSelect.value = previousValue;
-            };
-
-            const filterProducts = () => {
-                if (!productFilter || !productSelect) return;
-                const needle = productFilter.value.trim().toLowerCase();
-
-                // Always run the local filter first so the user sees instant feedback.
-                filterRenderedOptions(needle);
-
-                if (!productSearchUrl) return;
-
-                if (productSearchTimer) clearTimeout(productSearchTimer);
-                if (productSearchAbort) productSearchAbort.abort();
-
-                productSearchTimer = setTimeout(() => {
-                    const trimmed = productFilter.value.trim();
-                    if (trimmed === '') return;
-
-                    productSearchAbort = new AbortController();
-                    fetch(`${productSearchUrl}?q=${encodeURIComponent(trimmed)}&per_page=30`, {
-                        headers: { 'Accept': 'application/json' },
-                        credentials: 'same-origin',
-                        signal: productSearchAbort.signal,
-                    })
-                        .then((res) => res.ok ? res.json() : null)
-                        .then((data) => {
-                            if (!data) return;
-                            mergeAjaxResults(data.results || []);
-                            filterRenderedOptions(needle);
-                        })
-                        .catch(() => { /* aborted or network — ignore */ });
-                }, 250);
-            };
-
-            const setModelOptions = () => {
-                const brandId = brandSelect.value;
-                const models = brandId ? (modelMap[brandId] || []) : [];
-                const previousValue = modelSelect.value;
-                modelSelect.innerHTML = '';
-
-                const placeholder = document.createElement('option');
-                placeholder.value = '';
-                placeholder.textContent = models.length > 0 || brandId === '' ? anyModelLabel : noModelLabel;
-                modelSelect.appendChild(placeholder);
-
-                models.forEach((model) => {
-                    const option = document.createElement('option');
-                    option.value = model.id;
-                    option.textContent = model.name;
-                    option.dataset.engines = JSON.stringify(model.engines || []);
-                    option.dataset.yearFrom = model.year_from || '';
-                    option.dataset.yearTo = model.year_to || '';
-                    modelSelect.appendChild(option);
-                });
-
-                if (models.some((model) => String(model.id) === String(previousValue))) {
-                    modelSelect.value = previousValue;
-                }
-
-                modelSelect.disabled = brandId !== '' && models.length === 0;
-                updateEngineOptions();
-                updateModelYearHints();
-                updatePreview();
-            };
-
-            const updateEngineOptions = () => {
-                if (!engineOptions) return;
-                const selected = modelSelect.selectedOptions?.[0];
-                const modelEngines = selected?.dataset.engines ? JSON.parse(selected.dataset.engines) : [];
-                const choices = modelEngines.length > 0 ? modelEngines : allEngineTypes;
-                engineOptions.innerHTML = '';
-                choices.forEach((engine) => {
-                    const option = document.createElement('option');
-                    option.value = typeof engine === 'object' ? engine.value : engine;
-                    option.label = typeof engine === 'object' ? engine.label : engine;
-                    engineOptions.appendChild(option);
-                });
-            };
-
-            const updateModelYearHints = () => {
-                const selected = modelSelect.selectedOptions?.[0];
-                const modelYearFrom = selected?.dataset.yearFrom || '';
-                const modelYearTo = selected?.dataset.yearTo || '';
-                if (yearFrom) yearFrom.placeholder = modelYearFrom || @json(__('Any'));
-                if (yearTo) yearTo.placeholder = modelYearTo || @json(__('Any'));
-            };
-
-            productFilter?.addEventListener('input', filterProducts);
-            productSelect?.addEventListener('change', updatePreview);
-            brandSelect.addEventListener('change', setModelOptions);
-            modelSelect.addEventListener('change', () => {
-                updateEngineOptions();
-                updateModelYearHints();
-                updatePreview();
-            });
-            yearFrom?.addEventListener('input', updatePreview);
-            yearTo?.addEventListener('input', updatePreview);
-            engineInput?.addEventListener('input', updatePreview);
-            filterProducts();
-            setModelOptions();
-            updatePreview();
-        });
-
         // ── Batch fitment form: one product + multiple independent vehicle rows ──
         document.querySelectorAll('[data-admin-vehicle-fitment]').forEach((form) => {
-            const productFilter = form.querySelector('[data-admin-product-filter]');
-            const productSelect = form.querySelector('[data-admin-product-select]');
+            // The product picker owns this control now; the preview still
+            // listens to it, because it is still what holds the chosen id.
+            const productSelect = form.querySelector('[data-product-picker-select]');
             const rowsContainer = form.querySelector('[data-fitment-rows]');
             const rowTemplate = form.querySelector('[data-fitment-row-template]');
             const addRowButton = form.querySelector('[data-add-fitment-row]');
@@ -1236,73 +1058,9 @@
                 newRow.querySelector('[data-admin-vehicle-brand]')?.focus({ preventScroll: true });
             });
 
-            // Product search remains shared because the product is selected once
-            // and applied to every vehicle row in this batch.
-            const productSearchUrl = form.dataset.productSearchUrl || '';
-            let productSearchTimer = null;
-            let productSearchAbort = null;
-
-            const filterRenderedOptions = (needle) => {
-                Array.from(productSelect.options).forEach((option) => {
-                    if (option.value === '') {
-                        option.hidden = false;
-                        return;
-                    }
-                    option.hidden = needle !== ''
-                        && !(option.dataset.search || option.textContent).toLowerCase().includes(needle);
-                });
-            };
-
-            const mergeAjaxResults = (results) => {
-                if (!Array.isArray(results)) return;
-                const previousValue = productSelect.value;
-                const existingIds = new Set(Array.from(productSelect.options).map((option) => option.value));
-                results.forEach((item) => {
-                    if (existingIds.has(String(item.id))) return;
-                    const labelParts = [item.name];
-                    if (item.sku) labelParts.push(`(${item.sku})`);
-                    if (item.brand) labelParts.push(`- ${item.brand}`);
-                    const option = document.createElement('option');
-                    option.value = String(item.id);
-                    option.dataset.search = `${item.name} ${item.sku} ${item.brand}`.toLowerCase();
-                    option.textContent = labelParts.join(' ');
-                    productSelect.appendChild(option);
-                });
-                if (previousValue) productSelect.value = previousValue;
-            };
-
-            const filterProducts = () => {
-                if (!productFilter) return;
-                const needle = productFilter.value.trim().toLowerCase();
-                filterRenderedOptions(needle);
-                if (!productSearchUrl) return;
-                if (productSearchTimer) clearTimeout(productSearchTimer);
-                if (productSearchAbort) productSearchAbort.abort();
-
-                productSearchTimer = setTimeout(() => {
-                    const query = productFilter.value.trim();
-                    if (query === '') return;
-                    productSearchAbort = new AbortController();
-                    fetch(`${productSearchUrl}?q=${encodeURIComponent(query)}&per_page=30`, {
-                        headers: { 'Accept': 'application/json' },
-                        credentials: 'same-origin',
-                        signal: productSearchAbort.signal,
-                    })
-                        .then((response) => response.ok ? response.json() : null)
-                        .then((data) => {
-                            if (!data) return;
-                            mergeAjaxResults(data.results || []);
-                            filterRenderedOptions(needle);
-                        })
-                        .catch(() => { /* aborted or network unavailable */ });
-                }, 250);
-            };
-
-            productFilter?.addEventListener('input', filterProducts);
             productSelect.addEventListener('change', () => updatePreview());
             rows().forEach(configureRow);
             refreshRowState();
-            filterProducts();
             updatePreview();
         });
     </script>

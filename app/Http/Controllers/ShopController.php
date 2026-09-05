@@ -173,7 +173,9 @@ class ShopController extends Controller
                     'price' => $price,
                     'price_formatted' => trim(number_format($price, 2).' '.$currencyLabel),
                     'stock_quantity' => (int) $product->stock_quantity,
-                    'image_url' => $this->primaryImageUrl($product),
+                    // One resolver, shared with the admin product picker: cover
+                    // image, else the first uploaded one, else the legacy column.
+                    'image_url' => $product->primaryImageUrl(400),
                     'url' => route('shop.show', $product),
                 ];
             })
@@ -272,15 +274,5 @@ class ShopController extends Controller
         if ($staleIds->isNotEmpty()) {
             RecentlyViewedProduct::query()->whereKey($staleIds)->delete();
         }
-    }
-
-    private function primaryImageUrl(Product $product): ?string
-    {
-        $firstImage = $product->relationLoaded('images') ? $product->images->first() : $product->images()->first();
-        if ($firstImage) {
-            return asset('storage/'.ltrim((string) $firstImage->path, '/'));
-        }
-
-        return $product->image ? asset('storage/'.ltrim((string) $product->image, '/')) : null;
     }
 }

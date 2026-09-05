@@ -3698,5 +3698,15 @@
     "Select a brand first": "Select a brand first",
     "Select a model first": "Select a model first",
     "Searching": "Searching",
-    "+:count engine|+:count engines": "+:count engine|+:count engines"
+    "+:count engine|+:count engines": "+:count engine|+:count engines",
+    "Search and select a product": "Search and select a product",
+    "Search products": "Search products",
+    "Searching products...": "Searching products...",
+    "No matching products found": "No matching products found",
+    "Try a product name, SKU or OEM number.": "Try a product name, SKU or OEM number.",
+    "Start typing to find a product": "Start typing to find a product",
+    "Products could not be loaded. Try again.": "Products could not be loaded. Try again.",
+    "OEM": "OEM",
+    "units": "units",
+    "Archived": "Archived"
 }

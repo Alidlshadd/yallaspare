@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Support\CatalogLandingCache;
 use App\Support\DbSchema;
+use App\Support\ImageVariants;
 use App\Support\LocalizedText;
 use App\Support\SqlSafe;
 use App\Support\VehicleFilterCache;
@@ -193,6 +194,49 @@ class Product extends Model
     public function primaryImage(): HasOne
     {
         return $this->hasOne(ProductImage::class)->where('is_primary', true)->oldest('sort_order')->oldest('id');
+    }
+
+    /**
+     * The picture that stands for this product.
+     *
+     * The cover image first, then whatever image was uploaded first, then the
+     * single legacy `image` column, and null when there is nothing — a caller
+     * showing a placeholder is better than an <img> with a broken source.
+     *
+     * Reads loaded relations when it has them and queries only when it must, so
+     * a list of results eager-loads `images` and this stays one query for all.
+     */
+    public function primaryImagePath(): ?string
+    {
+        $images = $this->relationLoaded('images')
+            ? $this->images
+            : $this->images()->get();
+
+        $chosen = $images->firstWhere('is_primary', true) ?? $images->first();
+
+        if ($chosen && trim((string) $chosen->path) !== '') {
+            return ltrim((string) $chosen->path, '/');
+        }
+
+        return trim((string) $this->image) !== '' ? ltrim((string) $this->image, '/') : null;
+    }
+
+    /**
+     * That picture as a URL, at a width the caller asks for. A width the
+     * variant command generates gets the small WebP copy; anything else, and
+     * anything with no variant yet, falls back to the original.
+     */
+    public function primaryImageUrl(?int $width = null): ?string
+    {
+        $path = $this->primaryImagePath();
+
+        if ($path === null) {
+            return null;
+        }
+
+        return $width === null
+            ? asset('storage/'.$path)
+            : ImageVariants::url($path, $width);
     }
 
     /**

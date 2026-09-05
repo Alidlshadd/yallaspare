@@ -3698,5 +3698,15 @@
     "Select a brand first": "سەرەتا براند هەڵبژێرە",
     "Select a model first": "سەرەتا مۆدێل هەڵبژێرە",
     "Searching": "گەڕان",
-    "+:count engine|+:count engines": "+:count بزوێنەر|+:count بزوێنەر"
+    "+:count engine|+:count engines": "+:count بزوێنەر|+:count بزوێنەر",
+    "Search and select a product": "بەرهەمێک بگەڕێ و هەڵیبژێرە",
+    "Search products": "گەڕان بە بەرهەمەکاندا",
+    "Searching products...": "گەڕان بە بەرهەمەکاندا...",
+    "No matching products found": "هیچ بەرهەمێکی هاوتا نەدۆزرایەوە",
+    "Try a product name, SKU or OEM number.": "ناوی بەرهەم، SKU یان ژمارەی OEM تاقی بکەرەوە.",
+    "Start typing to find a product": "دەست بە نووسین بکە بۆ دۆزینەوەی بەرهەم",
+    "Products could not be loaded. Try again.": "بەرهەمەکان بار نەکران. دووبارە هەوڵ بدەرەوە.",
+    "OEM": "OEM",
+    "units": "دانە",
+    "Archived": "ئەرشیفکراو"
 }

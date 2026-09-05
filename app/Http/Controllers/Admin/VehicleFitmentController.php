@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Product;
 use App\Models\ProductVehicleFitment;
+use App\Models\Setting;
 use App\Models\VehicleBrand;
 use App\Models\VehicleModel;
 use App\Models\VehicleModelFamily;
@@ -153,15 +154,40 @@ class VehicleFitmentController extends Controller
         ], VehicleFuelType::all());
     }
 
+    /**
+     * Products for the fitment picker.
+     *
+     * There are hundreds of parts and many share a name — several products are
+     * called "SsangYong Engine Air Filter" — so a row has to carry enough to
+     * tell them apart: the photo, the numbers, the price and the stock. An
+     * empty query returns the most recently added, which is what an operator
+     * adding fitments to new stock is usually after.
+     *
+     * `ids` fetches specific products regardless of the query, so a selection
+     * coming back from a validation failure can be redrawn without a search.
+     */
     public function searchProducts(Request $request): JsonResponse
     {
         $query = trim((string) $request->query('q', ''));
-        $perPage = max(10, min(50, (int) $request->query('per_page', 30)));
+        $perPage = max(10, min(50, (int) $request->query('per_page', 20)));
+
+        $ids = collect(explode(',', (string) $request->query('ids', '')))
+            ->map(fn ($id) => (int) trim((string) $id))
+            ->filter()
+            ->take(20)
+            ->values();
 
         $products = Product::query()
-            ->select(['id', 'name_en', 'name_ar', 'name_ku', 'sku', 'brand'])
-            ->where('is_active', true)
-            ->when($query !== '', function ($builder) use ($query) {
+            ->select([
+                'id', 'name_en', 'name_ar', 'name_ku', 'sku', 'oem_number', 'part_number',
+                'brand', 'price', 'stock_quantity', 'low_stock_threshold', 'image', 'is_active',
+            ])
+            // Eager loaded so the thumbnails cost one query for the whole page
+            // of results rather than one per row.
+            ->with(['images:id,product_id,path,is_primary,sort_order'])
+            ->when($ids->isNotEmpty(), fn ($builder) => $builder->whereIn('id', $ids->all()))
+            ->when($ids->isEmpty(), fn ($builder) => $builder->where('is_active', true))
+            ->when($ids->isEmpty() && $query !== '', function ($builder) use ($query) {
                 $builder->where(function ($nested) use ($query) {
                     SqlSafe::whereLike($nested, 'name_en', $query);
                     SqlSafe::orWhereLike($nested, 'name_ar', $query);
@@ -170,23 +196,72 @@ class VehicleFitmentController extends Controller
                     SqlSafe::orWhereLike($nested, 'oem_number', $query);
                     SqlSafe::orWhereLike($nested, 'part_number', $query);
                     SqlSafe::orWhereLike($nested, 'brand', $query);
+
+                    // "SY-1721840025" and "1721840025" are the same part number
+                    // to everyone except a LIKE, so the punctuation is dropped
+                    // and the numbers are matched again.
+                    $bare = preg_replace('/[^A-Za-z0-9]/', '', $query);
+                    if ($bare !== '' && $bare !== $query) {
+                        SqlSafe::orWhereLike($nested, 'sku', $bare);
+                        SqlSafe::orWhereLike($nested, 'oem_number', $bare);
+                        SqlSafe::orWhereLike($nested, 'part_number', $bare);
+                    }
                 });
             })
-            ->orderBy('name_en')
-            ->limit($perPage)
+            // No query means "what have I just added", which is the usual reason
+            // an operator opens this form at all.
+            ->when($query === '' && $ids->isEmpty(), fn ($builder) => $builder->orderByDesc('id'))
+            ->when($query !== '' || $ids->isNotEmpty(), fn ($builder) => $builder->orderBy('name_en'))
+            ->limit($ids->isNotEmpty() ? $ids->count() : $perPage)
             ->get()
-            ->map(fn (Product $product) => [
-                'id' => $product->id,
-                'name' => (string) $product->name_en,
-                'sku' => (string) ($product->sku ?? ''),
-                'brand' => (string) ($product->brand ?? ''),
-            ]);
+            ->map(fn (Product $product) => $this->productPickerRow($product));
 
         return response()->json([
             'query' => $query,
             'count' => $products->count(),
             'results' => $products,
         ]);
+    }
+
+    /**
+     * One row of the picker. Presentation only — the form submits the id.
+     *
+     * @return array<string, mixed>
+     */
+    private function productPickerRow(Product $product): array
+    {
+        $threshold = (int) ($product->low_stock_threshold
+            ?? (int) Setting::getValue('low_stock_threshold', 0));
+        $stock = (int) $product->stock_quantity;
+
+        $state = match (true) {
+            ! $product->is_active => 'archived',
+            $stock <= 0 => 'out_of_stock',
+            $threshold > 0 && $stock <= $threshold => 'low_stock',
+            default => 'in_stock',
+        };
+
+        return [
+            'id' => $product->id,
+            'name' => $product->localizedName(),
+            'sku' => (string) ($product->sku ?? ''),
+            'oem' => (string) ($product->oem_number ?? $product->part_number ?? ''),
+            'brand' => (string) ($product->brand ?? ''),
+            'price' => (float) $product->price,
+            'price_formatted' => number_format((float) $product->price, 0).' '.Setting::getValue('currency_code', 'IQD'),
+            'stock_quantity' => $stock,
+            'stock_state' => $state,
+            'stock_label' => match ($state) {
+                'archived' => __('Archived'),
+                'out_of_stock' => __('Out of stock'),
+                'low_stock' => __('Low stock'),
+                default => __('In stock'),
+            },
+            'selectable' => (bool) $product->is_active,
+            // 400 is the width the variant command generates; a 52px thumbnail
+            // has no business pulling a two-megabyte original.
+            'image_url' => $product->primaryImageUrl(400),
+        ];
     }
 
     public function storeBrand(Request $request): RedirectResponse

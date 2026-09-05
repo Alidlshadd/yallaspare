@@ -3698,5 +3698,15 @@
     "Select a brand first": "اختر العلامة أولاً",
     "Select a model first": "اختر الطراز أولاً",
     "Searching": "جارٍ البحث",
-    "+:count engine|+:count engines": "+:count محرك|+:count محركات"
+    "+:count engine|+:count engines": "+:count محرك|+:count محركات",
+    "Search and select a product": "ابحث واختر منتجاً",
+    "Search products": "ابحث في المنتجات",
+    "Searching products...": "جارٍ البحث في المنتجات...",
+    "No matching products found": "لا توجد منتجات مطابقة",
+    "Try a product name, SKU or OEM number.": "جرّب اسم المنتج أو رمز SKU أو رقم OEM.",
+    "Start typing to find a product": "ابدأ الكتابة للعثور على منتج",
+    "Products could not be loaded. Try again.": "تعذّر تحميل المنتجات. حاول مرة أخرى.",
+    "OEM": "OEM",
+    "units": "قطعة",
+    "Archived": "مؤرشف"
 }
