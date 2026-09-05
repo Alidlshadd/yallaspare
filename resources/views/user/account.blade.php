@@ -32,6 +32,8 @@
                             <img
                                 src="{{ asset('storage/' . ltrim((string) $user->profile_photo_path, '/')) }}"
                                 alt="{{ __(':name profile photo', ['name' => $user->name]) }}"
+                                loading="lazy"
+                                decoding="async"
                                 class="h-16 w-16 rounded-full object-cover border border-slate-200"
                             >
                         @else

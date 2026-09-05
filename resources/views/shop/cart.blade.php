@@ -65,6 +65,8 @@
                                 <img
                                     src="{{ $product?->image ? asset('storage/' . ltrim((string) $product->image, '/')) : '/images/placeholder-product.png' }}"
                                     alt="{{ $product?->name ?? __('Product image') }}"
+                                    loading="lazy"
+                                    decoding="async"
                                     class="h-full w-full object-contain"
                                 >
                             </a>

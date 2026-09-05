@@ -34,7 +34,10 @@ class StorefrontHeroVideoPlaybackTest extends TestCase
         $this->assertStringContainsString('loop', $videoTag);
         $this->assertStringContainsString('playsinline', $videoTag);
         $this->assertStringContainsString('webkit-playsinline', $videoTag);
-        $this->assertStringContainsString('preload="auto"', $videoTag);
+        // preload="none" plus a source that carries its URL on a data attribute:
+        // the hero file is ~31MB, and fetching it on page load starved every
+        // other request on the page.
+        $this->assertStringContainsString('preload="none"', $videoTag);
         $this->assertStringContainsString('disablepictureinpicture', $videoTag);
         $this->assertStringContainsString('disableremoteplayback', $videoTag);
         $this->assertStringContainsString('controlslist="nodownload nofullscreen noremoteplayback"', $videoTag);
@@ -44,6 +47,11 @@ class StorefrontHeroVideoPlaybackTest extends TestCase
         $this->assertStringContainsString('data-hero-video-fallback', $html);
         $this->assertStringContainsString('home/hero/poster.jpg', $html);
         $this->assertStringContainsString('hero-background-video::-webkit-media-controls-start-playback-button', $html);
+
+        preg_match('/<source[^>]*>/i', $html, $sourceMatches);
+        $sourceTag = $sourceMatches[0] ?? '';
+        $this->assertStringContainsString('data-hero-video-src="', $sourceTag);
+        $this->assertStringNotContainsString(' src="', $sourceTag);
     }
 
     public function test_hero_video_playback_logic_ships_in_storefront_bundle(): void
@@ -56,7 +64,6 @@ class StorefrontHeroVideoPlaybackTest extends TestCase
 
         $this->assertStringContainsString('data-hero-background-video', $source);
         $this->assertStringContainsString('window.setInterval', $source);
-        $this->assertStringContainsString('}, 500);', $source);
         $this->assertStringContainsString('setHeroVideoVisible', $source);
         $this->assertStringContainsString("video.classList.toggle('opacity-100', visible)", $source);
         $this->assertStringContainsString("video.classList.toggle('opacity-0', !visible)", $source);
@@ -65,10 +72,30 @@ class StorefrontHeroVideoPlaybackTest extends TestCase
         $this->assertStringContainsString('video.playbackRate = 1', $source);
         $this->assertStringContainsString('recoverFrozenHeroVideo', $source);
         $this->assertStringContainsString('frozenCount >= 3', $source);
-        $this->assertStringContainsString("'touchstart'", $source);
-        $this->assertStringContainsString("'touchend'", $source);
-        $this->assertStringContainsString("'orientationchange'", $source);
         $this->assertStringContainsString("'webkitbeginfullscreen'", $source);
         $this->assertStringContainsString("'enterpictureinpicture'", $source);
+
+        // A mobile autoplay block is lifted by the first user gesture, so that
+        // listener retires itself. It used to run on every scroll, touch and
+        // click, and rewriting a <video> element's attributes on every scroll
+        // tick is what made the storefront stutter under the finger.
+        $this->assertStringContainsString("'pointerdown', 'touchstart'", $source);
+        $this->assertStringContainsString('once: true', $source);
+        $this->assertStringNotContainsString("'click', 'scroll'", $source);
+    }
+
+    public function test_hero_video_only_downloads_once_it_is_on_screen(): void
+    {
+        // The file is the heaviest asset on the site. It must stay unfetched
+        // until the visitor can actually see it, and stay unfetched entirely on
+        // a metered or slow connection — the poster frame covers both cases.
+        $source = file_get_contents(resource_path('js/storefront.js'));
+        $this->assertIsString($source);
+
+        $this->assertStringContainsString('IntersectionObserver', $source);
+        $this->assertStringContainsString('startHeroVideo', $source);
+        $this->assertStringContainsString('data-hero-video-src', $source);
+        $this->assertStringContainsString('connectionIsSlow', $source);
+        $this->assertStringContainsString('saveData', $source);
     }
 }

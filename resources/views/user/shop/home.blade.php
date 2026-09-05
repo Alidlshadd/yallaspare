@@ -40,6 +40,8 @@
                             src="{{ $heroImageUrl }}"
                             alt="{{ __('Auto parts banner') }}"
                             class="absolute inset-0 h-full w-full object-cover"
+                            fetchpriority="high"
+                            decoding="async"
                             data-hero-video-fallback
                         >
                     @else
@@ -56,7 +58,7 @@
                         loop
                         playsinline
                         webkit-playsinline
-                        preload="auto"
+                        preload="none"
                         disablepictureinpicture
                         disableremoteplayback
                         controlslist="nodownload nofullscreen noremoteplayback"
@@ -65,10 +67,16 @@
                         tabindex="-1"
                         @if ($heroImageUrl) poster="{{ $heroImageUrl }}" @endif
                     >
-                        <source src="{{ $heroVideoUrl }}" type="video/mp4">
+                        {{-- The URL is handed to JS rather than set here. An
+                             autoplay <video> starts fetching the moment it has a
+                             source, preload="none" or not, and this file is the
+                             heaviest asset on the site — it must not compete with
+                             the rest of the page. storefront.js attaches the
+                             source once the hero is actually on screen. --}}
+                        <source data-hero-video-src="{{ $heroVideoUrl }}" type="video/mp4">
                     </video>
                 @elseif ($heroImageUrl)
-                    <img src="{{ $heroImageUrl }}" alt="{{ __('Auto parts banner') }}" class="absolute inset-0 h-full w-full object-cover">
+                    <img src="{{ $heroImageUrl }}" alt="{{ __('Auto parts banner') }}" class="absolute inset-0 h-full w-full object-cover" fetchpriority="high" decoding="async">
                 @else
                     <div class="absolute inset-0 h-full w-full bg-[linear-gradient(135deg,#070740_0%,#070740_52%,#04041f_100%)]"></div>
                 @endif

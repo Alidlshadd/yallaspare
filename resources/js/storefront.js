@@ -85,8 +85,10 @@ const initHeroVideos = () => {
         window.setTimeout(() => playHeroVideo(video, options), delay);
     };
 
+    const hasStarted = (video) => video.dataset.heroStarted === '1';
+
     const resumeAllHeroVideos = () => {
-        videos.forEach((video) => playHeroVideo(video));
+        videos.filter(hasStarted).forEach((video) => playHeroVideo(video));
     };
 
     const recoverFrozenHeroVideo = (video) => {
@@ -127,8 +129,57 @@ const initHeroVideos = () => {
         });
     };
 
+    // The hero file is by far the heaviest asset on the page. Fetching it
+    // eagerly starves every other request on a slow link, so the poster carries
+    // the hero until the browser is actually looking at it on a connection that
+    // can afford it. Design-wise nothing is lost: the poster is the same frame.
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+    const connectionIsSlow = () => Boolean(
+        connection && (connection.saveData === true || /(^|-)[23]g$/.test(connection.effectiveType || ''))
+    );
+
+    const startHeroVideo = (video) => {
+        if (hasStarted(video) || connectionIsSlow()) {
+            return;
+        }
+
+        video.dataset.heroStarted = '1';
+        video.preload = 'auto';
+
+        // The markup ships the URL on data-hero-video-src, so up to this point
+        // the element had no source and the browser had nothing to fetch.
+        const source = video.querySelector('source[data-hero-video-src]');
+        if (source && !source.getAttribute('src')) {
+            source.setAttribute('src', source.getAttribute('data-hero-video-src'));
+
+            try {
+                video.load();
+            } catch (error) {}
+        }
+
+        playHeroVideo(video, { reload: true });
+    };
+
+    const inView = new Set();
+    const observer = typeof window.IntersectionObserver === 'function'
+        ? new window.IntersectionObserver((entries) => {
+            entries.forEach((entry) => {
+                if (entry.isIntersecting) {
+                    inView.add(entry.target);
+                    startHeroVideo(entry.target);
+                } else {
+                    inView.delete(entry.target);
+                }
+            });
+        }, { rootMargin: '200px' })
+        : null;
+
     videos.forEach((video) => {
-        playHeroVideo(video);
+        if (observer) {
+            observer.observe(video);
+        } else {
+            startHeroVideo(video);
+        }
 
         [
             'loadedmetadata',
@@ -147,12 +198,14 @@ const initHeroVideos = () => {
             }, { passive: true });
         });
 
+        // Buffering signals (suspend, stalled, waiting) are deliberately absent
+        // here. They fire constantly while a large file loads, and restarting on
+        // them is what made the hero blink between poster and video instead of
+        // simply waiting for the next chunk. The watchdog below still catches a
+        // video that is genuinely stuck.
         [
             'pause',
             'ended',
-            'stalled',
-            'suspend',
-            'waiting',
             'emptied',
             'abort',
         ].forEach((eventName) => {
@@ -180,12 +233,17 @@ const initHeroVideos = () => {
         }
     });
 
-    ['pageshow', 'focus', 'resize', 'orientationchange'].forEach((eventName) => {
+    ['pageshow', 'focus'].forEach((eventName) => {
         window.addEventListener(eventName, resumeAllHeroVideos, { passive: true });
     });
 
-    ['touchstart', 'touchend', 'pointerdown', 'pointerup', 'click', 'scroll'].forEach((eventName) => {
-        window.addEventListener(eventName, () => resumeAllHeroVideos(), { passive: true });
+    // Mobile autoplay policies can hold the first play() until the visitor
+    // interacts. One gesture is enough to lift that, so this listener retires
+    // itself — it used to run on every scroll, touch and click, and rewriting a
+    // <video> element's attributes on every scroll tick is what made the page
+    // stutter under the finger.
+    ['pointerdown', 'touchstart'].forEach((eventName) => {
+        window.addEventListener(eventName, resumeAllHeroVideos, { passive: true, once: true });
     });
 
     window.setInterval(() => {
@@ -194,9 +252,11 @@ const initHeroVideos = () => {
         }
 
         videos.forEach((video) => {
-            recoverFrozenHeroVideo(video);
+            if (hasStarted(video) && (!observer || inView.has(video))) {
+                recoverFrozenHeroVideo(video);
+            }
         });
-    }, 500);
+    }, 1000);
 };
 
 // Shared by the home hero finder and the shop listing finder — both use the

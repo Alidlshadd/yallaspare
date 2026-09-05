@@ -88,6 +88,7 @@
                                     alt="{{ $category->name }}"
                                     class="h-full w-full object-contain p-8 transition duration-300 group-hover:scale-[1.06]"
                                     loading="lazy"
+                                    decoding="async"
                                 >
                             @else
                                 <svg class="h-12 w-12 transition duration-300 group-hover:scale-[1.06]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true">

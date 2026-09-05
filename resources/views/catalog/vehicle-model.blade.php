@@ -22,7 +22,7 @@
             <div class="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center">
                 @if ($model->image_path)
                     <span class="flex h-20 w-28 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-50 dark:border-slate-800 dark:bg-slate-950">
-                        <img src="{{ asset('storage/' . ltrim((string) $model->image_path, '/')) }}" alt="" class="h-full w-full object-cover">
+                        <img src="{{ asset('storage/' . ltrim((string) $model->image_path, '/')) }}" alt="" loading="lazy" decoding="async" class="h-full w-full object-cover">
                     </span>
                 @endif
 

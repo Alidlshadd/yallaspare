@@ -161,6 +161,8 @@
                                 id="product-main-image"
                                 src="{{ $imageUrl }}"
                                 alt="{{ $name }}"
+                                fetchpriority="high"
+                                decoding="async"
                                 class="h-full w-full object-contain transition duration-500 ease-out group-hover:scale-[1.04]"
                             >
                         </div>
@@ -175,7 +177,7 @@
                                 class="inline-flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl border {{ $index === 0 ? 'border-primary bg-slate-100 dark:bg-slate-800' : 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900' }} p-2 transition hover:border-primary/50 hover:bg-slate-100 dark:hover:bg-slate-800"
                                 aria-label="{{ __('Product image :number', ['number' => $index + 1]) }}"
                             >
-                                <img src="{{ $thumb }}" alt="{{ __(':name thumbnail :number', ['name' => $name, 'number' => $index + 1]) }}" class="h-full w-full object-contain">
+                                <img src="{{ $thumb }}" alt="{{ __(':name thumbnail :number', ['name' => $name, 'number' => $index + 1]) }}" loading="lazy" decoding="async" class="h-full w-full object-contain">
                             </button>
                         @endforeach
                     </div>
