@@ -562,19 +562,6 @@
                                 </a>
 
                                 <a
-                                    href="{{ route('catalog.vehicles') }}"
-                                    class="inline-flex items-center rounded-xl px-3 py-1 font-display text-sm font-medium transition duration-200 {{ request()->routeIs('catalog.vehicle*') ? 'bg-white/10 text-white shadow-[inset_0_-2px_0_0_var(--brand-orange)]' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
-                                >
-                                    {{ __('Shop by car') }}
-                                </a>
-                                <a
-                                    href="{{ route('catalog.brands') }}"
-                                    class="inline-flex items-center rounded-xl px-3 py-1 font-display text-sm font-medium transition duration-200 {{ request()->routeIs('catalog.brand*') ? 'bg-white/10 text-white shadow-[inset_0_-2px_0_0_var(--brand-orange)]' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
-                                >
-                                    {{ __('Brands') }}
-                                </a>
-
-                                <a
                                     href="{{ route('legal.about') }}"
                                     class="inline-flex items-center rounded-xl px-3 py-1 font-display text-sm font-medium text-white/80 transition duration-200 hover:bg-white/10 hover:text-white"
                                 >
