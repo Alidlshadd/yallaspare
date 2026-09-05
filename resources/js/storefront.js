@@ -682,6 +682,7 @@ const initHeaderDropdowns = () => {
     const categoryTrigger = document.querySelector('[data-store-categories-trigger]');
     const categoryMenu = document.querySelector('[data-store-categories-menu]');
     const categoryIcon = document.querySelector('[data-store-categories-icon]');
+    const categoryGroup = document.querySelector('[data-store-categories-root]') ?? categoryTrigger;
 
     if (languageDropdowns.length === 0 && accountDropdowns.length === 0 && !categoryTrigger) {
         return;
@@ -908,7 +909,7 @@ const initHeaderDropdowns = () => {
             }
         });
         categoryRoot?.addEventListener('mouseleave', queueCategoryClose);
-        categoryTrigger.addEventListener('mouseenter', () => {
+        categoryGroup?.addEventListener('mouseenter', () => {
             if (desktopQuery.matches) {
                 openCategoryMenu();
             }

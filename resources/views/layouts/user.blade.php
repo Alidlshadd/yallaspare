@@ -548,18 +548,29 @@
                                     {{ __('Shop') }}
                                 </a>
 
-                                <a
-                                    href="{{ route('categories.index') }}"
-                                    class="inline-flex items-center gap-1 rounded-xl px-3 py-1 font-display text-sm font-medium transition duration-200 {{ request()->routeIs('categories.*') ? 'bg-white/10 text-white shadow-[inset_0_-2px_0_0_var(--brand-orange)]' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
-                                    data-store-categories-trigger
-                                    aria-expanded="false"
-                                    aria-haspopup="menu"
+                                <div
+                                    class="flex items-center rounded-xl font-display text-sm font-medium transition duration-200 {{ request()->routeIs('categories.*') ? 'bg-white/10 text-white shadow-[inset_0_-2px_0_0_var(--brand-orange)]' : 'text-white/80 hover:bg-white/10 hover:text-white' }}"
+                                    data-store-categories-root
                                 >
-                                    <span>{{ __('Categories') }}</span>
-                                    <svg class="h-4 w-4 transition-transform" data-store-categories-icon viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                        <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.126l3.71-3.895a.75.75 0 1 1 1.08 1.04l-4.25 4.46a.75.75 0 0 1-1.08 0l-4.25-4.46a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd" />
-                                    </svg>
-                                </a>
+                                    <a
+                                        href="{{ route('categories.index') }}"
+                                        class="inline-flex items-center rounded-l-xl py-1 pl-3 pr-1"
+                                    >
+                                        {{ __('Categories') }}
+                                    </a>
+                                    <button
+                                        type="button"
+                                        class="inline-flex items-center rounded-r-xl py-1 pl-0.5 pr-2.5"
+                                        data-store-categories-trigger
+                                        aria-expanded="false"
+                                        aria-haspopup="menu"
+                                        aria-label="{{ __('Browse Categories') }}"
+                                    >
+                                        <svg class="h-4 w-4 transition-transform" data-store-categories-icon viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 0 1 1.06.02L10 11.126l3.71-3.895a.75.75 0 1 1 1.08 1.04l-4.25 4.46a.75.75 0 0 1-1.08 0l-4.25-4.46a.75.75 0 0 1 .02-1.06Z" clip-rule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </div>
 
                                 <a
                                     href="{{ route('legal.about') }}"
