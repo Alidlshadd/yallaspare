@@ -3693,5 +3693,18 @@
     "That engine name is too long.": "ناوی بزوێنەر زۆر درێژە.",
     "Fitment notes may not be longer than 255 characters.": "تێبینییەکانی گونجاندن ناتوانن لە ٢٥٥ پیت درێژتر بن.",
     "Please select an engine compatible with the selected variant. This variant has no engines recorded yet.": "تکایە بزوێنەرێک هەڵبژێرە کە لەگەڵ جۆرە هەڵبژێردراوەکە بگونجێت. هێشتا هیچ بزوێنەرێک بۆ ئەم جۆرە تۆمار نەکراوە.",
-    "Please select an engine compatible with the selected variant. Available: :engines": "تکایە بزوێنەرێک هەڵبژێرە کە لەگەڵ جۆرە هەڵبژێردراوەکە بگونجێت. بەردەست: :engines"
+    "Please select an engine compatible with the selected variant. Available: :engines": "تکایە بزوێنەرێک هەڵبژێرە کە لەگەڵ جۆرە هەڵبژێردراوەکە بگونجێت. بەردەست: :engines",
+    "Select model": "مۆدێل هەڵبژێرە",
+    "Select a brand first": "سەرەتا براند هەڵبژێرە",
+    "Select a model first": "سەرەتا مۆدێل هەڵبژێرە",
+    "Search brand": "بەدوای براند بگەڕێ",
+    "No matching brands found": "هیچ براندێکی هاوتا نەدۆزرایەوە",
+    "Search model or year": "بە مۆدێل یان ساڵ بگەڕێ",
+    "No matching vehicles found": "هیچ ئۆتۆمبێلێکی هاوتا نەدۆزرایەوە",
+    "Search engine": "بەدوای بزوێنەر بگەڕێ",
+    "No matching engines found": "هیچ بزوێنەرێکی هاوتا نەدۆزرایەوە",
+    "Search year": "بەدوای ساڵ بگەڕێ",
+    "No matching years found": "هیچ ساڵێکی هاوتا نەدۆزرایەوە",
+    "Searching": "گەڕان",
+    "+:count engine|+:count engines": "+:count بزوێنەر|+:count بزوێنەر"
 }

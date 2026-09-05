@@ -5000,3 +5000,294 @@
     .hpr-card { transition: none; }
     .hpr-card:hover { transform: none; }
 }
+
+/* ---------------------------------------------------------------------------
+   Vehicle finder dropdown (see resources/js/fancy-select.js)
+
+   A native <select> hands its popup to the operating system: a white OS menu,
+   sized and coloured by the browser, drawn outside the panel it belongs to.
+   Nothing in this file can reach inside that popup, which is why the finder
+   needed a listbox of its own rather than more CSS on the <select>.
+
+   The native control stays in the DOM and stays what submits the form; it is
+   only taken out of the visual and focus order.
+--------------------------------------------------------------------------- */
+
+.ys-select {
+    position: relative;
+    display: block;
+    min-width: 0;
+}
+
+.ys-select-native {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+}
+
+.ys-select-trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    min-width: 0;
+    height: 54px;
+    padding: 0 14px;
+    border-radius: 15px;
+    border: 1px solid rgb(255 255 255 / 0.22);
+    background: rgb(255 255 255 / 0.07);
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: start;
+    cursor: pointer;
+    transition: border-color 0.18s ease, background-color 0.18s ease;
+}
+
+.ys-select-trigger:hover:not(:disabled) {
+    border-color: rgb(255 255 255 / 0.4);
+    background: rgb(255 255 255 / 0.11);
+}
+
+.ys-select-trigger:focus-visible {
+    outline: none;
+    border-color: var(--brand-orange);
+    box-shadow: 0 0 0 3px rgb(var(--brand-orange-rgb) / 0.35);
+}
+
+.ys-select.is-open .ys-select-trigger {
+    border-color: var(--brand-orange);
+}
+
+.ys-select-trigger:disabled {
+    cursor: not-allowed;
+    /* Still readable. A disabled field has to explain itself, and it cannot do
+       that at 40% opacity. */
+    color: rgb(255 255 255 / 0.62);
+    border-color: rgb(255 255 255 / 0.12);
+    background: rgb(255 255 255 / 0.03);
+}
+
+.ys-select-trigger.is-empty {
+    font-weight: 500;
+    color: rgb(255 255 255 / 0.7);
+}
+
+.ys-select-icon {
+    display: inline-flex;
+    flex: 0 0 auto;
+    color: rgb(255 255 255 / 0.55);
+}
+
+.ys-select-icon svg { width: 18px; height: 18px; }
+
+.ys-select-value {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ys-select-chevron {
+    display: inline-flex;
+    flex: 0 0 auto;
+    color: rgb(255 255 255 / 0.6);
+    transition: transform 0.18s ease;
+}
+
+.ys-select-chevron svg { width: 18px; height: 18px; }
+.ys-select.is-open .ys-select-chevron { transform: rotate(180deg); }
+
+/* --- The panel --------------------------------------------------------- */
+
+/* An author `display` wins over the `hidden` attribute's UA rule, so a panel
+   given `display: flex` below would stay on screen while closed. */
+.ys-select-panel[hidden] { display: none; }
+
+.ys-select-panel {
+    position: absolute;
+    inset-inline: 0;
+    top: calc(100% + 6px);
+    /* Above the hero's own layers, below the sticky header (z-40). */
+    z-index: 30;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: 15px;
+    border: 1px solid rgb(255 255 255 / 0.12);
+    background: #0b0b34;
+    box-shadow: 0 24px 50px -20px rgb(4 4 31 / 0.85);
+}
+
+.ys-select.is-above .ys-select-panel {
+    top: auto;
+    bottom: calc(100% + 6px);
+}
+
+.ys-select-search {
+    flex: 0 0 auto;
+    padding: 8px;
+    border-bottom: 1px solid rgb(255 255 255 / 0.08);
+}
+
+.ys-select-search-input {
+    width: 100%;
+    height: 38px;
+    padding: 0 12px;
+    border-radius: 10px;
+    border: 1px solid rgb(255 255 255 / 0.14);
+    background: rgb(255 255 255 / 0.05);
+    color: #fff;
+    font-size: 13px;
+}
+
+.ys-select-search-input::placeholder { color: rgb(255 255 255 / 0.45); }
+
+.ys-select-search-input:focus {
+    outline: none;
+    border-color: var(--brand-orange);
+    box-shadow: 0 0 0 2px rgb(var(--brand-orange-rgb) / 0.3);
+}
+
+.ys-select-list {
+    flex: 1 1 auto;
+    margin: 0;
+    padding: 6px;
+    list-style: none;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.ys-select-option {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    /* 44px on a phone even with a single line of text. */
+    min-height: 44px;
+    padding: 8px 10px;
+    border-radius: 11px;
+    cursor: pointer;
+    color: rgb(255 255 255 / 0.92);
+}
+
+.ys-select-option[hidden] { display: none; }
+
+.ys-select-option-primary {
+    grid-column: 1;
+    font-size: 13.5px;
+    font-weight: 600;
+    line-height: 1.3;
+    overflow-wrap: anywhere;
+}
+
+.ys-select-option-secondary {
+    grid-column: 1;
+    margin-top: 1px;
+    font-size: 11.5px;
+    font-weight: 500;
+    line-height: 1.35;
+    color: rgb(255 255 255 / 0.58);
+    overflow-wrap: anywhere;
+}
+
+.ys-select-option-check {
+    grid-column: 2;
+    grid-row: 1 / -1;
+    display: inline-flex;
+    margin-inline-start: 10px;
+    color: var(--brand-orange);
+    opacity: 0;
+}
+
+.ys-select-option-check svg { width: 17px; height: 17px; }
+.ys-select-option.is-selected .ys-select-option-check { opacity: 1; }
+
+.ys-select-option.is-placeholder .ys-select-option-primary {
+    font-weight: 500;
+    color: rgb(255 255 255 / 0.6);
+}
+
+/* "Nothing chosen" is not an answer worth ticking. */
+.ys-select-option.is-placeholder .ys-select-option-check { display: none; }
+.ys-select-option.is-placeholder.is-selected { background: transparent; }
+.ys-select-option.is-placeholder.is-selected.is-active { background: rgb(255 255 255 / 0.08); }
+
+.ys-select-option.is-active {
+    background: rgb(255 255 255 / 0.08);
+}
+
+.ys-select-option.is-selected {
+    background: rgb(var(--brand-orange-rgb) / 0.12);
+}
+
+.ys-select-option.is-selected.is-active {
+    background: rgb(var(--brand-orange-rgb) / 0.2);
+}
+
+.ys-select-empty {
+    margin: 0;
+    padding: 18px 14px;
+    font-size: 12.5px;
+    text-align: center;
+    color: rgb(255 255 255 / 0.55);
+}
+
+/* --- On a light surface ------------------------------------------------- */
+
+.ys-select-on-light .ys-select-trigger {
+    border-color: var(--border);
+    background: var(--surface);
+    color: var(--text);
+}
+
+.ys-select-on-light .ys-select-trigger:hover:not(:disabled) {
+    border-color: rgb(var(--brand-navy-rgb) / 0.3);
+    background: var(--surface);
+}
+
+.ys-select-on-light .ys-select-trigger:disabled {
+    color: var(--text-muted);
+    background: var(--surface-sunk);
+    border-color: var(--border);
+}
+
+.ys-select-on-light .ys-select-trigger.is-empty { color: var(--text-muted); }
+.ys-select-on-light .ys-select-icon,
+.ys-select-on-light .ys-select-chevron { color: var(--text-muted); }
+
+.ys-select-on-light .ys-select-panel {
+    border-color: var(--border);
+    background: var(--surface);
+    box-shadow: 0 24px 50px -22px rgb(var(--brand-navy-rgb) / 0.35);
+}
+
+.ys-select-on-light .ys-select-search { border-bottom-color: var(--border); }
+
+.ys-select-on-light .ys-select-search-input {
+    border-color: var(--border);
+    background: var(--surface-sunk);
+    color: var(--text);
+}
+
+.ys-select-on-light .ys-select-search-input::placeholder { color: var(--text-muted); }
+.ys-select-on-light .ys-select-option { color: var(--text); }
+.ys-select-on-light .ys-select-option-secondary { color: var(--text-muted); }
+.ys-select-on-light .ys-select-option.is-placeholder .ys-select-option-primary { color: var(--text-muted); }
+.ys-select-on-light .ys-select-option.is-active { background: rgb(var(--brand-navy-rgb) / 0.07); }
+.ys-select-on-light .ys-select-option.is-selected { background: rgb(var(--brand-orange-rgb) / 0.1); }
+.ys-select-on-light .ys-select-option.is-selected.is-active { background: rgb(var(--brand-orange-rgb) / 0.16); }
+.ys-select-on-light .ys-select-empty { color: var(--text-muted); }
+
+@media (prefers-reduced-motion: reduce) {
+    .ys-select-trigger,
+    .ys-select-chevron { transition: none; }
+}

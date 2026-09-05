@@ -3693,5 +3693,18 @@
     "That engine name is too long.": "اسم المحرك طويل جداً.",
     "Fitment notes may not be longer than 255 characters.": "لا يمكن أن تتجاوز ملاحظات التوافق 255 حرفاً.",
     "Please select an engine compatible with the selected variant. This variant has no engines recorded yet.": "يرجى اختيار محرك متوافق مع الطراز المختار. لا توجد محركات مسجلة لهذا الطراز بعد.",
-    "Please select an engine compatible with the selected variant. Available: :engines": "يرجى اختيار محرك متوافق مع الطراز المختار. المتاح: :engines"
+    "Please select an engine compatible with the selected variant. Available: :engines": "يرجى اختيار محرك متوافق مع الطراز المختار. المتاح: :engines",
+    "Select model": "اختر الطراز",
+    "Select a brand first": "اختر العلامة أولاً",
+    "Select a model first": "اختر الطراز أولاً",
+    "Search brand": "ابحث عن علامة",
+    "No matching brands found": "لا توجد علامات مطابقة",
+    "Search model or year": "ابحث بالطراز أو السنة",
+    "No matching vehicles found": "لا توجد مركبات مطابقة",
+    "Search engine": "ابحث عن محرك",
+    "No matching engines found": "لا توجد محركات مطابقة",
+    "Search year": "ابحث عن سنة",
+    "No matching years found": "لا توجد سنوات مطابقة",
+    "Searching": "جارٍ البحث",
+    "+:count engine|+:count engines": "+:count محرك|+:count محركات"
 }

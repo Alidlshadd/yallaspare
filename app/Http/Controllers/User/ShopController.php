@@ -461,7 +461,13 @@ class ShopController extends Controller
                 $modelOptionsByBrand = $vehicleBrandRows
                     ->mapWithKeys(fn (VehicleBrand $brand) => [
                         (string) $brand->name => $brand->models
-                            ->map(fn (VehicleModel $model) => ['value' => (string) $model->id, 'label' => $model->listLabel()])
+                            // The finder shows the name on one line and the years
+                            // and engines under it, so an option carries more than
+                            // a string. Engines are the storefront-offered ones,
+                            // the same set the engine dropdown will list.
+                            ->map(fn (VehicleModel $model) => $model->finderOption(
+                                $model->engineTypes->filter(fn ($engine) => $engine->isOfferedInStorefront())->values()
+                            ))
                             ->values()
                             ->all(),
                     ])
@@ -493,9 +499,14 @@ class ShopController extends Controller
 
         if (DbSchema::hasTable('vehicle_models')) {
             $vehicleModels = VehicleModel::query()
+                // One extra query for every variant's engines, not one per row:
+                // the finder prints them under the name.
+                ->with(['engineTypes:id,vehicle_model_id,name,fuel_type,engine_size,aspiration'])
                 ->orderBy('name')
                 ->get(['id', 'name', 'name_en', 'name_ar', 'name_ku', 'production_start_year', 'production_end_year'])
-                ->map(fn (VehicleModel $model) => ['value' => (string) $model->id, 'label' => $model->listLabel()])
+                ->map(fn (VehicleModel $model) => $model->finderOption(
+                    $model->engineTypes->filter(fn ($engine) => $engine->isOfferedInStorefront())->values()
+                ))
                 ->values();
 
             if ($vehicleModels->isNotEmpty()) {

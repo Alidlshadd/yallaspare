@@ -7,6 +7,8 @@
 // attributes on the elements, plus a small translation config exposed as
 // window.YallaI18n from the layout. Nothing here is a security boundary.
 
+import { initFancySelects } from './fancy-select';
+
 const initHeroVideos = () => {
     const videos = Array.from(document.querySelectorAll('[data-hero-background-video]'));
     if (videos.length === 0) {
@@ -282,7 +284,8 @@ const initVehicleFinder = () => {
         const noModelsPlaceholder = form.dataset.noModelsPlaceholder || 'No models for this brand yet';
         const enginePlaceholder = form.dataset.enginePlaceholder || 'Any engine';
         const yearPlaceholder = form.dataset.yearPlaceholder || 'Any year';
-        const selectModelPlaceholder = form.dataset.selectModelPlaceholder || 'Select model first';
+        const selectModelPlaceholder = form.dataset.selectModelPlaceholder || 'Select a model first';
+        const selectBrandPlaceholder = form.dataset.allModelsPlaceholder || 'Select a brand first';
         const noEnginesPlaceholder = form.dataset.noEnginesPlaceholder || 'No engines for this model yet';
         const noYearsPlaceholder = form.dataset.noYearsPlaceholder || 'No years for this model yet';
         const hasStructuredModels = Object.keys(modelMap).length > 0;
@@ -315,9 +318,13 @@ const initVehicleFinder = () => {
                 engineSelect.innerHTML = '';
                 const enginePlaceholderOption = document.createElement('option');
                 enginePlaceholderOption.value = '';
-                enginePlaceholderOption.textContent = !model
-                    ? selectModelPlaceholder
-                    : (engines.length > 0 ? enginePlaceholder : noEnginesPlaceholder);
+                // Each field names the choice it is actually waiting on, rather
+                // than every one of them repeating the same sentence.
+                enginePlaceholderOption.textContent = !brand
+                    ? selectBrandPlaceholder
+                    : (!model
+                        ? selectModelPlaceholder
+                        : (engines.length > 0 ? enginePlaceholder : noEnginesPlaceholder));
                 engineSelect.appendChild(enginePlaceholderOption);
                 engines.forEach((engine) => appendOption(engineSelect, engine, selectedEngine));
                 engineSelect.disabled = !model || engines.length === 0;
@@ -327,9 +334,11 @@ const initVehicleFinder = () => {
                 yearSelect.innerHTML = '';
                 const yearPlaceholderOption = document.createElement('option');
                 yearPlaceholderOption.value = '';
-                yearPlaceholderOption.textContent = !model
-                    ? selectModelPlaceholder
-                    : (hasYears ? yearPlaceholder : noYearsPlaceholder);
+                yearPlaceholderOption.textContent = !brand
+                    ? selectBrandPlaceholder
+                    : (!model
+                        ? selectModelPlaceholder
+                        : (hasYears ? yearPlaceholder : noYearsPlaceholder));
                 yearSelect.appendChild(yearPlaceholderOption);
                 if (hasYears) {
                     for (let year = yearTo; year >= yearFrom; year -= 1) {
@@ -361,6 +370,15 @@ const initVehicleFinder = () => {
                 option.value = value;
                 option.textContent = label;
                 option.selected = value === selectedModel;
+
+                // The listbox draws the name large and the years and engines
+                // under it; a native <select> can only show the flat label.
+                if (typeof model === 'object') {
+                    if (model.primary) option.dataset.primary = model.primary;
+                    if (model.secondary) option.dataset.secondary = model.secondary;
+                    if (model.search) option.dataset.search = model.search;
+                }
+
                 modelSelect.appendChild(option);
             });
 
@@ -388,6 +406,39 @@ const initVehicleFinder = () => {
             if (yearSelect) yearSelect.value = '';
             setVehicleOptions();
         });
+
+        // Nothing chosen means "show me everything", which is what the Shop
+        // link already does. The button waits for a brand — the first choice
+        // that makes this a search for a vehicle — and refuses a second press
+        // once it is on its way.
+        const submitButton = form.querySelector('[data-vehicle-finder-submit]');
+        if (submitButton) {
+            const idleLabel = submitButton.textContent.trim();
+            const loadingLabel = submitButton.dataset.loadingLabel || idleLabel;
+            let submitting = false;
+
+            const syncSubmitState = () => {
+                if (submitting) {
+                    return;
+                }
+
+                submitButton.disabled = brandSelect.value === '';
+            };
+
+            form.addEventListener('change', syncSubmitState);
+            form.addEventListener('submit', (event) => {
+                if (submitting) {
+                    event.preventDefault();
+                    return;
+                }
+
+                submitting = true;
+                submitButton.disabled = true;
+                submitButton.textContent = loadingLabel;
+            });
+
+            syncSubmitState();
+        }
 
         setOptions();
     });
@@ -1488,6 +1539,8 @@ const initCategoriesSearch = () => {
 const boot = () => {
     initHeroVideos();
     initVehicleFinder();
+    // After the finder, so the options it builds are the ones enhanced.
+    initFancySelects();
     initWishlistForms();
     initStickyHeader();
     initSearchAutocomplete();

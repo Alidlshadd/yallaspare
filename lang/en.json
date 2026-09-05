@@ -3693,5 +3693,18 @@
     "That engine name is too long.": "That engine name is too long.",
     "Fitment notes may not be longer than 255 characters.": "Fitment notes may not be longer than 255 characters.",
     "Please select an engine compatible with the selected variant. This variant has no engines recorded yet.": "Please select an engine compatible with the selected variant. This variant has no engines recorded yet.",
-    "Please select an engine compatible with the selected variant. Available: :engines": "Please select an engine compatible with the selected variant. Available: :engines"
+    "Please select an engine compatible with the selected variant. Available: :engines": "Please select an engine compatible with the selected variant. Available: :engines",
+    "Select model": "Select model",
+    "Select a brand first": "Select a brand first",
+    "Select a model first": "Select a model first",
+    "Search brand": "Search brand",
+    "No matching brands found": "No matching brands found",
+    "Search model or year": "Search model or year",
+    "No matching vehicles found": "No matching vehicles found",
+    "Search engine": "Search engine",
+    "No matching engines found": "No matching engines found",
+    "Search year": "Search year",
+    "No matching years found": "No matching years found",
+    "Searching": "Searching",
+    "+:count engine|+:count engines": "+:count engine|+:count engines"
 }

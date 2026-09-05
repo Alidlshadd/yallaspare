@@ -113,38 +113,61 @@
                     data-vehicle-finder
                     data-model-map='@json($modelOptionsByBrand)'
                     data-vehicle-option-map='@json($vehicleOptionsByModel)'
-                    data-model-placeholder="{{ __('Model') }}"
-                    data-all-models-placeholder="{{ __('Select brand first') }}"
+                    data-model-placeholder="{{ __('Select model') }}"
+                    data-all-models-placeholder="{{ __('Select a brand first') }}"
                     data-no-models-placeholder="{{ __('No models for this brand yet') }}"
                     data-engine-placeholder="{{ __('Any engine') }}"
                     data-year-placeholder="{{ __('Any year') }}"
-                    data-select-model-placeholder="{{ __('Select model first') }}"
+                    data-select-model-placeholder="{{ __('Select a model first') }}"
                     data-no-engines-placeholder="{{ __('No engines for this model yet') }}"
                     data-no-years-placeholder="{{ __('No years for this model yet') }}"
                 >
                     <p class="font-display text-[15px] font-semibold leading-tight text-white">{{ __('Find parts for your vehicle') }}</p>
 
+                    {{-- Every field keeps its name, its options and its dependent
+                         behaviour. data-fancy-select swaps the browser's own popup
+                         for a listbox that belongs to this panel; with JavaScript
+                         off the native control is still here and still works. --}}
                     <select
                         name="brand"
                         aria-label="{{ __('Brand') }}"
                         data-vehicle-brand
+                        data-fancy-select
+                        data-fancy-icon="car"
+                        data-fancy-search-label="{{ __('Search brand') }}"
+                        data-fancy-empty-label="{{ __('No matching brands found') }}"
                         class="h-11 w-full rounded-xl border-0 bg-white px-3.5 text-sm font-medium text-slate-900 outline-none transition duration-200 focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-[#070740] disabled:cursor-not-allowed disabled:bg-[#E6E8EC] disabled:text-slate-600 disabled:opacity-100"
                     >
-                        <option value="">{{ __('Brand') }}</option>
+                        <option value="">{{ __('Select brand') }}</option>
                         @foreach ($brandOptions as $option)
                             <option value="{{ $option }}">{{ $option }}</option>
                         @endforeach
                     </select>
 
+                    {{-- Named "model" because that is the request parameter and
+                         what a shopper calls it, but the value is a variant id.
+                         Two Tivolis differ only by their years and engines, and
+                         that is what the second line of each option carries. --}}
                     <select
                         name="model"
                         aria-label="{{ __('Model') }}"
                         data-vehicle-model
+                        data-fancy-select
+                        data-fancy-icon="vehicle"
+                        data-fancy-search-label="{{ __('Search model or year') }}"
+                        data-fancy-empty-label="{{ __('No matching vehicles found') }}"
                         class="h-11 w-full rounded-xl border-0 bg-white px-3.5 text-sm font-medium text-slate-900 outline-none transition duration-200 focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-[#070740] disabled:cursor-not-allowed disabled:bg-[#E6E8EC] disabled:text-slate-600 disabled:opacity-100"
                     >
-                        <option value="">{{ __('Model') }}</option>
+                        <option value="">{{ __('Select a brand first') }}</option>
                         @foreach ($modelOptions as $option)
-                            <option value="{{ is_array($option) ? $option['value'] : $option }}">{{ is_array($option) ? $option['label'] : $option }}</option>
+                            <option
+                                value="{{ is_array($option) ? $option['value'] : $option }}"
+                                @if (is_array($option))
+                                    data-primary="{{ $option['primary'] ?? $option['label'] }}"
+                                    data-secondary="{{ $option['secondary'] ?? '' }}"
+                                    data-search="{{ $option['search'] ?? '' }}"
+                                @endif
+                            >{{ is_array($option) ? $option['label'] : $option }}</option>
                         @endforeach
                     </select>
 
@@ -152,10 +175,14 @@
                         name="engine"
                         aria-label="{{ __('Engine') }}"
                         data-vehicle-engine
+                        data-fancy-select
+                        data-fancy-icon="engine"
+                        data-fancy-search-label="{{ __('Search engine') }}"
+                        data-fancy-empty-label="{{ __('No matching engines found') }}"
                         @disabled($vehicleOptionsByModel !== [])
                         class="h-11 w-full rounded-xl border-0 bg-white px-3.5 text-sm font-medium text-slate-900 outline-none transition duration-200 focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-[#070740] disabled:cursor-not-allowed disabled:bg-[#E6E8EC] disabled:text-slate-600 disabled:opacity-100"
                     >
-                        <option value="">{{ __('Any engine') }}</option>
+                        <option value="">{{ $vehicleOptionsByModel !== [] ? __('Select a model first') : __('Any engine') }}</option>
                         @if($vehicleOptionsByModel === [])
                             @foreach ($engineOptions as $option)
                                 <option value="{{ is_array($option) ? $option['value'] : $option }}">{{ is_array($option) ? $option['label'] : $option }}</option>
@@ -167,15 +194,21 @@
                         name="year"
                         aria-label="{{ __('Year') }}"
                         data-vehicle-year
+                        data-fancy-select
+                        data-fancy-icon="calendar"
+                        data-fancy-search-label="{{ __('Search year') }}"
+                        data-fancy-empty-label="{{ __('No matching years found') }}"
                         disabled
                         class="h-11 w-full rounded-xl border-0 bg-white px-3.5 text-sm font-medium text-slate-900 outline-none transition duration-200 focus:ring-2 focus:ring-accent focus:ring-offset-2 focus:ring-offset-[#070740] disabled:cursor-not-allowed disabled:bg-[#E6E8EC] disabled:text-slate-600 disabled:opacity-100"
                     >
-                        <option value="">{{ __('Any year') }}</option>
+                        <option value="">{{ __('Select a model first') }}</option>
                     </select>
 
                     <button
                         type="submit"
-                        class="mt-1.5 inline-flex h-11 w-full items-center justify-center rounded-xl bg-accent sm:mt-2 sm:h-12 px-4 text-sm font-bold tracking-[0.01em] text-navy transition duration-200 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#070740]"
+                        data-vehicle-finder-submit
+                        data-loading-label="{{ __('Searching') }}"
+                        class="mt-1.5 inline-flex h-11 w-full items-center justify-center rounded-xl bg-accent sm:mt-2 sm:h-12 px-4 text-sm font-bold tracking-[0.01em] text-navy transition duration-200 hover:bg-accent-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-[#070740] disabled:cursor-not-allowed disabled:bg-white/15 disabled:text-white/60 disabled:hover:bg-white/15"
                     >
                         {{ __('Find parts') }}
                     </button>

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 
 class VehicleModel extends Model
 {
@@ -262,5 +263,60 @@ class VehicleModel extends Model
         ], fn (string $part): bool => trim($part) !== '');
 
         return mb_strtolower(implode(' ', $parts));
+    }
+
+    /**
+     * One option in the storefront vehicle finder, as a two-line entry.
+     *
+     * The engines are passed in rather than read off the relation, because the
+     * storefront hides fuel types the shop does not sell. The line under the
+     * name must never advertise an engine the engine dropdown will refuse to
+     * offer, so both are built from the same filtered collection.
+     *
+     * @param  Collection<int, VehicleModelEngineType>  $engines
+     * @return array{value: string, label: string, primary: string, secondary: string, search: string}
+     */
+    public function finderOption(Collection $engines, ?string $locale = null): array
+    {
+        $engineLabels = $engines
+            ->map(fn (VehicleModelEngineType $engine): string => $engine->localizedName($locale))
+            ->filter(fn (string $label): bool => trim($label) !== '')
+            ->unique()
+            ->values();
+
+        $secondary = [];
+
+        $years = $this->productionYears();
+        if ($years !== null) {
+            $secondary[] = $years;
+        }
+
+        if ($engineLabels->isNotEmpty()) {
+            $secondary[] = (string) $engineLabels->first();
+
+            $remaining = $engineLabels->count() - 1;
+            if ($remaining > 0) {
+                $secondary[] = trans_choice('+:count engine|+:count engines', $remaining, ['count' => $remaining]);
+            }
+        }
+
+        return [
+            'value' => (string) $this->id,
+            // The closed control shows this, so it has to carry the years: two
+            // variants sharing a name are the reason this field exists.
+            'label' => $this->listLabel($locale),
+            'primary' => $this->localizedName($locale),
+            'secondary' => implode(' · ', $secondary),
+            'search' => mb_strtolower(implode(' ', array_filter([
+                (string) $this->name,
+                (string) $this->name_en,
+                (string) $this->name_ar,
+                (string) $this->name_ku,
+                $this->localizedName($locale),
+                (string) $this->production_start_year,
+                (string) $this->production_end_year,
+                $engineLabels->implode(' '),
+            ], fn (string $part): bool => trim($part) !== ''))),
+        ];
     }
 }
