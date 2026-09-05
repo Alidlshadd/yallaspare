@@ -35,11 +35,27 @@
             ->filter()
             ->implode(' | ');
     $inStock = $product->in_stock ?? (($product->stock_quantity ?? 0) > 0);
+
+    // What the part fits, for a quiet one-line hint under the stock code. This
+    // never queries: a caller that did not eager load vehicleFitments.model
+    // simply gets no hint, which is what keeps a grid of cards free of N+1.
+    $fitsModels = collect();
+    if ($product instanceof \App\Models\Product && $product->relationLoaded('vehicleFitments')) {
+        $fitsModels = $product->vehicleFitments
+            ->filter(fn ($fitment) => $fitment->relationLoaded('model') && $fitment->model !== null)
+            ->map(fn ($fitment) => $fitment->model->localizedName())
+            ->filter()
+            ->unique()
+            ->values();
+    }
+    $fitsFirst = $fitsModels->first();
+    $fitsMore = max(0, $fitsModels->count() - 1);
 @endphp
 
 @if ($compact)
 <article
     aria-label="{{ $productName }}"
+    data-product-card-id="{{ $product->id ?? '' }}"
     class="group relative flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-3 text-left shadow-sm shadow-slate-900/5 transition duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-lg hover:shadow-slate-900/10 active:translate-y-0.5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 dark:hover:border-primary/30 dark:hover:shadow-black/20"
 >
     <a
@@ -128,6 +144,12 @@
             {{ $stockCode }}
         </p>
 
+        @if ($fitsFirst)
+            <p class="mt-1.5 truncate text-[11px] font-medium text-slate-500 dark:text-slate-400" title="{{ $fitsModels->implode(', ') }}">
+                {{ __('Fits') }}: <span class="text-slate-700 dark:text-slate-300">{{ $fitsFirst }}</span>@if ($fitsMore > 0) <span class="text-muted">+{{ $fitsMore }}</span>@endif
+            </p>
+        @endif
+
         <div class="mt-3 flex flex-wrap items-end gap-x-2 gap-y-0.5">
             <p class="break-all font-display text-lg font-semibold leading-none tracking-[-0.03em] text-primary dark:text-white">
                 {{ number_format($price, 2) }}
@@ -178,6 +200,7 @@
 @else
 <article
     aria-label="{{ $productName }}"
+    data-product-card-id="{{ $product->id ?? '' }}"
     class="group relative flex h-full min-w-0 flex-col overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-3 text-left shadow-sm shadow-slate-900/5 transition duration-300 hover:-translate-y-1 hover:border-primary/20 hover:shadow-lg hover:shadow-slate-900/10 active:translate-y-0.5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 dark:hover:border-primary/30 dark:hover:shadow-black/20 sm:rounded-3xl sm:p-5"
 >
     <a
@@ -270,6 +293,12 @@
                 <p class="mt-1 break-all text-[0.78rem] font-semibold uppercase tracking-[0.08em] text-slate-700 dark:text-slate-300 sm:tracking-[0.14em]">
                     {{ $stockCode }}
                 </p>
+
+                @if ($fitsFirst)
+                    <p class="mt-1.5 truncate text-xs font-medium text-slate-500 dark:text-slate-400" title="{{ $fitsModels->implode(', ') }}">
+                        {{ __('Fits') }}: <span class="text-slate-700 dark:text-slate-300">{{ $fitsFirst }}</span>@if ($fitsMore > 0) <span class="text-muted">+{{ $fitsMore }}</span>@endif
+                    </p>
+                @endif
             </div>
 
             <h3 class="line-clamp-2 min-h-[3.2rem] break-mobile text-[1.05rem] font-semibold leading-6 tracking-[-0.02em] text-slate-950 transition duration-200 group-hover:text-primary dark:text-white dark:group-hover:text-slate-200">

@@ -169,20 +169,14 @@ class ShopController extends Controller
         $authUser = auth()->user();
         $customerUser = $authUser && ! $authUser->isAdminPanelUser() ? $authUser : null;
         $productsQuery = Product::query()
-            ->with('category')
+            ->with(['category', 'vehicleFitments.model'])
             ->where('is_active', true);
 
         $search = trim((string) $request->input('q', $request->input('search', '')));
         if ($search !== '') {
-            $productsQuery->where(function ($query) use ($search): void {
-                SqlSafe::whereLike($query, 'name_en', $search);
-                SqlSafe::orWhereLike($query, 'name_ar', $search);
-                SqlSafe::orWhereLike($query, 'name_ku', $search);
-                SqlSafe::orWhereLike($query, 'brand', $search);
-                SqlSafe::orWhereLike($query, 'sku', $search);
-                SqlSafe::orWhereLike($query, 'oem_number', $search);
-                SqlSafe::orWhereLike($query, 'part_number', $search);
-            });
+            // One definition, shared with the autocomplete endpoint, covering the
+            // product's own columns and what it is recorded as fitting.
+            $productsQuery->matchingSearchTerm($search);
         }
 
         $categoryInput = trim((string) $request->input('category', ''));

@@ -17,7 +17,7 @@ class WishlistController extends Controller
     {
         $items = Wishlist::query()
             ->where('user_id', $request->user()->id)
-            ->with(['product.category'])
+            ->with(['product.category', 'product.vehicleFitments.model'])
             ->latest('id')
             ->paginate(12);
 

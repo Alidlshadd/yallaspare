@@ -76,7 +76,7 @@ class ShopController extends Controller
         $currencyLabel = (string) Setting::getValue('currency_code', 'IQD');
 
         $relatedProducts = Product::query()
-            ->with('category')
+            ->with(['category', 'vehicleFitments.model'])
             ->where('is_active', 1)
             ->whereKeyNot($product->id)
             ->when($product->category_id, fn ($query) => $query->where('category_id', $product->category_id))
@@ -155,15 +155,9 @@ class ShopController extends Controller
         $products = Product::query()
             ->with(['category', 'images'])
             ->where('is_active', true)
-            ->where(function ($query) use ($term): void {
-                SqlSafe::whereLike($query, 'name_en', $term);
-                SqlSafe::orWhereLike($query, 'name_ar', $term);
-                SqlSafe::orWhereLike($query, 'name_ku', $term);
-                SqlSafe::orWhereLike($query, 'sku', $term);
-                SqlSafe::orWhereLike($query, 'oem_number', $term);
-                SqlSafe::orWhereLike($query, 'part_number', $term);
-                SqlSafe::orWhereLike($query, 'brand', $term);
-            })
+            // The same definition the shop listing uses, so a suggestion list
+            // can never disagree with the results page it leads to.
+            ->matchingSearchTerm($term)
             ->orderByRaw('CASE WHEN stock_quantity > 0 THEN 0 ELSE 1 END')
             ->latest('id')
             ->limit($limit)
@@ -215,7 +209,12 @@ class ShopController extends Controller
             ->pluck('brand')
             ->map(fn (string $brand): array => [
                 'label' => $brand,
-                'url' => route('shop.index', ['brand' => $brand]),
+                // The listing's `brand` parameter names a *vehicle* brand — it
+                // feeds the fitment filter — while these suggestions come from
+                // the part's own brand column. Sending one as the other left
+                // every suggestion landing on an empty page. The search covers
+                // the part brand, so that is what the suggestion follows.
+                'url' => route('shop.index', ['search' => $brand]),
             ])
             ->values();
 
