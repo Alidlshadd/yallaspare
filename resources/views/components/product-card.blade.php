@@ -28,6 +28,7 @@
     $brand = $product->brand ?? null;
     $imageUrl = $product->image_url
         ?? (($product->image ?? null) ? asset('storage/' . ltrim((string) $product->image, '/')) : null);
+    $imageUrl = \App\Support\ImageVariants::url($imageUrl, 400) ?? $imageUrl;
     $compatibility = $product->compatibility
         ?? collect($product->compatible_models ?? [])
             ->map(fn ($item) => is_array($item) ? ($item['name'] ?? reset($item)) : $item)

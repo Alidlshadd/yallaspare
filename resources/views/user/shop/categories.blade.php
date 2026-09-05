@@ -71,7 +71,7 @@
                 @forelse ($categories as $category)
                     @php
                         $imagePath = $hasCategoryImage ? trim((string) $category->image) : '';
-                        $imageUrl = $imagePath !== '' ? asset('storage/' . ltrim($imagePath, '/')) : null;
+                        $imageUrl = $imagePath !== '' ? \App\Support\ImageVariants::url($imagePath, 400) : null;
                     @endphp
 
                     <a

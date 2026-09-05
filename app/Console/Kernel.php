@@ -52,6 +52,15 @@ class Kernel extends ConsoleKernel
         $schedule->command('queue:alert-failed')
             ->hourly()
             ->withoutOverlapping();
+
+        // Uploads are stored at whatever resolution they arrived in, and the
+        // storefront needs card-sized copies. This runs over the stored files
+        // instead of hooking the upload path, so a newly added photo serves its
+        // original for at most an hour and its variant from then on.
+        $schedule->command('images:variants')
+            ->hourly()
+            ->withoutOverlapping(30)
+            ->runInBackground();
     }
 
     /**

@@ -12,6 +12,12 @@
         ? $product->images->map(fn ($image) => asset('storage/' . ltrim((string) $image->path, '/')))->values()
         : collect([$imageUrl])->values();
     $imageUrl = $galleryImages->first() ?: $imageUrl;
+    // $imageUrl keeps the full-size original because the social preview tags
+    // below hand it to other sites. What this page renders is the derivative:
+    // 1400 for the main photo, 400 for the thumbnail strip.
+    $displayImages = $galleryImages->map(fn ($url) => \App\Support\ImageVariants::url($url, 1400) ?: $url)->values();
+    $thumbImages = $galleryImages->map(fn ($url) => \App\Support\ImageVariants::url($url, 400) ?: $url)->values();
+    $mainImageUrl = $displayImages->first() ?: $imageUrl;
 
     // What this part fits, resolved once from the records rather than pieced
     // together in the markup. The fitment row narrows; the variant supplies the
@@ -159,7 +165,7 @@
                         <div class="aspect-square w-full overflow-hidden bg-slate-50 p-4 sm:p-8">
                             <img
                                 id="product-main-image"
-                                src="{{ $imageUrl }}"
+                                src="{{ $mainImageUrl }}"
                                 alt="{{ $name }}"
                                 fetchpriority="high"
                                 decoding="async"
@@ -169,11 +175,11 @@
                     </div>
 
                     <div class="flex gap-3 overflow-x-auto pb-1">
-                        @foreach ($galleryImages as $index => $thumb)
+                        @foreach ($thumbImages as $index => $thumb)
                             <button
                                 type="button"
                                 data-gallery-thumb
-                                data-image-src="{{ $thumb }}"
+                                data-image-src="{{ $displayImages[$index] ?? $thumb }}"
                                 class="inline-flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl border {{ $index === 0 ? 'border-primary bg-slate-100 dark:bg-slate-800' : 'border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900' }} p-2 transition hover:border-primary/50 hover:bg-slate-100 dark:hover:bg-slate-800"
                                 aria-label="{{ __('Product image :number', ['number' => $index + 1]) }}"
                             >

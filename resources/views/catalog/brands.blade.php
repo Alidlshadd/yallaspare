@@ -41,7 +41,7 @@
                     >
                         <span class="flex h-14 w-14 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-slate-200/80 bg-slate-50 dark:border-slate-800 dark:bg-slate-950">
                             @if ($brand['logo_path'])
-                                <img src="{{ asset('storage/' . ltrim((string) $brand['logo_path'], '/')) }}" alt="" loading="lazy" decoding="async" class="max-h-10 max-w-10 object-contain">
+                                <img src="{{ \App\Support\ImageVariants::url($brand['logo_path'], 400) }}" alt="" loading="lazy" decoding="async" class="max-h-10 max-w-10 object-contain">
                             @else
                                 <span aria-hidden="true" class="text-sm font-semibold uppercase text-slate-400">{{ mb_substr($brand['name'], 0, 2) }}</span>
                             @endif

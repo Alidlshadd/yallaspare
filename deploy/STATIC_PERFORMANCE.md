@@ -64,10 +64,33 @@ already carried a `Cache-Control` block for `/storage/`, and the live headers
 show it is not in effect — so check that the include is actually reached and not
 shadowed by an earlier `location` match.
 
-## Still to do in the application
+## Resized images, without touching the upload path
 
-The product photos are served at their original upload resolution — 1.3–2.1 MB
-PNGs rendered into roughly 300px cards. Generating a resized derivative on
-upload (plus a backfill command for existing files) would take that ~24 MB down
-to well under 1 MB. That needs an image library, which the project does not
-currently depend on, so it is scoped separately.
+Uploads are stored at whatever resolution they arrived in — 1.3–2.1 MB PNGs
+rendered into roughly 300px cards. Rather than change how uploads are handled,
+`php artisan images:variants` walks the stored files and writes resized WebP
+copies under `storage/app/public/variants/<width>/…`, and the views ask
+`App\Support\ImageVariants` for one. Measured on the local image set, a 555 KB
+PNG became a 9 KB WebP at card width.
+
+Three widths are generated: 400 (cards, category tiles, thumbnails), 800 (popup,
+vehicle art) and 1400 (the product detail photo). Anything already narrower than
+a given width is skipped, since re-encoding it would only make it heavier.
+
+Nothing about this is load-bearing. A path with no variant yet, a remote URL, or
+a machine without the `gd` extension all fall back to the original file, so a
+missing variant is never a broken image. The product page's `og:image` and
+`twitter:image` deliberately keep the full-size original, because other sites
+render those.
+
+The command is scheduled hourly, which is what keeps the upload path untouched:
+a newly uploaded photo serves its original for at most an hour, then its
+variant. After deploying, run it once to backfill:
+
+```bash
+php artisan images:variants
+```
+
+GD is required (`php8.3-gd`), and it must be built with WebP support — check
+with `php -r "print_r(gd_info());"`. Without it the command says so and exits
+cleanly rather than failing the deploy.

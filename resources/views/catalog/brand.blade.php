@@ -15,7 +15,7 @@
             <div class="mt-4 flex flex-col gap-4 sm:flex-row sm:items-center">
                 @if ($brand->logo_path)
                     <span class="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-50 dark:border-slate-800 dark:bg-slate-950">
-                        <img src="{{ asset('storage/' . ltrim((string) $brand->logo_path, '/')) }}" alt="" loading="lazy" decoding="async" class="max-h-12 max-w-12 object-contain">
+                        <img src="{{ \App\Support\ImageVariants::url($brand->logo_path, 400) }}" alt="" loading="lazy" decoding="async" class="max-h-12 max-w-12 object-contain">
                     </span>
                 @endif
 

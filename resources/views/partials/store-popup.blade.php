@@ -7,7 +7,7 @@
 @if($storePopup)
     @php
         $popupImageUrl = ! empty($storePopup->image_path)
-            ? asset('storage/' . ltrim($storePopup->image_path, '/'))
+            ? \App\Support\ImageVariants::url($storePopup->image_path, 800)
             : null;
     @endphp
     {{-- Inline display:none (not the hidden attribute) so the .flex utility can never win the cascade before JS opens it --}}

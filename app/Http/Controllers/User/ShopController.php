@@ -15,6 +15,7 @@ use App\Models\Wishlist;
 use App\Services\Analytics\ClientAnalytics;
 use App\Services\Analytics\SearchTracker;
 use App\Support\DbSchema;
+use App\Support\ImageVariants;
 use App\Support\LocalizedText;
 use App\Support\SqlSafe;
 use App\Support\VehicleFilterCache;
@@ -70,7 +71,7 @@ class ShopController extends Controller
                         'slug' => $category->slug,
                         'name' => LocalizedText::first($category->{$nameField}, $category->name_en, $category->name_ar, $category->name_ku),
                         'description' => $category->localized_description,
-                        'image' => $imagePath !== '' ? asset('storage/'.ltrim($imagePath, '/')) : null,
+                        'image' => $imagePath !== '' ? ImageVariants::url($imagePath, 400) : null,
                     ];
                 });
         }
@@ -680,7 +681,7 @@ class ShopController extends Controller
 
         $imagePath = trim((string) $product->image);
         $imageUrl = $imagePath !== ''
-            ? asset('storage/'.ltrim($imagePath, '/'))
+            ? ImageVariants::url($imagePath, 400)
             : null;
 
         $pricing = $product->pricingFor($customerUser);
