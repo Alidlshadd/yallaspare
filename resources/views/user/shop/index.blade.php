@@ -311,7 +311,7 @@
                 {{-- Offered, never applied on the shopper's behalf, and only
                      ever a name the catalogue actually holds. --}}
                 @if ($searchSuggestion)
-                    <p class="mt-4 text-sm text-slate-600">
+                    <p data-search-suggestion class="mt-4 text-sm text-slate-600">
                         {{ __('Did you mean') }}:
                         <a
                             href="{{ route('shop.index', array_merge(request()->except(['search', 'q', 'page']), ['search' => $searchSuggestion['query']])) }}"

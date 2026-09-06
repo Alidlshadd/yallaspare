@@ -252,19 +252,28 @@ class ShopCompatibilitySearchTest extends TestCase
 
         $this->get(route('shop.index', ['search' => 'Tivoli']))->assertOk();
 
+        // Identifier quoting is the grammar's business — double quotes on
+        // SQLite, backticks on the MySQL this actually ships on. Matching one
+        // of them made this guard silently vacuous on the other, which is the
+        // half that matters.
+        $unquoted = array_map(
+            static fn (string $sql): string => str_replace(['"', '`'], '', $sql),
+            $dataQueries
+        );
+
         // One IN(...) read covering every card on the page. Eager loading is
         // what makes the "Fits" hint safe to render inside a grid.
         $eagerLoads = count(array_filter(
-            $dataQueries,
-            fn (string $sql): bool => str_contains($sql, 'from "product_vehicle_fitments" where "product_vehicle_fitments"."product_id" in')
+            $unquoted,
+            fn (string $sql): bool => str_contains($sql, 'from product_vehicle_fitments where product_vehicle_fitments.product_id in')
         ));
 
         $this->assertSame(1, $eagerLoads, 'Fitments were not loaded in a single read for the page.');
 
         // A per-card lookup would show up here as twelve.
         $perCardReads = count(array_filter(
-            $dataQueries,
-            fn (string $sql): bool => str_contains($sql, 'from "product_vehicle_fitments" where "product_vehicle_fitments"."product_id" = ')
+            $unquoted,
+            fn (string $sql): bool => str_contains($sql, 'from product_vehicle_fitments where product_vehicle_fitments.product_id = ')
         ));
 
         $this->assertSame(0, $perCardReads, "The listing read fitments {$perCardReads} times one product at a time.");

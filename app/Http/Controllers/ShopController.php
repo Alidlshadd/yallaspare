@@ -14,6 +14,7 @@ use App\Services\Analytics\ClientAnalytics;
 use App\Services\Analytics\MeasurementPayload;
 use App\Services\Analytics\ProductViewTracker;
 use App\Support\DbSchema;
+use App\Support\Search\AutocompletePanel;
 use App\Support\SqlSafe;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -137,34 +138,53 @@ class ShopController extends Controller
         ]);
     }
 
+    /**
+     * The suggestion panel behind the header search.
+     *
+     * Everything the old endpoint returned is still returned, under the same
+     * keys and in the same shape — a mobile build or a cached page reading
+     * `data.products[].label` keeps working untouched. What is new sits beside
+     * it: what the query was understood to mean, a reason on every product row,
+     * the car a part is being suggested for, and the vehicle and marque groups
+     * that let a shopper who knows their car but not the part number get to the
+     * right shelf.
+     */
     public function autocomplete(Request $request): JsonResponse
     {
         $term = SqlSafe::searchTerm($request->query('q', $request->query('search', '')), 80);
         $limit = min(max((int) $request->query('limit', 6), 1), 10);
         $currencyLabel = (string) Setting::getValue('currency_code', 'IQD');
 
+        $panel = AutocompletePanel::for($term, $request->user());
+
         if (mb_strlen($term) < 2) {
-            return response()->json(['data' => [
+            // The shape never changes with the query. A panel that has to guess
+            // which keys arrived this time is a panel that renders nothing on
+            // the one request that mattered.
+            return response()->json(['data' => array_merge([
                 'query' => $term,
                 'products' => [],
                 'categories' => [],
                 'brands' => [],
-            ]]);
+            ], $panel->emptyStructure())]);
         }
 
-        $products = Product::query()
-            ->with(['category', 'images'])
-            ->where('is_active', true)
-            // The same definition the shop listing uses, so a suggestion list
-            // can never disagree with the results page it leads to.
-            ->matchingSearchTerm($term)
-            ->orderByRaw('CASE WHEN stock_quantity > 0 THEN 0 ELSE 1 END')
-            // The same ladder the results page uses, so a suggestion and the
-            // page it leads to cannot disagree about what the best answer is.
-            ->orderBySearchRelevance($term)
-            ->latest('id')
-            ->limit($limit)
-            ->get()
+        // One fetch, read twice: the legacy list takes the caller's limit, the
+        // grouped panel takes its own five. Two mappings over one result set
+        // rather than two trips to the database.
+        //
+        // One row past what anyone will show, so the page can tell "that was
+        // all of them" from "there are more" without asking the database to run
+        // the whole search again just to count it.
+        $wanted = max($limit, AutocompletePanel::PRODUCT_LIMIT);
+        $products = $panel->productQuery()->limit($wanted + 1)->get();
+        $hasMore = $products->count() > $wanted;
+        $products = $products->take($wanted);
+
+        $categories = $panel->categoryQuery()->limit(max($limit, AutocompletePanel::CATEGORY_LIMIT))->get();
+
+        $legacyProducts = $products
+            ->take($limit)
             ->map(function (Product $product) use ($request, $currencyLabel): array {
                 $price = $product->priceFor($request->user());
 
@@ -184,16 +204,8 @@ class ShopController extends Controller
             })
             ->values();
 
-        $categories = Category::query()
-            ->where(function ($query) use ($term): void {
-                SqlSafe::whereLike($query, 'name_en', $term);
-                SqlSafe::orWhereLike($query, 'name_ar', $term);
-                SqlSafe::orWhereLike($query, 'name_ku', $term);
-            })
-            ->withCount('products')
-            ->orderByDesc('products_count')
-            ->limit($limit)
-            ->get()
+        $legacyCategories = $categories
+            ->take($limit)
             ->map(fn (Category $category): array => [
                 'id' => $category->id,
                 'label' => $category->localizedName(),
@@ -202,7 +214,7 @@ class ShopController extends Controller
             ])
             ->values();
 
-        $brands = Product::query()
+        $legacyBrands = Product::query()
             ->where('is_active', true)
             ->whereNotNull('brand')
             ->where('brand', '!=', '')
@@ -223,12 +235,19 @@ class ShopController extends Controller
             ])
             ->values();
 
-        return response()->json(['data' => [
+        // Fewer rows came back than were asked for, so that is the total. More,
+        // and the honest answer is that we do not know: `matchingSearchTerm` is
+        // an EXISTS over four relations, and running it a second time to print
+        // a number beside "View all results" would double the cost of the one
+        // request a shopper makes on every keystroke.
+        $total = $hasMore ? null : $products->count();
+
+        return response()->json(['data' => array_merge([
             'query' => $term,
-            'products' => $products,
-            'categories' => $categories,
-            'brands' => $brands,
-        ]]);
+            'products' => $legacyProducts,
+            'categories' => $legacyCategories,
+            'brands' => $legacyBrands,
+        ], $panel->toArray($products, $categories, $total))]);
     }
 
     public function subscribeBackInStock(Request $request, Product $product): RedirectResponse

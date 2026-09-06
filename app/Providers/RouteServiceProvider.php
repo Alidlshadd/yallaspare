@@ -110,6 +110,15 @@ class RouteServiceProvider extends ServiceProvider
             return Limit::perMinute(10)->by($request->ip());
         });
 
+        // A shopper typing "ssangyong rexton 2024" sends one request per pause,
+        // and a household, an office or a phone network behind one address
+        // sends several people's worth of those. The ceiling is set high enough
+        // that only a script reaches it, because a suggestion panel that stops
+        // answering mid-word is worse than no panel at all.
+        RateLimiter::for('search-suggest', function (Request $request) {
+            return Limit::perMinute(120)->by($request->user()?->id ?: $request->ip());
+        });
+
         RateLimiter::for('mobile-lookup', function (Request $request) {
             return Limit::perMinute(20)->by($request->user()?->id ?: $request->ip());
         });

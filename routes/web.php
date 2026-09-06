@@ -124,7 +124,9 @@ Route::post('/language/{locale}', function (Request $request, string $locale) {
     return redirect()->to($targetUrl);
 })->middleware('throttle:public-write')->name('language.switch');
 Route::get('/shop', [UserShopController::class, 'shop'])->name('shop.index');
-Route::get('/shop/autocomplete', [CatalogShopController::class, 'autocomplete'])->name('shop.autocomplete');
+Route::get('/shop/autocomplete', [CatalogShopController::class, 'autocomplete'])
+    ->middleware('throttle:search-suggest')
+    ->name('shop.autocomplete');
 Route::get('/categories', [UserShopController::class, 'categories'])->name('categories.index');
 Route::get('/categories/{category}', [UserShopController::class, 'category'])->name('categories.show');
 Route::get('/shop/products/{product}', [CatalogShopController::class, 'show'])->name('shop.show');

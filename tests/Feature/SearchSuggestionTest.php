@@ -111,15 +111,20 @@ class SearchSuggestionTest extends TestCase
 
     public function test_the_suggestion_only_appears_when_there_are_no_results(): void
     {
-        // A real query returns products, and no suggestion beside them.
+        // A real query returns products, and no suggestion beside them. The
+        // offer is looked for by its own element rather than by its words: the
+        // header's suggestion panel now ships the same phrase as a translation
+        // on every page, and finding it in that script block would say nothing
+        // about whether a correction was actually offered here.
         $this->get(route('shop.index', ['search' => 'rexton']))
             ->assertOk()
             ->assertSee('Engine Oil Filter')
-            ->assertDontSee('Did you mean');
+            ->assertDontSee('data-search-suggestion', false);
 
         // A typo returns nothing, and the offer appears.
         $this->get(route('shop.index', ['search' => 'rextn']))
             ->assertOk()
+            ->assertSee('data-search-suggestion', false)
             ->assertSee('Did you mean')
             ->assertSee('Rexton');
     }

@@ -147,6 +147,37 @@
                 sku: @json(__('SKU:')),
                 inStock: @json(__('In stock')),
                 outOfStock: @json(__('Out of stock')),
+                {{-- The search suggestion panel. Every visible string it draws
+                     is translated here rather than in the bundle, so a new
+                     locale needs no rebuild. --}}
+                vehicles: @json(__('Vehicles')),
+                oem: @json(__('OEM:')),
+                fits: @json(__('Fits')),
+                fitsCount: @json(__('Fits :count vehicles')),
+                viewCompatibleParts: @json(__('View compatible parts')),
+                browseBrandParts: @json(__('Browse brand parts')),
+                browseCategoryProducts: @json(__('Browse category products')),
+                browseVehicleParts: @json(__('Browse :vehicle parts')),
+                viewAllResults: @json(__('View all results')),
+                didYouMean: @json(__('Did you mean')),
+                trySearching: @json(__('Try searching')),
+                typeOneMore: @json(__('Type one more character')),
+                noExactMatches: @json(__('No exact matches for ":query"')),
+                searchWithoutYear: @json(__('Search without the year')),
+                clearSearch: @json(__('Clear search')),
+                retry: @json(__('Retry')),
+                loading: @json(__('Loading')),
+                searchError: @json(__('We could not load suggestions.')),
+                searchSuggestions: @json(__('Search suggestions')),
+                vehicle: @json(__('Vehicle')),
+                year: @json(__('Year')),
+                brand: @json(__('Brand')),
+                engine: @json(__('Engine')),
+                fuel: @json(__('Fuel')),
+                {{-- Query shapes, not copy: a car and a year, a car and an
+                     engine, a marque and a year. Model names read the same in
+                     all three locales, and one config line changes the set. --}}
+                searchExamples: @json(array_values(array_filter(array_map('strval', (array) config('vehicles.search_examples', []))))),
             });
         </script>
         <x-loading-overlay message="{{ __('Processing, please wait...') }}" variant="full" />
@@ -362,7 +393,7 @@
                                     type="search"
                                     name="search"
                                     value="{{ request('search') }}"
-                                    placeholder="{{ __('Search part name, OEM number, SKU...') }}"
+                                    placeholder="{{ __('Search by part, OEM, vehicle or year...') }}"
                                     aria-label="{{ __('Search catalog') }}"
                                     autocomplete="off"
                                     data-search-autocomplete-input
@@ -374,7 +405,7 @@
                                 >
                                     {{ __('Search') }}
                                 </button>
-                                <div data-search-autocomplete-panel class="absolute left-0 right-0 top-full z-50 mt-2 hidden overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-xl shadow-slate-950/20 dark:border-slate-700 dark:bg-slate-950 dark:text-white"></div>
+                                <div data-search-autocomplete-panel class="absolute inset-x-0 top-full z-50 mt-2 hidden max-h-[min(32rem,calc(100vh-8rem))] flex-col overflow-hidden rounded-2xl border border-app bg-surface-2 text-app shadow-[0_18px_45px_-12px_rgb(7_7_64_/_0.35)]"></div>
                             </div>
                         </form>
 
@@ -468,7 +499,7 @@
                                     type="search"
                                     name="search"
                                     value="{{ request('search') }}"
-                                    placeholder="{{ __('Search part name, OEM number, SKU...') }}"
+                                    placeholder="{{ __('Search by part, OEM, vehicle or year...') }}"
                                     aria-label="{{ __('Search catalog') }}"
                                     autocomplete="off"
                                     data-search-autocomplete-input
@@ -480,7 +511,7 @@
                                 >
                                     {{ __('Search') }}
                                 </button>
-                                <div data-search-autocomplete-panel class="absolute left-0 right-0 top-full z-50 mt-2 hidden overflow-hidden rounded-2xl border border-slate-200 bg-white text-slate-900 shadow-xl shadow-slate-950/20 dark:border-slate-700 dark:bg-slate-950 dark:text-white"></div>
+                                <div data-search-autocomplete-panel class="absolute inset-x-0 top-full z-50 mt-2 hidden max-h-[min(32rem,calc(100vh-8rem))] flex-col overflow-hidden rounded-2xl border border-app bg-surface-2 text-app shadow-[0_18px_45px_-12px_rgb(7_7_64_/_0.35)]"></div>
                             </div>
                         </form>
 

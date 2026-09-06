@@ -47,4 +47,26 @@ return [
         ['SsangYong', 'Ssang Yong', 'KGM'],
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Search examples
+    |--------------------------------------------------------------------------
+    |
+    | What the suggestion panel offers a shopper who has focused the search box
+    | and typed nothing yet. They teach the *shape* of a query the search can
+    | answer — a car and a year, a car and an engine, a marque and a year —
+    | rather than advertising particular parts.
+    |
+    | Deliberately model names and numbers only: those read the same in English,
+    | Arabic and Kurdish, so the list needs no translation. Change it here when
+    | the catalogue's marques change; nothing in the bundle hard-codes them.
+    |
+    */
+
+    'search_examples' => [
+        'Rexton 2024',
+        'Tivoli 1.6',
+        'KGM 2022',
+    ],
+
 ];

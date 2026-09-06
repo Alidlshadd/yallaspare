@@ -5656,3 +5656,71 @@
 @media (prefers-reduced-motion: reduce) {
     .ys-picker-trigger { transition: none; }
 }
+
+/* ---------------------------------------------------------------------------
+   Header search suggestion panel
+
+   The panel's layout, colour and spacing are Tailwind utilities on the nodes
+   the bundle builds. Only the two things utilities cannot express live here:
+   a scrollbar that matches the theme instead of the operating system, and the
+   indeterminate bar that says a newer answer is on its way.
+   --------------------------------------------------------------------------- */
+
+.search-panel-scroll {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+}
+
+.search-panel-scroll::-webkit-scrollbar {
+    width: 8px;
+}
+
+.search-panel-scroll::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.search-panel-scroll::-webkit-scrollbar-thumb {
+    background-color: var(--border);
+    background-clip: content-box;
+    border: 2px solid transparent;
+    border-radius: 999px;
+}
+
+.search-panel-progress {
+    position: relative;
+    height: 2px;
+    overflow: hidden;
+    background-color: var(--surface-sunk);
+    flex: none;
+}
+
+.search-panel-progress::after {
+    content: '';
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    width: 40%;
+    background-color: rgb(var(--accent-rgb));
+    animation: search-panel-progress 1.1s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes search-panel-progress {
+    0% { transform: translateX(-110%); }
+    100% { transform: translateX(310%); }
+}
+
+/* A moving bar is the wrong way to tell someone something is loading when they
+   have asked for less motion. The bar stays, and stops. */
+@media (prefers-reduced-motion: reduce) {
+    .search-panel-progress::after {
+        animation: none;
+        width: 100%;
+        opacity: 0.55;
+    }
+}
+
+html.user-reduced-motion .search-panel-progress::after {
+    animation: none;
+    width: 100%;
+    opacity: 0.55;
+}
