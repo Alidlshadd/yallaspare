@@ -16,7 +16,11 @@
         body {
             background: #ffffff;
             color: #111827;
-            font-family: DejaVu Sans, sans-serif;
+            {{-- Named here as well as in the engine because a body rule wins
+                 over mPDF's default_font. XB Riyaz joins ڕ and ڵ, which DejaVu
+                 draws detached; Latin runs inside the page (SKU, IQD, the
+                 email) still fall through to DejaVu. --}}
+            font-family: {{ $isRtl ? 'xbriyaz, DejaVu Sans' : 'DejaVu Sans' }}, sans-serif;
             font-size: 12px;
             line-height: 1.45;
             margin: 0;

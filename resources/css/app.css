@@ -227,6 +227,24 @@
 }
 
 /* ========================================================================
+   Connected scripts
+
+   Arabic and Kurdish letters join. Letter-spacing pulls the joins apart, so
+   a tracking-[…] utility that tightens an English heading breaks a Kurdish
+   one into pieces — and the eyebrow labels, which carry the widest tracking
+   in the design, are the worst of it. The base layer already refuses to set
+   tracking globally for this reason; this is the other half, because the
+   utilities in the markup still land on ar and ku pages.
+
+   Anything explicitly marked dir="ltr" keeps its tracking: those are the SKU
+   and OEM codes, the displacements and the prices, which are Latin runs
+   inside an RTL page and are meant to read as Latin.
+   ===================================================================== */
+[dir='rtl'] :not([dir='ltr'], [dir='ltr'] *) {
+    letter-spacing: normal;
+}
+
+/* ========================================================================
    YS Access — the authentication system
 
    Login, registration and the loading screen are one family. They share the

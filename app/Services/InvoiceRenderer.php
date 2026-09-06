@@ -103,14 +103,29 @@ final class InvoiceRenderer
     }
 
     /**
+     * The font an Arabic-script invoice is set in.
+     *
+     * DejaVu Sans carries every Sorani letter and was assumed to be enough. It
+     * is not: it has the codepoints but not the mark positioning, so ڕ and ڵ
+     * came out with the ring and the small V detached and drifting off the
+     * letter, and the word visibly split at the join — "بازاڕی" and
+     * "گەڕاندنەوە" broke in the middle on every Kurdish invoice.
+     *
+     * XB Riyaz is a real Arabic typeface, ships with mPDF, and joins those
+     * letters correctly. Nothing is added to the repository for it.
+     */
+    private const RTL_FONT = 'xbriyaz';
+
+    /**
      * mPDF rather than DomPDF because DomPDF cannot shape Arabic script: it can
      * only print pre-composed presentation forms, and Unicode defines none for
      * ڕ, ڵ or ێ. Those three letters are everywhere in Sorani, so every Kurdish
      * invoice came out with words broken apart mid-join. mPDF applies the
      * font's own OpenType joining, which handles them and Arabic correctly.
      *
-     * autoScriptToLang/autoLangToFont stay off so the invoice keeps one font in
-     * every locale — DejaVu Sans shapes all three scripts here.
+     * autoScriptToLang/autoLangToFont stay off: the font is chosen here, once,
+     * from the locale the invoice is being written in, rather than guessed per
+     * run of text.
      */
     private function makeEngine(bool $isRtl): Mpdf
     {
@@ -121,7 +136,7 @@ final class InvoiceRenderer
             'mode' => 'utf-8',
             'format' => 'A4',
             'tempDir' => $tempDir,
-            'default_font' => 'dejavusans',
+            'default_font' => $isRtl ? self::RTL_FONT : 'dejavusans',
             'useOTL' => 0xFF,
             'useKashida' => 0,
             'autoScriptToLang' => false,
