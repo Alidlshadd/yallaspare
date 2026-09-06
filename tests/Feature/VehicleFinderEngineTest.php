@@ -46,21 +46,26 @@ class VehicleFinderEngineTest extends TestCase
         $this->assertStringContainsString('2015', $options[0]['label']);
     }
 
-    public function test_the_engines_offered_for_a_car_leave_out_the_ones_not_sold_for(): void
+    public function test_every_engine_the_car_is_recorded_with_is_offered(): void
     {
         $tivoli = $this->tivoliWithBothEngines();
 
         $html = (string) $this->get(route('shop.index'))->assertOk()->getContent();
-        $engines = $this->enginesFor($html, $tivoli->id);
 
-        $this->assertSame(['1.6 Petrol'], $engines);
+        $this->assertEqualsCanonicalizing(
+            ['1.6 Petrol', '1.6 Turbo Diesel'],
+            $this->enginesFor($html, $tivoli->id)
+        );
     }
 
-    public function test_enabling_diesel_offers_it_without_any_data_changing(): void
+    public function test_the_storefront_fuel_setting_does_not_narrow_the_finder(): void
     {
         $tivoli = $this->tivoliWithBothEngines();
 
-        config(['vehicles.storefront_fuel_types' => [VehicleFuelType::PETROL, VehicleFuelType::DIESEL]]);
+        // The setting still governs what the shop presents itself as selling
+        // elsewhere. It is not what decides which car a shopper can say they
+        // drive, so narrowing it changes nothing in this list.
+        config(['vehicles.storefront_fuel_types' => [VehicleFuelType::PETROL]]);
 
         $html = (string) $this->get(route('shop.index'))->assertOk()->getContent();
 
@@ -134,6 +139,52 @@ class VehicleFinderEngineTest extends TestCase
 
         $this->assertCount(2, $labels);
         $this->assertNotSame($labels[0], $labels[1]);
+    }
+
+    public function test_each_variant_offers_only_its_own_engines(): void
+    {
+        $brand = $this->brand();
+        $family = $this->family($brand, 'Tivoli');
+
+        $older = $this->variant($brand, $family, 'Tivoli', 2015, 2019, 'tivoli-2015');
+        $this->engine($older, 'petrol', 1.6);
+        $this->engine($older, 'diesel', 1.6, 'turbo');
+
+        $newer = $this->variant($brand, $family, 'Tivoli', 2020, 2026, 'tivoli-2020');
+        $this->engine($newer, 'petrol', 1.5, 'turbo');
+        $this->engine($newer, 'petrol', 1.6);
+        $this->engine($newer, 'diesel', 1.6, 'turbo');
+
+        $html = (string) $this->get(route('shop.index'))->assertOk()->getContent();
+
+        $this->assertSame(['1.6 Petrol', '1.6 Turbo Diesel'], $this->enginesFor($html, $older->id));
+        $this->assertSame(
+            ['1.5 Turbo Petrol', '1.6 Petrol', '1.6 Turbo Diesel'],
+            $this->enginesFor($html, $newer->id),
+            'The 2020 car was offered engines that belong to the 2015 one.'
+        );
+    }
+
+    public function test_an_engine_named_by_several_fitments_is_offered_once(): void
+    {
+        $brand = $this->brand();
+        $tivoli = $this->variant($brand, $this->family($brand, 'Tivoli'), 'Tivoli', 2015, 2019);
+        $this->engine($tivoli, 'petrol', 1.6);
+
+        // Two parts recorded against the engine the variant already has. The
+        // dropdown lists an engine, not a fitment.
+        foreach (['Filter', 'Belt'] as $name) {
+            $this->fit(
+                Product::factory()->create(['name_en' => $name, 'is_active' => true]),
+                $brand,
+                $tivoli,
+                '1.6 Petrol'
+            );
+        }
+
+        $html = (string) $this->get(route('shop.index'))->assertOk()->getContent();
+
+        $this->assertSame(['1.6 Petrol'], $this->enginesFor($html, $tivoli->id));
     }
 
     private function tivoliWithBothEngines(): VehicleModel

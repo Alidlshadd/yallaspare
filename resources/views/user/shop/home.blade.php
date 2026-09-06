@@ -161,6 +161,7 @@
                                 @if (is_array($option))
                                     data-primary="{{ $option['primary'] ?? $option['label'] }}"
                                     data-secondary="{{ $option['secondary'] ?? '' }}"
+                                    data-engines="{{ $option['engines'] ?? '' }}"
                                 @endif
                             >{{ is_array($option) ? $option['label'] : $option }}</option>
                         @endforeach

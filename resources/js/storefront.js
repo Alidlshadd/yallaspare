@@ -377,6 +377,7 @@ const initVehicleFinder = () => {
                 if (typeof model === 'object') {
                     if (model.primary) option.dataset.primary = model.primary;
                     if (model.secondary) option.dataset.secondary = model.secondary;
+                    if (model.engines) option.dataset.engines = model.engines;
                     if (model.search) option.dataset.search = model.search;
                 }
 

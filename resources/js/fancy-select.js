@@ -125,6 +125,18 @@ export const initFancySelects = () => {
                 item.appendChild(secondaryNode);
             }
 
+            // A line of its own, because the engines are what a shopper is
+            // actually scanning for and running them into the years makes both
+            // harder to read. It wraps rather than truncates: an engine name
+            // hidden behind an ellipsis is the one they came to look for.
+            const engines = (option.dataset.engines || '').trim();
+            if (engines !== '') {
+                const enginesNode = document.createElement('span');
+                enginesNode.className = 'ys-select-option-engines';
+                enginesNode.textContent = engines;
+                item.appendChild(enginesNode);
+            }
+
             const checkHost = document.createElement('span');
             checkHost.className = 'ys-select-option-check';
             checkHost.setAttribute('aria-hidden', 'true');

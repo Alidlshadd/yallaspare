@@ -90,7 +90,7 @@ class VehicleFuelLocalizationTest extends TestCase
         $this->assertSame('2.0 بنزين', $engines[0]['label']);
     }
 
-    public function test_the_shop_engine_filter_leaves_out_a_fuel_the_shop_does_not_sell_for(): void
+    public function test_the_shop_engine_filter_offers_every_fuel_the_car_is_recorded_with(): void
     {
         $variant = $this->variant();
         $variant->engineTypes()->create(['name' => '2.0 Petrol', 'fuel_type' => 'petrol', 'engine_size' => 2.0]);
@@ -99,9 +99,10 @@ class VehicleFuelLocalizationTest extends TestCase
         $map = $this->vehicleOptionMap($this->get(route('shop.index'))->assertOk()->getContent());
         $engines = collect($map['SSANGYONG / KGM'][(string) $variant->id]['engines'])->pluck('value')->all();
 
-        // The car keeps its diesel engine on record; the customer is simply
-        // not offered an engine the shop has no parts for.
-        $this->assertSame(['2.0 Petrol'], $engines);
+        // Both engines the car is sold with. A shopper driving the diesel has
+        // to be able to say so; what is stocked for it is the results page's
+        // answer to give.
+        $this->assertEqualsCanonicalizing(['2.0 Petrol', '2.2 Diesel'], $engines);
         $this->assertSame(2, $variant->engineTypes()->count());
     }
 

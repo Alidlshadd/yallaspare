@@ -77,25 +77,31 @@ class VehicleFinderDropdownTest extends TestCase
         $this->assertStringContainsString('2020–2026', $content);
     }
 
-    public function test_an_option_carries_its_two_lines(): void
+    public function test_an_option_carries_its_three_lines(): void
     {
         [$older] = $this->twoTivolis();
 
         $content = $this->get(route('user.shop.home'))->assertOk()->getContent();
 
-        preg_match('/value="'.$older->id.'"\s+data-primary="Tivoli"\s+data-secondary="([^"]+)"/s', $content, $matches);
-        $secondary = html_entity_decode($matches[1], ENT_QUOTES);
+        preg_match(
+            '/value="'.$older->id.'"\s+data-primary="Tivoli"\s+data-secondary="([^"]*)"\s+data-engines="([^"]*)"/s',
+            $content,
+            $matches
+        );
+        $years = html_entity_decode($matches[1] ?? '', ENT_QUOTES);
+        $engines = html_entity_decode($matches[2] ?? '', ENT_QUOTES);
 
-        $this->assertStringContainsString('2015–2019', $secondary);
-        $this->assertStringContainsString('1.6 Petrol', $secondary);
+        // The years and the engines are separate lines: running them together
+        // makes the one a shopper is scanning for harder to pick out.
+        $this->assertSame('2015–2019', $years);
+        $this->assertStringContainsString('1.6 Petrol', $engines);
+        $this->assertStringContainsString('1.6 Turbo Diesel', $engines);
     }
 
-    public function test_a_variant_names_its_engines_and_counts_only_the_overflow(): void
+    public function test_a_variant_names_every_engine_however_many_there_are(): void
     {
         [$older] = $this->twoTivolis();
 
-        // Three more storefront-offered engines on the older car: one past what
-        // the line names, so exactly one is counted.
         foreach ([['1.8 Petrol', 1.8], ['2.0 Petrol', 2.0], ['2.3 Petrol', 2.3]] as [$name, $size]) {
             VehicleModelEngineType::query()->create([
                 'vehicle_model_id' => $older->id,
@@ -105,24 +111,22 @@ class VehicleFinderDropdownTest extends TestCase
             ]);
         }
 
-        $option = $older->fresh(['engineTypes'])->finderOption(
-            $older->fresh(['engineTypes'])->engineTypes->filter(fn ($engine) => $engine->isOfferedInStorefront())->values()
-        );
+        $older = $older->fresh(['engineTypes']);
+        $option = $older->finderOption($older->engineTypes);
 
-        $this->assertStringContainsString('2015–2019', $option['secondary']);
-        // Named, not counted: a shopper looking for the 1.8 has to see it.
-        $this->assertStringContainsString('1.6 Petrol', $option['secondary']);
-        $this->assertStringContainsString('1.8 Petrol', $option['secondary']);
-        $this->assertStringContainsString('2.0 Petrol', $option['secondary']);
-        $this->assertStringContainsString('+1 engine', $option['secondary']);
+        $this->assertSame('2015–2019', $option['secondary']);
+        // Five engines, five names. A count in place of a name is the one thing
+        // a shopper cannot read their own car out of.
+        foreach (['1.6 Petrol', '1.6 Turbo Diesel', '1.8 Petrol', '2.0 Petrol', '2.3 Petrol'] as $engine) {
+            $this->assertStringContainsString($engine, $option['engines']);
+        }
+        $this->assertStringNotContainsString('engine', mb_strtolower($option['engines']));
     }
 
     public function test_both_engines_of_a_two_engine_variant_are_named(): void
     {
         [, $newer] = $this->twoTivolis();
 
-        // The 2020 car is sold with a 1.5 turbo and a 1.6, and naming one while
-        // counting the other reads as "your engine is not sold here".
         VehicleModelEngineType::query()->create([
             'vehicle_model_id' => $newer->id,
             'name' => '1.6 Petrol',
@@ -130,29 +134,26 @@ class VehicleFinderDropdownTest extends TestCase
             'engine_size' => 1.6,
         ]);
 
-        $option = $newer->fresh(['engineTypes'])->finderOption(
-            $newer->fresh(['engineTypes'])->engineTypes->filter(fn ($engine) => $engine->isOfferedInStorefront())->values()
-        );
+        $newer = $newer->fresh(['engineTypes']);
+        $option = $newer->finderOption($newer->engineTypes);
 
-        $this->assertStringContainsString('1.5 Turbo Petrol', $option['secondary']);
-        $this->assertStringContainsString('1.6 Petrol', $option['secondary']);
-        $this->assertStringNotContainsString('+1 engine', $option['secondary']);
+        $this->assertSame('1.5 Turbo Petrol · 1.6 Petrol · 1.6 Turbo Diesel', $option['engines']);
     }
 
-    public function test_the_option_never_advertises_an_engine_the_storefront_hides(): void
+    public function test_the_option_names_the_diesel_the_variant_is_recorded_with(): void
     {
         [$older] = $this->twoTivolis();
 
-        $option = $older->finderOption(
-            $older->engineTypes->filter(fn ($engine) => $engine->isOfferedInStorefront())->values()
-        );
+        $option = $older->finderOption($older->engineTypes);
 
-        // The diesel row stays in the database; it is simply not offered here.
+        // The finder answers "which car is yours", and a diesel Tivoli is a car
+        // this catalogue records. Whether parts are stocked for it is the
+        // results page's answer, not this list's.
         $this->assertDatabaseHas('vehicle_model_engine_types', [
             'vehicle_model_id' => $older->id,
             'fuel_type' => 'diesel',
         ]);
-        $this->assertStringNotContainsString('Diesel', $option['secondary']);
+        $this->assertStringContainsString('1.6 Turbo Diesel', $option['engines']);
     }
 
     public function test_the_native_control_keeps_its_name_so_the_form_still_submits(): void

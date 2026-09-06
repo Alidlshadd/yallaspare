@@ -158,29 +158,33 @@ class VehicleFinderOrderingTest extends TestCase
         $this->assertSame($brand->name, VehicleBrand::query()->find($brand->id)?->name);
     }
 
-    public function test_every_petrol_engine_is_named_not_only_the_first(): void
+    public function test_each_tivoli_names_every_engine_it_is_recorded_with(): void
+    {
+        $this->catalogue();
+
+        $engines = $this->tivoliEngineLines();
+
+        $this->assertSame('1.6 Petrol · 1.6 Turbo Diesel', $engines['2015–2019'] ?? null);
+        $this->assertSame('1.5 Turbo Petrol · 1.6 Petrol · 1.6 Turbo Diesel', $engines['2020–2026'] ?? null);
+    }
+
+    public function test_no_engine_is_ever_replaced_by_a_count(): void
     {
         $this->catalogue();
 
         $content = $this->get(route('user.shop.home'))->assertOk()->getContent();
 
-        preg_match_all('/data-primary="Tivoli"\s+data-secondary="([^"]+)"/s', $content, $matches);
-        $secondaries = array_map(fn (string $value) => html_entity_decode($value, ENT_QUOTES), $matches[1]);
-        $newer = collect($secondaries)->first(fn (string $value) => str_contains($value, '2020'));
-
-        $this->assertNotNull($newer, 'The 2020 Tivoli is missing from the finder.');
-        $this->assertStringContainsString('1.5 Turbo Petrol', $newer);
-        $this->assertStringContainsString('1.6 Petrol', $newer);
-        $this->assertStringNotContainsString('+1 engine', $newer, 'A second engine was counted instead of named.');
-        $this->assertStringNotContainsString('Diesel', $newer, 'A diesel engine reached the storefront finder.');
+        $this->assertStringNotContainsString('+1 engine', $content);
+        $this->assertStringNotContainsString('+2 engines', $content);
     }
 
-    public function test_a_diesel_engine_is_hidden_from_the_finder_but_kept_on_record(): void
+    public function test_a_diesel_engine_is_offered_and_kept_on_record(): void
     {
         $this->catalogue();
 
-        $this->get(route('user.shop.home'))->assertOk();
+        $engines = $this->tivoliEngineLines();
 
+        $this->assertStringContainsString('1.6 Turbo Diesel', $engines['2015–2019'] ?? '');
         $this->assertDatabaseHas('vehicle_model_engine_types', ['fuel_type' => 'diesel']);
     }
 
@@ -313,6 +317,29 @@ class VehicleFinderOrderingTest extends TestCase
         preg_match_all('/data-primary="([^"]*)"/', $content, $matches);
 
         return array_map(fn (string $value) => trim(html_entity_decode($value, ENT_QUOTES)), $matches[1]);
+    }
+
+    /**
+     * The engine line of each Tivoli option, keyed by the years above it.
+     *
+     * @return array<string, string>
+     */
+    private function tivoliEngineLines(): array
+    {
+        $content = $this->get(route('user.shop.home'))->assertOk()->getContent();
+        preg_match_all(
+            '/data-primary="Tivoli"\s+data-secondary="([^"]*)"\s+data-engines="([^"]*)"/s',
+            $content,
+            $matches,
+            PREG_SET_ORDER
+        );
+
+        $lines = [];
+        foreach ($matches as $match) {
+            $lines[html_entity_decode($match[1], ENT_QUOTES)] = html_entity_decode($match[2], ENT_QUOTES);
+        }
+
+        return $lines;
     }
 
     /** @return list<string> */

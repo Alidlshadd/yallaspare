@@ -430,7 +430,6 @@ class ShopController extends Controller
             return $this->vehicleFilterPayload($brandOptions, $modelOptions, $engineOptions, $modelOptionsByBrand, $vehicleOptionsByModel, false, false);
         }
 
-        $withheldEngineNames = [];
         $brands = Product::query()
             ->whereNotNull('brand')
             ->where('brand', '!=', '')
@@ -452,26 +451,17 @@ class ShopController extends Controller
                 $hasStructuredVehicleData = true;
                 // Engines configured on a variant carry a fuel type, so their
                 // label is built from those parts rather than from the string.
-                // Diesel cars stay on record, but a shop that sells petrol
-                // parts should not ask a customer to pick a diesel engine. The
-                // rule reads the structured fuel type, never the label.
-                $offeredEngines = $vehicleBrandRows
+                //
+                // Every engine the variant is recorded with is listed, diesel
+                // included. The finder answers "which car is yours", and a
+                // shopper whose Tivoli is the diesel one cannot answer that
+                // from a list that omits it — a filtered list does not read as
+                // "we stock petrol parts", it reads as "your car is not here".
+                // What the shop has parts for is the results page's answer to
+                // give, not the finder's.
+                $engineLabels = $vehicleBrandRows
                     ->flatMap(fn (VehicleBrand $brand) => $brand->models->pluck('engineTypes')->flatten())
-                    ->filter(fn ($engine) => $engine->isOfferedInStorefront())
-                    ->values();
-                $engineLabels = $offeredEngines
                     ->mapWithKeys(fn ($engine) => [(string) $engine->name => $engine->localizedName()]);
-                // The inverse list, for the engines a fitment names as free
-                // text: only a name that is known and known not to be offered
-                // is dropped. An unrecognised one is left alone rather than
-                // ruled out on a guess.
-                $withheldEngineNames = $vehicleBrandRows
-                    ->flatMap(fn (VehicleBrand $brand) => $brand->models->pluck('engineTypes')->flatten())
-                    ->reject(fn ($engine) => $engine->isOfferedInStorefront())
-                    ->pluck('name')
-                    ->map(fn ($name) => mb_strtolower(trim((string) $name)))
-                    ->unique()
-                    ->all();
                 $brandOptions = $vehicleBrandRows->pluck('name')->filter()->values();
                 // Keyed by variant id, not by name. Two variants can share a
                 // name — a Tivoli built 2015-2019 and one built 2020-2023 — and
@@ -481,13 +471,12 @@ class ShopController extends Controller
                         // A–Z by the name the shopper is reading, with the
                         // variants of one car kept together and oldest first.
                         (string) $brand->name => VehicleModelOrder::sort($brand->models)
-                            // The finder shows the name on one line and the years
-                            // and engines under it, so an option carries more than
-                            // a string. Engines are the storefront-offered ones,
-                            // the same set the engine dropdown will list.
-                            ->map(fn (VehicleModel $model) => $model->finderOption(
-                                $model->engineTypes->filter(fn ($engine) => $engine->isOfferedInStorefront())->values()
-                            ))
+                            // The finder shows the name on one line, the years
+                            // under it and the engines under those, so an option
+                            // carries more than a string. The engines are every
+                            // one the variant is recorded with — the same set the
+                            // engine dropdown will list.
+                            ->map(fn (VehicleModel $model) => $model->finderOption($model->engineTypes))
                             ->values()
                             ->all(),
                     ])
@@ -501,7 +490,10 @@ class ShopController extends Controller
                                     'label' => $model->listLabel(),
                                     'family' => $model->family?->localizedName(),
                                     'engines' => $model->engineTypes
-                                        ->filter(fn ($engine) => $engine->isOfferedInStorefront())
+                                        // By canonical name, so two rows that
+                                        // record the same engine collapse to
+                                        // one option while a 1.6 petrol and a
+                                        // 1.6 diesel stay two.
                                         ->pluck('name')
                                         ->filter()
                                         ->unique()
@@ -526,9 +518,7 @@ class ShopController extends Controller
                 // the finder prints them under the name.
                 ->with(['engineTypes:id,vehicle_model_id,name,fuel_type,engine_size,aspiration'])
                 ->get(['id', 'name', 'name_en', 'name_ar', 'name_ku', 'production_start_year', 'production_end_year']))
-                ->map(fn (VehicleModel $model) => $model->finderOption(
-                    $model->engineTypes->filter(fn ($engine) => $engine->isOfferedInStorefront())->values()
-                ))
+                ->map(fn (VehicleModel $model) => $model->finderOption($model->engineTypes))
                 ->values();
 
             if ($vehicleModels->isNotEmpty()) {
@@ -545,7 +535,6 @@ class ShopController extends Controller
                 ->pluck('engine')
                 ->map(fn ($engine) => trim((string) $engine))
                 ->filter()
-                ->reject(fn (string $engine) => in_array(mb_strtolower($engine), $withheldEngineNames, true))
                 ->unique()
                 ->values();
 
@@ -568,7 +557,6 @@ class ShopController extends Controller
                         ->pluck('engine')
                         ->map(fn ($engine) => trim((string) $engine))
                         ->filter()
-                        ->reject(fn (string $engine) => in_array(mb_strtolower($engine), $withheldEngineNames, true))
                         ->unique()
                         ->values()
                         ->all();

@@ -15,7 +15,13 @@ use Illuminate\Support\Facades\Cache;
  */
 final class VehicleFilterCache
 {
-    public const KEY = 'shop_vehicle_filter_options';
+    /**
+     * The suffix moves whenever the shape or the contents of the payload
+     * change, so a deploy cannot serve yesterday's answer out of a warm cache.
+     * v2: engines are no longer filtered by fuel type, and an option carries
+     * its years and its engines as separate fields.
+     */
+    public const KEY = 'shop_vehicle_filter_options.v2';
 
     public const TTL_SECONDS = 600;
 

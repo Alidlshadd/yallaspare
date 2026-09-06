@@ -5175,8 +5175,11 @@
     display: grid;
     grid-template-columns: 1fr auto;
     align-items: center;
-    /* Two lines in about 54px: comfortably over the 44px touch target while
-       still letting two and a half options show inside the card. */
+    /* A floor, never a ceiling: 54px clears the 44px touch target for a
+       one-line option, and an option carrying years and a row of engine names
+       grows past it rather than cropping a line. The panel's own max-height
+       still holds, so a taller option means more scrolling, not a taller
+       dropdown. */
     min-height: 54px;
     padding: 7px 10px;
     border-radius: 10px;
@@ -5201,6 +5204,18 @@
     font-weight: 500;
     line-height: 1.3;
     color: rgb(255 255 255 / 0.58);
+    overflow-wrap: anywhere;
+}
+
+/* The engines, under the years. Wraps onto as many lines as it needs — three
+   engine names do not fit one phone-width line and none of them may be cut. */
+.ys-select-option-engines {
+    grid-column: 1;
+    margin-top: 2px;
+    font-size: 12.5px;
+    font-weight: 500;
+    line-height: 1.35;
+    color: rgb(255 255 255 / 0.72);
     overflow-wrap: anywhere;
 }
 
@@ -5284,6 +5299,7 @@
 
 .ys-select-on-light .ys-select-option { color: var(--text); }
 .ys-select-on-light .ys-select-option-secondary { color: var(--text-muted); }
+.ys-select-on-light .ys-select-option-engines { color: var(--text); opacity: 0.78; }
 .ys-select-on-light .ys-select-option.is-placeholder .ys-select-option-primary { color: var(--text-muted); }
 .ys-select-on-light .ys-select-option.is-active { background: rgb(var(--brand-navy-rgb) / 0.07); }
 .ys-select-on-light .ys-select-option.is-selected { background: rgb(var(--brand-orange-rgb) / 0.1); }

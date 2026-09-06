@@ -15,13 +15,6 @@ class VehicleModel extends Model
     use FlushesVehicleFilterCache;
     use HasFactory;
 
-    /**
-     * How many engines a finder option names before it starts counting them.
-     * Three fits the second line at the narrowest phone width the finder is
-     * laid out for; a car with more than three is rare enough to summarise.
-     */
-    public const FINDER_ENGINE_NAMES = 3;
-
     protected $fillable = [
         'vehicle_brand_id',
         'vehicle_model_family_id',
@@ -273,15 +266,20 @@ class VehicleModel extends Model
     }
 
     /**
-     * One option in the storefront vehicle finder, as a two-line entry.
+     * One option in the storefront vehicle finder, as a three-line entry: the
+     * name, the years it was built, and every engine it was built with.
      *
-     * The engines are passed in rather than read off the relation, because the
-     * storefront hides fuel types the shop does not sell. The line under the
-     * name must never advertise an engine the engine dropdown will refuse to
-     * offer, so both are built from the same filtered collection.
+     * The engines are passed in rather than read off the relation so that the
+     * caller decides the set once and both this line and the engine dropdown
+     * are built from it — the option must never name an engine the dropdown
+     * will not offer, or the other way round.
+     *
+     * Nothing is summarised. A count in place of an engine name ("+1 engine")
+     * saves a few characters and costs the shopper the one word they came to
+     * look for, so a car with five engines prints five and the option grows.
      *
      * @param  Collection<int, VehicleModelEngineType>  $engines
-     * @return array{value: string, label: string, primary: string, secondary: string}
+     * @return array{value: string, label: string, primary: string, secondary: string, engines: string}
      */
     public function finderOption(Collection $engines, ?string $locale = null): array
     {
@@ -291,36 +289,16 @@ class VehicleModel extends Model
             ->unique()
             ->values();
 
-        $secondary = [];
-
-        $years = $this->productionYears();
-        if ($years !== null) {
-            $secondary[] = $years;
-        }
-
-        if ($engineLabels->isNotEmpty()) {
-            // A car offered with a 1.5 turbo and a 1.6 has two engines, and
-            // naming one of them while counting the other is how a shopper
-            // concludes their engine is not sold here. Every engine is named,
-            // up to the point where the line stops being readable — and only
-            // what is past that point is counted.
-            foreach ($engineLabels->take(self::FINDER_ENGINE_NAMES) as $label) {
-                $secondary[] = $label;
-            }
-
-            $remaining = $engineLabels->count() - self::FINDER_ENGINE_NAMES;
-            if ($remaining > 0) {
-                $secondary[] = trans_choice('+:count engine|+:count engines', $remaining, ['count' => $remaining]);
-            }
-        }
-
         return [
             'value' => (string) $this->id,
             // The closed control shows this, so it has to carry the years: two
-            // variants sharing a name are the reason this field exists.
+            // variants sharing a name are the reason this field exists. It stops
+            // there — the engines belong in the open list and the engine
+            // dropdown, not squeezed into a collapsed field.
             'label' => $this->listLabel($locale),
             'primary' => $this->localizedName($locale),
-            'secondary' => implode(' · ', $secondary),
+            'secondary' => (string) $this->productionYears(),
+            'engines' => $engineLabels->implode(' · '),
         ];
     }
 }
