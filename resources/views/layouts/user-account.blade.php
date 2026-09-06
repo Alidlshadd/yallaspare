@@ -77,7 +77,9 @@
     </head>
     <body class="{{ $bodyClasses }}" x-data="accountMenu">
         <div class="min-h-screen">
-            <x-user.account-header :title="$titleContent !== '' ? $titleContent : 'Account'" :subtitle="$subtitleContent !== '' ? $subtitleContent : null">
+            {{-- The fallback is a heading a visitor reads, so it is translated
+                 like every other one rather than left in English. --}}
+            <x-user.account-header :title="$titleContent !== '' ? $titleContent : __('Account')" :subtitle="$subtitleContent !== '' ? $subtitleContent : null">
                 @if ($actionsContent !== '')
                     <x-slot name="actions">
                         @yield('actions')

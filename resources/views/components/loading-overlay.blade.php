@@ -40,7 +40,9 @@
                         img-class="ys-loading-logo-image"
                         fallback-class="ys-loading-logo-fallback"
                         fallback-text-class="ys-loading-logo-fallback-text"
-                        :alt="$brand . ' logo'"
+                        {{-- Only a screen reader hears this one, which is
+                             exactly why it cannot stay in English. --}}
+                        :alt="__(':brand logo', ['brand' => $brand])"
                     />
                 @else
                     <span class="ys-loading-logo-fallback">

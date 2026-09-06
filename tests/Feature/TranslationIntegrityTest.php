@@ -86,6 +86,57 @@ class TranslationIntegrityTest extends TestCase
         }
     }
 
+    /**
+     * A key whose Arabic or Kurdish side is still the English sentence.
+     *
+     * This is the gap neither of the other guards can see: the key is present,
+     * the JSON is well-formed, the coverage test is satisfied — and the visitor
+     * reads English. The whole Goals Center shipped that way, seventy strings
+     * that every check called complete.
+     *
+     * The allowed list is names and codes, not copy: an email address, a
+     * protocol, a marque. Anything that reads as a sentence has to be
+     * translated, and adding it here instead is the mistake this test exists to
+     * make visible.
+     */
+    public function test_no_translation_is_still_the_english_source(): void
+    {
+        $untranslatable = [
+            // Addresses and sample data, shown as typed.
+            'www.yallaspare.com', 'you@example.com', 'sara@example.com - +964 770 123 4567',
+            'Chrome 134 - Windows 11',
+            // Marques, protocols, payment providers and short technical codes.
+            'SMS', 'HTTP', 'Webhook', 'Endpoint', 'WAYL', 'SAVE10', 'OEM', 'OEM:',
+            'SSANGYONG / KGM',
+            // A format, not a sentence.
+            ':type #:id',
+        ];
+
+        $offenders = [];
+
+        foreach (['ar', 'ku'] as $locale) {
+            foreach ($this->lines($locale) as $key => $value) {
+                if ($value !== $key || in_array($key, $untranslatable, true)) {
+                    continue;
+                }
+
+                // Keys with no Latin word are symbols, numbers or already in
+                // the local script; there is nothing to translate.
+                if (preg_match('/[A-Za-z]{3,}/', (string) $key) !== 1) {
+                    continue;
+                }
+
+                if (preg_match('/['.self::SCRIPT.']/u', (string) $key) === 1) {
+                    continue;
+                }
+
+                $offenders[] = "{$locale}: “{$key}” is still the English text.";
+            }
+        }
+
+        $this->assertSame([], $offenders, implode("\n", $offenders));
+    }
+
     public function test_every_placeholder_survives_translation(): void
     {
         // A dropped :count is invisible until the sentence renders without its

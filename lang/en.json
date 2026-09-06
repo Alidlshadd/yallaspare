@@ -3749,5 +3749,6 @@
     "Please select at least one engine for this vehicle variant.": "Please select at least one engine for this vehicle variant.",
     "No engines are configured for this vehicle variant. Configure an engine before adding the fitment.": "No engines are configured for this vehicle variant. Configure an engine before adding the fitment.",
     "Configure engines": "Configure engines",
-    "Select at least one engine to create this fitment.": "Select at least one engine to create this fitment."
+    "Select at least one engine to create this fitment.": "Select at least one engine to create this fitment.",
+    ":brand logo": ":brand logo"
 }
