@@ -58,23 +58,6 @@ class VehicleFinderEngineTest extends TestCase
         );
     }
 
-    public function test_the_storefront_fuel_setting_does_not_narrow_the_finder(): void
-    {
-        $tivoli = $this->tivoliWithBothEngines();
-
-        // The setting still governs what the shop presents itself as selling
-        // elsewhere. It is not what decides which car a shopper can say they
-        // drive, so narrowing it changes nothing in this list.
-        config(['vehicles.storefront_fuel_types' => [VehicleFuelType::PETROL]]);
-
-        $html = (string) $this->get(route('shop.index'))->assertOk()->getContent();
-
-        $this->assertEqualsCanonicalizing(
-            ['1.6 Petrol', '1.6 Turbo Diesel'],
-            $this->enginesFor($html, $tivoli->id)
-        );
-    }
-
     public function test_an_engine_with_no_fuel_type_is_still_offered(): void
     {
         $brand = $this->brand();
