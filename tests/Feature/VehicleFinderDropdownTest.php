@@ -90,24 +90,53 @@ class VehicleFinderDropdownTest extends TestCase
         $this->assertStringContainsString('1.6 Petrol', $secondary);
     }
 
-    public function test_a_variant_with_several_engines_counts_the_rest(): void
+    public function test_a_variant_names_its_engines_and_counts_only_the_overflow(): void
     {
         [$older] = $this->twoTivolis();
 
-        // A second storefront-offered engine on the older car.
-        VehicleModelEngineType::query()->create([
-            'vehicle_model_id' => $older->id,
-            'name' => '1.8 Petrol',
-            'fuel_type' => 'petrol',
-            'engine_size' => 1.8,
-        ]);
+        // Three more storefront-offered engines on the older car: one past what
+        // the line names, so exactly one is counted.
+        foreach ([['1.8 Petrol', 1.8], ['2.0 Petrol', 2.0], ['2.3 Petrol', 2.3]] as [$name, $size]) {
+            VehicleModelEngineType::query()->create([
+                'vehicle_model_id' => $older->id,
+                'name' => $name,
+                'fuel_type' => 'petrol',
+                'engine_size' => $size,
+            ]);
+        }
 
         $option = $older->fresh(['engineTypes'])->finderOption(
             $older->fresh(['engineTypes'])->engineTypes->filter(fn ($engine) => $engine->isOfferedInStorefront())->values()
         );
 
         $this->assertStringContainsString('2015–2019', $option['secondary']);
+        // Named, not counted: a shopper looking for the 1.8 has to see it.
+        $this->assertStringContainsString('1.6 Petrol', $option['secondary']);
+        $this->assertStringContainsString('1.8 Petrol', $option['secondary']);
+        $this->assertStringContainsString('2.0 Petrol', $option['secondary']);
         $this->assertStringContainsString('+1 engine', $option['secondary']);
+    }
+
+    public function test_both_engines_of_a_two_engine_variant_are_named(): void
+    {
+        [, $newer] = $this->twoTivolis();
+
+        // The 2020 car is sold with a 1.5 turbo and a 1.6, and naming one while
+        // counting the other reads as "your engine is not sold here".
+        VehicleModelEngineType::query()->create([
+            'vehicle_model_id' => $newer->id,
+            'name' => '1.6 Petrol',
+            'fuel_type' => 'petrol',
+            'engine_size' => 1.6,
+        ]);
+
+        $option = $newer->fresh(['engineTypes'])->finderOption(
+            $newer->fresh(['engineTypes'])->engineTypes->filter(fn ($engine) => $engine->isOfferedInStorefront())->values()
+        );
+
+        $this->assertStringContainsString('1.5 Turbo Petrol', $option['secondary']);
+        $this->assertStringContainsString('1.6 Petrol', $option['secondary']);
+        $this->assertStringNotContainsString('+1 engine', $option['secondary']);
     }
 
     public function test_the_option_never_advertises_an_engine_the_storefront_hides(): void

@@ -22,6 +22,7 @@ use App\Support\Search\SearchSuggestions;
 use App\Support\SqlSafe;
 use App\Support\VehicleFilterCache;
 use App\Support\VehicleLocalization;
+use App\Support\VehicleModelOrder;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
@@ -477,7 +478,9 @@ class ShopController extends Controller
                 // a map keyed by name would quietly keep only one of them.
                 $modelOptionsByBrand = $vehicleBrandRows
                     ->mapWithKeys(fn (VehicleBrand $brand) => [
-                        (string) $brand->name => $brand->models
+                        // A–Z by the name the shopper is reading, with the
+                        // variants of one car kept together and oldest first.
+                        (string) $brand->name => VehicleModelOrder::sort($brand->models)
                             // The finder shows the name on one line and the years
                             // and engines under it, so an option carries more than
                             // a string. Engines are the storefront-offered ones,
@@ -515,12 +518,14 @@ class ShopController extends Controller
         }
 
         if (DbSchema::hasTable('vehicle_models')) {
-            $vehicleModels = VehicleModel::query()
+            // Ordered in PHP rather than by SQL: the column a database can sort
+            // on is `name`, and the list is read in `name_ar` or `name_ku` as
+            // often as in English. One comparator decides both lists.
+            $vehicleModels = VehicleModelOrder::sort(VehicleModel::query()
                 // One extra query for every variant's engines, not one per row:
                 // the finder prints them under the name.
                 ->with(['engineTypes:id,vehicle_model_id,name,fuel_type,engine_size,aspiration'])
-                ->orderBy('name')
-                ->get(['id', 'name', 'name_en', 'name_ar', 'name_ku', 'production_start_year', 'production_end_year'])
+                ->get(['id', 'name', 'name_en', 'name_ar', 'name_ku', 'production_start_year', 'production_end_year']))
                 ->map(fn (VehicleModel $model) => $model->finderOption(
                     $model->engineTypes->filter(fn ($engine) => $engine->isOfferedInStorefront())->values()
                 ))
@@ -652,9 +657,18 @@ class ShopController extends Controller
             ? ''
             : 'Vehicle compatibility data is still being prepared. Use search or product category filters if your vehicle is not listed.';
 
+        // The cap is a guard against the free-text fallback, where "models" are
+        // whatever operators typed into compatible_models and the list has no
+        // natural end. A recorded variant is a different thing: there are as
+        // many as the catalogue has, dropping one hides a car nobody can then
+        // select, and — because the filter reads its current value off the
+        // options — the model filter in the URL silently falls off the form on
+        // the next submit. So the cap applies only where it was meant to.
+        $models = $modelOptions->unique(fn ($option) => is_array($option) ? $option['value'] : $option);
+
         return [
             'brandOptions' => $brandOptions->unique()->take(30)->values(),
-            'modelOptions' => $modelOptions->unique(fn ($option) => is_array($option) ? $option['value'] : $option)->take(30)->values(),
+            'modelOptions' => ($hasStructuredVehicleData ? $models : $models->take(30))->values(),
             'engineOptions' => $engineOptions->unique(fn ($option) => is_array($option) ? $option['value'] : $option)->take(30)->values(),
             'modelOptionsByBrand' => $modelOptionsByBrand,
             'vehicleOptionsByModel' => $vehicleOptionsByModel,

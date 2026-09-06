@@ -15,6 +15,13 @@ class VehicleModel extends Model
     use FlushesVehicleFilterCache;
     use HasFactory;
 
+    /**
+     * How many engines a finder option names before it starts counting them.
+     * Three fits the second line at the narrowest phone width the finder is
+     * laid out for; a car with more than three is rare enough to summarise.
+     */
+    public const FINDER_ENGINE_NAMES = 3;
+
     protected $fillable = [
         'vehicle_brand_id',
         'vehicle_model_family_id',
@@ -292,9 +299,16 @@ class VehicleModel extends Model
         }
 
         if ($engineLabels->isNotEmpty()) {
-            $secondary[] = (string) $engineLabels->first();
+            // A car offered with a 1.5 turbo and a 1.6 has two engines, and
+            // naming one of them while counting the other is how a shopper
+            // concludes their engine is not sold here. Every engine is named,
+            // up to the point where the line stops being readable — and only
+            // what is past that point is counted.
+            foreach ($engineLabels->take(self::FINDER_ENGINE_NAMES) as $label) {
+                $secondary[] = $label;
+            }
 
-            $remaining = $engineLabels->count() - 1;
+            $remaining = $engineLabels->count() - self::FINDER_ENGINE_NAMES;
             if ($remaining > 0) {
                 $secondary[] = trans_choice('+:count engine|+:count engines', $remaining, ['count' => $remaining]);
             }

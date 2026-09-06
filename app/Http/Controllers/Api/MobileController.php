@@ -40,6 +40,7 @@ use App\Services\Shipping\ShippingQuote;
 use App\Support\IraqiPhoneNumber;
 use App\Support\SqlSafe;
 use App\Support\VehicleLocalization;
+use App\Support\VehicleModelOrder;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
@@ -767,7 +768,10 @@ class MobileController extends Controller
                         'name' => $family->localizedName(),
                         ...VehicleLocalization::names($family),
                         'slug' => $family->slug,
-                        'variants' => $family->variants->map(fn ($variant) => [
+                        // The same order the web finder lists them in: A–Z by
+                        // the name this request's locale shows, oldest variant
+                        // of a car first.
+                        'variants' => VehicleModelOrder::sort($family->variants)->map(fn ($variant) => [
                             'id' => $variant->id,
                             'name' => $variant->localizedName(),
                             ...VehicleLocalization::names($variant),
@@ -792,7 +796,7 @@ class MobileController extends Controller
                         ])->values()->all(),
                     ])->values()->all(),
                     // Kept for older mobile clients. New clients should use families[].variants.
-                    'models' => $brand->models->map(fn ($model) => [
+                    'models' => VehicleModelOrder::sort($brand->models)->map(fn ($model) => [
                         'id' => $model->id,
                         'name' => $model->localizedName(),
                         ...VehicleLocalization::names($model),
