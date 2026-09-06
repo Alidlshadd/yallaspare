@@ -105,7 +105,7 @@ final class SearchInterpretation
         }
 
         $matching = $this->variants->filter(function (VehicleModel $model): bool {
-            foreach (self::offeredEngines($model) as $engine) {
+            foreach (self::recordedEngines($model) as $engine) {
                 $sizeMatches = $this->engine === null
                     || VehicleFuelType::displacement($engine->engine_size, $engine->fuel_type) === $this->engine;
                 $fuelMatches = $this->fuel === null || (string) $engine->fuel_type === $this->fuel;
@@ -623,23 +623,22 @@ final class SearchInterpretation
     }
 
     /**
-     * The engines a customer is offered for this car.
+     * Every engine this car is recorded with.
      *
-     * The same rule the vehicle finder and the fitment board apply: an engine
-     * the shop stocks no parts for is not put in front of a shopper. The record
-     * keeps it either way — one config line brings it back.
+     * The same set the vehicle finder lists and the fitment board prints. A
+     * shopper searching "tivoli diesel" is telling us which car they drive, and
+     * a list that leaves the diesel out cannot answer them — it can only fail
+     * to recognise the words they typed.
      *
      * @return Collection<int, VehicleModelEngineType>
      */
-    public static function offeredEngines(VehicleModel $model): Collection
+    public static function recordedEngines(VehicleModel $model): Collection
     {
         if (! $model->relationLoaded('engineTypes')) {
             return collect();
         }
 
-        return $model->engineTypes
-            ->filter(static fn (VehicleModelEngineType $engine): bool => $engine->isOfferedInStorefront())
-            ->values();
+        return $model->engineTypes->values();
     }
 
     /**
@@ -647,7 +646,7 @@ final class SearchInterpretation
      */
     public static function engineMatchingFuel(VehicleModel $model, ?string $fuel): ?VehicleModelEngineType
     {
-        $engines = self::offeredEngines($model);
+        $engines = self::recordedEngines($model);
 
         if ($fuel !== null) {
             return $engines->first(

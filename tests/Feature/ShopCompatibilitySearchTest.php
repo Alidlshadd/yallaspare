@@ -297,6 +297,59 @@ class ShopCompatibilitySearchTest extends TestCase
     }
 
     /** @return array{VehicleBrand, VehicleModel} */
+    public function test_a_diesel_part_is_found_by_the_words_its_owner_would_type(): void
+    {
+        $product = $this->dieselOilFilter();
+
+        foreach (['tivoli diesel', '1.6 turbo diesel', 'diesel', $product->sku] as $term) {
+            $this->get(route('shop.index', ['search' => $term]))
+                ->assertOk()
+                ->assertSee($product->name_en, false);
+        }
+    }
+
+    public function test_the_autocomplete_fits_line_names_the_diesel_it_was_recorded_for(): void
+    {
+        $product = $this->dieselOilFilter();
+
+        $data = $this->getJson(route('shop.autocomplete', ['q' => 'tivoli diesel']))
+            ->assertOk()
+            ->json('data');
+
+        $row = collect($data['groups']['products'] ?? [])
+            ->first(fn (array $item): bool => (int) $item['id'] === $product->id);
+
+        $this->assertNotNull($row, 'The diesel part is missing from the suggestions.');
+        // The car it was recorded for, engine included — the same line the
+        // product page prints.
+        $this->assertSame('Tivoli · 2015–2019 · 1.6 Turbo Diesel', $row['fits']['label'] ?? null);
+    }
+
+    /**
+     * The record from the report: one part, one Tivoli, one diesel engine.
+     */
+    private function dieselOilFilter(): Product
+    {
+        [$brand, $model] = $this->tivoli();
+
+        VehicleModelEngineType::query()->firstOrCreate(
+            ['vehicle_model_id' => $model->id, 'name' => '1.6 Turbo Diesel'],
+            ['fuel_type' => 'diesel', 'engine_size' => 1.6, 'aspiration' => 'turbo']
+        );
+
+        $product = Product::factory()->create([
+            'name_en' => 'SsangYong Diesel Oil Filter',
+            'name_ar' => 'SsangYong Diesel Oil Filter',
+            'name_ku' => 'SsangYong Diesel Oil Filter',
+            'sku' => 'SY-D-1721840025',
+            'brand' => 'KGM',
+        ]);
+
+        $this->fitment($product, $brand, $model, '1.6 Turbo Diesel', 2015, 2019);
+
+        return $product;
+    }
+
     private function tivoli(): array
     {
         $brand = VehicleBrand::query()->firstOrCreate(

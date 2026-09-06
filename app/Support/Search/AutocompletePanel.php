@@ -324,7 +324,7 @@ final class AutocompletePanel
             $parts[] = $years;
         }
 
-        $engines = SearchInterpretation::offeredEngines($model)
+        $engines = SearchInterpretation::recordedEngines($model)
             ->map(static fn (VehicleModelEngineType $engine): string => $engine->localizedName($locale))
             ->filter(static fn (string $label): bool => trim($label) !== '')
             ->unique()

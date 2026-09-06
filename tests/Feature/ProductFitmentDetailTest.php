@@ -131,7 +131,7 @@ class ProductFitmentDetailTest extends TestCase
         $this->assertStringNotContainsString('Diesel', $section);
     }
 
-    public function test_an_engine_the_shop_does_not_sell_for_is_not_listed(): void
+    public function test_both_recorded_engines_are_listed_whatever_they_burn(): void
     {
         $product = Product::factory()->create(['compatible_models' => null]);
         $brand = $this->brand();
@@ -144,13 +144,52 @@ class ProductFitmentDetailTest extends TestCase
 
         $section = $this->section($this->pageIn('en', $product));
 
-        // One car, and only the engine a customer here can buy parts for.
+        // One car, both engines it was recorded as fitting.
         $this->assertSame(1, substr_count($section, '<li class="fitment-card'));
         $this->assertStringContainsString('1.6L', $section);
         $this->assertStringContainsString('Petrol', $section);
-        $this->assertStringNotContainsString('Diesel', $section);
-        // The record still holds both.
+        $this->assertStringContainsString('Diesel', $section);
         $this->assertSame(2, $variant->engineTypes()->count());
+    }
+
+    public function test_a_diesel_fitment_is_a_confirmed_fit_not_a_missing_record(): void
+    {
+        // The exact record from the report: one fitment, no years of its own,
+        // one diesel engine. The page said "Engine not recorded" over it.
+        $product = Product::factory()->create(['compatible_models' => null]);
+        $brand = $this->brand();
+        $variant = $this->variant($brand, $this->family($brand, 'Tivoli'), 'Tivoli', 2015, 2019);
+        $this->engine($variant, 'petrol', 1.6);
+        $this->engine($variant, 'diesel', 1.6, 'turbo');
+
+        $this->fit($product, $brand, $variant, null, null, '1.6 Turbo Diesel');
+
+        $section = $this->section($this->pageIn('en', $product));
+
+        $this->assertStringContainsString('2015–2019', $section);
+        $this->assertStringContainsString('1.6L', $section);
+        $this->assertStringContainsString('Diesel', $section);
+        $this->assertStringNotContainsString('Engine not recorded', $section);
+        $this->assertStringNotContainsString('Compatibility details incomplete', $section);
+        $this->assertStringContainsString('Confirmed fit for this part', $section);
+        // One row, one configuration — the engine relation did not split it.
+        $this->assertSame(1, substr_count($section, '<li class="fitment-card'));
+    }
+
+    public function test_a_diesel_engine_the_variant_never_recorded_is_still_shown_as_typed(): void
+    {
+        // No structured row to lean on: the fitment's own text is the record.
+        $product = Product::factory()->create(['compatible_models' => null]);
+        $brand = $this->brand();
+        $variant = $this->variant($brand, $this->family($brand, 'Tivoli'), 'Tivoli', 2015, 2019);
+
+        $this->fit($product, $brand, $variant, null, null, '1.6 Turbo Diesel');
+
+        $section = $this->section($this->pageIn('en', $product));
+
+        $this->assertStringContainsString('1.6 Turbo Diesel', $section);
+        $this->assertStringNotContainsString('Engine not recorded', $section);
+        $this->assertStringContainsString('Confirmed fit for this part', $section);
     }
 
     public function test_two_year_ranges_are_never_folded_into_one_card(): void

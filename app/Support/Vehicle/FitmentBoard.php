@@ -181,6 +181,11 @@ class FitmentBoard
      * aspiration. Matching on those parts rather than on the text means a stored
      * label that predates a formatting change still resolves.
      *
+     * What the structured row can do is describe the engine better. What it must
+     * never do is delete it: an operator recorded this part as fitting this
+     * engine, and a card that answers "engine not recorded" over a filled-in
+     * column is not hiding a product, it is contradicting the record.
+     *
      * @return array{label: string, displacement: string, aspiration: string, fuel: string, known: bool}
      */
     private static function engine(ProductVehicleFitment $fitment, VehicleModel $model, ?string $locale): array
@@ -204,13 +209,6 @@ class FitmentBoard
                 'fuel' => '',
                 'known' => true,
             ];
-        }
-
-        // The same rule the finder applies: a customer is not shown an engine
-        // the shop has no parts for. The record keeps it either way, and one
-        // config line brings it back.
-        if (! $type->isOfferedInStorefront()) {
-            return self::unknownEngine();
         }
 
         $displacement = VehicleFuelType::displacement($type->engine_size, $type->fuel_type);
