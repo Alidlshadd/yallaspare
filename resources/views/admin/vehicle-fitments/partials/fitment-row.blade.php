@@ -63,6 +63,7 @@
                                 data-years="{{ $model->productionYears() }}"
                                 data-engine-labels="{{ implode(', ', $model->engineLabels()) }}"
                                 data-search="{{ $model->selectionHaystack() }}"
+                                data-edit-url="{{ route('admin.vehicle-fitments.models.edit', $model) }}"
                                 data-year-from="{{ $model->production_start_year }}" data-year-to="{{ $model->production_end_year }}">
                             {{ $model->shortSelectionLabel() }}
                         </option>
@@ -78,17 +79,62 @@
             </div>
         </div>
         <div>
-            <label class="vf-lbl">{{ __('Engine') }}</label>
-            <select aria-label="{{ __('Engine') }}" name="fitments[{{ $rowIndex }}][engine]" class="vf-sel" data-admin-engine
-                    @disabled($selectedModelId === '')>
-                <option value="">{{ __('Any configured petrol engine') }}</option>
-                @if(trim((string) ($row['engine'] ?? '')) !== '')
-                    <option value="{{ $row['engine'] }}" selected>{{ $row['engine'] }}</option>
-                @endif
-            </select>
+            <label class="vf-lbl" id="engine-label-{{ $rowIndex }}">{{ __('Engines') }}</label>
+            {{-- A part usually fits every engine a car was built with, and one
+                 native select made that three trips through the form. The
+                 checkboxes below are the real inputs: each posts an engine id,
+                 and the server turns each id into its own fitment rule. --}}
+            <div
+                class="vf-engine-picker"
+                data-admin-engine-picker
+                data-row-index="{{ $rowIndex }}"
+                data-selected='@json(array_values(array_map("strval", (array) ($row["engine_ids"] ?? []))))'
+            >
+                <button
+                    type="button"
+                    class="vf-sel vf-engine-trigger"
+                    data-admin-engine-trigger
+                    aria-expanded="false"
+                    aria-controls="engine-panel-{{ $rowIndex }}"
+                    aria-labelledby="engine-label-{{ $rowIndex }} engine-summary-{{ $rowIndex }}"
+                    @disabled($selectedModelId === '')
+                >
+                    <span id="engine-summary-{{ $rowIndex }}" data-admin-engine-summary>{{ __('Select engines') }}</span>
+                    <i class="fas fa-chevron-down text-[9px] text-slate-400" aria-hidden="true"></i>
+                </button>
+
+                <div
+                    class="vf-engine-panel"
+                    id="engine-panel-{{ $rowIndex }}"
+                    data-admin-engine-panel
+                    role="group"
+                    aria-labelledby="engine-label-{{ $rowIndex }}"
+                    hidden
+                >
+                    <label class="vf-engine-option is-all" data-admin-engine-all-row>
+                        <input type="checkbox" data-admin-engine-all>
+                        <span>{{ __('Select all engines') }}</span>
+                    </label>
+                    <div class="vf-engine-options" data-admin-engine-options></div>
+                </div>
+            </div>
             <p class="vf-help" data-admin-engine-help @if($selectedModelId !== '') hidden @endif>
                 {{ __('Select a vehicle variant first') }}
             </p>
+            {{-- Shown only while the field is in the wrong state, and cleared
+                 the moment an engine is ticked. --}}
+            <p class="vf-help is-error" data-admin-engine-error hidden>
+                <span data-admin-engine-error-text></span>
+                <a href="#" class="vf-help-link" data-admin-engine-configure hidden>{{ __('Configure engines') }}</a>
+            </p>
+            @error("fitments.{$rowIndex}.engine_ids")
+                <p class="vf-help is-error">{{ $message }}</p>
+            @enderror
+            @if(trim((string) ($row['engine'] ?? '')) !== '')
+                {{-- A single engine posted by an older client is kept as it was
+                     sent, so a validation bounce does not lose it. --}}
+                <input type="hidden" name="fitments[{{ $rowIndex }}][engine]" value="{{ $row['engine'] }}">
+            @endif
         </div>
         <div>
             <label class="vf-lbl">{{ __('Year From') }}</label>

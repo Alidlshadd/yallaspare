@@ -167,14 +167,18 @@ class VehicleHierarchyTest extends TestCase
         [$brand, $family] = $this->family('Rexton');
         $first = $this->variant($brand, $family, 'Rexton II');
         $second = $this->variant($brand, $family, 'Rexton W');
+        // Each car is recorded with an engine, which is what a fitment against
+        // it now has to name.
+        $firstEngine = $first->engineTypes()->create(['name' => '2.7 Turbo Diesel', 'fuel_type' => 'diesel', 'engine_size' => 2.7, 'aspiration' => 'turbo']);
+        $secondEngine = $second->engineTypes()->create(['name' => '2.0 Turbo Diesel', 'fuel_type' => 'diesel', 'engine_size' => 2.0, 'aspiration' => 'turbo']);
         $product = Product::factory()->create(['is_active' => true]);
 
         $response = $this->actingAs($this->admin())
             ->post(route('admin.vehicle-fitments.store'), [
                 'product_id' => $product->id,
                 'fitments' => [
-                    ['vehicle_brand_id' => $brand->id, 'vehicle_model_family_id' => $family->id, 'vehicle_model_id' => $first->id],
-                    ['vehicle_brand_id' => $brand->id, 'vehicle_model_family_id' => $family->id, 'vehicle_model_id' => $second->id],
+                    ['vehicle_brand_id' => $brand->id, 'vehicle_model_family_id' => $family->id, 'vehicle_model_id' => $first->id, 'engine_ids' => [$firstEngine->id]],
+                    ['vehicle_brand_id' => $brand->id, 'vehicle_model_family_id' => $family->id, 'vehicle_model_id' => $second->id, 'engine_ids' => [$secondEngine->id]],
                 ],
             ]);
 

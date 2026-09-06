@@ -3734,5 +3734,20 @@
     "Browse :vehicle parts": "گەڕان بەناو پارچەکانی :vehicle",
     "We could not load suggestions.": "نەتوانرا پێشنیارەکان باربکرێن.",
     "Vehicle and part match": "هاوتایی ئۆتۆمبێل و پارچە",
-    ":count result|:count results": "یەک ئەنجام|:count ئەنجام"
+    ":count result|:count results": "یەک ئەنجام|:count ئەنجام",
+    "Select engines": "بزوێنەرەکان هەڵبژێرە",
+    "Select all engines": "هەموو بزوێنەرەکان هەڵبژێرە",
+    "All engines selected": "هەموو بزوێنەرەکان هەڵبژێردران",
+    ":count engine selected": ":count بزوێنەر هەڵبژێردرا",
+    ":count engines selected": ":count بزوێنەر هەڵبژێردران",
+    "No engines configured for this variant": "هیچ بزوێنەرێک بۆ ئەم جۆرە تۆمار نەکراوە",
+    ":count fitment rule": ":count یاسای گونجان",
+    ":count fitment rules": ":count یاسای گونجان",
+    "The selected engine does not belong to this vehicle variant.": "بزوێنەری هەڵبژێردراو هی ئەم جۆرەی ئۆتۆمبێلە نییە.",
+    "That fitment already exists.": "ئەم گونجانە پێشتر هەیە.",
+    ":count fitment already existed and was skipped.|:count fitments already existed and were skipped.": ":count گونجان پێشتر هەبوو و بازی لێدرا.|:count گونجان پێشتر هەبوون و بازیان لێدرا.",
+    "Please select at least one engine for this vehicle variant.": "تکایە لانیکەم یەک بزوێنەر بۆ ئەم جۆرەی ئۆتۆمبێل هەڵبژێرە.",
+    "No engines are configured for this vehicle variant. Configure an engine before adding the fitment.": "هیچ بزوێنەرێک بۆ ئەم جۆرەی ئۆتۆمبێل تۆمار نەکراوە. پێش زیادکردنی گونجان بزوێنەرێک ڕێکبخە.",
+    "Configure engines": "ڕێکخستنی بزوێنەرەکان",
+    "Select at least one engine to create this fitment.": "بۆ دروستکردنی ئەم گونجانە لانیکەم یەک بزوێنەر هەڵبژێرە."
 }

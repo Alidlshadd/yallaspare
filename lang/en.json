@@ -3734,5 +3734,20 @@
     "Browse :vehicle parts": "Browse :vehicle parts",
     "We could not load suggestions.": "We could not load suggestions.",
     "Vehicle and part match": "Vehicle and part match",
-    ":count result|:count results": ":count result|:count results"
+    ":count result|:count results": ":count result|:count results",
+    "Select engines": "Select engines",
+    "Select all engines": "Select all engines",
+    "All engines selected": "All engines selected",
+    ":count engine selected": ":count engine selected",
+    ":count engines selected": ":count engines selected",
+    "No engines configured for this variant": "No engines configured for this variant",
+    ":count fitment rule": ":count fitment rule",
+    ":count fitment rules": ":count fitment rules",
+    "The selected engine does not belong to this vehicle variant.": "The selected engine does not belong to this vehicle variant.",
+    "That fitment already exists.": "That fitment already exists.",
+    ":count fitment already existed and was skipped.|:count fitments already existed and were skipped.": ":count fitment already existed and was skipped.|:count fitments already existed and were skipped.",
+    "Please select at least one engine for this vehicle variant.": "Please select at least one engine for this vehicle variant.",
+    "No engines are configured for this vehicle variant. Configure an engine before adding the fitment.": "No engines are configured for this vehicle variant. Configure an engine before adding the fitment.",
+    "Configure engines": "Configure engines",
+    "Select at least one engine to create this fitment.": "Select at least one engine to create this fitment."
 }

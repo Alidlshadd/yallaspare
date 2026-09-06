@@ -3734,5 +3734,20 @@
     "Browse :vehicle parts": "تصفح قطع :vehicle",
     "We could not load suggestions.": "تعذر تحميل الاقتراحات.",
     "Vehicle and part match": "تطابق السيارة والقطعة",
-    ":count result|:count results": "لا توجد نتائج|نتيجة واحدة|نتيجتان|:count نتائج|:count نتيجة|:count نتيجة"
+    ":count result|:count results": "لا توجد نتائج|نتيجة واحدة|نتيجتان|:count نتائج|:count نتيجة|:count نتيجة",
+    "Select engines": "اختر المحركات",
+    "Select all engines": "اختر كل المحركات",
+    "All engines selected": "تم اختيار كل المحركات",
+    ":count engine selected": "تم اختيار :count محرك",
+    ":count engines selected": "تم اختيار :count محركات",
+    "No engines configured for this variant": "لا توجد محركات مسجلة لهذا الطراز",
+    ":count fitment rule": "قاعدة توافق واحدة (:count)",
+    ":count fitment rules": ":count قواعد توافق",
+    "The selected engine does not belong to this vehicle variant.": "المحرك المختار لا يخص هذا الطراز.",
+    "That fitment already exists.": "هذا التوافق موجود بالفعل.",
+    ":count fitment already existed and was skipped.|:count fitments already existed and were skipped.": "كان :count توافق موجوداً وتم تخطيه.|كان :count توافقات موجودة وتم تخطيها.",
+    "Please select at least one engine for this vehicle variant.": "يرجى اختيار محرك واحد على الأقل لهذا الطراز.",
+    "No engines are configured for this vehicle variant. Configure an engine before adding the fitment.": "لا توجد محركات مسجلة لهذا الطراز. أضف محركاً قبل إنشاء التوافق.",
+    "Configure engines": "إعداد المحركات",
+    "Select at least one engine to create this fitment.": "اختر محركاً واحداً على الأقل لإنشاء هذا التوافق."
 }

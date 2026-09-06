@@ -8,6 +8,7 @@ use App\Models\ProductVehicleFitment;
 use App\Models\Setting;
 use App\Models\VehicleBrand;
 use App\Models\VehicleModel;
+use App\Models\VehicleModelEngineType;
 use App\Models\VehicleModelFamily;
 use App\Support\SecureImageStorage;
 use App\Support\SqlSafe;
@@ -595,13 +596,30 @@ class VehicleFitmentController extends Controller
                 'year_from' => $request->input('year_from'),
                 'year_to' => $request->input('year_to'),
                 'engine' => $request->input('engine'),
+                'engine_ids' => $request->input('engine_ids'),
                 'notes' => $request->input('notes'),
             ]];
         }
 
+        // A card may name several engines, and each of those is its own rule.
+        // Normalising here — ids to a unique list of integers — means the
+        // validator, the duplicate check and the writer all read one shape.
+        $fitmentRows = array_map(static function ($row): array {
+            $row = is_array($row) ? $row : [];
+            $ids = $row['engine_ids'] ?? [];
+            $ids = is_array($ids) ? $ids : [$ids];
+
+            $row['engine_ids'] = array_values(array_unique(array_map(
+                static fn ($id): int => (int) $id,
+                array_filter($ids, static fn ($id): bool => is_numeric($id) && (int) $id > 0),
+            )));
+
+            return $row;
+        }, array_values($fitmentRows));
+
         $payload = [
             'product_id' => $request->input('product_id'),
-            'fitments' => array_values($fitmentRows),
+            'fitments' => $fitmentRows,
         ];
 
         $validator = Validator::make($payload, [
@@ -616,6 +634,8 @@ class VehicleFitmentController extends Controller
             'fitments.*.year_from' => ['nullable', 'integer', 'min:1900', 'max:2100'],
             'fitments.*.year_to' => ['nullable', 'integer', 'min:1900', 'max:2100'],
             'fitments.*.engine' => ['nullable', 'string', 'max:120'],
+            'fitments.*.engine_ids' => ['array', 'max:30'],
+            'fitments.*.engine_ids.*' => ['integer'],
             'fitments.*.notes' => ['nullable', 'string', 'max:255'],
         ], [
             // Laravel names the field by its array path, so the default read
@@ -657,7 +677,44 @@ class VehicleFitmentController extends Controller
                     );
                 }
 
+                // The engines a card names, checked against the car it names.
+                // An id from the other variant of the same name is the mistake
+                // this screen exists to prevent, and a client that sends one is
+                // told so rather than quietly recording the wrong car's engine.
+                $engineIds = $row['engine_ids'] ?? [];
                 $engine = trim((string) ($row['engine'] ?? ''));
+
+                if ($engineIds !== [] && $model) {
+                    $ownIds = $model->engineTypes->pluck('id')->map(fn ($id): int => (int) $id)->all();
+                    $foreign = array_diff($engineIds, $ownIds);
+
+                    if ($foreign !== []) {
+                        $validator->errors()->add(
+                            "fitments.{$index}.engine_ids",
+                            __('The selected engine does not belong to this vehicle variant.'),
+                        );
+                    }
+                }
+
+                if ($model && $model->engineTypes->isEmpty()) {
+                    // A car with no engines on record cannot be recorded
+                    // against one. Writing the rule anyway would produce a
+                    // fitment nobody can search, filter or read an engine off,
+                    // so the operator is sent to configure the car first.
+                    $validator->errors()->add(
+                        "fitments.{$index}.engine_ids",
+                        __('No engines are configured for this vehicle variant. Configure an engine before adding the fitment.'),
+                    );
+                } elseif ($model && $engineIds === [] && $engine === '') {
+                    // The car has engines, so leaving them all unpicked is not
+                    // "fits every engine" — it is a blank a customer would read
+                    // as "engine not recorded" on a car whose engines we know.
+                    $validator->errors()->add(
+                        "fitments.{$index}.engine_ids",
+                        __('Please select at least one engine for this vehicle variant.'),
+                    );
+                }
+
                 if ($engine !== '' && $model && ! $model->engineTypes->contains('name', $engine)) {
                     // Name the engines this car does have. The operator picked
                     // one that belongs to the other variant of the same name,
@@ -688,25 +745,114 @@ class VehicleFitmentController extends Controller
 
         $data = $validator->validate();
 
-        DB::transaction(function () use ($data): void {
-            foreach ($data['fitments'] as $row) {
-                ProductVehicleFitment::query()->create([
-                    'product_id' => (int) $data['product_id'],
-                    'vehicle_brand_id' => (int) $row['vehicle_brand_id'],
-                    'vehicle_model_id' => isset($row['vehicle_model_id']) ? (int) $row['vehicle_model_id'] : null,
-                    'year_from' => $row['year_from'] ?? null,
-                    'year_to' => $row['year_to'] ?? null,
-                    'engine' => trim((string) ($row['engine'] ?? '')) ?: null,
-                    'notes' => trim((string) ($row['notes'] ?? '')) ?: null,
-                ]);
+        $rules = $this->fitmentRulesFrom($data);
+
+        $created = 0;
+        $skipped = 0;
+
+        DB::transaction(function () use ($rules, &$created, &$skipped): void {
+            foreach ($rules as $rule) {
+                // The same part, car, years and engine recorded twice is one
+                // rule, not two. Skipping is what an operator means by adding a
+                // card that overlaps one they already saved — failing the whole
+                // batch over it would throw away the rules that were new.
+                $exists = ProductVehicleFitment::query()
+                    ->where('product_id', $rule['product_id'])
+                    ->where('vehicle_brand_id', $rule['vehicle_brand_id'])
+                    ->where(fn ($query) => $rule['vehicle_model_id'] === null
+                        ? $query->whereNull('vehicle_model_id')
+                        : $query->where('vehicle_model_id', $rule['vehicle_model_id']))
+                    ->where(fn ($query) => $rule['year_from'] === null
+                        ? $query->whereNull('year_from')
+                        : $query->where('year_from', $rule['year_from']))
+                    ->where(fn ($query) => $rule['year_to'] === null
+                        ? $query->whereNull('year_to')
+                        : $query->where('year_to', $rule['year_to']))
+                    ->where(fn ($query) => $rule['engine'] === null
+                        ? $query->whereNull('engine')
+                        : $query->where('engine', $rule['engine']))
+                    ->exists();
+
+                if ($exists) {
+                    $skipped++;
+
+                    continue;
+                }
+
+                ProductVehicleFitment::query()->create($rule);
+                $created++;
             }
         });
 
-        $count = count($data['fitments']);
+        $message = match (true) {
+            $created === 0 => __('That fitment already exists.'),
+            $created === 1 => __('Product fitment created.'),
+            default => __(':count product fitments created.', ['count' => $created]),
+        };
 
-        return back()->with('success', $count === 1
-            ? __('Product fitment created.')
-            : __(':count product fitments created.', ['count' => $count]));
+        if ($created > 0 && $skipped > 0) {
+            $message .= ' '.trans_choice(
+                ':count fitment already existed and was skipped.|:count fitments already existed and were skipped.',
+                $skipped,
+                ['count' => $skipped],
+            );
+        }
+
+        return back()->with('success', $message);
+    }
+
+    /**
+     * The rules a validated batch actually writes.
+     *
+     * One card is one car, and a card naming three engines is three rules: the
+     * product page, the shop filter and the search each read an engine off its
+     * own row, so a comma-joined string or a null standing for "all of them"
+     * would be a value only this screen could read back.
+     *
+     * The engine text is resolved here from the id the operator picked, never
+     * from a label the browser sent — the row is the authority on its own name.
+     *
+     * @param  array<string, mixed>  $data
+     * @return list<array<string, mixed>>
+     */
+    private function fitmentRulesFrom(array $data): array
+    {
+        $engineNames = VehicleModelEngineType::query()
+            ->whereIn('id', collect($data['fitments'])->pluck('engine_ids')->flatten()->unique()->all())
+            ->pluck('name', 'id');
+
+        $rules = [];
+
+        foreach ($data['fitments'] as $row) {
+            $base = [
+                'product_id' => (int) $data['product_id'],
+                'vehicle_brand_id' => (int) $row['vehicle_brand_id'],
+                'vehicle_model_id' => isset($row['vehicle_model_id']) ? (int) $row['vehicle_model_id'] : null,
+                'year_from' => $row['year_from'] ?? null,
+                'year_to' => $row['year_to'] ?? null,
+                'notes' => trim((string) ($row['notes'] ?? '')) ?: null,
+            ];
+
+            $engines = collect($row['engine_ids'] ?? [])
+                ->map(fn (int $id): ?string => $engineNames[$id] ?? null)
+                ->filter()
+                ->unique()
+                ->values();
+
+            if ($engines->isEmpty()) {
+                // Nothing picked: the older single-engine field still posts a
+                // name, and a blank one still means "no engine recorded".
+                $rules[] = $base + ['engine' => trim((string) ($row['engine'] ?? '')) ?: null];
+
+                continue;
+            }
+
+            foreach ($engines as $engine) {
+                $rules[] = $base + ['engine' => (string) $engine];
+            }
+        }
+
+        return $rules;
     }
 
     public function destroyFitment(ProductVehicleFitment $fitment): RedirectResponse

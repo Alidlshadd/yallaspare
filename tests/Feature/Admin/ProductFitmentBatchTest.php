@@ -36,6 +36,9 @@ class ProductFitmentBatchTest extends TestCase
         [$ford, $focus] = $this->vehicle('Ford', 'Focus');
         $corolla->engineTypes()->create(['name' => '1.8 Petrol']);
         $civic->engineTypes()->create(['name' => '1.5 Turbo Petrol']);
+        // Every card names a car whose engines are on record: a variant with
+        // none of them recorded is refused now, and has its own test below.
+        $focus->engineTypes()->create(['name' => '1.0 Petrol']);
 
         $this->actingAs($admin)
             ->post(route('admin.vehicle-fitments.store'), [
@@ -58,6 +61,7 @@ class ProductFitmentBatchTest extends TestCase
                     [
                         'vehicle_brand_id' => $ford->id,
                         'vehicle_model_id' => $focus->id,
+                        'engine' => '1.0 Petrol',
                         'notes' => 'All engines',
                     ],
                 ],

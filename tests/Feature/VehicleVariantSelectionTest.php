@@ -293,9 +293,9 @@ class VehicleVariantSelectionTest extends TestCase
             ->assertOk()
             ->getContent();
 
-        // Nothing is chosen on a fresh form, so the engine select is disabled
+        // Nothing is chosen on a fresh form, so the engine picker is disabled
         // and explains what it is waiting for.
-        $this->assertMatchesRegularExpression('/<select[^>]*data-admin-engine[^>]*\sdisabled/', $content);
+        $this->assertMatchesRegularExpression('/<button[^>]*data-admin-engine-trigger[^>]*\sdisabled/s', $content);
         $this->assertStringContainsString('Select a vehicle variant first', $content);
     }
 

@@ -49,12 +49,23 @@
                         'search' => $model->selectionHaystack(),
                         'family_id' => (int) $model->vehicle_model_family_id,
                         'family_name' => (string) ($model->family?->localizedName() ?? ''),
+                        // The id is what the form submits: a label can be
+                        // retyped and a name can be edited, but the row the
+                        // operator picked is the row the server resolves.
                         'engines' => $model->engineTypes
-                            ->map(fn ($engine) => ['value' => (string) $engine->name, 'label' => $engine->localizedName()])
+                            ->map(fn ($engine) => [
+                                'id' => (int) $engine->id,
+                                'value' => (string) $engine->name,
+                                'label' => $engine->localizedName(),
+                            ])
                             ->values()
                             ->all(),
                         'year_from' => $model->production_start_year ? (int) $model->production_start_year : null,
                         'year_to' => $model->production_end_year ? (int) $model->production_end_year : null,
+                        // Where a car with no engines on record is given some.
+                        // Same permission as this page, so anyone reading this
+                        // map can follow it.
+                        'edit_url' => route('admin.vehicle-fitments.models.edit', $model),
                     ])
                     ->values()
                     ->all(),
@@ -89,6 +100,7 @@
                 'year_from' => old('year_from'),
                 'year_to' => old('year_to'),
                 'engine' => old('engine'),
+                'engine_ids' => old('engine_ids', []),
                 'notes' => old('notes'),
             ]];
         }
@@ -205,6 +217,53 @@
         }
         .dark .vf-fitment-card { background: linear-gradient(180deg, var(--surface), var(--surface-sunk)); border-color: var(--border); }
         .dark .vf-fitment-card-head { border-color: var(--border); }
+
+        /* Engine multi-select */
+        .vf-engine-picker { position: relative; }
+        .vf-engine-trigger {
+            display: flex; align-items: center; justify-content: space-between; gap: 8px;
+            width: 100%; text-align: start; cursor: pointer;
+        }
+        .vf-engine-trigger:disabled { cursor: not-allowed; opacity: .6; }
+        .vf-engine-panel {
+            position: absolute; z-index: 30; inset-inline: 0; top: calc(100% + 4px);
+            display: flex; flex-direction: column;
+            /* A floor of a few rows and a ceiling the card can hold: past this
+               the option list scrolls rather than the panel growing. */
+            max-height: 300px; padding: 5px;
+            background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+            box-shadow: 0 14px 32px -14px rgb(4 4 31 / .3);
+        }
+        .vf-engine-panel[hidden] { display: none; }
+        .vf-engine-options { overflow-y: auto; min-height: 0; scrollbar-width: thin; }
+        .vf-engine-options::-webkit-scrollbar { width: 6px; }
+        .vf-engine-options::-webkit-scrollbar-thumb { border-radius: 999px; background: rgb(4 4 31 / .18); }
+        .vf-engine-option {
+            display: flex; align-items: center; gap: 9px;
+            /* The whole row is the target, and it clears the 44px a thumb needs. */
+            min-height: 44px; padding: 6px 9px; border-radius: 10px; cursor: pointer;
+            font-size: 12.5px; font-weight: 600; color: var(--text);
+            overflow-wrap: anywhere;
+        }
+        .vf-engine-option:hover { background: rgb(4 4 31 / .05); }
+        .vf-engine-option input { width: 15px; height: 15px; flex-shrink: 0; accent-color: #e65c00; }
+        .vf-engine-option.is-all {
+            font-weight: 800; border-bottom: 1px solid var(--border); border-radius: 10px 10px 0 0; margin-bottom: 3px;
+        }
+        .vf-engine-option.is-all[hidden] { display: none; }
+        .dark .vf-engine-option:hover { background: rgb(255 255 255 / .06); }
+        /* Wrong, not alarming: a thin border and a line of text, no red wash. */
+        .vf-engine-picker.has-error .vf-engine-trigger { border-color: #dc2626; }
+        .vf-help.is-error { color: #b91c1c; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+        .dark .vf-help.is-error { color: #fca5a5; }
+        .vf-help.is-error[hidden] { display: none; }
+        .vf-help-link { font-weight: 700; text-decoration: underline; color: inherit; }
+        .vf-preview-warning {
+            margin-top: 2px; padding: 8px 10px; border-radius: 10px;
+            font-size: 11.5px; font-weight: 700; line-height: 1.4;
+            color: #b91c1c; background: rgb(220 38 38 / .07); border: 1px solid rgb(220 38 38 / .22);
+        }
+        .vf-preview-warning[hidden] { display: none; }
         .dark .vf-fitment-number { background: #ff8a3d; color: #04041f; }
         /* Fitment rule row */
         .vf-row {
@@ -516,6 +575,8 @@
                 data-no-model-label="{{ __('No models for this brand yet') }}"
                 data-no-family-label="{{ __('No families for this brand yet') }}"
                 data-any-engine-label="{{ __('Any engine') }}"
+                data-one-rule-label="{{ __(':count fitment rule') }}"
+                data-many-rules-label="{{ __(':count fitment rules') }}"
                 data-any-year-label="{{ __('Any year') }}"
                 data-vehicle-label="{{ __('vehicle') }}"
                 data-vehicles-label="{{ __('vehicles') }}"
@@ -583,7 +644,7 @@
                         <span class="vf-mono-chip" data-fitment-count>{{ count($fitmentRows) }} {{ __('vehicles') }}</span>
                     </div>
 
-                    <button class="vf-btn gold w-full sm:w-auto px-6">
+                    <button class="vf-btn gold w-full sm:w-auto px-6" data-admin-fitment-submit>
                         <i class="fas fa-link text-[10px]" aria-hidden="true"></i>
                         {{ __('Save All Fitments') }}
                     </button>
@@ -612,9 +673,18 @@
                             <span class="text-[13px] font-bold font-mono text-slate-900" data-admin-preview-years>{{ __('Any year') }}</span>
                         </div>
                         <div class="flex gap-3">
-                            <span class="w-[74px] shrink-0 text-[10px] font-bold uppercase tracking-widest text-muted pt-0.5">{{ __('Engine') }}</span>
-                            <span class="text-[13px] font-bold text-slate-900" data-admin-preview-engine>{{ __('Any engine') }}</span>
+                            <span class="w-[74px] shrink-0 text-[10px] font-bold uppercase tracking-widest text-muted pt-0.5">{{ __('Engines') }}</span>
+                            <span class="min-w-0 text-[13px] font-bold text-slate-900" data-admin-preview-engine>{{ __('Any engine') }}</span>
                         </div>
+                        {{-- What Save will write, not how many cards are open:
+                             a card naming three engines is three rules. --}}
+                        <div class="flex gap-3 border-t border-slate-100 pt-3">
+                            <span class="w-[74px] shrink-0 text-[10px] font-bold uppercase tracking-widest text-muted pt-0.5">{{ __('Total') }}</span>
+                            <span class="text-[13px] font-bold text-slate-900" data-admin-preview-rules>{{ __(':count fitment rules', ['count' => 0]) }}</span>
+                        </div>
+                        <p class="vf-preview-warning" data-admin-preview-warning hidden>
+                            {{ __('Select at least one engine to create this fitment.') }}
+                        </p>
                     </div>
                 </aside>
             </form>
@@ -783,6 +853,11 @@
             const previewVehicle = form.querySelector('[data-admin-preview-vehicle]');
             const previewYears = form.querySelector('[data-admin-preview-years]');
             const previewEngine = form.querySelector('[data-admin-preview-engine]');
+            const previewRules = form.querySelector('[data-admin-preview-rules]');
+            const previewWarning = form.querySelector('[data-admin-preview-warning]');
+            const submitButton = form.querySelector('[data-admin-fitment-submit]');
+            const oneRuleLabel = form.dataset.oneRuleLabel || ':count fitment rule';
+            const manyRulesLabel = form.dataset.manyRulesLabel || ':count fitment rules';
 
             if (!productSelect || !rowsContainer || !rowTemplate) return;
 
@@ -835,7 +910,6 @@
                 const modelSelect = row.querySelector('[data-admin-vehicle-model]');
                 const yearFrom = row.querySelector('[data-admin-year-from]');
                 const yearTo = row.querySelector('[data-admin-year-to]');
-                const engineInput = row.querySelector('[data-admin-engine]');
                 const productFallback = productSelect.querySelector('option[value=""]')?.textContent.trim() || 'Select product';
                 const brandFallback = brandSelect?.querySelector('option[value=""]')?.textContent.trim() || 'Select brand';
                 const productLabel = selectedOptionLabel(productSelect, productFallback);
@@ -843,13 +917,48 @@
                 const modelLabel = selectedOptionLabel(modelSelect, anyModelLabel);
                 const from = yearFrom?.value?.trim() || '';
                 const to = yearTo?.value?.trim() || '';
-                const engine = selectedOptionLabel(engineInput, anyEngineLabel);
+                const engines = enginesChosenIn(row);
 
                 if (previewProduct) previewProduct.textContent = productLabel;
                 const familyLabel = selectedOptionLabel(familySelect, '');
                 if (previewVehicle) previewVehicle.textContent = [brandLabel, familyLabel, modelLabel].filter(Boolean).join(' / ');
                 if (previewYears) previewYears.textContent = from || to ? `${from || '*'} - ${to || '*'}` : anyYearLabel;
-                if (previewEngine) previewEngine.textContent = engine || anyEngineLabel;
+                if (previewEngine) previewEngine.textContent = engines.length > 0 ? engines.join(' · ') : anyEngineLabel;
+
+                refreshRuleCount();
+            };
+
+            // What a row will actually write, read off the checkboxes that will
+            // be posted rather than off anything the preview keeps of its own.
+            const enginesChosenIn = (row) => Array.from(
+                row.querySelectorAll('[data-admin-engine-option]:checked')
+            ).map((box) => box.dataset.engineLabel || box.value);
+
+            // A card naming three engines is three rules, so the count the
+            // operator reads before saving is the number of rows that will
+            // exist afterwards — never the number of cards on screen, and never
+            // rounded up: a card with nothing picked writes nothing, and saying
+            // "1 rule" over it would promise a row the server will refuse.
+            const refreshRuleCount = () => {
+                if (!previewRules) return;
+                const total = rows().reduce((sum, row) => sum + enginesChosenIn(row).length, 0);
+                previewRules.textContent = (total === 1 ? oneRuleLabel : manyRulesLabel).replace(':count', String(total));
+
+                const incomplete = rows().some((row) => rowNeedsAnEngine(row));
+                if (previewWarning) previewWarning.hidden = !incomplete;
+                if (submitButton) submitButton.disabled = incomplete;
+            };
+
+            // A card is short of an engine when its car has engines on record
+            // and none of them is ticked. A card with no variant yet is simply
+            // unfinished, and the variant control says so on its own.
+            const rowNeedsAnEngine = (row) => {
+                const modelSelect = row.querySelector('[data-admin-vehicle-model]');
+                const options = row.querySelectorAll('[data-admin-engine-option]');
+
+                if (!modelSelect?.value) return false;
+
+                return options.length === 0 || enginesChosenIn(row).length === 0;
             };
 
             const configureRow = (row) => {
@@ -861,7 +970,6 @@
                 const modelSelect = row.querySelector('[data-admin-vehicle-model]');
                 const yearFrom = row.querySelector('[data-admin-year-from]');
                 const yearTo = row.querySelector('[data-admin-year-to]');
-                const engineInput = row.querySelector('[data-admin-engine]');
                 const removeButton = row.querySelector('[data-remove-fitment-row]');
                 if (!brandSelect || !familySelect || !modelSelect) return;
 
@@ -894,34 +1002,175 @@
                     summary.hidden = false;
                 };
 
+                // ── Engine multi-select ────────────────────────────────────
+                // The checkboxes are the form inputs: each posts an engine id
+                // and the server writes one fitment rule per id. Nothing here
+                // invents a value — the ids come from the variant option the
+                // server rendered.
+                const enginePicker = row.querySelector('[data-admin-engine-picker]');
+                const engineTrigger = row.querySelector('[data-admin-engine-trigger]');
+                const enginePanel = row.querySelector('[data-admin-engine-panel]');
+                const engineOptionsHost = row.querySelector('[data-admin-engine-options]');
+                const engineAll = row.querySelector('[data-admin-engine-all]');
+                const engineAllRow = row.querySelector('[data-admin-engine-all-row]');
+                const engineSummary = row.querySelector('[data-admin-engine-summary]');
+                const engineError = row.querySelector('[data-admin-engine-error]');
+                const engineErrorText = row.querySelector('[data-admin-engine-error-text]');
+                const engineConfigure = row.querySelector('[data-admin-engine-configure]');
+                const rowIndex = row.dataset.fitmentIndex;
+
+                const engineBoxes = () => Array.from(
+                    engineOptionsHost?.querySelectorAll('[data-admin-engine-option]') || []
+                );
+                const checkedEngines = () => engineBoxes().filter((box) => box.checked);
+
+                const closeEnginePanel = () => {
+                    if (!enginePanel || enginePanel.hidden) return;
+                    enginePanel.hidden = true;
+                    engineTrigger?.setAttribute('aria-expanded', 'false');
+                };
+
+                const openEnginePanel = () => {
+                    if (!enginePanel || engineTrigger?.disabled) return;
+                    enginePanel.hidden = false;
+                    engineTrigger?.setAttribute('aria-expanded', 'true');
+                    (engineAll || engineBoxes()[0])?.focus();
+                };
+
+                const syncEngineState = () => {
+                    const boxes = engineBoxes();
+                    const chosen = checkedEngines();
+
+                    if (engineAll) {
+                        // Some but not all: the control says "partly", which is
+                        // what a tri-state checkbox is for.
+                        engineAll.checked = boxes.length > 0 && chosen.length === boxes.length;
+                        engineAll.indeterminate = chosen.length > 0 && chosen.length < boxes.length;
+                        engineAll.disabled = boxes.length === 0;
+                    }
+
+                    if (engineSummary) {
+                        engineSummary.textContent = (() => {
+                            if (boxes.length === 0) return @json(__('No engines configured for this variant'));
+                            if (chosen.length === 0) return @json(__('Select engines'));
+                            if (chosen.length === boxes.length) return @json(__('All engines selected'));
+                            const template = chosen.length === 1
+                                ? @json(__(':count engine selected'))
+                                : @json(__(':count engines selected'));
+
+                            return template.replace(':count', String(chosen.length));
+                        })();
+                    }
+
+                    // The field says what is wrong with it while it is wrong,
+                    // and stops the moment an engine is ticked.
+                    const missing = rowNeedsAnEngine(row);
+                    const hasOptions = engineBoxes().length > 0;
+                    enginePicker?.classList.toggle('has-error', missing);
+
+                    if (engineError) {
+                        engineError.hidden = !missing;
+                        if (engineErrorText) {
+                            engineErrorText.textContent = hasOptions
+                                ? @json(__('Please select at least one engine for this vehicle variant.'))
+                                : @json(__('No engines are configured for this vehicle variant. Configure an engine before adding the fitment.'));
+                        }
+                        if (engineConfigure) {
+                            const editUrl = modelSelect.selectedOptions?.[0]?.dataset.editUrl || '';
+                            engineConfigure.hidden = hasOptions || editUrl === '';
+                            if (editUrl !== '') engineConfigure.href = editUrl;
+                        }
+                    }
+
+                    updatePreview(row);
+                };
+
                 const updateEngineOptions = () => {
-                    if (!engineInput) return;
+                    if (!engineOptionsHost) return;
                     const selected = modelSelect.selectedOptions?.[0];
                     const modelEngines = selected?.dataset.engines ? JSON.parse(selected.dataset.engines) : [];
-                    const previousValue = engineInput.value;
-                    engineInput.innerHTML = '';
-                    const placeholder = document.createElement('option');
-                    placeholder.value = '';
-                    placeholder.textContent = @json(__('Any configured petrol engine'));
-                    engineInput.appendChild(placeholder);
+                    // A card carries the engines of the car it names. Changing
+                    // the variant clears the old car's engines rather than
+                    // posting ids the new one never had.
+                    const keep = new Set(
+                        enginePicker?.dataset.selected
+                            ? JSON.parse(enginePicker.dataset.selected).map(String)
+                            : []
+                    );
+                    if (enginePicker) enginePicker.dataset.selected = '[]';
+
+                    engineOptionsHost.innerHTML = '';
+
                     modelEngines.forEach((engine) => {
-                        const option = document.createElement('option');
-                        option.value = typeof engine === 'object' ? engine.value : engine;
-                        option.textContent = typeof engine === 'object' ? engine.label : engine;
-                        engineInput.appendChild(option);
+                        if (!engine || typeof engine !== 'object' || !engine.id) return;
+
+                        const label = document.createElement('label');
+                        label.className = 'vf-engine-option';
+
+                        const box = document.createElement('input');
+                        box.type = 'checkbox';
+                        box.name = `fitments[${rowIndex}][engine_ids][]`;
+                        box.value = String(engine.id);
+                        box.checked = keep.has(String(engine.id));
+                        box.dataset.adminEngineOption = '';
+                        box.dataset.engineLabel = engine.label || engine.value || '';
+
+                        const text = document.createElement('span');
+                        text.textContent = engine.label || engine.value || '';
+
+                        label.append(box, text);
+                        engineOptionsHost.appendChild(label);
                     });
-                    // A previous choice survives only if the new variant offers
-                    // it too; otherwise the field falls back to the placeholder
-                    // rather than carrying an engine this car never had.
-                    if (modelEngines.some((engine) => String(typeof engine === 'object' ? engine.value : engine) === String(previousValue))) {
-                        engineInput.value = previousValue;
-                    }
-                    engineInput.disabled = !modelSelect.value;
+
+                    const hasEngines = modelEngines.length > 0;
+                    if (engineTrigger) engineTrigger.disabled = !modelSelect.value || !hasEngines;
+                    if (engineAllRow) engineAllRow.hidden = !hasEngines;
+                    if (!hasEngines) closeEnginePanel();
 
                     if (engineHelp) {
                         engineHelp.hidden = Boolean(modelSelect.value);
                     }
+
+                    syncEngineState();
                 };
+
+                engineTrigger?.addEventListener('click', () => {
+                    if (enginePanel?.hidden) openEnginePanel(); else closeEnginePanel();
+                });
+
+                engineAll?.addEventListener('change', () => {
+                    const shouldCheck = engineAll.checked;
+                    engineBoxes().forEach((box) => { box.checked = shouldCheck; });
+                    syncEngineState();
+                });
+
+                engineOptionsHost?.addEventListener('change', (event) => {
+                    if (event.target.matches('[data-admin-engine-option]')) syncEngineState();
+                });
+
+                enginePanel?.addEventListener('keydown', (event) => {
+                    if (event.key === 'Escape') {
+                        closeEnginePanel();
+                        engineTrigger?.focus();
+                        return;
+                    }
+
+                    if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return;
+
+                    const focusable = [engineAll, ...engineBoxes()].filter(Boolean);
+                    const current = focusable.indexOf(document.activeElement);
+                    if (current < 0) return;
+
+                    event.preventDefault();
+                    const next = event.key === 'ArrowDown'
+                        ? (current + 1) % focusable.length
+                        : (current - 1 + focusable.length) % focusable.length;
+                    focusable[next].focus();
+                });
+
+                document.addEventListener('click', (event) => {
+                    if (!enginePicker?.contains(event.target)) closeEnginePanel();
+                });
 
                 const updateModelYearHints = () => {
                     const selected = modelSelect.selectedOptions?.[0];
@@ -1026,7 +1275,6 @@
                 });
                 yearFrom?.addEventListener('input', activate);
                 yearTo?.addEventListener('input', activate);
-                engineInput?.addEventListener('input', activate);
                 row.addEventListener('focusin', activate);
                 removeButton?.addEventListener('click', () => {
                     if (rows().length <= 1) return;
