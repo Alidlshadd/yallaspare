@@ -7,6 +7,8 @@ use App\Models\User;
 use App\Support\Branding;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\File;
+use Mpdf\Config\ConfigVariables;
+use Mpdf\Config\FontVariables;
 use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
 
@@ -111,10 +113,12 @@ final class InvoiceRenderer
      * letter, and the word visibly split at the join — "بازاڕی" and
      * "گەڕاندنەوە" broke in the middle on every Kurdish invoice.
      *
-     * XB Riyaz is a real Arabic typeface, ships with mPDF, and joins those
-     * letters correctly. Nothing is added to the repository for it.
+     * IBM Plex Sans Arabic joins them correctly and is the same face the
+     * storefront is set in, so an invoice reads as the same document as the
+     * site that produced it. It is not one of mPDF's bundled fonts, so the two
+     * weights live in resources/fonts under their own OFL licence.
      */
-    private const RTL_FONT = 'xbriyaz';
+    private const RTL_FONT = 'ibmplexsansarabic';
 
     /**
      * mPDF rather than DomPDF because DomPDF cannot shape Arabic script: it can
@@ -136,6 +140,20 @@ final class InvoiceRenderer
             'mode' => 'utf-8',
             'format' => 'A4',
             'tempDir' => $tempDir,
+            // mPDF looks in its own ttfonts directory and then in ours, so the
+            // bundled faces keep working and Plex is found beside them.
+            'fontDir' => array_merge((new ConfigVariables)->getDefaults()['fontDir'], [resource_path('fonts')]),
+            'fontdata' => (new FontVariables)->getDefaults()['fontdata'] + [
+                self::RTL_FONT => [
+                    'R' => 'IBMPlexSansArabic-Regular.ttf',
+                    'B' => 'IBMPlexSansArabic-Bold.ttf',
+                    // The joining and mark positioning this whole change is
+                    // about live in the font's OpenType tables; without this
+                    // mPDF would print the letters unshaped.
+                    'useOTL' => 0xFF,
+                    'useKashida' => 75,
+                ],
+            ],
             'default_font' => $isRtl ? self::RTL_FONT : 'dejavusans',
             'useOTL' => 0xFF,
             'useKashida' => 0,

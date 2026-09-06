@@ -38,7 +38,7 @@ class ArabicScriptTypographyTest extends TestCase
             $html = $this->invoiceHtml($order, $locale);
 
             $this->assertStringContainsString(
-                'xbriyaz',
+                'ibmplexsansarabic',
                 $html,
                 "The {$locale} invoice fell back to a font that draws ڕ and ڵ detached."
             );
@@ -49,7 +49,7 @@ class ArabicScriptTypographyTest extends TestCase
     {
         $html = $this->invoiceHtml($this->order(), 'en');
 
-        $this->assertStringNotContainsString('xbriyaz', $html);
+        $this->assertStringNotContainsString('ibmplexsansarabic', $html);
         $this->assertStringContainsString('DejaVu Sans', $html);
     }
 
