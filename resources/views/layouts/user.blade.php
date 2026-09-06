@@ -160,7 +160,6 @@
                 browseVehicleParts: @json(__('Browse :vehicle parts')),
                 viewAllResults: @json(__('View all results')),
                 didYouMean: @json(__('Did you mean')),
-                trySearching: @json(__('Try searching')),
                 typeOneMore: @json(__('Type one more character')),
                 noExactMatches: @json(__('No exact matches for ":query"')),
                 searchWithoutYear: @json(__('Search without the year')),
@@ -174,10 +173,6 @@
                 brand: @json(__('Brand')),
                 engine: @json(__('Engine')),
                 fuel: @json(__('Fuel')),
-                {{-- Query shapes, not copy: a car and a year, a car and an
-                     engine, a marque and a year. Model names read the same in
-                     all three locales, and one config line changes the set. --}}
-                searchExamples: @json(array_values(array_filter(array_map('strval', (array) config('vehicles.search_examples', []))))),
             });
         </script>
         <x-loading-overlay message="{{ __('Processing, please wait...') }}" variant="full" />

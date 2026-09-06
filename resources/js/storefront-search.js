@@ -42,7 +42,6 @@ const readLabels = () => {
         browseVehicleParts: t('browseVehicleParts', 'Browse :vehicle parts'),
         viewAllResults: t('viewAllResults', 'View all results'),
         didYouMean: t('didYouMean', 'Did you mean'),
-        trySearching: t('trySearching', 'Try searching'),
         typeOneMore: t('typeOneMore', 'Type one more character'),
         noExactMatches: t('noExactMatches', 'No exact matches for ":query"'),
         searchWithoutYear: t('searchWithoutYear', 'Search without the year'),
@@ -57,14 +56,6 @@ const readLabels = () => {
         engine: t('engine', 'Engine'),
         fuel: t('fuel', 'Fuel'),
     };
-};
-
-const readExamples = () => {
-    const examples = (window.YallaI18n || {}).searchExamples;
-
-    return Array.isArray(examples)
-        ? examples.filter((value) => typeof value === 'string' && value !== '').slice(0, 3)
-        : [];
 };
 
 // ---------------------------------------------------------------- DOM helpers
@@ -534,7 +525,7 @@ const createRows = (labels, optionList) => {
 
 // --------------------------------------------------------------------- panel
 
-const createSearchPanel = (form, labels, examples) => {
+const createSearchPanel = (form, labels) => {
     const input = form.querySelector('[data-search-autocomplete-input]');
     const panel = form.querySelector('[data-search-autocomplete-panel]');
     const endpoint = form.dataset.searchAutocompleteUrl;
@@ -690,7 +681,7 @@ const createSearchPanel = (form, labels, examples) => {
             input.focus();
             abort();
             renderedQuery = null;
-            renderHint();
+            clearPanel();
         }, 'text-muted'));
 
         announce(fillPlaceholders(labels.noExactMatches, { query }));
@@ -762,27 +753,11 @@ const createSearchPanel = (form, labels, examples) => {
         announce(totalLabel || labels.viewAllResults);
     };
 
-    function renderHint() {
+    // An empty box has nothing to answer. The panel closes rather than filling
+    // itself with prompts nobody asked for.
+    function clearPanel() {
         reset();
-
-        if (examples.length === 0) {
-            close();
-            return;
-        }
-
-        list.appendChild(rows.groupHeading(labels.trySearching));
-
-        examples.forEach((example) => {
-            list.appendChild(rows.action(example, () => {
-                input.value = example;
-                input.focus();
-                renderedQuery = null;
-                search();
-            }, 'text-muted'));
-        });
-
-        renderChips(null);
-        open();
+        close();
     }
 
     const renderTypeMore = () => {
@@ -822,7 +797,7 @@ const createSearchPanel = (form, labels, examples) => {
         if (query.length === 0) {
             abort();
             renderedQuery = null;
-            renderHint();
+            clearPanel();
             return;
         }
 
@@ -871,7 +846,7 @@ const createSearchPanel = (form, labels, examples) => {
         if (input.value.trim() === '') {
             abort();
             renderedQuery = null;
-            renderHint();
+            clearPanel();
             return;
         }
 
@@ -880,7 +855,7 @@ const createSearchPanel = (form, labels, examples) => {
 
     input.addEventListener('focus', () => {
         if (input.value.trim() === '') {
-            renderHint();
+            clearPanel();
             return;
         }
 
@@ -963,7 +938,6 @@ export const initSearchAutocomplete = () => {
     }
 
     const labels = readLabels();
-    const examples = readExamples();
 
-    forms.forEach((form) => createSearchPanel(form, labels, examples));
+    forms.forEach((form) => createSearchPanel(form, labels));
 };
