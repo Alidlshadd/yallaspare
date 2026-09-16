@@ -3750,5 +3750,8 @@
     "No engines are configured for this vehicle variant. Configure an engine before adding the fitment.": "هیچ بزوێنەرێک بۆ ئەم جۆرەی ئۆتۆمبێل تۆمار نەکراوە. پێش زیادکردنی گونجان بزوێنەرێک ڕێکبخە.",
     "Configure engines": "ڕێکخستنی بزوێنەرەکان",
     "Select at least one engine to create this fitment.": "بۆ دروستکردنی ئەم گونجانە لانیکەم یەک بزوێنەر هەڵبژێرە.",
-    ":brand logo": "لۆگۆی :brand"
+    ":brand logo": "لۆگۆی :brand",
+    "Back to Analytics": "گەڕانەوە بۆ شیکارییەکان",
+    "Top :n keywords": "باشترین :n وشەی گەڕان",
+    "Share": "ڕێژە"
 }

@@ -33,6 +33,31 @@ class AnalyticsQueryService
         return in_array($days, self::ALLOWED_DAYS, true) ? $days : 30;
     }
 
+    public const SEARCHES_PAGE_LIMIT = 100;
+
+    /**
+     * Full top-N search keyword report for the dedicated searches page.
+     *
+     * @return array<string, mixed>
+     */
+    public function searchKeywordsPage(int $days): array
+    {
+        $days = $this->normalizeDays($days);
+        $end = Carbon::now();
+        $start = $end->copy()->subDays($days)->startOfDay();
+
+        $rows = $this->topSearchKeywords($start, $end, self::SEARCHES_PAGE_LIMIT);
+        $totalSearches = (int) $rows->sum('count');
+
+        return [
+            'days' => $days,
+            'allowedDays' => self::ALLOWED_DAYS,
+            'rows' => $rows,
+            'totalSearches' => $totalSearches,
+            'generatedAt' => Carbon::now(),
+        ];
+    }
+
     /**
      * @return array<string, mixed>
      */
@@ -52,7 +77,7 @@ class AnalyticsQueryService
         $topCartAdds = $this->topProducts('add_to_cart', $start, $end);
         $topWishlisted = $this->topProducts('wishlist_click', $start, $end);
         $topSearches = $this->topSearchKeywords($start, $end);
-        $recentSearches = $this->recentSearches();
+        $recentSearches = $this->recentSearches($end);
 
         return [
             'days' => $days,
@@ -181,16 +206,26 @@ class AnalyticsQueryService
             ]);
     }
 
+    public const RECENT_SEARCHES_WINDOW_DAYS = 30;
+
     /**
+     * Rolling window of every keyword searched in the last RECENT_SEARCHES_WINDOW_DAYS
+     * days, most recent first. Bounded by $limit purely to keep the page render sane;
+     * the window itself (not a row cap) is what keeps the list "fresh".
+     *
      * @return Collection<int, array{keyword: string, count: int, last_searched_at: Carbon}>
      */
-    private function recentSearches(int $limit = 12): Collection
+    private function recentSearches(Carbon $end, int $limit = 500): Collection
     {
         if (! Schema::hasTable('search_analytics')) {
             return collect();
         }
 
+        $windowStart = $end->copy()->subDays(self::RECENT_SEARCHES_WINDOW_DAYS);
+
         return DB::table('search_analytics')
+            ->where('last_searched_at', '>=', $windowStart)
+            ->where('last_searched_at', '<=', $end)
             ->orderByDesc('last_searched_at')
             ->limit($limit)
             ->get(['keyword', 'search_count', 'last_searched_at'])

@@ -18,4 +18,12 @@ class AnalyticsController extends Controller
 
         return view('admin.analytics.index', $snapshot);
     }
+
+    public function searches(Request $request): View
+    {
+        $days = $this->analytics->normalizeDays((int) $request->query('days', 30));
+        $page = $this->analytics->searchKeywordsPage($days);
+
+        return view('admin.analytics.searches', $page);
+    }
 }

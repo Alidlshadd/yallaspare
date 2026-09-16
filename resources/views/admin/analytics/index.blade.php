@@ -280,7 +280,12 @@
                     <i class="fas fa-magnifying-glass mr-1 text-info" aria-hidden="true"></i>
                     {{ __('Top searched keywords') }}
                 </h3>
-                <span class="kicker">{{ __('Last :n days', ['n' => $days]) }}</span>
+                <div class="flex items-center gap-3">
+                    <span class="kicker">{{ __('Last :n days', ['n' => $days]) }}</span>
+                    <a href="{{ route('admin.analytics.searches', ['days' => $days]) }}" class="text-[11px] font-bold text-info hover:underline">
+                        {{ __('View all') }} <i class="fas fa-arrow-right text-[9px] rtl:rotate-180" aria-hidden="true"></i>
+                    </a>
+                </div>
             </div>
             @if($topSearches->isEmpty())
                 <div class="px-5 py-8 text-center text-xs text-muted">{{ __('No searches recorded in this period.') }}</div>
@@ -315,18 +320,32 @@
                     <i class="far fa-clock mr-1 text-slate-500" aria-hidden="true"></i>
                     {{ __('Recent searches') }}
                 </h3>
-                <span class="kicker">{{ __('All-time') }}</span>
+                <span class="kicker">{{ __('Last :n days', ['n' => 30]) }} · {{ number_format($recentSearches->count()) }}</span>
             </div>
             @if($recentSearches->isEmpty())
                 <div class="px-5 py-8 text-center text-xs text-muted">{{ __('No recent searches.') }}</div>
             @else
-                <div class="flex flex-wrap gap-2 px-5 py-4">
-                    @foreach($recentSearches as $row)
-                        <span class="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-xs text-slate-700">
-                            <span class="font-mono">{{ $row['keyword'] }}</span>
-                            <span class="rounded bg-white px-1.5 py-0.5 text-[10px] font-bold text-slate-500 border border-slate-200">{{ $row['count'] }}</span>
-                        </span>
-                    @endforeach
+                <div class="max-h-96 overflow-y-auto">
+                    <table class="w-full text-sm">
+                        <thead class="sticky top-0 bg-white">
+                            <tr class="text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                                <th class="px-5 py-3">{{ __('Keyword') }}</th>
+                                <th class="px-5 py-3 text-right">{{ __('Searches') }}</th>
+                                <th class="px-5 py-3 text-right">{{ __('Last seen') }}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach($recentSearches as $row)
+                                <tr class="border-t border-slate-100">
+                                    <td class="px-5 py-2.5 font-mono text-slate-700">{{ $row['keyword'] }}</td>
+                                    <td class="px-5 py-2.5 text-right num-display font-bold text-slate-900">{{ number_format($row['count']) }}</td>
+                                    <td class="px-5 py-2.5 text-right text-xs text-slate-500" title="{{ $row['last_searched_at']->format('Y-m-d H:i') }}">
+                                        {{ $row['last_searched_at']->diffForHumans() }}
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             @endif
         </div>

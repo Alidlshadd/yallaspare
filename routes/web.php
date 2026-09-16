@@ -431,6 +431,9 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::get('/analytics', [AdminAnalyticsController::class, 'index'])
             ->middleware('can:'.User::PERMISSION_DASHBOARD_VIEW)
             ->name('analytics.index');
+        Route::get('/analytics/searches', [AdminAnalyticsController::class, 'searches'])
+            ->middleware('can:'.User::PERMISSION_DASHBOARD_VIEW)
+            ->name('analytics.searches');
         Route::get('/purchase-planning', [OperationsInsightController::class, 'purchasePlanning'])
             ->middleware('can:'.User::PERMISSION_STOCK_MANAGE)
             ->name('purchase-planning.index');

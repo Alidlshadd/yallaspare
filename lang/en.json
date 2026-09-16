@@ -3750,5 +3750,8 @@
     "No engines are configured for this vehicle variant. Configure an engine before adding the fitment.": "No engines are configured for this vehicle variant. Configure an engine before adding the fitment.",
     "Configure engines": "Configure engines",
     "Select at least one engine to create this fitment.": "Select at least one engine to create this fitment.",
-    ":brand logo": ":brand logo"
+    ":brand logo": ":brand logo",
+    "Back to Analytics": "Back to Analytics",
+    "Top :n keywords": "Top :n keywords",
+    "Share": "Share"
 }

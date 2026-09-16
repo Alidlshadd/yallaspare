@@ -3750,5 +3750,8 @@
     "No engines are configured for this vehicle variant. Configure an engine before adding the fitment.": "لا توجد محركات مسجلة لهذا الطراز. أضف محركاً قبل إنشاء التوافق.",
     "Configure engines": "إعداد المحركات",
     "Select at least one engine to create this fitment.": "اختر محركاً واحداً على الأقل لإنشاء هذا التوافق.",
-    ":brand logo": "شعار :brand"
+    ":brand logo": "شعار :brand",
+    "Back to Analytics": "العودة إلى التحليلات",
+    "Top :n keywords": "أفضل :n كلمة بحث",
+    "Share": "النسبة"
 }

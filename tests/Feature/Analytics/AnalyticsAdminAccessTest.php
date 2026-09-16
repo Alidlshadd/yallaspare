@@ -133,4 +133,66 @@ class AnalyticsAdminAccessTest extends TestCase
         $response->assertSee('Brake Pad Test');
         $response->assertSee('oil filter');
     }
+
+    public function test_recent_searches_only_shows_last_30_days(): void
+    {
+        $admin = User::factory()->create([
+            'role' => User::ROLE_ADMIN,
+            'email_verified_at' => now(),
+        ]);
+
+        DB::table('search_analytics')->insert([
+            [
+                'keyword' => 'fresh keyword',
+                'search_count' => 2,
+                'last_searched_at' => now()->subDays(5),
+                'created_at' => now()->subDays(5),
+                'updated_at' => now()->subDays(5),
+            ],
+            [
+                'keyword' => 'stale keyword',
+                'search_count' => 9,
+                'last_searched_at' => now()->subDays(45),
+                'created_at' => now()->subDays(45),
+                'updated_at' => now()->subDays(45),
+            ],
+        ]);
+
+        cache()->forget('analytics.snapshot.30');
+
+        $response = $this->actingAs($admin)
+            ->get(route('admin.analytics.index'))
+            ->assertOk();
+
+        $response->assertSee('fresh keyword');
+        $response->assertDontSee('stale keyword');
+    }
+
+    public function test_admin_can_open_search_keywords_page(): void
+    {
+        $admin = User::factory()->create([
+            'role' => User::ROLE_ADMIN,
+            'email_verified_at' => now(),
+        ]);
+
+        DB::table('search_analytics')->insert([
+            'keyword' => 'brake pad',
+            'search_count' => 12,
+            'last_searched_at' => now(),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $this->actingAs($admin)
+            ->get(route('admin.analytics.searches'))
+            ->assertOk()
+            ->assertSee('Top searched keywords')
+            ->assertSee('brake pad');
+    }
+
+    public function test_search_keywords_page_requires_login(): void
+    {
+        $this->get(route('admin.analytics.searches'))
+            ->assertRedirect(route('login'));
+    }
 }
