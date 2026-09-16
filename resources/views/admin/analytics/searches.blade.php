@@ -1,25 +1,5 @@
 <x-app-layout>
 
-<x-slot name="header">
-    <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-        <div class="flex items-center gap-3">
-            <a href="{{ route('admin.analytics.index', ['days' => $days]) }}"
-               class="h-10 w-10 rounded-xl border border-slate-200 bg-white text-slate-600 grid place-items-center hover:bg-slate-50 dark:hover:bg-slate-800"
-               title="{{ __('Back to Analytics') }}">
-                <i class="fas fa-arrow-left text-xs rtl:rotate-180" aria-hidden="true"></i>
-            </a>
-            <div>
-                <p class="text-[10px] uppercase tracking-[0.22em] text-muted font-bold leading-none">
-                    <a href="{{ route('admin.analytics.index', ['days' => $days]) }}" class="hover:text-primary dark:hover:text-white">{{ __('Site Analytics') }}</a>
-                    <span class="mx-1 text-slate-300">/</span>
-                    <span class="text-primary dark:text-white">{{ __('Top searched keywords') }}</span>
-                </p>
-                <h2 class="text-2xl font-semibold text-slate-900 mt-1">{{ __('Top searched keywords') }}</h2>
-            </div>
-        </div>
-    </div>
-</x-slot>
-
 <style>
     .bento-shadow { box-shadow: var(--admin-shadow-soft); }
     .kicker { font-size: 10px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase; color: var(--text-muted); }
@@ -34,6 +14,16 @@
 </style>
 
 <div class="px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+    {{-- Breadcrumb / back --}}
+    <div class="flex items-center gap-2 text-xs font-bold">
+        <a href="{{ route('admin.analytics.index', ['days' => $days]) }}" class="inline-flex items-center gap-1.5 text-slate-500 hover:text-info transition">
+            <i class="fas fa-arrow-left text-[10px] rtl:rotate-180" aria-hidden="true"></i>
+            {{ __('Site Analytics') }}
+        </a>
+        <span class="text-slate-300">/</span>
+        <span class="text-slate-900">{{ __('Top searched keywords') }}</span>
+    </div>
 
     {{-- Time range selector --}}
     <div class="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white p-4 bento-shadow">

@@ -632,6 +632,14 @@
                         break;
                     }
                 }
+
+                // Sub-pages nested under a listing/dashboard get a back button in the
+                // topbar — the shared admin layout never renders each page's own
+                // header slot, so this is the one place it can live consistently.
+                $adminBackUrl = match (true) {
+                    request()->routeIs('admin.analytics.searches') => route('admin.analytics.index', ['days' => request()->integer('days', 30)]),
+                    default => null,
+                };
             @endphp
             <div
                 class="min-h-screen admin-shell"
@@ -1098,6 +1106,16 @@
                         <div class="relative z-10 flex min-w-0 items-center justify-between gap-3 px-3 sm:px-5 lg:px-7" style="min-height: 72px; padding-top: 10px; padding-bottom: 10px;">
                             {{-- LEFT: menu + YS badge + brand --}}
                             <div class="flex min-w-0 items-center gap-2 shrink-0">
+                                @if($adminBackUrl)
+                                    <a
+                                        href="{{ $adminBackUrl }}"
+                                        class="topbar-action inline-flex"
+                                        aria-label="{{ __('Back') }}"
+                                        title="{{ __('Back') }}"
+                                    >
+                                        <i class="fas fa-arrow-left text-sm rtl:rotate-180" aria-hidden="true"></i>
+                                    </a>
+                                @endif
                                 {{-- Desktop expand (visibility controlled by app.css — hidden until sidebar collapsed) --}}
                                 <button
                                     type="button"
