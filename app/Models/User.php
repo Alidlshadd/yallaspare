@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Notifications\ImmediateResetPassword;
 use App\Notifications\ImmediateVerifyEmail;
+use App\Services\WelcomeOfferService;
 use App\Support\EmailVerificationCode;
 use App\Support\IraqiPhoneNumber;
 use App\Support\PhoneVerificationCode;
@@ -144,6 +145,8 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
      * @var array<string, string>
      */
     protected $casts = [
+        'welcome_offer' => 'array',
+        'welcome_offer_used_at' => 'datetime',
         'email_verified_at' => 'datetime',
         'phone_verified_at' => 'datetime',
         'password' => 'hashed',
@@ -259,6 +262,7 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
     protected static function booted(): void
     {
         static::creating(function (self $user): void {
+            app(WelcomeOfferService::class)->grant($user);
             if (empty($user->attributes['role'])) {
                 $user->attributes['role'] = self::ROLE_USER;
             }

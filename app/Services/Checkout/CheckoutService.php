@@ -14,6 +14,7 @@ use App\Models\UserAddress;
 use App\Services\CouponService;
 use App\Services\Payments\PaymentService;
 use App\Services\Shipping\ShippingFeeResolver;
+use App\Services\WelcomeOfferService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -33,6 +34,8 @@ class CheckoutService
         string $paymentMethod = PaymentService::METHOD_COD
     ): Order {
         return DB::transaction(function () use ($cart, $user, $address, $notes, $couponCode, $paymentMethod): Order {
+            $user = User::query()->whereKey($user->id)->lockForUpdate()->firstOrFail();
+            $cart->load('items');
             $productIds = $cart->items
                 ->pluck('product_id')
                 ->filter()
@@ -94,6 +97,7 @@ class CheckoutService
         string $paymentMethod = PaymentService::METHOD_COD
     ): Order {
         return DB::transaction(function () use ($product, $quantity, $user, $address, $notes, $couponCode, $paymentMethod): Order {
+            $user = User::query()->whereKey($user->id)->lockForUpdate()->firstOrFail();
             $lockedProduct = Product::query()->whereKey($product->id)->lockForUpdate()->firstOrFail();
 
             if (! $lockedProduct->is_active) {
@@ -144,8 +148,10 @@ class CheckoutService
             }
         }
 
-        $couponDiscount = (float) ($couponPreview['discount'] ?? 0);
-        $couponShippingDiscount = ($couponPreview['free_shipping'] ?? false) ? $shippingFee : 0.0;
+        $welcomePreview = app(WelcomeOfferService::class)->preview($user, $subtotalAmount, (bool) $couponPreview['valid']);
+        $promotion = $welcomePreview['valid'] ? $welcomePreview : $couponPreview;
+        $couponDiscount = (float) ($promotion['discount'] ?? 0);
+        $couponShippingDiscount = ($promotion['free_shipping'] ?? false) ? $shippingFee : 0.0;
         $discountAmount = round($couponDiscount + $couponShippingDiscount, 2);
         $grandTotal = round(max(0, $subtotalAmount + $shippingFee - $discountAmount), 2);
         $this->assertPaymentMinimum($paymentMethod, $grandTotal);
@@ -161,6 +167,7 @@ class CheckoutService
             'subtotal_amount' => $subtotalAmount,
             'shipping_fee' => $shippingFee,
             'discount_amount' => $discountAmount,
+            'welcome_offer' => $welcomePreview['valid'] ? $welcomePreview['offer'] + ['discount_amount' => $discountAmount] : null,
             'coupon_id' => ($couponPreview['coupon'] ?? null)?->exists ? $couponPreview['coupon']->id : null,
             'coupon_code' => ($couponPreview['code'] ?? '') !== '' ? (string) $couponPreview['code'] : null,
             'grand_total' => $grandTotal,
@@ -177,6 +184,12 @@ class CheckoutService
             'notes' => $notes !== '' ? $notes : null,
         ]);
         $order->save();
+
+        // The first placed order closes eligibility even when a coupon or
+        // a below-minimum basket meant the welcome reward was not applied.
+        if ($user->welcome_offer && ! $user->welcome_offer_used_at) {
+            $user->forceFill(['welcome_offer_used_at' => now()])->save();
+        }
 
         $order->statusHistory()->create([
             'from_status' => null,

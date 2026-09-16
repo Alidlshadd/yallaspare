@@ -33,6 +33,7 @@ use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\VehicleFitmentController;
 use App\Http\Controllers\Admin\WaylPaymentController;
+use App\Http\Controllers\Admin\WelcomeOfferController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CatalogLandingController;
 use App\Http\Controllers\CheckoutController;
@@ -452,6 +453,9 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::get('/discounts', [DiscountCouponController::class, 'edit'])
             ->middleware('can:'.User::PERMISSION_FINANCE_MANAGE)
             ->name('discounts.edit');
+        Route::put('/discounts/welcome-offer', [WelcomeOfferController::class, 'update'])
+            ->middleware(['can:'.User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
+            ->name('discounts.welcome-offer.update');
         Route::get('/discounts/rules', [DiscountCouponController::class, 'rules'])
             ->middleware('can:'.User::PERMISSION_FINANCE_MANAGE)
             ->name('discounts.rules');

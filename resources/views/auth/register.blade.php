@@ -12,6 +12,7 @@
     :switch-href="route('login')"
     :loading-message="__('Setting up your account')"
 >
+    @include('shop.partials.welcome-offer')
     <form method="POST" action="{{ route('register') }}" class="space-y-4" data-auth-form data-loading-button-text="{{ __('Processing...') }}">
         @csrf
 

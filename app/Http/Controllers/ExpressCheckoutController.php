@@ -11,8 +11,11 @@ use App\Services\Analytics\ClientAnalytics;
 use App\Services\Analytics\MeasurementPayload;
 use App\Services\Cart\CartService;
 use App\Services\Checkout\CheckoutService;
+use App\Services\CheckoutTotals;
 use App\Services\Payments\PaymentService;
 use App\Services\PhoneVerificationService;
+use App\Services\Shipping\ShippingFeeResolver;
+use App\Services\WelcomeOfferService;
 use App\Support\UserCommunication;
 use App\Support\VerificationRateLimit;
 use Illuminate\Http\RedirectResponse;
@@ -139,7 +142,24 @@ class ExpressCheckoutController extends Controller
             return redirect()->route('checkout.express');
         }
 
+        $cart = $this->carts->current()?->load('items.product');
+        if (! $cart || $cart->items->isEmpty()) {
+            return redirect()->route('cart.index')->with('error', __('Cart is empty.'));
+        }
+        $lines = $cart->items->map(fn ($item) => [
+            'quantity' => (int) $item->quantity,
+            'unit_price' => $item->product ? (float) $item->product->priceFor($account) : 0.0,
+        ]);
+        $subtotal = round((float) $lines->sum(fn ($line) => $line['quantity'] * $line['unit_price']), 2);
+        $pending = (array) $request->session()->get(self::PENDING_SESSION_KEY, []);
+        $address = new UserAddress((array) ($pending['address'] ?? []));
+        $shipping = app(ShippingFeeResolver::class)->forAddress($address);
+        $welcomeSummary = app(WelcomeOfferService::class)->preview($account, $subtotal);
+
         return view('shop.checkout-express-verify', [
+            'welcomeSummary' => $welcomeSummary,
+            'totals' => app(CheckoutTotals::class)->compute($lines, $shipping->fee, $welcomeSummary),
+            'currencySymbol' => (string) Setting::getValue('currency_code', 'IQD'),
             'maskedPhone' => PhoneVerificationService::displayPhone((string) $account->phone_normalized),
             'expiresInMinutes' => $this->phoneVerification->expiresInMinutes(),
             'resendCooldownSeconds' => $this->resendCooldownSeconds($request),

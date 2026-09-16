@@ -32,7 +32,7 @@
                 </div>
                 @if(($discountAmount ?? 0) > 0)
                     <div class="flex items-center justify-between border-b border-slate-200/80 py-3">
-                        <span class="text-sm font-medium text-slate-600">{{ __('Discount') }}</span>
+                        <span class="text-sm font-medium text-slate-600">{{ $order->welcome_offer ? __('welcome.order_applied') : __('Discount') }}</span>
                         <span class="text-sm font-semibold text-accent-ink dark:text-accent">-{{ number_format($discountAmount, 0) }} {{ $currencySymbol }}</span>
                     </div>
                 @endif

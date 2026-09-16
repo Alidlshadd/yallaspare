@@ -4,6 +4,7 @@
 @section('checkout_back_label', __('Back to Delivery'))
 
 @section('content')
+    @include('shop.partials.welcome-offer')
     <div class="mx-auto w-full max-w-5xl space-y-6 py-4">
         @if (session('success'))
             <x-ui.alert variant="success" :title="__('Success')">
@@ -104,7 +105,7 @@
                         </div>
                         @if (($discountAmount ?? 0) > 0)
                             <div class="flex items-center justify-between border-b border-slate-200/80 py-3">
-                                <span class="text-sm text-slate-600">{{ __('Discount') }}</span>
+                                <span class="text-sm text-slate-600">{{ ($welcomeSummary['valid'] ?? false) ? __('welcome.order_applied') : __('Discount') }}</span>
                                 <span class="text-sm font-semibold text-accent-ink dark:text-accent">-{{ number_format($discountAmount, 0) }} {{ $currencySymbol }}</span>
                             </div>
                         @endif

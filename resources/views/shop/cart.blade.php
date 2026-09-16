@@ -2,6 +2,7 @@
 
 @section('content')
     <div class="space-y-5 pb-16">
+        @include('shop.partials.welcome-offer')
         @if (session('success'))
             <x-ui.alert variant="success" :title="__('Success')">
                 {{ session('success') }}

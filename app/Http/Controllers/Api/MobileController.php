@@ -37,6 +37,7 @@ use App\Services\Reviews\ProductReviewEligibilityService;
 use App\Services\Security\UserPrivilegeService;
 use App\Services\Shipping\ShippingFeeResolver;
 use App\Services\Shipping\ShippingQuote;
+use App\Services\WelcomeOfferService;
 use App\Support\IraqiPhoneNumber;
 use App\Support\SqlSafe;
 use App\Support\VehicleLocalization;
@@ -1152,7 +1153,8 @@ class MobileController extends Controller
         $subtotalForCoupon = array_sum(array_map(fn ($i) => $i['quantity'] * $i['unit_price'], $lineItems));
         $couponPreview = $code !== '' ? $coupons->preview($code, round($subtotalForCoupon, 2), $user) : null;
 
-        $computed = $totals->compute($lineItems, $shippingFee, $couponPreview);
+        $welcomeSummary = app(WelcomeOfferService::class)->preview($user, round($subtotalForCoupon, 2), (bool) ($couponPreview['valid'] ?? false));
+        $computed = $totals->compute($lineItems, $shippingFee, $welcomeSummary['valid'] ? $welcomeSummary : $couponPreview);
 
         return response()->json(['data' => [
             'address' => $this->addressPayload($address),
@@ -1161,6 +1163,7 @@ class MobileController extends Controller
             'totals' => $computed,
             'shipping' => $this->shippingPayload($shippingQuote),
             'coupon_summary' => $this->couponSummaryFor($couponPreview),
+            'welcome_offer' => $welcomeSummary,
         ]]);
     }
 
@@ -1191,11 +1194,12 @@ class MobileController extends Controller
         $code = $coupons->normalizeCode((string) ($data['coupon_code'] ?? ''));
         $subtotalForCoupon = round($unitPrice * $quantity, 2);
         $couponPreview = $code !== '' ? $coupons->preview($code, $subtotalForCoupon, $user) : null;
+        $welcomeSummary = app(WelcomeOfferService::class)->preview($user, $subtotalForCoupon, (bool) ($couponPreview['valid'] ?? false));
 
         $computed = $totals->compute(
             [['quantity' => $quantity, 'unit_price' => $unitPrice]],
             $shippingFee,
-            $couponPreview,
+            $welcomeSummary['valid'] ? $welcomeSummary : $couponPreview,
         );
 
         $payload = [
@@ -1206,6 +1210,7 @@ class MobileController extends Controller
             'totals' => $computed,
             'shipping' => $this->shippingPayload($shippingQuote),
             'coupon_summary' => $this->couponSummaryFor($couponPreview),
+            'welcome_offer' => $welcomeSummary,
         ];
 
         if ($quantity !== $requestedQuantity) {
@@ -2119,6 +2124,7 @@ class MobileController extends Controller
             'permissions' => $user->effectivePermissions(),
             'dealer_status' => $user->dealer_status,
             'dealer_discount' => (float) $user->dealer_discount,
+            'welcome_offer' => app(WelcomeOfferService::class)->available($user),
         ];
     }
 
@@ -2153,6 +2159,7 @@ class MobileController extends Controller
             'subtotal' => (float) ($order->subtotal_amount ?? $order->items->sum('subtotal')),
             'shipping_fee' => (float) ($order->shipping_fee ?? 0),
             'discount_amount' => (float) ($order->discount_amount ?? 0),
+            'welcome_offer' => $order->welcome_offer,
             'total' => (float) ($order->grand_total ?? $order->total_amount),
             'delivery_city' => (string) $order->delivery_city,
             'delivery_governorate' => $order->delivery_governorate,

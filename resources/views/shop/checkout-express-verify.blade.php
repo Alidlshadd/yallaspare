@@ -36,6 +36,15 @@
         ])
 
         <div class="mx-auto w-full max-w-lg">
+            @include('shop.partials.welcome-offer')
+            <dl class="mb-4 space-y-2 rounded-2xl border border-slate-200 bg-white p-5 text-sm dark:border-slate-700 dark:bg-slate-900">
+                @foreach (['subtotal' => __('Subtotal'), 'shipping_fee' => __('Shipping'), 'discount_amount' => __('Discount'), 'grand_total' => __('Total')] as $key => $label)
+                    <div class="flex items-center justify-between gap-3 {{ $key === 'grand_total' ? 'border-t border-slate-200 pt-3 font-bold' : '' }}">
+                        <dt>{{ $key === 'discount_amount' && $welcomeSummary['valid'] ? __('welcome.order_applied') : $label }}</dt>
+                        <dd>{{ $key === 'discount_amount' ? '-' : '' }}{{ number_format($totals[$key], 0) }} {{ $currencySymbol }}</dd>
+                    </div>
+                @endforeach
+            </dl>
             <section class="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-900/5 dark:bg-slate-900 dark:shadow-black/10 sm:rounded-3xl sm:p-8">
                 <h1 class="text-center text-xl font-semibold tracking-[-0.02em] text-slate-950">{{ __('Confirm your phone number') }}</h1>
 

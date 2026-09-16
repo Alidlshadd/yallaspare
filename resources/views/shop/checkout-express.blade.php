@@ -7,6 +7,7 @@
 
 @section('content')
     <div class="space-y-5 pb-16">
+        @include('shop.partials.welcome-offer')
         @if (session('error'))
             <x-ui.alert variant="danger" :title="__('Please review')">
                 {{ session('error') }}

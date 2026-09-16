@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Governorate;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Setting;
 use App\Models\User;
 use App\Services\Cart\CartService;
 use App\Support\PhoneVerificationCode;
@@ -300,6 +301,23 @@ class ExpressCheckoutTest extends TestCase
         $this->assertGuest();
         $this->assertDatabaseCount('orders', 0);
         $this->assertNull(session(ExpressCheckoutController::PENDING_SESSION_KEY));
+    }
+
+    public function test_new_express_account_sees_and_receives_welcome_discount(): void
+    {
+        Setting::setMany(['welcome_offer_enabled' => '1', 'welcome_offer_value' => '20']);
+        $governorate = Governorate::factory()->create(['shipping_fee' => 7000]);
+        $this->productInGuestCart(quantity: 2, price: 12000);
+        $code = $this->fakeOtpiq();
+        $this->post(route('checkout.express.store'), $this->details($governorate))
+            ->assertRedirect(route('checkout.express.verify'));
+        $this->get(route('checkout.express.verify'))->assertOk()->assertSee('26,200 IQD')
+            ->assertSee('data-welcome-offer', false);
+        $this->post(route('checkout.express.verify.store'), ['code' => $code()])->assertRedirect();
+        $order = Order::query()->firstOrFail();
+        $this->assertSame(26200.0, (float) $order->grand_total);
+        $this->assertSame(4800.0, (float) $order->discount_amount);
+        $this->assertNotNull($order->welcome_offer);
     }
 
     /**

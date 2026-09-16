@@ -72,6 +72,7 @@ class Order extends Model
     ];
 
     protected $casts = [
+        'welcome_offer' => 'array',
         'subtotal_amount' => 'decimal:2',
         'shipping_fee' => 'decimal:2',
         'discount_amount' => 'decimal:2',

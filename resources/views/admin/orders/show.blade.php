@@ -398,7 +398,7 @@
                         </div>
                         @if($discount > 0)
                             <div class="flex items-center justify-between text-sm">
-                                <span class="text-slate-500">{{ __('Discount') }}</span>
+                                <span class="text-slate-500">{{ $order->welcome_offer ? __('welcome.order_applied') : __('Discount') }}</span>
                                 <span class="font-medium text-slate-900">- {{ $currencyLabel }} {{ number_format($discount, $currencyDecimals) }}</span>
                             </div>
                         @endif

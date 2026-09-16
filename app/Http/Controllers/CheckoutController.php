@@ -14,6 +14,7 @@ use App\Services\Checkout\CheckoutService;
 use App\Services\CouponService;
 use App\Services\Payments\PaymentService;
 use App\Services\Shipping\ShippingFeeResolver;
+use App\Services\WelcomeOfferService;
 use App\Support\UserCommunication;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -314,8 +315,10 @@ class CheckoutController extends Controller
             $couponPreview['discount'] = 0.0;
             $couponPreview['free_shipping'] = false;
         }
-        $couponDiscount = (float) $couponPreview['discount'];
-        $couponShippingDiscount = $couponPreview['free_shipping'] ? $shippingFee : 0.0;
+        $welcomeSummary = app(WelcomeOfferService::class)->preview($user, round($subtotal, 2), (bool) $couponPreview['valid']);
+        $promotion = $welcomeSummary['valid'] ? $welcomeSummary : $couponPreview;
+        $couponDiscount = (float) $promotion['discount'];
+        $couponShippingDiscount = $promotion['free_shipping'] ? $shippingFee : 0.0;
         $discountAmount = round($couponDiscount + $couponShippingDiscount, 2);
         $grandTotal = round(max(0, $subtotal + $shippingFee - $discountAmount), 2);
 
@@ -330,6 +333,7 @@ class CheckoutController extends Controller
             'discountAmount' => $discountAmount,
             'grandTotal' => $grandTotal,
             'couponSummary' => $couponPreview,
+            'welcomeSummary' => $welcomeSummary,
             'currencySymbol' => $currencyLabel,
             'paymentMethods' => $this->paymentService->checkoutMethods(),
         ]);
@@ -500,8 +504,10 @@ class CheckoutController extends Controller
             $couponPreview['discount'] = 0.0;
             $couponPreview['free_shipping'] = false;
         }
-        $couponDiscount = (float) $couponPreview['discount'];
-        $couponShippingDiscount = $couponPreview['free_shipping'] ? $shippingFee : 0.0;
+        $welcomeSummary = app(WelcomeOfferService::class)->preview($user, $subtotal, (bool) $couponPreview['valid']);
+        $promotion = $welcomeSummary['valid'] ? $welcomeSummary : $couponPreview;
+        $couponDiscount = (float) $promotion['discount'];
+        $couponShippingDiscount = $promotion['free_shipping'] ? $shippingFee : 0.0;
         $discountAmount = round($couponDiscount + $couponShippingDiscount, 2);
 
         return view('shop.buy-now-review', [
@@ -515,6 +521,7 @@ class CheckoutController extends Controller
             'discountAmount' => $discountAmount,
             'grandTotal' => round(max(0, $subtotal + $shippingFee - $discountAmount), 2),
             'couponSummary' => $couponPreview,
+            'welcomeSummary' => $welcomeSummary,
             'currencySymbol' => $currencyLabel,
             'addresses' => $addresses,
             'defaultAddress' => $defaultAddress,

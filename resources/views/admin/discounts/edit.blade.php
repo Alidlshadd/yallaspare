@@ -144,6 +144,8 @@
             </div>
         </section>
 
+        @include('admin.discounts.welcome-offer')
+
         {{-- ============ analytics row ============ --}}
         <section class="grid gap-4 xl:grid-cols-[1.5fr_1fr]">
             <article class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
