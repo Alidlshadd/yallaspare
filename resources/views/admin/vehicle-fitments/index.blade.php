@@ -472,6 +472,19 @@
                                 <span class="font-mono text-[10px] text-slate-300">{{ $brand->modelFamilies->count() }} {{ __('families') }}</span>
                             </div>
                             <div class="space-y-2.5 p-3">
+                                <details class="overflow-hidden rounded-xl border border-dashed border-amber-300 bg-amber-50/60 dark:border-amber-500/30 dark:bg-amber-500/5">
+                                    <summary class="flex cursor-pointer list-none items-center gap-1.5 px-4 py-2.5 text-[11px] font-bold uppercase tracking-[.08em] text-amber-700 dark:text-amber-400">
+                                        <i class="fas fa-plus text-[9px]" aria-hidden="true"></i>{{ __('Add Family') }}
+                                    </summary>
+                                    <form method="POST" action="{{ route('admin.vehicle-fitments.families.store') }}" class="grid gap-2 border-t border-dashed border-amber-300 p-3 dark:border-amber-500/30 sm:grid-cols-[1fr_1fr_1fr_auto] sm:items-end">
+                                        @csrf
+                                        <input type="hidden" name="vehicle_brand_id" value="{{ $brand->id }}">
+                                        <label class="block"><span class="vf-lbl">{{ __('Family Name — English') }}</span><input name="name_en" required maxlength="120" class="vf-inp"></label>
+                                        <label class="block"><span class="vf-lbl">{{ __('Family Name — Arabic') }}</span><input name="name_ar" maxlength="120" dir="rtl" class="vf-inp"></label>
+                                        <label class="block"><span class="vf-lbl">{{ __('Family Name — Kurdish') }}</span><input name="name_ku" maxlength="120" dir="rtl" class="vf-inp"></label>
+                                        <button class="vf-btn primary sm">{{ __('Create Family') }}</button>
+                                    </form>
+                                </details>
                                 @forelse($brand->modelFamilies as $family)
                                     @php
                                         $familyFitments = $family->variants->sum('fitments_count');

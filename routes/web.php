@@ -639,6 +639,9 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::patch('/vehicle-fitments/models/{model}', [VehicleFitmentController::class, 'updateModel'])
             ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('vehicle-fitments.models.update');
+        Route::post('/vehicle-fitments/families', [VehicleFitmentController::class, 'storeFamily'])
+            ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
+            ->name('vehicle-fitments.families.store');
         Route::patch('/vehicle-fitments/families/{family}', [VehicleFitmentController::class, 'updateFamily'])
             ->middleware(['can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
             ->name('vehicle-fitments.families.update');

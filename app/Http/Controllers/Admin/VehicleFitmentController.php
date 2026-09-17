@@ -888,6 +888,49 @@ class VehicleFitmentController extends Controller
         return back()->with('success', __('Vehicle variant removed.'));
     }
 
+    public function storeFamily(Request $request): RedirectResponse
+    {
+        $request->merge([
+            'name_en' => trim((string) $request->input('name_en')),
+        ]);
+
+        $data = $request->validate([
+            'vehicle_brand_id' => ['required', 'exists:vehicle_brands,id'],
+            'name_en' => ['required', 'string', 'max:120'],
+            'name_ar' => ['nullable', 'string', 'max:120'],
+            'name_ku' => ['nullable', 'string', 'max:120'],
+        ]);
+
+        $brandId = (int) $data['vehicle_brand_id'];
+        $name = trim((string) $data['name_en']);
+
+        // Unlike storeModel()'s firstOrCreate() (which joins an existing family
+        // when a variant is added under a name that already exists), this is an
+        // explicit "create a new family" action: a name that already exists
+        // here is a mistake to reject, not an instruction to reuse it.
+        $duplicate = VehicleModelFamily::query()
+            ->where('vehicle_brand_id', $brandId)
+            ->get(['id', 'name', 'name_en'])
+            ->contains(fn (VehicleModelFamily $existing): bool => mb_strtolower(trim((string) ($existing->name_en ?: $existing->name))) === mb_strtolower($name));
+
+        if ($duplicate) {
+            return back()
+                ->withErrors(['name_en' => __('A family named :name already exists under this brand.', ['name' => $name])])
+                ->withInput();
+        }
+
+        VehicleModelFamily::query()->create([
+            'vehicle_brand_id' => $brandId,
+            'name' => $name,
+            'name_en' => $name,
+            'name_ar' => $this->nullableText($data['name_ar'] ?? null),
+            'name_ku' => $this->nullableText($data['name_ku'] ?? null),
+            'slug' => $this->uniqueFamilySlug($brandId, $name),
+        ]);
+
+        return back()->with('success', __('Model family created.'));
+    }
+
     public function updateFamily(Request $request, VehicleModelFamily $family): RedirectResponse
     {
         $request->merge([
