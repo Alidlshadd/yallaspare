@@ -1,10 +1,13 @@
 import './bootstrap';
 
 import Alpine from '@alpinejs/csp';
+import welcomeOfferEditor from './welcome-offer';
+import '../css/welcome-offer.css';
 
 import { initThemeToggles } from './theme-toggle';
 
 window.Alpine = Alpine;
+Alpine.data('welcomeOfferEditor', welcomeOfferEditor);
 
 // Alpine.data() registrations — keeps component logic out of inline directives,
 // so we can eventually switch to the CSP build of Alpine without rewrites.

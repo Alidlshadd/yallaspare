@@ -3,14 +3,29 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use App\Models\Setting;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\View\View;
 
 class WelcomeOfferController extends Controller
 {
+    public function edit(): View
+    {
+        return view('admin.discounts.welcome', [
+            'settings' => Setting::allWithDefaults(),
+            'welcomeStats' => [
+                'issued' => User::query()->whereNotNull('welcome_offer')->count(),
+                'redeemed' => Order::query()->whereNotNull('welcome_offer')->count(),
+                'savings' => (float) Order::query()->whereNotNull('welcome_offer')->sum('discount_amount'),
+            ],
+        ]);
+    }
+
     public function update(Request $request): RedirectResponse
     {
         $data = $request->validate([
@@ -28,6 +43,6 @@ class WelcomeOfferController extends Controller
 
         DB::transaction(fn () => Setting::setMany($data));
 
-        return redirect()->to(route('admin.discounts.edit').'#welcome-offer')->with('success', __('welcome.saved'));
+        return redirect()->route('admin.discounts.welcome-offer.edit')->with('success', __('welcome.saved'));
     }
 }

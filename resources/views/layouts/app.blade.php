@@ -614,6 +614,7 @@
                     'admin.users.*'                => __('Users'),
                     'admin.discounts.coupons.*'    => __('Coupon Management'),
                     'admin.discounts.edit'         => __('Coupon Management'),
+                    'admin.discounts.welcome-offer.edit' => __('welcome.nav'),
                     'admin.discounts.rules'        => __('Discount Rules'),
                     'admin.email.*'                => __('Email Center'),
                     'admin.popups.*'               => __('Popups'),
@@ -894,6 +895,15 @@
                                 >
                                     <x-ph-icon name="ticket" class="admin-nav-icon" />
                                     <span class="admin-nav-label">{{ __('Coupon Management') }}</span>
+                                </a>
+                                <a
+                                    href="{{ route('admin.discounts.welcome-offer.edit') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.discounts.welcome-offer.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('welcome.nav') }}"
+                                    @if(request()->routeIs('admin.discounts.welcome-offer.*')) aria-current="page" @endif
+                                >
+                                    <x-ph-icon name="gift" class="admin-nav-icon" />
+                                    <span class="admin-nav-label">{{ __('welcome.nav') }}</span>
                                 </a>
                                 <a
                                     href="{{ route('admin.discounts.rules') }}"

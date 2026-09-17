@@ -456,6 +456,9 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::put('/discounts/welcome-offer', [WelcomeOfferController::class, 'update'])
             ->middleware(['can:'.User::PERMISSION_FINANCE_MANAGE, 'throttle:admin-write'])
             ->name('discounts.welcome-offer.update');
+        Route::get('/discounts/welcome-offer', [WelcomeOfferController::class, 'edit'])
+            ->middleware('can:'.User::PERMISSION_FINANCE_MANAGE)
+            ->name('discounts.welcome-offer.edit');
         Route::get('/discounts/rules', [DiscountCouponController::class, 'rules'])
             ->middleware('can:'.User::PERMISSION_FINANCE_MANAGE)
             ->name('discounts.rules');

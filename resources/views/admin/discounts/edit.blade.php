@@ -144,7 +144,13 @@
             </div>
         </section>
 
-        @include('admin.discounts.welcome-offer')
+        <a id="welcome-offer" href="{{ route('admin.discounts.welcome-offer.edit') }}" class="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-orange-200 bg-orange-50 p-5 dark:border-slate-700 dark:bg-slate-900">
+            <div class="flex items-center gap-4">
+                <span class="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-accent text-navy"><x-ph-icon name="percent" :size="26" /></span>
+                <div><h2 class="font-bold text-slate-900 dark:text-white">{{ __('welcome.nav') }}</h2><p class="mt-1 text-sm text-slate-600 dark:text-slate-300">{{ __('welcome.admin_intro') }}</p></div>
+            </div>
+            <span class="text-sm font-bold text-accent-ink dark:text-accent">{{ __('welcome.manage') }}</span>
+        </a>
 
         {{-- ============ analytics row ============ --}}
         <section class="grid gap-4 xl:grid-cols-[1.5fr_1fr]">

@@ -172,9 +172,11 @@ class WelcomeOfferTest extends TestCase
             'welcome_offer_maximum_discount' => '10000', 'welcome_offer_valid_days' => '30',
         ];
         $this->actingAs($admin)->put(route('admin.discounts.welcome-offer.update'), $payload)
-            ->assertRedirect(route('admin.discounts.edit').'#welcome-offer');
+            ->assertRedirect(route('admin.discounts.welcome-offer.edit'));
         $this->assertSame('20', Setting::getValue('welcome_offer_value'));
         $this->get(route('admin.discounts.edit'))->assertOk()->assertSee('id="welcome-offer"', false);
+        $this->get(route('admin.discounts.welcome-offer.edit'))->assertOk()
+            ->assertSee('x-data="welcomeOfferEditor"', false)->assertSee('Try an example order');
         $this->put(route('admin.discounts.welcome-offer.update'), array_merge($payload, ['welcome_offer_value' => 101]))
             ->assertSessionHasErrors('welcome_offer_value');
         $this->assertSame('20', Setting::getValue('welcome_offer_value'));
@@ -205,6 +207,7 @@ class WelcomeOfferTest extends TestCase
     {
         $user = User::factory()->create();
         $this->actingAs($user)->put(route('admin.discounts.welcome-offer.update'), [])->assertForbidden();
+        $this->get(route('admin.discounts.welcome-offer.edit'))->assertForbidden();
         $user->fill(['welcome_offer' => ['type' => 'percent', 'value' => 100], 'welcome_offer_used_at' => now()]);
         $this->assertNull($user->welcome_offer);
         $this->assertNull($user->welcome_offer_used_at);
