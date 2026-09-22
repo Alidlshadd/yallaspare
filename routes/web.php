@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DealerController;
 use App\Http\Controllers\Admin\DiscountCouponController;
+use App\Http\Controllers\Admin\EmailAlertController;
 use App\Http\Controllers\Admin\EmailController;
 use App\Http\Controllers\Admin\EmailTemplateController;
 use App\Http\Controllers\Admin\GoalController;
@@ -746,6 +747,14 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::delete('/shipping/governorates/{governorate}', [GovernorateShippingController::class, 'destroy'])
             ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
             ->name('shipping.governorates.destroy');
+        Route::get('/email/alerts', [EmailAlertController::class, 'index'])
+            ->middleware('can:'.User::PERMISSION_SETTINGS_MANAGE)->name('email-alerts.index');
+        Route::put('/email/alerts', [EmailAlertController::class, 'update'])
+            ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])->name('email-alerts.update');
+        Route::post('/email/alerts/test', [EmailAlertController::class, 'test'])
+            ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'throttle:6,1'])->name('email-alerts.test');
+        Route::post('/email/alerts/{alert}/retry', [EmailAlertController::class, 'retry'])
+            ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'throttle:6,1'])->name('email-alerts.retry');
         Route::get('/email', [EmailController::class, 'index'])
             ->middleware('can:'.User::PERMISSION_SETTINGS_MANAGE)
             ->name('email.index');

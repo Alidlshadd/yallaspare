@@ -128,6 +128,9 @@
                                 <i class="fas fa-bullhorn w-4 text-muted text-xs" aria-hidden="true"></i> {{ __('Broadcasts') }}
                                 <span class="ml-auto font-mono text-[10px] text-muted">{{ number_format($broadcastAll) }}</span>
                             </a>
+                            <a href="{{ route('admin.email-alerts.index') }}" class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:hover:bg-slate-900 dark:hover:text-white">
+                                <i class="fas fa-bell w-4 text-muted text-xs" aria-hidden="true"></i> {{ __('alerts.title') }}
+                            </a>
                             <a href="{{ route('admin.email.outbox') }}"
                                class="flex items-center gap-2.5 rounded-lg px-2.5 py-2 text-sm font-semibold text-slate-600 hover:bg-white hover:text-primary transition dark:hover:bg-slate-900 dark:hover:text-white">
                                 <i class="fas fa-inbox w-4 text-muted text-xs" aria-hidden="true"></i> {{ __('Outbox') }}

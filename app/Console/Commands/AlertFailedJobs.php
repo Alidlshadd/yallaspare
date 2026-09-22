@@ -3,7 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Mail\OperationalNotificationMail;
+use App\Models\Setting;
 use App\Models\User;
+use App\Services\Email\AdminEmailAlertService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -94,6 +96,12 @@ class AlertFailedJobs extends Command
      */
     private function notify(array $recipients, Collection $failures): void
     {
+        if (Setting::getValue('admin_alert_system_enabled') !== null) {
+            app(AdminEmailAlertService::class)->failedJobs($failures->count(), (int) $failures->max('id'));
+
+            return;
+        }
+
         $total = $failures->count();
         $oldest = $failures->min('failed_at');
 
@@ -148,6 +156,12 @@ class AlertFailedJobs extends Command
      */
     private function recipients(): array
     {
+        if (Setting::getValue('admin_alert_system_enabled') !== null) {
+            $alerts = app(AdminEmailAlertService::class);
+
+            return $alerts->enabled('system') ? $alerts->recipients('system') : [];
+        }
+
         $configured = trim((string) config('ops.alerts.email', ''));
 
         if ($configured !== '') {

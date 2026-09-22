@@ -15,6 +15,7 @@ use App\Observers\AdminAuditObserver;
 use App\Observers\CartItemCacheObserver;
 use App\Observers\CategoryCacheObserver;
 use App\Observers\OrderAnalyticsObserver;
+use App\Observers\OrderEmailAlertObserver;
 use App\Observers\ProductStockObserver;
 use App\Observers\WishlistCacheObserver;
 use App\Security\HibpCircuitBreaker;
@@ -88,6 +89,7 @@ class AppServiceProvider extends ServiceProvider
         Wishlist::observe(WishlistCacheObserver::class);
         Order::observe(AdminAuditObserver::class);
         Order::observe(OrderAnalyticsObserver::class);
+        Order::observe(OrderEmailAlertObserver::class);
         Goal::observe(AdminAuditObserver::class);
 
         View::composer('layouts.user', HeaderComposer::class);

@@ -617,6 +617,7 @@
                     'admin.discounts.welcome-offer.edit' => __('welcome.nav'),
                     'admin.discounts.rules'        => __('Discount Rules'),
                     'admin.email.*'                => __('Email Center'),
+                    'admin.email-alerts.*'         => __('alerts.title'),
                     'admin.popups.*'               => __('Popups'),
                     'admin.messaging.*'            => config('services.otpiq.whatsapp.admin_visible', true) ? __('SMS & WhatsApp Center') : __('SMS Center'),
                     'admin.whatsapp.*'             => __('Inbound WhatsApp'),
@@ -638,6 +639,7 @@
                 // topbar — the shared admin layout never renders each page's own
                 // header slot, so this is the one place it can live consistently.
                 $adminBackUrl = match (true) {
+                    request()->routeIs('admin.email-alerts.*') => route('admin.email.index'),
                     request()->routeIs('admin.analytics.searches') => route('admin.analytics.index', ['days' => request()->integer('days', 30)]),
                     default => null,
                 };
@@ -924,6 +926,15 @@
                                 >
                                     <x-ph-icon name="envelope-simple" class="admin-nav-icon" />
                                     <span class="admin-nav-label">{{ __('Email Center') }}</span>
+                                </a>
+                                <a
+                                    href="{{ route('admin.email-alerts.index') }}"
+                                    class="admin-nav-link {{ $navItem(request()->routeIs('admin.email-alerts.*')) }}"
+                                    data-admin-sidebar-tooltip="{{ __('alerts.title') }}"
+                                    @if(request()->routeIs('admin.email-alerts.*')) aria-current="page" @endif
+                                >
+                                    <x-ph-icon name="envelope-simple" class="admin-nav-icon" />
+                                    <span class="admin-nav-label">{{ __('alerts.title') }}</span>
                                 </a>
                                 <a
                                     href="{{ route('admin.messaging.index') }}"

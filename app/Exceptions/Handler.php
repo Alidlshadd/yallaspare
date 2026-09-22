@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Services\Email\AdminEmailAlertService;
 use App\Support\VerificationRateLimit;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -42,7 +43,7 @@ class Handler extends ExceptionHandler
     public function register(): void
     {
         $this->reportable(function (Throwable $e) {
-            //
+            app(AdminEmailAlertService::class)->systemError($e);
         });
 
         $this->renderable(function (PostTooLargeException $e, Request $request): Response {
