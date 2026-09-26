@@ -933,7 +933,7 @@
                                     data-admin-sidebar-tooltip="{{ __('alerts.title') }}"
                                     @if(request()->routeIs('admin.email-alerts.*')) aria-current="page" @endif
                                 >
-                                    <x-ph-icon name="envelope-simple" class="admin-nav-icon" />
+                                    <x-ph-icon name="siren" class="admin-nav-icon" />
                                     <span class="admin-nav-label">{{ __('alerts.title') }}</span>
                                 </a>
                                 <a
