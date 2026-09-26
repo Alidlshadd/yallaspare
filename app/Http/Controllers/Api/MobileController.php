@@ -67,6 +67,9 @@ class MobileController extends Controller
      * Contact is intentionally excluded — it's a form, not a static page,
      * and is exposed via POST /legal/contact instead.
      */
+    /** Matches the web cart's per-line limit. */
+    private const MAX_CART_LINE_QUANTITY = 99;
+
     private const LEGAL_PAGES = [
         'privacy' => 'Privacy Policy & SSL Security',
         'terms' => 'Terms of Service | Yalla Spare',
@@ -1063,11 +1066,15 @@ class MobileController extends Controller
     {
         $data = $request->validate([
             'product_id' => ['required', 'integer', 'exists:products,id'],
-            'quantity' => ['nullable', 'integer', 'min:1'],
+            'quantity' => ['nullable', 'integer', 'min:1', 'max:'.self::MAX_CART_LINE_QUANTITY],
         ]);
+        abort_unless(Product::query()->whereKey($data['product_id'])->where('is_active', true)->exists(), 422, __('errors.product_unavailable'));
+
         $cart = $this->cartFor($request->user());
         $item = $cart->items()->firstOrNew(['product_id' => $data['product_id']]);
-        $item->quantity = max(1, (int) $item->quantity + (int) ($data['quantity'] ?? 1));
+        // Same ceiling as the web cart. Checkout still checks stock; this
+        // only keeps an unbounded number out of an integer column.
+        $item->quantity = min(self::MAX_CART_LINE_QUANTITY, max(1, (int) $item->quantity + (int) ($data['quantity'] ?? 1)));
         $item->save();
 
         return response()->json(['data' => $this->cartPayload($cart->fresh('items.product'), $request->user())]);
@@ -1075,7 +1082,7 @@ class MobileController extends Controller
 
     public function updateCartItem(Request $request, int $productId)
     {
-        $data = $request->validate(['quantity' => ['required', 'integer', 'min:0']]);
+        $data = $request->validate(['quantity' => ['required', 'integer', 'min:0', 'max:'.self::MAX_CART_LINE_QUANTITY]]);
         $cart = $this->cartFor($request->user());
         $item = $cart->items()->where('product_id', $productId)->first();
         if ($item && (int) $data['quantity'] <= 0) {
@@ -2455,7 +2462,12 @@ class MobileController extends Controller
     private function requireDealer(Request $request): void
     {
         $user = $request->user();
-        abort_unless($user && ($user->isDealer() || $user->isAdminPanelUser()), 403);
+        // A suspended or not-yet-approved dealer keeps the role but not the
+        // tools; pricing already makes the same distinction.
+        abort_unless($user && (
+            ($user->isDealer() && $user->dealer_status === User::DEALER_STATUS_ACTIVE)
+            || $user->isAdminPanelUser()
+        ), 403);
     }
 
     private function dealerProductsQuery(User $user)

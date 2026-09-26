@@ -2,11 +2,14 @@
 
 namespace Tests\Feature;
 
+use App\Models\CartItem;
+use App\Models\Category;
+use App\Models\Product;
 use App\Models\User;
 use App\Notifications\UserTwoFactorCode;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Notification;
 use Illuminate\Routing\Middleware\ThrottleRequests;
+use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
 
 /**
@@ -146,6 +149,46 @@ class MobileAccountSecurityTest extends TestCase
         $this->withToken($current)->getJson('/api/mobile/me')->assertOk();
         $this->app['auth']->forgetGuards();
         $this->withToken($other)->getJson('/api/mobile/me')->assertUnauthorized();
+    }
+
+    public function test_mobile_cart_rejects_inactive_products_and_caps_quantities(): void
+    {
+        $user = User::factory()->create();
+        $category = Category::factory()->create();
+        $active = Product::factory()->create(['category_id' => $category->id, 'is_active' => true]);
+        $inactive = Product::factory()->create(['category_id' => $category->id, 'is_active' => false]);
+
+        $this->actingAs($user, 'sanctum')
+            ->postJson('/api/mobile/cart/items', ['product_id' => $inactive->id])
+            ->assertStatus(422);
+
+        $this->actingAs($user, 'sanctum')
+            ->postJson('/api/mobile/cart/items', ['product_id' => $active->id, 'quantity' => 2147483647])
+            ->assertStatus(422);
+
+        foreach (range(1, 3) as $attempt) {
+            $this->actingAs($user, 'sanctum')
+                ->postJson('/api/mobile/cart/items', ['product_id' => $active->id, 'quantity' => 60])
+                ->assertOk();
+        }
+
+        $this->assertSame(99, (int) CartItem::query()->where('product_id', $active->id)->value('quantity'));
+
+        $this->actingAs($user, 'sanctum')
+            ->patchJson('/api/mobile/cart/items/'.$active->id, ['quantity' => 500])
+            ->assertStatus(422);
+    }
+
+    public function test_a_suspended_dealer_loses_the_dealer_tools(): void
+    {
+        $dealer = User::factory()->create();
+        $dealer->forceFill(['role' => User::ROLE_DEALER, 'dealer_status' => User::DEALER_STATUS_SUSPENDED])->save();
+
+        $this->actingAs($dealer, 'sanctum')->getJson('/api/mobile/dealer/dashboard')->assertForbidden();
+
+        $dealer->forceFill(['dealer_status' => User::DEALER_STATUS_ACTIVE])->save();
+
+        $this->actingAs($dealer->fresh(), 'sanctum')->getJson('/api/mobile/dealer/dashboard')->assertOk();
     }
 
     private function customerWithEmailCodes(): User
