@@ -8,6 +8,7 @@ use App\Services\WelcomeOfferService;
 use App\Support\EmailVerificationCode;
 use App\Support\IraqiPhoneNumber;
 use App\Support\PhoneVerificationCode;
+use App\Support\WelcomeEmail;
 use Carbon\Carbon;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Translation\HasLocalePreference;
@@ -147,6 +148,7 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
     protected $casts = [
         'welcome_offer' => 'array',
         'welcome_offer_used_at' => 'datetime',
+        'welcome_email_sent_at' => 'datetime',
         'email_verified_at' => 'datetime',
         'phone_verified_at' => 'datetime',
         'password' => 'hashed',
@@ -265,6 +267,12 @@ class User extends Authenticatable implements HasLocalePreference, MustVerifyEma
             app(WelcomeOfferService::class)->grant($user);
             if (empty($user->attributes['role'])) {
                 $user->attributes['role'] = self::ROLE_USER;
+            }
+        });
+
+        static::saved(function (self $user): void {
+            if ($user->wasRecentlyCreated || $user->wasChanged(['email_verified_at', 'phone_verified_at', 'email'])) {
+                WelcomeEmail::sendIfDue($user);
             }
         });
     }

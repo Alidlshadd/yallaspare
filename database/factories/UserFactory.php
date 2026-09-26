@@ -32,6 +32,10 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
+            // A factory user stands for an existing account, which the
+            // migration marks as already welcomed. Tests about the welcome
+            // itself pass null.
+            'welcome_email_sent_at' => now(),
         ];
     }
 

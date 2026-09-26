@@ -14,9 +14,14 @@
     <x-email-title :text="__('Welcome to YallaSpare') . (!empty($name) ? ', ' . $name : '')" />
 
     {{-- Body copy --}}
-    <x-email-copy>
-        {{ __('Your account is ready. You can now browse thousands of auto parts, place orders, track deliveries, and manage your account — all in one place.') }}
-    </x-email-copy>
+    @if (! empty($customBodyHtml))
+        {{-- Wording saved in the admin email template editor. --}}
+        <x-email-copy>{!! $customBodyHtml !!}</x-email-copy>
+    @else
+        <x-email-copy>
+            {{ __('Your account is ready. You can now browse thousands of auto parts, place orders, track deliveries, and manage your account — all in one place.') }}
+        </x-email-copy>
+    @endif
 
     {{-- Feature highlights --}}
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="margin:26px 0;border-top:1px solid #ebedf0;border-bottom:1px solid #ebedf0;">
