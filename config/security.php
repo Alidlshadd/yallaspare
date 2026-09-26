@@ -12,9 +12,15 @@ return [
         'window_minutes' => (int) env('INTRUSION_PREVENTION_WINDOW_MINUTES', 10),
         'block_minutes' => (int) env('INTRUSION_PREVENTION_BLOCK_MINUTES', 30),
         'max_score' => (int) env('INTRUSION_PREVENTION_MAX_SCORE', 8),
+        // Provider callbacks carry customer-written text (a WhatsApp message
+        // saying "order #12") and are authenticated by their own signatures,
+        // so they are never scored: blocking the provider's IP drops every
+        // later callback for the whole block window.
         'excluded_paths' => [
             'admin/two-factor*',
             'user/two-factor*',
+            'api/webhooks/*',
+            'api/payments/*/webhook',
         ],
         'probe_paths' => [
             '/.env',
@@ -25,10 +31,17 @@ return [
             '/storage/logs',
             '/server-status',
         ],
+        // Matched against the path, query string and body. Each pattern needs
+        // SQL-shaped context rather than a lone token: "House #12", "call
+        // first -- thanks" and "select a part from the list" are ordinary
+        // checkout input, and three such requests used to block the visitor's
+        // whole address for 30 minutes.
         'patterns' => [
-            '/(\bunion\b.{0,40}\bselect\b|\bselect\b.{0,40}\bfrom\b)/i',
+            '/\bunion\b.{0,40}\bselect\b/i',
+            '/\bselect\b.{0,40}\bfrom\b.{0,40}(--|#|;)/i',
             '/(\bor\b|\band\b)\s+[\w\'"]+\s*=\s*[\w\'"]+/i',
-            '/(--|#|\/\*|\*\/|;\s*(drop|alter|truncate|insert|update|delete)\b)/i',
+            '/([\'"]|\b\d+\s*=\s*\d+)\s*(--|#)/',
+            '/(\/\*|\*\/|;\s*(drop|alter|truncate|insert|update|delete)\b)/i',
             '/(<script\b|javascript:|onerror\s*=|onload\s*=)/i',
             '/(\.\.\/|\.\.\\\\|%2e%2e%2f|%252e%252e%252f)/i',
             '/(\bbenchmark\s*\(|\bsleep\s*\(|\bload_file\s*\()/i',
