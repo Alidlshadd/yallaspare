@@ -4,6 +4,7 @@ namespace Tests\Feature\Ops;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class DatabaseBackupTest extends TestCase
@@ -74,6 +75,46 @@ class DatabaseBackupTest extends TestCase
 
         $this->assertFileDoesNotExist($stale);
         $this->assertFileExists($recent);
+    }
+
+    public function test_the_backup_is_copied_off_site_when_a_disk_is_configured(): void
+    {
+        $this->useFileDatabase();
+        DB::statement('CREATE TABLE parts (id INTEGER PRIMARY KEY, name TEXT)');
+        DB::statement("INSERT INTO parts (name) VALUES ('oil filter')");
+        $offsite = Storage::fake('offsite-backups');
+        config(['ops.backup.offsite_disk' => 'offsite-backups', 'ops.backup.offsite_path' => 'db']);
+
+        $this->artisan('db:backup')->assertSuccessful();
+
+        $copies = $offsite->files('db');
+        $this->assertCount(1, $copies);
+        $this->assertStringContainsString('oil filter', (string) gzdecode((string) $offsite->get($copies[0])));
+    }
+
+    public function test_off_site_copies_past_the_retention_window_are_removed(): void
+    {
+        $this->useFileDatabase();
+        $offsite = Storage::fake('offsite-backups');
+        config(['ops.backup.offsite_disk' => 'offsite-backups', 'ops.backup.offsite_path' => 'db']);
+
+        $offsite->put('db/old_20260101_000000.sql.gz', 'x');
+        touch($offsite->path('db/old_20260101_000000.sql.gz'), now()->subDays(30)->getTimestamp());
+
+        $this->artisan('db:backup --keep-days=14')->assertSuccessful();
+
+        $this->assertFalse($offsite->exists('db/old_20260101_000000.sql.gz'));
+        $this->assertCount(1, $offsite->files('db'));
+    }
+
+    public function test_a_failed_off_site_copy_fails_the_command_but_keeps_the_local_backup(): void
+    {
+        $this->useFileDatabase();
+        config(['ops.backup.offsite_disk' => 'no-such-disk']);
+
+        $this->artisan('db:backup')->assertFailed();
+
+        $this->assertCount(1, glob($this->backupDirectory.DIRECTORY_SEPARATOR.'*.sql.gz') ?: []);
     }
 
     public function test_an_in_memory_database_reports_that_it_cannot_be_backed_up(): void

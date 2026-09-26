@@ -38,6 +38,15 @@ return [
         */
         'timeout' => (int) env('DB_BACKUP_TIMEOUT', 900),
 
+        /*
+        | Name of a disk from config/filesystems.php to copy every backup to,
+        | e.g. an s3 or sftp disk on another machine. Empty keeps backups
+        | local only. The same keep_days retention applies there.
+        */
+        'offsite_disk' => env('DB_BACKUP_OFFSITE_DISK', ''),
+
+        'offsite_path' => env('DB_BACKUP_OFFSITE_PATH', 'db-backups'),
+
     ],
 
     /*

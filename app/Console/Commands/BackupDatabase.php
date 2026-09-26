@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Symfony\Component\Process\Process;
 
 /**
@@ -57,10 +58,19 @@ class BackupDatabase extends Command
             return self::FAILURE;
         }
 
+        // Read the archive back end to end before trusting it: a truncated or
+        // corrupt gzip is only discovered at restore time otherwise.
+        if (! $this->readsBackIntact($compressed, $driver)) {
+            @unlink($compressed);
+            $this->error('The compressed backup did not read back intact and was discarded.');
+
+            return self::FAILURE;
+        }
+
         $this->info('Backup written: '.$compressed.' ('.$this->humanSize(filesize($compressed) ?: 0).')');
         $this->info('Pruned '.$this->prune($directory).' expired backup(s).');
 
-        return self::SUCCESS;
+        return $this->copyOffsite($compressed);
     }
 
     /**
@@ -208,13 +218,91 @@ class BackupDatabase extends Command
         return str_contains($tail, 'Dump completed');
     }
 
+    private function readsBackIntact(string $compressed, string $driver): bool
+    {
+        $handle = @gzopen($compressed, 'rb');
+        if ($handle === false) {
+            return false;
+        }
+
+        $tail = '';
+        while (! gzeof($handle)) {
+            $chunk = gzread($handle, 1024 * 512);
+            if ($chunk === false) {
+                gzclose($handle);
+
+                return false;
+            }
+            $tail = substr($tail.$chunk, -512);
+        }
+        gzclose($handle);
+
+        // mysqldump signs off with a marker; a SQLite copy has none to check.
+        return in_array($driver, ['mysql', 'mariadb'], true)
+            ? str_contains($tail, 'Dump completed')
+            : true;
+    }
+
+    /**
+     * A copy on the same disk dies with the disk. When an off-site disk is
+     * configured (any Laravel filesystem disk: s3, sftp, a second drive) the
+     * archive goes there too, and a failed upload fails the command so the
+     * scheduler and the failed-job alert notice.
+     */
+    private function copyOffsite(string $compressed): int
+    {
+        $diskName = trim((string) config('ops.backup.offsite_disk', ''));
+        if ($diskName === '') {
+            return self::SUCCESS;
+        }
+
+        $prefix = trim((string) config('ops.backup.offsite_path', 'db-backups'), '/');
+        $target = ($prefix !== '' ? $prefix.'/' : '').basename($compressed);
+
+        try {
+            $disk = Storage::disk($diskName);
+            $stream = fopen($compressed, 'rb');
+            if ($stream === false || ! $disk->writeStream($target, $stream)) {
+                throw new \RuntimeException('the disk refused the write');
+            }
+            if (is_resource($stream)) {
+                fclose($stream);
+            }
+
+            if ($disk->size($target) !== filesize($compressed)) {
+                throw new \RuntimeException('the uploaded size does not match');
+            }
+        } catch (\Throwable $exception) {
+            $this->error("Off-site copy to disk '{$diskName}' failed: ".$exception->getMessage().'. The local backup is kept.');
+
+            return self::FAILURE;
+        }
+
+        $this->info("Copied off-site to {$diskName}:{$target}");
+
+        $cutoff = Carbon::now()->subDays($this->keepDays())->getTimestamp();
+        $removed = 0;
+        foreach ($disk->files($prefix) as $file) {
+            if (str_ends_with($file, '.sql.gz') && $disk->lastModified($file) < $cutoff && $disk->delete($file)) {
+                $removed++;
+            }
+        }
+        $this->info("Pruned {$removed} expired off-site backup(s).");
+
+        return self::SUCCESS;
+    }
+
+    private function keepDays(): int
+    {
+        return max(1, (int) ($this->option('keep-days') ?: config('ops.backup.keep_days', 14)));
+    }
+
     /**
      * @return int how many files were removed
      */
     private function prune(string $directory): int
     {
-        $keepDays = max(1, (int) ($this->option('keep-days') ?: config('ops.backup.keep_days', 14)));
-        $cutoff = Carbon::now()->subDays($keepDays)->getTimestamp();
+        $cutoff = Carbon::now()->subDays($this->keepDays())->getTimestamp();
         $removed = 0;
 
         foreach (glob(rtrim($directory, '/\\').DIRECTORY_SEPARATOR.'*.sql.gz') ?: [] as $file) {
