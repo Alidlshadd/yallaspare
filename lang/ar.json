@@ -3757,5 +3757,6 @@
     ":brand logo": "شعار :brand",
     "Back to Analytics": "العودة إلى التحليلات",
     "Top :n keywords": "أفضل :n كلمة بحث",
-    "Share": "النسبة"
+    "Share": "النسبة",
+    "A verification code has been sent to your email.": "تم إرسال رمز تحقق إلى بريدك الإلكتروني."
 }

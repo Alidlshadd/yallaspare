@@ -30,6 +30,7 @@ Route::post('/webhooks/otpiq', OtpiqWhatsAppWebhookController::class)
 
 Route::prefix('mobile')->group(function () {
     Route::post('/login', [MobileController::class, 'login'])->middleware('throttle:mobile-login');
+    Route::post('/login/two-factor', [MobileController::class, 'verifyLoginTwoFactor'])->middleware('throttle:admin-2fa');
     Route::post('/register', [MobileController::class, 'register'])->middleware('throttle:mobile-register');
     Route::post('/forgot-password', [MobileController::class, 'forgotPassword'])->middleware('throttle:mobile-password-reset');
 

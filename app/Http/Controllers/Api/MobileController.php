@@ -23,6 +23,7 @@ use App\Models\UserAddress;
 use App\Models\VehicleBrand;
 use App\Models\Wishlist;
 use App\Notifications\AdminTwoFactorCode;
+use App\Notifications\UserTwoFactorCode;
 use App\Rules\IraqiMobileNumber;
 use App\Rules\PhoneNumber;
 use App\Services\Checkout\CheckoutService;
@@ -55,6 +56,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator as ValidatorFacade;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password as PasswordRule;
 
@@ -110,25 +112,65 @@ class MobileController extends Controller
             ], 403);
         }
 
-        try {
-            $token = $user->createToken(
-                'mobile',
-                $this->mobileTokenAbilities($user),
-                now()->addMinutes((int) config('sanctum.expiration', 60 * 24 * 14))
-            )->plainTextToken;
-        } catch (\Throwable $e) {
-            Log::error('Mobile login token creation failed', [
-                'user_id' => $user->id,
-                'reason' => $e->getMessage(),
-            ]);
-
-            return response()->json(['message' => __('Unable to start mobile session. Please try again.')], 500);
+        // A customer who turned on sign-in codes gets one here too, exactly
+        // as the web login's user.2fa middleware demands. Staff accounts are
+        // held by the separate admin step-up instead, as on the web.
+        if ($this->requiresMobileTwoFactor($user)) {
+            return $this->startMobileTwoFactor($user);
         }
 
-        return response()->json([
-            'token' => $token,
-            'user' => $this->userPayload($user),
+        return $this->issueMobileLoginToken($user);
+    }
+
+    public function verifyLoginTwoFactor(Request $request)
+    {
+        $data = $request->validate([
+            'challenge' => ['required', 'string', 'size:64'],
+            'code' => ['required', 'digits:6'],
         ]);
+
+        $cacheKey = $this->mobileTwoFactorKey((string) $data['challenge']);
+        $challenge = Cache::get($cacheKey);
+        $invalid = response()->json(['message' => __('The verification code is invalid or expired.')], 422);
+
+        if (! is_array($challenge) || empty($challenge['hash']) || empty($challenge['user_id'])) {
+            return $invalid;
+        }
+
+        if (! Hash::check((string) $data['code'], (string) $challenge['hash'])) {
+            $attempts = ((int) ($challenge['attempts'] ?? 0)) + 1;
+            if ($attempts >= max((int) config('security.email_verification.max_attempts', 5), 1)) {
+                Cache::forget($cacheKey);
+            } else {
+                $challenge['attempts'] = $attempts;
+                Cache::put($cacheKey, $challenge, now()->addSeconds(max(1, (int) $challenge['expires_at'] - now()->timestamp)));
+            }
+
+            Log::channel('security')->warning('security event', [
+                'event' => 'auth.2fa_failed',
+                'guard' => 'mobile',
+                'user_id' => (int) $challenge['user_id'],
+                'route' => $request->route()?->getName() ?? $request->path(),
+                'ip' => $request->ip(),
+            ]);
+
+            return $invalid;
+        }
+
+        Cache::forget($cacheKey);
+
+        // Re-read the account: it may have been banned, or its password
+        // changed, between the two steps.
+        $user = User::query()->find((int) $challenge['user_id']);
+        if (! $user || ! hash_equals((string) ($challenge['password_hash'] ?? ''), hash('sha256', (string) $user->password))) {
+            return $invalid;
+        }
+
+        if ($user->isBanned()) {
+            return response()->json(['message' => $user->banMessage()], 403);
+        }
+
+        return $this->issueMobileLoginToken($user);
     }
 
     public function register(Request $request)
@@ -243,7 +285,19 @@ class MobileController extends Controller
             return response()->json(['message' => __('Current password is incorrect.')], 422);
         }
 
-        $request->user()->update(['password' => Hash::make($data['password'])]);
+        $user = $request->user();
+        $user->forceFill([
+            'password' => Hash::make($data['password']),
+            'remember_token' => Str::random(60),
+        ])->save();
+
+        // Like the web password form: a password is changed because it may
+        // be known to someone else, so every other device signs in again.
+        // This device keeps the token it is using.
+        $currentTokenId = $user->currentAccessToken()?->getKey();
+        $user->tokens()
+            ->when($currentTokenId !== null, fn ($query) => $query->whereKeyNot($currentTokenId))
+            ->delete();
 
         return response()->json(['message' => __('Password updated.')]);
     }
@@ -2299,6 +2353,78 @@ class MobileController extends Controller
         }
 
         return $user;
+    }
+
+    private function requiresMobileTwoFactor(User $user): bool
+    {
+        return ! $user->isAdminPanelUser()
+            && (string) ($user->two_factor_preference ?? 'off') === 'email';
+    }
+
+    private function startMobileTwoFactor(User $user)
+    {
+        $challengeId = Str::random(64);
+        $code = (string) random_int(100000, 999999);
+        $ttl = max((int) config('security.user_two_factor.code_ttl_minutes', 10), 1);
+        $cacheKey = $this->mobileTwoFactorKey($challengeId);
+
+        Cache::put($cacheKey, [
+            'user_id' => $user->id,
+            'hash' => Hash::make($code),
+            // A password change between the two steps voids the challenge.
+            'password_hash' => hash('sha256', (string) $user->password),
+            'attempts' => 0,
+            'expires_at' => now()->addMinutes($ttl)->timestamp,
+        ], now()->addMinutes($ttl));
+
+        try {
+            $user->notify(new UserTwoFactorCode($code, $ttl));
+        } catch (\Throwable $exception) {
+            Cache::forget($cacheKey);
+            Log::error('Mobile two-factor code delivery failed', [
+                'user_id' => $user->id,
+                'exception' => $exception::class,
+                'message' => $exception->getMessage(),
+            ]);
+
+            return response()->json(['message' => __('We could not send the verification code. Please try again later.')], 503);
+        }
+
+        return response()->json([
+            'message' => __('A verification code has been sent to your email.'),
+            'two_factor_required' => true,
+            'challenge' => $challengeId,
+            'channel' => 'email',
+            'expires_in_minutes' => $ttl,
+        ], 202);
+    }
+
+    private function issueMobileLoginToken(User $user)
+    {
+        try {
+            $token = $user->createToken(
+                'mobile',
+                $this->mobileTokenAbilities($user),
+                now()->addMinutes((int) config('sanctum.expiration', 60 * 24 * 14))
+            )->plainTextToken;
+        } catch (\Throwable $e) {
+            Log::error('Mobile login token creation failed', [
+                'user_id' => $user->id,
+                'reason' => $e->getMessage(),
+            ]);
+
+            return response()->json(['message' => __('Unable to start mobile session. Please try again.')], 500);
+        }
+
+        return response()->json([
+            'token' => $token,
+            'user' => $this->userPayload($user),
+        ]);
+    }
+
+    private function mobileTwoFactorKey(string $challengeId): string
+    {
+        return 'mobile-2fa:'.hash('sha256', $challengeId);
     }
 
     private function mobileAdminStepUpKey(User $user, int $tokenId): string
