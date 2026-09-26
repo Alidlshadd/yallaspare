@@ -40,6 +40,7 @@ use App\Services\Shipping\ShippingFeeResolver;
 use App\Services\Shipping\ShippingQuote;
 use App\Services\WelcomeOfferService;
 use App\Support\IraqiPhoneNumber;
+use App\Support\LoginFailureThrottle;
 use App\Support\SqlSafe;
 use App\Support\VehicleLocalization;
 use App\Support\VehicleModelOrder;
@@ -87,17 +88,27 @@ class MobileController extends Controller
             'password' => ['required', 'string'],
         ]);
 
+        if (LoginFailureThrottle::tooMany($request->ip())) {
+            return response()->json([
+                'message' => __('auth.throttle', [
+                    'seconds' => LoginFailureThrottle::availableIn($request->ip()),
+                ]),
+            ], 429);
+        }
+
         $login = trim((string) $credentials['email']);
         $user = $this->userForLogin($login, (string) $credentials['password']);
 
         if (! $user) {
             $this->debugLoginFailure('user_not_found', $login);
+            LoginFailureThrottle::recordFailure($request->ip());
 
             return response()->json(['message' => __('Email or password is incorrect.')], 422);
         }
 
         if (! Hash::check((string) $credentials['password'], (string) $user->password)) {
             $this->debugLoginFailure('password_mismatch', $login, $user);
+            LoginFailureThrottle::recordFailure($request->ip());
 
             return response()->json(['message' => __('Email or password is incorrect.')], 422);
         }

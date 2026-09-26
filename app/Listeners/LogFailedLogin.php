@@ -22,11 +22,24 @@ class LogFailedLogin
         Log::channel('security')->warning('security event', [
             'event' => 'auth.failed',
             'guard' => (string) $event->guard,
-            'email' => $email,
+            // Attempts often carry a password typed into the wrong box, and the
+            // log outlives the attempt. The hash still ties every attempt at
+            // one address together; the masked form is enough to read.
+            'email_hash' => $email !== null ? hash('sha256', $email) : null,
+            'email_masked' => $email !== null ? self::mask($email) : null,
             'user_id' => $event->user?->getAuthIdentifier(),
             'route' => $this->request->route()?->getName() ?? $this->request->path(),
             'ip' => $this->request->ip(),
             'user_agent' => substr((string) $this->request->userAgent(), 0, 255),
         ]);
+    }
+
+    private static function mask(string $value): string
+    {
+        [$local, $domain] = array_pad(explode('@', $value, 2), 2, null);
+
+        $shown = mb_substr((string) $local, 0, 2);
+
+        return $domain === null ? $shown.'***' : $shown.'***@'.$domain;
     }
 }

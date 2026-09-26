@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use App\Models\User;
+use App\Support\LoginFailureThrottle;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -56,6 +57,7 @@ class LoginRequest extends FormRequest
             ! Auth::attempt(['id' => $user->getKey(), 'password' => (string) $this->input('password')], $this->boolean('remember'))
         ) {
             RateLimiter::hit($this->throttleKey());
+            LoginFailureThrottle::recordFailure($this->ip());
 
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
@@ -84,13 +86,19 @@ class LoginRequest extends FormRequest
      */
     public function ensureIsNotRateLimited(): void
     {
-        if (! RateLimiter::tooManyAttempts($this->throttleKey(), 5)) {
+        $accountLimited = RateLimiter::tooManyAttempts($this->throttleKey(), 5);
+        $addressLimited = LoginFailureThrottle::tooMany($this->ip());
+
+        if (! $accountLimited && ! $addressLimited) {
             return;
         }
 
         event(new Lockout($this));
 
-        $seconds = RateLimiter::availableIn($this->throttleKey());
+        $seconds = max(
+            $accountLimited ? RateLimiter::availableIn($this->throttleKey()) : 0,
+            $addressLimited ? LoginFailureThrottle::availableIn($this->ip()) : 0,
+        );
 
         throw ValidationException::withMessages([
             'email' => trans('auth.throttle', [

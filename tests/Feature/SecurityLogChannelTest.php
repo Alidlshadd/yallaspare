@@ -49,7 +49,9 @@ class SecurityLogChannelTest extends TestCase
         ]);
 
         $this->assertLoggedSecurity('auth.failed', 'warning', function (array $ctx) {
-            return ($ctx['email'] ?? null) === 'known@example.com'
+            return ! array_key_exists('email', $ctx)
+                && ($ctx['email_hash'] ?? null) === hash('sha256', 'known@example.com')
+                && ($ctx['email_masked'] ?? null) === 'kn***@example.com'
                 && isset($ctx['ip'])
                 && isset($ctx['guard']);
         });
