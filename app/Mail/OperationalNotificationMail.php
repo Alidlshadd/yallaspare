@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use App\Models\Order;
 use App\Models\Setting;
+use App\Services\Email\EmailTemplateOverrides;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -38,11 +39,54 @@ class OperationalNotificationMail extends Mailable implements ShouldQueue
         }
 
         $viewData = $this->emailViewData();
+        $subject = $this->subjectLine;
+
+        $templateKey = match ($viewData['view']) {
+            'emails.orders.status' => 'order-status',
+            'emails.inventory.low-stock-alert' => 'low-stock',
+            'emails.dealer.notification' => 'dealer',
+            'emails.admin.security-alert' => 'security-alert',
+            default => null,
+        };
+
+        if ($templateKey !== null) {
+            $templateVars = $this->templateVars($viewData);
+            $overrides = app(EmailTemplateOverrides::class);
+            $viewData = $overrides->viewData($templateKey, $templateVars, $locale) + $viewData;
+            $subject = $overrides->subject($templateKey, $subject, $templateVars, $locale);
+        }
 
         return $this
-            ->subject($this->subjectLine)
+            ->subject($subject)
             ->view($viewData['view'], $viewData)
             ->text('emails.text.generic', $viewData);
+    }
+
+    /**
+     * Placeholder values for the admin email template editor. {message} is
+     * the text this event would have said anyway, so one template can serve
+     * every order status without flattening them into the same sentence.
+     *
+     * @param  array<string, mixed>  $viewData
+     * @return array<string, scalar|null>
+     */
+    private function templateVars(array $viewData): array
+    {
+        $order = in_array($viewData['view'], ['emails.orders.status'], true) ? $this->resolveOrder() : null;
+
+        return [
+            'brand' => 'YallaSpare',
+            'name' => (string) ($order?->user?->name ?? $this->context['name'] ?? ''),
+            'message' => $this->bodyText,
+            'status' => (string) ($this->context['to'] ?? $this->context['status'] ?? ''),
+            'order' => (string) ($order?->order_number ?? $this->context['order_number'] ?? ''),
+            'tracking' => (string) ($order?->tracking_number ?? ''),
+            'url' => (string) ($viewData['actionUrl'] ?? url('/')),
+            'count' => (string) ($this->context['count'] ?? $this->context['item_count'] ?? ''),
+            'tier' => (string) ($this->context['tier'] ?? $this->context['dealer_discount'] ?? ''),
+            'device' => (string) ($this->context['device'] ?? $this->context['user_agent'] ?? ''),
+            'ip' => (string) ($this->context['ip'] ?? ''),
+        ];
     }
 
     private function emailViewData(): array

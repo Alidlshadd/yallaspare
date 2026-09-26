@@ -13,9 +13,14 @@
     <x-email-title :text="__('Admin sign-in code')" />
 
     {{-- Body copy --}}
-    <x-email-copy>
-        {{ __('Use this one-time code to complete your sign-in to the YallaSpare admin panel. This code is only valid for this session.') }}
-    </x-email-copy>
+    @if (! empty($customBodyHtml))
+        {{-- Wording saved in the admin email template editor. --}}
+        <x-email-copy>{!! $customBodyHtml !!}</x-email-copy>
+    @else
+        <x-email-copy>
+            {{ __('Use this one-time code to complete your sign-in to the YallaSpare admin panel. This code is only valid for this session.') }}
+        </x-email-copy>
+    @endif
 
     {{-- OTP Code --}}
     @include('emails.components.verification-code', ['code' => $code])

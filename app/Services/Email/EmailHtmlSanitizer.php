@@ -38,8 +38,29 @@ class EmailHtmlSanitizer
         $this->sanitizer = new HtmlSanitizer($config);
     }
 
+    /**
+     * Stands in for a {url} link while the sanitizer runs. A bare "{url}" is
+     * not an http(s) address, so the sanitizer used to strip every templated
+     * link — a saved password-reset template came back with no link at all.
+     */
+    private const TOKEN_HOST = 'https://template-token.invalid/';
+
     public function clean(string $html): string
     {
-        return $this->sanitizer->sanitize($html);
+        // Only {url}: it is always a link the application built. Any other
+        // token may carry customer text ("javascript:..." as a name).
+        $protected = preg_replace(
+            '/href=(["\'])\{(url)\}\1/i',
+            'href="'.self::TOKEN_HOST.'$2"',
+            $html
+        ) ?? $html;
+
+        $clean = $this->sanitizer->sanitize($protected);
+
+        return preg_replace(
+            '#href="'.preg_quote(self::TOKEN_HOST, '#').'(url)"#i',
+            'href="{$1}"',
+            $clean
+        ) ?? $clean;
     }
 }

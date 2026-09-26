@@ -12,9 +12,14 @@
     <x-email-title :text="$title ?? __('Low stock alert')" />
 
     {{-- Body copy --}}
-    <x-email-copy>
-        {{ $bodyText ?? __('One or more products in your inventory have reached the low-stock threshold and require attention.') }}
-    </x-email-copy>
+    @if (! empty($customBodyHtml))
+        {{-- Wording saved in the admin email template editor. --}}
+        <x-email-copy>{!! $customBodyHtml !!}</x-email-copy>
+    @else
+        <x-email-copy>
+            {{ $bodyText ?? __('One or more products in your inventory have reached the low-stock threshold and require attention.') }}
+        </x-email-copy>
+    @endif
 
     {{-- Meta grid --}}
     @include('emails.components.meta-grid', ['items' => $metaItems ?? []])

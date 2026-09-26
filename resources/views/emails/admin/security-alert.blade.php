@@ -13,9 +13,14 @@
     <x-email-title :text="$title ?? __('Admin security alert')" />
 
     {{-- Body copy --}}
-    <x-email-copy>
-        {!! nl2br(e($bodyText ?? '')) !!}
-    </x-email-copy>
+    @if (! empty($customBodyHtml))
+        {{-- Wording saved in the admin email template editor. --}}
+        <x-email-copy>{!! $customBodyHtml !!}</x-email-copy>
+    @else
+        <x-email-copy>
+            {!! nl2br(e($bodyText ?? '')) !!}
+        </x-email-copy>
+    @endif
 
     @if (!empty($metaItems))
         @include('emails.components.meta-grid', ['items' => $metaItems])

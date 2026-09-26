@@ -2,6 +2,7 @@
 
 namespace App\Mail;
 
+use App\Services\Email\EmailTemplateOverrides;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -26,9 +27,21 @@ class SupportContactRequestMail extends Mailable implements ShouldQueue
         $email = (string) ($this->data['email'] ?? '');
         $subject = (string) ($this->data['subject'] ?? 'Support request');
 
+        $templateVars = [
+            'brand' => 'YallaSpare',
+            'name' => $name,
+            'email' => $email,
+            'subject' => $subject,
+            'topic' => (string) ($this->data['topic'] ?? 'general'),
+        ];
+        $overrides = app(EmailTemplateOverrides::class);
+        // Only the HTML lead copy: the plain-text part carries the customer's
+        // own message and stays as it is.
+        $custom = array_intersect_key($overrides->viewData('support', $templateVars), ['customBodyHtml' => true]);
+
         $mail = $this
-            ->subject(__('Support request: :subject', ['subject' => $subject]))
-            ->view('emails.support.contact-request', $this->viewData())
+            ->subject($overrides->subject('support', __('Support request: :subject', ['subject' => $subject]), $templateVars))
+            ->view('emails.support.contact-request', $custom + $this->viewData())
             ->text('emails.text.generic', [
                 'title' => __('Support request: :subject', ['subject' => $subject]),
                 'bodyText' => (string) ($this->data['message'] ?? ''),

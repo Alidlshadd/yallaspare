@@ -13,9 +13,14 @@
     <x-email-title :text="__('Reset your password')" />
 
     {{-- Body copy --}}
-    <x-email-copy>
-        {{ __('We received a request to reset the password for your YallaSpare account. Click the button below to choose a new password.') }}
-    </x-email-copy>
+    @if (! empty($customBodyHtml))
+        {{-- Wording saved in the admin email template editor. --}}
+        <x-email-copy>{!! $customBodyHtml !!}</x-email-copy>
+    @else
+        <x-email-copy>
+            {{ __('We received a request to reset the password for your YallaSpare account. Click the button below to choose a new password.') }}
+        </x-email-copy>
+    @endif
 
     {{-- Meta info --}}
     @include('emails.components.meta-grid', ['items' => [

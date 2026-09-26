@@ -13,9 +13,14 @@
     <x-email-title :text="__('Verify your email address')" />
 
     {{-- Body copy --}}
-    <x-email-copy>
-        {{ __('Enter this verification code on the YallaSpare verification screen to protect your account and unlock checkout, order tracking, and account settings.') }}
-    </x-email-copy>
+    @if (! empty($customBodyHtml))
+        {{-- Wording saved in the admin email template editor. --}}
+        <x-email-copy>{!! $customBodyHtml !!}</x-email-copy>
+    @else
+        <x-email-copy>
+            {{ __('Enter this verification code on the YallaSpare verification screen to protect your account and unlock checkout, order tracking, and account settings.') }}
+        </x-email-copy>
+    @endif
 
     {{-- Meta info --}}
     @include('emails.components.meta-grid', ['items' => [

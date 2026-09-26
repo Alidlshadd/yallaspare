@@ -71,6 +71,7 @@ class EmailTemplateController extends Controller
                 old('body_html', $override?->body_html ?? $defaults['body_html'])
             ),
             'tableExists' => EmailTemplate::tableExists(),
+            'sampleVars' => $this->sampleVars($key),
         ]);
     }
 
@@ -171,10 +172,10 @@ class EmailTemplateController extends Controller
             'reset-password' => $shared + ['url' => url('/reset-password/sample-token'), 'expires' => '60'],
             'two-factor-code' => $shared + ['code' => '129 437', 'expires' => '10'],
             'welcome' => $shared + ['url' => url('/')],
-            'order-status' => $shared + ['order' => 'YS-104482', 'tracking' => 'AR-9837-4471-IQ', 'url' => url('/account/orders')],
-            'dealer' => $shared + ['status' => 'approved', 'tier' => '8%', 'url' => url('/')],
-            'security-alert' => $shared + ['device' => 'Chrome 134 / Windows 11', 'ip' => '93.184.216.34'],
-            'low-stock' => $shared + ['count' => '3', 'url' => url('/')],
+            'order-status' => $shared + ['order' => 'YS-104482', 'status' => 'shipped', 'tracking' => 'AR-9837-4471-IQ', 'url' => url('/account/orders'), 'message' => 'Your order YS-104482 is on the way.'],
+            'dealer' => $shared + ['status' => 'approved', 'tier' => '8%', 'url' => url('/'), 'message' => 'Your dealer account was approved.'],
+            'security-alert' => $shared + ['device' => 'Chrome 134 / Windows 11', 'ip' => '93.184.216.34', 'message' => 'A new admin sign-in was detected.'],
+            'low-stock' => $shared + ['count' => '3', 'url' => url('/'), 'message' => '3 products are below the low-stock threshold.'],
             'support' => $shared + ['subject' => 'Wrong part received', 'topic' => 'Order issue'],
             default => $shared,
         };

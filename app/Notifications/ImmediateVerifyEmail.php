@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Services\Email\EmailTemplateOverrides;
 use App\Support\EmailVerificationCode;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -30,8 +31,18 @@ class ImmediateVerifyEmail extends Notification
             'verificationCode' => $verificationCode,
         ];
 
+        $templateVars = [
+            'brand' => 'YallaSpare',
+            'name' => (string) ($notifiable->name ?? ''),
+            'email' => $email,
+            'code' => $verificationCode,
+            'expires' => $expiresIn,
+        ];
+        $overrides = app(EmailTemplateOverrides::class);
+        $viewData = $overrides->viewData('verify-email', $templateVars) + $viewData;
+
         return (new MailMessage)
-            ->subject(__('Verify your YallaSpare email address'))
+            ->subject($overrides->subject('verify-email', __('Verify your YallaSpare email address'), $templateVars))
             ->greeting(__('Welcome to YallaSpare'))
             ->line(__('Enter this verification code on the YallaSpare verification screen to protect your account and unlock checkout, orders, saved addresses, and account settings.'))
             ->line(__('Your verification code is :code.', ['code' => $verificationCode]))

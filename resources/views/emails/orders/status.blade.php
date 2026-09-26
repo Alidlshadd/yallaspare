@@ -20,9 +20,14 @@
     @endif
 
     {{-- Body copy --}}
-    <x-email-copy>
-        {{ $intro ?? $bodyText ?? '' }}
-    </x-email-copy>
+    @if (! empty($customBodyHtml))
+        {{-- Wording saved in the admin email template editor. --}}
+        <x-email-copy>{!! $customBodyHtml !!}</x-email-copy>
+    @else
+        <x-email-copy>
+            {{ $intro ?? $bodyText ?? '' }}
+        </x-email-copy>
+    @endif
 
     {{-- Meta grid --}}
     @include('emails.components.meta-grid', ['items' => $metaItems ?? []])

@@ -97,7 +97,7 @@
                         @error('body_html')<p class="mt-1 text-xs font-medium text-rose-600">{{ $message }}</p>@enderror
                         <p class="mt-2 text-[10px] font-mono text-muted">
                             {{ __('Allowed tags') }}: p, br, strong, b, em, i, u, s, a, ul, ol, li, h1-h4, blockquote, hr, span, div.
-                            {{ __('Placeholders') }}: <code class="text-primary">{name}</code>, <code class="text-primary">{code}</code>, <code class="text-primary">{url}</code>, <code class="text-primary">{email}</code>.
+                            {{ __('Placeholders') }}: @foreach(array_keys($sampleVars) as $token)<code class="text-primary">{{ '{'.$token.'}' }}</code>{{ $loop->last ? '.' : ', ' }}@endforeach
                         </p>
                     </div>
                 </div>
@@ -159,15 +159,6 @@
                         <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">{{ __('Sample variables') }}</p>
                     </div>
                     <div class="p-4 space-y-1">
-                        @php
-                            $sampleVars = [
-                                'brand' => 'YallaSpare',
-                                'name' => 'Ahmed Al-Khalidi',
-                                'email' => 'customer@example.com',
-                                'code' => '847293',
-                                'url' => url('/'),
-                            ];
-                        @endphp
                         @foreach($sampleVars as $k => $v)
                             <div class="flex items-center justify-between gap-3 text-[11px] font-mono">
                                 <code class="text-primary dark:text-info">{{ '{' . $k . '}' }}</code>
@@ -206,23 +197,7 @@
         var previewSubject = document.getElementById('preview-subject');
         var previewBody = document.getElementById('preview-body');
 
-        var sampleVars = {
-            brand: 'YallaSpare',
-            name: 'Ahmed Al-Khalidi',
-            email: 'customer@example.com',
-            code: '847293',
-            url: '/',
-            expires: '60',
-            order: 'YS-104482',
-            tracking: 'AR-9837-4471-IQ',
-            status: 'approved',
-            tier: '8%',
-            device: 'Chrome 134 / Windows 11',
-            ip: '93.184.216.34',
-            count: '3',
-            topic: 'Order issue',
-            subject: 'Wrong part received'
-        };
+        var sampleVars = @json($sampleVars);
 
         function interpolate(html) {
             for (var token in sampleVars) {

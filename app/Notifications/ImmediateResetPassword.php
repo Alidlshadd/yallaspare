@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Services\Email\EmailTemplateOverrides;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;
 
@@ -26,8 +27,17 @@ class ImmediateResetPassword extends ResetPassword
             'intro' => __('We received a request to reset the password for your YallaSpare account. Use the secure button below to continue.'),
         ];
 
+        $templateVars = [
+            'brand' => 'YallaSpare',
+            'email' => $email,
+            'url' => $url,
+            'expires' => $expiresIn,
+        ];
+        $overrides = app(EmailTemplateOverrides::class);
+        $viewData = $overrides->viewData('reset-password', $templateVars) + $viewData;
+
         return (new MailMessage)
-            ->subject(__('Reset your YallaSpare password'))
+            ->subject($overrides->subject('reset-password', __('Reset your YallaSpare password'), $templateVars))
             ->line(__('We received a request to reset the password for your YallaSpare account. Use the secure button below to continue.'))
             ->action(__('Reset Password'), $url)
             ->line(__('This password reset link will expire in :count minutes.', ['count' => $expiresIn]))

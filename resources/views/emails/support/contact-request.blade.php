@@ -12,9 +12,14 @@
     <x-email-title :text="__('New support request')" />
 
     {{-- Intro --}}
-    <x-email-copy>
-        {{ __('A visitor submitted a support request through the YallaSpare contact form. Details are below.') }}
-    </x-email-copy>
+    @if (! empty($customBodyHtml))
+        {{-- Wording saved in the admin email template editor. --}}
+        <x-email-copy>{!! $customBodyHtml !!}</x-email-copy>
+    @else
+        <x-email-copy>
+            {{ __('A visitor submitted a support request through the YallaSpare contact form. Details are below.') }}
+        </x-email-copy>
+    @endif
 
     {{-- Contact details --}}
     @include('emails.components.meta-grid', ['items' => array_filter([
