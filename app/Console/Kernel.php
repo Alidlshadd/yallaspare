@@ -49,6 +49,13 @@ class Kernel extends ConsoleKernel
             ->weeklyOn(1, '04:00')
             ->withoutOverlapping();
 
+        // Every mobile login and token refresh writes a row that stays after
+        // it expires. Expired rows authorise nothing, so a day's grace is
+        // plenty before they go.
+        $schedule->command('sanctum:prune-expired --hours=24')
+            ->dailyAt('04:30')
+            ->withoutOverlapping();
+
         $schedule->command('queue:alert-failed')
             ->hourly()
             ->withoutOverlapping();

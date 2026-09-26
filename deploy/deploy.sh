@@ -18,6 +18,7 @@
 #     WORKER=yallaspare-worker         # supervisor program name ('' to skip)
 #     SKIP_MAINTENANCE=0               # 1 = don't toggle maintenance mode
 #     FORCE=0                          # 1 = deploy even with a dirty working tree
+#     SKIP_BACKUP=0                    # 1 = migrate without a fresh database dump
 #
 set -euo pipefail
 
@@ -29,6 +30,7 @@ PHP_BIN="${PHP_BIN:-php}"
 WORKER="${WORKER:-yallaspare-worker}"
 SKIP_MAINTENANCE="${SKIP_MAINTENANCE:-0}"
 FORCE="${FORCE:-0}"
+SKIP_BACKUP="${SKIP_BACKUP:-0}"
 
 # Vite entries that MUST appear in the built manifest. If npm run build ran
 # against stale code (the classic failure), one of these is missing and we
@@ -141,6 +143,18 @@ done
 ok "Manifest contains all ${#REQUIRED_MANIFEST_ENTRIES[@]} required entries"
 
 # --- Database ----------------------------------------------------------------
+# A migration that drops or rewrites data cannot be undone by redeploying, and
+# last night's dump is up to a day old. Take a fresh one first, and refuse to
+# migrate without it.
+if [ "${SKIP_BACKUP}" != "1" ]; then
+    log "Backing up the database before migrating"
+    "${PHP_BIN}" artisan db:backup \
+        || die "Pre-migration backup failed — not migrating. Fix it, or rerun with SKIP_BACKUP=1 if you accept the risk."
+    ok "Database backed up"
+else
+    warn "SKIP_BACKUP=1 — migrating without a fresh backup"
+fi
+
 log "Running migrations"
 "${PHP_BIN}" artisan migrate --force
 ok "Migrations up to date"
