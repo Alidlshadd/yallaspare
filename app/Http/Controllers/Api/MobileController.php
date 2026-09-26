@@ -218,7 +218,16 @@ class MobileController extends Controller
             $data['phone'] = IraqiPhoneNumber::toE164($data['phone']);
         }
 
-        $user->update($data);
+        $user->fill($data);
+
+        // Same rule as the web profile forms: a new address has proved
+        // nothing yet. Keeping the old stamp let anyone wear an address they
+        // do not own as "verified", which social sign-in then trusts.
+        if ($user->isDirty('email')) {
+            $user->email_verified_at = null;
+        }
+
+        $user->save();
 
         return response()->json(['user' => $this->userPayload($user->fresh())]);
     }

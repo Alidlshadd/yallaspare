@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use Laravel\Socialite\Two\User as SocialiteUser;
@@ -203,6 +204,59 @@ class SocialAuthenticationTest extends TestCase
         $this->assertSame('google-456', $freshUser->google_id);
         $this->assertSame('https://example.com/buyer.jpg', $freshUser->avatar);
         $this->assertNotNull($freshUser->email_verified_at);
+    }
+
+    /**
+     * Pre-registration takeover: someone signs up with another person's
+     * address, activates the account with their own phone and waits. When
+     * the real owner later arrives through Google, whatever the squatter
+     * could sign in with must stop working.
+     */
+    public function test_linking_an_unverified_email_revokes_the_previous_credentials(): void
+    {
+        $squatted = User::factory()->unverified()->create([
+            'email' => 'owner@example.com',
+            'phone_verified_at' => now(),
+            'password' => 'squatter-secret',
+        ]);
+        $squatted->createToken('mobile');
+
+        $this->mockGoogleUser([
+            'id' => 'google-owner',
+            'name' => 'Real Owner',
+            'email' => 'owner@example.com',
+            'email_verified' => true,
+        ]);
+
+        $this->get(route('auth.google.callback'))->assertRedirect(route('user.shop.home'));
+
+        $fresh = $squatted->fresh();
+        $this->assertSame('google-owner', $fresh->google_id);
+        $this->assertFalse(Hash::check('squatter-secret', $fresh->password));
+        $this->assertNotSame($squatted->remember_token, $fresh->remember_token);
+        $this->assertSame(0, $fresh->tokens()->count());
+    }
+
+    public function test_linking_a_verified_email_keeps_the_owners_password(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'verified@example.com',
+            'password' => 'owner-secret',
+        ]);
+        $user->createToken('mobile');
+
+        $this->mockGoogleUser([
+            'id' => 'google-verified',
+            'name' => 'Verified Owner',
+            'email' => 'verified@example.com',
+            'email_verified' => true,
+        ]);
+
+        $this->get(route('auth.google.callback'))->assertRedirect(route('user.shop.home'));
+
+        $fresh = $user->fresh();
+        $this->assertTrue(Hash::check('owner-secret', $fresh->password));
+        $this->assertSame(1, $fresh->tokens()->count());
     }
 
     public function test_google_callback_binds_google_id_to_existing_user(): void

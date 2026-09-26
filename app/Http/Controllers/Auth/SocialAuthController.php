@@ -224,11 +224,28 @@ class SocialAuthController extends Controller
                     $attributes['avatar'] = $avatar;
                 }
 
+                $revokeExistingAccess = false;
+
                 if (! $user->hasVerifiedEmail()) {
                     $attributes['email_verified_at'] = now();
+
+                    // Nobody had proved they own this address until now, so
+                    // whoever set the account up may not be the person
+                    // signing in. Anything they could sign in with — the
+                    // password, remembered browsers, app tokens, and (via the
+                    // password hash) other sessions — stops working, and the
+                    // provider becomes the only way in until the owner sets
+                    // a password of their own.
+                    $attributes['password'] = Str::random(48);
+                    $attributes['remember_token'] = Str::random(60);
+                    $revokeExistingAccess = true;
                 }
 
                 $user->forceFill($attributes)->save();
+
+                if ($revokeExistingAccess) {
+                    $user->tokens()->delete();
+                }
 
                 return $user;
             }
