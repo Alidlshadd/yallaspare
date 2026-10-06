@@ -3919,5 +3919,6 @@
     "Russia": "ڕووسیا",
     "Country code for :field": "کۆدی وڵات بۆ :field",
     "Choose the country, then type the number as it is written there. A number typed in full with + keeps its own country code.": "وڵاتەکە هەڵبژێرە، پاشان ژمارەکە وەک لەوێ دەنووسرێت بینووسە. ئەو ژمارەیەی بە تەواوی لەگەڵ + دەنووسرێت کۆدی وڵاتی خۆی دەپارێزێت.",
-    "This is not a valid phone number for :country. Check the number, or type it in full starting with + and the country code.": "ئەمە ژمارەیەکی تەلەفۆنی دروست نییە بۆ :country. ژمارەکە بپشکنە، یان بە تەواوی بینووسە بە دەستپێکردن بە + و کۆدی وڵات."
+    "This is not a valid phone number for :country. Check the number, or type it in full starting with + and the country code.": "ئەمە ژمارەیەکی تەلەفۆنی دروست نییە بۆ :country. ژمارەکە بپشکنە، یان بە تەواوی بینووسە بە دەستپێکردن بە + و کۆدی وڵات.",
+    "The invoice total is too large to be saved. Check the quantities and prices.": "کۆی پسوولەکە زۆر گەورەیە بۆ پاشەکەوتکردن. بڕ و نرخەکان بپشکنە."
 }

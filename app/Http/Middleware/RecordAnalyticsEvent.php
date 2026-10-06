@@ -33,6 +33,12 @@ class RecordAnalyticsEvent
         if ($request->is('admin') || $request->is('admin/*')) {
             return;
         }
+        // A shared invoice's address is its key. Recording the page view
+        // would copy that key into the analytics table, where anyone who can
+        // read the traffic report could open the invoice with it.
+        if ($request->is('i/*')) {
+            return;
+        }
         if (BotDetector::isBot($request->userAgent())) {
             return;
         }

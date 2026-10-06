@@ -3919,5 +3919,6 @@
     "Russia": "روسيا",
     "Country code for :field": "رمز الدولة لحقل :field",
     "Choose the country, then type the number as it is written there. A number typed in full with + keeps its own country code.": "اختر الدولة ثم اكتب الرقم كما يُكتب فيها. الرقم المكتوب كاملاً مع + يحتفظ برمز دولته.",
-    "This is not a valid phone number for :country. Check the number, or type it in full starting with + and the country code.": "هذا ليس رقم هاتف صالحاً في :country. تحقق من الرقم، أو اكتبه كاملاً مبتدئاً بـ + ورمز الدولة."
+    "This is not a valid phone number for :country. Check the number, or type it in full starting with + and the country code.": "هذا ليس رقم هاتف صالحاً في :country. تحقق من الرقم، أو اكتبه كاملاً مبتدئاً بـ + ورمز الدولة.",
+    "The invoice total is too large to be saved. Check the quantities and prices.": "إجمالي الفاتورة أكبر من أن يُحفظ. تحقق من الكميات والأسعار."
 }

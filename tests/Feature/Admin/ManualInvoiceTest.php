@@ -710,6 +710,41 @@ class ManualInvoiceTest extends TestCase
         $this->get($url)->assertNotFound();
     }
 
+    public function test_a_share_link_is_never_written_into_the_traffic_log(): void
+    {
+        $invoice = $this->draft($this->customer(), $this->product());
+        $this->actingAs($this->admin)->post(route('admin.manual-invoices.finalize', $invoice));
+        $this->actingAs($this->admin)->post(route('admin.manual-invoices.share', $invoice));
+        $url = $invoice->fresh()->shareUrl();
+        auth()->logout();
+
+        $browser = ['HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/126.0 Safari/537.36'];
+
+        // An ordinary page is recorded, so the check below is not passing
+        // merely because nothing is being recorded at all.
+        $this->get(route('legal.contact'), $browser)->assertOk();
+        $this->assertTrue(DB::table('analytics_events')->where('url', 'like', '%/contact%')->exists());
+
+        $this->get($url, $browser)->assertOk();
+        $this->get($url.'/pdf', $browser)->assertOk();
+
+        $this->assertFalse(
+            DB::table('analytics_events')->where('url', 'like', '%/i/%')->exists(),
+            'The share token was copied into analytics_events.'
+        );
+    }
+
+    public function test_a_total_too_large_for_the_ledger_is_refused_not_clipped(): void
+    {
+        $this->actingAs($this->admin)
+            ->post(route('admin.manual-invoices.store'), $this->payload($this->customer(), [
+                ['description' => 'Absurd', 'quantity' => 100000, 'unit_price' => 9999999999],
+            ]))
+            ->assertSessionHasErrors('items');
+
+        $this->assertSame(0, ManualInvoice::query()->count());
+    }
+
     public function test_the_whatsapp_button_opens_a_chat_with_a_ready_message_and_the_public_link(): void
     {
         $invoice = $this->draft($this->customer(['whatsapp' => '+9647509998877']), $this->product());

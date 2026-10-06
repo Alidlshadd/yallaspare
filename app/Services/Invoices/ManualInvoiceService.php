@@ -16,6 +16,9 @@ use Illuminate\Validation\ValidationException;
 
 class ManualInvoiceService
 {
+    /** The largest value a decimal(12, 2) money column can hold. */
+    private const MAX_AMOUNT = 9999999999.99;
+
     public function __construct(private readonly InventoryAdjustmentService $inventory) {}
 
     /**
@@ -79,6 +82,16 @@ class ManualInvoiceService
             ]);
         }
 
+        // Each field is within range on its own, but quantity times price, or
+        // the lines added up, can still exceed what the money columns hold.
+        // Refused here it is a message on the form; left to the database it
+        // is a failed save or, on a lenient server, a silently clipped total.
+        if ($subtotal + $deliveryFee > self::MAX_AMOUNT) {
+            throw ValidationException::withMessages([
+                'items' => __('The invoice total is too large to be saved. Check the quantities and prices.'),
+            ]);
+        }
+
         return [
             'items' => $items,
             'subtotal' => $subtotal,
@@ -135,6 +148,23 @@ class ManualInvoiceService
             $invoice->items()->createMany($priced['items']);
 
             return $invoice->load('items');
+        });
+    }
+
+    /**
+     * Delete a draft, and only a draft.
+     *
+     * The status is read again under a lock rather than trusted from the page
+     * that was open: otherwise a delete racing a finalize in another tab could
+     * remove an invoice whose stock had just been deducted, leaving a movement
+     * with nothing to explain it.
+     */
+    public function deleteDraft(ManualInvoice $invoice): void
+    {
+        DB::transaction(function () use ($invoice): void {
+            $locked = ManualInvoice::query()->whereKey($invoice->id)->lockForUpdate()->firstOrFail();
+            $this->assertDraft($locked);
+            $locked->delete();
         });
     }
 

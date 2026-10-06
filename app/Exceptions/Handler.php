@@ -78,7 +78,10 @@ class Handler extends ExceptionHandler
         // Scoped 404 logging: `routeIs()` is unreliable when routing itself
         // failed, so we match against the request path prefixes instead.
         $this->renderable(function (NotFoundHttpException $e, Request $request): void {
-            if ($request->is('account/*', 'user/*', 'admin/*')) {
+            // i/* is the shared-invoice link: a miss there is a revoked link
+            // at best and someone guessing tokens at worst. The event carries
+            // the route name, not the token that was tried.
+            if ($request->is('account/*', 'user/*', 'admin/*', 'i/*')) {
                 $this->logSecurityEvent($request, 'authz.not_found', 'notice');
             }
         });

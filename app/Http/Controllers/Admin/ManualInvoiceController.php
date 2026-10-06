@@ -152,10 +152,8 @@ class ManualInvoiceController extends Controller
     {
         // A finalized invoice has moved stock and may be in a customer's
         // hands; only a draft, which has done neither, can simply go.
-        $this->invoices->assertDraft($manualInvoice);
-
         $number = $manualInvoice->number;
-        $manualInvoice->delete();
+        $this->invoices->deleteDraft($manualInvoice);
 
         AdminLogger::log('manual_invoice.draft_deleted', null, ['number' => $number]);
 
