@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\ManualInvoice;
+use App\Models\ManualInvoicePayment;
 use App\Models\Order;
 use App\Models\Setting;
 use Carbon\Carbon;
@@ -256,9 +258,41 @@ class RevenueController extends Controller
             'topDealers' => $topDealers,
             'conversionSummary' => $conversionSummary,
             'recentPaidOrders' => $recentPaidOrders,
+            'manualSales' => $this->manualSales($start, $end),
             'currencyLabel' => $currencyLabel,
             'currencyDecimals' => $currencyDecimals,
         ]);
+    }
+
+    /**
+     * Sales invoiced by hand, shown beside the site's figures and never added
+     * into them: everything else on this page is built from site orders, and
+     * goals and comparisons depend on that staying true.
+     *
+     * @return array{count: int, invoiced: float, collected: float, outstanding: float}
+     */
+    private function manualSales(Carbon $start, Carbon $end): array
+    {
+        $finalized = ManualInvoice::query()->where('status', ManualInvoice::STATUS_FINALIZED);
+        // whereDate rather than whereBetween: a date column holds a bare date
+        // on MySQL and a midnight timestamp on SQLite, and only a date
+        // comparison treats the last day of the range the same on both.
+        $inRange = (clone $finalized)
+            ->whereDate('invoice_date', '>=', $start->toDateString())
+            ->whereDate('invoice_date', '<=', $end->toDateString());
+
+        return [
+            'count' => (clone $inRange)->count(),
+            'invoiced' => (float) (clone $inRange)->sum('total'),
+            // Money that actually came in during the range, whichever
+            // invoice it was for. Refunds are negative rows, so they net out.
+            'collected' => (float) ManualInvoicePayment::query()
+                ->whereDate('paid_on', '>=', $start->toDateString())
+                ->whereDate('paid_on', '<=', $end->toDateString())
+                ->sum('amount'),
+            // Owed right now across every finalized invoice, not just these.
+            'outstanding' => max((float) (clone $finalized)->sum('total') - (float) (clone $finalized)->sum('paid_amount'), 0),
+        ];
     }
 
     public function export(Request $request): StreamedResponse

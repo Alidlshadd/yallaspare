@@ -5,6 +5,7 @@
         $cardClass = 'bg-white border border-slate-200/70 rounded-2xl p-5 sm:p-6 bento-shadow';
         $labelClass = 'block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 mb-1.5';
         $ghostButton = 'inline-flex w-full items-center justify-center gap-2 h-10 px-4 rounded-xl border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-100 transition dark:hover:bg-slate-800';
+        $fieldClass = 'h-10 w-full px-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30';
         $shareUrl = $invoice->shareUrl();
         $pdfLocales = ['en' => 'English', 'ar' => 'العربية', 'ku' => 'کوردی'];
     @endphp
@@ -28,6 +29,12 @@
             <div class="mb-4 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-900">
                 <p class="font-bold">{{ __('This is a draft.') }}</p>
                 <p class="mt-1 text-xs">{{ __('No stock has been deducted and it is not counted as a sale. Finalizing deducts stock for the catalogue items once, records the movement under this invoice number, and locks the invoice.') }}</p>
+            </div>
+        @elseif ($invoice->isVoid())
+            <div class="mb-4 rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-sm text-rose-900">
+                <p class="font-bold">{{ __('Voided on :date.', ['date' => $invoice->voided_at?->format('Y-m-d H:i')]) }}</p>
+                <p class="mt-1 text-xs">{{ __('This invoice no longer counts as a sale. Stock for its catalogue items was returned and its share link was withdrawn. It is kept for the record.') }}</p>
+                <p class="mt-1 text-xs"><span class="font-bold">{{ __('Reason') }}:</span> {{ $invoice->void_reason }}</p>
             </div>
         @else
             <div class="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm text-emerald-900">
@@ -135,22 +142,78 @@
                     </section>
                 @endif
 
-                <section class="{{ $cardClass }}">
-                    <h2 class="text-sm font-bold text-slate-900 mb-3">{{ __('Payment status') }}</h2>
-                    <form method="POST" action="{{ route('admin.manual-invoices.update-payment', $invoice) }}" class="flex items-end gap-2">
-                        @csrf
-                        @method('PATCH')
-                        <div class="flex-1">
-                            <label for="payment_status" class="{{ $labelClass }}">{{ __('Payment status') }}</label>
-                            <select id="payment_status" name="payment_status" class="h-10 w-full px-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30">
-                                @foreach (\App\Models\ManualInvoice::paymentStatusLabels() as $value => $label)
-                                    <option value="{{ $value }}" @selected($invoice->payment_status === $value)>{{ $label }}</option>
-                                @endforeach
-                            </select>
+                @if (! $invoice->isDraft())
+                    <section class="{{ $cardClass }}">
+                        <div class="flex items-center justify-between gap-3 mb-3">
+                            <h2 class="text-sm font-bold text-slate-900">{{ __('Payments') }}</h2>
+                            <span class="inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold {{ $invoice->payment_status === 'paid' ? 'bg-emerald-100 text-emerald-700' : ($invoice->payment_status === 'partial' ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-700') }}">{{ $invoice->paymentStatusLabel() }}</span>
                         </div>
-                        <button type="submit" class="h-10 px-4 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition dark:text-slate-900 dark:hover:bg-slate-100">{{ __('Update') }}</button>
-                    </form>
-                </section>
+                        <dl class="space-y-1.5 text-sm">
+                            <div class="flex justify-between gap-3"><dt class="text-slate-500">{{ __('Grand total') }}</dt><dd class="font-bold text-slate-900">{{ $service->money((float) $invoice->total) }}</dd></div>
+                            <div class="flex justify-between gap-3"><dt class="text-slate-500">{{ __('Paid so far') }}</dt><dd class="font-bold text-slate-900">{{ $service->money((float) $invoice->paid_amount) }}</dd></div>
+                            <div class="flex justify-between gap-3 border-t border-slate-200 pt-2"><dt class="font-bold text-slate-900">{{ __('Balance due') }}</dt><dd class="font-bold text-slate-900">{{ $service->money($invoice->balance()) }}</dd></div>
+                        </dl>
+
+                        @if ($invoice->payments->isNotEmpty())
+                            <ul class="mt-3 divide-y divide-slate-100 border-t border-slate-100">
+                                @foreach ($invoice->payments as $payment)
+                                    <li class="py-2 text-xs">
+                                        <div class="flex justify-between gap-3">
+                                            <span class="font-bold {{ $payment->isRefund() ? 'text-rose-600' : 'text-slate-900' }}">{{ $payment->isRefund() ? __('Refund') : __('Payment') }}</span>
+                                            <span dir="ltr" class="font-bold {{ $payment->isRefund() ? 'text-rose-600' : 'text-slate-900' }}">{{ $service->money((float) $payment->amount) }}</span>
+                                        </div>
+                                        <div class="text-slate-500 mt-0.5">
+                                            {{ $payment->paid_on?->format('Y-m-d') }}@if ($payment->method) · {{ \App\Models\ManualInvoicePayment::methodLabels()[$payment->method] ?? $payment->method }}@endif @if ($payment->recorder) · {{ $payment->recorder->name }}@endif
+                                        </div>
+                                        @if ($payment->note)
+                                            <div class="text-slate-600 mt-0.5">{{ $payment->note }}</div>
+                                        @endif
+                                    </li>
+                                @endforeach
+                            </ul>
+                        @endif
+
+                        @if ($invoice->isFinalized())
+                            <form method="POST" action="{{ route('admin.manual-invoices.payments.store', $invoice) }}" class="mt-4 space-y-2 border-t border-slate-100 pt-4">
+                                @csrf
+                                <div class="grid grid-cols-2 gap-2">
+                                    <div>
+                                        <label for="payment_kind" class="{{ $labelClass }}">{{ __('Entry') }}</label>
+                                        <select id="payment_kind" name="kind" class="{{ $fieldClass }}">
+                                            <option value="payment" @selected(old('kind', 'payment') === 'payment')>{{ __('Payment') }}</option>
+                                            <option value="refund" @selected(old('kind') === 'refund')>{{ __('Refund') }}</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label for="payment_amount" class="{{ $labelClass }}">{{ __('Amount') }} ({{ $service->currencyLabel() }})</label>
+                                        <input id="payment_amount" type="number" name="amount" min="0" step="any" required
+                                               value="{{ old('amount', $invoice->balance() > 0 ? $invoice->balance() : '') }}" class="{{ $fieldClass }}">
+                                    </div>
+                                    <div>
+                                        <label for="payment_date" class="{{ $labelClass }}">{{ __('Date') }}</label>
+                                        <input id="payment_date" type="date" name="paid_on" required max="{{ now()->format('Y-m-d') }}"
+                                               value="{{ old('paid_on', now()->format('Y-m-d')) }}" class="{{ $fieldClass }}">
+                                    </div>
+                                    <div>
+                                        <label for="payment_method" class="{{ $labelClass }}">{{ __('Method') }}</label>
+                                        <select id="payment_method" name="method" class="{{ $fieldClass }}">
+                                            <option value="">—</option>
+                                            @foreach (\App\Models\ManualInvoicePayment::methodLabels() as $value => $label)
+                                                <option value="{{ $value }}" @selected(old('method') === $value)>{{ $label }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label for="payment_note" class="{{ $labelClass }}">{{ __('Note (optional)') }}</label>
+                                    <input id="payment_note" type="text" name="note" maxlength="255" value="{{ old('note') }}" class="{{ $fieldClass }}">
+                                </div>
+                                <button type="submit" class="inline-flex w-full items-center justify-center h-10 px-4 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition dark:text-slate-900 dark:hover:bg-slate-100">{{ __('Record entry') }}</button>
+                                <p class="text-[11px] text-slate-500">{{ __('The status is worked out from these entries. A refund is kept as its own line; nothing is erased.') }}</p>
+                            </form>
+                        @endif
+                    </section>
+                @endif
 
                 <section class="{{ $cardClass }}">
                     <h2 class="text-sm font-bold text-slate-900 mb-1">{{ __('PDF and print') }}</h2>
@@ -178,7 +241,9 @@
                 <section class="{{ $cardClass }}">
                     <h2 class="text-sm font-bold text-slate-900 mb-1">{{ __('Share with the customer') }}</h2>
 
-                    @if ($invoice->isDraft())
+                    @if ($invoice->isVoid())
+                        <p class="text-xs text-slate-500">{{ __('A void invoice cannot be shared.') }}</p>
+                    @elseif ($invoice->isDraft())
                         <p class="text-xs text-slate-500">{{ __('Finalize the invoice before sharing it.') }}</p>
                     @elseif (! $shareUrl)
                         <p class="text-[11px] text-slate-500 mb-3">{{ __('Creates a private link that opens this invoice only. It needs no sign-in, cannot be guessed, and can be revoked at any time.') }}</p>
@@ -220,6 +285,29 @@
                         </form>
                     @endif
                 </section>
+
+                @if ($invoice->isFinalized())
+                    <section class="{{ $cardClass }}">
+                        <h2 class="text-sm font-bold text-slate-900 mb-1">{{ __('Void invoice') }}</h2>
+                        <p class="text-[11px] text-slate-500 mb-3">{{ __('For a sale that was cancelled or entered by mistake. Stock for the catalogue items is returned once, the share link is withdrawn, and the invoice is kept marked as void.') }}</p>
+                        @if ($invoice->paid_amount > 0)
+                            <p class="rounded-xl border border-amber-200 bg-amber-50 px-3 py-2 text-xs text-amber-900">{{ __('Refund the :paid already paid before voiding this invoice.', ['paid' => $service->money((float) $invoice->paid_amount)]) }}</p>
+                        @else
+                            <form method="POST" action="{{ route('admin.manual-invoices.void', $invoice) }}" class="space-y-2"
+                                  data-danger-confirm
+                                  data-danger-title="{{ __('Void invoice') }}"
+                                  data-danger-action="{{ __('Void invoice') }}"
+                                  data-danger-description="{{ __('The invoice will be marked void and its stock returned. This cannot be undone.') }}">
+                                @csrf
+                                <label for="void_reason" class="{{ $labelClass }}">{{ __('Reason') }}</label>
+                                <input id="void_reason" type="text" name="void_reason" required minlength="3" maxlength="500" value="{{ old('void_reason') }}" class="{{ $fieldClass }}">
+                                <button type="submit" class="inline-flex w-full items-center justify-center gap-2 h-10 px-4 rounded-xl border border-rose-200 bg-rose-50 text-xs font-bold text-rose-600 hover:bg-rose-100 transition">
+                                    <i class="fas fa-ban text-[11px]" aria-hidden="true"></i>{{ __('Void invoice') }}
+                                </button>
+                            </form>
+                        @endif
+                    </section>
+                @endif
             </aside>
         </div>
 

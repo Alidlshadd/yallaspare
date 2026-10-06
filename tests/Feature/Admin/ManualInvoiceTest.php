@@ -488,7 +488,7 @@ class ManualInvoiceTest extends TestCase
         $this->assertSame(8, (int) $product->fresh()->stock_quantity);
     }
 
-    public function test_a_draft_can_be_edited_and_deleted_and_payment_status_changed(): void
+    public function test_a_draft_can_be_edited_and_deleted(): void
     {
         $customer = $this->customer();
         $product = $this->product();
@@ -497,7 +497,7 @@ class ManualInvoiceTest extends TestCase
         $this->actingAs($this->admin)
             ->put(route('admin.manual-invoices.update', $invoice), $this->payload($customer, [
                 ['description' => 'Wheel alignment', 'quantity' => 1, 'unit_price' => 30000],
-            ], ['payment_status' => 'partial']))
+            ]))
             ->assertRedirect(route('admin.manual-invoices.show', $invoice));
 
         $invoice = $invoice->fresh('items');
@@ -505,14 +505,263 @@ class ManualInvoiceTest extends TestCase
         $this->assertSame(30000.0, $invoice->total);
 
         $this->actingAs($this->admin)
-            ->patch(route('admin.manual-invoices.update-payment', $invoice), ['payment_status' => 'paid'])
-            ->assertSessionHasNoErrors();
-        $this->assertSame('paid', $invoice->fresh()->payment_status);
-
-        $this->actingAs($this->admin)
             ->delete(route('admin.manual-invoices.destroy', $invoice))
             ->assertRedirect(route('admin.manual-invoices.index'));
         $this->assertDatabaseMissing('manual_invoices', ['id' => $invoice->id]);
+    }
+
+    // ── Payments ───────────────────────────────────────────────────
+
+    private function finalized(int $quantity = 2): ManualInvoice
+    {
+        $invoice = $this->draft($this->customer(), $this->product(), $quantity);
+        $this->actingAs($this->admin)->post(route('admin.manual-invoices.finalize', $invoice));
+
+        return $invoice->fresh();
+    }
+
+    /**
+     * @param  array<string, mixed>  $overrides
+     */
+    private function pay(ManualInvoice $invoice, float $amount, string $kind = 'payment', array $overrides = [])
+    {
+        return $this->actingAs($this->admin)->post(route('admin.manual-invoices.payments.store', $invoice), array_merge([
+            'kind' => $kind,
+            'amount' => $amount,
+            'paid_on' => now()->toDateString(),
+            'method' => 'cash',
+        ], $overrides));
+    }
+
+    public function test_the_payment_status_follows_the_money_recorded(): void
+    {
+        $invoice = $this->finalized();   // total 50,000
+        $this->assertSame('unpaid', $invoice->payment_status);
+
+        $this->pay($invoice, 20000)->assertSessionHasNoErrors();
+        $invoice->refresh();
+        $this->assertSame(20000.0, $invoice->paid_amount);
+        $this->assertSame(30000.0, $invoice->balance());
+        $this->assertSame('partial', $invoice->payment_status);
+
+        $this->pay($invoice, 30000, 'payment', ['method' => 'bank_transfer', 'note' => 'Second half'])->assertSessionHasNoErrors();
+        $invoice->refresh();
+        $this->assertSame(50000.0, $invoice->paid_amount);
+        $this->assertSame(0.0, $invoice->balance());
+        $this->assertSame('paid', $invoice->payment_status);
+
+        $this->assertSame(2, $invoice->payments()->count());
+        $this->assertSame($this->admin->id, $invoice->payments()->first()->created_by);
+
+        $this->actingAs($this->admin)
+            ->get(route('admin.manual-invoices.show', $invoice))
+            ->assertOk()
+            ->assertSee('Second half')
+            ->assertSee('Balance due');
+    }
+
+    public function test_a_payment_cannot_exceed_the_balance_nor_a_refund_what_was_paid(): void
+    {
+        $invoice = $this->finalized();
+
+        $this->pay($invoice, 50001)->assertSessionHasErrors('amount');
+        $this->pay($invoice, 1, 'refund')->assertSessionHasErrors('amount');
+        $this->pay($invoice, 0)->assertSessionHasErrors('amount');
+        $this->pay($invoice, -5)->assertSessionHasErrors('amount');
+        $this->pay($invoice, 1000, 'payment', ['paid_on' => now()->addDay()->toDateString()])->assertSessionHasErrors('paid_on');
+        $this->pay($invoice, 1000, 'payment', ['method' => 'crypto'])->assertSessionHasErrors('method');
+
+        $this->assertSame(0.0, $invoice->fresh()->paid_amount);
+        $this->assertSame(0, $invoice->payments()->count());
+
+        $this->pay($invoice, 30000)->assertSessionHasNoErrors();
+        $this->pay($invoice, 30000)->assertSessionHasErrors('amount');
+        $this->pay($invoice, 30001, 'refund')->assertSessionHasErrors('amount');
+        $this->assertSame(30000.0, $invoice->fresh()->paid_amount);
+    }
+
+    public function test_a_refund_is_kept_as_its_own_line_and_lowers_what_was_paid(): void
+    {
+        $invoice = $this->finalized();
+        $this->pay($invoice, 50000);
+        $this->pay($invoice, 20000, 'refund', ['note' => 'Returned one pad'])->assertSessionHasNoErrors();
+
+        $invoice->refresh();
+        $this->assertSame(30000.0, $invoice->paid_amount);
+        $this->assertSame('partial', $invoice->payment_status);
+        $this->assertSame([50000.0, -20000.0], $invoice->payments()->pluck('amount')->map(fn ($a) => (float) $a)->all());
+    }
+
+    public function test_a_draft_takes_no_payments(): void
+    {
+        $invoice = $this->draft($this->customer(), $this->product());
+
+        $this->pay($invoice, 1000)->assertSessionHasErrors('amount');
+        $this->assertSame(0, $invoice->payments()->count());
+    }
+
+    public function test_the_printed_invoice_shows_what_was_paid_and_what_is_left(): void
+    {
+        $invoice = $this->finalized();
+        $this->pay($invoice, 20000);
+        $invoice = $invoice->fresh('items');
+
+        $html = view('admin.manual-invoices.pdf', [
+            'invoice' => $invoice, 'currency' => 'IQD', 'logoPath' => null, 'locale' => 'en', 'isRtl' => false,
+        ])->render();
+
+        $this->assertStringContainsString('Balance Due', $html);
+        $this->assertStringContainsString('20,000 IQD', $html);
+        $this->assertStringContainsString('30,000 IQD', $html);
+        $this->assertStringContainsString('Partially paid', $html);
+    }
+
+    // ── Voiding ────────────────────────────────────────────────────
+
+    public function test_voiding_returns_the_stock_once_and_keeps_the_invoice(): void
+    {
+        $invoice = $this->finalized(4);
+        $product = Product::query()->where('sku', 'BRK-1001')->firstOrFail();
+        $this->assertSame(6, (int) $product->fresh()->stock_quantity);
+
+        for ($press = 0; $press < 3; $press++) {
+            $this->actingAs($this->admin)
+                ->post(route('admin.manual-invoices.void', $invoice), ['void_reason' => 'Customer cancelled'])
+                ->assertRedirect(route('admin.manual-invoices.show', $invoice));
+        }
+
+        $invoice->refresh();
+        $this->assertTrue($invoice->isVoid());
+        $this->assertSame('Customer cancelled', $invoice->void_reason);
+        $this->assertSame($this->admin->id, $invoice->voided_by);
+        $this->assertSame(10, (int) $product->fresh()->stock_quantity);
+
+        // One movement out when it was finalized, one back in now, no more.
+        $movements = InventoryMovement::query()->where('reference', $invoice->number)->orderBy('id')->get();
+        $this->assertSame([InventoryMovement::TYPE_OUT, InventoryMovement::TYPE_IN], $movements->pluck('type')->all());
+        $this->assertSame([4, 4], $movements->pluck('quantity')->map(fn ($q) => (int) $q)->all());
+
+        // Kept, with everything it said, and no longer editable or finalizable.
+        $this->assertSame(100000.0, $invoice->total);
+        $this->assertCount(1, $invoice->items);
+        $this->actingAs($this->admin)->post(route('admin.manual-invoices.finalize', $invoice));
+        $this->assertTrue($invoice->fresh()->isVoid());
+        $this->assertSame(10, (int) $product->fresh()->stock_quantity);
+        $this->actingAs($this->admin)->delete(route('admin.manual-invoices.destroy', $invoice))->assertSessionHasErrors('invoice');
+        $this->assertDatabaseHas('manual_invoices', ['id' => $invoice->id]);
+    }
+
+    public function test_an_invoice_with_money_on_it_must_be_refunded_before_it_is_voided(): void
+    {
+        $invoice = $this->finalized();
+        $this->pay($invoice, 50000);
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.manual-invoices.void', $invoice), ['void_reason' => 'Returned'])
+            ->assertSessionHasErrors('void_reason');
+        $this->assertTrue($invoice->fresh()->isFinalized());
+        $this->assertSame(8, (int) Product::query()->where('sku', 'BRK-1001')->value('stock_quantity'));
+
+        $this->pay($invoice, 50000, 'refund')->assertSessionHasNoErrors();
+        $this->actingAs($this->admin)
+            ->post(route('admin.manual-invoices.void', $invoice), ['void_reason' => 'Returned'])
+            ->assertSessionHasNoErrors();
+
+        $this->assertTrue($invoice->fresh()->isVoid());
+        $this->assertSame(10, (int) Product::query()->where('sku', 'BRK-1001')->value('stock_quantity'));
+        // Both the payment and the refund are still on file.
+        $this->assertSame(2, $invoice->payments()->count());
+    }
+
+    public function test_voiding_needs_a_reason_and_only_applies_to_finalized_invoices(): void
+    {
+        $draft = $this->draft($this->customer(), $this->product());
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.manual-invoices.void', $draft), ['void_reason' => 'Mistake'])
+            ->assertSessionHasErrors('void_reason');
+        $this->assertTrue($draft->fresh()->isDraft());
+
+        $this->actingAs($this->admin)->post(route('admin.manual-invoices.finalize', $draft));
+        $this->actingAs($this->admin)
+            ->post(route('admin.manual-invoices.void', $draft), ['void_reason' => ''])
+            ->assertSessionHasErrors('void_reason');
+        $this->assertTrue($draft->fresh()->isFinalized());
+    }
+
+    public function test_voiding_withdraws_the_share_link_and_takes_no_more_payments(): void
+    {
+        $invoice = $this->finalized();
+        $this->actingAs($this->admin)->post(route('admin.manual-invoices.share', $invoice));
+        $url = $invoice->fresh()->shareUrl();
+
+        $this->actingAs($this->admin)->post(route('admin.manual-invoices.void', $invoice), ['void_reason' => 'Entered twice']);
+
+        $this->assertNull($invoice->fresh()->share_token_hash);
+        $this->actingAs($this->admin)->post(route('admin.manual-invoices.share', $invoice))->assertSessionHasErrors('share');
+        $this->pay($invoice, 1000)->assertSessionHasErrors('amount');
+
+        auth()->logout();
+        $this->get($url)->assertNotFound();
+        $this->get($url.'/pdf')->assertNotFound();
+    }
+
+    public function test_sales_figures_count_money_received_and_leave_out_drafts_and_void_invoices(): void
+    {
+        $product = $this->product(['stock_quantity' => 100]);
+        $customer = $this->customer();
+
+        $this->draft($customer, $product);                                   // draft: 50,000, not a sale
+        $partly = $this->draft($customer, $product);                         // 50,000, 20,000 paid
+        $voided = $this->draft($customer, $product);                         // 50,000, voided
+        foreach ([$partly, $voided] as $invoice) {
+            $this->actingAs($this->admin)->post(route('admin.manual-invoices.finalize', $invoice));
+        }
+        $this->pay($partly->fresh(), 20000);
+        $this->actingAs($this->admin)->post(route('admin.manual-invoices.void', $voided), ['void_reason' => 'Cancelled']);
+        $partly->update(['invoice_date' => now()->toDateString()]);
+
+        $this->actingAs($this->admin)
+            ->get(route('admin.manual-invoices.index'))
+            ->assertOk()
+            ->assertSeeInOrder(['Finalized sales', '50,000 IQD', 'Paid', '20,000 IQD', 'Outstanding', '30,000 IQD']);
+
+        $this->actingAs($this->admin)
+            ->get(route('admin.manual-invoices.index', ['status' => 'void']))
+            ->assertSee($voided->number)
+            ->assertDontSee($partly->number);
+
+        // The revenue page shows the same sales beside the site figures,
+        // without folding them in.
+        $superAdmin = User::factory()->create(['role' => User::ROLE_SUPER_ADMIN, 'email_verified_at' => now()]);
+        $this->actingAs($superAdmin)
+            ->get(route('admin.revenue.index'))
+            ->assertOk()
+            ->assertSeeInOrder([
+                'not included in the figures above',
+                'Invoiced in range', '50,000', '1 INVOICES',
+                'Collected in range', '20,000',
+                'Outstanding', '30,000',
+            ]);
+
+        // No site order exists, so the site's own revenue is still nothing.
+        $this->assertSame(0, Order::query()->count());
+    }
+
+    public function test_payments_and_voiding_are_closed_to_staff_without_order_access(): void
+    {
+        $invoice = $this->finalized();
+        $outsider = User::factory()->create(['role' => User::ROLE_PRODUCT_MANAGER, 'email_verified_at' => now()]);
+
+        $this->assertContains($this->actingAs($outsider)->post(route('admin.manual-invoices.payments.store', $invoice), [
+            'kind' => 'payment', 'amount' => 1000, 'paid_on' => now()->toDateString(),
+        ])->status(), [302, 403]);
+        $this->assertContains($this->actingAs($outsider)->post(route('admin.manual-invoices.void', $invoice), [
+            'void_reason' => 'No',
+        ])->status(), [302, 403]);
+
+        $this->assertSame(0.0, $invoice->fresh()->paid_amount);
+        $this->assertTrue($invoice->fresh()->isFinalized());
     }
 
     // ── Listing ────────────────────────────────────────────────────
@@ -522,7 +771,7 @@ class ManualInvoiceTest extends TestCase
         $product = $this->product(['stock_quantity' => 100]);
         $first = $this->draft($this->customer(), $product);
         $second = $this->draft($this->customer(['name' => 'Soran Parts', 'phone' => '+9647501112233']), $product);
-        $second->update(['payment_status' => 'paid', 'invoice_date' => '2026-09-01']);
+        $second->update(['payment_status' => 'paid', 'paid_amount' => $second->total, 'invoice_date' => '2026-09-01']);
 
         $see = fn (array $query) => $this->actingAs($this->admin)->get(route('admin.manual-invoices.index', $query))->assertOk();
 

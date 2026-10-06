@@ -35,6 +35,8 @@
                 <p class="invoice-meta"><span class="meta-label">{{ __('invoice.invoice_date') }}</span> <span class="value">{{ $ltr($invoice->invoice_date?->format('Y-m-d')) }}</span></p>
                 @if ($invoice->isDraft())
                     <p class="invoice-meta"><span class="status-badge">{{ __('invoice.draft') }}</span></p>
+                @elseif ($invoice->isVoid())
+                    <p class="invoice-meta"><span class="status-badge">{{ __('invoice.void') }}</span></p>
                 @endif
             </td>
         </tr>
@@ -117,6 +119,16 @@
             <td>{{ __('invoice.grand_total') }}</td>
             <td class="text-right">{{ $money((float) $invoice->total) }}</td>
         </tr>
+        @if ((float) $invoice->paid_amount > 0 && ! $invoice->isVoid())
+            <tr>
+                <td class="summary-label">{{ __('invoice.paid') }}</td>
+                <td class="text-right">{{ $money((float) $invoice->paid_amount) }}</td>
+            </tr>
+            <tr>
+                <td class="summary-label">{{ __('invoice.balance_due') }}</td>
+                <td class="text-right">{{ $money($invoice->balance()) }}</td>
+            </tr>
+        @endif
     </table>
 
     @if ($invoice->notes)

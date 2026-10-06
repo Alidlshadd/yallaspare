@@ -36,7 +36,7 @@
                 </div>
             @endforeach
         </div>
-        <p class="mb-4 text-xs text-slate-500">{{ __('Drafts are not counted as sales. These figures are separate from the online revenue reports, which are built from site orders only.') }}</p>
+        <p class="mb-4 text-xs text-slate-500">{{ __('Drafts and void invoices are not counted as sales. Paid is the money actually recorded; outstanding is what finalized invoices are still owed.') }}</p>
 
         <form method="GET" action="{{ route('admin.manual-invoices.index') }}" class="mb-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-3 bg-white border border-slate-200/70 rounded-2xl p-4 bento-shadow">
             <div class="lg:col-span-2">
@@ -49,6 +49,7 @@
                     <option value="">{{ __('All') }}</option>
                     <option value="draft" @selected($filters['status'] === 'draft')>{{ __('Draft') }}</option>
                     <option value="finalized" @selected($filters['status'] === 'finalized')>{{ __('Finalized') }}</option>
+                    <option value="void" @selected($filters['status'] === 'void')>{{ __('Void') }}</option>
                 </select>
             </div>
             <div>
@@ -116,7 +117,7 @@
                                     </td>
                                     <td class="px-4 py-3 text-slate-700 whitespace-nowrap">{{ $invoice->invoice_date?->format('Y-m-d') }}</td>
                                     <td class="px-4 py-3">
-                                        <span class="inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold {{ $invoice->isFinalized() ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-slate-600' }}">{{ $invoice->statusLabel() }}</span>
+                                        <span class="inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold {{ $invoice->isFinalized() ? 'bg-emerald-100 text-emerald-700' : ($invoice->isVoid() ? 'bg-rose-100 text-rose-700' : 'bg-slate-200 text-slate-600') }}">{{ $invoice->statusLabel() }}</span>
                                     </td>
                                     <td class="px-4 py-3">
                                         <span class="inline-flex rounded-full px-2.5 py-1 text-[11px] font-bold {{ $invoice->payment_status === 'paid' ? 'bg-emerald-100 text-emerald-700' : ($invoice->payment_status === 'partial' ? 'bg-amber-100 text-amber-800' : 'bg-rose-100 text-rose-700') }}">{{ $invoice->paymentStatusLabel() }}</span>

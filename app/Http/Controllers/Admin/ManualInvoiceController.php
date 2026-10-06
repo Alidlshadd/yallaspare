@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\ManualInvoice;
+use App\Models\ManualInvoicePayment;
 use App\Models\Product;
 use App\Services\InvoiceRenderer;
 use App\Services\Invoices\ManualInvoiceService;
@@ -47,20 +48,23 @@ class ManualInvoiceController extends Controller
                     }
                 });
             })
-            ->when(in_array($filters['status'], [ManualInvoice::STATUS_DRAFT, ManualInvoice::STATUS_FINALIZED], true),
+            ->when(in_array($filters['status'], [ManualInvoice::STATUS_DRAFT, ManualInvoice::STATUS_FINALIZED, ManualInvoice::STATUS_VOID], true),
                 fn (Builder $query) => $query->where('status', $filters['status']))
             ->when(in_array($filters['payment_status'], ManualInvoice::PAYMENT_STATUSES, true),
                 fn (Builder $query) => $query->where('payment_status', $filters['payment_status']))
             ->when($this->isDate($filters['date_from']), fn (Builder $query) => $query->whereDate('invoice_date', '>=', $filters['date_from']))
             ->when($this->isDate($filters['date_to']), fn (Builder $query) => $query->whereDate('invoice_date', '<=', $filters['date_to']));
 
-        // Drafts are not sales, so they stay out of the money figures.
+        // Drafts are not sales yet and void invoices no longer are, so both
+        // stay out of the money figures.
         $finalized = (clone $query)->where('status', ManualInvoice::STATUS_FINALIZED);
+        $finalizedTotal = (float) (clone $finalized)->sum('total');
+        $paidTotal = (float) (clone $finalized)->sum('paid_amount');
         $summary = [
             'count' => (clone $query)->count(),
-            'finalized_total' => (float) (clone $finalized)->sum('total'),
-            'paid_total' => (float) (clone $finalized)->where('payment_status', ManualInvoice::PAYMENT_PAID)->sum('total'),
-            'outstanding_total' => (float) (clone $finalized)->where('payment_status', '!=', ManualInvoice::PAYMENT_PAID)->sum('total'),
+            'finalized_total' => $finalizedTotal,
+            'paid_total' => $paidTotal,
+            'outstanding_total' => max($finalizedTotal - $paidTotal, 0),
         ];
 
         $invoices = $query->latest('invoice_date')->latest('id')->paginate(20)->withQueryString();
@@ -91,7 +95,7 @@ class ManualInvoiceController extends Controller
 
     public function show(ManualInvoice $manualInvoice): View
     {
-        $manualInvoice->load(['items.product:id,stock_quantity', 'creator:id,name', 'customer']);
+        $manualInvoice->load(['items.product:id,stock_quantity', 'creator:id,name', 'customer', 'payments.recorder:id,name']);
 
         return view('admin.manual-invoices.show', [
             'invoice' => $manualInvoice,
@@ -132,20 +136,37 @@ class ManualInvoiceController extends Controller
                 : __('This invoice was already finalized. Nothing was changed.'));
     }
 
-    public function updatePayment(Request $request, ManualInvoice $manualInvoice): RedirectResponse
+    public function storePayment(Request $request, ManualInvoice $manualInvoice): RedirectResponse
     {
         $data = $request->validate([
-            'payment_status' => ['required', Rule::in(ManualInvoice::PAYMENT_STATUSES)],
+            'kind' => ['required', Rule::in(['payment', 'refund'])],
+            'amount' => ['required', 'numeric', 'gt:0', 'max:9999999999'],
+            'paid_on' => ['required', 'date', 'before_or_equal:today'],
+            'method' => ['nullable', Rule::in(ManualInvoicePayment::METHODS)],
+            'note' => ['nullable', 'string', 'max:255'],
         ]);
 
-        $manualInvoice->update($data);
+        $amount = (float) $data['amount'] * ($data['kind'] === 'refund' ? -1 : 1);
 
-        AdminLogger::log('manual_invoice.payment_updated', $manualInvoice, [
-            'number' => $manualInvoice->number,
-            'payment_status' => $data['payment_status'],
+        $this->invoices->recordPayment($manualInvoice, $amount, $data['paid_on'], $data['method'] ?? null, $data['note'] ?? null, $request->user());
+
+        return back()->with('success', $data['kind'] === 'refund' ? __('Refund recorded.') : __('Payment recorded.'));
+    }
+
+    public function void(Request $request, ManualInvoice $manualInvoice): RedirectResponse
+    {
+        $data = $request->validate([
+            'void_reason' => ['required', 'string', 'min:3', 'max:500'],
         ]);
 
-        return back()->with('success', __('Payment status updated.'));
+        $wasVoid = $manualInvoice->isVoid();
+        $this->invoices->void($manualInvoice, $data['void_reason'], $request->user());
+
+        return redirect()
+            ->route('admin.manual-invoices.show', $manualInvoice)
+            ->with($wasVoid ? 'warning' : 'success', $wasVoid
+                ? __('This invoice was already void. Nothing was changed.')
+                : __('Invoice voided. Stock for its catalogue items was returned.'));
     }
 
     public function destroy(ManualInvoice $manualInvoice): RedirectResponse
@@ -265,7 +286,6 @@ class ManualInvoiceController extends Controller
         return $request->validate([
             'customer_id' => ['required', 'integer', 'exists:customers,id'],
             'invoice_date' => ['required', 'date'],
-            'payment_status' => ['required', Rule::in(ManualInvoice::PAYMENT_STATUSES)],
             'discount_amount' => ['nullable', 'numeric', 'min:0', 'max:9999999999'],
             'delivery_fee' => ['nullable', 'numeric', 'min:0', 'max:9999999999'],
             'notes' => ['nullable', 'string', 'max:2000'],

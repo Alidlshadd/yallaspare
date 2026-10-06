@@ -193,13 +193,8 @@
                             <input id="invoice_date" type="date" name="invoice_date" required
                                    value="{{ old('invoice_date', $invoice?->invoice_date?->format('Y-m-d') ?? now()->format('Y-m-d')) }}" class="{{ $inputBase }}">
                         </div>
-                        <div>
-                            <label for="payment_status" class="{{ $labelClass }}">{{ __('Payment status') }}</label>
-                            <select id="payment_status" name="payment_status" class="{{ $inputBase }}">
-                                @foreach (\App\Models\ManualInvoice::paymentStatusLabels() as $value => $label)
-                                    <option value="{{ $value }}" @selected(old('payment_status', $invoice?->payment_status ?? 'unpaid') === $value)>{{ $label }}</option>
-                                @endforeach
-                            </select>
+                        <div class="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2.5 text-[11px] text-slate-500 self-end">
+                            {{ __('Payments are recorded on the invoice after it is finalized. The paid, partial or unpaid status follows from them.') }}
                         </div>
                         <div>
                             <label for="discount_amount" class="{{ $labelClass }}">{{ __('Discount') }} ({{ $currency }})</label>

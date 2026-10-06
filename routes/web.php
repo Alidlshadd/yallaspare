@@ -625,9 +625,12 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::post('/manual-invoices/{manual_invoice}/finalize', [ManualInvoiceController::class, 'finalize'])
             ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('manual-invoices.finalize');
-        Route::patch('/manual-invoices/{manual_invoice}/payment', [ManualInvoiceController::class, 'updatePayment'])
+        Route::post('/manual-invoices/{manual_invoice}/payments', [ManualInvoiceController::class, 'storePayment'])
             ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
-            ->name('manual-invoices.update-payment');
+            ->name('manual-invoices.payments.store');
+        Route::post('/manual-invoices/{manual_invoice}/void', [ManualInvoiceController::class, 'void'])
+            ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
+            ->name('manual-invoices.void');
         Route::post('/manual-invoices/{manual_invoice}/share', [ManualInvoiceController::class, 'share'])
             ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('manual-invoices.share');

@@ -5,6 +5,7 @@ namespace App\Services\Invoices;
 use App\Models\Customer;
 use App\Models\InventoryMovement;
 use App\Models\ManualInvoice;
+use App\Models\ManualInvoicePayment;
 use App\Models\Product;
 use App\Models\Setting;
 use App\Models\User;
@@ -125,7 +126,6 @@ class ManualInvoiceService
             $attributes = [
                 'customer_id' => $customer->id,
                 ...$this->customerSnapshot($customer),
-                'payment_status' => $data['payment_status'],
                 'invoice_date' => Carbon::parse($data['invoice_date'])->toDateString(),
                 'subtotal' => $priced['subtotal'],
                 'discount_amount' => $priced['discount_amount'],
@@ -140,6 +140,7 @@ class ManualInvoiceService
             } else {
                 $invoice = ManualInvoice::query()->create($attributes + [
                     'status' => ManualInvoice::STATUS_DRAFT,
+                    'payment_status' => ManualInvoice::PAYMENT_UNPAID,
                     'created_by' => $actor->id,
                 ]);
                 $invoice->update(['number' => $this->numberFor($invoice)]);
@@ -185,7 +186,8 @@ class ManualInvoiceService
         return DB::transaction(function () use ($invoice, $actor): ManualInvoice {
             $invoice = ManualInvoice::query()->whereKey($invoice->id)->lockForUpdate()->firstOrFail();
 
-            if ($invoice->isFinalized()) {
+            // Finalized already, or void: either way there is nothing to do.
+            if (! $invoice->isDraft()) {
                 return $invoice->load('items');
             }
 
@@ -254,6 +256,153 @@ class ManualInvoiceService
 
             return $invoice;
         });
+    }
+
+    /**
+     * Record money received against a finalized invoice, or given back.
+     *
+     * A positive amount is a payment, a negative one a refund. What has been
+     * paid can never go below zero or above the invoice total, and the status
+     * shown everywhere — unpaid, partially paid, paid — is worked out from the
+     * running sum rather than chosen by hand.
+     */
+    public function recordPayment(ManualInvoice $invoice, float $amount, string $paidOn, ?string $method, ?string $note, User $actor): ManualInvoicePayment
+    {
+        return DB::transaction(function () use ($invoice, $amount, $paidOn, $method, $note, $actor): ManualInvoicePayment {
+            $invoice = ManualInvoice::query()->whereKey($invoice->id)->lockForUpdate()->firstOrFail();
+            $amount = round($amount, 2);
+
+            if (! $invoice->isFinalized()) {
+                throw ValidationException::withMessages([
+                    'amount' => __('Payments can only be recorded on a finalized invoice.'),
+                ]);
+            }
+
+            if ($amount == 0.0) {
+                throw ValidationException::withMessages(['amount' => __('Enter an amount.')]);
+            }
+
+            $paid = round($invoice->paid_amount + $amount, 2);
+
+            if ($paid > $invoice->total) {
+                throw ValidationException::withMessages([
+                    'amount' => __('This is more than the balance due (:balance).', ['balance' => $this->money($invoice->balance())]),
+                ]);
+            }
+
+            if ($paid < 0) {
+                throw ValidationException::withMessages([
+                    'amount' => __('A refund cannot be larger than what has been paid (:paid).', ['paid' => $this->money($invoice->paid_amount)]),
+                ]);
+            }
+
+            $payment = $invoice->payments()->create([
+                'amount' => $amount,
+                'paid_on' => Carbon::parse($paidOn)->toDateString(),
+                'method' => $method,
+                'note' => $note,
+                'created_by' => $actor->id,
+            ]);
+
+            $invoice->update([
+                'paid_amount' => $paid,
+                'payment_status' => $this->paymentStatusFor($paid, $invoice->total),
+            ]);
+
+            AdminLogger::log($amount < 0 ? 'manual_invoice.refund_recorded' : 'manual_invoice.payment_recorded', $invoice, [
+                'number' => $invoice->number,
+                'amount' => $amount,
+                'paid_amount' => $paid,
+            ]);
+
+            return $payment;
+        });
+    }
+
+    /**
+     * Cancel a finalized invoice.
+     *
+     * The opposite of finalizing, and built the same way: the row is locked,
+     * the stock for every catalogue line goes back in through the inventory
+     * service under the invoice number, and a second click finds it already
+     * void and does nothing. The invoice is kept, marked void, with who did it
+     * and why. Its share link is withdrawn, since the document a customer
+     * would open no longer stands.
+     *
+     * Money has to be settled first: an invoice with payments on it cannot be
+     * voided until they are refunded, so no payment is ever left attached to
+     * a sale that did not happen.
+     */
+    public function void(ManualInvoice $invoice, string $reason, User $actor): ManualInvoice
+    {
+        return DB::transaction(function () use ($invoice, $reason, $actor): ManualInvoice {
+            $invoice = ManualInvoice::query()->whereKey($invoice->id)->lockForUpdate()->firstOrFail();
+
+            if ($invoice->isVoid()) {
+                return $invoice;
+            }
+
+            if (! $invoice->isFinalized()) {
+                throw ValidationException::withMessages([
+                    'void_reason' => __('Only a finalized invoice can be voided. A draft can simply be deleted.'),
+                ]);
+            }
+
+            if ($invoice->paid_amount > 0) {
+                throw ValidationException::withMessages([
+                    'void_reason' => __('Refund the :paid already paid before voiding this invoice.', ['paid' => $this->money($invoice->paid_amount)]),
+                ]);
+            }
+
+            $returned = $invoice->items()
+                ->whereNotNull('product_id')
+                ->get()
+                ->groupBy('product_id')
+                ->map(fn ($lines) => (int) $lines->sum('quantity'));
+
+            // A product deleted since the sale has no shelf to go back to.
+            $products = Product::query()->whereIn('id', $returned->keys())->orderBy('id')->lockForUpdate()->get()->keyBy('id');
+
+            foreach ($returned as $productId => $quantity) {
+                if ($product = $products->get($productId)) {
+                    $this->inventory->move(
+                        $product,
+                        InventoryMovement::TYPE_IN,
+                        $quantity,
+                        $actor,
+                        (string) $invoice->number,
+                        __('Void of manual invoice :number', ['number' => $invoice->number]),
+                    );
+                }
+            }
+
+            $invoice->update([
+                'status' => ManualInvoice::STATUS_VOID,
+                'voided_at' => now(),
+                'voided_by' => $actor->id,
+                'void_reason' => $reason,
+                'share_token' => null,
+                'share_token_hash' => null,
+                'shared_at' => null,
+            ]);
+
+            AdminLogger::log('manual_invoice.voided', $invoice, [
+                'number' => $invoice->number,
+                'reason' => $reason,
+                'stock_lines' => $returned->count(),
+            ]);
+
+            return $invoice;
+        });
+    }
+
+    private function paymentStatusFor(float $paid, float $total): string
+    {
+        return match (true) {
+            $paid <= 0 => ManualInvoice::PAYMENT_UNPAID,
+            $paid >= $total => ManualInvoice::PAYMENT_PAID,
+            default => ManualInvoice::PAYMENT_PARTIAL,
+        };
     }
 
     /**

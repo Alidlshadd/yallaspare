@@ -101,6 +101,10 @@
                 <div class="row"><span>{{ __('invoice.delivery_fee') }}</span><span class="amount">{{ $service->money((float) $invoice->delivery_fee) }}</span></div>
             @endif
             <div class="row total"><strong>{{ __('invoice.grand_total') }}</strong><span class="amount">{{ $service->money((float) $invoice->total) }}</span></div>
+            @if ((float) $invoice->paid_amount > 0)
+                <div class="row"><span>{{ __('invoice.paid') }}</span><span class="amount">{{ $service->money((float) $invoice->paid_amount) }}</span></div>
+                <div class="row"><strong>{{ __('invoice.balance_due') }}</strong><span class="amount">{{ $service->money($invoice->balance()) }}</span></div>
+            @endif
 
             @if ($invoice->notes)
                 <p style="margin: 14px 0 0; color: #475569;"><strong>{{ __('invoice.notes') }}:</strong> {{ $invoice->notes }}</p>

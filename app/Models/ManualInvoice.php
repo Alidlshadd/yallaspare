@@ -11,13 +11,17 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  *
  * A draft is a working copy and touches nothing else. Finalizing it is the
  * sale: stock leaves the shelf, the document is frozen, and from then on only
- * its payment status and its share link can change.
+ * payments and its share link can change. A finalized invoice that should
+ * not have happened is voided, not deleted: the stock comes back and the
+ * document stays on file, marked as void.
  */
 class ManualInvoice extends Model
 {
     public const STATUS_DRAFT = 'draft';
 
     public const STATUS_FINALIZED = 'finalized';
+
+    public const STATUS_VOID = 'void';
 
     public const PAYMENT_UNPAID = 'unpaid';
 
@@ -43,12 +47,16 @@ class ManualInvoice extends Model
         'discount_amount',
         'delivery_fee',
         'total',
+        'paid_amount',
         'notes',
         'share_token_hash',
         'share_token',
         'shared_at',
         'finalized_at',
         'finalized_by',
+        'voided_at',
+        'voided_by',
+        'void_reason',
         'created_by',
     ];
 
@@ -60,6 +68,8 @@ class ManualInvoice extends Model
         'discount_amount' => 'float',
         'delivery_fee' => 'float',
         'total' => 'float',
+        'paid_amount' => 'float',
+        'voided_at' => 'datetime',
         'share_token' => 'encrypted',
         'shared_at' => 'datetime',
         'finalized_at' => 'datetime',
@@ -69,6 +79,12 @@ class ManualInvoice extends Model
     public function items(): HasMany
     {
         return $this->hasMany(ManualInvoiceItem::class)->orderBy('sort_order')->orderBy('id');
+    }
+
+    /** @return HasMany<ManualInvoicePayment, $this> */
+    public function payments(): HasMany
+    {
+        return $this->hasMany(ManualInvoicePayment::class)->orderBy('paid_on')->orderBy('id');
     }
 
     /** @return BelongsTo<Customer, $this> */
@@ -93,6 +109,17 @@ class ManualInvoice extends Model
         return $this->status === self::STATUS_FINALIZED;
     }
 
+    public function isVoid(): bool
+    {
+        return $this->status === self::STATUS_VOID;
+    }
+
+    /** What the customer still owes. Never negative, and nothing once void. */
+    public function balance(): float
+    {
+        return $this->isVoid() ? 0.0 : max(round($this->total - $this->paid_amount, 2), 0.0);
+    }
+
     public function whatsappNumber(): string
     {
         return (string) ($this->customer_whatsapp ?: $this->customer_phone);
@@ -100,7 +127,11 @@ class ManualInvoice extends Model
 
     public function statusLabel(): string
     {
-        return $this->isFinalized() ? __('Finalized') : __('Draft');
+        return match ($this->status) {
+            self::STATUS_FINALIZED => __('Finalized'),
+            self::STATUS_VOID => __('Void'),
+            default => __('Draft'),
+        };
     }
 
     public function paymentStatusLabel(): string

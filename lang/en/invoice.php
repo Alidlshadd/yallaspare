@@ -44,5 +44,8 @@ return [
     'payment_paid' => 'Paid',
     'item_description' => 'Description',
     'delivery_fee' => 'Delivery',
+    'void' => 'Void',
+    'paid' => 'Paid',
+    'balance_due' => 'Balance Due',
     'notes' => 'Notes',
 ];

@@ -172,6 +172,33 @@
                         </div>
                     </div>
 
+                    {{-- Sales invoiced by hand in the shop. Beside the site's
+                         figures, not inside them: the totals above stay
+                         site orders only. --}}
+                    @can(\App\Models\User::PERMISSION_ORDERS_MANAGE)
+                        <div class="mt-3 rounded-md border border-navy-raised bg-navy/60 px-3 py-2.5">
+                            <div class="flex flex-wrap items-center justify-between gap-2">
+                                <p class="text-[11px] uppercase tracking-[0.16em] text-[#666fa3]">{{ __('Manual invoices') }} · {{ __('not included in the figures above') }}</p>
+                                <a href="{{ route('admin.manual-invoices.index') }}" class="text-[11px] font-semibold uppercase tracking-[0.12em] text-[#ff8a3d] hover:underline">{{ __('Open') }}</a>
+                            </div>
+                            <div class="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-3">
+                                <div>
+                                    <p class="text-[11px] uppercase tracking-[0.16em] text-[#666fa3]">{{ __('Invoiced in range') }}</p>
+                                    <p class="mt-1 text-base font-semibold text-[#f2f3ff]">{{ $currencyLabel }} {{ $fmt($manualSales['invoiced']) }}</p>
+                                    <p class="text-[11px] text-[#666fa3]">{{ number_format($manualSales['count']) }} {{ strtoupper(__('Invoices')) }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-[11px] uppercase tracking-[0.16em] text-[#666fa3]">{{ __('Collected in range') }}</p>
+                                    <p class="mt-1 text-base font-semibold text-[#34d399]">{{ $currencyLabel }} {{ $fmt($manualSales['collected']) }}</p>
+                                </div>
+                                <div>
+                                    <p class="text-[11px] uppercase tracking-[0.16em] text-[#666fa3]">{{ __('Outstanding') }}</p>
+                                    <p class="mt-1 text-base font-semibold text-[#ff8a3d]">{{ $currencyLabel }} {{ $fmt($manualSales['outstanding']) }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    @endcan
+
                     <div class="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
                         <div class="rounded-md border border-navy-raised bg-navy/60 px-3 py-2.5">
                             <p class="text-[11px] uppercase tracking-[0.16em] text-[#666fa3]">{{ __('Range Total') }}</p>
