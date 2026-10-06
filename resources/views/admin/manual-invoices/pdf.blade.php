@@ -12,6 +12,9 @@
         // is written in. Without the embedding marks an Arabic-script invoice
         // prints "+964…" with the plus trailing and the date back to front.
         $ltr = fn (?string $value): string => "\u{202A}".$value."\u{202C}";
+        // The same for money: left alone, "88,000 IQD" comes out as "IQD 88,000"
+        // and a discount's minus sign lands after the figure.
+        $money = fn (float $amount, string $sign = ''): string => $ltr($sign.number_format($amount).' '.$currency);
     @endphp
     <table class="header-table">
         <tr>
@@ -63,7 +66,7 @@
                         <div class="label">{{ __('invoice.payment_status') }}</div>
                         <div class="value">{{ __('invoice.payment_'.$invoice->payment_status) }}</div>
                         <div class="label" style="margin-top: 8px;">{{ __('invoice.grand_total') }}</div>
-                        <div class="value">{{ number_format((float) $invoice->total) }} {{ $currency }}</div>
+                        <div class="value">{{ $money((float) $invoice->total) }}</div>
                     </td></tr>
                 </table>
             </td>
@@ -86,8 +89,8 @@
                     <td><div class="product-name">{{ $item->description }}</div></td>
                     <td class="sku">{{ $item->sku ?: __('invoice.not_available') }}</td>
                     <td class="text-center">{{ number_format((int) $item->quantity) }}</td>
-                    <td class="text-right">{{ number_format((float) $item->unit_price) }} {{ $currency }}</td>
-                    <td class="text-right">{{ number_format((float) $item->line_total) }} {{ $currency }}</td>
+                    <td class="text-right">{{ $money((float) $item->unit_price) }}</td>
+                    <td class="text-right">{{ $money((float) $item->line_total) }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -96,23 +99,23 @@
     <table class="summary-table">
         <tr>
             <td class="summary-label">{{ __('invoice.subtotal') }}</td>
-            <td class="text-right">{{ number_format((float) $invoice->subtotal) }} {{ $currency }}</td>
+            <td class="text-right">{{ $money((float) $invoice->subtotal) }}</td>
         </tr>
         @if ((float) $invoice->discount_amount > 0)
             <tr>
                 <td class="summary-label">{{ __('invoice.discount') }}</td>
-                <td class="text-right">- {{ number_format((float) $invoice->discount_amount) }} {{ $currency }}</td>
+                <td class="text-right">{{ $money((float) $invoice->discount_amount, '- ') }}</td>
             </tr>
         @endif
         @if ((float) $invoice->delivery_fee > 0)
             <tr>
                 <td class="summary-label">{{ __('invoice.delivery_fee') }}</td>
-                <td class="text-right">{{ number_format((float) $invoice->delivery_fee) }} {{ $currency }}</td>
+                <td class="text-right">{{ $money((float) $invoice->delivery_fee) }}</td>
             </tr>
         @endif
         <tr class="grand">
             <td>{{ __('invoice.grand_total') }}</td>
-            <td class="text-right">{{ number_format((float) $invoice->total) }} {{ $currency }}</td>
+            <td class="text-right">{{ $money((float) $invoice->total) }}</td>
         </tr>
     </table>
 

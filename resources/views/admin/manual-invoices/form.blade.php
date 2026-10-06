@@ -10,6 +10,23 @@
         $currency = $service->currencyLabel();
     @endphp
 
+    {{-- On a phone or a tablet a five-column table means editing sideways. Below the
+         laptop breakpoint each line becomes a card instead: description on
+         top, then code, quantity and price, then the total and the remove
+         button. The placeholders stand in for the hidden column headings. --}}
+    <style>
+        @media (max-width: 1023px) {
+            #invoiceTable { min-width: 0; }
+            #invoiceTable thead { display: none; }
+            #invoiceRows tr { display: grid; grid-template-columns: 1fr 1fr; gap: 0 4px; border: 1px solid #e2e8f0; border-radius: 12px; padding: 8px; margin-bottom: 8px; }
+            #invoiceRows td { display: block; padding: 4px; }
+            #invoiceRows td:first-child { grid-column: 1 / -1; }
+            #invoiceRows td:nth-child(2) { grid-column: 1 / -1; }
+            #invoiceRows td:nth-child(5) { text-align: start; }
+            #invoiceRows td:nth-child(6) { text-align: end; }
+        }
+    </style>
+
     <div class="bg-[#f3f4f7] dark:bg-slate-950 min-h-screen">
     <div class="py-6">
     <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -129,7 +146,7 @@
                 <p id="productNoResults" class="mt-2 text-xs text-slate-500 hidden">{{ __('No product found. Add it as a manual line instead.') }}</p>
 
                 <div class="mt-4 overflow-x-auto">
-                    <table class="min-w-[720px] w-full text-sm">
+                    <table id="invoiceTable" class="min-w-[720px] w-full text-sm">
                         <thead class="text-[10.5px] font-bold uppercase tracking-widest text-slate-500">
                             <tr>
                                 <th scope="col" class="px-1.5 py-2 text-start">{{ __('Description') }}</th>
@@ -149,12 +166,12 @@
                     <tr class="align-top">
                         <td class="px-1.5 py-1.5">
                             <input type="hidden" data-field="product_id">
-                            <input type="text" data-field="description" maxlength="255" required aria-label="{{ __('Description') }}" class="{{ $cellInput }}">
+                            <input type="text" data-field="description" maxlength="255" required aria-label="{{ __('Description') }}" placeholder="{{ __('Description') }}" class="{{ $cellInput }}">
                             <p data-stock class="hidden mt-1 text-[11px] text-slate-500"></p>
                         </td>
-                        <td class="px-1.5 py-1.5"><input type="text" data-field="sku" maxlength="120" aria-label="{{ __('Part code') }}" class="{{ $cellInput }}"></td>
-                        <td class="px-1.5 py-1.5"><input type="number" data-field="quantity" min="1" step="1" required aria-label="{{ __('Quantity') }}" class="{{ $cellInput }}"></td>
-                        <td class="px-1.5 py-1.5"><input type="number" data-field="unit_price" min="0" step="any" required aria-label="{{ __('Unit price') }}" class="{{ $cellInput }}"></td>
+                        <td class="px-1.5 py-1.5"><input type="text" data-field="sku" maxlength="120" aria-label="{{ __('Part code') }}" placeholder="{{ __('Part code') }}" class="{{ $cellInput }}"></td>
+                        <td class="px-1.5 py-1.5"><input type="number" data-field="quantity" min="1" step="1" required aria-label="{{ __('Quantity') }}" placeholder="{{ __('Quantity') }}" class="{{ $cellInput }}"></td>
+                        <td class="px-1.5 py-1.5"><input type="number" data-field="unit_price" min="0" step="any" required aria-label="{{ __('Unit price') }}" placeholder="{{ __('Unit price') }}" class="{{ $cellInput }}"></td>
                         <td class="px-1.5 py-1.5 text-end font-bold text-slate-900 whitespace-nowrap leading-10" data-line-total></td>
                         <td class="px-1.5 py-1.5">
                             <button type="button" data-remove aria-label="{{ __('Remove line') }}"
