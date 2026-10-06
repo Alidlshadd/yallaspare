@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\ManualInvoice;
 use App\Models\Order;
 use App\Models\User;
 use App\Support\Branding;
@@ -101,6 +102,69 @@ final class InvoiceRenderer
         return new Response($this->render($order, $locale), 200, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="invoice-'.$order->id.'-'.$locale.'.pdf"',
+        ]);
+    }
+
+    /**
+     * The locale a manual invoice is written in: the one asked for if it is one
+     * we print, otherwise whatever the request is already in.
+     */
+    public function resolveManualLocale(?string $explicit): string
+    {
+        foreach ([$explicit, app()->getLocale()] as $candidate) {
+            $normalized = strtolower((string) $candidate);
+            if (in_array($normalized, self::ALLOWED_LOCALES, true)) {
+                return $normalized;
+            }
+        }
+
+        return 'en';
+    }
+
+    /**
+     * Build the PDF for a manual invoice.
+     *
+     * Everything printed comes from the invoice's own columns and lines, never
+     * from the catalogue or the customer directory, so the document reads the
+     * same on the day it is reprinted as on the day it was issued.
+     */
+    public function renderManual(ManualInvoice $invoice, string $locale): string
+    {
+        $invoice->loadMissing('items');
+        $isRtl = in_array($locale, ['ar', 'ku'], true);
+
+        $previousLocale = app()->getLocale();
+        app()->setLocale($locale);
+
+        try {
+            $html = view('admin.manual-invoices.pdf', [
+                'invoice' => $invoice,
+                'currency' => 'IQD',
+                'logoPath' => Branding::invoiceLogoPath(),
+                'locale' => $locale,
+                'isRtl' => $isRtl,
+            ])->render();
+        } finally {
+            app()->setLocale($previousLocale);
+        }
+
+        $mpdf = $this->makeEngine($isRtl);
+        $mpdf->WriteHTML($html);
+
+        return (string) $mpdf->Output('', Destination::STRING_RETURN);
+    }
+
+    /**
+     * A manual invoice as a response: saved to disk, or opened in the browser's
+     * own viewer when it is going to be printed.
+     */
+    public function manualResponse(ManualInvoice $invoice, string $locale, bool $inline = false): Response
+    {
+        $filename = 'invoice-'.$invoice->number.'-'.$locale.'.pdf';
+
+        return new Response($this->renderManual($invoice, $locale), 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => ($inline ? 'inline' : 'attachment').'; filename="'.$filename.'"',
         ]);
     }
 

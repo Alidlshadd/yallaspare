@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\AdminActivityLogController;
 use App\Http\Controllers\Admin\AnalyticsController as AdminAnalyticsController;
 use App\Http\Controllers\Admin\BulkStockAdjustmentController;
 use App\Http\Controllers\Admin\CategoryController;
+use App\Http\Controllers\Admin\CustomerController;
 use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\DealerController;
 use App\Http\Controllers\Admin\DiscountCouponController;
@@ -17,6 +18,7 @@ use App\Http\Controllers\Admin\GoalController;
 use App\Http\Controllers\Admin\GovernorateShippingController;
 use App\Http\Controllers\Admin\InventoryMovementController;
 use App\Http\Controllers\Admin\LowStockController;
+use App\Http\Controllers\Admin\ManualInvoiceController;
 use App\Http\Controllers\Admin\MessagingController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\OperationsInsightController;
@@ -45,6 +47,7 @@ use App\Http\Controllers\LegalController;
 use App\Http\Controllers\PaymentReturnController;
 use App\Http\Controllers\ProductReviewController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SharedInvoiceController;
 use App\Http\Controllers\ShopController as CatalogShopController;
 use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\User\CustomerPhoneSetupController;
@@ -82,6 +85,18 @@ Route::get('/', function () {
 })->name('home');
 
 Route::get('/sitemap.xml', [SitemapController::class, 'index'])->name('sitemap');
+
+// A manual invoice, opened by the customer from the link staff sent them.
+// The token is the only key: 48 hex characters, checked against a stored
+// hash, and gone the moment the link is revoked.
+Route::get('/i/{token}', [SharedInvoiceController::class, 'show'])
+    ->where('token', '[a-f0-9]{48}')
+    ->middleware('throttle:30,1')
+    ->name('invoices.shared.show');
+Route::get('/i/{token}/pdf', [SharedInvoiceController::class, 'pdf'])
+    ->where('token', '[a-f0-9]{48}')
+    ->middleware('throttle:15,1')
+    ->name('invoices.shared.pdf');
 
 // A monitor polls this every minute or so, and it must cost almost nothing.
 // The session middleware would write a session file per probe and the
@@ -589,6 +604,36 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::post('/orders/{order}/admin-notes', [OrderController::class, 'storeAdminNote'])
             ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('orders.admin-notes.store');
+
+        // Manual invoices and the customer directory behind them: sales made
+        // in the shop or over the phone. Static segments come before the
+        // {manualInvoice} routes for the same reason as /orders/export-excel.
+        Route::get('/customers/search', [CustomerController::class, 'search'])
+            ->middleware('can:'.User::PERMISSION_ORDERS_MANAGE)
+            ->name('customers.search');
+        Route::resource('customers', CustomerController::class)
+            ->only(['index', 'create', 'store', 'edit', 'update'])
+            ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write']);
+        Route::get('/manual-invoices/products/search', [ManualInvoiceController::class, 'searchProducts'])
+            ->middleware('can:'.User::PERMISSION_ORDERS_MANAGE)
+            ->name('manual-invoices.products.search');
+        Route::resource('manual-invoices', ManualInvoiceController::class)
+            ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write']);
+        Route::get('/manual-invoices/{manual_invoice}/pdf', [ManualInvoiceController::class, 'pdf'])
+            ->middleware('can:'.User::PERMISSION_ORDERS_MANAGE)
+            ->name('manual-invoices.pdf');
+        Route::post('/manual-invoices/{manual_invoice}/finalize', [ManualInvoiceController::class, 'finalize'])
+            ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
+            ->name('manual-invoices.finalize');
+        Route::patch('/manual-invoices/{manual_invoice}/payment', [ManualInvoiceController::class, 'updatePayment'])
+            ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
+            ->name('manual-invoices.update-payment');
+        Route::post('/manual-invoices/{manual_invoice}/share', [ManualInvoiceController::class, 'share'])
+            ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
+            ->name('manual-invoices.share');
+        Route::delete('/manual-invoices/{manual_invoice}/share', [ManualInvoiceController::class, 'revokeShare'])
+            ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
+            ->name('manual-invoices.share.revoke');
 
         // Returns / Refunds
         Route::get('/returns', [ReturnRequestController::class, 'index'])

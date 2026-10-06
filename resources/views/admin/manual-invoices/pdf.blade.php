@@ -2,11 +2,17 @@
 <html lang="{{ $locale ?? str_replace('_', '-', app()->getLocale()) }}" dir="{{ !empty($isRtl) ? 'rtl' : 'ltr' }}">
 <head>
     <meta charset="utf-8">
-    <title>{{ $invoiceNumber }}</title>
+    <title>{{ $invoice->number }}</title>
     @include('partials.brand-head')
     @include('admin.orders.partials.invoice-styles')
 </head>
 <body class="{{ !empty($isRtl) ? 'rtl' : 'ltr' }}">
+    @php
+        // A phone number or a date is read left to right whatever the page
+        // is written in. Without the embedding marks an Arabic-script invoice
+        // prints "+964…" with the plus trailing and the date back to front.
+        $ltr = fn (?string $value): string => "\u{202A}".$value."\u{202C}";
+    @endphp
     <table class="header-table">
         <tr>
             <td style="width: 55%;">
@@ -22,8 +28,11 @@
             </td>
             <td class="text-right" style="width: 45%;">
                 <h1 class="invoice-title">{{ __('invoice.title') }}</h1>
-                <p class="invoice-meta"><span class="meta-label">{{ __('invoice.invoice_number') }}</span> <span class="value">{{ $invoiceNumber }}</span></p>
-                <p class="invoice-meta"><span class="meta-label">{{ __('invoice.order_date') }}</span> <span class="value">{{ optional($order->created_at)->format('Y-m-d H:i') }}</span></p>
+                <p class="invoice-meta"><span class="meta-label">{{ __('invoice.invoice_number') }}</span> <span class="value">{{ $invoice->number }}</span></p>
+                <p class="invoice-meta"><span class="meta-label">{{ __('invoice.invoice_date') }}</span> <span class="value">{{ $ltr($invoice->invoice_date?->format('Y-m-d')) }}</span></p>
+                @if ($invoice->isDraft())
+                    <p class="invoice-meta"><span class="status-badge">{{ __('invoice.draft') }}</span></p>
+                @endif
             </td>
         </tr>
     </table>
@@ -37,12 +46,13 @@
                     <tr><td class="card-title">{{ __('invoice.customer_information') }}</td></tr>
                     <tr><td class="info-card-body">
                         <div class="label">{{ __('invoice.customer_name') }}</div>
-                        <div class="value">{{ $order->user?->name ?? __('invoice.guest_customer') }}</div>
-                        @if ($order->user?->email)
-                            <div class="muted">{{ $order->user->email }}</div>
+                        <div class="value">{{ $invoice->customer_name }}</div>
+                        <div class="muted">{{ __('invoice.phone') }}: {{ $ltr($invoice->customer_phone) }}</div>
+                        @if ($invoice->customer_city)
+                            <div>{{ $invoice->customer_city }}</div>
                         @endif
-                        @if ($order->user?->phone)
-                            <div class="muted">{{ __('invoice.phone') }}: {{ $order->user->phone }}</div>
+                        @if ($invoice->customer_address)
+                            <div>{{ $invoice->customer_address }}</div>
                         @endif
                     </td></tr>
                 </table>
@@ -50,13 +60,12 @@
             <td class="card-spacer" style="width: 2%;"></td>
             <td style="width: 49%;">
                 <table class="info-card">
-                    <tr><td class="card-title">{{ __('invoice.shipping_information') }}</td></tr>
+                    <tr><td class="card-title">{{ __('invoice.payment_information') }}</td></tr>
                     <tr><td class="info-card-body">
-                        <div class="label">{{ __('invoice.ship_to') }}</div>
-                        <div class="value">{{ $order->user?->name ?? __('invoice.guest_customer') }}</div>
-                        <div>{{ $order->delivery_address }}</div>
-                        <div>{{ $order->delivery_city }}@if ($order->delivery_governorate), {{ $order->delivery_governorate }}@endif</div>
-                        <div class="muted">{{ __('invoice.phone') }}: {{ $order->delivery_phone }}</div>
+                        <div class="label">{{ __('invoice.payment_status') }}</div>
+                        <div class="value">{{ __('invoice.payment_'.$invoice->payment_status) }}</div>
+                        <div class="label" style="margin-top: 8px;">{{ __('invoice.grand_total') }}</div>
+                        <div class="value">{{ number_format((float) $invoice->total) }} {{ $currency }}</div>
                     </td></tr>
                 </table>
             </td>
@@ -66,7 +75,7 @@
     <table class="items-table">
         <thead>
             <tr>
-                <th>{{ __('invoice.product_name') }}</th>
+                <th>{{ __('invoice.item_description') }}</th>
                 <th style="width: 105px;">{{ __('invoice.sku') }}</th>
                 <th class="text-center" style="width: 70px;">{{ __('invoice.quantity') }}</th>
                 <th class="text-right" style="width: 105px;">{{ __('invoice.unit_price') }}</th>
@@ -74,20 +83,13 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($order->items as $item)
+            @foreach ($invoice->items as $item)
                 <tr>
-                    <td>
-                        <div class="product-name">
-                            {{ $item->product?->localizedName($locale ?? app()->getLocale()) ?: $item->soldName() }}
-                        </div>
-                        @if ($item->product?->brand)
-                            <div class="sku"><span>{{ __('invoice.brand') }}</span>: {{ $item->product->brand }}</div>
-                        @endif
-                    </td>
-                    <td class="sku">{{ $item->soldSku() ?: __('invoice.not_available') }}</td>
+                    <td><div class="product-name">{{ $item->description }}</div></td>
+                    <td class="sku">{{ $item->sku ?: __('invoice.not_available') }}</td>
                     <td class="text-center">{{ number_format((int) $item->quantity) }}</td>
                     <td class="text-right">{{ number_format((float) $item->unit_price) }} {{ $currency }}</td>
-                    <td class="text-right">{{ number_format((float) $item->subtotal) }} {{ $currency }}</td>
+                    <td class="text-right">{{ number_format((float) $item->line_total) }} {{ $currency }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -96,31 +98,31 @@
     <table class="summary-table">
         <tr>
             <td class="summary-label">{{ __('invoice.subtotal') }}</td>
-            <td class="text-right">{{ number_format((float) $subtotal) }} {{ $currency }}</td>
+            <td class="text-right">{{ number_format((float) $invoice->subtotal) }} {{ $currency }}</td>
         </tr>
-        <tr>
-            <td class="summary-label">{{ __('invoice.shipping') }}</td>
-            <td class="text-right">{{ number_format((float) $shipping) }} {{ $currency }}</td>
-        </tr>
-        @if (!empty($discount) && (float) $discount > 0)
+        @if ((float) $invoice->discount_amount > 0)
             <tr>
                 <td class="summary-label">{{ __('invoice.discount') }}</td>
-                <td class="text-right">- {{ number_format((float) $discount) }} {{ $currency }}</td>
+                <td class="text-right">- {{ number_format((float) $invoice->discount_amount) }} {{ $currency }}</td>
+            </tr>
+        @endif
+        @if ((float) $invoice->delivery_fee > 0)
+            <tr>
+                <td class="summary-label">{{ __('invoice.delivery_fee') }}</td>
+                <td class="text-right">{{ number_format((float) $invoice->delivery_fee) }} {{ $currency }}</td>
             </tr>
         @endif
         <tr class="grand">
             <td>{{ __('invoice.grand_total') }}</td>
-            <td class="text-right">{{ number_format((float) $grandTotal) }} {{ $currency }}</td>
+            <td class="text-right">{{ number_format((float) $invoice->total) }} {{ $currency }}</td>
         </tr>
     </table>
 
-    <div class="print-note">
-        <p>
-            <strong class="navy">{{ __('invoice.shipping_copy') }}:</strong>
-            {{ __('invoice.shipping_copy_note_line_1') }}
-        </p>
-        <p>{{ __('invoice.shipping_copy_note_line_2') }}</p>
-    </div>
+    @if ($invoice->notes)
+        <div class="print-note">
+            <p><strong class="navy">{{ __('invoice.notes') }}:</strong> {{ $invoice->notes }}</p>
+        </div>
+    @endif
 
     <div class="invoice-policies">
         <p>

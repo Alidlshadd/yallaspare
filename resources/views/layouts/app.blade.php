@@ -769,6 +769,24 @@
                                 <x-ph-icon name="arrow-u-down-left" class="admin-nav-icon" />
                                 <span class="admin-nav-label">{{ __('Returns & Refunds') }}</span>
                             </a>
+                            <a
+                                href="{{ route('admin.manual-invoices.index') }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.manual-invoices.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Manual Invoices') }}"
+                                @if(request()->routeIs('admin.manual-invoices.*')) aria-current="page" @endif
+                            >
+                                <x-ph-icon name="invoice" class="admin-nav-icon" />
+                                <span class="admin-nav-label">{{ __('Manual Invoices') }}</span>
+                            </a>
+                            <a
+                                href="{{ route('admin.customers.index') }}"
+                                class="admin-nav-link {{ $navItem(request()->routeIs('admin.customers.*')) }}"
+                                data-admin-sidebar-tooltip="{{ __('Customer Directory') }}"
+                                @if(request()->routeIs('admin.customers.*')) aria-current="page" @endif
+                            >
+                                <x-ph-icon name="address-book" class="admin-nav-icon" />
+                                <span class="admin-nav-label">{{ __('Customer Directory') }}</span>
+                            </a>
                         @endcan
                         {{-- Was a section of its own, "Customer Demand", holding this one link. --}}
                         @if($canStockRequests)

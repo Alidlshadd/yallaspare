@@ -33,7 +33,7 @@ class AdminSidebarTest extends TestCase
         }
 
         foreach ([
-            'Dashboard', 'Orders Management', 'Returns &amp; Refunds', 'Product Requests',
+            'Dashboard', 'Orders Management', 'Returns &amp; Refunds', 'Manual Invoices', 'Customer Directory', 'Product Requests',
             'Products', 'Categories', 'Product Brands', 'Vehicle Finder', 'Customer Reviews',
             'Inventory', 'Bulk Stock', 'Dead Stock', 'Purchase Planning',
             'Coupon Management', 'Welcome campaign', 'Discount Rules', 'Email Center', 'Order &amp; System Alerts', 'Popups', 'Inbound WhatsApp',
@@ -47,7 +47,7 @@ class AdminSidebarTest extends TestCase
             );
         }
 
-        $this->assertSame(31, substr_count($html, 'class="admin-nav-link'), 'Expected 31 links in the sidebar.');
+        $this->assertSame(33, substr_count($html, 'class="admin-nav-link'), 'Expected 33 links in the sidebar.');
     }
 
     public function test_no_section_heading_is_left_standing_over_nothing(): void
@@ -81,7 +81,7 @@ class AdminSidebarTest extends TestCase
         $duplicates = array_keys(array_filter(array_count_values($icons), static fn (int $n): bool => $n > 1));
 
         $this->assertSame([], $duplicates, 'These icons are used by more than one link: '.implode(', ', $duplicates));
-        $this->assertCount(31, $icons, 'Every link should carry an icon.');
+        $this->assertCount(33, $icons, 'Every link should carry an icon.');
 
         // One family, one geometry. A stray Font Awesome glyph in the panel
         // would put two drawing styles side by side.
@@ -90,8 +90,8 @@ class AdminSidebarTest extends TestCase
 
         // Each icon ships both weights so the current page can wear the
         // heavier one without another request.
-        $this->assertSame(31, substr_count($nav, 'ph-regular'));
-        $this->assertSame(31, substr_count($nav, 'ph-fill'));
+        $this->assertSame(33, substr_count($nav, 'ph-regular'));
+        $this->assertSame(33, substr_count($nav, 'ph-fill'));
     }
 
     public function test_the_accent_marks_the_current_page_and_nothing_else(): void
