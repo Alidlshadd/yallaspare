@@ -46,7 +46,22 @@ class Handler extends ExceptionHandler
             app(AdminEmailAlertService::class)->systemError($e);
         });
 
-        $this->renderable(function (PostTooLargeException $e, Request $request): Response {
+        $this->renderable(function (PostTooLargeException $e, Request $request): ?Response {
+            // The whole request was bigger than post_max_size, so PHP threw
+            // away the form along with the files: there is nothing to refill.
+            // This runs before routing, hence the path match.
+            if ($request->is('admin/products', 'admin/products/*') && ! $request->expectsJson()) {
+                Log::warning('Product form exceeded post_max_size', [
+                    'content_length' => $request->server('CONTENT_LENGTH'),
+                    'post_max_size' => ini_get('post_max_size'),
+                    'path' => $request->path(),
+                ]);
+
+                return back()->withErrors([
+                    'image' => __('The upload is too large for the server to accept. Please use fewer or smaller images.'),
+                ]);
+            }
+
             if ($request->expectsJson()) {
                 return response()->json([
                     'message' => __('The uploaded file is too large. Please upload an MP4 video up to 50MB.'),

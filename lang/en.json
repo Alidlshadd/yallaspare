@@ -1224,7 +1224,7 @@
     "Please select a valid saved address before reviewing your order.": "Please select a valid saved address before reviewing your order.",
     "Please verify your email address before signing in.": "Please verify your email address before signing in.",
     "Please wait a moment before requesting another verification code.": "Please wait a moment before requesting another verification code.",
-    "PNG, JPG up to 2MB": "PNG, JPG up to 2MB",
+    "JPG, PNG or WEBP up to :limit MB": "JPG, PNG or WEBP up to :limit MB",
     "PO-1001, Return-22...": "PO-1001, Return-22...",
     "Popular Right Now": "Popular Right Now",
     "Possible Cause": "Possible Cause",
@@ -3758,5 +3758,12 @@
     "Back to Analytics": "Back to Analytics",
     "Top :n keywords": "Top :n keywords",
     "Share": "Share",
-    "A verification code has been sent to your email.": "A verification code has been sent to your email."
+    "A verification code has been sent to your email.": "A verification code has been sent to your email.",
+    "The image is too large. The maximum size is :limit MB per image.": "The image is too large. The maximum size is :limit MB per image.",
+    "Unsupported image format. Please upload a JPG, PNG or WEBP file.": "Unsupported image format. Please upload a JPG, PNG or WEBP file.",
+    "The image could not be uploaded. Please try again.": "The image could not be uploaded. Please try again.",
+    "The image could not be read. Please upload a valid JPG, PNG or WEBP file.": "The image could not be read. Please upload a valid JPG, PNG or WEBP file.",
+    "The image dimensions are too large to process. Please upload a smaller image.": "The image dimensions are too large to process. Please upload a smaller image.",
+    "The image could not be saved on the server. Please try again later.": "The image could not be saved on the server. Please try again later.",
+    "The upload is too large for the server to accept. Please use fewer or smaller images.": "The upload is too large for the server to accept. Please use fewer or smaller images."
 }

@@ -62,10 +62,22 @@ class MissingTranslationFallbackTest extends TestCase
             __('errors.something_went_wrong_here')
         );
 
-        $this->assertSame(
-            'Rule missing',
-            __('validation.custom.some_field.rule-missing')
-        );
+    }
+
+    public function test_the_validators_own_lookups_are_left_alone(): void
+    {
+        // The validator probes for a per-field override of every message and
+        // takes the key coming back as "none". Turning the probe into a label
+        // replaced every validation message with one word — "Required",
+        // "Image", and for an oversized upload just "File".
+        foreach ([
+            'validation.custom.some_field.rule-missing',
+            'validation.custom.image.max.file',
+            'validation.attributes.image',
+            'validation.values.status.active',
+        ] as $key) {
+            $this->assertSame($key, __($key));
+        }
     }
 
     public function test_a_nested_key_that_does_exist_is_translated_normally(): void

@@ -54,6 +54,15 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useTailwind();
 
         Lang::handleMissingKeysUsing(function (string $key, array $replace, string $locale, bool $fallback): string {
+            // The validator asks for a per-field override of every message
+            // before it uses the standard one, and reads getting the key back
+            // as "there is none". Tidying these up made every answer look
+            // like an override, so "validation.custom.image.max.file" became
+            // the entire error: "File".
+            if (Str::startsWith($key, ['validation.custom', 'validation.attributes', 'validation.values'])) {
+                return $key;
+            }
+
             Log::warning('Missing translation key.', [
                 'key' => $key,
                 'locale' => $locale,

@@ -1224,7 +1224,7 @@
     "Please select a valid saved address before reviewing your order.": "پێش پێداچوونەوەی داواکاری ناونیشانێکی پاشەکەوتکراوی دروست هەڵبژێرە.",
     "Please verify your email address before signing in.": "تکایە پێش چوونەژوورەوە ئیمەیڵەکەت پشتڕاست بکەرەوە.",
     "Please wait a moment before requesting another verification code.": "تکایە چاوەڕێیەکی کەم بکە پێش داواکردنی کۆدی پشتڕاستکردنەوەی تر.",
-    "PNG, JPG up to 2MB": "PNG، JPG هەتا 2 مێگابایت",
+    "JPG, PNG or WEBP up to :limit MB": "JPG، PNG یان WEBP هەتا :limit مێگابایت",
     "PO-1001, Return-22...": "PO-1001، Return-22...",
     "Popular Right Now": "ئێستا زۆر خوازراوە",
     "Possible Cause": "ئەگەری هۆکار",
@@ -3758,5 +3758,12 @@
     "Back to Analytics": "گەڕانەوە بۆ شیکارییەکان",
     "Top :n keywords": "باشترین :n وشەی گەڕان",
     "Share": "ڕێژە",
-    "A verification code has been sent to your email.": "کۆدی پشتڕاستکردنەوە بۆ ئیمەیلەکەت نێردرا."
+    "A verification code has been sent to your email.": "کۆدی پشتڕاستکردنەوە بۆ ئیمەیلەکەت نێردرا.",
+    "The image is too large. The maximum size is :limit MB per image.": "وێنەکە زۆر گەورەیە. زۆرترین قەبارە :limit مێگابایتە بۆ هەر وێنەیەک.",
+    "Unsupported image format. Please upload a JPG, PNG or WEBP file.": "جۆری وێنەکە پشتگیری نەکراوە. تکایە فایلێکی JPG، PNG یان WEBP باربکە.",
+    "The image could not be uploaded. Please try again.": "نەتوانرا وێنەکە باربکرێت. تکایە دووبارە هەوڵ بدەوە.",
+    "The image could not be read. Please upload a valid JPG, PNG or WEBP file.": "نەتوانرا وێنەکە بخوێندرێتەوە. تکایە فایلێکی دروستی JPG، PNG یان WEBP باربکە.",
+    "The image dimensions are too large to process. Please upload a smaller image.": "ئەندازەکانی وێنەکە زۆر گەورەن بۆ پرۆسێسکردن. تکایە وێنەیەکی بچووکتر باربکە.",
+    "The image could not be saved on the server. Please try again later.": "نەتوانرا وێنەکە لەسەر ڕاژەکار پاشەکەوت بکرێت. تکایە دواتر هەوڵ بدەوە.",
+    "The upload is too large for the server to accept. Please use fewer or smaller images.": "قەبارەی بارکردنەکە لەوە گەورەترە کە ڕاژەکار وەریبگرێت. تکایە وێنەی کەمتر یان بچووکتر بەکاربهێنە."
 }

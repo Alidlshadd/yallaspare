@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exceptions\ImageUploadException;
 use App\Exports\ProductsExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\StoreProductRequest;
@@ -26,6 +27,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\ValidationException;
 use Maatwebsite\Excel\Facades\Excel;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
@@ -205,10 +207,6 @@ class ProductController extends Controller
     public function store(StoreProductRequest $request)
     {
         $selectedBrand = $this->resolveRequestedBrand($request);
-        $imagePath = null;
-        if ($request->hasFile('image')) {
-            $imagePath = SecureImageStorage::store($request->file('image'), 'products');
-        }
 
         $compatibleModels = $request->filled('compatible_models')
             ? array_values(array_filter(array_map('trim', preg_split('/[,\n]+/', $request->compatible_models))))
@@ -221,39 +219,55 @@ class ProductController extends Controller
         $dealerPrice = $request->filled('dealer_price') ? (float) $request->dealer_price : null;
         $basePrice = (float) $request->price;
 
-        $product = Product::create([
-            'category_id' => $request->category_id,
-            'name_en' => $request->name_en,
-            'name_ar' => $request->name_ar,
-            'name_ku' => $request->name_ku,
-            'description_en' => $request->description_en,
-            'description_ar' => $request->description_ar,
-            'description_ku' => $request->description_ku,
-            'price' => $basePrice,
-            'dealer_price' => $dealerPrice,
-            'stock_quantity' => $request->stock_quantity,
-            'sku' => $sku,
-            'oem_number' => $request->filled('oem_number') ? $request->oem_number : null,
-            'part_number' => $request->filled('part_number') ? $request->part_number : null,
-            'warranty' => $request->filled('warranty') ? $request->warranty : null,
-            'product_brand_id' => $selectedBrand?->id,
-            'brand' => $selectedBrand?->name,
-            'compatible_models' => $compatibleModels,
-            'image' => $imagePath,
-            'is_active' => $request->boolean('is_active'),
-        ]);
+        // Every file written for this request, so a failure part-way through
+        // can take them back out. The product and its pictures are saved
+        // together or not at all.
+        $storedPaths = [];
 
-        if ($imagePath) {
-            $product->images()->create([
-                'path' => $imagePath,
-                'disk' => 'public',
-                'alt_text' => $product->name_en,
-                'sort_order' => 0,
-                'is_primary' => true,
-            ]);
+        try {
+            DB::transaction(function () use ($request, $selectedBrand, $compatibleModels, $sku, $dealerPrice, $basePrice, &$storedPaths): void {
+                $imagePath = null;
+                if ($request->hasFile('image')) {
+                    $imagePath = $storedPaths[] = SecureImageStorage::store($request->file('image'), 'products');
+                }
+
+                $product = Product::create([
+                    'category_id' => $request->category_id,
+                    'name_en' => $request->name_en,
+                    'name_ar' => $request->name_ar,
+                    'name_ku' => $request->name_ku,
+                    'description_en' => $request->description_en,
+                    'description_ar' => $request->description_ar,
+                    'description_ku' => $request->description_ku,
+                    'price' => $basePrice,
+                    'dealer_price' => $dealerPrice,
+                    'stock_quantity' => $request->stock_quantity,
+                    'sku' => $sku,
+                    'oem_number' => $request->filled('oem_number') ? $request->oem_number : null,
+                    'part_number' => $request->filled('part_number') ? $request->part_number : null,
+                    'warranty' => $request->filled('warranty') ? $request->warranty : null,
+                    'product_brand_id' => $selectedBrand?->id,
+                    'brand' => $selectedBrand?->name,
+                    'compatible_models' => $compatibleModels,
+                    'image' => $imagePath,
+                    'is_active' => $request->boolean('is_active'),
+                ]);
+
+                if ($imagePath) {
+                    $product->images()->create([
+                        'path' => $imagePath,
+                        'disk' => 'public',
+                        'alt_text' => $product->name_en,
+                        'sort_order' => 0,
+                        'is_primary' => true,
+                    ]);
+                }
+
+                $this->storeGalleryImages($request, $product, $imagePath ? 1 : 0, $storedPaths);
+            });
+        } catch (\Throwable $e) {
+            $this->abandonImageUpload($e, $request, $storedPaths);
         }
-
-        $this->storeGalleryImages($request, $product, $imagePath ? 1 : 0);
 
         $redirect = redirect()->to($this->productsIndexReturnUrl($request))
             ->with('success', __('Product added successfully'));
@@ -297,19 +311,6 @@ class ProductController extends Controller
         $brandWasSubmitted = $request->has('product_brand_id') || $request->has('brand');
         $selectedBrand = $brandWasSubmitted ? $this->resolveRequestedBrand($request) : null;
         $oldImagePath = $product->image;
-        $imagePath = $product->image;
-        if ($request->boolean('remove_image')) {
-            if ($product->image) {
-                Storage::disk('public')->delete($product->image);
-            }
-            $imagePath = null;
-        }
-        if ($request->hasFile('image')) {
-            if ($product->image) {
-                Storage::disk('public')->delete($product->image);
-            }
-            $imagePath = SecureImageStorage::store($request->file('image'), 'products');
-        }
 
         $compatibleModels = $request->filled('compatible_models')
             ? array_values(array_filter(array_map('trim', preg_split('/[,\n]+/', $request->compatible_models))))
@@ -318,57 +319,84 @@ class ProductController extends Controller
         $dealerPrice = $request->filled('dealer_price') ? (float) $request->dealer_price : null;
         $basePrice = (float) $request->price;
 
-        $product->update([
-            'category_id' => $request->category_id,
-            'name_en' => $request->name_en,
-            'name_ar' => $request->name_ar,
-            'name_ku' => $request->name_ku,
-            'description_en' => $request->description_en,
-            'description_ar' => $request->description_ar,
-            'description_ku' => $request->description_ku,
-            'price' => $basePrice,
-            'dealer_price' => $dealerPrice,
-            'stock_quantity' => $request->stock_quantity,
-            'sku' => $request->filled('sku') ? $request->sku : $product->sku,
-            'oem_number' => $request->filled('oem_number') ? $request->oem_number : null,
-            'part_number' => $request->filled('part_number') ? $request->part_number : null,
-            'warranty' => $request->filled('warranty') ? $request->warranty : null,
-            'product_brand_id' => $brandWasSubmitted ? $selectedBrand?->id : $product->product_brand_id,
-            'brand' => $brandWasSubmitted ? $selectedBrand?->name : $product->brand,
-            'compatible_models' => $compatibleModels,
-            'image' => $imagePath,
-            'is_active' => $request->boolean('is_active'),
-        ]);
+        // New files are written first and old ones removed last, once the
+        // database has accepted the change. Whatever goes wrong in between,
+        // the product keeps the pictures it had.
+        $storedPaths = [];
+        $obsoletePaths = [];
 
-        if ($request->boolean('remove_image') && $oldImagePath) {
-            $product->images()->where('path', $oldImagePath)->delete();
+        try {
+            DB::transaction(function () use ($request, $product, $brandWasSubmitted, $selectedBrand, $compatibleModels, $dealerPrice, $basePrice, $oldImagePath, &$storedPaths, &$obsoletePaths): void {
+                $newImagePath = null;
+                $imagePath = $oldImagePath;
+                if ($request->hasFile('image')) {
+                    $imagePath = $newImagePath = $storedPaths[] = SecureImageStorage::store($request->file('image'), 'products');
+                } elseif ($request->boolean('remove_image')) {
+                    $imagePath = null;
+                }
+
+                $product->update([
+                    'category_id' => $request->category_id,
+                    'name_en' => $request->name_en,
+                    'name_ar' => $request->name_ar,
+                    'name_ku' => $request->name_ku,
+                    'description_en' => $request->description_en,
+                    'description_ar' => $request->description_ar,
+                    'description_ku' => $request->description_ku,
+                    'price' => $basePrice,
+                    'dealer_price' => $dealerPrice,
+                    'stock_quantity' => $request->stock_quantity,
+                    'sku' => $request->filled('sku') ? $request->sku : $product->sku,
+                    'oem_number' => $request->filled('oem_number') ? $request->oem_number : null,
+                    'part_number' => $request->filled('part_number') ? $request->part_number : null,
+                    'warranty' => $request->filled('warranty') ? $request->warranty : null,
+                    'product_brand_id' => $brandWasSubmitted ? $selectedBrand?->id : $product->product_brand_id,
+                    'brand' => $brandWasSubmitted ? $selectedBrand?->name : $product->brand,
+                    'compatible_models' => $compatibleModels,
+                    'image' => $imagePath,
+                    'is_active' => $request->boolean('is_active'),
+                ]);
+
+                // Replaced or removed, the old main picture leaves the gallery too.
+                // Its row used to survive a replacement, still marked as the form's
+                // chosen primary, and was promoted straight back over the new upload
+                // while pointing at a file that had already been deleted.
+                if ($oldImagePath && $imagePath !== $oldImagePath) {
+                    $product->images()->where('path', $oldImagePath)->delete();
+                    $obsoletePaths[] = $oldImagePath;
+                }
+
+                if ($newImagePath) {
+                    $product->images()->update(['is_primary' => false]);
+                    $product->images()->create([
+                        'path' => $newImagePath,
+                        'disk' => 'public',
+                        'alt_text' => $product->name_en,
+                        'sort_order' => 0,
+                        'is_primary' => true,
+                    ]);
+                }
+
+                $product->load('images');
+                if ($imagePath && $product->images->isEmpty()) {
+                    $product->images()->create([
+                        'path' => $imagePath,
+                        'disk' => 'public',
+                        'alt_text' => $product->name_en,
+                        'sort_order' => 0,
+                        'is_primary' => true,
+                    ]);
+                    $product->load('images');
+                }
+                $obsoletePaths = array_merge($obsoletePaths, $this->updateExistingGalleryImages($request, $product));
+                $this->storeGalleryImages($request, $product, (int) $product->images()->count(), $storedPaths);
+                $this->syncPrimaryImage($request, $product, $newImagePath);
+            });
+        } catch (\Throwable $e) {
+            $this->abandonImageUpload($e, $request, $storedPaths);
         }
 
-        if ($request->hasFile('image') && $imagePath) {
-            $product->images()->update(['is_primary' => false]);
-            $product->images()->create([
-                'path' => $imagePath,
-                'disk' => 'public',
-                'alt_text' => $product->name_en,
-                'sort_order' => 0,
-                'is_primary' => true,
-            ]);
-        }
-
-        $product->load('images');
-        if ($imagePath && $product->images->isEmpty()) {
-            $product->images()->create([
-                'path' => $imagePath,
-                'disk' => 'public',
-                'alt_text' => $product->name_en,
-                'sort_order' => 0,
-                'is_primary' => true,
-            ]);
-            $product->load('images');
-        }
-        $this->updateExistingGalleryImages($request, $product);
-        $this->storeGalleryImages($request, $product, (int) $product->images()->count());
-        $this->syncPrimaryImage($request, $product);
+        $this->deleteImageFiles($obsoletePaths);
 
         $redirect = redirect()->to($this->productsIndexReturnUrl($request))
             ->with('success', __('Product updated successfully'));
@@ -496,9 +524,11 @@ class ProductController extends Controller
     private function deleteImageFiles(array $paths): void
     {
         foreach ($paths as $path) {
+            // Through the model, so a gallery row that was itself removed —
+            // they are soft-deleted — does not keep its file alive for ever.
             $stillUsed = Product::query()->where('image', $path)->exists()
                 || (Schema::hasTable('product_images')
-                    && DB::table('product_images')->where('path', $path)->exists());
+                    && ProductImage::query()->where('path', $path)->exists());
 
             if ($stillUsed) {
                 continue;
@@ -798,7 +828,10 @@ class ProductController extends Controller
         return in_array($normalized, ['1', 'true', 'yes', 'active'], true);
     }
 
-    private function storeGalleryImages(Request $request, Product $product, int $startingOrder = 0): void
+    /**
+     * @param  array<int, string>  $storedPaths  Collects each file written, for the caller to undo.
+     */
+    private function storeGalleryImages(Request $request, Product $product, int $startingOrder = 0, array &$storedPaths = []): void
     {
         if (! $request->hasFile('gallery_images')) {
             return;
@@ -810,7 +843,7 @@ class ProductController extends Controller
             }
 
             $product->images()->create([
-                'path' => SecureImageStorage::store($file, 'products'),
+                'path' => $storedPaths[] = SecureImageStorage::store($file, 'products'),
                 'disk' => 'public',
                 'alt_text' => $product->name_en,
                 'sort_order' => $startingOrder + $index,
@@ -819,8 +852,13 @@ class ProductController extends Controller
         }
     }
 
-    private function updateExistingGalleryImages(Request $request, Product $product): void
+    /**
+     * @return array<int, string> Files no longer wanted, to delete once the change is committed.
+     */
+    private function updateExistingGalleryImages(Request $request, Product $product): array
     {
+        $removedPaths = [];
+
         $removeIds = collect($request->input('remove_gallery_image_ids', []))
             ->map(fn ($id) => (int) $id)
             ->filter()
@@ -829,7 +867,7 @@ class ProductController extends Controller
         if ($removeIds->isNotEmpty()) {
             $images = $product->images()->whereIn('id', $removeIds)->get();
             foreach ($images as $image) {
-                Storage::disk($image->disk ?: 'public')->delete($image->path);
+                $removedPaths[] = (string) $image->path;
                 $image->delete();
             }
         }
@@ -846,14 +884,57 @@ class ProductController extends Controller
                 'alt_text' => isset($altTexts[$image->id]) ? trim((string) $altTexts[$image->id]) : $image->alt_text,
             ]);
         }
+
+        return $removedPaths;
     }
 
-    private function syncPrimaryImage(Request $request, Product $product): void
+    /**
+     * Undo a save that failed while pictures were being handled.
+     *
+     * The files written so far go, since nothing points at them any more. A
+     * picture that could not be kept sends the admin back to the form with
+     * everything they typed and a reason they can act on; the detail goes to
+     * the log. Anything else is not an upload problem and carries on up.
+     *
+     * @param  array<int, string>  $storedPaths
+     */
+    private function abandonImageUpload(\Throwable $e, Request $request, array $storedPaths): never
     {
+        Storage::disk('public')->delete($storedPaths);
+
+        if (! $e instanceof ImageUploadException) {
+            throw $e;
+        }
+
+        Log::log($e->reason === ImageUploadException::NOT_SAVED ? 'error' : 'warning', 'Product image could not be stored', [
+            'reason' => $e->reason,
+            'error' => $e->getMessage(),
+            'route' => $request->route()?->getName(),
+            'product_id' => $request->route('product')?->id,
+            'user_id' => $request->user()?->getAuthIdentifier(),
+            'disk_root' => config('filesystems.disks.public.root'),
+        ]);
+
+        throw ValidationException::withMessages([
+            'image' => match ($e->reason) {
+                ImageUploadException::TOO_MANY_PIXELS => __('The image dimensions are too large to process. Please upload a smaller image.'),
+                ImageUploadException::NOT_SAVED => __('The image could not be saved on the server. Please try again later.'),
+                default => __('The image could not be read. Please upload a valid JPG, PNG or WEBP file.'),
+            },
+        ]);
+    }
+
+    private function syncPrimaryImage(Request $request, Product $product, ?string $newImagePath = null): void
+    {
+        // A picture uploaded as the main image is the main image. The form
+        // always posts the previous choice alongside it, which says nothing
+        // about what the admin wants now.
         $primaryImageId = (int) $request->input('primary_image_id', 0);
-        $primaryImage = $primaryImageId > 0
-            ? $product->images()->whereKey($primaryImageId)->first()
-            : null;
+        $primaryImage = match (true) {
+            $newImagePath !== null => $product->images()->where('path', $newImagePath)->first(),
+            $primaryImageId > 0 => $product->images()->whereKey($primaryImageId)->first(),
+            default => null,
+        };
 
         if (! $primaryImage) {
             $primaryImage = $product->images()->orderByDesc('is_primary')->orderBy('sort_order')->orderBy('id')->first();
@@ -865,8 +946,12 @@ class ProductController extends Controller
             return;
         }
 
+        // The chosen row is left out: clearing it here behind the model's back
+        // made the next line a no-op whenever it was already the primary, and
+        // the product ended up with no primary at all.
         ProductImage::query()
             ->where('product_id', $product->id)
+            ->whereKeyNot($primaryImage->id)
             ->update(['is_primary' => false]);
 
         $primaryImage->update(['is_primary' => true]);

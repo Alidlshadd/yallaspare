@@ -1224,7 +1224,7 @@
     "Please select a valid saved address before reviewing your order.": "يرجى اختيار عنوان محفوظ صالح قبل مراجعة الطلب.",
     "Please verify your email address before signing in.": "يرجى تأكيد بريدك الإلكتروني قبل تسجيل الدخول.",
     "Please wait a moment before requesting another verification code.": "يرجى الانتظار قليلاً قبل طلب رمز تحقق آخر.",
-    "PNG, JPG up to 2MB": "PNG، JPG حتى 2 ميغابايت",
+    "JPG, PNG or WEBP up to :limit MB": "JPG أو PNG أو WEBP حتى :limit ميغابايت",
     "PO-1001, Return-22...": "PO-1001، Return-22...",
     "Popular Right Now": "الأكثر رواجاً الآن",
     "Possible Cause": "محتمل سبب",
@@ -3758,5 +3758,12 @@
     "Back to Analytics": "العودة إلى التحليلات",
     "Top :n keywords": "أفضل :n كلمة بحث",
     "Share": "النسبة",
-    "A verification code has been sent to your email.": "تم إرسال رمز تحقق إلى بريدك الإلكتروني."
+    "A verification code has been sent to your email.": "تم إرسال رمز تحقق إلى بريدك الإلكتروني.",
+    "The image is too large. The maximum size is :limit MB per image.": "حجم الصورة كبير جداً. الحد الأقصى هو :limit ميغابايت لكل صورة.",
+    "Unsupported image format. Please upload a JPG, PNG or WEBP file.": "صيغة الصورة غير مدعومة. يرجى رفع ملف JPG أو PNG أو WEBP.",
+    "The image could not be uploaded. Please try again.": "تعذر رفع الصورة. يرجى المحاولة مرة أخرى.",
+    "The image could not be read. Please upload a valid JPG, PNG or WEBP file.": "تعذرت قراءة الصورة. يرجى رفع ملف JPG أو PNG أو WEBP صالح.",
+    "The image dimensions are too large to process. Please upload a smaller image.": "أبعاد الصورة كبيرة جداً ولا يمكن معالجتها. يرجى رفع صورة أصغر.",
+    "The image could not be saved on the server. Please try again later.": "تعذر حفظ الصورة على الخادم. يرجى المحاولة لاحقاً.",
+    "The upload is too large for the server to accept. Please use fewer or smaller images.": "حجم الرفع أكبر مما يقبله الخادم. يرجى استخدام صور أقل عدداً أو أصغر حجماً."
 }

@@ -225,13 +225,13 @@
                             <div class="p-6 space-y-4">
                                 <label for="gallery_images" class="block text-sm font-medium text-slate-700">{{ __('Product Image') }}</label>
                                 <label class="group flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 px-6 py-6 text-center text-sm text-slate-500 transition hover:border-info hover:text-info dark:border-slate-700 dark:hover:border-info">
-                                    <input id="productImage" type="file" name="image" accept="image/*" class="hidden">
+                                    <input id="productImage" type="file" name="image" accept="{{ \App\Support\ProductImageUpload::acceptAttribute() }}" class="hidden">
                                     <div class="flex flex-col items-center gap-2">
                                         <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-white text-slate-600 shadow-sm">
                                             <i class="fas fa-cloud-upload-alt text-lg" aria-hidden="true"></i>
                                         </span>
                                         <span class="font-medium">{{ __('Drag & drop or click to upload') }}</span>
-                                        <span class="text-xs text-muted">{{ __('PNG, JPG up to 2MB') }}</span>
+                                        <span class="text-xs text-muted">{{ __('JPG, PNG or WEBP up to :limit MB', ['limit' => \App\Support\ProductImageUpload::maxMegabytes()]) }}</span>
                                     </div>
                                 </label>
 
@@ -251,8 +251,9 @@
                                 @endif
                                 <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
                                     <label class="block text-sm font-medium text-slate-700">{{ __('Add Gallery Images') }}</label>
-                                    <input id="gallery_images" type="file" name="gallery_images[]" accept="image/*" multiple class="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">
+                                    <input id="gallery_images" type="file" name="gallery_images[]" accept="{{ \App\Support\ProductImageUpload::acceptAttribute() }}" multiple class="mt-2 w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700">
                                 </div>
+                                @include('admin.products.partials.image-upload-guard')
 
                                 @if($product->images->isNotEmpty())
                                     <div class="rounded-xl border border-slate-200 bg-white p-4">
