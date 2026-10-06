@@ -358,6 +358,7 @@ class ManualInvoiceService
             'customer_name' => $customer->name,
             'customer_phone' => $customer->phone,
             'customer_whatsapp' => $customer->whatsapp,
+            'customer_country' => $customer->country,
             'customer_city' => $customer->city,
             'customer_address' => $customer->address,
         ];

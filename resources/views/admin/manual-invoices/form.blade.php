@@ -45,7 +45,7 @@
                         <div id="customerSelectedName" class="font-bold text-slate-900">{{ $customer?->name }}</div>
                         <div class="text-xs text-slate-600 mt-0.5">
                             <span id="customerSelectedPhone" dir="ltr" class="font-mono">{{ $customer?->phone }}</span>
-                            <span id="customerSelectedCity">{{ $customer?->city ? ' · '.$customer->city : '' }}</span>
+                            <span id="customerSelectedCity">{{ $customer ? collect([$customer->city, \App\Support\InternationalPhone::countryName($customer->country)])->filter()->map(fn ($part) => ' · '.$part)->implode('') : '' }}</span>
                         </div>
                     </div>
                     <button type="button" id="customerChange" class="h-9 px-3 rounded-lg border border-slate-200 bg-white text-xs font-bold text-slate-700 hover:bg-slate-100 transition dark:hover:bg-slate-800">{{ __('Change customer') }}</button>
@@ -71,11 +71,25 @@
                             </div>
                             <div>
                                 <label for="newCustomerPhone" class="{{ $labelClass }}">{{ __('Phone') }}</label>
-                                <input id="newCustomerPhone" type="tel" dir="ltr" inputmode="tel" placeholder="0770 123 4567" class="{{ $inputBase }}">
+                                @include('admin.customers.partials.phone-field', [
+                                    'id' => 'newCustomerPhone', 'field' => 'phone', 'label' => __('Phone'),
+                                    'nameless' => true, 'placeholder' => '0770 123 4567',
+                                ])
                             </div>
                             <div>
                                 <label for="newCustomerWhatsapp" class="{{ $labelClass }}">{{ __('WhatsApp number') }}</label>
-                                <input id="newCustomerWhatsapp" type="tel" dir="ltr" inputmode="tel" class="{{ $inputBase }}">
+                                @include('admin.customers.partials.phone-field', [
+                                    'id' => 'newCustomerWhatsapp', 'field' => 'whatsapp', 'label' => __('WhatsApp number'),
+                                    'nameless' => true,
+                                ])
+                            </div>
+                            <div>
+                                <label for="newCustomerAddressCountry" class="{{ $labelClass }}">{{ __('Country') }}</label>
+                                <select id="newCustomerAddressCountry" class="{{ $inputBase }}">
+                                    @foreach (\App\Support\InternationalPhone::countries() as $iso => $country)
+                                        <option value="{{ $iso }}" @selected($iso === \App\Support\InternationalPhone::DEFAULT_COUNTRY)>{{ $country['name'] }}</option>
+                                    @endforeach
+                                </select>
                             </div>
                             <div>
                                 <label for="newCustomerCity" class="{{ $labelClass }}">{{ __('City / Governorate') }}</label>
@@ -379,7 +393,7 @@
                 customerId.value = customer.id;
                 byId('customerSelectedName').textContent = customer.name;
                 byId('customerSelectedPhone').textContent = customer.phone;
-                byId('customerSelectedCity').textContent = customer.city ? ' · ' + customer.city : '';
+                byId('customerSelectedCity').textContent = [customer.city, customer.country_name].filter(Boolean).map((part) => ' · ' + part).join('');
                 customerSelected.classList.replace('hidden', 'flex');
                 customerPicker.classList.add('hidden');
                 customerNotice.textContent = notice || '';
@@ -403,7 +417,7 @@
                 getJson(config.customerSearchUrl, query).then(({ data }) => {
                     customerResults.replaceChildren();
                     data.forEach((customer) => {
-                        const { item, button } = resultButton(customer.name, [customer.phone, customer.city].filter(Boolean).join(' · '));
+                        const { item, button } = resultButton(customer.name, [customer.phone, customer.city, customer.country_name].filter(Boolean).join(' · '));
                         button.addEventListener('click', () => selectCustomer(customer));
                         customerResults.appendChild(item);
                     });
@@ -428,7 +442,10 @@
                     body: JSON.stringify({
                         name: byId('newCustomerName').value,
                         phone: byId('newCustomerPhone').value,
+                        phone_country: byId('newCustomerPhoneCountry').value,
                         whatsapp: byId('newCustomerWhatsapp').value,
+                        whatsapp_country: byId('newCustomerWhatsappCountry').value,
+                        country: byId('newCustomerAddressCountry').value,
                         city: byId('newCustomerCity').value,
                         address: byId('newCustomerAddress').value,
                     }),

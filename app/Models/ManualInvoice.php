@@ -33,6 +33,7 @@ class ManualInvoice extends Model
         'customer_name',
         'customer_phone',
         'customer_whatsapp',
+        'customer_country',
         'customer_city',
         'customer_address',
         'status',

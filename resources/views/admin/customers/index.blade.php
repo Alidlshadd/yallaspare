@@ -68,7 +68,7 @@
                                             </a>
                                         </div>
                                     </td>
-                                    <td class="px-4 py-3 text-slate-700">{{ $customer->city ?: '—' }}</td>
+                                    <td class="px-4 py-3 text-slate-700">{{ collect([$customer->city, \App\Support\InternationalPhone::countryName($customer->country)])->filter()->implode(' · ') }}</td>
                                     <td class="px-4 py-3 text-slate-700">{{ number_format($customer->invoices_count) }}</td>
                                     <td class="px-4 py-3">
                                         <div class="flex items-center justify-end gap-1.5">

@@ -9,15 +9,19 @@
     <meta name="robots" content="noindex, nofollow, noarchive">
     <meta name="referrer" content="no-referrer">
     <title>{{ __('invoice.title') }} {{ $invoice->number }}</title>
+    <link rel="preconnect" href="https://fonts.bunny.net" crossorigin>
+    <link href="https://fonts.bunny.net/css?family=inter:400,700|ibm-plex-sans-arabic:400,700&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; }
-        body { margin: 0; background: #f3f4f7; color: #111827; font-family: {{ $isRtl ? "'IBM Plex Sans Arabic', Tahoma" : 'Inter, system-ui, -apple-system, Segoe UI, Roboto' }}, sans-serif; font-size: 15px; line-height: 1.6; }
+        /* One stack for every language: fallback is per glyph, so Latin lands on
+           Inter and Arabic script on Plex without a rule per direction. */
+        body { margin: 0; background: #f3f4f7; color: #111827; font-family: Inter, "IBM Plex Sans Arabic", system-ui, -apple-system, "Segoe UI", Tahoma, sans-serif; font-size: 15px; line-height: 1.6; }
         .page { max-width: 760px; margin: 0 auto; padding: 20px 16px 40px; }
         .card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 20px; margin-bottom: 14px; }
         .head { background: #04042a; color: #fff; border-color: #04042a; }
         .head h1 { margin: 0; font-size: 22px; }
         .head p { margin: 4px 0 0; color: rgba(255,255,255,.72); font-size: 13px; }
-        .number { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; direction: ltr; unicode-bidi: embed; }
+        .number { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; direction: ltr; unicode-bidi: isolate; display: inline-block; }
         .label { color: #64748b; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; }
         /* Tracking pulls joined Arabic-script letters apart. */
         [dir="rtl"] .label { letter-spacing: 0; }
@@ -26,7 +30,12 @@
         .row:last-child { border-bottom: 0; }
         .row .desc { min-width: 0; }
         .row .desc small { display: block; color: #64748b; }
+        /* Money and codes read left to right in every language; without this an
+           RTL page prints "IQD 88,000" and moves the minus sign. */
+        .amount, .ltr { direction: ltr; unicode-bidi: isolate; }
         .amount { white-space: nowrap; font-weight: 700; }
+        [dir="rtl"] div.amount { text-align: right; }
+        .ltr { display: inline-block; }
         .total { border-top: 2px solid #04042a; margin-top: 6px; padding-top: 12px; font-size: 18px; }
         .badge { display: inline-block; border-radius: 999px; padding: 3px 10px; font-size: 12px; font-weight: 700; background: #e2e8f0; color: #334155; }
         .badge.paid { background: #d1fae5; color: #047857; }
@@ -46,7 +55,7 @@
     <main class="page">
         <header class="card head">
             <h1>{{ $service->businessName() }}</h1>
-            <p>{{ __('invoice.title') }} <span class="number">{{ $invoice->number }}</span> · {{ $invoice->invoice_date?->format('Y-m-d') }}</p>
+            <p>{{ __('invoice.title') }} <span class="number">{{ $invoice->number }}</span> · <span class="ltr">{{ $invoice->invoice_date?->format('Y-m-d') }}</span></p>
         </header>
 
         <nav class="card langs no-print" aria-label="{{ __('Language') }}">
@@ -60,9 +69,7 @@
                 <div class="label">{{ __('invoice.customer_information') }}</div>
                 <div><strong>{{ $invoice->customer_name }}</strong></div>
                 <div class="number">{{ $invoice->customer_phone }}</div>
-                @if ($invoice->customer_city || $invoice->customer_address)
-                    <div>{{ collect([$invoice->customer_city, $invoice->customer_address])->filter()->implode(' · ') }}</div>
-                @endif
+                <div>{{ collect([$invoice->customer_address, $invoice->customer_city, \App\Support\InternationalPhone::countryName($invoice->customer_country)])->filter()->implode(' · ') }}</div>
             </section>
             <section class="card">
                 <div class="label">{{ __('invoice.payment_status') }}</div>
@@ -79,7 +86,7 @@
                         <strong>{{ $item->description }}</strong>
                         <small>
                             @if ($item->sku)<span class="number">{{ $item->sku }}</span> · @endif
-                            {{ number_format($item->quantity) }} × {{ $service->money((float) $item->unit_price) }}
+                            <span class="ltr">{{ number_format($item->quantity) }} × {{ $service->money((float) $item->unit_price) }}</span>
                         </small>
                     </div>
                     <div class="amount">{{ $service->money((float) $item->line_total) }}</div>

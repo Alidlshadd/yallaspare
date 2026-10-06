@@ -51,9 +51,7 @@
                             <i class="fab fa-whatsapp text-sm" aria-hidden="true"></i>
                         </a>
                     </div>
-                    @if ($invoice->customer_city || $invoice->customer_address)
-                        <p class="mt-1 text-sm text-slate-600">{{ collect([$invoice->customer_city, $invoice->customer_address])->filter()->implode(' · ') }}</p>
-                    @endif
+                    <p class="mt-1 text-sm text-slate-600">{{ collect([$invoice->customer_address, $invoice->customer_city, \App\Support\InternationalPhone::countryName($invoice->customer_country)])->filter()->implode(' · ') }}</p>
                 </section>
 
                 <section class="{{ $cardClass }}">
@@ -117,6 +115,7 @@
                         <form method="POST" action="{{ route('admin.manual-invoices.finalize', $invoice) }}"
                               data-danger-confirm
                               data-danger-title="{{ __('Finalize invoice') }}"
+                              data-danger-action="{{ __('Finalize invoice') }}"
                               data-danger-description="{{ __('Stock will be deducted for the catalogue items and the invoice can no longer be edited.') }}">
                             @csrf
                             <button type="submit" class="inline-flex w-full items-center justify-center gap-2 h-10 px-4 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition dark:text-slate-900 dark:hover:bg-slate-100">
@@ -211,6 +210,7 @@
                         <form method="POST" action="{{ route('admin.manual-invoices.share.revoke', $invoice) }}" class="mt-3"
                               data-danger-confirm
                               data-danger-title="{{ __('Revoke share link') }}"
+                              data-danger-action="{{ __('Revoke share link') }}"
                               data-danger-description="{{ __('The link already sent to the customer will stop working. You can create a new one afterwards.') }}">
                             @csrf
                             @method('DELETE')

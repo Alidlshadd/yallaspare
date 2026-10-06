@@ -48,12 +48,10 @@
                         <div class="label">{{ __('invoice.customer_name') }}</div>
                         <div class="value">{{ $invoice->customer_name }}</div>
                         <div class="muted">{{ __('invoice.phone') }}: {{ $ltr($invoice->customer_phone) }}</div>
-                        @if ($invoice->customer_city)
-                            <div>{{ $invoice->customer_city }}</div>
-                        @endif
                         @if ($invoice->customer_address)
                             <div>{{ $invoice->customer_address }}</div>
                         @endif
+                        <div>{{ collect([$invoice->customer_city, \App\Support\InternationalPhone::countryName($invoice->customer_country)])->filter()->implode(' · ') }}</div>
                     </td></tr>
                 </table>
             </td>

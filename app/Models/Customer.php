@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Support\IraqiPhoneNumber;
+use App\Support\InternationalPhone;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
@@ -17,6 +17,7 @@ class Customer extends Model
         'name',
         'phone',
         'whatsapp',
+        'country',
         'city',
         'address',
         'notes',
@@ -32,9 +33,9 @@ class Customer extends Model
     /**
      * The row holding this number, however it was typed.
      */
-    public static function findByPhone(mixed $phone): ?self
+    public static function findByPhone(mixed $phone, ?string $country = null): ?self
     {
-        $e164 = IraqiPhoneNumber::toE164($phone);
+        $e164 = InternationalPhone::toE164($phone, $country);
 
         return $e164 === null ? null : self::query()->where('phone', $e164)->first();
     }

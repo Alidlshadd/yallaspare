@@ -5,14 +5,15 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Customer;
 use App\Models\Governorate;
-use App\Rules\IraqiMobileNumber;
 use App\Support\AdminLogger;
-use App\Support\IraqiPhoneNumber;
+use App\Support\InternationalPhone;
 use App\Support\SqlSafe;
+use Closure;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use Illuminate\View\View;
 
@@ -133,21 +134,55 @@ class CustomerController extends Controller
      */
     private function validated(Request $request): array
     {
+        $countries = array_keys(InternationalPhone::countries());
+        $phoneCountry = $this->countryFrom($request->input('phone_country'));
+        $whatsappCountry = $this->countryFrom($request->input('whatsapp_country'), $phoneCountry);
+
         $data = $request->validate([
             'name' => ['required', 'string', 'max:160'],
-            'phone' => ['required', 'string', 'max:32', new IraqiMobileNumber],
-            'whatsapp' => ['nullable', 'string', 'max:32', new IraqiMobileNumber],
+            'phone' => ['required', 'string', 'max:32', $this->validPhoneFor($phoneCountry)],
+            'phone_country' => ['nullable', 'string', Rule::in($countries)],
+            'whatsapp' => ['nullable', 'string', 'max:32', $this->validPhoneFor($whatsappCountry)],
+            'whatsapp_country' => ['nullable', 'string', Rule::in($countries)],
+            'country' => ['nullable', 'string', Rule::in($countries)],
             'city' => ['nullable', 'string', 'max:120'],
             'address' => ['nullable', 'string', 'max:1000'],
             'notes' => ['nullable', 'string', 'max:2000'],
         ]);
 
-        // 0770…, 770… and +964770… all become the one stored form.
-        $data['phone'] = IraqiPhoneNumber::toE164($data['phone']);
-        $data['whatsapp'] = filled($data['whatsapp'] ?? null) ? IraqiPhoneNumber::toE164($data['whatsapp']) : null;
+        // Each number is read by its own country's rules and stored in full:
+        // 0770… with Iraq and +964770… are one number, and 0532… with Türkiye
+        // becomes +90532…, never +964….
+        $data['phone'] = InternationalPhone::toE164($data['phone'], $phoneCountry);
+        $data['whatsapp'] = filled($data['whatsapp'] ?? null)
+            ? InternationalPhone::toE164($data['whatsapp'], $whatsappCountry)
+            : null;
+        $data['country'] = $data['country'] ?? $phoneCountry;
         $data['name'] = trim($data['name']);
 
+        unset($data['phone_country'], $data['whatsapp_country']);
+
         return $data;
+    }
+
+    private function countryFrom(mixed $value, string $fallback = InternationalPhone::DEFAULT_COUNTRY): string
+    {
+        return InternationalPhone::isKnownCountry($value) ? strtoupper((string) $value) : $fallback;
+    }
+
+    /**
+     * A rule rather than a check after validation, so a bad number is reported
+     * alongside the form's other mistakes instead of one round later.
+     */
+    private function validPhoneFor(string $country): Closure
+    {
+        return function (string $attribute, mixed $value, Closure $fail) use ($country): void {
+            if (InternationalPhone::toE164($value, $country) === null) {
+                $fail(__('This is not a valid phone number for :country. Check the number, or type it in full starting with + and the country code.', [
+                    'country' => InternationalPhone::countryName($country),
+                ]));
+            }
+        };
     }
 
     /**
@@ -156,9 +191,10 @@ class CustomerController extends Controller
     private function applySearch(Builder $query, string $search): void
     {
         $term = SqlSafe::searchTerm($search);
-        // A number is stored as +9647…; someone searching types 0770… or 770….
+        // A number is stored as +9647…; someone searching types 0770…, 770…
+        // or the whole thing. Dropping the leading zeros makes all three a
+        // substring of what is stored, for any country.
         $digits = ltrim(preg_replace('/\D+/', '', $search) ?? '', '0');
-        $digits = str_starts_with($digits, '964') ? substr($digits, 3) : $digits;
 
         $query->where(function (Builder $nested) use ($term, $digits): void {
             SqlSafe::whereLike($nested, 'name', $term);
@@ -181,6 +217,8 @@ class CustomerController extends Controller
             'name' => $customer->name,
             'phone' => $customer->phone,
             'whatsapp' => $customer->whatsapp,
+            'country' => $customer->country,
+            'country_name' => InternationalPhone::countryName($customer->country),
             'city' => $customer->city,
             'address' => $customer->address,
         ];

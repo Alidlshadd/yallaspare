@@ -37,7 +37,6 @@ class ManualInvoiceController extends Controller
             ->when($filters['q'] !== '', function (Builder $query) use ($filters): void {
                 $term = SqlSafe::searchTerm($filters['q']);
                 $digits = ltrim(preg_replace('/\D+/', '', $filters['q']) ?? '', '0');
-                $digits = str_starts_with($digits, '964') ? substr($digits, 3) : $digits;
 
                 $query->where(function (Builder $nested) use ($term, $digits): void {
                     SqlSafe::whereLike($nested, 'number', $term);

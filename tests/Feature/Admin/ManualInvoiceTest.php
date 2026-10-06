@@ -11,6 +11,7 @@ use App\Models\Product;
 use App\Models\User;
 use App\Services\Invoices\ManualInvoiceService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use Tests\TestCase;
@@ -106,7 +107,7 @@ class ManualInvoiceTest extends TestCase
         Notification::assertNothingSent();
     }
 
-    public function test_name_and_a_valid_iraqi_phone_are_required(): void
+    public function test_name_and_a_valid_phone_are_required(): void
     {
         $this->actingAs($this->admin)
             ->post(route('admin.customers.store'), ['name' => '', 'phone' => '12345'])
@@ -128,6 +129,132 @@ class ManualInvoiceTest extends TestCase
 
         $this->assertSame(1, Customer::query()->count());
         $this->assertSame('Karwan Garage', $existing->fresh()->name);
+    }
+
+    public function test_numbers_are_read_by_their_own_country_and_never_given_an_iraqi_prefix(): void
+    {
+        $cases = [
+            // country, as typed, stored
+            ['IQ', '0770 123 4567', '+9647701234567'],
+            ['IR', '0912 345 6789', '+989123456789'],
+            ['IR', '۰۹۱۲۳۴۵۶۷۸۰', '+989123456780'],
+            ['TR', '0532 123 45 67', '+905321234567'],
+            ['TR', '532 123 45 68', '+905321234568'],
+            // A number written in full says where it is from, whatever is selected.
+            ['IQ', '+90 532 123 45 69', '+905321234569'],
+            ['IQ', '0098 912 345 6781', '+989123456781'],
+            ['DE', '0151 23456789', '+4915123456789'],
+        ];
+
+        foreach ($cases as $index => [$country, $typed, $stored]) {
+            $this->actingAs($this->admin)->post(route('admin.customers.store'), [
+                'name' => 'Customer '.$index,
+                'phone' => $typed,
+                'phone_country' => $country,
+            ])->assertSessionHasNoErrors();
+
+            $this->assertDatabaseHas('customers', ['name' => 'Customer '.$index, 'phone' => $stored]);
+        }
+
+        $this->assertSame(0, Customer::query()->where('phone', 'like', '+9649%')->orWhere('phone', 'like', '+9645%')->count());
+    }
+
+    public function test_a_number_that_is_wrong_for_its_country_is_refused_by_name(): void
+    {
+        foreach ([
+            ['IR', '0912 345', 'Iran'],
+            ['TR', '12345', 'Türkiye'],
+            ['TR', '0770 123 4567', 'Türkiye'],   // an Iraqi mobile is not a Turkish number
+            ['IQ', '0770 12', 'Iraq'],
+        ] as [$country, $typed, $named]) {
+            $this->actingAs($this->admin)
+                ->post(route('admin.customers.store'), ['name' => 'Nobody', 'phone' => $typed, 'phone_country' => $country])
+                ->assertSessionHasErrors('phone');
+
+            $this->assertStringContainsString($named, session('errors')->first('phone'));
+        }
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.customers.store'), ['name' => 'Nobody', 'phone' => '0912 345 6789', 'phone_country' => 'XX'])
+            ->assertSessionHasErrors('phone_country');
+
+        $this->assertSame(0, Customer::query()->count());
+    }
+
+    public function test_whatsapp_and_address_country_are_kept_separately_from_the_phone(): void
+    {
+        // Lives in Türkiye, keeps an Iranian line, uses WhatsApp on a Turkish one.
+        $this->actingAs($this->admin)->post(route('admin.customers.store'), [
+            'name' => 'Cross Border Trading',
+            'phone' => '0912 345 6789',
+            'phone_country' => 'IR',
+            'whatsapp' => '0532 123 45 67',
+            'whatsapp_country' => 'TR',
+            'country' => 'TR',
+            'city' => 'Van',
+        ])->assertSessionHasNoErrors();
+
+        $customer = Customer::query()->firstOrFail();
+        $this->assertSame('+989123456789', $customer->phone);
+        $this->assertSame('+905321234567', $customer->whatsapp);
+        $this->assertSame('TR', $customer->country);
+
+        // The edit form shows each number under its own country, not Iraq's.
+        $this->actingAs($this->admin)
+            ->get(route('admin.customers.edit', $customer))
+            ->assertOk()
+            ->assertSee('value="9123456789"', false)
+            ->assertSee('value="5321234567"', false)
+            ->assertSee('<option value="IR" selected>', false)
+            ->assertSee('<option value="TR" selected>', false);
+
+        // Saving it back unchanged leaves both numbers exactly as they were.
+        $this->actingAs($this->admin)->put(route('admin.customers.update', $customer), [
+            'name' => 'Cross Border Trading',
+            'phone' => '9123456789', 'phone_country' => 'IR',
+            'whatsapp' => '5321234567', 'whatsapp_country' => 'TR',
+            'country' => 'TR', 'city' => 'Van',
+        ])->assertSessionHasNoErrors();
+
+        $this->assertSame('+989123456789', $customer->fresh()->phone);
+        $this->assertSame('+905321234567', $customer->fresh()->whatsapp);
+
+        // The invoice carries the country and WhatsApp opens the Turkish number.
+        $invoice = $this->draft($customer, $this->product());
+        $this->actingAs($this->admin)->post(route('admin.manual-invoices.finalize', $invoice));
+        $this->actingAs($this->admin)->post(route('admin.manual-invoices.share', $invoice));
+        $invoice = $invoice->fresh();
+
+        $this->assertSame('TR', $invoice->customer_country);
+        $this->assertStringStartsWith('https://wa.me/905321234567?text=', app(ManualInvoiceService::class)->whatsappUrl($invoice));
+
+        $this->actingAs($this->admin)->get(route('admin.manual-invoices.show', $invoice))->assertSee('Türkiye');
+        auth()->logout();
+        $this->get($invoice->shareUrl())->assertOk()->assertSee('Türkiye')->assertSee('+989123456789');
+    }
+
+    public function test_customers_saved_before_countries_existed_are_untouched_and_iraqi(): void
+    {
+        // What the first migration produced: no country given at all.
+        DB::table('customers')->insert([
+            'name' => 'Old Customer', 'phone' => '+9647701234567', 'created_at' => now(), 'updated_at' => now(),
+        ]);
+
+        $customer = Customer::query()->firstOrFail();
+        $this->assertSame('IQ', $customer->country);
+        $this->assertSame('+9647701234567', $customer->phone);
+
+        $this->actingAs($this->admin)
+            ->get(route('admin.customers.edit', $customer))
+            ->assertOk()
+            ->assertSee('value="7701234567"', false)
+            ->assertSee('<option value="IQ" selected>', false);
+
+        // Still the one customer for that number, in any spelling.
+        $this->actingAs($this->admin)
+            ->post(route('admin.customers.store'), ['name' => 'Again', 'phone' => '0770 123 4567', 'phone_country' => 'IQ'])
+            ->assertRedirect(route('admin.customers.edit', $customer));
+        $this->assertSame(1, Customer::query()->count());
     }
 
     public function test_the_invoice_form_is_handed_the_existing_customer_for_a_known_number(): void

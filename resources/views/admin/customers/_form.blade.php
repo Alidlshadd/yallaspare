@@ -23,18 +23,30 @@
         </div>
         <div>
             <label for="phone" class="{{ $labelClass }}">{{ __('Phone') }}</label>
-            <input id="phone" type="tel" name="phone" value="{{ old('phone', $customer->phone ?? '') }}" required dir="ltr" inputmode="tel"
-                   placeholder="0770 123 4567"
-                   class="{{ $inputBase }} {{ $errors->has('phone') ? $inputErr : $inputOk }}">
-            <p class="text-[11px] text-slate-500 mt-1.5">{{ __('Local (0770…) or international (+964…) — both are saved the same way.') }}</p>
+            @include('admin.customers.partials.phone-field', [
+                'id' => 'phone', 'field' => 'phone', 'label' => __('Phone'),
+                'stored' => $customer->phone ?? null, 'required' => true, 'placeholder' => '0770 123 4567',
+            ])
+            <p class="text-[11px] text-slate-500 mt-1.5">{{ __('Choose the country, then type the number as it is written there. A number typed in full with + keeps its own country code.') }}</p>
             @error('phone')<p class="text-xs font-medium text-rose-600 mt-1.5">{{ $message }}</p>@enderror
         </div>
         <div>
             <label for="whatsapp" class="{{ $labelClass }}">{{ __('WhatsApp number') }}</label>
-            <input id="whatsapp" type="tel" name="whatsapp" value="{{ old('whatsapp', $customer->whatsapp ?? '') }}" dir="ltr" inputmode="tel"
-                   class="{{ $inputBase }} {{ $errors->has('whatsapp') ? $inputErr : $inputOk }}">
+            @include('admin.customers.partials.phone-field', [
+                'id' => 'whatsapp', 'field' => 'whatsapp', 'label' => __('WhatsApp number'),
+                'stored' => $customer->whatsapp ?? null,
+            ])
             <p class="text-[11px] text-slate-500 mt-1.5">{{ __('Leave empty if it is the same as the phone number.') }}</p>
             @error('whatsapp')<p class="text-xs font-medium text-rose-600 mt-1.5">{{ $message }}</p>@enderror
+        </div>
+        <div>
+            <label for="country" class="{{ $labelClass }}">{{ __('Country') }}</label>
+            <select id="country" name="country" class="{{ $inputBase }} {{ $errors->has('country') ? $inputErr : $inputOk }}">
+                @foreach (\App\Support\InternationalPhone::countries() as $iso => $country)
+                    <option value="{{ $iso }}" @selected(old('country', $customer->country ?? \App\Support\InternationalPhone::DEFAULT_COUNTRY) === $iso)>{{ $country['name'] }}</option>
+                @endforeach
+            </select>
+            @error('country')<p class="text-xs font-medium text-rose-600 mt-1.5">{{ $message }}</p>@enderror
         </div>
         <div>
             <label for="city" class="{{ $labelClass }}">{{ __('City / Governorate') }}</label>
@@ -47,7 +59,7 @@
             </datalist>
             @error('city')<p class="text-xs font-medium text-rose-600 mt-1.5">{{ $message }}</p>@enderror
         </div>
-        <div>
+        <div class="md:col-span-2">
             <label for="address" class="{{ $labelClass }}">{{ __('Full address') }}</label>
             <input id="address" type="text" name="address" value="{{ old('address', $customer->address ?? '') }}" maxlength="1000"
                    class="{{ $inputBase }} {{ $errors->has('address') ? $inputErr : $inputOk }}">
