@@ -7,6 +7,15 @@
     @include('admin.orders.partials.invoice-styles')
 </head>
 <body class="{{ !empty($isRtl) ? 'rtl' : 'ltr' }}">
+    @php
+        // A phone number, a date or an amount is read left to right whatever
+        // the page is written in. Without the embedding marks an Arabic or
+        // Kurdish invoice prints "+964…" with the plus trailing, the date
+        // back to front, "IQD 88,000" for "88,000 IQD", and a discount's
+        // minus sign after the figure.
+        $ltr = fn (?string $value): string => "\u{202A}".$value."\u{202C}";
+        $money = fn (float $amount, string $sign = ''): string => $ltr($sign.number_format($amount).' '.$currency);
+    @endphp
     <table class="header-table">
         <tr>
             <td style="width: 55%;">
@@ -23,7 +32,7 @@
             <td class="text-right" style="width: 45%;">
                 <h1 class="invoice-title">{{ __('invoice.title') }}</h1>
                 <p class="invoice-meta"><span class="meta-label">{{ __('invoice.invoice_number') }}</span> <span class="value">{{ $invoiceNumber }}</span></p>
-                <p class="invoice-meta"><span class="meta-label">{{ __('invoice.order_date') }}</span> <span class="value">{{ optional($order->created_at)->format('Y-m-d H:i') }}</span></p>
+                <p class="invoice-meta"><span class="meta-label">{{ __('invoice.order_date') }}</span> <span class="value">{{ $ltr(optional($order->created_at)->format('Y-m-d H:i')) }}</span></p>
             </td>
         </tr>
     </table>
@@ -42,7 +51,7 @@
                             <div class="muted">{{ $order->user->email }}</div>
                         @endif
                         @if ($order->user?->phone)
-                            <div class="muted">{{ __('invoice.phone') }}: {{ $order->user->phone }}</div>
+                            <div class="muted">{{ __('invoice.phone') }}: {{ $ltr($order->user->phone) }}</div>
                         @endif
                     </td></tr>
                 </table>
@@ -56,7 +65,7 @@
                         <div class="value">{{ $order->user?->name ?? __('invoice.guest_customer') }}</div>
                         <div>{{ $order->delivery_address }}</div>
                         <div>{{ $order->delivery_city }}@if ($order->delivery_governorate), {{ $order->delivery_governorate }}@endif</div>
-                        <div class="muted">{{ __('invoice.phone') }}: {{ $order->delivery_phone }}</div>
+                        <div class="muted">{{ __('invoice.phone') }}: {{ $ltr($order->delivery_phone) }}</div>
                     </td></tr>
                 </table>
             </td>
@@ -86,8 +95,8 @@
                     </td>
                     <td class="sku">{{ $item->soldSku() ?: __('invoice.not_available') }}</td>
                     <td class="text-center">{{ number_format((int) $item->quantity) }}</td>
-                    <td class="text-right">{{ number_format((float) $item->unit_price) }} {{ $currency }}</td>
-                    <td class="text-right">{{ number_format((float) $item->subtotal) }} {{ $currency }}</td>
+                    <td class="text-right">{{ $money((float) $item->unit_price) }}</td>
+                    <td class="text-right">{{ $money((float) $item->subtotal) }}</td>
                 </tr>
             @endforeach
         </tbody>
@@ -96,21 +105,21 @@
     <table class="summary-table">
         <tr>
             <td class="summary-label">{{ __('invoice.subtotal') }}</td>
-            <td class="text-right">{{ number_format((float) $subtotal) }} {{ $currency }}</td>
+            <td class="text-right">{{ $money((float) $subtotal) }}</td>
         </tr>
         <tr>
             <td class="summary-label">{{ __('invoice.shipping') }}</td>
-            <td class="text-right">{{ number_format((float) $shipping) }} {{ $currency }}</td>
+            <td class="text-right">{{ $money((float) $shipping) }}</td>
         </tr>
         @if (!empty($discount) && (float) $discount > 0)
             <tr>
                 <td class="summary-label">{{ __('invoice.discount') }}</td>
-                <td class="text-right">- {{ number_format((float) $discount) }} {{ $currency }}</td>
+                <td class="text-right">{{ $money((float) $discount, '- ') }}</td>
             </tr>
         @endif
         <tr class="grand">
             <td>{{ __('invoice.grand_total') }}</td>
-            <td class="text-right">{{ number_format((float) $grandTotal) }} {{ $currency }}</td>
+            <td class="text-right">{{ $money((float) $grandTotal) }}</td>
         </tr>
     </table>
 
