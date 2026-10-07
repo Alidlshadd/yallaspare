@@ -374,6 +374,9 @@
                                     <td class="py-2.5 pr-2 align-top text-[#666fa3]">{{ str_pad($index + 1, 2, '0', STR_PAD_LEFT) }}</td>
                                     <td class="max-w-0 py-2.5 pr-3">
                                         <span class="block truncate text-[#c0c5e8]">{{ $product->name }}</span>
+                                        @if (($product->manual_units ?? 0) > 0)
+                                            <span class="block text-[11px] text-[#7c84b3]">{{ __(':count of them by manual invoice', ['count' => number_format((int) $product->manual_units)]) }}</span>
+                                        @endif
                                         <span class="mt-1 block h-[4px] rounded-full bg-gradient-to-r from-[#e65c00] to-[#ff8a3d]/60" style="width: {{ $productShare }}%"></span>
                                     </td>
                                     <td class="py-2.5 pr-3 text-right align-top text-[#7c84b3]">{{ number_format((int) $product->units_sold) }}</td>

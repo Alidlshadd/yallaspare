@@ -9,6 +9,7 @@ use App\Models\Order;
 use App\Models\Setting;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -47,8 +48,9 @@ class RevenueController extends Controller
 
         // Revenue is everything the shop sold: delivered site orders and
         // invoices written by hand, counted on the day they are invoiced.
-        // The per-order figures further down (average order value, the
-        // status cards, top products) stay site orders only.
+        // The status cards and the customer and dealer rankings further down
+        // stay site orders only: a manual invoice has no order status and
+        // its customer is not a site account.
         $siteRevenue = (float) Order::query()
             ->whereIn('status', $paidStatuses)
             ->whereBetween('created_at', [$start, $end])
@@ -69,13 +71,17 @@ class RevenueController extends Controller
 
         $growthPercent = $this->percentageChange($periodRevenue, $previousRevenue);
 
+        // Sales, like revenue, are both channels: delivered site orders and
+        // finalized manual invoices. The average is therefore revenue over
+        // sales, like for like.
         $periodPaidOrders = (int) Order::query()
             ->whereIn('status', $paidStatuses)
             ->whereBetween('created_at', [$start, $end])
-            ->count();
+            ->count()
+            + ManualInvoice::countBetween($start, $end);
 
         $averageOrderValue = $periodPaidOrders > 0
-            ? ($siteRevenue / $periodPaidOrders)
+            ? ($periodRevenue / $periodPaidOrders)
             : 0.0;
 
         $todayRevenue = (float) Order::query()
@@ -141,6 +147,7 @@ class RevenueController extends Controller
             ->keyBy('order_day');
 
         $manualByDay = ManualInvoice::invoicedByDay($start, $end);
+        $manualCountByDay = ManualInvoice::countByDay($start, $end);
 
         $dailyRevenue = collect();
         for ($i = $rangeDays - 1; $i >= 0; $i--) {
@@ -150,9 +157,11 @@ class RevenueController extends Controller
                 'label' => $day->format('M d'),
                 'date' => $key,
                 'amount' => (float) ($dailyRows[$key]->total_revenue ?? 0) + (float) ($manualByDay[$key] ?? 0),
-                'orders' => (int) ($dailyRows[$key]->orders_count ?? 0),
+                'orders' => (int) ($dailyRows[$key]->orders_count ?? 0) + (int) ($manualCountByDay[$key] ?? 0),
             ]);
         }
+
+        $manualProductSales = ManualInvoice::productSalesBetween($start, $end);
 
         $topProducts = DB::table('order_items')
             ->join('orders', 'orders.id', '=', 'order_items.order_id')
@@ -167,8 +176,12 @@ class RevenueController extends Controller
             )
             ->groupBy('products.id', 'products.name_en', 'products.name_ar', 'products.name_ku')
             ->orderByDesc('revenue_total')
-            ->limit(10)
             ->get();
+
+        $topProducts = $this->withManualProductSales($topProducts, $manualProductSales, $localizedProductColumn)
+            ->sortByDesc('revenue_total')
+            ->take(10)
+            ->values();
 
         $topCategories = DB::table('order_items')
             ->join('orders', 'orders.id', '=', 'order_items.order_id')
@@ -184,8 +197,12 @@ class RevenueController extends Controller
             )
             ->groupBy('categories.id', 'categories.name_en', 'categories.name_ar', 'categories.name_ku')
             ->orderByDesc('revenue_total')
-            ->limit(8)
             ->get();
+
+        $topCategories = $this->withManualCategorySales($topCategories, $manualProductSales, $localizedCategoryColumn)
+            ->sortByDesc('revenue_total')
+            ->take(8)
+            ->values();
 
         $topCustomers = Order::query()
             ->join('users', 'users.id', '=', 'orders.user_id')
@@ -274,6 +291,92 @@ class RevenueController extends Controller
             'currencyLabel' => $currencyLabel,
             'currencyDecimals' => $currencyDecimals,
         ]);
+    }
+
+    /**
+     * Add what manual invoices sold to the site's per-product figures.
+     *
+     * A product sold only over the counter has no row from the site query at
+     * all, so it is looked up and given one; the caller then ranks the lot.
+     *
+     * @param  Collection<int, \stdClass>  $rows
+     * @param  array<int, array{units: float, revenue: float}>  $manual
+     * @return Collection<int, \stdClass>
+     */
+    private function withManualProductSales(Collection $rows, array $manual, string $nameColumn): Collection
+    {
+        $rows = $rows->keyBy('id');
+
+        $missing = array_diff(array_keys($manual), $rows->keys()->all());
+
+        if ($missing !== []) {
+            DB::table('products')
+                ->whereIn('id', $missing)
+                ->select('products.id', DB::raw("COALESCE(NULLIF({$nameColumn}, ''), products.name_en) as name"))
+                ->get()
+                ->each(function (\stdClass $product) use ($rows): void {
+                    $product->units_sold = 0;
+                    $product->revenue_total = 0;
+                    $rows->put($product->id, $product);
+                });
+        }
+
+        foreach ($manual as $productId => $sales) {
+            if ($row = $rows->get($productId)) {
+                $row->units_sold = (float) $row->units_sold + $sales['units'];
+                $row->revenue_total = (float) $row->revenue_total + $sales['revenue'];
+                // Kept beside the total, so the list can say how much of a
+                // best seller went out over the counter.
+                $row->manual_units = $sales['units'];
+            }
+        }
+
+        return $rows->values();
+    }
+
+    /**
+     * The same for categories: each manually sold product's figures go to
+     * the category it is in today.
+     *
+     * @param  Collection<int, \stdClass>  $rows
+     * @param  array<int, array{units: float, revenue: float}>  $manual
+     * @return Collection<int, \stdClass>
+     */
+    private function withManualCategorySales(Collection $rows, array $manual, string $nameColumn): Collection
+    {
+        if ($manual === []) {
+            return $rows;
+        }
+
+        $rows = $rows->keyBy(fn (\stdClass $row): int => (int) $row->category_id);
+
+        DB::table('products')
+            ->leftJoin('categories', 'categories.id', '=', 'products.category_id')
+            ->whereIn('products.id', array_keys($manual))
+            ->select(
+                'products.id as product_id',
+                DB::raw('COALESCE(categories.id, 0) as category_id'),
+                DB::raw("COALESCE(NULLIF({$nameColumn}, ''), categories.name_en, 'Uncategorized') as category_name"),
+            )
+            ->get()
+            ->each(function (\stdClass $product) use ($rows, $manual): void {
+                $categoryId = (int) $product->category_id;
+
+                if (! $rows->has($categoryId)) {
+                    $rows->put($categoryId, (object) [
+                        'category_id' => $categoryId,
+                        'category_name' => $product->category_name,
+                        'revenue_total' => 0,
+                        'units_sold' => 0,
+                    ]);
+                }
+
+                $row = $rows->get($categoryId);
+                $row->units_sold = (float) $row->units_sold + $manual[(int) $product->product_id]['units'];
+                $row->revenue_total = (float) $row->revenue_total + $manual[(int) $product->product_id]['revenue'];
+            });
+
+        return $rows->values();
     }
 
     /**
@@ -394,19 +497,20 @@ class RevenueController extends Controller
         // The sheet adds up to the revenue on the page, so it carries the
         // manual invoices too, in a column of their own.
         $manualByDay = ManualInvoice::invoicedByDay($start, $end);
+        $manualCountByDay = ManualInvoice::countByDay($start, $end);
 
         $filename = 'revenue-'.$start->toDateString().'-to-'.$end->toDateString().'.csv';
 
-        return response()->streamDownload(function () use ($dailyRows, $manualByDay, $start, $end, $rangeDays) {
+        return response()->streamDownload(function () use ($dailyRows, $manualByDay, $manualCountByDay, $start, $end, $rangeDays) {
             $out = fopen('php://output', 'w');
-            fputcsv($out, ['Date', 'Paid Orders', 'Site Orders', 'Manual Invoices', 'Revenue']);
+            fputcsv($out, ['Date', 'Sales', 'Site Orders', 'Manual Invoices', 'Revenue']);
 
             $totalOrders = 0;
             $totalSite = 0.0;
             $totalManual = 0.0;
             for ($i = 0; $i < $rangeDays; $i++) {
                 $key = $start->copy()->addDays($i)->toDateString();
-                $orders = (int) ($dailyRows[$key]->orders_count ?? 0);
+                $orders = (int) ($dailyRows[$key]->orders_count ?? 0) + (int) ($manualCountByDay[$key] ?? 0);
                 $site = (float) ($dailyRows[$key]->total_revenue ?? 0);
                 $manual = (float) ($manualByDay[$key] ?? 0);
                 $totalOrders += $orders;

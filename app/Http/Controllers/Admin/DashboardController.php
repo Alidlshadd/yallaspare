@@ -41,7 +41,7 @@ class DashboardController extends Controller
             ->minute((int) floor($now->minute / $bucketMinutes) * $bucketMinutes)
             ->format('YmdHi');
         $cacheKey = sprintf(
-            'admin:dashboard:v3:days:%d:threshold:%d:bucket:%s',
+            'admin:dashboard:v4:days:%d:threshold:%d:bucket:%s',
             $analyticsDays,
             $lowStockThreshold,
             $cacheBucket
@@ -58,7 +58,9 @@ class DashboardController extends Controller
             $endPreviousMonth = (clone $startCurrentMonth)->subSecond();
 
             $totalProducts = Product::count();
-            $totalOrders = Order::count();
+            // A sale invoiced by hand is a sale: it is counted with the
+            // orders, in the totals, the month figures and the chart.
+            $totalOrders = Order::count() + ManualInvoice::countBetween();
             $totalUsers = User::count();
             // Revenue is everything the shop sold: delivered site orders
             // and invoices written by hand, counted when they are invoiced.
@@ -104,8 +106,10 @@ class DashboardController extends Controller
             $outOfStockTrendPercent = $this->percentageChange($currentOutOfStockNew, $previousOutOfStockNew);
             $recentProductsTrendPercent = $productsTrendPercent;
 
-            $currentMonthOrders = Order::whereBetween('created_at', [$startCurrentMonth, $now])->count();
-            $previousMonthOrders = Order::whereBetween('created_at', [$startPreviousMonth, $endPreviousMonth])->count();
+            $currentMonthOrders = Order::whereBetween('created_at', [$startCurrentMonth, $now])->count()
+                + ManualInvoice::countBetween($startCurrentMonth, $now);
+            $previousMonthOrders = Order::whereBetween('created_at', [$startPreviousMonth, $endPreviousMonth])->count()
+                + ManualInvoice::countBetween($startPreviousMonth, $endPreviousMonth);
             $ordersGrowth = $this->percentageChange($currentMonthOrders, $previousMonthOrders);
 
             $currentMonthUsers = User::whereBetween('created_at', [$startCurrentMonth, $now])->count();
@@ -239,11 +243,20 @@ class DashboardController extends Controller
                 ->orderBy('month')
                 ->get();
 
+            $salesByMonth = [];
+            foreach ($monthlyOrders as $m) {
+                $salesByMonth[(int) $m->month] = (int) $m->total;
+            }
+            foreach (ManualInvoice::countByMonth((int) $now->year) as $month => $count) {
+                $salesByMonth[$month] = ($salesByMonth[$month] ?? 0) + $count;
+            }
+            ksort($salesByMonth);
+
             $monthLabels = [];
             $monthCounts = [];
-            foreach ($monthlyOrders as $m) {
-                $monthLabels[] = Carbon::create()->month((int) $m->month)->format('M');
-                $monthCounts[] = $m->total;
+            foreach ($salesByMonth as $month => $count) {
+                $monthLabels[] = Carbon::create()->month($month)->format('M');
+                $monthCounts[] = $count;
             }
 
             $stockTrendLabels = [];
@@ -315,8 +328,21 @@ class DashboardController extends Controller
                 )
                 ->groupBy('products.id', 'products.name_en', 'products.name_ar', 'products.name_ku', 'products.image')
                 ->orderByDesc('total_sold')
-                ->limit(5)
                 ->get();
+
+            // Best sellers across both channels: what manual invoices sold
+            // is added to each product before the five are picked, so a part
+            // that sells mostly over the counter is not left off the list.
+            $manualProductSales = ManualInvoice::productSalesBetween();
+            $topProducts = $topProducts
+                ->each(function (Product $product) use ($manualProductSales): void {
+                    $manual = $manualProductSales[(int) $product->id] ?? ['units' => 0, 'revenue' => 0];
+                    $product->setAttribute('total_sold', (float) $product->getAttribute('total_sold') + $manual['units']);
+                    $product->setAttribute('total_revenue', (float) $product->getAttribute('total_revenue') + $manual['revenue']);
+                })
+                ->sortByDesc('total_sold')
+                ->take(5)
+                ->values();
 
             // KPI 1: return rate over the last 30 days
             $window = $now->copy()->subDays(30);

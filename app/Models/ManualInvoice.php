@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -110,6 +111,71 @@ class ManualInvoice extends Model
             ->groupBy(fn (self $invoice): string => (string) $invoice->invoice_date?->format('Y-m-d'))
             ->map(fn ($invoices): float => (float) $invoices->sum('total'))
             ->all();
+    }
+
+    /**
+     * How many sales were invoiced by hand between two days, both included.
+     * Each finalized invoice is one sale, the way each order is.
+     */
+    public static function countBetween(?\DateTimeInterface $from = null, ?\DateTimeInterface $to = null): int
+    {
+        return (int) self::finalizedBetween($from, $to)->count();
+    }
+
+    /**
+     * @return array<string, int> keyed by Y-m-d
+     */
+    public static function countByDay(\DateTimeInterface $from, \DateTimeInterface $to): array
+    {
+        return self::finalizedBetween($from, $to)
+            ->get(['invoice_date'])
+            ->countBy(fn (self $invoice): string => (string) $invoice->invoice_date?->format('Y-m-d'))
+            ->all();
+    }
+
+    /**
+     * @return array<int, int> keyed by month number, for one calendar year
+     */
+    public static function countByMonth(int $year): array
+    {
+        return self::query()
+            ->where('status', self::STATUS_FINALIZED)
+            ->whereYear('invoice_date', $year)
+            ->get(['invoice_date'])
+            ->countBy(fn (self $invoice): int => (int) $invoice->invoice_date?->format('n'))
+            ->all();
+    }
+
+    /**
+     * Catalogue products sold on manual invoices: units and money per
+     * product. A line typed by hand has no product and is not here.
+     *
+     * @return array<int, array{units: float, revenue: float}> keyed by product id
+     */
+    public static function productSalesBetween(?\DateTimeInterface $from = null, ?\DateTimeInterface $to = null): array
+    {
+        return ManualInvoiceItem::query()
+            ->whereNotNull('product_id')
+            ->whereIn('manual_invoice_id', self::finalizedBetween($from, $to)->select('id'))
+            ->selectRaw('product_id, SUM(quantity) as units, SUM(line_total) as revenue')
+            ->groupBy('product_id')
+            ->get()
+            ->mapWithKeys(fn ($row): array => [(int) $row->product_id => [
+                'units' => (float) $row->getAttribute('units'),
+                'revenue' => (float) $row->getAttribute('revenue'),
+            ]])
+            ->all();
+    }
+
+    /**
+     * @return Builder<self>
+     */
+    private static function finalizedBetween(?\DateTimeInterface $from, ?\DateTimeInterface $to): Builder
+    {
+        return self::query()
+            ->where('status', self::STATUS_FINALIZED)
+            ->when($from, fn ($query) => $query->whereDate('invoice_date', '>=', $from->format('Y-m-d')))
+            ->when($to, fn ($query) => $query->whereDate('invoice_date', '<=', $to->format('Y-m-d')));
     }
 
     /** @return HasMany<ManualInvoiceItem, $this> */
