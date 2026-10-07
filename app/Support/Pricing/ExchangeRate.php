@@ -34,6 +34,29 @@ final class ExchangeRate
 
     public const SETTING_UPDATED_BY_NAME = 'usd_rate_updated_by_name';
 
+    /**
+     * The rate the old dinar prices were set at. Used once, to turn those
+     * prices into dollars; it is not the selling rate and does not move
+     * with it.
+     */
+    public const SETTING_CONVERSION_RATE = 'usd_conversion_rate_per_100';
+
+    public const DEFAULT_CONVERSION_RATE = '150000.00';
+
+    /**
+     * Bumped on every change to a selling price, so anything cached per
+     * price (the header's cart total) is dropped with it.
+     */
+    public const SETTING_PRICE_VERSION = 'price_version';
+
+    /**
+     * Decimals a dollar price is kept to. Cents are not enough: a price
+     * chosen in dinars ("17,000") has to come back as exactly that many
+     * dinars after being stored in dollars, and at four decimals the error
+     * is under a tenth of a dinar at any realistic rate.
+     */
+    public const USD_SCALE = 4;
+
     /** Far above any real rate; only there to keep a typo out of the columns. */
     public const MAX_PER_HUNDRED = '100000000';
 
@@ -96,9 +119,9 @@ final class ExchangeRate
             throw new \DomainException('No USD exchange rate is set.');
         }
 
-        $amount = self::decimal($usd, 2);
+        $amount = self::decimal($usd, self::USD_SCALE);
 
-        if ($amount === null || bccomp($amount, '0', 2) < 0) {
+        if ($amount === null || bccomp($amount, '0', self::USD_SCALE) < 0) {
             throw new \DomainException('Not a valid USD amount.');
         }
 
@@ -106,6 +129,92 @@ final class ExchangeRate
 
         // Half-up to the dinar: add a half, then drop the fraction.
         return bcadd($exact, '0.5', 0);
+    }
+
+    /**
+     * A dinar amount in dollars at the given rate, to four decimals.
+     *
+     * Plain division, rounded half-up. This is what the one-off conversion
+     * of old dinar prices uses: 15,000 at 1,500 is 10.
+     *
+     * @throws \DomainException when the rate or the amount is unusable
+     */
+    public static function fromIqd(mixed $iqd, string $perHundred): string
+    {
+        $rate = self::normalizeRate($perHundred);
+        $amount = self::decimal($iqd, 2);
+
+        if ($rate === null || $amount === null) {
+            throw new \DomainException('Not a valid IQD amount or rate.');
+        }
+
+        $exact = bcdiv(bcmul($amount, '100', self::SCALE), $rate, self::SCALE);
+
+        return self::decimal($exact, self::USD_SCALE) ?? '0.0000';
+    }
+
+    /**
+     * The dollar price that sells for exactly this many dinars at the given
+     * rate, or at the current one.
+     *
+     * Division alone can land a hair to one side, so the result is checked
+     * by converting it back and, if it misses, the nearest neighbours are
+     * tried. `exact` says whether a dollar price was found that comes back
+     * to the dinar figure asked for.
+     *
+     * @return array{usd: string, iqd: string, exact: bool}
+     */
+    public static function usdForTargetIqd(mixed $targetIqd, ?string $perHundred = null): array
+    {
+        $rate = $perHundred !== null ? self::normalizeRate($perHundred) : self::perHundred();
+        $target = self::decimal($targetIqd, 0);
+
+        if ($rate === null || $target === null) {
+            throw new \DomainException('Not a valid IQD target or rate.');
+        }
+
+        $usd = self::fromIqd($target, $rate);
+        $step = '0.'.str_repeat('0', self::USD_SCALE - 1).'1';
+
+        foreach ([$usd, bcadd($usd, $step, self::USD_SCALE), bcsub($usd, $step, self::USD_SCALE)] as $candidate) {
+            if (bccomp($candidate, '0', self::USD_SCALE) >= 0 && self::toIqd($candidate, $rate) === $target) {
+                return ['usd' => $candidate, 'iqd' => $target, 'exact' => true];
+            }
+        }
+
+        return ['usd' => $usd, 'iqd' => self::toIqd($usd, $rate), 'exact' => false];
+    }
+
+    /**
+     * A dollar amount for people: two decimals when that is all there is
+     * ("10.00"), more only when the price really has them ("9.4118").
+     */
+    public static function formatUsd(mixed $usd): string
+    {
+        $amount = self::decimal($usd, self::USD_SCALE);
+
+        if ($amount === null) {
+            return '';
+        }
+
+        [$whole, $fraction] = explode('.', $amount);
+        $fraction = str_pad(rtrim($fraction, '0'), 2, '0');
+
+        return number_format((float) $whole).'.'.$fraction;
+    }
+
+    /**
+     * The rate old dinar prices are converted at. A setting of its own, so
+     * moving the selling rate never changes what a conversion would do.
+     */
+    public static function conversionRate(): string
+    {
+        return self::normalizeRate(Setting::getValue(self::SETTING_CONVERSION_RATE)) ?? self::DEFAULT_CONVERSION_RATE;
+    }
+
+    public static function priceVersion(): string
+    {
+        return (string) Setting::getValue(self::SETTING_PRICE_VERSION, '0');
     }
 
     public static function sameRate(mixed $first, mixed $second): bool

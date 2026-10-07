@@ -148,19 +148,20 @@ class CartService
 
     /**
      * Compare what each line costs now with what the customer was last shown,
-     * report the lines the exchange rate has moved, and remember the new
-     * figures as seen.
+     * report the lines whose price has moved, and remember the new figures
+     * as seen.
      *
-     * Only a dollar-priced product whose rate differs from the one on the
-     * line counts. A price that moved for another reason — a discount ending,
-     * a dealer signing in — is not the rate's doing and is not reported here.
+     * Whatever moved it counts: the exchange rate, a price edited by the
+     * shop, a discount that ended. The customer was shown one figure and is
+     * about to be charged another, and that is what they are told. `rate`
+     * says whether the exchange rate was behind it, for the wording.
      *
      * Reporting is once per change: the caller is expected to tell the
      * customer, since the next call will find nothing to say. The line's own
      * timestamp is left alone, because the abandoned-cart reminders read it
      * as the customer's last activity and looking at a price is not that.
      *
-     * @return array<int, array{old: float, new: float}> keyed by cart item id
+     * @return array<int, array{old: float, new: float, rate: bool}> keyed by cart item id
      */
     public function reviewPrices(Cart $cart, ?User $user): array
     {
@@ -184,8 +185,8 @@ class CartService
             $rateMoved = $currentRate !== null && $seenRate !== null && ! ExchangeRate::sameRate($seenRate, $currentRate);
             $priceMoved = $seenPrice !== null && abs($seenPrice - $currentPrice) >= 0.005;
 
-            if ($rateMoved && $priceMoved) {
-                $changes[(int) $item->id] = ['old' => $seenPrice, 'new' => $currentPrice];
+            if ($priceMoved) {
+                $changes[(int) $item->id] = ['old' => $seenPrice, 'new' => $currentPrice, 'rate' => $rateMoved];
             }
 
             $rateRecorded = $currentRate === null ? $seenRate === null : ExchangeRate::sameRate($seenRate, $currentRate);

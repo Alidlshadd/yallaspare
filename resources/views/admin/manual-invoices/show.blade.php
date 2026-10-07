@@ -125,7 +125,7 @@
                                         <td class="py-2.5 pe-3 text-end text-slate-800 whitespace-nowrap">
                                             {{ $service->money((float) $item->unit_price) }}
                                             @if ($item->usd_unit_price !== null && $item->usd_rate_per_100 !== null)
-                                                <div class="text-[11px] text-slate-500" dir="ltr">{{ __('$:usd · 1 USD = :rate IQD', ['usd' => number_format((float) $item->usd_unit_price, 2), 'rate' => \App\Support\Pricing\ExchangeRate::perDollar((string) $item->usd_rate_per_100)]) }}</div>
+                                                <div class="text-[11px] text-slate-500" dir="ltr">{{ __('$:usd · 1 USD = :rate IQD', ['usd' => \App\Support\Pricing\ExchangeRate::formatUsd($item->usd_unit_price), 'rate' => \App\Support\Pricing\ExchangeRate::perDollar((string) $item->usd_rate_per_100)]) }}</div>
                                             @endif
                                             @if (isset($rateDrift['lines'][$item->id]))
                                                 <div class="text-[11px] font-bold text-amber-700">{{ __('At the current rate: :amount', ['amount' => $service->money($rateDrift['lines'][$item->id]['new'])]) }}</div>

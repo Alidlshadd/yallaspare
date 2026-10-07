@@ -124,7 +124,7 @@
                                             <td class="px-6 py-4 text-sm text-slate-900">
                                                 {{ $currencyLabel }} {{ number_format((float) $item->unit_price, $currencyDecimals) }}
                                                 @if ($item->usd_unit_price !== null && $item->usd_rate_per_100 !== null)
-                                                    <div class="text-[11px] text-slate-500" dir="ltr">{{ __('$:usd · 1 USD = :rate IQD', ['usd' => number_format((float) $item->usd_unit_price, 2), 'rate' => \App\Support\Pricing\ExchangeRate::perDollar((string) $item->usd_rate_per_100)]) }}</div>
+                                                    <div class="text-[11px] text-slate-500" dir="ltr">{{ __('$:usd · 1 USD = :rate IQD', ['usd' => \App\Support\Pricing\ExchangeRate::formatUsd($item->usd_unit_price), 'rate' => \App\Support\Pricing\ExchangeRate::perDollar((string) $item->usd_rate_per_100)]) }}</div>
                                                 @endif
                                             </td>
                                             <td class="px-6 py-4 text-sm font-semibold text-slate-900">{{ $currencyLabel }} {{ number_format((float) $item->subtotal, $currencyDecimals) }}</td>

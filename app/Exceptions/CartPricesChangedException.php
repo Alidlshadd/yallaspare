@@ -3,7 +3,8 @@
 namespace App\Exceptions;
 
 /**
- * The exchange rate moved a price in the cart after the customer last saw it.
+ * A price in the cart moved after the customer last saw it: the exchange
+ * rate changed, or the shop edited the price.
  *
  * A RuntimeException on purpose: every checkout entry point, web and mobile,
  * already turns those into a message for the customer, so an order is never

@@ -24,15 +24,21 @@
     }
 
     $savedIsUsd = (bool) $pricingProduct?->isUsdPriced();
-    $priceValue = old('price', $pricingProduct ? ($savedIsUsd ? $pricingProduct->price_usd : $pricingProduct->price) : '');
-    $dealerPriceValue = old('dealer_price', $pricingProduct ? ($savedIsUsd ? $pricingProduct->dealer_price_usd : $pricingProduct->dealer_price) : '');
-    $costPriceValue = old('cost_price', $pricingProduct ? ($savedIsUsd ? $pricingProduct->cost_price_usd : $pricingProduct->cost_price) : '');
+    // A stored dollar amount without its padding ("10.00", "9.4118"), and
+    // without thousands separators a number field would refuse.
+    $usdValue = fn ($value) => $value === null ? '' : str_replace(',', '', \App\Support\Pricing\ExchangeRate::formatUsd($value));
+    $priceValue = old('price', $pricingProduct ? ($savedIsUsd ? $usdValue($pricingProduct->price_usd) : $pricingProduct->price) : '');
+    $dealerPriceValue = old('dealer_price', $pricingProduct ? ($savedIsUsd ? $usdValue($pricingProduct->dealer_price_usd) : $pricingProduct->dealer_price) : '');
+    // A dollar product may still carry a cost entered in dinars before it
+    // was converted; it is shown beside the field rather than in it.
+    $dinarOnlyCost = $savedIsUsd && $pricingProduct->cost_price_usd === null && $pricingProduct->cost_price !== null;
+    $costPriceValue = old('cost_price', $pricingProduct ? ($savedIsUsd ? $usdValue($pricingProduct->cost_price_usd) : $pricingProduct->cost_price) : '');
 @endphp
 
 <div
     class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4"
     data-pricing-fields
-    data-rate-per-100="{{ $usdRatePer100 ?? '' }}"
+    data-rate-per-hundred="{{ $usdRatePer100 ?? '' }}"
     data-dinar-label="{{ $currencyLabel }}"
     data-preview-template="{{ __('= :amount IQD at the current rate') }}"
     data-profit-template="{{ __('Net profit per unit: :amount (:percent% of the price)') }}"
@@ -64,7 +70,7 @@
     <div>
         <label for="price" class="block text-sm font-medium text-slate-700">{{ __('Price') }} <span class="text-rose-500">*</span></label>
         <div class="relative">
-            <input id="price" aria-label="{{ __('Price') }}" type="number" step="0.01" min="0" name="price" value="{{ $priceValue }}" class="{{ $inputBase }} pr-16 @error('price') {{ $inputError }} @enderror" required data-price-input data-role="price" @error('price') aria-invalid="true" @enderror>
+            <input id="price" aria-label="{{ __('Price') }}" type="number" step="any" min="0" name="price" value="{{ $priceValue }}" class="{{ $inputBase }} pr-16 @error('price') {{ $inputError }} @enderror" required data-price-input data-role="price" @error('price') aria-invalid="true" @enderror>
             <span class="absolute inset-y-0 right-3 flex items-center text-xs text-slate-500" data-price-suffix>{{ $priceCurrency === 'USD' ? 'USD' : $currencyLabel }}</span>
         </div>
         <p class="text-xs font-semibold text-slate-700 mt-1 hidden" dir="ltr" data-price-preview></p>
@@ -75,7 +81,7 @@
     <div>
         <label for="dealer_price" class="block text-sm font-medium text-slate-700">{{ __('Dealer Price') }}</label>
         <div class="relative">
-            <input id="dealer_price" type="number" step="0.01" min="0" name="dealer_price" value="{{ $dealerPriceValue }}" class="{{ $inputBase }} pr-16 @error('dealer_price') {{ $inputError }} @enderror" placeholder="{{ __('Optional') }}" data-price-input data-role="dealer" @error('dealer_price') aria-invalid="true" @enderror>
+            <input id="dealer_price" type="number" step="any" min="0" name="dealer_price" value="{{ $dealerPriceValue }}" class="{{ $inputBase }} pr-16 @error('dealer_price') {{ $inputError }} @enderror" placeholder="{{ __('Optional') }}" data-price-input data-role="dealer" @error('dealer_price') aria-invalid="true" @enderror>
             <span class="absolute inset-y-0 right-3 flex items-center text-xs text-slate-500" data-price-suffix>{{ $priceCurrency === 'USD' ? 'USD' : $currencyLabel }}</span>
         </div>
         <p class="text-xs font-semibold text-slate-700 mt-1 hidden" dir="ltr" data-price-preview></p>
@@ -89,7 +95,7 @@
         <div class="md:max-w-[calc(50%-0.5rem)]">
             <label for="cost_price" class="block text-sm font-medium text-slate-700">{{ __('Purchase price (your cost)') }}</label>
             <div class="relative">
-                <input id="cost_price" type="number" step="0.01" min="0" name="cost_price" value="{{ $costPriceValue }}" class="{{ $inputBase }} pr-16 @error('cost_price') {{ $inputError }} @enderror" placeholder="{{ __('Optional') }}" data-price-input data-role="cost" @error('cost_price') aria-invalid="true" @enderror>
+                <input id="cost_price" type="number" step="any" min="0" name="cost_price" value="{{ $costPriceValue }}" class="{{ $inputBase }} pr-16 @error('cost_price') {{ $inputError }} @enderror" placeholder="{{ __('Optional') }}" data-price-input data-role="cost" @error('cost_price') aria-invalid="true" @enderror>
                 <span class="absolute inset-y-0 right-3 flex items-center text-xs text-slate-500" data-price-suffix>{{ $priceCurrency === 'USD' ? 'USD' : $currencyLabel }}</span>
             </div>
             <p class="text-xs font-semibold text-slate-700 mt-1 hidden" dir="ltr" data-price-preview></p>
@@ -98,6 +104,9 @@
             @enderror
         </div>
         <p class="text-xs text-slate-500 mt-1">{{ __('What you pay for one unit, in the same currency as the price. Only staff see it; customers never do.') }}</p>
+        @if ($dinarOnlyCost)
+            <p class="text-xs font-semibold text-slate-700 mt-1">{{ __('Purchase price on file: :amount IQD, entered in dinars. It stays as it is unless you enter a USD cost here.', ['amount' => number_format((float) $pricingProduct->cost_price)]) }}</p>
+        @endif
         <p class="text-sm font-bold text-slate-900 mt-2 hidden" data-profit-line></p>
         <p class="text-xs font-semibold text-slate-600 mt-1 hidden" data-dealer-profit-line></p>
     </div>
@@ -114,12 +123,15 @@
 
         // Hundredths as whole numbers, so the preview never disagrees with
         // the server by a float's last digit.
-        const hundredths = (value) => {
-            const match = /^(\d+)(?:\.(\d{1,2}))?$/.exec(String(value).trim());
-            return match ? BigInt(match[1]) * 100n + BigInt((match[2] || '').padEnd(2, '0')) : null;
+        // Amounts as whole numbers of ten-thousandths, so the preview never
+        // disagrees with the server by a float's last digit.
+        const units = (value) => {
+            const match = /^(\d+)(?:\.(\d{1,4}))?$/.exec(String(value).trim());
+            return match ? BigInt(match[1]) * 10000n + BigInt((match[2] || '').padEnd(4, '0')) : null;
         };
+        const hundredths = units;
 
-        const rate = hundredths(root.dataset.ratePer100 || '');
+        const rate = units(root.dataset.ratePerHundred || '');
 
         const render = () => {
             const isUsd = select.value === 'USD';
@@ -137,7 +149,7 @@
                 }
 
                 // dollars × (dinars per 100 dollars) ÷ 100, rounded half-up.
-                const dinars = (amount * rate + 500000n) / 1000000n;
+                const dinars = (amount * rate + 5000000000n) / 10000000000n;
                 preview.textContent = root.dataset.previewTemplate.replace(':amount', dinars.toLocaleString('en-US'));
                 preview.classList.remove('hidden');
             });
@@ -152,14 +164,14 @@
             if (amount === null) return null;
             if (!isUsd) return amount;
 
-            return rate === null ? null : ((amount * rate + 500000n) / 1000000n) * 100n;
+            return rate === null ? null : ((amount * rate + 5000000000n) / 10000000000n) * 10000n;
         };
 
         const dinarText = (value) => {
             const negative = value < 0n;
             const absolute = negative ? -value : value;
-            const cents = absolute % 100n;
-            const text = (absolute / 100n).toLocaleString('en-US') + (cents === 0n ? '' : '.' + cents.toString().padStart(2, '0'));
+            const cents = (absolute % 10000n) / 100n;
+            const text = (absolute / 10000n).toLocaleString('en-US') + (cents === 0n ? '' : '.' + cents.toString().padStart(2, '0'));
 
             return (negative ? '-' : '') + text + ' ' + root.dataset.dinarLabel;
         };

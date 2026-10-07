@@ -37,10 +37,10 @@ class Product extends Model
         'compatible_models' => 'array',
         'price' => 'decimal:2',
         'dealer_price' => 'decimal:2',
-        'price_usd' => 'decimal:2',
-        'dealer_price_usd' => 'decimal:2',
+        'price_usd' => 'decimal:4',
+        'dealer_price_usd' => 'decimal:4',
         'cost_price' => 'decimal:2',
-        'cost_price_usd' => 'decimal:2',
+        'cost_price_usd' => 'decimal:4',
         'low_stock_threshold' => 'integer',
     ];
 
@@ -666,11 +666,14 @@ class Product extends Model
         $this->dealer_price = $this->dealer_price_usd !== null
             ? ExchangeRate::toIqd($this->dealer_price_usd)
             : null;
-        // The cost of a dollar product is a dollar cost and moves with the
-        // rate the same way, so the margin is compared like for like.
-        $this->cost_price = $this->cost_price_usd !== null
-            ? ExchangeRate::toIqd($this->cost_price_usd)
-            : null;
+        // A cost entered in dollars moves with the rate the same way, so
+        // the margin is compared like for like. A cost that was entered in
+        // dinars — on a product priced in dinars at the time — is left as
+        // it is: changing how a product is priced must not rewrite what was
+        // paid for it.
+        if ($this->cost_price_usd !== null) {
+            $this->cost_price = ExchangeRate::toIqd($this->cost_price_usd);
+        }
     }
 
     /**

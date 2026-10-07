@@ -217,12 +217,24 @@ class UsdPricingTest extends TestCase
         $this->assertSame('150000.00', ExchangeRate::perHundred());
     }
 
-    public function test_usd_cannot_become_the_default_before_a_rate_exists(): void
+    public function test_new_products_start_on_usd_once_a_rate_exists(): void
     {
-        $this->saveSettings(['default_price_currency' => 'USD'])
-            ->assertSessionHasErrors('usd_rate_per_100');
+        $this->assertSame('USD', ExchangeRate::defaultCurrency());
 
-        $this->assertSame('IQD', ExchangeRate::defaultCurrency());
+        // With no rate there is nothing to convert with, so the form still
+        // opens on dinars and says why dollars are not on offer.
+        $this->actingAs($this->admin)
+            ->get(route('admin.products.create'))
+            ->assertOk()
+            ->assertSee('<option value="IQD" selected', false)
+            ->assertSee('No exchange rate has been set yet.');
+
+        $this->setRate('150000');
+
+        $this->actingAs($this->admin)
+            ->get(route('admin.products.create'))
+            ->assertOk()
+            ->assertSee('<option value="USD" selected', false);
     }
 
     public function test_changing_the_default_currency_does_not_reinterpret_existing_products(): void
@@ -242,7 +254,7 @@ class UsdPricingTest extends TestCase
 
         $dollar->refresh();
         $this->assertTrue($dollar->isUsdPriced());
-        $this->assertSame('10.00', $dollar->price_usd);
+        $this->assertSame('10.0000', $dollar->price_usd);
         $this->assertSame('15000.00', $dollar->price);
     }
 
@@ -263,7 +275,7 @@ class UsdPricingTest extends TestCase
         $this->assertSame(1, $result['repriced']);
 
         $dollar->refresh();
-        $this->assertSame('10.00', $dollar->price_usd);
+        $this->assertSame('10.0000', $dollar->price_usd);
         $this->assertSame('17000.00', $dollar->price);
         $this->assertSame('13600.00', $dollar->dealer_price);
         $this->assertSame(17000.0, $dollar->priceFor(null));
@@ -284,7 +296,7 @@ class UsdPricingTest extends TestCase
         }
 
         $product->refresh();
-        $this->assertSame('10.99', $product->price_usd);
+        $this->assertSame('10.9900', $product->price_usd);
         $this->assertSame('16216.00', $product->price);
     }
 
@@ -322,9 +334,9 @@ class UsdPricingTest extends TestCase
         $product = Product::query()->where('sku', 'USD-ALT-1')->firstOrFail();
 
         $this->assertTrue($product->isUsdPriced());
-        $this->assertSame('10.00', $product->price_usd);
-        $this->assertSame('8.50', $product->dealer_price_usd);
-        $this->assertSame('6.00', $product->cost_price_usd);
+        $this->assertSame('10.0000', $product->price_usd);
+        $this->assertSame('8.5000', $product->dealer_price_usd);
+        $this->assertSame('6.0000', $product->cost_price_usd);
         $this->assertSame('15000.00', $product->price);
         $this->assertSame('12750.00', $product->dealer_price);
         $this->assertSame('9000.00', $product->cost_price);
@@ -636,7 +648,7 @@ class UsdPricingTest extends TestCase
             ->json('data.0');
 
         $this->assertSame(17000, (int) $picked['price']);
-        $this->assertSame('10.00', $picked['usd_price']);
+        $this->assertSame('10.0000', $picked['usd_price']);
         $this->assertSame('170000.00', $picked['usd_rate']);
     }
 

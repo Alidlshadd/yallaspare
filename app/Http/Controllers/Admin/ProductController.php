@@ -440,9 +440,16 @@ class ProductController extends Controller
         if ($currency === ExchangeRate::USD) {
             return [
                 'price_currency' => ExchangeRate::USD,
-                'price_usd' => ExchangeRate::decimal($price, 2),
-                'dealer_price_usd' => $dealerPrice !== null ? ExchangeRate::decimal($dealerPrice, 2) : null,
-                'cost_price_usd' => $costPrice !== null ? ExchangeRate::decimal($costPrice, 2) : null,
+                'price_usd' => ExchangeRate::decimal($price, ExchangeRate::USD_SCALE),
+                'dealer_price_usd' => $dealerPrice !== null ? ExchangeRate::decimal($dealerPrice, ExchangeRate::USD_SCALE) : null,
+                // The field sets or clears a dollar cost. A cost that is
+                // on file in dinars only — entered before the product was
+                // moved to dollars — is not this field's to clear.
+                ...match (true) {
+                    $costPrice !== null => ['cost_price_usd' => ExchangeRate::decimal($costPrice, ExchangeRate::USD_SCALE)],
+                    $product?->cost_price_usd !== null => ['cost_price_usd' => null, 'cost_price' => null],
+                    default => [],
+                },
             ];
         }
 
@@ -679,12 +686,12 @@ class ProductController extends Controller
                 // `price`: an exported sheet carries the dinar equivalent
                 // there, and reading that as dollars would be ruinous.
                 $rowCurrency = ExchangeRate::normalizeCurrency($rowData['price_currency'] ?? '');
-                $rowPriceUsd = ExchangeRate::decimal(trim((string) ($rowData['price_usd'] ?? '')), 2);
+                $rowPriceUsd = ExchangeRate::decimal(trim((string) ($rowData['price_usd'] ?? '')), ExchangeRate::USD_SCALE);
                 $rowDealerPriceUsd = trim((string) ($rowData['dealer_price_usd'] ?? '')) !== ''
-                    ? ExchangeRate::decimal(trim((string) $rowData['dealer_price_usd']), 2)
+                    ? ExchangeRate::decimal(trim((string) $rowData['dealer_price_usd']), ExchangeRate::USD_SCALE)
                     : null;
                 $rowCostPriceUsd = trim((string) ($rowData['cost_price_usd'] ?? '')) !== ''
-                    ? ExchangeRate::decimal(trim((string) $rowData['cost_price_usd']), 2)
+                    ? ExchangeRate::decimal(trim((string) $rowData['cost_price_usd']), ExchangeRate::USD_SCALE)
                     : null;
 
                 if ($rowCurrency === ExchangeRate::USD) {

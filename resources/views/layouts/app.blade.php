@@ -1092,11 +1092,11 @@
                                 <a
                                     href="{{ route('admin.exchange-rate.edit') }}"
                                     class="admin-nav-link {{ $navItem(request()->routeIs('admin.exchange-rate.*')) }}"
-                                    data-admin-sidebar-tooltip="{{ __('Exchange Rate') }}"
+                                    data-admin-sidebar-tooltip="{{ __('Rates & Prices') }}"
                                     @if(request()->routeIs('admin.exchange-rate.*')) aria-current="page" @endif
                                 >
                                     <x-ph-icon name="currency-circle-dollar" class="admin-nav-icon" />
-                                    <span class="admin-nav-label">{{ __('Exchange Rate') }}</span>
+                                    <span class="admin-nav-label">{{ __('Rates & Prices') }}</span>
                                 </a>
                             @endcan
                             @can(\App\Models\User::PERMISSION_ACTIVITY_LOGS_VIEW)

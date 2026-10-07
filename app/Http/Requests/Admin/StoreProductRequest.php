@@ -120,8 +120,8 @@ class StoreProductRequest extends FormRequest
                     continue;
                 }
 
-                if (! is_scalar($value) || preg_match('/^\d{1,7}(\.\d{1,2})?$/', trim((string) $value)) !== 1) {
-                    $validator->errors()->add($field, __('Enter a USD amount with at most two decimals.'));
+                if (! is_scalar($value) || preg_match('/^\d{1,7}(\.\d{1,4})?$/', trim((string) $value)) !== 1) {
+                    $validator->errors()->add($field, __('Enter a USD amount with at most four decimals.'));
 
                     continue;
                 }

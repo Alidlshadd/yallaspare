@@ -259,7 +259,9 @@ class HeaderComposer
     {
         $rate = ExchangeRate::perHundred();
 
-        return $rate === null ? '' : '_r'.str_replace('.', '_', $rate);
+        // And the price version: a price edited by hand moves a cart total
+        // as surely as the rate does.
+        return ($rate === null ? '' : '_r'.str_replace('.', '_', $rate)).'_v'.ExchangeRate::priceVersion();
     }
 
     private function wishlistCountCacheKey(int $userId): string

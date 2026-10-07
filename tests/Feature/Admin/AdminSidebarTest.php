@@ -38,7 +38,7 @@ class AdminSidebarTest extends TestCase
             'Inventory', 'Bulk Stock', 'Dead Stock', 'Purchase Planning',
             'Coupon Management', 'Welcome campaign', 'Discount Rules', 'Email Center', 'Order &amp; System Alerts', 'Popups', 'Inbound WhatsApp',
             'Progress Center', 'Revenue', 'Site Analytics', 'Search Insights', 'WAYL Payments',
-            'Dealers', 'Users', 'Settings', 'Shipping', 'Exchange Rate', 'Activity Logs',
+            'Dealers', 'Users', 'Settings', 'Shipping', 'Rates &amp; Prices', 'Activity Logs',
         ] as $label) {
             $this->assertStringContainsString(
                 '<span class="admin-nav-label">'.$label.'</span>',

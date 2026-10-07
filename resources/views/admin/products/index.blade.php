@@ -685,7 +685,7 @@
                             <div class="price">
                                 <span class="cy">{{ $currencyLabel }}</span>{{ number_format($product->price, $currencyDecimals) }}
                                 @if($product->isUsdPriced() && $product->price_usd !== null)
-                                    <span class="cy" dir="ltr" title="{{ __('Priced in USD; the IQD price follows the exchange rate.') }}">· ${{ number_format((float) $product->price_usd, 2) }}</span>
+                                    <span class="cy" dir="ltr" title="{{ __('Priced in USD; the IQD price follows the exchange rate.') }}">· ${{ \App\Support\Pricing\ExchangeRate::formatUsd($product->price_usd) }}</span>
                                 @endif
                             </div>
                             <span class="stock-badge {{ $stockClass }}">

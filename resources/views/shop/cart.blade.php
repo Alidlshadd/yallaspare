@@ -17,7 +17,7 @@
 
         @if (! empty($priceChanges))
             <x-ui.alert variant="warn" :title="__('Prices updated')">
-                {{ __('The exchange rate changed, so some prices in your cart were updated. The new prices are shown below.') }}
+                {{ __('Some prices in your cart have changed. The new prices are shown below.') }}
             </x-ui.alert>
         @endif
 
@@ -100,7 +100,7 @@
                                 </div>
                                 @if (isset($priceChanges[$item->id]))
                                     <p class="mt-1 text-[11px] font-semibold text-amber-700 dark:text-amber-300">
-                                        {{ __('Price updated with the exchange rate: was :old, now :new', [
+                                        {{ __($priceChanges[$item->id]['rate'] ? 'Price updated with the exchange rate: was :old, now :new' : 'Price updated: was :old, now :new', [
                                             'old' => number_format($priceChanges[$item->id]['old'], 2).' '.$currencySymbol,
                                             'new' => number_format($priceChanges[$item->id]['new'], 2).' '.$currencySymbol,
                                         ]) }}

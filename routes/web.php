@@ -26,6 +26,7 @@ use App\Http\Controllers\Admin\OperationsInsightController;
 use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\OtpiqWhatsAppController;
 use App\Http\Controllers\Admin\PopupController;
+use App\Http\Controllers\Admin\PriceManagementController;
 use App\Http\Controllers\Admin\ProductBrandController;
 use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\ProductReviewController as AdminProductReviewController;
@@ -793,6 +794,20 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::put('/exchange-rate', [ExchangeRateController::class, 'update'])
             ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
             ->name('exchange-rate.update');
+        // Prices on the same page. Setting what a product sells for is a
+        // catalogue permission, on top of the page's own.
+        Route::put('/exchange-rate/products/{product}', [PriceManagementController::class, 'update'])
+            ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
+            ->name('exchange-rate.products.update');
+        Route::post('/exchange-rate/convert', [PriceManagementController::class, 'convert'])
+            ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
+            ->name('exchange-rate.convert');
+        Route::post('/exchange-rate/bulk/preview', [PriceManagementController::class, 'bulkPreview'])
+            ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
+            ->name('exchange-rate.bulk.preview');
+        Route::post('/exchange-rate/bulk/apply', [PriceManagementController::class, 'bulkApply'])
+            ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'can:'.User::PERMISSION_PRODUCTS_MANAGE, 'throttle:admin-write'])
+            ->name('exchange-rate.bulk.apply');
 
         // System Settings
         Route::get('/settings', [SettingController::class, 'edit'])

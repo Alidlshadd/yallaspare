@@ -90,10 +90,10 @@ class ManualInvoiceService
             // out here, whatever the form sent. Typing a different unit
             // price on the form drops the dollar amount, and the line is
             // then an ordinary dinar line the rate cannot touch.
-            $usdUnitPrice = ExchangeRate::decimal(trim((string) ($row['usd_unit_price'] ?? '')), 2);
+            $usdUnitPrice = ExchangeRate::decimal(trim((string) ($row['usd_unit_price'] ?? '')), ExchangeRate::USD_SCALE);
             $usdRate = null;
 
-            if ($product && $product->isUsdPriced() && $usdUnitPrice !== null && bccomp($usdUnitPrice, '0', 2) > 0) {
+            if ($product && $product->isUsdPriced() && $usdUnitPrice !== null && bccomp($usdUnitPrice, '0', ExchangeRate::USD_SCALE) > 0) {
                 $usdRate = ExchangeRate::normalizeRate($row['usd_rate_per_100'] ?? null) ?? ExchangeRate::perHundred();
             }
 

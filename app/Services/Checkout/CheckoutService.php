@@ -39,13 +39,14 @@ class CheckoutService
     ): Order {
         // Prices are always taken from the catalogue below, never from the
         // request. That alone could still charge a total the customer never
-        // saw, if the exchange rate changed after their last look at the
-        // cart — so that case stops here, once. The new prices are recorded
+        // saw, if a price moved after their last look at the cart — the
+        // exchange rate, or a price the shop edited — so that case stops
+        // here, once. The new prices are recorded
         // as seen before the exception leaves (outside the transaction, so
         // it is not rolled back), and placing the order again goes through.
         if ($this->carts->reviewPrices($cart, $user) !== []) {
             throw new CartPricesChangedException(
-                __('Prices in your cart changed because the exchange rate was updated. Please review the new total and place your order again.')
+                __('Prices in your cart have changed. Please review the new total and place your order again.')
             );
         }
 

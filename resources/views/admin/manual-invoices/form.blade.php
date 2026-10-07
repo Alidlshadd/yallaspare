@@ -351,7 +351,7 @@
                 const usdNote = row.querySelector('[data-usd-note]');
                 if (data.usd_unit_price && data.usd_rate_per_100) {
                     usdNote.textContent = config.text.usdLine
-                        .replace(':usd', Number(data.usd_unit_price).toFixed(2))
+                        .replace(':usd', String(Number(data.usd_unit_price)).includes('.') && String(Number(data.usd_unit_price)).split('.')[1].length > 2 ? String(Number(data.usd_unit_price)) : Number(data.usd_unit_price).toFixed(2))
                         .replace(':rate', String(Math.round(Number(data.usd_rate_per_100) * 100) / 10000));
                     usdNote.classList.remove('hidden');
                 }
