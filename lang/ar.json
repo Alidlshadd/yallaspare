@@ -3933,7 +3933,6 @@
     "Refund the :paid already paid before voiding this invoice.": "استردّ المبلغ المدفوع (:paid) قبل إلغاء هذه الفاتورة.",
     "The invoice will be marked void and its stock returned. This cannot be undone.": "ستُعلَّم الفاتورة كملغاة ويُعاد مخزونها. لا يمكن التراجع عن ذلك.",
     "Manual invoices": "الفواتير اليدوية",
-    "not included in the figures above": "غير مشمولة في الأرقام أعلاه",
     "Invoiced in range": "المفوتر في الفترة",
     "Collected in range": "المحصَّل في الفترة",
     "Refund recorded.": "تم تسجيل الاسترداد.",
@@ -4036,5 +4035,6 @@
     "PDF, image and print": "PDF وصورة وطباعة",
     "Save as image": "حفظ كصورة",
     "Preparing the image…": "جارٍ تجهيز الصورة…",
-    "The image could not be made. Try the PDF instead.": "تعذّر إنشاء الصورة. جرّب ملف PDF بدلاً منها."
+    "The image could not be made. Try the PDF instead.": "تعذّر إنشاء الصورة. جرّب ملف PDF بدلاً منها.",
+    "included in the revenue above": "مشمولة في الإيرادات أعلاه"
 }

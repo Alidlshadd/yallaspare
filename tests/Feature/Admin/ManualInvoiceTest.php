@@ -932,21 +932,23 @@ class ManualInvoiceTest extends TestCase
             ->assertSee($voided->number)
             ->assertDontSee($partly->number);
 
-        // The revenue page shows the same sales beside the site figures,
-        // without folding them in.
+        // The revenue page breaks the same sales out, and counts what was
+        // invoiced in its revenue.
         $superAdmin = User::factory()->create(['role' => User::ROLE_SUPER_ADMIN, 'email_verified_at' => now()]);
         $this->actingAs($superAdmin)
             ->get(route('admin.revenue.index'))
             ->assertOk()
             ->assertSeeInOrder([
-                'not included in the figures above',
+                'included in the revenue above',
                 'Invoiced in range', '50,000', '1 INVOICES',
                 'Collected in range', '20,000',
                 'Outstanding', '30,000',
             ]);
 
-        // No site order exists, so the site's own revenue is still nothing.
+        // No site order exists, so every dinar of revenue here is manual:
+        // the finalized invoice counts, the draft and the void one do not.
         $this->assertSame(0, Order::query()->count());
+        $this->assertSame(50000.0, ManualInvoice::invoicedBetween());
     }
 
     public function test_payments_and_voiding_are_closed_to_staff_without_order_access(): void

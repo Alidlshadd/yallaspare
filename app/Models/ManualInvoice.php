@@ -75,6 +75,43 @@ class ManualInvoice extends Model
         'finalized_at' => 'datetime',
     ];
 
+    /**
+     * What was invoiced by hand between two days, both included.
+     *
+     * This is the figure the shop's revenue counts for a manual sale: the
+     * total of every finalized invoice dated in the range, whether or not it
+     * has been paid yet. Drafts are not sales and void invoices no longer
+     * are. Either end may be left open.
+     *
+     * Dates, not timestamps: an invoice has a day, and comparing days reads
+     * the same on MySQL and SQLite where a timestamp range does not.
+     */
+    public static function invoicedBetween(?\DateTimeInterface $from = null, ?\DateTimeInterface $to = null): float
+    {
+        return (float) self::query()
+            ->where('status', self::STATUS_FINALIZED)
+            ->when($from, fn ($query) => $query->whereDate('invoice_date', '>=', $from->format('Y-m-d')))
+            ->when($to, fn ($query) => $query->whereDate('invoice_date', '<=', $to->format('Y-m-d')))
+            ->sum('total');
+    }
+
+    /**
+     * The same, split by day.
+     *
+     * @return array<string, float> keyed by Y-m-d
+     */
+    public static function invoicedByDay(\DateTimeInterface $from, \DateTimeInterface $to): array
+    {
+        return self::query()
+            ->where('status', self::STATUS_FINALIZED)
+            ->whereDate('invoice_date', '>=', $from->format('Y-m-d'))
+            ->whereDate('invoice_date', '<=', $to->format('Y-m-d'))
+            ->get(['invoice_date', 'total'])
+            ->groupBy(fn (self $invoice): string => (string) $invoice->invoice_date?->format('Y-m-d'))
+            ->map(fn ($invoices): float => (float) $invoices->sum('total'))
+            ->all();
+    }
+
     /** @return HasMany<ManualInvoiceItem, $this> */
     public function items(): HasMany
     {

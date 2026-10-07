@@ -3,10 +3,12 @@
 namespace App\Services\Goals;
 
 use App\Models\Goal;
+use App\Models\ManualInvoice;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
 class GoalMetricService
@@ -60,7 +62,10 @@ class GoalMetricService
         $end = $range['end_exclusive'];
 
         return match ($metric) {
-            self::REVENUE => (float) $this->ordersBase()->whereIn('status', [Order::STATUS_DELIVERED, 'completed'])->where('created_at', '>=', $start)->where('created_at', '<', $end)->sum('total_amount'),
+            // Delivered site orders plus what was invoiced by hand in the
+            // same days; the range's end is exclusive, an invoice's day is not.
+            self::REVENUE => (float) $this->ordersBase()->whereIn('status', [Order::STATUS_DELIVERED, 'completed'])->where('created_at', '>=', $start)->where('created_at', '<', $end)->sum('total_amount')
+                + ManualInvoice::invoicedBetween(Carbon::parse($start), Carbon::parse($end)->subSecond()),
             self::ORDERS => (float) $this->ordersBase()->whereNotIn('status', [Order::STATUS_CANCELLED, 'canceled'])->where('created_at', '>=', $start)->where('created_at', '<', $end)->count(),
             self::DELIVERED_ORDERS => (float) $this->ordersBase()->whereIn('status', [Order::STATUS_DELIVERED, 'completed'])->where('delivered_at', '>=', $start)->where('delivered_at', '<', $end)->count(),
             self::NEW_CUSTOMERS => (float) User::query()->where('role', User::ROLE_USER)->where('created_at', '>=', $start)->where('created_at', '<', $end)->count(),

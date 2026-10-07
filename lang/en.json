@@ -3933,7 +3933,6 @@
     "Refund the :paid already paid before voiding this invoice.": "Refund the :paid already paid before voiding this invoice.",
     "The invoice will be marked void and its stock returned. This cannot be undone.": "The invoice will be marked void and its stock returned. This cannot be undone.",
     "Manual invoices": "Manual invoices",
-    "not included in the figures above": "not included in the figures above",
     "Invoiced in range": "Invoiced in range",
     "Collected in range": "Collected in range",
     "Refund recorded.": "Refund recorded.",
@@ -4036,5 +4035,6 @@
     "PDF, image and print": "PDF, image and print",
     "Save as image": "Save as image",
     "Preparing the image…": "Preparing the image…",
-    "The image could not be made. Try the PDF instead.": "The image could not be made. Try the PDF instead."
+    "The image could not be made. Try the PDF instead.": "The image could not be made. Try the PDF instead.",
+    "included in the revenue above": "included in the revenue above"
 }

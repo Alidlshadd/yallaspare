@@ -45,19 +45,27 @@ class RevenueController extends Controller
             default => 'categories.name_en',
         };
 
-        $totalRevenue = (float) Order::query()
-            ->whereIn('status', $paidStatuses)
-            ->sum('total_amount');
-
-        $periodRevenue = (float) Order::query()
+        // Revenue is everything the shop sold: delivered site orders and
+        // invoices written by hand, counted on the day they are invoiced.
+        // The per-order figures further down (average order value, the
+        // status cards, top products) stay site orders only.
+        $siteRevenue = (float) Order::query()
             ->whereIn('status', $paidStatuses)
             ->whereBetween('created_at', [$start, $end])
             ->sum('total_amount');
 
+        $totalRevenue = (float) Order::query()
+            ->whereIn('status', $paidStatuses)
+            ->sum('total_amount')
+            + ManualInvoice::invoicedBetween();
+
+        $periodRevenue = $siteRevenue + ManualInvoice::invoicedBetween($start, $end);
+
         $previousRevenue = (float) Order::query()
             ->whereIn('status', $paidStatuses)
             ->whereBetween('created_at', [$previousStart, $previousEnd])
-            ->sum('total_amount');
+            ->sum('total_amount')
+            + ManualInvoice::invoicedBetween($previousStart, $previousEnd);
 
         $growthPercent = $this->percentageChange($periodRevenue, $previousRevenue);
 
@@ -67,13 +75,14 @@ class RevenueController extends Controller
             ->count();
 
         $averageOrderValue = $periodPaidOrders > 0
-            ? ($periodRevenue / $periodPaidOrders)
+            ? ($siteRevenue / $periodPaidOrders)
             : 0.0;
 
         $todayRevenue = (float) Order::query()
             ->whereIn('status', $paidStatuses)
             ->whereDate('created_at', $now->toDateString())
-            ->sum('total_amount');
+            ->sum('total_amount')
+            + ManualInvoice::invoicedBetween($now, $now);
 
         $statusCards = [
             'paid' => [
@@ -131,6 +140,8 @@ class RevenueController extends Controller
             ->get()
             ->keyBy('order_day');
 
+        $manualByDay = ManualInvoice::invoicedByDay($start, $end);
+
         $dailyRevenue = collect();
         for ($i = $rangeDays - 1; $i >= 0; $i--) {
             $day = $end->copy()->subDays($i);
@@ -138,7 +149,7 @@ class RevenueController extends Controller
             $dailyRevenue->push([
                 'label' => $day->format('M d'),
                 'date' => $key,
-                'amount' => (float) ($dailyRows[$key]->total_revenue ?? 0),
+                'amount' => (float) ($dailyRows[$key]->total_revenue ?? 0) + (float) ($manualByDay[$key] ?? 0),
                 'orders' => (int) ($dailyRows[$key]->orders_count ?? 0),
             ]);
         }
@@ -336,9 +347,9 @@ class RevenueController extends Controller
     }
 
     /**
-     * Sales invoiced by hand, shown beside the site's figures and never added
-     * into them: everything else on this page is built from site orders, and
-     * goals and comparisons depend on that staying true.
+     * Sales invoiced by hand, broken out. What was invoiced is part of the
+     * revenue totals above; this block says how much of it that is, and adds
+     * what only manual invoices have: money collected and money still owed.
      *
      * @return array{count: int, invoiced: float, collected: float, outstanding: float}
      */
@@ -380,24 +391,31 @@ class RevenueController extends Controller
             ->get()
             ->keyBy('order_day');
 
+        // The sheet adds up to the revenue on the page, so it carries the
+        // manual invoices too, in a column of their own.
+        $manualByDay = ManualInvoice::invoicedByDay($start, $end);
+
         $filename = 'revenue-'.$start->toDateString().'-to-'.$end->toDateString().'.csv';
 
-        return response()->streamDownload(function () use ($dailyRows, $start, $end, $rangeDays) {
+        return response()->streamDownload(function () use ($dailyRows, $manualByDay, $start, $end, $rangeDays) {
             $out = fopen('php://output', 'w');
-            fputcsv($out, ['Date', 'Paid Orders', 'Revenue']);
+            fputcsv($out, ['Date', 'Paid Orders', 'Site Orders', 'Manual Invoices', 'Revenue']);
 
             $totalOrders = 0;
-            $totalRevenue = 0.0;
+            $totalSite = 0.0;
+            $totalManual = 0.0;
             for ($i = 0; $i < $rangeDays; $i++) {
                 $key = $start->copy()->addDays($i)->toDateString();
                 $orders = (int) ($dailyRows[$key]->orders_count ?? 0);
-                $revenue = (float) ($dailyRows[$key]->total_revenue ?? 0);
+                $site = (float) ($dailyRows[$key]->total_revenue ?? 0);
+                $manual = (float) ($manualByDay[$key] ?? 0);
                 $totalOrders += $orders;
-                $totalRevenue += $revenue;
-                fputcsv($out, [$key, $orders, $revenue]);
+                $totalSite += $site;
+                $totalManual += $manual;
+                fputcsv($out, [$key, $orders, $site, $manual, $site + $manual]);
             }
 
-            fputcsv($out, ['Total ('.$start->toDateString().' to '.$end->toDateString().')', $totalOrders, $totalRevenue]);
+            fputcsv($out, ['Total ('.$start->toDateString().' to '.$end->toDateString().')', $totalOrders, $totalSite, $totalManual, $totalSite + $totalManual]);
             fclose($out);
         }, $filename, ['Content-Type' => 'text/csv']);
     }

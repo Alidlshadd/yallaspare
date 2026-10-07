@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\InventoryMovement;
+use App\Models\ManualInvoice;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\ReturnRequest;
@@ -40,7 +41,7 @@ class DashboardController extends Controller
             ->minute((int) floor($now->minute / $bucketMinutes) * $bucketMinutes)
             ->format('YmdHi');
         $cacheKey = sprintf(
-            'admin:dashboard:v2:days:%d:threshold:%d:bucket:%s',
+            'admin:dashboard:v3:days:%d:threshold:%d:bucket:%s',
             $analyticsDays,
             $lowStockThreshold,
             $cacheBucket
@@ -59,7 +60,10 @@ class DashboardController extends Controller
             $totalProducts = Product::count();
             $totalOrders = Order::count();
             $totalUsers = User::count();
-            $totalRevenue = (float) Order::whereIn('status', $paidStatuses)->sum('total_amount');
+            // Revenue is everything the shop sold: delivered site orders
+            // and invoices written by hand, counted when they are invoiced.
+            $totalRevenue = (float) Order::whereIn('status', $paidStatuses)->sum('total_amount')
+                + ManualInvoice::invoicedBetween();
             $lowStockCount = Product::where('stock_quantity', '<=', $lowStockThreshold)->count();
             $outOfStockCount = Product::where('stock_quantity', '<=', 0)->count();
             $lowStockProducts = Product::query()
@@ -110,18 +114,22 @@ class DashboardController extends Controller
 
             $currentMonthRevenue = (float) Order::whereIn('status', $paidStatuses)
                 ->whereBetween('created_at', [$startCurrentMonth, $now])
-                ->sum('total_amount');
+                ->sum('total_amount')
+                + ManualInvoice::invoicedBetween($startCurrentMonth, $now);
             $previousMonthRevenue = (float) Order::whereIn('status', $paidStatuses)
                 ->whereBetween('created_at', [$startPreviousMonth, $endPreviousMonth])
-                ->sum('total_amount');
+                ->sum('total_amount')
+                + ManualInvoice::invoicedBetween($startPreviousMonth, $endPreviousMonth);
             $revenueGrowth = $this->percentageChange($currentMonthRevenue, $previousMonthRevenue);
 
             $todaySales = (float) Order::whereIn('status', $paidStatuses)
                 ->whereDate('created_at', $now->toDateString())
-                ->sum('total_amount');
+                ->sum('total_amount')
+                + ManualInvoice::invoicedBetween($now, $now);
             $yesterdaySales = (float) Order::whereIn('status', $paidStatuses)
                 ->whereDate('created_at', $now->copy()->subDay()->toDateString())
-                ->sum('total_amount');
+                ->sum('total_amount')
+                + ManualInvoice::invoicedBetween($now->copy()->subDay(), $now->copy()->subDay());
             $salesChangePercent = $this->percentageChange($todaySales, $yesterdaySales);
 
             $pendingOrders = Order::whereIn('status', ['pending', 'processing'])->count();
