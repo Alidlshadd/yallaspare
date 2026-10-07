@@ -1,0 +1,25 @@
+<?php
+
+return [
+    'workspace' => 'SALES WORKSPACE',
+    'invoice_intro' => 'Every sale, every detail. Your invoices, beautifully organized.',
+    'customer_intro' => 'Good business starts with people. Keep your customers close.',
+    'all_invoices' => 'Invoice overview',
+    'all_customers' => 'Your customers',
+    'records' => 'Showing :from–:to of :total',
+    'matching_records' => ':total matching results',
+    'total_customers' => 'Total customers',
+    'with_invoices' => 'Customers with invoices',
+    'cities' => 'Cities represented',
+    'directory_scope' => 'Across your entire directory',
+    'invoice_scope' => 'Based on the current filters',
+    'collection' => 'Payment collection',
+    'collected' => ':percent% collected',
+    'no_sales' => 'No finalized sales in this view',
+    'search_invoices' => 'Find an invoice or customer…',
+    'search_customers' => 'Find a name, phone number or city…',
+    'filters' => 'Refine your view',
+    'view_invoice' => 'View invoice :number',
+    'customer_note' => 'Directory contacts only. No account is created and no message is sent.',
+    'empty_search' => 'Try another search or clear your filters to see all records.',
+];

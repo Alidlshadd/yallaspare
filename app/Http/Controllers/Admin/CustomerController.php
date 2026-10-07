@@ -35,7 +35,13 @@ class CustomerController extends Controller
             ->paginate(20)
             ->withQueryString();
 
-        return view('admin.customers.index', compact('customers', 'search'));
+        $summary = [
+            'total' => Customer::query()->count(),
+            'with_invoices' => Customer::query()->has('invoices')->count(),
+            'cities' => Customer::query()->whereNotNull('city')->where('city', '!=', '')->distinct()->count('city'),
+        ];
+
+        return view('admin.customers.index', compact('customers', 'search', 'summary'));
     }
 
     /**

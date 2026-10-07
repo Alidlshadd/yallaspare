@@ -3,6 +3,7 @@ import './bootstrap';
 import Alpine from '@alpinejs/csp';
 import welcomeOfferEditor from './welcome-offer';
 import '../css/welcome-offer.css';
+import '../css/admin-sales.css';
 
 import { initThemeToggles } from './theme-toggle';
 
