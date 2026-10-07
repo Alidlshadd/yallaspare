@@ -3,6 +3,7 @@
 namespace App\Exports;
 
 use App\Models\Product;
+use App\Support\ExportThumbnail;
 use App\Support\SpreadsheetSanitizer;
 use Illuminate\Support\Collection;
 use Maatwebsite\Excel\Concerns\FromCollection;
@@ -145,13 +146,11 @@ class ProductsExport implements FromCollection, ShouldAutoSize, WithColumnFormat
         $drawings = [];
 
         foreach ($this->products()->values() as $index => $product) {
-            $imagePath = trim((string) $product->image);
-            if ($imagePath === '') {
-                continue;
-            }
-
-            $fullPath = storage_path('app/public/'.ltrim($imagePath, '/'));
-            if (! is_file($fullPath)) {
+            // A cell-sized copy, never the upload itself: the writer holds
+            // every embedded picture in memory, and full-size photos for a
+            // whole catalogue exhaust it.
+            $fullPath = ExportThumbnail::pathFor($product->image);
+            if ($fullPath === null) {
                 continue;
             }
 
