@@ -463,7 +463,7 @@ class ManualInvoiceTest extends TestCase
             ->assertDontSee('New Owner');
     }
 
-    public function test_a_finalized_invoice_cannot_be_edited_or_deleted(): void
+    public function test_a_finalized_invoice_cannot_be_deleted(): void
     {
         $customer = $this->customer();
         $product = $this->product();
@@ -471,21 +471,222 @@ class ManualInvoiceTest extends TestCase
         $this->actingAs($this->admin)->post(route('admin.manual-invoices.finalize', $invoice));
 
         $this->actingAs($this->admin)
-            ->put(route('admin.manual-invoices.update', $invoice), $this->payload($customer, [
-                ['description' => 'Tampered', 'quantity' => 1, 'unit_price' => 1],
-            ]))
-            ->assertSessionHasErrors('invoice');
-
-        $this->actingAs($this->admin)
             ->delete(route('admin.manual-invoices.destroy', $invoice))
             ->assertSessionHasErrors('invoice');
+
+        $this->assertSame(50000.0, $invoice->fresh()->total);
+        $this->assertSame(8, (int) $product->fresh()->stock_quantity);
+    }
+
+    // ── Amending a finalized invoice ───────────────────────────────
+
+    private function finalizedFor(Customer $customer, Product $product, int $quantity = 2): ManualInvoice
+    {
+        $invoice = $this->draft($customer, $product, $quantity);
+        $this->actingAs($this->admin)->post(route('admin.manual-invoices.finalize', $invoice));
+
+        return $invoice->fresh();
+    }
+
+    private function line(Product $product, int $quantity, float $unitPrice): array
+    {
+        return ['product_id' => $product->id, 'description' => $product->name_en, 'sku' => $product->sku, 'quantity' => $quantity, 'unit_price' => $unitPrice];
+    }
+
+    public function test_a_finalized_invoice_opens_for_editing(): void
+    {
+        $invoice = $this->finalizedFor($this->customer(), $this->product());
+
+        $this->actingAs($this->admin)
+            ->get(route('admin.manual-invoices.show', $invoice))
+            ->assertOk()
+            ->assertSee('Edit invoice');
+
+        $this->actingAs($this->admin)
+            ->get(route('admin.manual-invoices.edit', $invoice))
+            ->assertOk()
+            ->assertSee('This invoice is already finalized.')
+            ->assertSee('Save changes')
+            ->assertDontSee('Save as draft');
+    }
+
+    public function test_adding_a_product_later_deducts_only_that_product(): void
+    {
+        $customer = $this->customer();
+        $pads = $this->product();
+        $filter = $this->product(['name_en' => 'Oil Filter', 'sku' => 'OIL-2002', 'price' => 8000, 'stock_quantity' => 5]);
+        $invoice = $this->finalizedFor($customer, $pads);
+        $movementsBefore = InventoryMovement::query()->count();
+
+        $this->actingAs($this->admin)
+            ->put(route('admin.manual-invoices.update', $invoice), $this->payload($customer, [
+                $this->line($pads, 2, 25000),
+                $this->line($filter, 3, 8000),
+            ]))
+            ->assertRedirect(route('admin.manual-invoices.show', $invoice))
+            ->assertSessionHasNoErrors();
+
+        $invoice = $invoice->fresh('items');
+
+        $this->assertTrue($invoice->isFinalized());
+        $this->assertCount(2, $invoice->items);
+        $this->assertSame(74000.0, $invoice->total);
+        $this->assertSame(8, (int) $pads->fresh()->stock_quantity);
+        $this->assertSame(2, (int) $filter->fresh()->stock_quantity);
+
+        // One movement, for the product that changed, under the invoice number.
+        $this->assertSame($movementsBefore + 1, InventoryMovement::query()->count());
+        $movement = InventoryMovement::query()->latest('id')->firstOrFail();
+        $this->assertSame($filter->id, (int) $movement->product_id);
+        $this->assertSame(InventoryMovement::TYPE_OUT, $movement->type);
+        $this->assertSame(3, (int) $movement->quantity);
+        $this->assertSame($invoice->number, $movement->reference);
+    }
+
+    public function test_removing_a_line_or_lowering_a_quantity_returns_the_stock(): void
+    {
+        $customer = $this->customer();
+        $pads = $this->product();
+        $filter = $this->product(['name_en' => 'Oil Filter', 'sku' => 'OIL-2002', 'price' => 8000, 'stock_quantity' => 5]);
+        $invoice = $this->finalizedFor($customer, $pads, 4);
+
+        $this->actingAs($this->admin)
+            ->put(route('admin.manual-invoices.update', $invoice), $this->payload($customer, [
+                $this->line($pads, 4, 25000),
+                $this->line($filter, 2, 8000),
+            ]))->assertSessionHasNoErrors();
+
+        $this->assertSame(6, (int) $pads->fresh()->stock_quantity);
+        $this->assertSame(3, (int) $filter->fresh()->stock_quantity);
+
+        // Fewer pads, and the filter taken off altogether.
+        $this->actingAs($this->admin)
+            ->put(route('admin.manual-invoices.update', $invoice), $this->payload($customer, [
+                $this->line($pads, 1, 25000),
+            ]))->assertSessionHasNoErrors();
+
+        $this->assertSame(9, (int) $pads->fresh()->stock_quantity);
+        $this->assertSame(5, (int) $filter->fresh()->stock_quantity);
+        $this->assertSame(25000.0, $invoice->fresh()->total);
+    }
+
+    public function test_a_price_change_or_a_discount_moves_no_stock_and_updates_the_balance(): void
+    {
+        $customer = $this->customer();
+        $pads = $this->product();
+        $invoice = $this->finalizedFor($customer, $pads);
+
+        $this->actingAs($this->admin)->post(route('admin.manual-invoices.payments.store', $invoice), [
+            'kind' => 'payment', 'amount' => 50000, 'paid_on' => now()->toDateString(),
+        ])->assertSessionHasNoErrors();
+        $this->assertSame(ManualInvoice::PAYMENT_PAID, $invoice->fresh()->payment_status);
+
+        $movementsBefore = InventoryMovement::query()->count();
+
+        // The customer comes back for a dearer fitting: the price goes up.
+        $this->actingAs($this->admin)
+            ->put(route('admin.manual-invoices.update', $invoice), $this->payload($customer, [
+                $this->line($pads, 2, 30000),
+            ], ['discount_amount' => 4000]))
+            ->assertSessionHasNoErrors();
+
+        $invoice = $invoice->fresh();
+
+        $this->assertSame(60000.0, $invoice->subtotal);
+        $this->assertSame(4000.0, $invoice->discount_amount);
+        $this->assertSame(56000.0, $invoice->total);
+        $this->assertSame(50000.0, $invoice->paid_amount);
+        $this->assertSame(6000.0, $invoice->balance());
+        $this->assertSame(ManualInvoice::PAYMENT_PARTIAL, $invoice->payment_status);
+        $this->assertSame($movementsBefore, InventoryMovement::query()->count());
+        $this->assertSame(8, (int) $pads->fresh()->stock_quantity);
+    }
+
+    public function test_the_total_cannot_be_cut_below_what_was_already_paid(): void
+    {
+        $customer = $this->customer();
+        $pads = $this->product();
+        $invoice = $this->finalizedFor($customer, $pads);
+
+        $this->actingAs($this->admin)->post(route('admin.manual-invoices.payments.store', $invoice), [
+            'kind' => 'payment', 'amount' => 40000, 'paid_on' => now()->toDateString(),
+        ]);
+
+        $this->actingAs($this->admin)
+            ->put(route('admin.manual-invoices.update', $invoice), $this->payload($customer, [
+                $this->line($pads, 1, 25000),
+            ]))
+            ->assertSessionHasErrors('items');
+
+        // Nothing moved: not the total, not the lines, not the shelf.
+        $this->assertSame(50000.0, $invoice->fresh()->total);
+        $this->assertSame(2, (int) $invoice->items()->first()->quantity);
+        $this->assertSame(8, (int) $pads->fresh()->stock_quantity);
+    }
+
+    public function test_an_increase_the_shelf_cannot_cover_changes_nothing(): void
+    {
+        $customer = $this->customer();
+        $pads = $this->product();
+        $filter = $this->product(['name_en' => 'Oil Filter', 'sku' => 'OIL-2002', 'price' => 8000, 'stock_quantity' => 1]);
+        $invoice = $this->finalizedFor($customer, $pads);
+
+        $this->actingAs($this->admin)
+            ->put(route('admin.manual-invoices.update', $invoice), $this->payload($customer, [
+                $this->line($pads, 5, 25000),
+                $this->line($filter, 2, 8000),
+            ]))
+            ->assertSessionHasErrors('items');
+
+        $this->assertSame(50000.0, $invoice->fresh()->total);
+        $this->assertCount(1, $invoice->fresh()->items);
+        $this->assertSame(8, (int) $pads->fresh()->stock_quantity);
+        $this->assertSame(1, (int) $filter->fresh()->stock_quantity);
+    }
+
+    public function test_a_line_keeps_the_cost_it_was_sold_at_when_the_invoice_is_amended(): void
+    {
+        $customer = $this->customer();
+        $pads = $this->product(['cost_price' => 15000]);
+        $filter = $this->product(['name_en' => 'Oil Filter', 'sku' => 'OIL-2002', 'price' => 8000, 'stock_quantity' => 5, 'cost_price' => 5000]);
+        $invoice = $this->finalizedFor($customer, $pads);
+
+        $pads->update(['cost_price' => 19000]);
+
+        $this->actingAs($this->admin)
+            ->put(route('admin.manual-invoices.update', $invoice), $this->payload($customer, [
+                $this->line($pads, 2, 25000),
+                $this->line($filter, 1, 8000),
+            ]))->assertSessionHasNoErrors();
+
+        $items = $invoice->fresh('items')->items->keyBy('product_id');
+
+        $this->assertSame(15000.0, (float) $items[$pads->id]->unit_cost);
+        $this->assertSame(5000.0, (float) $items[$filter->id]->unit_cost);
+    }
+
+    public function test_a_void_invoice_cannot_be_amended(): void
+    {
+        $customer = $this->customer();
+        $pads = $this->product();
+        $invoice = $this->finalizedFor($customer, $pads);
+
+        $this->actingAs($this->admin)
+            ->post(route('admin.manual-invoices.void', $invoice), ['void_reason' => 'Entered twice'])
+            ->assertSessionHasNoErrors();
 
         $this->actingAs($this->admin)
             ->get(route('admin.manual-invoices.edit', $invoice))
             ->assertRedirect(route('admin.manual-invoices.show', $invoice));
 
-        $this->assertSame(50000.0, $invoice->fresh()->total);
-        $this->assertSame(8, (int) $product->fresh()->stock_quantity);
+        $this->actingAs($this->admin)
+            ->put(route('admin.manual-invoices.update', $invoice), $this->payload($customer, [
+                $this->line($pads, 1, 25000),
+            ]))
+            ->assertSessionHasErrors('invoice');
+
+        $this->assertTrue($invoice->fresh()->isVoid());
+        $this->assertSame(10, (int) $pads->fresh()->stock_quantity);
     }
 
     public function test_a_draft_can_be_edited_and_deleted(): void
@@ -871,7 +1072,9 @@ class ManualInvoiceTest extends TestCase
             $this->assertStringContainsString($expected, $html);
             $this->assertStringContainsString($invoice->number, $html);
             $this->assertStringContainsString('Karwan Garage', $html);
-            $this->assertStringContainsString('Front Brake Pad', $html);
+            // The line is named in the document's language, not the one the
+            // admin's screen was in when the product was picked.
+            $this->assertStringContainsString(e($invoice->items->first()->descriptionFor($locale)), $html);
             $this->assertStringContainsString('BRK-1001', $html);
             $this->assertStringContainsString('50,000 IQD', $html);
             $this->assertStringContainsString($locale === 'en' ? 'dir="ltr"' : 'dir="rtl"', $html);

@@ -18,6 +18,7 @@ class ManualInvoiceItem extends Model
         'usd_unit_price',
         'usd_rate_per_100',
         'unit_cost',
+        'description_translations',
         'sort_order',
     ];
 
@@ -26,7 +27,28 @@ class ManualInvoiceItem extends Model
         'unit_price' => 'float',
         'line_total' => 'float',
         'sort_order' => 'integer',
+        'description_translations' => 'array',
     ];
+
+    /**
+     * What this line is called on a document written in the given language.
+     *
+     * A catalogue line carries the product's name in each language, copied
+     * when the line was saved, and answers with the right one. A line typed
+     * or reworded by hand has no translations and reads as written.
+     */
+    public function descriptionFor(string $locale): string
+    {
+        $key = match (true) {
+            str_starts_with($locale, 'ar') => 'ar',
+            str_starts_with($locale, 'ku') => 'ku',
+            default => 'en',
+        };
+
+        $translated = trim((string) (($this->description_translations ?? [])[$key] ?? ''));
+
+        return $translated !== '' ? $translated : (string) $this->description;
+    }
 
     /** @return BelongsTo<ManualInvoice, $this> */
     public function invoice(): BelongsTo

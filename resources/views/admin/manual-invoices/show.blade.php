@@ -39,7 +39,7 @@
         @else
             <div class="mb-4 rounded-2xl border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm text-emerald-900">
                 <p class="font-bold">{{ __('Finalized on :date.', ['date' => $invoice->finalized_at?->format('Y-m-d H:i')]) }}</p>
-                <p class="mt-1 text-xs">{{ __('Stock was deducted for the catalogue items and the invoice is locked. Later changes to the catalogue or to the customer do not alter it. Only the payment status and the share link can still change.') }}</p>
+                <p class="mt-1 text-xs">{{ __('Stock was deducted for the catalogue items. Later changes to the catalogue or to the customer do not alter this invoice. It can still be edited: stock and the balance due are adjusted to match.') }}</p>
             </div>
         @endif
 
@@ -111,7 +111,7 @@
                                 @foreach ($invoice->items as $item)
                                     <tr>
                                         <td class="py-2.5 pe-3">
-                                            <div class="font-bold text-slate-900">{{ $item->description }}</div>
+                                            <div class="font-bold text-slate-900">{{ $item->descriptionFor(app()->getLocale()) }}</div>
                                             <div class="text-[11px] text-slate-500">
                                                 @if ($item->product_id)
                                                     {{ __('Catalogue item') }}@if ($invoice->isDraft() && $item->product) · {{ __('In stock: :count', ['count' => (int) $item->product->stock_quantity]) }}@endif
@@ -180,7 +180,7 @@
                               data-danger-confirm
                               data-danger-title="{{ __('Finalize invoice') }}"
                               data-danger-action="{{ __('Finalize invoice') }}"
-                              data-danger-description="{{ __('Stock will be deducted for the catalogue items and the invoice can no longer be edited.') }}">
+                              data-danger-description="{{ __('Stock will be deducted for the catalogue items and the invoice will count as a sale.') }}">
                             @csrf
                             <button type="submit" class="inline-flex w-full items-center justify-center gap-2 h-10 px-4 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition dark:text-slate-900 dark:hover:bg-slate-100">
                                 <i class="fas fa-check text-[11px]" aria-hidden="true"></i>{{ __('Finalize invoice') }}
@@ -196,6 +196,16 @@
                                 <i class="fas fa-trash-can text-[11px]" aria-hidden="true"></i>{{ __('Delete draft') }}
                             </button>
                         </form>
+                    </section>
+                @endif
+
+                @if ($invoice->isFinalized())
+                    <section class="{{ $cardClass }} space-y-2">
+                        <h2 class="text-sm font-bold text-slate-900 mb-1">{{ __('Changes') }}</h2>
+                        <a href="{{ route('admin.manual-invoices.edit', $invoice) }}" class="{{ $ghostButton }}">
+                            <i class="fas fa-pen text-[11px]" aria-hidden="true"></i>{{ __('Edit invoice') }}
+                        </a>
+                        <p class="text-[11px] text-slate-500">{{ __('Add or remove lines, change a price or give a discount. Stock and the balance due follow.') }}</p>
                     </section>
                 @endif
 

@@ -52,6 +52,29 @@ class ManualInvoiceService
                 $description = $product->localizedName();
             }
 
+            // The product's name in every language, kept with the line so the
+            // invoice can be printed in any of them. Only while the text is
+            // still the product's own name: a description the admin reworded
+            // is theirs, and is printed as written whatever the language.
+            $translations = null;
+
+            if ($product) {
+                $names = array_filter([
+                    'en' => trim((string) $product->name_en),
+                    'ar' => trim((string) $product->name_ar),
+                    'ku' => trim((string) $product->name_ku),
+                ], fn (string $name): bool => $name !== '');
+
+                $kept = is_array($row['description_translations'] ?? null) ? $row['description_translations'] : [];
+
+                if (in_array($description, $names, true)) {
+                    $translations = $names;
+                } elseif ($kept !== [] && in_array($description, $kept, true)) {
+                    // A finalized-era copy the catalogue has since renamed.
+                    $translations = $kept;
+                }
+            }
+
             if ($description === '') {
                 throw ValidationException::withMessages([
                     "items.{$index}.description" => __('Each invoice line needs a description.'),
@@ -86,6 +109,7 @@ class ManualInvoiceService
             $items[] = [
                 'product_id' => $product?->id,
                 'description' => mb_substr($description, 0, 255),
+                'description_translations' => $translations,
                 'sku' => mb_substr($sku !== '' ? $sku : (string) ($product?->sku ?: $product?->part_number), 0, 120) ?: null,
                 'quantity' => $quantity,
                 'unit_price' => $unitPrice,
@@ -179,6 +203,141 @@ class ManualInvoiceService
     }
 
     /**
+     * Change an invoice that has already been finalized.
+     *
+     * A customer adds a part, a price is renegotiated, a discount is given
+     * after the fact: the invoice is corrected in place rather than voided
+     * and rewritten, and everything that depended on the old version is
+     * brought in line in the same transaction.
+     *
+     * Stock moves by the difference only. Each product's quantity before and
+     * after is compared: more of it leaves the shelf under the invoice
+     * number, less of it comes back, and a product whose quantity did not
+     * change is not touched. If the shelf cannot cover an increase nothing is
+     * saved at all.
+     *
+     * Money already received stays as recorded. The new total may not fall
+     * below it — a refund has to be recorded first — and paid, partial or
+     * unpaid is worked out again against the new total.
+     *
+     * A line that was on the invoice keeps the cost it was sold at; only a
+     * newly added product takes today's. A void invoice cannot be amended.
+     *
+     * @param  array<string, mixed>  $data  Validated form input.
+     */
+    public function amendFinalized(ManualInvoice $invoice, array $data, User $actor): ManualInvoice
+    {
+        $priced = $this->calculate(
+            $data['items'],
+            (float) ($data['discount_amount'] ?? 0),
+            (float) ($data['delivery_fee'] ?? 0),
+        );
+
+        return DB::transaction(function () use ($invoice, $data, $priced, $actor): ManualInvoice {
+            $invoice = ManualInvoice::query()->whereKey($invoice->id)->lockForUpdate()->firstOrFail();
+
+            if (! $invoice->isFinalized()) {
+                throw ValidationException::withMessages([
+                    'invoice' => __('Only a finalized invoice can be amended.'),
+                ]);
+            }
+
+            if ($priced['total'] < round((float) $invoice->paid_amount, 2)) {
+                throw ValidationException::withMessages([
+                    'items' => __('The new total (:total) is less than what has already been paid (:paid). Record a refund first.', [
+                        'total' => $this->money($priced['total']),
+                        'paid' => $this->money((float) $invoice->paid_amount),
+                    ]),
+                ]);
+            }
+
+            $oldItems = $invoice->items()->get();
+            $quantities = fn ($lines) => collect($lines)
+                ->filter(fn ($line) => ! empty($line['product_id']))
+                ->groupBy('product_id')
+                ->map(fn ($group) => (int) $group->sum('quantity'));
+
+            $before = $quantities($oldItems->toArray());
+            $after = $quantities($priced['items']);
+            $productIds = $before->keys()->merge($after->keys())->unique()->sort()->values();
+
+            // A product deleted since the sale has no shelf to adjust.
+            $products = Product::query()->whereIn('id', $productIds)->orderBy('id')->lockForUpdate()->get()->keyBy('id');
+
+            $deltas = [];
+
+            foreach ($productIds as $productId) {
+                $delta = (int) $after->get($productId, 0) - (int) $before->get($productId, 0);
+                $product = $products->get($productId);
+
+                if ($delta === 0 || ! $product) {
+                    continue;
+                }
+
+                if ($delta > 0 && (int) $product->stock_quantity < $delta) {
+                    throw ValidationException::withMessages([
+                        'items' => __('Not enough stock for :product: :available available, :needed needed.', [
+                            'product' => $product->localizedName(),
+                            'available' => (int) $product->stock_quantity,
+                            'needed' => $delta,
+                        ]),
+                    ]);
+                }
+
+                $deltas[$productId] = $delta;
+            }
+
+            foreach ($deltas as $productId => $delta) {
+                $this->inventory->move(
+                    $products->get($productId),
+                    $delta > 0 ? InventoryMovement::TYPE_OUT : InventoryMovement::TYPE_IN,
+                    abs($delta),
+                    $actor,
+                    (string) $invoice->number,
+                    __('Amendment of manual invoice :number', ['number' => $invoice->number]),
+                );
+            }
+
+            // The cost a product was sold at stays with it.
+            $soldAt = $oldItems->whereNotNull('product_id')->pluck('unit_cost', 'product_id');
+            $items = array_map(function (array $line) use ($soldAt): array {
+                if ($line['product_id'] !== null && $soldAt->has($line['product_id'])) {
+                    $line['unit_cost'] = $soldAt->get($line['product_id']);
+                }
+
+                return $line;
+            }, $priced['items']);
+
+            $customer = Customer::query()->findOrFail((int) $data['customer_id']);
+            $previousTotal = (float) $invoice->total;
+
+            $invoice->update([
+                'customer_id' => $customer->id,
+                ...$this->customerSnapshot($customer),
+                'invoice_date' => Carbon::parse($data['invoice_date'])->toDateString(),
+                'subtotal' => $priced['subtotal'],
+                'discount_amount' => $priced['discount_amount'],
+                'delivery_fee' => $priced['delivery_fee'],
+                'total' => $priced['total'],
+                'notes' => $data['notes'] ?? null,
+                'payment_status' => $this->paymentStatusFor((float) $invoice->paid_amount, $priced['total']),
+            ]);
+
+            $invoice->items()->delete();
+            $invoice->items()->createMany($items);
+
+            AdminLogger::log('manual_invoice.amended', $invoice, [
+                'number' => $invoice->number,
+                'previous_total' => $previousTotal,
+                'total' => $priced['total'],
+                'stock_changes' => $deltas,
+            ]);
+
+            return $invoice->load('items');
+        });
+    }
+
+    /**
      * What a draft would come to at today's rate, when that differs.
      *
      * A draft keeps the rate each dollar line was priced at, so reopening it
@@ -254,6 +413,7 @@ class ManualInvoiceService
                 'unit_price' => $item->unit_price,
                 'usd_unit_price' => $item->usd_unit_price,
                 'usd_rate_per_100' => $item->usd_unit_price !== null ? $rate : null,
+                'description_translations' => $item->description_translations,
             ])->all();
 
             $priced = $this->calculate($rows, (float) $invoice->discount_amount, (float) $invoice->delivery_fee);

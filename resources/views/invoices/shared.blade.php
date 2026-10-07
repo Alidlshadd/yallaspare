@@ -83,7 +83,7 @@
             @foreach ($invoice->items as $item)
                 <div class="row">
                     <div class="desc">
-                        <strong>{{ $item->description }}</strong>
+                        <strong>{{ $item->descriptionFor($locale) }}</strong>
                         <small>
                             @if ($item->sku)<span class="number">{{ $item->sku }}</span> · @endif
                             <span class="ltr">{{ number_format($item->quantity) }} × {{ $service->money((float) $item->unit_price) }}</span>

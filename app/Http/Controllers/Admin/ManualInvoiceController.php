@@ -120,10 +120,12 @@ class ManualInvoiceController extends Controller
 
     public function edit(Request $request, ManualInvoice $manualInvoice): View|RedirectResponse
     {
-        if (! $manualInvoice->isDraft()) {
+        // A draft is rewritten freely and a finalized invoice is amended;
+        // a void one is a closed record.
+        if ($manualInvoice->isVoid()) {
             return redirect()
                 ->route('admin.manual-invoices.show', $manualInvoice)
-                ->with('warning', __('A finalized invoice can no longer be edited.'));
+                ->with('warning', __('A void invoice cannot be edited.'));
         }
 
         $manualInvoice->load(['items', 'customer']);
@@ -133,6 +135,14 @@ class ManualInvoiceController extends Controller
 
     public function update(Request $request, ManualInvoice $manualInvoice): RedirectResponse
     {
+        if ($manualInvoice->isFinalized()) {
+            $invoice = $this->invoices->amendFinalized($manualInvoice, $this->validated($request), $request->user());
+
+            return redirect()
+                ->route('admin.manual-invoices.show', $invoice)
+                ->with('success', __('Invoice updated. Stock and the balance due were adjusted to match.'));
+        }
+
         $invoice = $this->invoices->saveDraft($manualInvoice, $this->validated($request), $request->user());
 
         return $this->afterSave($request, $invoice);

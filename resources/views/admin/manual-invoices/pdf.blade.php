@@ -88,7 +88,7 @@
         <tbody>
             @foreach ($invoice->items as $item)
                 <tr>
-                    <td><div class="product-name">{{ $item->description }}</div></td>
+                    <td><div class="product-name">{{ $item->descriptionFor($locale ?? app()->getLocale()) }}</div></td>
                     <td class="sku">{{ $item->sku ?: __('invoice.not_available') }}</td>
                     <td class="text-center">{{ number_format((int) $item->quantity) }}</td>
                     <td class="text-right">{{ $money((float) $item->unit_price) }}</td>

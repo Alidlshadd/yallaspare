@@ -1,7 +1,8 @@
 <x-app-layout>
-    <x-slot name="header">{{ $invoice ? __('Edit Draft Invoice') : __('New Invoice') }}</x-slot>
+    <x-slot name="header">{{ $invoice ? ($invoice->isFinalized() ? __('Edit Invoice') : __('Edit Draft Invoice')) : __('New Invoice') }}</x-slot>
 
     @php
+        $amending = (bool) $invoice?->isFinalized();
         $inputBase = 'h-11 w-full px-3 rounded-xl border border-slate-200 bg-slate-50 text-sm text-slate-900 placeholder-muted transition focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:focus:bg-slate-900';
         $cellInput = 'h-10 w-full px-2.5 rounded-lg border border-slate-200 bg-slate-50 text-sm text-slate-900 focus:outline-none focus:border-accent focus:ring-2 focus:ring-accent/30 focus:bg-white dark:focus:bg-slate-900';
         $labelClass = 'block text-[10.5px] font-bold uppercase tracking-widest text-slate-500 mb-1.5';
@@ -33,8 +34,10 @@
 
         @include('admin.manual-invoices.partials.hero', [
             'eyebrow' => __('Sales · In store and by phone'),
-            'title' => $invoice ? __('Edit draft :number', ['number' => $invoice->number]) : __('New Invoice'),
-            'subtitle' => __('Pick a customer, add products or services, then save as a draft or finalize.'),
+            'title' => $invoice ? ($amending ? __('Edit invoice :number', ['number' => $invoice->number]) : __('Edit draft :number', ['number' => $invoice->number])) : __('New Invoice'),
+            'subtitle' => $amending
+                ? __('Add or remove lines, change a price or give a discount. Stock and the balance due follow.')
+                : __('Pick a customer, add products or services, then save as a draft or finalize.'),
             'actions' => [
                 ['href' => $invoice ? route('admin.manual-invoices.show', $invoice) : route('admin.manual-invoices.index'), 'label' => __('Back')],
             ],
@@ -232,6 +235,17 @@
             </div>
 
             {{-- ═════════════ What saving does ═════════════ --}}
+            @if ($amending)
+            <section class="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-900">
+                <p class="font-bold">{{ __('This invoice is already finalized.') }}</p>
+                <ul class="mt-1.5 space-y-1 text-xs list-disc ps-5">
+                    <li>{{ __('Stock moves by the difference only: an added product is deducted, a removed one is returned, an unchanged one is left alone.') }}</li>
+                    <li>{{ __('Payments already recorded stay. The balance due and the paid status are worked out again from the new total.') }}</li>
+                    <li>{{ __('The total cannot go below what has already been paid. Record a refund first if it has to.') }}</li>
+                    <li>{{ __('The customer sees the updated invoice through the same share link.') }}</li>
+                </ul>
+            </section>
+            @else
             <section class="rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-900">
                 <p class="font-bold">{{ __('Draft or finalized?') }}</p>
                 <ul class="mt-1.5 space-y-1 text-xs list-disc ps-5">
@@ -240,12 +254,17 @@
                     <li>{{ __('If a catalogue item does not have enough stock, the invoice stays a draft and nothing is deducted.') }}</li>
                 </ul>
             </section>
+            @endif
 
             <div class="sticky bottom-0 z-10 -mx-4 sm:-mx-6 lg:-mx-8 border-t border-slate-200 bg-white/90 px-4 py-4 backdrop-blur dark:bg-slate-900/80">
                 <div class="max-w-6xl mx-auto flex flex-wrap items-center justify-end gap-3">
                     <a href="{{ $invoice ? route('admin.manual-invoices.show', $invoice) : route('admin.manual-invoices.index') }}" class="inline-flex items-center justify-center rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-100 dark:hover:bg-slate-800">{{ __('Cancel') }}</a>
+                    @if ($amending)
+                        <button type="submit" class="inline-flex items-center justify-center rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 dark:text-slate-900 dark:hover:bg-slate-100">{{ __('Save changes') }}</button>
+                    @else
                     <button type="submit" name="action" value="draft" class="inline-flex items-center justify-center rounded-lg border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-800 transition hover:bg-slate-100 dark:hover:bg-slate-800">{{ __('Save as draft') }}</button>
                     <button type="submit" name="action" value="finalize" class="inline-flex items-center justify-center rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800 dark:text-slate-900 dark:hover:bg-slate-100">{{ __('Save and finalize') }}</button>
+                    @endif
                 </div>
             </div>
         </form>
