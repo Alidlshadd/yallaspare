@@ -108,7 +108,7 @@ class StoreProductRequest extends FormRequest
             }
 
             if (! ExchangeRate::isConfigured()) {
-                $validator->errors()->add('price_currency', __('Set the exchange rate in Settings before pricing a product in USD.'));
+                $validator->errors()->add('price_currency', __('Set the exchange rate before pricing a product in USD.'));
 
                 return;
             }

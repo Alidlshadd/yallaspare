@@ -88,32 +88,16 @@ class UsdPricingTest extends TestCase
     }
 
     /**
-     * @return array<string, mixed>
+     * The exchange rate page's own form: the rate and the default currency,
+     * nothing else, and no password prompt in the way.
      */
-    private function settingsPayload(array $overrides = []): array
-    {
-        return array_merge([
-            'site_name' => 'Yalla Spare',
-            'currency_code' => 'IQD',
-            'currency_symbol' => 'IQD',
-            'low_stock_threshold' => 5,
-            'shipping_fee' => 5000,
-            'storefront_hero_title' => 'Find the right spare parts faster',
-            'storefront_hero_subtitle' => 'Browse the catalog.',
-            'storefront_hero_button_label' => 'Shop now',
-            'storefront_hero_button_url' => '',
-        ], $overrides);
-    }
-
     private function saveSettings(array $overrides)
     {
         return $this
-            ->withSession([
-                'admin_2fa.verified_user_id' => $this->admin->id,
-                'auth.password_confirmed_at' => time(),
-            ])
             ->actingAs($this->admin)
-            ->put(route('admin.settings.update'), $this->settingsPayload($overrides));
+            ->put(route('admin.exchange-rate.update'), array_merge([
+                'default_price_currency' => ExchangeRate::defaultCurrency(),
+            ], $overrides));
     }
 
     // ── The conversion itself ──────────────────────────────────────
@@ -145,7 +129,7 @@ class UsdPricingTest extends TestCase
     public function test_the_admin_sets_the_rate_and_it_records_when_and_who(): void
     {
         $this->saveSettings(['usd_rate_per_100' => '150000', 'default_price_currency' => 'USD'])
-            ->assertRedirect(route('admin.settings.edit'))
+            ->assertRedirect(route('admin.exchange-rate.edit'))
             ->assertSessionHasNoErrors();
 
         $this->assertSame('150000.00', ExchangeRate::perHundred());
@@ -154,13 +138,67 @@ class UsdPricingTest extends TestCase
         $this->assertSame($this->admin->name, Setting::getValue('usd_rate_updated_by_name'));
         $this->assertNotEmpty(Setting::getValue('usd_rate_updated_at'));
 
+        $this->usdProduct(['name_en' => 'Listed Dollar Part']);
+
         $this->actingAs($this->admin)
-            ->withSession(['admin_2fa.verified_user_id' => $this->admin->id])
-            ->get(route('admin.settings.edit'))
+            ->get(route('admin.exchange-rate.edit'))
             ->assertOk()
             ->assertSee('How many IQD is 100 USD?')
             ->assertSee('1 USD = 1500 IQD')
-            ->assertSee($this->admin->name);
+            ->assertSee($this->admin->name)
+            ->assertSee('Listed Dollar Part')
+            ->assertSee('15,000 IQD');
+    }
+
+    public function test_a_rate_typed_with_separators_or_arabic_digits_is_understood(): void
+    {
+        $this->saveSettings(['usd_rate_per_100' => '150,000'])->assertSessionHasNoErrors();
+        $this->assertSame('150000.00', ExchangeRate::perHundred());
+
+        $this->saveSettings(['usd_rate_per_100' => '١٧٠٠٠٠'])->assertSessionHasNoErrors();
+        $this->assertSame('170000.00', ExchangeRate::perHundred());
+
+        $this->saveSettings(['usd_rate_per_100' => '147 550.5'])->assertSessionHasNoErrors();
+        $this->assertSame('147550.50', ExchangeRate::perHundred());
+    }
+
+    public function test_the_rate_page_is_only_for_those_who_manage_settings(): void
+    {
+        $customer = $this->customer();
+
+        $this->actingAs($customer)->get(route('admin.exchange-rate.edit'))->assertForbidden();
+        $this->actingAs($customer)
+            ->put(route('admin.exchange-rate.update'), ['default_price_currency' => 'IQD', 'usd_rate_per_100' => '1'])
+            ->assertForbidden();
+
+        $this->assertNull(ExchangeRate::perHundred());
+    }
+
+    public function test_the_system_settings_form_no_longer_touches_the_rate(): void
+    {
+        $this->setRate('150000');
+
+        $this
+            ->withSession([
+                'admin_2fa.verified_user_id' => $this->admin->id,
+                'auth.password_confirmed_at' => time(),
+            ])
+            ->actingAs($this->admin)
+            ->put(route('admin.settings.update'), [
+                'site_name' => 'Yalla Spare',
+                'currency_code' => 'IQD',
+                'currency_symbol' => 'IQD',
+                'low_stock_threshold' => 5,
+                'shipping_fee' => 5000,
+                'storefront_hero_title' => 'Find the right spare parts faster',
+                'storefront_hero_subtitle' => 'Browse the catalog.',
+                'storefront_hero_button_label' => 'Shop now',
+                'storefront_hero_button_url' => '',
+                'usd_rate_per_100' => '999999',
+            ])
+            ->assertSessionHasNoErrors();
+
+        $this->assertSame('150000.00', ExchangeRate::perHundred());
     }
 
     public function test_a_zero_negative_or_invalid_rate_is_refused_and_the_old_one_stays(): void

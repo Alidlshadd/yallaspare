@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\DiscountCouponController;
 use App\Http\Controllers\Admin\EmailAlertController;
 use App\Http\Controllers\Admin\EmailController;
 use App\Http\Controllers\Admin\EmailTemplateController;
+use App\Http\Controllers\Admin\ExchangeRateController;
 use App\Http\Controllers\Admin\GoalController;
 use App\Http\Controllers\Admin\GovernorateShippingController;
 use App\Http\Controllers\Admin\InventoryMovementController;
@@ -776,6 +777,15 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::post('/inventory/bulk-stock', [BulkStockAdjustmentController::class, 'store'])
             ->middleware(['can:'.User::PERMISSION_STOCK_MANAGE, 'throttle:admin-write'])
             ->name('inventory.bulk-stock.apply');
+
+        // Exchange rate: its own page, so changing the rate does not go
+        // through the whole settings form.
+        Route::get('/exchange-rate', [ExchangeRateController::class, 'edit'])
+            ->middleware('can:'.User::PERMISSION_SETTINGS_MANAGE)
+            ->name('exchange-rate.edit');
+        Route::put('/exchange-rate', [ExchangeRateController::class, 'update'])
+            ->middleware(['can:'.User::PERMISSION_SETTINGS_MANAGE, 'throttle:admin-write'])
+            ->name('exchange-rate.update');
 
         // System Settings
         Route::get('/settings', [SettingController::class, 'edit'])

@@ -17,7 +17,7 @@
     $sections = [
         'branding' => __('Branding'),
         'hero' => __('Storefront Hero'),
-        'currency' => __('Currency & Exchange Rate'),
+        'currency' => __('Currency'),
         'operations' => __('Operations Defaults'),
         'providers' => __('Notification Providers'),
         'templates-en' => __('English Notification Templates'),
@@ -27,7 +27,7 @@
     $sectionFields = [
         'branding' => ['site_name', 'site_logo'],
         'hero' => ['storefront_hero_video'],
-        'currency' => ['currency_code', 'currency_symbol', 'default_price_currency', 'usd_rate_per_100'],
+        'currency' => ['currency_code', 'currency_symbol'],
         'operations' => ['shipping_fee', 'low_stock_threshold'],
         'providers' => $whatsappAdminVisible
             ? ['sms_provider_webhook_url', 'whatsapp_provider_webhook_url']
@@ -43,14 +43,6 @@
             'notification_order_status_updated_ku_subject', 'notification_order_status_updated_ku_body',
         ],
     ];
-
-    $usdRatePer100 = \App\Support\Pricing\ExchangeRate::perHundred();
-    $usdRatePerDollar = \App\Support\Pricing\ExchangeRate::perDollar();
-    $defaultPriceCurrency = old('default_price_currency', \App\Support\Pricing\ExchangeRate::defaultCurrency());
-    $usdRateUpdatedAt = trim((string) ($settings['usd_rate_updated_at'] ?? ''));
-    $usdRateUpdatedBy = trim((string) ($settings['usd_rate_updated_by_name'] ?? ''));
-    // Shown without a trailing ".00": the owner types 150000, not 150000.00.
-    $usdRateInput = old('usd_rate_per_100', $usdRatePer100 !== null ? rtrim(rtrim($usdRatePer100, '0'), '.') : '');
 
     $activeSection = 'branding';
     foreach ($sectionFields as $sectionKey => $fields) {
@@ -216,65 +208,10 @@
                                 </div>
                             </div>
 
-                            <div class="mt-8 border-t border-slate-200 pt-6">
-                                <p class="text-lg font-bold text-slate-800">{{ __('Product pricing and USD exchange rate') }}</p>
-                                <p class="mt-1 mb-5 text-xs text-slate-500">{{ __('Price a product in USD and its IQD price follows the rate you set here. Products priced in IQD never change with the rate.') }}</p>
-
-                                <div class="grid grid-cols-1 gap-4">
-                                    <div>
-                                        <label for="default_price_currency" class="{{ $labelClasses }}">{{ __('Default price currency for new products') }}</label>
-                                        <select id="default_price_currency" name="default_price_currency" class="{{ $inputClasses }}">
-                                            <option value="IQD" @selected($defaultPriceCurrency === 'IQD')>{{ __('IQD — Iraqi dinar') }}</option>
-                                            <option value="USD" @selected($defaultPriceCurrency === 'USD')>{{ __('USD ($) — US dollar') }}</option>
-                                        </select>
-                                        <p class="{{ $hintClasses }}">{{ __('Only the starting choice on the new product form. Existing products keep the currency they were priced in.') }}</p>
-                                        @error('default_price_currency')
-                                            <p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-
-                                    <div>
-                                        <label for="usd_rate_per_100" class="{{ $labelClasses }}">{{ __('How many IQD is 100 USD?') }}</label>
-                                        <div class="relative">
-                                            <input
-                                                id="usd_rate_per_100"
-                                                type="number"
-                                                name="usd_rate_per_100"
-                                                value="{{ $usdRateInput }}"
-                                                min="0.01"
-                                                step="0.01"
-                                                inputmode="decimal"
-                                                dir="ltr"
-                                                placeholder="150000"
-                                                class="{{ $inputClasses }} pe-16"
-                                                data-usd-rate-input
-                                                @error('usd_rate_per_100') aria-invalid="true" @enderror
-                                            >
-                                            <span class="pointer-events-none absolute inset-y-0 end-3 flex items-center text-xs text-slate-500">IQD</span>
-                                        </div>
-                                        <p class="mt-2 text-sm font-bold text-slate-800" data-usd-rate-preview data-template="{{ __('1 USD = :rate IQD') }}">{{ $usdRatePerDollar !== null ? __('1 USD = :rate IQD', ['rate' => $usdRatePerDollar]) : '' }}</p>
-                                        <p class="{{ $hintClasses }}">{{ __('You set this rate yourself; it is never fetched automatically. Saving a new rate reprices every USD-priced product at once.') }}</p>
-                                        @error('usd_rate_per_100')
-                                            <p class="mt-1 text-xs font-semibold text-rose-600">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-
-                                    <div class="rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-3 text-xs text-slate-600">
-                                        @if ($usdRatePer100 === null)
-                                            {{ __('No exchange rate has been set yet. Products can only be priced in USD once it is set.') }}
-                                        @else
-                                            <p>
-                                                <span class="font-bold text-slate-800">{{ __('Last updated') }}:</span>
-                                                <span dir="ltr">{{ $usdRateUpdatedAt !== '' ? \Illuminate\Support\Carbon::parse($usdRateUpdatedAt)->format('Y-m-d H:i') : '—' }}</span>
-                                            </p>
-                                            <p class="mt-1">
-                                                <span class="font-bold text-slate-800">{{ __('Updated by') }}:</span>
-                                                {{ $usdRateUpdatedBy !== '' ? $usdRateUpdatedBy : '—' }}
-                                            </p>
-                                        @endif
-                                    </div>
-                                </div>
-                            </div>
+                            <p class="mt-6 rounded-lg border border-slate-200 bg-slate-50 px-3.5 py-3 text-xs text-slate-600">
+                                {{ __('The USD exchange rate and the price currency of new products have their own page.') }}
+                                <a href="{{ route('admin.exchange-rate.edit') }}" class="font-bold underline">{{ __('Exchange Rate') }}</a>
+                            </p>
                         </div>
 
                         <div class="max-w-2xl" x-show="isActive('operations')" x-cloak>
@@ -422,28 +359,6 @@
     </div>
 
 @push('scripts')
-    <script nonce="{{ $cspNonce }}">
-        document.addEventListener('DOMContentLoaded', () => {
-            const rateInput = document.querySelector('[data-usd-rate-input]');
-            const ratePreview = document.querySelector('[data-usd-rate-preview]');
-
-            if (!rateInput || !ratePreview) {
-                return;
-            }
-
-            rateInput.addEventListener('input', () => {
-                const perHundred = parseFloat(rateInput.value);
-
-                if (!Number.isFinite(perHundred) || perHundred <= 0) {
-                    ratePreview.textContent = '';
-                    return;
-                }
-
-                const perDollar = (Math.round(perHundred * 100) / 10000).toString();
-                ratePreview.textContent = ratePreview.dataset.template.replace(':rate', perDollar);
-            });
-        });
-    </script>
     <script nonce="{{ $cspNonce }}">
         document.addEventListener('DOMContentLoaded', () => {
             const form = document.querySelector('[data-admin-settings-form]');

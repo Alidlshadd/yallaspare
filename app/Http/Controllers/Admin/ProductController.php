@@ -689,7 +689,7 @@ class ProductController extends Controller
 
                 if ($rowCurrency === ExchangeRate::USD) {
                     $usdProblem = match (true) {
-                        ! ExchangeRate::isConfigured() => __('Set the exchange rate in Settings before importing USD-priced products.'),
+                        ! ExchangeRate::isConfigured() => __('Set the exchange rate before importing USD-priced products.'),
                         $rowPriceUsd === null => __('A USD-priced row needs a valid price_usd value.'),
                         trim((string) ($rowData['dealer_price_usd'] ?? '')) !== '' && $rowDealerPriceUsd === null => __('The dealer_price_usd value is not a valid amount.'),
                         trim((string) ($rowData['cost_price_usd'] ?? '')) !== '' && $rowCostPriceUsd === null => __('The cost_price_usd value is not a valid amount.'),

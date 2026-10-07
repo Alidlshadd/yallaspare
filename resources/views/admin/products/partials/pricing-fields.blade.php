@@ -47,7 +47,7 @@
         @if ($usdRatePer100 === null)
             <p class="text-xs text-slate-500 mt-1">
                 {{ __('No exchange rate has been set yet. Products can only be priced in USD once it is set.') }}
-                <a href="{{ route('admin.settings.edit') }}" class="font-semibold underline">{{ __('Open settings') }}</a>
+                <a href="{{ route('admin.exchange-rate.edit') }}" class="font-semibold underline">{{ __('Set the exchange rate') }}</a>
             </p>
         @else
             <p class="text-xs text-slate-500 mt-1">
