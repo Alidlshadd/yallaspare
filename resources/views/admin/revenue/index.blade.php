@@ -199,6 +199,31 @@
                         </div>
                     @endcan
 
+                    {{-- Net profit, from the purchase price recorded on each
+                         line when it was sold. Lines sold without one are
+                         counted and named, never assumed to cost nothing. --}}
+                    <div class="mt-3 rounded-md border border-navy-raised bg-navy/60 px-3 py-2.5">
+                        <p class="text-[11px] uppercase tracking-[0.16em] text-[#666fa3]">{{ __('Net profit in range') }} · {{ __('sales minus purchase cost and discounts; delivery not counted') }}</p>
+                        <div class="mt-2 grid grid-cols-1 gap-2 sm:grid-cols-2">
+                            @foreach (['orders' => __('Site orders'), 'manual' => __('Manual invoices')] as $profitKey => $profitLabel)
+                                @php $profitRow = $profit[$profitKey]; @endphp
+                                <div>
+                                    <p class="text-[11px] uppercase tracking-[0.16em] text-[#666fa3]">{{ $profitLabel }}</p>
+                                    @if ($profitRow['costed_lines'] > 0)
+                                        <p class="mt-1 text-base font-semibold {{ $profitRow['profit'] < 0 ? 'text-[#f87171]' : 'text-[#34d399]' }}" dir="ltr">{{ $currencyLabel }} {{ $fmt($profitRow['profit']) }}</p>
+                                        <p class="text-[11px] text-[#666fa3]">{{ __('Sales') }} {{ $fmt($profitRow['sales']) }} · {{ __('Cost') }} {{ $fmt($profitRow['cost']) }} · {{ __('Discount') }} {{ $fmt($profitRow['discount']) }}</p>
+                                    @else
+                                        <p class="mt-1 text-base font-semibold text-[#f2f3ff]">—</p>
+                                        <p class="text-[11px] text-[#666fa3]">{{ __('No sold line in this range has a purchase price yet.') }}</p>
+                                    @endif
+                                    @if ($profitRow['uncosted_lines'] > 0)
+                                        <p class="text-[11px] text-[#ff8a3d]">{{ __(':count lines have no purchase price and are left out.', ['count' => $profitRow['uncosted_lines']]) }}</p>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+
                     <div class="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-3">
                         <div class="rounded-md border border-navy-raised bg-navy/60 px-3 py-2.5">
                             <p class="text-[11px] uppercase tracking-[0.16em] text-[#666fa3]">{{ __('Range Total') }}</p>

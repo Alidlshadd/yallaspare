@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Wishlist;
 use App\Services\Cart\CartService;
 use App\Support\LocalizedText;
+use App\Support\Pricing\ExchangeRate;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
@@ -193,7 +194,7 @@ class HeaderComposer
             return;
         }
 
-        Cache::forget(self::CART_SUMMARY_CACHE_PREFIX.$userId);
+        Cache::forget(self::CART_SUMMARY_CACHE_PREFIX.$userId.self::priceVersion());
     }
 
     /**
@@ -204,7 +205,7 @@ class HeaderComposer
         self::forgetCartCacheForUser($userId);
 
         if (is_string($sessionToken) && $sessionToken !== '') {
-            Cache::forget(self::GUEST_CART_SUMMARY_CACHE_PREFIX.sha1($sessionToken));
+            Cache::forget(self::GUEST_CART_SUMMARY_CACHE_PREFIX.sha1($sessionToken).self::priceVersion());
         }
     }
 
@@ -237,14 +238,28 @@ class HeaderComposer
     private function cartSummaryCacheKey(?Authenticatable $user): ?string
     {
         if ($user !== null) {
-            return self::CART_SUMMARY_CACHE_PREFIX.(int) $user->getAuthIdentifier();
+            return self::CART_SUMMARY_CACHE_PREFIX.(int) $user->getAuthIdentifier().self::priceVersion();
         }
 
         $token = app(CartService::class)->guestToken();
 
         return $token === null
             ? null
-            : self::GUEST_CART_SUMMARY_CACHE_PREFIX.sha1($token);
+            : self::GUEST_CART_SUMMARY_CACHE_PREFIX.sha1($token).self::priceVersion();
+    }
+
+    /**
+     * The dollar rate, as part of the cart summary's cache key.
+     *
+     * A cart total depends on the rate, and there is no way to list every
+     * cached summary to drop them when it changes. With the rate in the key a
+     * new rate reads fresh entries at once and the old ones expire unread.
+     */
+    private static function priceVersion(): string
+    {
+        $rate = ExchangeRate::perHundred();
+
+        return $rate === null ? '' : '_r'.str_replace('.', '_', $rate);
     }
 
     private function wishlistCountCacheKey(int $userId): string

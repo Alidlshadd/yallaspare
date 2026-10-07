@@ -10,6 +10,7 @@ use App\Models\Product;
 use App\Services\InvoiceRenderer;
 use App\Services\Invoices\ManualInvoiceService;
 use App\Support\AdminLogger;
+use App\Support\Pricing\ExchangeRate;
 use App\Support\SqlSafe;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
@@ -101,7 +102,20 @@ class ManualInvoiceController extends Controller
             'invoice' => $manualInvoice,
             'service' => $this->invoices,
             'whatsappUrl' => $this->invoices->whatsappUrl($manualInvoice),
+            'rateDrift' => $this->invoices->exchangeRateDrift($manualInvoice),
         ]);
+    }
+
+    /**
+     * Bring a draft's dollar-priced lines to the current exchange rate.
+     */
+    public function reprice(Request $request, ManualInvoice $manualInvoice): RedirectResponse
+    {
+        $this->invoices->repriceDraft($manualInvoice, $request->user());
+
+        return redirect()
+            ->route('admin.manual-invoices.show', $manualInvoice)
+            ->with('success', __('The draft was recalculated at the current exchange rate.'));
     }
 
     public function edit(Request $request, ManualInvoice $manualInvoice): View|RedirectResponse
@@ -217,7 +231,7 @@ class ManualInvoiceController extends Controller
         $search = trim((string) $request->query('q', ''));
 
         $products = Product::query()
-            ->select(['id', 'name_en', 'name_ar', 'name_ku', 'sku', 'part_number', 'oem_number', 'brand', 'price', 'stock_quantity'])
+            ->select(['id', 'name_en', 'name_ar', 'name_ku', 'sku', 'part_number', 'oem_number', 'brand', 'price', 'price_currency', 'price_usd', 'stock_quantity'])
             ->when($search !== '', function (Builder $query) use ($search): void {
                 $term = SqlSafe::searchTerm($search);
 
@@ -240,7 +254,12 @@ class ManualInvoiceController extends Controller
                 'id' => $product->id,
                 'name' => $product->localizedName(),
                 'sku' => (string) ($product->sku ?: $product->part_number),
+                // Always dinars at the current rate. For a dollar product the
+                // dollar amount and rate come along too, so the line can say
+                // where its price came from and be repriced later.
                 'price' => (float) $product->price,
+                'usd_price' => $product->isUsdPriced() && $product->price_usd !== null ? (string) $product->price_usd : null,
+                'usd_rate' => $product->isUsdPriced() ? ExchangeRate::perHundred() : null,
                 'stock' => (int) $product->stock_quantity,
             ])->values(),
         ]);
@@ -266,6 +285,8 @@ class ManualInvoiceController extends Controller
                     'sku' => $item->sku,
                     'quantity' => $item->quantity,
                     'unit_price' => $item->unit_price,
+                    'usd_unit_price' => $item->usd_unit_price,
+                    'usd_rate_per_100' => $item->usd_rate_per_100,
                 ])->all()
                 : [];
         }
@@ -295,6 +316,8 @@ class ManualInvoiceController extends Controller
             'items.*.sku' => ['nullable', 'string', 'max:120'],
             'items.*.quantity' => ['required', 'integer', 'min:1', 'max:100000'],
             'items.*.unit_price' => ['required', 'numeric', 'min:0', 'max:9999999999'],
+            'items.*.usd_unit_price' => ['nullable', 'numeric', 'min:0', 'max:9999999'],
+            'items.*.usd_rate_per_100' => ['nullable', 'numeric', 'gt:0', 'max:'.ExchangeRate::MAX_PER_HUNDRED],
         ], [
             'customer_id.required' => __('Select a customer for this invoice.'),
             'items.required' => __('Add at least one line to the invoice.'),

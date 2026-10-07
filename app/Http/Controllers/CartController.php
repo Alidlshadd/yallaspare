@@ -31,6 +31,10 @@ class CartController extends Controller
             session()->flash('error', __('Some cart quantities were adjusted to available stock.'));
         }
 
+        // After the stock sync, so a line that was just removed is not also
+        // reported as repriced.
+        $priceChanges = $cart ? $this->carts->reviewPrices($cart, $user) : [];
+
         $items = $cart?->items ?? collect();
         $subtotal = $items->sum(function (CartItem $item): float {
             $product = $item->product;
@@ -51,6 +55,7 @@ class CartController extends Controller
             'cart' => $cart,
             'items' => $items,
             'subtotal' => round((float) $subtotal, 2),
+            'priceChanges' => $priceChanges,
             'currencySymbol' => $currencyLabel,
             'cartCount' => (int) $items->sum('quantity'),
             'addresses' => $addresses,

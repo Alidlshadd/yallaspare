@@ -6,6 +6,7 @@ use App\Support\CatalogLandingCache;
 use App\Support\DbSchema;
 use App\Support\ImageVariants;
 use App\Support\LocalizedText;
+use App\Support\Pricing\ExchangeRate;
 use App\Support\Search\SearchQuery;
 use App\Support\Search\Token;
 use App\Support\SqlSafe;
@@ -28,7 +29,7 @@ class Product extends Model
     protected $fillable = [
         'category_id', 'product_brand_id', 'name_en', 'name_ar', 'name_ku',
         'description_en', 'description_ar', 'description_ku',
-        'price', 'dealer_price', 'stock_quantity', 'sku', 'oem_number', 'part_number', 'warranty', 'brand',
+        'price', 'dealer_price', 'price_currency', 'price_usd', 'dealer_price_usd', 'cost_price', 'cost_price_usd', 'stock_quantity', 'sku', 'oem_number', 'part_number', 'warranty', 'brand',
         'compatible_models', 'image', 'is_active', 'low_stock_threshold', 'slug',
     ];
 
@@ -36,7 +37,20 @@ class Product extends Model
         'compatible_models' => 'array',
         'price' => 'decimal:2',
         'dealer_price' => 'decimal:2',
+        'price_usd' => 'decimal:2',
+        'dealer_price_usd' => 'decimal:2',
+        'cost_price' => 'decimal:2',
+        'cost_price_usd' => 'decimal:2',
         'low_stock_threshold' => 'integer',
+    ];
+
+    /**
+     * What the shop paid is the shop's business. Nothing serializes a whole
+     * product to a customer today; this keeps it that way by default.
+     */
+    protected $hidden = [
+        'cost_price',
+        'cost_price_usd',
     ];
 
     protected static function booted(): void
@@ -51,6 +65,8 @@ class Product extends Model
                     $product->id
                 );
             }
+
+            $product->syncDinarPricesFromUsd();
         });
 
         // Only brand / compatible_models feed the storefront vehicle filter
@@ -579,6 +595,96 @@ class Product extends Model
         $type = DB::connection()->getDriverName() === 'mysql' ? 'UNSIGNED' : 'INTEGER';
 
         return "CAST({$column} AS {$type})";
+    }
+
+    /**
+     * True when the owner priced this product in dollars. Its dinar price is
+     * then a figure derived from `price_usd` and the current rate, not one
+     * anybody typed.
+     */
+    public function isUsdPriced(): bool
+    {
+        return strtoupper((string) ($this->attributes['price_currency'] ?? '')) === ExchangeRate::USD;
+    }
+
+    /**
+     * The dollar figure behind the price this user pays, before discounts:
+     * the dealer's own dollar price when they have one, the list price
+     * otherwise. Null for a dinar product.
+     */
+    public function usdBasePriceFor(?User $user = null): ?string
+    {
+        if (! $this->isUsdPriced() || $this->price_usd === null) {
+            return null;
+        }
+
+        if ($this->dealer_price_usd !== null && $user && $user->isDealer() && $user->dealer_status === User::DEALER_STATUS_ACTIVE) {
+            return (string) $this->dealer_price_usd;
+        }
+
+        return (string) $this->price_usd;
+    }
+
+    /**
+     * Keep the dinar columns of a dollar product equal to dollars times rate.
+     *
+     * `price` and `dealer_price` are what the whole shop reads, sorts and
+     * filters by, so they stay real columns; for a dollar product they are
+     * always recomputed from the stored dollar amounts, never adjusted from
+     * their own previous value. A dinar product is left exactly as typed and
+     * carries no dollar figures.
+     *
+     * Runs on every save, whoever is saving — the form, an import, a script —
+     * so the two can not drift. A model loaded without the currency column
+     * is left alone: it does not know enough to decide.
+     */
+    private function syncDinarPricesFromUsd(): void
+    {
+        if ($this->exists && ! array_key_exists('price_currency', $this->attributes)) {
+            return;
+        }
+
+        if (! $this->isUsdPriced()) {
+            foreach (['price_usd', 'dealer_price_usd', 'cost_price_usd'] as $column) {
+                if (($this->attributes[$column] ?? null) !== null) {
+                    $this->{$column} = null;
+                }
+            }
+
+            return;
+        }
+
+        if ($this->exists && ! $this->isDirty(['price_currency', 'price_usd', 'dealer_price_usd', 'cost_price_usd', 'price', 'dealer_price', 'cost_price'])) {
+            return;
+        }
+
+        if ($this->price_usd === null) {
+            throw new \DomainException('A USD-priced product needs a USD price.');
+        }
+
+        $this->price = ExchangeRate::toIqd($this->price_usd);
+        $this->dealer_price = $this->dealer_price_usd !== null
+            ? ExchangeRate::toIqd($this->dealer_price_usd)
+            : null;
+        // The cost of a dollar product is a dollar cost and moves with the
+        // rate the same way, so the margin is compared like for like.
+        $this->cost_price = $this->cost_price_usd !== null
+            ? ExchangeRate::toIqd($this->cost_price_usd)
+            : null;
+    }
+
+    /**
+     * Profit on one unit at the list price, in dinars, or null when no cost
+     * has been entered. Before discounts and coupons: it describes the
+     * product, not any particular sale.
+     */
+    public function unitProfit(): ?float
+    {
+        if ($this->cost_price === null) {
+            return null;
+        }
+
+        return round((float) $this->price - (float) $this->cost_price, 2);
     }
 
     public function priceFor(?User $user = null): float

@@ -9,6 +9,11 @@ class CartItem extends Model
 {
     protected $fillable = ['cart_id', 'product_id', 'quantity'];
 
+    // A rate is compared digit for digit, so it stays a decimal string.
+    protected $casts = [
+        'seen_usd_rate' => 'decimal:2',
+    ];
+
     /** @return BelongsTo<Cart, $this> */
     public function cart(): BelongsTo
     {

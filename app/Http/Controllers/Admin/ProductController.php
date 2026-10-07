@@ -13,6 +13,7 @@ use App\Models\ProductBrand;
 use App\Models\ProductImage;
 use App\Models\Setting;
 use App\Support\AdminLogger;
+use App\Support\Pricing\ExchangeRate;
 use App\Support\SecureImageStorage;
 use App\Support\SqlSafe;
 use Illuminate\Database\QueryException;
@@ -56,6 +57,9 @@ class ProductController extends Controller
                 'is_active',
                 'price',
                 'dealer_price',
+                'price_currency',
+                'price_usd',
+                'cost_price',
                 'stock_quantity',
                 'created_at',
             ])
@@ -218,6 +222,7 @@ class ProductController extends Controller
 
         $dealerPrice = $request->filled('dealer_price') ? (float) $request->dealer_price : null;
         $basePrice = (float) $request->price;
+        $priceAttributes = $this->priceAttributes($request);
 
         // Every file written for this request, so a failure part-way through
         // can take them back out. The product and its pictures are saved
@@ -225,7 +230,7 @@ class ProductController extends Controller
         $storedPaths = [];
 
         try {
-            DB::transaction(function () use ($request, $selectedBrand, $compatibleModels, $sku, $dealerPrice, $basePrice, &$storedPaths): void {
+            DB::transaction(function () use ($request, $selectedBrand, $compatibleModels, $sku, $priceAttributes, &$storedPaths): void {
                 $imagePath = null;
                 if ($request->hasFile('image')) {
                     $imagePath = $storedPaths[] = SecureImageStorage::store($request->file('image'), 'products');
@@ -239,8 +244,7 @@ class ProductController extends Controller
                     'description_en' => $request->description_en,
                     'description_ar' => $request->description_ar,
                     'description_ku' => $request->description_ku,
-                    'price' => $basePrice,
-                    'dealer_price' => $dealerPrice,
+                    ...$priceAttributes,
                     'stock_quantity' => $request->stock_quantity,
                     'sku' => $sku,
                     'oem_number' => $request->filled('oem_number') ? $request->oem_number : null,
@@ -318,6 +322,7 @@ class ProductController extends Controller
 
         $dealerPrice = $request->filled('dealer_price') ? (float) $request->dealer_price : null;
         $basePrice = (float) $request->price;
+        $priceAttributes = $this->priceAttributes($request, $product);
 
         // New files are written first and old ones removed last, once the
         // database has accepted the change. Whatever goes wrong in between,
@@ -326,7 +331,7 @@ class ProductController extends Controller
         $obsoletePaths = [];
 
         try {
-            DB::transaction(function () use ($request, $product, $brandWasSubmitted, $selectedBrand, $compatibleModels, $dealerPrice, $basePrice, $oldImagePath, &$storedPaths, &$obsoletePaths): void {
+            DB::transaction(function () use ($request, $product, $brandWasSubmitted, $selectedBrand, $compatibleModels, $priceAttributes, $oldImagePath, &$storedPaths, &$obsoletePaths): void {
                 $newImagePath = null;
                 $imagePath = $oldImagePath;
                 if ($request->hasFile('image')) {
@@ -343,8 +348,7 @@ class ProductController extends Controller
                     'description_en' => $request->description_en,
                     'description_ar' => $request->description_ar,
                     'description_ku' => $request->description_ku,
-                    'price' => $basePrice,
-                    'dealer_price' => $dealerPrice,
+                    ...$priceAttributes,
                     'stock_quantity' => $request->stock_quantity,
                     'sku' => $request->filled('sku') ? $request->sku : $product->sku,
                     'oem_number' => $request->filled('oem_number') ? $request->oem_number : null,
@@ -406,6 +410,51 @@ class ProductController extends Controller
         }
 
         return $redirect;
+    }
+
+    /**
+     * The price columns for what the form sent.
+     *
+     * In dollars, the typed amounts are kept as the product's real price and
+     * the dinar columns are left to the model, which derives them from the
+     * current rate on every save. In dinars, the typed amounts are the price
+     * and no dollar figure is kept, so the rate can never move it.
+     *
+     * A request that does not say which currency (an older client) keeps the
+     * product's own, and a new product defaults to dinars.
+     *
+     * @return array<string, mixed>
+     */
+    private function priceAttributes(Request $request, ?Product $product = null): array
+    {
+        $currency = $request->filled('price_currency')
+            ? ExchangeRate::normalizeCurrency($request->input('price_currency'))
+            : ($product?->isUsdPriced() ? ExchangeRate::USD : ExchangeRate::IQD);
+
+        $price = (string) $request->input('price');
+        $dealerPrice = $request->filled('dealer_price') ? (string) $request->input('dealer_price') : null;
+        // The purchase price is typed in the same currency as the price, so
+        // the two are always comparable.
+        $costPrice = $request->filled('cost_price') ? (string) $request->input('cost_price') : null;
+
+        if ($currency === ExchangeRate::USD) {
+            return [
+                'price_currency' => ExchangeRate::USD,
+                'price_usd' => ExchangeRate::decimal($price, 2),
+                'dealer_price_usd' => $dealerPrice !== null ? ExchangeRate::decimal($dealerPrice, 2) : null,
+                'cost_price_usd' => $costPrice !== null ? ExchangeRate::decimal($costPrice, 2) : null,
+            ];
+        }
+
+        return [
+            'price_currency' => ExchangeRate::IQD,
+            'price_usd' => null,
+            'dealer_price_usd' => null,
+            'cost_price_usd' => null,
+            'price' => (float) $price,
+            'dealer_price' => $dealerPrice !== null ? (float) $dealerPrice : null,
+            'cost_price' => $costPrice !== null ? (float) $costPrice : null,
+        ];
     }
 
     /**
@@ -625,6 +674,39 @@ class ProductController extends Controller
                     continue;
                 }
 
+                // A row is priced in dinars unless it says otherwise. A dollar
+                // row takes its amounts from the price_usd columns, never from
+                // `price`: an exported sheet carries the dinar equivalent
+                // there, and reading that as dollars would be ruinous.
+                $rowCurrency = ExchangeRate::normalizeCurrency($rowData['price_currency'] ?? '');
+                $rowPriceUsd = ExchangeRate::decimal(trim((string) ($rowData['price_usd'] ?? '')), 2);
+                $rowDealerPriceUsd = trim((string) ($rowData['dealer_price_usd'] ?? '')) !== ''
+                    ? ExchangeRate::decimal(trim((string) $rowData['dealer_price_usd']), 2)
+                    : null;
+                $rowCostPriceUsd = trim((string) ($rowData['cost_price_usd'] ?? '')) !== ''
+                    ? ExchangeRate::decimal(trim((string) $rowData['cost_price_usd']), 2)
+                    : null;
+
+                if ($rowCurrency === ExchangeRate::USD) {
+                    $usdProblem = match (true) {
+                        ! ExchangeRate::isConfigured() => __('Set the exchange rate in Settings before importing USD-priced products.'),
+                        $rowPriceUsd === null => __('A USD-priced row needs a valid price_usd value.'),
+                        trim((string) ($rowData['dealer_price_usd'] ?? '')) !== '' && $rowDealerPriceUsd === null => __('The dealer_price_usd value is not a valid amount.'),
+                        trim((string) ($rowData['cost_price_usd'] ?? '')) !== '' && $rowCostPriceUsd === null => __('The cost_price_usd value is not a valid amount.'),
+                        default => null,
+                    };
+
+                    if ($usdProblem !== null) {
+                        $errors[] = [
+                            'row' => $rowNumber,
+                            'sku' => $rowData['sku'] ?? '',
+                            'message' => $usdProblem,
+                        ];
+
+                        continue;
+                    }
+                }
+
                 $providedSku = trim((string) ($rowData['sku'] ?? ''));
                 $sku = $providedSku;
                 $skuKey = strtolower($sku);
@@ -659,8 +741,26 @@ class ProductController extends Controller
                     'description_en' => ($rowData['description_en'] ?? '') !== '' ? (string) $rowData['description_en'] : null,
                     'description_ar' => ($rowData['description_ar'] ?? '') !== '' ? (string) $rowData['description_ar'] : null,
                     'description_ku' => ($rowData['description_ku'] ?? '') !== '' ? (string) $rowData['description_ku'] : null,
-                    'price' => (float) $rowData['price'],
-                    'dealer_price' => (($rowData['dealer_price'] ?? '') !== '') ? (float) $rowData['dealer_price'] : null,
+                    ...($rowCurrency === ExchangeRate::USD
+                        ? [
+                            'price_currency' => ExchangeRate::USD,
+                            'price_usd' => $rowPriceUsd,
+                            'dealer_price_usd' => $rowDealerPriceUsd,
+                        ]
+                        : [
+                            'price_currency' => ExchangeRate::IQD,
+                            'price_usd' => null,
+                            'dealer_price_usd' => null,
+                            'price' => (float) $rowData['price'],
+                            'dealer_price' => (($rowData['dealer_price'] ?? '') !== '') ? (float) $rowData['dealer_price'] : null,
+                        ]),
+                    // Purchase price is only written when the sheet has the
+                    // column: a file without it must not wipe costs on file.
+                    ...($rowCurrency === ExchangeRate::USD
+                        ? (array_key_exists('cost_price_usd', $rowData) ? ['cost_price_usd' => $rowCostPriceUsd] : [])
+                        : (array_key_exists('cost_price', $rowData)
+                            ? ['cost_price' => (($rowData['cost_price'] ?? '') !== '') ? (float) $rowData['cost_price'] : null]
+                            : [])),
                     'stock_quantity' => (int) $rowData['stock_quantity'],
                     'sku' => $sku,
                     'oem_number' => ($rowData['oem_number'] ?? '') !== '' ? (string) $rowData['oem_number'] : null,
@@ -770,6 +870,11 @@ class ProductController extends Controller
             'price' => ['required', 'numeric', 'min:0'],
             'stock_quantity' => ['required', 'integer', 'min:0'],
             'dealer_price' => ['nullable', 'numeric', 'min:0'],
+            'price_currency' => ['nullable', 'string', 'max:3'],
+            'price_usd' => ['nullable', 'string', 'max:20'],
+            'dealer_price_usd' => ['nullable', 'string', 'max:20'],
+            'cost_price' => ['nullable', 'numeric', 'min:0'],
+            'cost_price_usd' => ['nullable', 'string', 'max:20'],
             'sku' => ['nullable', 'string', 'max:64'],
             'oem_number' => ['nullable', 'string', 'max:120'],
             'part_number' => ['nullable', 'string', 'max:120'],

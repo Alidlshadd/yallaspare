@@ -27,6 +27,7 @@ class Setting extends Model
             'site_name' => config('app.name', 'Laravel'),
             'currency_code' => 'IQD',
             'currency_symbol' => 'IQD',
+            'default_price_currency' => 'IQD',
             'low_stock_threshold' => (string) config('inventory.low_stock_threshold', 5),
             'shipping_fee' => '5000',
             'welcome_offer_enabled' => '0',
@@ -77,6 +78,11 @@ class Setting extends Model
             );
         }
 
+        Cache::forget(self::CACHE_KEY);
+    }
+
+    public static function forgetCache(): void
+    {
         Cache::forget(self::CACHE_KEY);
     }
 

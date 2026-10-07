@@ -159,29 +159,7 @@
                                 <h3 class="text-sm font-semibold text-slate-900">{{ __('Pricing') }}</h3>
                                 <p class="text-xs text-slate-500">{{ __('Set pricing and dealer visibility.') }}</p>
                             </div>
-                            <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div>
-                                    <label for="stock_quantity" class="block text-sm font-medium text-slate-700">{{ __('Price') }} <span class="text-rose-500">*</span></label>
-                                    <div class="relative">
-                                        <input aria-label="{{ __('Price') }}" type="number" step="0.01" name="price" value="{{ old('price') }}" class="{{ $inputBase }} pr-16 @error('price') {{ $inputError }} @enderror" required @error('price') aria-invalid="true" @enderror>
-                                        <span class="absolute inset-y-0 right-3 flex items-center text-xs text-slate-500">{{ $currencyLabel }}</span>
-                                    </div>
-                                    @error('price')
-                                        <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-slate-700">{{ __('Dealer Price') }}</label>
-                                    <div class="relative">
-                                        <input type="number" step="0.01" name="dealer_price" value="{{ old('dealer_price') }}" class="{{ $inputBase }} pr-16 @error('dealer_price') {{ $inputError }} @enderror" placeholder="{{ __('Optional') }}" @error('dealer_price') aria-invalid="true" @enderror>
-                                        <span class="absolute inset-y-0 right-3 flex items-center text-xs text-slate-500">{{ $currencyLabel }}</span>
-                                    </div>
-                                    <p class="text-xs text-slate-500 mt-1">{{ __('Leave empty to use dealer discount rules.') }}</p>
-                                    @error('dealer_price')
-                                        <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
-                                    @enderror
-                                </div>
-                            </div>
+                            @include('admin.products.partials.pricing-fields')
                         </section>
 
                         <section class="bg-white rounded-2xl border border-slate-200 shadow-sm">
@@ -192,7 +170,7 @@
                             <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700">{{ __('Stock Quantity') }} <span class="text-rose-500">*</span></label>
-                                    <input id="stock_quantity" type="number" name="stock_quantity" value="{{ old('stock_quantity') }}" class="{{ $inputBase }} @error('stock_quantity') {{ $inputError }} @enderror" required @error('stock_quantity') aria-invalid="true" @enderror>
+                                    <input id="stock_quantity" aria-label="{{ __('Stock Quantity') }}" type="number" name="stock_quantity" value="{{ old('stock_quantity') }}" class="{{ $inputBase }} @error('stock_quantity') {{ $inputError }} @enderror" required @error('stock_quantity') aria-invalid="true" @enderror>
                                     @error('stock_quantity')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror

@@ -259,9 +259,80 @@ class RevenueController extends Controller
             'conversionSummary' => $conversionSummary,
             'recentPaidOrders' => $recentPaidOrders,
             'manualSales' => $this->manualSales($start, $end),
+            'profit' => $this->profit($start, $end),
             'currencyLabel' => $currencyLabel,
             'currencyDecimals' => $currencyDecimals,
         ]);
+    }
+
+    /**
+     * Net profit for the range, from the cost written on each line at the
+     * moment it was sold.
+     *
+     * Only lines that carry a cost can say anything about profit, so only
+     * they are counted — on both sides: their sales, minus their cost. The
+     * number of lines left out is reported with it, because a profit figure
+     * that silently treats a missing cost as zero would be flattering and
+     * wrong. Discounts given on the orders come off; delivery is neither
+     * income nor cost here.
+     *
+     * Site orders and manual invoices are worked out separately, like the
+     * rest of this page, and shown side by side.
+     *
+     * @return array{orders: array{sales: float, cost: float, discount: float, profit: float, costed_lines: int, uncosted_lines: int}, manual: array{sales: float, cost: float, discount: float, profit: float, costed_lines: int, uncosted_lines: int}}
+     */
+    private function profit(Carbon $start, Carbon $end): array
+    {
+        $orderLines = fn () => DB::table('order_items')
+            ->join('orders', 'orders.id', '=', 'order_items.order_id')
+            ->whereIn('orders.status', self::PAID_STATUSES)
+            ->whereBetween('orders.created_at', [$start, $end]);
+
+        $invoiceLines = fn () => DB::table('manual_invoice_items')
+            ->join('manual_invoices', 'manual_invoices.id', '=', 'manual_invoice_items.manual_invoice_id')
+            ->where('manual_invoices.status', ManualInvoice::STATUS_FINALIZED)
+            ->whereDate('manual_invoices.invoice_date', '>=', $start->toDateString())
+            ->whereDate('manual_invoices.invoice_date', '<=', $end->toDateString());
+
+        $summarize = function (\Closure $lines, string $table, string $totalColumn, float $discount): array {
+            $costed = $lines()->whereNotNull($table.'.unit_cost');
+            $sales = (float) (clone $costed)->sum($table.'.'.$totalColumn);
+            $cost = (float) (clone $costed)->sum(DB::raw($table.'.unit_cost * '.$table.'.quantity'));
+            $costedLines = (int) (clone $costed)->count();
+
+            return [
+                'sales' => $sales,
+                'cost' => $cost,
+                // A discount belongs to the whole sale; with no costed line
+                // there is no profit to take it from.
+                'discount' => $costedLines > 0 ? $discount : 0.0,
+                'profit' => $costedLines > 0 ? round($sales - $cost - $discount, 2) : 0.0,
+                'costed_lines' => $costedLines,
+                'uncosted_lines' => (int) $lines()->whereNull($table.'.unit_cost')->count(),
+            ];
+        };
+
+        $orderDiscount = (float) Order::query()
+            ->whereIn('status', self::PAID_STATUSES)
+            ->whereBetween('created_at', [$start, $end])
+            ->whereExists(fn ($query) => $query->selectRaw('1')->from('order_items')
+                ->whereColumn('order_items.order_id', 'orders.id')
+                ->whereNotNull('order_items.unit_cost'))
+            ->sum('discount_amount');
+
+        $invoiceDiscount = (float) ManualInvoice::query()
+            ->where('status', ManualInvoice::STATUS_FINALIZED)
+            ->whereDate('invoice_date', '>=', $start->toDateString())
+            ->whereDate('invoice_date', '<=', $end->toDateString())
+            ->whereExists(fn ($query) => $query->selectRaw('1')->from('manual_invoice_items')
+                ->whereColumn('manual_invoice_items.manual_invoice_id', 'manual_invoices.id')
+                ->whereNotNull('manual_invoice_items.unit_cost'))
+            ->sum('discount_amount');
+
+        return [
+            'orders' => $summarize($orderLines, 'order_items', 'subtotal', $orderDiscount),
+            'manual' => $summarize($invoiceLines, 'manual_invoice_items', 'line_total', $invoiceDiscount),
+        ];
     }
 
     /**

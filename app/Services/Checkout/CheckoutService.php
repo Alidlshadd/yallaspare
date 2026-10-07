@@ -2,6 +2,7 @@
 
 namespace App\Services\Checkout;
 
+use App\Exceptions\CartPricesChangedException;
 use App\Http\View\Composers\HeaderComposer;
 use App\Models\Cart;
 use App\Models\Discount;
@@ -11,10 +12,12 @@ use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\UserAddress;
+use App\Services\Cart\CartService;
 use App\Services\CouponService;
 use App\Services\Payments\PaymentService;
 use App\Services\Shipping\ShippingFeeResolver;
 use App\Services\WelcomeOfferService;
+use App\Support\Pricing\ExchangeRate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -23,6 +26,7 @@ class CheckoutService
     public function __construct(
         private readonly CouponService $couponService,
         private readonly ShippingFeeResolver $shippingFees,
+        private readonly CartService $carts,
     ) {}
 
     public function placeCartOrder(
@@ -33,6 +37,18 @@ class CheckoutService
         string $couponCode,
         string $paymentMethod = PaymentService::METHOD_COD
     ): Order {
+        // Prices are always taken from the catalogue below, never from the
+        // request. That alone could still charge a total the customer never
+        // saw, if the exchange rate changed after their last look at the
+        // cart — so that case stops here, once. The new prices are recorded
+        // as seen before the exception leaves (outside the transaction, so
+        // it is not rolled back), and placing the order again goes through.
+        if ($this->carts->reviewPrices($cart, $user) !== []) {
+            throw new CartPricesChangedException(
+                __('Prices in your cart changed because the exchange rate was updated. Please review the new total and place your order again.')
+            );
+        }
+
         return DB::transaction(function () use ($cart, $user, $address, $notes, $couponCode, $paymentMethod): Order {
             $user = User::query()->whereKey($user->id)->lockForUpdate()->firstOrFail();
             $cart->load('items');
@@ -211,6 +227,12 @@ class CheckoutService
                 'quantity' => $line['quantity'],
                 'unit_price' => $line['unit_price'],
                 'subtotal' => $line['subtotal'],
+                // How this dinar price came about, for good: a later rate
+                // change reprices the catalogue, never this line.
+                ...$this->pricingSnapshot($line['product'], $user),
+                // What the part cost the shop on the day, so the profit on
+                // this order stays what it was when a cost is edited later.
+                'unit_cost' => $line['product']->cost_price,
             ]);
 
             $stockBefore = (int) $line['product']->stock_quantity;
@@ -243,6 +265,23 @@ class CheckoutService
         $this->recordDiscountRuleUsage($discountRuleIds);
 
         return $order;
+    }
+
+    /**
+     * The currency a product was priced in when it was sold and, for a dollar
+     * product, the dollar price and the rate that produced the dinar figure.
+     *
+     * @return array{price_currency: string, usd_unit_price: ?string, usd_rate_per_100: ?string}
+     */
+    private function pricingSnapshot(Product $product, User $user): array
+    {
+        $usdPrice = $product->usdBasePriceFor($user);
+
+        return [
+            'price_currency' => $usdPrice !== null ? ExchangeRate::USD : ExchangeRate::IQD,
+            'usd_unit_price' => $usdPrice,
+            'usd_rate_per_100' => $usdPrice !== null ? ExchangeRate::perHundred() : null,
+        ];
     }
 
     private function assertPaymentMinimum(string $paymentMethod, float $grandTotal): void

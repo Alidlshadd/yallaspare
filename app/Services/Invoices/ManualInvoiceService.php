@@ -11,6 +11,7 @@ use App\Models\Setting;
 use App\Models\User;
 use App\Services\Inventory\InventoryAdjustmentService;
 use App\Support\AdminLogger;
+use App\Support\Pricing\ExchangeRate;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -59,6 +60,26 @@ class ManualInvoiceService
 
             $quantity = (int) $row['quantity'];
             $unitPrice = round((float) $row['unit_price'], 2);
+
+            // A line that came from a dollar-priced product carries the
+            // dollar amount and the rate it was converted at. While it does,
+            // its dinar price is that conversion and nothing else — worked
+            // out here, whatever the form sent. Typing a different unit
+            // price on the form drops the dollar amount, and the line is
+            // then an ordinary dinar line the rate cannot touch.
+            $usdUnitPrice = ExchangeRate::decimal(trim((string) ($row['usd_unit_price'] ?? '')), 2);
+            $usdRate = null;
+
+            if ($product && $product->isUsdPriced() && $usdUnitPrice !== null && bccomp($usdUnitPrice, '0', 2) > 0) {
+                $usdRate = ExchangeRate::normalizeRate($row['usd_rate_per_100'] ?? null) ?? ExchangeRate::perHundred();
+            }
+
+            if ($usdRate !== null) {
+                $unitPrice = (float) ExchangeRate::toIqd($usdUnitPrice, $usdRate);
+            } else {
+                $usdUnitPrice = null;
+            }
+
             $lineTotal = round($quantity * $unitPrice, 2);
             $subtotal += $lineTotal;
 
@@ -69,6 +90,11 @@ class ManualInvoiceService
                 'quantity' => $quantity,
                 'unit_price' => $unitPrice,
                 'line_total' => $lineTotal,
+                'usd_unit_price' => $usdUnitPrice,
+                'usd_rate_per_100' => $usdRate,
+                // What the part costs the shop today. Rewritten on every save
+                // of the draft and one last time when it is finalized.
+                'unit_cost' => $product?->cost_price,
                 'sort_order' => $index,
             ];
         }
@@ -147,6 +173,107 @@ class ManualInvoiceService
             }
 
             $invoice->items()->createMany($priced['items']);
+
+            return $invoice->load('items');
+        });
+    }
+
+    /**
+     * What a draft would come to at today's rate, when that differs.
+     *
+     * A draft keeps the rate each dollar line was priced at, so reopening it
+     * a week later shows the customer the figure they were quoted. This says
+     * how far that has drifted. Null when nothing has: not a draft, no dollar
+     * lines, or every line already at the current rate.
+     *
+     * @return array{lines: array<int, array{old: float, new: float}>, old_total: float, new_total: float, difference: float, old_rate: string, new_rate: string}|null
+     */
+    public function exchangeRateDrift(ManualInvoice $invoice): ?array
+    {
+        $rate = ExchangeRate::perHundred();
+
+        if (! $invoice->isDraft() || $rate === null) {
+            return null;
+        }
+
+        $lines = [];
+        $subtotal = 0.0;
+        $oldRate = null;
+
+        foreach ($invoice->items as $item) {
+            $lineTotal = (float) $item->line_total;
+
+            if ($item->usd_unit_price !== null && $item->usd_rate_per_100 !== null && ! ExchangeRate::sameRate($item->usd_rate_per_100, $rate)) {
+                $newUnitPrice = (float) ExchangeRate::toIqd($item->usd_unit_price, $rate);
+                $lines[(int) $item->id] = ['old' => (float) $item->unit_price, 'new' => $newUnitPrice];
+                $lineTotal = round((int) $item->quantity * $newUnitPrice, 2);
+                $oldRate ??= ExchangeRate::normalizeRate($item->usd_rate_per_100);
+            }
+
+            $subtotal += $lineTotal;
+        }
+
+        if ($lines === [] || $oldRate === null) {
+            return null;
+        }
+
+        $newTotal = round($subtotal - (float) $invoice->discount_amount + (float) $invoice->delivery_fee, 2);
+
+        return [
+            'lines' => $lines,
+            'old_total' => (float) $invoice->total,
+            'new_total' => $newTotal,
+            'difference' => round($newTotal - (float) $invoice->total, 2),
+            'old_rate' => $oldRate,
+            'new_rate' => $rate,
+        ];
+    }
+
+    /**
+     * Reprice a draft's dollar lines at today's rate.
+     *
+     * Each line is converted again from its own dollar amount; dinar lines,
+     * manual lines, the discount and the delivery fee are left as they are.
+     * Only a draft: the status is read under a lock, so a finalized invoice
+     * can not be repriced by a stale page or a second tab.
+     */
+    public function repriceDraft(ManualInvoice $invoice, User $actor): ManualInvoice
+    {
+        return DB::transaction(function () use ($invoice, $actor): ManualInvoice {
+            $invoice = ManualInvoice::query()->whereKey($invoice->id)->lockForUpdate()->firstOrFail();
+            $this->assertDraft($invoice);
+
+            $rate = ExchangeRate::perHundred();
+            $previousTotal = (float) $invoice->total;
+
+            $rows = $invoice->items()->orderBy('sort_order')->orderBy('id')->get()->map(fn ($item): array => [
+                'product_id' => $item->product_id,
+                'description' => $item->description,
+                'sku' => $item->sku,
+                'quantity' => $item->quantity,
+                'unit_price' => $item->unit_price,
+                'usd_unit_price' => $item->usd_unit_price,
+                'usd_rate_per_100' => $item->usd_unit_price !== null ? $rate : null,
+            ])->all();
+
+            $priced = $this->calculate($rows, (float) $invoice->discount_amount, (float) $invoice->delivery_fee);
+
+            $invoice->update([
+                'subtotal' => $priced['subtotal'],
+                'discount_amount' => $priced['discount_amount'],
+                'delivery_fee' => $priced['delivery_fee'],
+                'total' => $priced['total'],
+            ]);
+            $invoice->items()->delete();
+            $invoice->items()->createMany($priced['items']);
+
+            AdminLogger::log('manual_invoice.repriced', $invoice, [
+                'number' => $invoice->number,
+                'per_100_usd' => $rate,
+                'previous_total' => $previousTotal,
+                'total' => $priced['total'],
+                'by' => $actor->id,
+            ]);
 
             return $invoice->load('items');
         });
@@ -236,6 +363,14 @@ class ManualInvoiceService
                         (string) $invoice->number,
                         __('Manual invoice :number', ['number' => $invoice->number]),
                     );
+                }
+            }
+
+            // Cost is frozen with the sale, like everything else on it: the
+            // profit on this invoice must not move when a cost is edited.
+            foreach ($invoice->items as $item) {
+                if ($item->product_id && ($product = $products->get($item->product_id))) {
+                    $item->update(['unit_cost' => $product->cost_price]);
                 }
             }
 

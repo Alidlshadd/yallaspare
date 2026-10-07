@@ -684,12 +684,24 @@
                         <div class="price-row">
                             <div class="price">
                                 <span class="cy">{{ $currencyLabel }}</span>{{ number_format($product->price, $currencyDecimals) }}
+                                @if($product->isUsdPriced() && $product->price_usd !== null)
+                                    <span class="cy" dir="ltr" title="{{ __('Priced in USD; the IQD price follows the exchange rate.') }}">· ${{ number_format((float) $product->price_usd, 2) }}</span>
+                                @endif
                             </div>
                             <span class="stock-badge {{ $stockClass }}">
                                 {{ $stockLabel }}
                                 <span class="sr-only">{{ __(':count units', ['count' => $product->stock_quantity]) }}</span>
                             </span>
                         </div>
+                        @if($product->unitProfit() !== null)
+                            <div class="dealer-row">
+                                {{ __('Net profit') }}:
+                                <span class="dp" dir="ltr">{{ $currencyLabel }} {{ number_format($product->unitProfit(), $currencyDecimals) }}</span>
+                                @if($product->unitProfit() < 0)
+                                    <span class="margin-warn ms-1">{{ __('Loss') }}</span>
+                                @endif
+                            </div>
+                        @endif
                         @if($product->dealer_price !== null)
                             <div class="dealer-row">
                                 {{ __('Dealer:') }}

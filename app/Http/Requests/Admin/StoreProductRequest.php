@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Admin;
 
+use App\Support\Pricing\ExchangeRate;
 use App\Support\ProductImageUpload;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
@@ -77,6 +78,8 @@ class StoreProductRequest extends FormRequest
             'description_ku' => ['nullable', 'string'],
             'price' => ['required', 'numeric', 'min:0'],
             'dealer_price' => ['nullable', 'numeric', 'min:0'],
+            'price_currency' => ['nullable', Rule::in(ExchangeRate::CURRENCIES)],
+            'cost_price' => ['nullable', 'numeric', 'min:0', 'max:9999999999'],
             'stock_quantity' => ['required', 'integer', 'min:0'],
             'oem_number' => ['nullable', 'string', 'max:120'],
             'part_number' => ['nullable', 'string', 'max:120'],
@@ -90,6 +93,45 @@ class StoreProductRequest extends FormRequest
             'is_active' => ['sometimes', 'boolean'],
             'category_id' => ['required', 'exists:categories,id'],
         ];
+    }
+
+    /**
+     * A dollar price needs a rate to be turned into dinars, and has to be an
+     * amount in dollars and cents — not "1e3", and nothing so large the
+     * converted price would not fit its column.
+     */
+    public function withValidator(Validator $validator): void
+    {
+        $validator->after(function (Validator $validator): void {
+            if ($this->input('price_currency') !== ExchangeRate::USD) {
+                return;
+            }
+
+            if (! ExchangeRate::isConfigured()) {
+                $validator->errors()->add('price_currency', __('Set the exchange rate in Settings before pricing a product in USD.'));
+
+                return;
+            }
+
+            foreach (['price', 'dealer_price', 'cost_price'] as $field) {
+                $value = $this->input($field);
+
+                if ($value === null || $value === '') {
+                    continue;
+                }
+
+                if (! is_scalar($value) || preg_match('/^\d{1,7}(\.\d{1,2})?$/', trim((string) $value)) !== 1) {
+                    $validator->errors()->add($field, __('Enter a USD amount with at most two decimals.'));
+
+                    continue;
+                }
+
+                // The dinar price has to fit the column it is stored in.
+                if (bccomp(ExchangeRate::toIqd(trim((string) $value)), '99999999', 0) > 0) {
+                    $validator->errors()->add($field, __('This USD amount is too large at the current exchange rate.'));
+                }
+            }
+        });
     }
 
     /**

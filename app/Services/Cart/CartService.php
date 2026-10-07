@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\CartItem;
 use App\Models\Product;
 use App\Models\User;
+use App\Support\Pricing\ExchangeRate;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -85,6 +86,12 @@ class CartService
             $currentQuantity = $item->exists ? (int) $item->quantity : 0;
             $requestedTotal = $currentQuantity + $quantity;
             $item->quantity = min($maxQuantity, $requestedTotal);
+
+            // The price on the page they just added from is the one they
+            // have seen, whatever this line remembered before.
+            $owner = $cart->user_id ? User::query()->find($cart->user_id) : null;
+            $item->seen_unit_price = round($lockedProduct->priceFor($owner), 2);
+            $item->seen_usd_rate = $lockedProduct->isUsdPriced() ? ExchangeRate::perHundred() : null;
             $item->save();
 
             return [
@@ -137,6 +144,65 @@ class CartService
         }
 
         return $changed;
+    }
+
+    /**
+     * Compare what each line costs now with what the customer was last shown,
+     * report the lines the exchange rate has moved, and remember the new
+     * figures as seen.
+     *
+     * Only a dollar-priced product whose rate differs from the one on the
+     * line counts. A price that moved for another reason — a discount ending,
+     * a dealer signing in — is not the rate's doing and is not reported here.
+     *
+     * Reporting is once per change: the caller is expected to tell the
+     * customer, since the next call will find nothing to say. The line's own
+     * timestamp is left alone, because the abandoned-cart reminders read it
+     * as the customer's last activity and looking at a price is not that.
+     *
+     * @return array<int, array{old: float, new: float}> keyed by cart item id
+     */
+    public function reviewPrices(Cart $cart, ?User $user): array
+    {
+        $cart->loadMissing('items.product');
+
+        $rate = ExchangeRate::perHundred();
+        $changes = [];
+
+        foreach ($cart->items as $item) {
+            $product = $item->product;
+
+            if (! $product) {
+                continue;
+            }
+
+            $currentPrice = round((float) $product->priceFor($user), 2);
+            $currentRate = $product->isUsdPriced() ? $rate : null;
+            $seenPrice = $item->seen_unit_price !== null ? round((float) $item->seen_unit_price, 2) : null;
+            $seenRate = $item->seen_usd_rate !== null ? (string) $item->seen_usd_rate : null;
+
+            $rateMoved = $currentRate !== null && $seenRate !== null && ! ExchangeRate::sameRate($seenRate, $currentRate);
+            $priceMoved = $seenPrice !== null && abs($seenPrice - $currentPrice) >= 0.005;
+
+            if ($rateMoved && $priceMoved) {
+                $changes[(int) $item->id] = ['old' => $seenPrice, 'new' => $currentPrice];
+            }
+
+            $rateRecorded = $currentRate === null ? $seenRate === null : ExchangeRate::sameRate($seenRate, $currentRate);
+
+            if ($seenPrice === null || $priceMoved || ! $rateRecorded) {
+                DB::table('cart_items')->where('id', $item->id)->update([
+                    'seen_unit_price' => $currentPrice,
+                    'seen_usd_rate' => $currentRate,
+                ]);
+
+                $item->seen_unit_price = $currentPrice;
+                $item->seen_usd_rate = $currentRate;
+                $item->syncOriginal();
+            }
+        }
+
+        return $changes;
     }
 
     /**

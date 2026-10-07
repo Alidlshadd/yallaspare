@@ -15,6 +15,9 @@ class ManualInvoiceItem extends Model
         'quantity',
         'unit_price',
         'line_total',
+        'usd_unit_price',
+        'usd_rate_per_100',
+        'unit_cost',
         'sort_order',
     ];
 

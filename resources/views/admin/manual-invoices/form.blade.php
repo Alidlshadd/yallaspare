@@ -171,7 +171,12 @@
                         </td>
                         <td class="px-1.5 py-1.5"><input type="text" data-field="sku" maxlength="120" aria-label="{{ __('Part code') }}" placeholder="{{ __('Part code') }}" class="{{ $cellInput }}"></td>
                         <td class="px-1.5 py-1.5"><input type="number" data-field="quantity" min="1" step="1" required aria-label="{{ __('Quantity') }}" placeholder="{{ __('Quantity') }}" class="{{ $cellInput }}"></td>
-                        <td class="px-1.5 py-1.5"><input type="number" data-field="unit_price" min="0" step="any" required aria-label="{{ __('Unit price') }}" placeholder="{{ __('Unit price') }}" class="{{ $cellInput }}"></td>
+                        <td class="px-1.5 py-1.5">
+                            <input type="number" data-field="unit_price" min="0" step="any" required aria-label="{{ __('Unit price') }}" placeholder="{{ __('Unit price') }}" class="{{ $cellInput }}">
+                            <input type="hidden" data-field="usd_unit_price">
+                            <input type="hidden" data-field="usd_rate_per_100">
+                            <p data-usd-note dir="ltr" class="hidden mt-1 text-[11px] text-slate-500"></p>
+                        </td>
                         <td class="px-1.5 py-1.5 text-end font-bold text-slate-900 whitespace-nowrap leading-10" data-line-total></td>
                         <td class="px-1.5 py-1.5">
                             <button type="button" data-remove aria-label="{{ __('Remove line') }}"
@@ -261,6 +266,7 @@
                 csrf: document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '',
                 text: {
                     inStock: @json(__('In stock: :count')),
+                    usdLine: @json(__('$:usd · 1 USD = :rate IQD')),
                     saveFailed: @json(__('The customer could not be saved. Check the name and phone number.')),
                 },
             };
@@ -317,6 +323,24 @@
                 set('sku', data.sku);
                 set('quantity', data.quantity || 1);
                 set('unit_price', data.unit_price ?? 0);
+                set('usd_unit_price', data.usd_unit_price);
+                set('usd_rate_per_100', data.usd_rate_per_100);
+
+                // A line priced from dollars says so. Typing another unit
+                // price makes it a plain dinar line: the dollar amount is
+                // dropped, and the exchange rate no longer applies to it.
+                const usdNote = row.querySelector('[data-usd-note]');
+                if (data.usd_unit_price && data.usd_rate_per_100) {
+                    usdNote.textContent = config.text.usdLine
+                        .replace(':usd', Number(data.usd_unit_price).toFixed(2))
+                        .replace(':rate', String(Math.round(Number(data.usd_rate_per_100) * 100) / 10000));
+                    usdNote.classList.remove('hidden');
+                }
+                row.querySelector('[data-field="unit_price"]').addEventListener('input', () => {
+                    set('usd_unit_price', '');
+                    set('usd_rate_per_100', '');
+                    usdNote.classList.add('hidden');
+                });
 
                 if (data.stock !== undefined && data.stock !== null) {
                     const stock = row.querySelector('[data-stock]');
@@ -374,7 +398,7 @@
                             [product.sku, money(product.price), config.text.inStock.replace(':count', product.stock)].filter(Boolean).join(' · ')
                         );
                         button.addEventListener('click', () => {
-                            addRow({ product_id: product.id, description: product.name, sku: product.sku, quantity: 1, unit_price: product.price, stock: product.stock });
+                            addRow({ product_id: product.id, description: product.name, sku: product.sku, quantity: 1, unit_price: product.price, usd_unit_price: product.usd_price, usd_rate_per_100: product.usd_rate, stock: product.stock });
                             productSearch.value = '';
                             productResults.classList.add('hidden');
                         });

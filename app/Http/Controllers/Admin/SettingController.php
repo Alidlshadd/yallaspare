@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
 use App\Rules\SafeLinkUrl;
+use App\Services\Pricing\ExchangeRateService;
 use App\Support\Branding;
+use App\Support\Pricing\ExchangeRate;
 use App\Support\SecureImageStorage;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -14,6 +16,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 use Throwable;
 
@@ -38,7 +41,7 @@ class SettingController extends Controller
         return view('admin.settings.edit', compact('settings', 'productionChecks'));
     }
 
-    public function update(Request $request): RedirectResponse
+    public function update(Request $request, ExchangeRateService $exchangeRates): RedirectResponse
     {
         $currentHeroTitle = (string) Setting::getValue('storefront_hero_title', 'Find the right spare parts faster');
         $currentHeroSubtitle = (string) Setting::getValue('storefront_hero_subtitle', 'Browse saved categories, filter by vehicle, and shop available parts from one clean catalog.');
@@ -56,6 +59,17 @@ class SettingController extends Controller
             'site_name' => ['required', 'string', 'max:120'],
             'currency_code' => ['required', 'string', 'max:10'],
             'currency_symbol' => ['required', 'string', 'max:10'],
+            'default_price_currency' => ['nullable', Rule::in(ExchangeRate::CURRENCIES)],
+            // Left empty, the rate already on file stays: it can be changed
+            // but never cleared, because dollar-priced products depend on it.
+            'usd_rate_per_100' => [
+                'nullable',
+                function (string $attribute, mixed $value, \Closure $fail): void {
+                    if (ExchangeRate::normalizeRate(is_scalar($value) ? (string) $value : null) === null) {
+                        $fail(__('Enter how many IQD 100 USD is worth, as a number greater than zero (for example 150000).'));
+                    }
+                },
+            ],
             'low_stock_threshold' => ['required', 'integer', 'min:0', 'max:1000000'],
             'shipping_fee' => ['required', 'numeric', 'min:0', 'max:1000000000'],
             'site_logo' => ['nullable', 'file', 'mimes:jpg,jpeg,png,webp', 'max:8192'],
@@ -96,6 +110,16 @@ class SettingController extends Controller
             'notification_order_status_updated_ku_subject' => ['nullable', 'string', 'max:160'],
             'notification_order_status_updated_ku_body' => ['nullable', 'string', 'max:3000'],
         ]);
+
+        $validator->after(function ($validator) use ($request): void {
+            if (
+                $request->input('default_price_currency') === ExchangeRate::USD
+                && blank($request->input('usd_rate_per_100'))
+                && ! ExchangeRate::isConfigured()
+            ) {
+                $validator->errors()->add('usd_rate_per_100', __('Set the exchange rate before making USD the default price currency.'));
+            }
+        });
 
         if ($validator->fails()) {
             if ($request->files->has('storefront_hero_video')) {
@@ -216,6 +240,9 @@ class SettingController extends Controller
             'site_name' => $data['site_name'],
             'currency_code' => strtoupper($data['currency_code']),
             'currency_symbol' => $data['currency_symbol'],
+            // Only the starting choice on the new-product form. Products
+            // already saved keep the currency they were priced in.
+            'default_price_currency' => ExchangeRate::normalizeCurrency($data['default_price_currency'] ?? ExchangeRate::defaultCurrency()),
             'low_stock_threshold' => (string) $data['low_stock_threshold'],
             'shipping_fee' => (string) round((float) $data['shipping_fee'], 2),
             'site_logo' => $newLogo,
@@ -244,9 +271,22 @@ class SettingController extends Controller
             'notification_order_status_updated_ku_body' => (string) ($data['notification_order_status_updated_ku_body'] ?? ''),
         ]);
 
+        $message = __('System settings updated successfully.');
+
+        if (filled($data['usd_rate_per_100'] ?? null)) {
+            $result = $exchangeRates->setRate((string) $data['usd_rate_per_100'], $request->user());
+
+            if ($result['changed']) {
+                $message .= ' '.__('Exchange rate updated: 1 USD = :rate IQD. :count USD-priced products were repriced.', [
+                    'rate' => ExchangeRate::perDollar(),
+                    'count' => $result['repriced'],
+                ]);
+            }
+        }
+
         return redirect()
             ->route('admin.settings.edit')
-            ->with('success', __('System settings updated successfully.'));
+            ->with('success', $message);
     }
 
     private function storeLogoWithTransparentBackground(UploadedFile $uploadedLogo): string

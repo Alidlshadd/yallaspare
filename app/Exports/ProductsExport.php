@@ -39,6 +39,11 @@ class ProductsExport implements FromCollection, ShouldAutoSize, WithColumnFormat
                 'price',
                 'stock_quantity',
                 'dealer_price',
+                'price_currency',
+                'price_usd',
+                'dealer_price_usd',
+                'cost_price',
+                'cost_price_usd',
                 'sku',
                 'oem_number',
                 'part_number',
@@ -77,6 +82,15 @@ class ProductsExport implements FromCollection, ShouldAutoSize, WithColumnFormat
                     (string) ($product->description_ar ?? ''),
                     (string) ($product->description_ku ?? ''),
                     (string) ($product->category?->name_en ?? ''),
+                    // Last, so the columns an existing sheet relies on keep
+                    // their letters. `price` above is always the dinar price;
+                    // for a dollar product these say what it is derived from,
+                    // and an import reads them back instead of `price`.
+                    $product->isUsdPriced() ? 'USD' : 'IQD',
+                    $product->isUsdPriced() ? $product->price_usd : null,
+                    $product->isUsdPriced() ? $product->dealer_price_usd : null,
+                    $product->cost_price,
+                    $product->isUsdPriced() ? $product->cost_price_usd : null,
                 ]);
             });
     }
@@ -100,6 +114,11 @@ class ProductsExport implements FromCollection, ShouldAutoSize, WithColumnFormat
             'description_ar',
             'description_ku',
             'category_name',
+            'price_currency',
+            'price_usd',
+            'dealer_price_usd',
+            'cost_price',
+            'cost_price_usd',
         ];
     }
 
@@ -113,6 +132,11 @@ class ProductsExport implements FromCollection, ShouldAutoSize, WithColumnFormat
             'I' => NumberFormat::FORMAT_TEXT,
             'J' => NumberFormat::FORMAT_TEXT,
             'P' => NumberFormat::FORMAT_TEXT,
+            'Q' => NumberFormat::FORMAT_TEXT,
+            'R' => NumberFormat::FORMAT_NUMBER_00,
+            'S' => NumberFormat::FORMAT_NUMBER_00,
+            'T' => NumberFormat::FORMAT_NUMBER_00,
+            'U' => NumberFormat::FORMAT_NUMBER_00,
         ];
     }
 
@@ -173,10 +197,10 @@ class ProductsExport implements FromCollection, ShouldAutoSize, WithColumnFormat
                 $highestRow = $sheet->getHighestRow();
 
                 $sheet->freezePane('A2');
-                $sheet->setAutoFilter('A1:P1');
+                $sheet->setAutoFilter('A1:U1');
                 $sheet->getColumnDimension('A')->setWidth(12);
 
-                $sheet->getStyle("A1:P{$highestRow}")
+                $sheet->getStyle("A1:U{$highestRow}")
                     ->getAlignment()
                     ->setVertical(Alignment::VERTICAL_TOP);
 

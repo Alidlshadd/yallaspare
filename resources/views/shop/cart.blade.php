@@ -15,6 +15,12 @@
             </x-ui.alert>
         @endif
 
+        @if (! empty($priceChanges))
+            <x-ui.alert variant="warn" :title="__('Prices updated')">
+                {{ __('The exchange rate changed, so some prices in your cart were updated. The new prices are shown below.') }}
+            </x-ui.alert>
+        @endif
+
         @if ($items->isEmpty())
             <section class="rounded-3xl border border-slate-200/80 bg-white p-8 shadow-sm shadow-slate-900/5 dark:bg-slate-900 dark:shadow-black/10 sm:p-10">
                 <div class="rounded-3xl border border-slate-200/80 bg-slate-50 px-6 py-10 text-center">
@@ -92,6 +98,14 @@
                                         </span>
                                     @endif
                                 </div>
+                                @if (isset($priceChanges[$item->id]))
+                                    <p class="mt-1 text-[11px] font-semibold text-amber-700 dark:text-amber-300">
+                                        {{ __('Price updated with the exchange rate: was :old, now :new', [
+                                            'old' => number_format($priceChanges[$item->id]['old'], 2).' '.$currencySymbol,
+                                            'new' => number_format($priceChanges[$item->id]['new'], 2).' '.$currencySymbol,
+                                        ]) }}
+                                    </p>
+                                @endif
                                 @if ($product)
                                     <p class="mt-1 text-[11px] text-muted dark:text-slate-500">{{ __('Available') }}: {{ $maxQuantity }}</p>
                                 @endif

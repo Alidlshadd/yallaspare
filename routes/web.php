@@ -625,6 +625,9 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::post('/manual-invoices/{manual_invoice}/finalize', [ManualInvoiceController::class, 'finalize'])
             ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('manual-invoices.finalize');
+        Route::post('/manual-invoices/{manual_invoice}/reprice', [ManualInvoiceController::class, 'reprice'])
+            ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
+            ->name('manual-invoices.reprice');
         Route::post('/manual-invoices/{manual_invoice}/payments', [ManualInvoiceController::class, 'storePayment'])
             ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('manual-invoices.payments.store');

@@ -17,6 +17,11 @@
             $shipping = (float) $order->shipping_fee;
             $discount = (float) $order->discount_amount;
             $total = (float) ($order->grand_total ?: $order->total_amount ?: ($subtotal + $shipping - $discount));
+            // Profit is only as complete as the costs recorded at the sale.
+            $costedItems = $order->items->filter(fn ($item) => $item->unit_cost !== null);
+            $orderCost = (float) $costedItems->sum(fn ($item) => (float) $item->unit_cost * (int) $item->quantity);
+            $costedSales = (float) $costedItems->sum(fn ($item) => (float) $item->subtotal);
+            $uncostedLines = $order->items->count() - $costedItems->count();
         @endphp
         <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
@@ -116,7 +121,12 @@
                                             </td>
                                             <td class="px-6 py-4 text-sm text-slate-600">{{ $item->soldSku() ?: '-' }}</td>
                                             <td class="px-6 py-4 text-sm text-slate-900">{{ $item->quantity }}</td>
-                                            <td class="px-6 py-4 text-sm text-slate-900">{{ $currencyLabel }} {{ number_format((float) $item->unit_price, $currencyDecimals) }}</td>
+                                            <td class="px-6 py-4 text-sm text-slate-900">
+                                                {{ $currencyLabel }} {{ number_format((float) $item->unit_price, $currencyDecimals) }}
+                                                @if ($item->usd_unit_price !== null && $item->usd_rate_per_100 !== null)
+                                                    <div class="text-[11px] text-slate-500" dir="ltr">{{ __('$:usd · 1 USD = :rate IQD', ['usd' => number_format((float) $item->usd_unit_price, 2), 'rate' => \App\Support\Pricing\ExchangeRate::perDollar((string) $item->usd_rate_per_100)]) }}</div>
+                                                @endif
+                                            </td>
                                             <td class="px-6 py-4 text-sm font-semibold text-slate-900">{{ $currencyLabel }} {{ number_format((float) $item->subtotal, $currencyDecimals) }}</td>
                                         </tr>
                                     @empty
@@ -127,6 +137,21 @@
                                 </tbody>
                             </table>
                         </div>
+                        @if ($costedItems->isNotEmpty() && auth()->user()?->can(\App\Models\User::PERMISSION_FINANCE_VIEW))
+                            <div class="border-t border-slate-200 px-6 py-4">
+                                <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500">{{ __('Staff only — not shown to the customer') }}</p>
+                                <dl class="mt-2 max-w-xs space-y-1.5 text-sm">
+                                    <div class="flex justify-between gap-3"><dt class="text-slate-500">{{ __('Cost of goods') }}</dt><dd class="font-semibold text-slate-900">{{ $currencyLabel }} {{ number_format($orderCost, $currencyDecimals) }}</dd></div>
+                                    <div class="flex justify-between gap-3"><dt class="text-slate-500">{{ __('Net profit') }}</dt><dd class="font-semibold text-slate-900" dir="ltr">{{ $currencyLabel }} {{ number_format($costedSales - $orderCost - $discount, $currencyDecimals) }}</dd></div>
+                                </dl>
+                                <p class="mt-2 text-xs text-slate-500">
+                                    {{ __('Sales of the lines with a purchase price, minus their cost and the discount. Delivery is not counted.') }}
+                                    @if ($uncostedLines > 0)
+                                        {{ __(':count lines have no purchase price and are left out.', ['count' => $uncostedLines]) }}
+                                    @endif
+                                </p>
+                            </div>
+                        @endif
                     </section>
                 </div>
 

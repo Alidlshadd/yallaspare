@@ -43,6 +43,39 @@
             </div>
         @endif
 
+        @if (! empty($rateDrift))
+            <div class="mb-4 rounded-2xl border border-amber-200 bg-amber-50 px-5 py-4 text-sm text-amber-900">
+                <p class="font-bold">{{ __('The exchange rate has changed since this draft was priced.') }}</p>
+                <p class="mt-1 text-xs">
+                    {{ __('Its USD-priced lines use 1 USD = :old IQD; the current rate is 1 USD = :new IQD.', [
+                        'old' => \App\Support\Pricing\ExchangeRate::perDollar($rateDrift['old_rate']),
+                        'new' => \App\Support\Pricing\ExchangeRate::perDollar($rateDrift['new_rate']),
+                    ]) }}
+                </p>
+                <dl class="mt-3 grid max-w-md grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-xs">
+                    <dt>{{ __('Total as priced') }}</dt><dd class="text-end font-bold">{{ $service->money($rateDrift['old_total']) }}</dd>
+                    <dt>{{ __('Total at the current rate') }}</dt><dd class="text-end font-bold">{{ $service->money($rateDrift['new_total']) }}</dd>
+                    <dt>{{ __('Difference') }}</dt><dd class="text-end font-bold" dir="ltr">{{ $rateDrift['difference'] > 0 ? '+' : '' }}{{ $service->money($rateDrift['difference']) }}</dd>
+                </dl>
+                <form method="POST" action="{{ route('admin.manual-invoices.reprice', $invoice) }}" class="mt-3">
+                    @csrf
+                    <button type="submit" class="inline-flex items-center justify-center gap-2 h-10 px-4 rounded-xl bg-slate-900 text-white text-xs font-bold hover:bg-slate-800 transition dark:text-slate-900 dark:hover:bg-slate-100">
+                        <i class="fas fa-rotate text-[11px]" aria-hidden="true"></i>{{ __('Recalculate at the current rate') }}
+                    </button>
+                </form>
+                <p class="mt-2 text-[11px]">{{ __('Leaving it as it is keeps the prices already quoted. Either way the rate used is saved on the invoice.') }}</p>
+            </div>
+        @endif
+
+        @php
+            // Profit is only as complete as the costs behind it: a manual
+            // line, or a product with no cost entered, has none to subtract.
+            $costedItems = $invoice->items->filter(fn ($item) => $item->unit_cost !== null);
+            $invoiceCost = (float) $costedItems->sum(fn ($item) => (float) $item->unit_cost * (int) $item->quantity);
+            $costedRevenue = (float) $costedItems->sum(fn ($item) => (float) $item->line_total);
+            $uncostedLines = $invoice->items->count() - $costedItems->count();
+        @endphp
+
         <div class="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-4">
             <div class="space-y-4 min-w-0">
                 <section class="{{ $cardClass }}">
@@ -89,7 +122,15 @@
                                         </td>
                                         <td class="py-2.5 pe-3 font-mono text-xs text-slate-600">{{ $item->sku ?: '—' }}</td>
                                         <td class="py-2.5 pe-3 text-slate-800">{{ number_format($item->quantity) }}</td>
-                                        <td class="py-2.5 pe-3 text-end text-slate-800 whitespace-nowrap">{{ $service->money((float) $item->unit_price) }}</td>
+                                        <td class="py-2.5 pe-3 text-end text-slate-800 whitespace-nowrap">
+                                            {{ $service->money((float) $item->unit_price) }}
+                                            @if ($item->usd_unit_price !== null && $item->usd_rate_per_100 !== null)
+                                                <div class="text-[11px] text-slate-500" dir="ltr">{{ __('$:usd · 1 USD = :rate IQD', ['usd' => number_format((float) $item->usd_unit_price, 2), 'rate' => \App\Support\Pricing\ExchangeRate::perDollar((string) $item->usd_rate_per_100)]) }}</div>
+                                            @endif
+                                            @if (isset($rateDrift['lines'][$item->id]))
+                                                <div class="text-[11px] font-bold text-amber-700">{{ __('At the current rate: :amount', ['amount' => $service->money($rateDrift['lines'][$item->id]['new'])]) }}</div>
+                                            @endif
+                                        </td>
                                         <td class="py-2.5 text-end font-bold text-slate-900 whitespace-nowrap">{{ $service->money((float) $item->line_total) }}</td>
                                     </tr>
                                 @endforeach
@@ -103,6 +144,22 @@
                         <div class="flex justify-between gap-3"><dt class="text-slate-500">{{ __('Delivery fee') }}</dt><dd class="font-bold text-slate-900">{{ $service->money((float) $invoice->delivery_fee) }}</dd></div>
                         <div class="flex justify-between gap-3 border-t border-slate-200 pt-3 text-base"><dt class="font-bold text-slate-900">{{ __('Grand total') }}</dt><dd class="font-bold text-slate-900">{{ $service->money((float) $invoice->total) }}</dd></div>
                     </dl>
+
+                    @if ($costedItems->isNotEmpty() && auth()->user()?->can(\App\Models\User::PERMISSION_FINANCE_VIEW))
+                        <div class="mt-4 ms-auto max-w-xs rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm">
+                            <p class="text-[10.5px] font-bold uppercase tracking-widest text-slate-500">{{ __('Staff only — not shown on the invoice') }}</p>
+                            <dl class="mt-2 space-y-1.5">
+                                <div class="flex justify-between gap-3"><dt class="text-slate-500">{{ __('Cost of goods') }}</dt><dd class="font-bold text-slate-900">{{ $service->money($invoiceCost) }}</dd></div>
+                                <div class="flex justify-between gap-3"><dt class="text-slate-500">{{ __('Net profit') }}</dt><dd class="font-bold text-slate-900" dir="ltr">{{ $service->money($costedRevenue - $invoiceCost - (float) $invoice->discount_amount) }}</dd></div>
+                            </dl>
+                            <p class="mt-2 text-[11px] text-slate-500">
+                                {{ __('Sales of the lines with a purchase price, minus their cost and the discount. Delivery is not counted.') }}
+                                @if ($uncostedLines > 0)
+                                    {{ __(':count lines have no purchase price and are left out.', ['count' => $uncostedLines]) }}
+                                @endif
+                            </p>
+                        </div>
+                    @endif
 
                     @if ($invoice->notes)
                         <div class="mt-4 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-700">

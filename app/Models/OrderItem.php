@@ -18,6 +18,10 @@ class OrderItem extends Model
         'quantity',
         'unit_price',
         'subtotal',
+        'price_currency',
+        'usd_unit_price',
+        'usd_rate_per_100',
+        'unit_cost',
     ];
 
     // 🔗 Product relation
