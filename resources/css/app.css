@@ -2998,6 +2998,77 @@
     :where(.dark .admin-shell) .dark\:border-rose-900\/60 {
         border-color: rgba(244, 63, 94, 0.34);
     }
+    /* The deeper steps of the same status families. A notice box is written
+       as bg-amber-50 + text-amber-900, a badge as bg-rose-100 + text-rose-700:
+       with only the 50 surfaces and the 600/700 inks handled above, the
+       notice kept its near-black text on a darkened surface and the badge
+       kept its pale surface under lightened text. Both were unreadable. */
+    :where(.dark .admin-shell) .bg-emerald-100,
+    :where(.dark .admin-shell) .bg-green-50,
+    :where(.dark .admin-shell) .bg-green-100 {
+        background-color: rgba(16, 185, 129, 0.14);
+    }
+    :where(.dark .admin-shell) .text-emerald-800,
+    :where(.dark .admin-shell) .text-emerald-900,
+    :where(.dark .admin-shell) .text-green-700,
+    :where(.dark .admin-shell) .text-green-800 {
+        color: #6ee7b7;
+    }
+    :where(.dark .admin-shell) .text-amber-800,
+    :where(.dark .admin-shell) .text-amber-900 {
+        color: #fcd34d;
+    }
+    :where(.dark .admin-shell) .bg-rose-100,
+    :where(.dark .admin-shell) .bg-red-50,
+    :where(.dark .admin-shell) .bg-red-100 {
+        background-color: rgba(244, 63, 94, 0.14);
+    }
+    :where(.dark .admin-shell) .text-rose-800,
+    :where(.dark .admin-shell) .text-rose-900,
+    :where(.dark .admin-shell) .text-red-600,
+    :where(.dark .admin-shell) .text-red-700,
+    :where(.dark .admin-shell) .text-red-800 {
+        color: #fda4af;
+    }
+    :where(.dark .admin-shell) .border-red-200 {
+        border-color: rgba(244, 63, 94, 0.34);
+    }
+    :where(.dark .admin-shell) .bg-sky-100,
+    :where(.dark .admin-shell) .bg-blue-50,
+    :where(.dark .admin-shell) .bg-blue-100 {
+        background-color: rgba(14, 165, 233, 0.14);
+    }
+    :where(.dark .admin-shell) .text-sky-800,
+    :where(.dark .admin-shell) .text-sky-900,
+    :where(.dark .admin-shell) .text-blue-700,
+    :where(.dark .admin-shell) .text-blue-800 {
+        color: #7dd3fc;
+    }
+    :where(.dark .admin-shell) .bg-orange-50,
+    :where(.dark .admin-shell) .bg-orange-100 {
+        background-color: rgba(255, 138, 61, 0.14);
+    }
+    /* The info colour turns pale in the dark theme, so white text on a
+       solid info button disappears into it; the ink goes dark instead. */
+    :where(.dark .admin-shell) .bg-info.text-white {
+        color: #04041f;
+    }
+    /* Solid buttons. Their ink is chosen for the fill, not for the page, so
+       it must not follow the page's ink: dark text on orange was being
+       lightened to white, and the navy button's own dark-mode ink was
+       near-black on a fill that stays navy here. */
+    :where(.dark .admin-shell) .bg-accent.text-slate-900[class],
+    :where(.dark .admin-shell) .bg-accent.text-slate-950[class],
+    :where(.dark .admin-shell) .bg-amber-500.text-white[class] {
+        color: #04041f;
+    }
+    :where(.dark .admin-shell) .bg-slate-900.text-white[class] {
+        color: #ffffff;
+        box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.18);
+    }
+    :where(.dark .admin-shell) .bg-slate-900.text-white[class]:hover {
+        background-color: var(--admin-surface-hover);
+    }
     :where(.dark .admin-shell) .bg-sky-50,
     :where(.dark .admin-shell) .dark\:bg-sky-950\/30 {
         background-color: rgba(14, 165, 233, 0.14);

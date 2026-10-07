@@ -359,7 +359,7 @@
                                     >
                                         <span>
                                             <span class="block text-sm font-bold">{{ __('Apply Temporary Ban') }}</span>
-                                            <span class="block text-[11px] font-semibold text-accent/65">{{ __('Uses selected duration') }}</span>
+                                            <span class="block text-[11px] font-semibold opacity-75">{{ __('Uses selected duration') }}</span>
                                         </span>
                                         <i class="fas fa-arrow-right text-xs transition-transform group-hover:translate-x-0.5" aria-hidden="true"></i>
                                     </button>

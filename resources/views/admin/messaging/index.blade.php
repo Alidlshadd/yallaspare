@@ -85,7 +85,7 @@
                                     $badgeClasses = match ($state) {
                                         'ready' => 'border-emerald-200 bg-white text-emerald-700',
                                         'disabled' => 'border-slate-200 bg-white text-slate-500',
-                                        default => 'border-accent bg-white text-accent dark:border-accent dark:bg-accent dark:text-accent',
+                                        default => 'border-accent bg-white text-accent',
                                     };
                                     $dotClasses = match ($state) {
                                         'ready' => 'bg-emerald-500',
