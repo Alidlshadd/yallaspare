@@ -148,6 +148,11 @@ class ManualInvoiceLanguageTest extends TestCase
             ->assertSee('dir="rtl"', false)
             ->assertSee(self::KU)
             ->assertDontSee(self::EN)
+            // The PDF's own document, not a different design: its header,
+            // its items table and its totals.
+            ->assertSee('class="header-table"', false)
+            ->assertSee('class="items-table"', false)
+            ->assertSee('class="summary-table"', false)
             // Staff links, not the customer's token links.
             ->assertSee(route('admin.manual-invoices.pdf', ['manual_invoice' => $invoice, 'doc_lang' => 'ku']), false);
 
@@ -168,11 +173,57 @@ class ManualInvoiceLanguageTest extends TestCase
             ['product_id' => $product->id, 'description' => self::EN, 'quantity' => 1, 'unit_price' => 25000],
         ]);
 
-        $this->get($this->shareUrl($invoice).'?lang=ku')
+        $url = $this->shareUrl($invoice);
+        $token = basename((string) parse_url($url, PHP_URL_PATH));
+
+        $this->get($url.'?lang=ku')
             ->assertOk()
+            ->assertSee(e(route('invoices.shared.image', ['token' => $token, 'lang' => 'ku'])), false);
+
+        $this->get(route('invoices.shared.image', ['token' => $token, 'lang' => 'ku']))
+            ->assertOk()
+            ->assertSee('data-invoice-sheet', false)
             ->assertSee('data-invoice-image', false)
+            ->assertSee('class="items-table"', false)
+            ->assertSee(self::KU)
             ->assertDontSee('data-auto', false)
-            ->assertDontSee('/admin/', false);
+            ->assertDontSee('/admin/', false)
+            ->assertHeader('X-Robots-Tag', 'noindex, nofollow, noarchive');
+
+        // A revoked link takes the picture page with it.
+        $this->actingAs($this->admin)->delete(route('admin.manual-invoices.share.revoke', $invoice));
+        $this->get(route('invoices.shared.image', ['token' => $token]))->assertNotFound();
+    }
+
+    public function test_the_picture_and_the_pdf_are_drawn_from_the_same_document(): void
+    {
+        $product = $this->product();
+        $invoice = $this->draft([
+            ['product_id' => $product->id, 'description' => self::EN, 'quantity' => 2, 'unit_price' => 25000],
+        ]);
+
+        $data = [
+            'invoice' => $invoice->load('items'),
+            'currency' => 'IQD',
+            'locale' => 'ku',
+            'isRtl' => true,
+        ];
+
+        $document = fn (string $html): string => preg_replace('/\s+/', ' ', trim(
+            (string) preg_replace('/^.*?(<table class="header-table">.*<div class="footer">.*?<\/div>).*$/s', '$1', $html)
+        ));
+
+        app()->setLocale('ku');
+
+        $pdf = view('admin.manual-invoices.pdf', $data + ['logoPath' => null])->render();
+        $picture = view('invoices.image', $data + [
+            'logoUrl' => null,
+            'auto' => false,
+            'links' => ['languages' => ['en' => '#', 'ar' => '#', 'ku' => '#'], 'pdf' => '#', 'back' => null],
+        ])->render();
+
+        $this->assertStringContainsString('class="summary-table"', $document($pdf));
+        $this->assertSame($document($pdf), $document($picture));
     }
 
     public function test_a_line_picked_in_kurdish_still_prints_in_english(): void

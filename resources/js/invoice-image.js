@@ -1,12 +1,14 @@
+import '../css/invoice-image.css';
 import { toBlob } from 'html-to-image';
 
 /**
- * "Save as image" on an invoice page.
+ * "Save as image" on the invoice picture page.
  *
  * Some customers want a picture they can keep in their chat, not a PDF. The
- * invoice on screen is turned into a PNG in the browser — the same text the
- * browser already shaped and laid out, so Arabic and Kurdish come out joined
- * and right to left exactly as shown. Nothing is sent to the server.
+ * sheet on screen is the PDF's own layout; it is turned into a PNG in the
+ * browser — the same text the browser already shaped and laid out, so Arabic
+ * and Kurdish come out joined and right to left exactly as shown. Nothing is
+ * sent to the server.
  *
  * On a phone the picture goes to the share sheet (WhatsApp is one tap away);
  * elsewhere it downloads.
@@ -21,28 +23,24 @@ if (sheet && button) {
     const render = async () => {
         const options = {
             pixelRatio: 2,
-            backgroundColor: '#f3f4f7',
+            backgroundColor: '#ffffff',
             cacheBust: false,
-            // The page's web fonts are on another host the picture cannot
-            // reach; the system's own Arabic-script font takes over.
-            skipFonts: true,
-            filter: (node) => !(node.classList && node.classList.contains('no-print')),
+            // The sheet sits centred on the page with a shadow; the picture
+            // is the paper alone.
+            style: { margin: '0', boxShadow: 'none' },
         };
 
-        // Lay the sheet out in the font the picture will be drawn in, and
-        // give the browser a frame to do it, before anything is measured.
-        sheet.classList.add('capturing');
-        await new Promise((resolve) => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-
-        try {
-            // Safari paints an empty canvas on the first pass of a page it
-            // has not rasterised before; the second pass has what it needs.
-            await toBlob(sheet, options);
-
-            return await toBlob(sheet, options);
-        } finally {
-            sheet.classList.remove('capturing');
+        // The invoice's font has to be in before anything is measured, or
+        // the picture is laid out in one face and drawn in another.
+        if (document.fonts && document.fonts.ready) {
+            await document.fonts.ready;
         }
+
+        // Safari paints an empty canvas on the first pass of a page it has
+        // not rasterised before; the second pass has what it needs.
+        await toBlob(sheet, options);
+
+        return toBlob(sheet, options);
     };
 
     const save = (blob) => {
@@ -92,7 +90,6 @@ if (sheet && button) {
     button.addEventListener('click', () => run(true));
 
     if (button.dataset.auto === '1') {
-        // Fonts change line heights; wait for them so the picture matches.
-        (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => run(false));
+        run(false);
     }
 }

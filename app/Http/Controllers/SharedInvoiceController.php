@@ -35,6 +35,32 @@ class SharedInvoiceController extends Controller
         ]));
     }
 
+    /**
+     * The same invoice laid out like its PDF, to be saved as a picture.
+     */
+    public function image(Request $request, string $token, InvoiceRenderer $renderer): Response
+    {
+        $invoice = $this->resolve($token);
+        $locale = $renderer->resolveManualLocale($request->query('lang'));
+        app()->setLocale($locale);
+
+        return $this->private(response()->view('invoices.image', [
+            'invoice' => $invoice->load('items'),
+            'currency' => 'IQD',
+            'logoUrl' => $renderer->logoUrl(),
+            'locale' => $locale,
+            'isRtl' => in_array($locale, ['ar', 'ku'], true),
+            'auto' => false,
+            'links' => [
+                'languages' => collect(['en', 'ar', 'ku'])->mapWithKeys(fn (string $code): array => [
+                    $code => route('invoices.shared.image', ['token' => $token, 'lang' => $code]),
+                ])->all(),
+                'pdf' => route('invoices.shared.pdf', ['token' => $token, 'lang' => $locale]),
+                'back' => route('invoices.shared.show', ['token' => $token, 'lang' => $locale]),
+            ],
+        ]));
+    }
+
     public function pdf(Request $request, string $token, InvoiceRenderer $renderer): Response
     {
         $invoice = $this->resolve($token);

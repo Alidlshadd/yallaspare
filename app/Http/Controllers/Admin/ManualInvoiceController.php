@@ -230,14 +230,20 @@ class ManualInvoiceController extends Controller
         $locale = $renderer->resolveManualLocale($request->query('doc_lang'));
         app()->setLocale($locale);
 
-        $response = response()->view('invoices.shared', [
+        $response = response()->view('invoices.image', [
             'invoice' => $manualInvoice->load('items'),
-            'token' => null,
-            'staffPreview' => true,
-            'autoImage' => $request->boolean('auto'),
+            'currency' => 'IQD',
+            'logoUrl' => $renderer->logoUrl(),
             'locale' => $locale,
             'isRtl' => in_array($locale, ['ar', 'ku'], true),
-            'service' => $this->invoices,
+            'auto' => $request->boolean('auto'),
+            'links' => [
+                'languages' => collect(['en', 'ar', 'ku'])->mapWithKeys(fn (string $code): array => [
+                    $code => route('admin.manual-invoices.image', ['manual_invoice' => $manualInvoice, 'doc_lang' => $code]),
+                ])->all(),
+                'pdf' => route('admin.manual-invoices.pdf', ['manual_invoice' => $manualInvoice, 'doc_lang' => $locale]),
+                'back' => route('admin.manual-invoices.show', $manualInvoice),
+            ],
         ]);
 
         $response->headers->set('Cache-Control', 'private, no-store');

@@ -94,6 +94,10 @@ Route::get('/i/{token}', [SharedInvoiceController::class, 'show'])
     ->where('token', '[a-f0-9]{48}')
     ->middleware('throttle:30,1')
     ->name('invoices.shared.show');
+Route::get('/i/{token}/image', [SharedInvoiceController::class, 'image'])
+    ->where('token', '[a-f0-9]{48}')
+    ->middleware('throttle:30,1')
+    ->name('invoices.shared.image');
 Route::get('/i/{token}/pdf', [SharedInvoiceController::class, 'pdf'])
     ->where('token', '[a-f0-9]{48}')
     ->middleware('throttle:15,1')

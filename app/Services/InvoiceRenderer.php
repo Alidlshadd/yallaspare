@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\ManualInvoice;
 use App\Models\Order;
+use App\Models\Setting;
 use App\Models\User;
 use App\Support\Branding;
 use Illuminate\Http\Response;
@@ -152,6 +153,15 @@ final class InvoiceRenderer
         $mpdf->WriteHTML($html);
 
         return (string) $mpdf->Output('', Destination::STRING_RETURN);
+    }
+
+    /**
+     * The shop's logo as a URL, for the invoice drawn in a browser. The PDF
+     * engine reads the same logo from disk instead.
+     */
+    public function logoUrl(): ?string
+    {
+        return Branding::logoUrlFromValue((string) Setting::getValue('site_logo', ''));
     }
 
     /**

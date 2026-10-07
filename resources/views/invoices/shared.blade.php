@@ -1,17 +1,6 @@
 {{-- What a customer sees when they open the link staff sent them. A page of its
      own on purpose: no storefront navigation, no account menu, and nothing on
      it that leads anywhere but this one invoice. --}}
-@php
-    // The same page serves the customer's share link and the staff preview
-    // the invoice picture is taken from; only where its links lead differs.
-    $staffPreview = $staffPreview ?? false;
-    $languageUrl = fn (string $code): string => $staffPreview
-        ? route('admin.manual-invoices.image', ['manual_invoice' => $invoice, 'doc_lang' => $code])
-        : route('invoices.shared.show', ['token' => $token, 'lang' => $code]);
-    $pdfUrl = fn (bool $inline = false): string => $staffPreview
-        ? route('admin.manual-invoices.pdf', array_filter(['manual_invoice' => $invoice, 'doc_lang' => $locale, 'inline' => $inline ? 1 : null]))
-        : route('invoices.shared.pdf', array_filter(['token' => $token, 'lang' => $locale, 'inline' => $inline ? 1 : null]));
-@endphp
 <!DOCTYPE html>
 <html lang="{{ $locale }}" dir="{{ $isRtl ? 'rtl' : 'ltr' }}">
 <head>
@@ -55,17 +44,6 @@
         .actions { display: flex; flex-wrap: wrap; gap: 10px; }
         .button { display: inline-flex; align-items: center; justify-content: center; min-height: 46px; padding: 0 20px; border-radius: 12px; font-weight: 700; font-size: 14px; text-decoration: none; background: #fbbf24; color: #04042a; }
         .button.ghost { background: #fff; color: #04042a; border: 1px solid #cbd5e1; }
-        button.button { border: 0; cursor: pointer; font-family: inherit; }
-        button.button.ghost { border: 1px solid #cbd5e1; }
-        button.button[disabled] { opacity: .6; cursor: progress; }
-        /* The part that becomes the picture: its own padding, so the image
-           has a margin whatever the page around it does. */
-        .sheet { background: #f3f4f7; padding: 14px 14px 2px; }
-        /* The picture is drawn without the page's web fonts, so the sheet is
-           measured in the font it will actually be drawn in; otherwise words
-           sized for one font wrap in the other. */
-        .sheet.capturing, .sheet.capturing * { font-family: "Segoe UI", Tahoma, system-ui, -apple-system, "Noto Sans Arabic", sans-serif !important; }
-        .badge, .row > span:first-child, .row > strong:first-child { white-space: nowrap; }
         .langs { font-size: 13px; color: #64748b; }
         .langs a { color: #04042a; font-weight: 700; text-decoration: none; margin-inline-end: 12px; }
         .langs a[aria-current] { text-decoration: underline; }
@@ -75,26 +53,16 @@
 </head>
 <body>
     <main class="page">
-        {{-- Above the sheet, not in it: left inside, its hidden space would
-             show up as a blank band in the picture. --}}
-        <nav class="card langs no-print" aria-label="{{ __('Language') }}">
-            @foreach (['en' => 'English', 'ar' => 'العربية', 'ku' => 'کوردی'] as $code => $name)
-                <a href="{{ $languageUrl($code) }}" lang="{{ $code }}" @if ($locale === $code) aria-current="true" @endif>{{ $name }}</a>
-            @endforeach
-        </nav>
-        <div class="sheet" data-invoice-sheet>
         <header class="card head">
             <h1>{{ $service->businessName() }}</h1>
-            <p>
-                {{ __('invoice.title') }} <span class="number">{{ $invoice->number }}</span> · <span class="ltr">{{ $invoice->invoice_date?->format('Y-m-d') }}</span>
-                @if ($invoice->isDraft())
-                    · {{ __('invoice.draft') }}
-                @elseif ($invoice->isVoid())
-                    · {{ __('invoice.void') }}
-                @endif
-            </p>
+            <p>{{ __('invoice.title') }} <span class="number">{{ $invoice->number }}</span> · <span class="ltr">{{ $invoice->invoice_date?->format('Y-m-d') }}</span></p>
         </header>
 
+        <nav class="card langs no-print" aria-label="{{ __('Language') }}">
+            @foreach (['en' => 'English', 'ar' => 'العربية', 'ku' => 'کوردی'] as $code => $name)
+                <a href="{{ route('invoices.shared.show', ['token' => $token, 'lang' => $code]) }}" lang="{{ $code }}" @if ($locale === $code) aria-current="true" @endif>{{ $name }}</a>
+            @endforeach
+        </nav>
 
         <div class="grid">
             <section class="card">
@@ -143,20 +111,14 @@
             @endif
         </section>
 
-        <p style="text-align: center; color: #64748b; font-size: 13px;">{{ __('invoice.thank_you') }}</p>
+        <div class="card actions no-print">
+            <a class="button" href="{{ route('invoices.shared.pdf', ['token' => $token, 'lang' => $locale]) }}">{{ __('Download PDF') }}</a>
+            {{-- For the customer who wants a picture in the chat, not a file. --}}
+            <a class="button ghost" href="{{ route('invoices.shared.image', ['token' => $token, 'lang' => $locale]) }}">{{ __('Save as image') }}</a>
+            <a class="button ghost" href="{{ route('invoices.shared.pdf', ['token' => $token, 'lang' => $locale, 'inline' => 1]) }}" target="_blank" rel="noopener">{{ __('Print') }}</a>
         </div>
 
-        <div class="card actions no-print" style="margin-top: 14px;">
-            <button type="button" class="button"
-                    data-invoice-image
-                    data-filename="{{ $invoice->number }}-{{ $locale }}"
-                    data-busy-label="{{ __('Preparing the image…') }}"
-                    data-failed-label="{{ __('The image could not be made. Try the PDF instead.') }}"
-                    @if (! empty($autoImage)) data-auto="1" @endif>{{ __('Save as image') }}</button>
-            <a class="button ghost" href="{{ $pdfUrl() }}">{{ __('Download PDF') }}</a>
-            <a class="button ghost" href="{{ $pdfUrl(true) }}" target="_blank" rel="noopener">{{ __('Print') }}</a>
-        </div>
+        <p style="text-align: center; color: #64748b; font-size: 13px;">{{ __('invoice.thank_you') }}</p>
     </main>
-    @vite('resources/js/invoice-image.js')
 </body>
 </html>
