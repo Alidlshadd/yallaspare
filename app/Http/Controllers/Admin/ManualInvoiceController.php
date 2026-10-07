@@ -219,6 +219,32 @@ class ManualInvoiceController extends Controller
         );
     }
 
+    /**
+     * The invoice as a page a picture can be taken of, for customers who want
+     * an image in their chat rather than a PDF. The picture itself is made in
+     * the browser; with `auto` it is made and downloaded as the page opens.
+     */
+    public function image(Request $request, ManualInvoice $manualInvoice, InvoiceRenderer $renderer): Response
+    {
+        // `doc_lang`, like the PDF: `lang` would switch the whole panel.
+        $locale = $renderer->resolveManualLocale($request->query('doc_lang'));
+        app()->setLocale($locale);
+
+        $response = response()->view('invoices.shared', [
+            'invoice' => $manualInvoice->load('items'),
+            'token' => null,
+            'staffPreview' => true,
+            'autoImage' => $request->boolean('auto'),
+            'locale' => $locale,
+            'isRtl' => in_array($locale, ['ar', 'ku'], true),
+            'service' => $this->invoices,
+        ]);
+
+        $response->headers->set('Cache-Control', 'private, no-store');
+
+        return $response;
+    }
+
     public function share(ManualInvoice $manualInvoice): RedirectResponse
     {
         $this->invoices->enableSharing($manualInvoice);

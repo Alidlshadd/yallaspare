@@ -12,6 +12,7 @@ export default defineConfig({
                 'resources/js/admin-goals.js',
                 'resources/js/admin-product-picker.js',
                 'resources/js/motion/admin.js',
+                'resources/js/invoice-image.js',
             ],
             refresh: true,
         }),

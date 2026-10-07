@@ -623,6 +623,9 @@ Route::middleware(['auth', 'verified', 'admin', 'admin.2fa'])
         Route::get('/manual-invoices/{manual_invoice}/pdf', [ManualInvoiceController::class, 'pdf'])
             ->middleware('can:'.User::PERMISSION_ORDERS_MANAGE)
             ->name('manual-invoices.pdf');
+        Route::get('/manual-invoices/{manual_invoice}/image', [ManualInvoiceController::class, 'image'])
+            ->middleware('can:'.User::PERMISSION_ORDERS_MANAGE)
+            ->name('manual-invoices.image');
         Route::post('/manual-invoices/{manual_invoice}/finalize', [ManualInvoiceController::class, 'finalize'])
             ->middleware(['can:'.User::PERMISSION_ORDERS_MANAGE, 'throttle:admin-write'])
             ->name('manual-invoices.finalize');

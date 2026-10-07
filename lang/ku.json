@@ -3846,7 +3846,6 @@
     "Finalize invoice": "کۆتایی پێهێنانی پسوولە",
     "Delete draft": "سڕینەوەی ڕەشنووس",
     "This draft will be deleted. Nothing else is affected.": "ئەم ڕەشنووسە دەسڕدرێتەوە. هیچ شتێکی تر ناگۆڕێت.",
-    "PDF and print": "PDF و چاپکردن",
     "Choose the language the invoice is written in.": "ئەو زمانە هەڵبژێرە کە پسوولەکەی پێ دەنووسرێت.",
     "Download PDF": "داگرتنی PDF",
     "Share with the customer": "هاوبەشکردن لەگەڵ کڕیار",
@@ -4033,5 +4032,9 @@
     "Invoice updated. Stock and the balance due were adjusted to match.": "پسووڵەکە نوێکرایەوە. کۆگا و بڕی ماوە بەپێی ئەوە ڕێکخران.",
     "Only a finalized invoice can be amended.": "تەنها پسووڵەی پەسەندکراو دەتوانرێت ڕاست بکرێتەوە.",
     "The new total (:total) is less than what has already been paid (:paid). Record a refund first.": "کۆی نوێ (:total) کەمترە لەوەی پێشتر دراوە (:paid). سەرەتا گەڕاندنەوە تۆمار بکە.",
-    "Amendment of manual invoice :number": "ڕاستکردنەوەی پسووڵەی دەستی :number"
+    "Amendment of manual invoice :number": "ڕاستکردنەوەی پسووڵەی دەستی :number",
+    "PDF, image and print": "PDF، وێنە و چاپ",
+    "Save as image": "پاشەکەوتکردن وەک وێنە",
+    "Preparing the image…": "وێنەکە ئامادە دەکرێت…",
+    "The image could not be made. Try the PDF instead.": "وێنەکە دروست نەکرا. لەجیاتی ئەوە PDF تاقی بکەرەوە."
 }

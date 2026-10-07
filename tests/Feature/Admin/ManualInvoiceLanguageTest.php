@@ -127,6 +127,54 @@ class ManualInvoiceLanguageTest extends TestCase
         }
     }
 
+    /**
+     * The picture is drawn in the browser, so what can be checked here is the
+     * page it is drawn from: the sheet, the button, the right language, and
+     * that only staff reach the preview of an unshared invoice.
+     */
+    public function test_staff_can_open_the_invoice_as_a_page_to_save_as_an_image(): void
+    {
+        $product = $this->product();
+        $invoice = $this->draft([
+            ['product_id' => $product->id, 'description' => self::EN, 'quantity' => 1, 'unit_price' => 25000],
+        ]);
+
+        $this->actingAs($this->admin)
+            ->get(route('admin.manual-invoices.image', ['manual_invoice' => $invoice, 'doc_lang' => 'ku', 'auto' => 1]))
+            ->assertOk()
+            ->assertSee('data-invoice-sheet', false)
+            ->assertSee('data-invoice-image', false)
+            ->assertSee('data-auto="1"', false)
+            ->assertSee('dir="rtl"', false)
+            ->assertSee(self::KU)
+            ->assertDontSee(self::EN)
+            // Staff links, not the customer's token links.
+            ->assertSee(route('admin.manual-invoices.pdf', ['manual_invoice' => $invoice, 'doc_lang' => 'ku']), false);
+
+        $this->actingAs($this->admin)
+            ->get(route('admin.manual-invoices.show', $invoice))
+            ->assertOk()
+            ->assertSee(e(route('admin.manual-invoices.image', ['manual_invoice' => $invoice, 'doc_lang' => 'ku', 'auto' => 1])), false);
+
+        $this->actingAs(User::factory()->create())
+            ->get(route('admin.manual-invoices.image', $invoice))
+            ->assertForbidden();
+    }
+
+    public function test_the_customers_shared_page_offers_the_image_too(): void
+    {
+        $product = $this->product();
+        $invoice = $this->draft([
+            ['product_id' => $product->id, 'description' => self::EN, 'quantity' => 1, 'unit_price' => 25000],
+        ]);
+
+        $this->get($this->shareUrl($invoice).'?lang=ku')
+            ->assertOk()
+            ->assertSee('data-invoice-image', false)
+            ->assertDontSee('data-auto', false)
+            ->assertDontSee('/admin/', false);
+    }
+
     public function test_a_line_picked_in_kurdish_still_prints_in_english(): void
     {
         $product = $this->product();

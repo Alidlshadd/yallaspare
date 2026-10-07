@@ -3846,7 +3846,6 @@
     "Finalize invoice": "اعتماد الفاتورة",
     "Delete draft": "حذف المسودة",
     "This draft will be deleted. Nothing else is affected.": "ستُحذف هذه المسودة. لن يتأثر أي شيء آخر.",
-    "PDF and print": "PDF والطباعة",
     "Choose the language the invoice is written in.": "اختر اللغة التي تُكتب بها الفاتورة.",
     "Download PDF": "تنزيل PDF",
     "Share with the customer": "مشاركة مع العميل",
@@ -4033,5 +4032,9 @@
     "Invoice updated. Stock and the balance due were adjusted to match.": "تم تحديث الفاتورة. ضُبط المخزون والمبلغ المتبقي تبعاً لذلك.",
     "Only a finalized invoice can be amended.": "لا يمكن تعديل إلا فاتورة معتمدة.",
     "The new total (:total) is less than what has already been paid (:paid). Record a refund first.": "الإجمالي الجديد (:total) أقل مما دُفع بالفعل (:paid). سجّل استرداداً أولاً.",
-    "Amendment of manual invoice :number": "تعديل الفاتورة اليدوية :number"
+    "Amendment of manual invoice :number": "تعديل الفاتورة اليدوية :number",
+    "PDF, image and print": "PDF وصورة وطباعة",
+    "Save as image": "حفظ كصورة",
+    "Preparing the image…": "جارٍ تجهيز الصورة…",
+    "The image could not be made. Try the PDF instead.": "تعذّر إنشاء الصورة. جرّب ملف PDF بدلاً منها."
 }

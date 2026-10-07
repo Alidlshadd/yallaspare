@@ -3846,7 +3846,6 @@
     "Finalize invoice": "Finalize invoice",
     "Delete draft": "Delete draft",
     "This draft will be deleted. Nothing else is affected.": "This draft will be deleted. Nothing else is affected.",
-    "PDF and print": "PDF and print",
     "Choose the language the invoice is written in.": "Choose the language the invoice is written in.",
     "Download PDF": "Download PDF",
     "Share with the customer": "Share with the customer",
@@ -4033,5 +4032,9 @@
     "Invoice updated. Stock and the balance due were adjusted to match.": "Invoice updated. Stock and the balance due were adjusted to match.",
     "Only a finalized invoice can be amended.": "Only a finalized invoice can be amended.",
     "The new total (:total) is less than what has already been paid (:paid). Record a refund first.": "The new total (:total) is less than what has already been paid (:paid). Record a refund first.",
-    "Amendment of manual invoice :number": "Amendment of manual invoice :number"
+    "Amendment of manual invoice :number": "Amendment of manual invoice :number",
+    "PDF, image and print": "PDF, image and print",
+    "Save as image": "Save as image",
+    "Preparing the image…": "Preparing the image…",
+    "The image could not be made. Try the PDF instead.": "The image could not be made. Try the PDF instead."
 }

@@ -283,12 +283,19 @@
                 @endif
 
                 <section class="{{ $cardClass }}">
-                    <h2 class="text-sm font-bold text-slate-900 mb-1">{{ __('PDF and print') }}</h2>
+                    <h2 class="text-sm font-bold text-slate-900 mb-1">{{ __('PDF, image and print') }}</h2>
                     <p class="text-[11px] text-slate-500 mb-3">{{ __('Choose the language the invoice is written in.') }}</p>
                     <div class="space-y-2">
                         @foreach ($pdfLocales as $code => $name)
-                            <div class="flex items-center gap-2">
-                                <span class="flex-1 text-sm font-bold text-slate-800">{{ $name }}</span>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <span class="w-full text-sm font-bold text-slate-800">{{ $name }}</span>
+                                {{-- For the customer who wants a picture in the chat, not a file. --}}
+                                <a href="{{ route('admin.manual-invoices.image', ['manual_invoice' => $invoice, 'doc_lang' => $code, 'auto' => 1]) }}"
+                                   target="_blank" rel="noopener"
+                                   aria-label="{{ __('Image') }} — {{ $name }}"
+                                   class="inline-flex h-9 items-center gap-1.5 px-3 rounded-lg border border-slate-200 bg-white text-[11px] font-bold text-slate-700 hover:bg-slate-100 transition dark:hover:bg-slate-800">
+                                    <i class="fas fa-image text-[10px]" aria-hidden="true"></i>{{ __('Image') }}
+                                </a>
                                 <a href="{{ route('admin.manual-invoices.pdf', ['manual_invoice' => $invoice, 'doc_lang' => $code]) }}"
                                    aria-label="{{ __('Download PDF') }} — {{ $name }}"
                                    class="inline-flex h-9 items-center gap-1.5 px-3 rounded-lg border border-slate-200 bg-white text-[11px] font-bold text-slate-700 hover:bg-slate-100 transition dark:hover:bg-slate-800">
