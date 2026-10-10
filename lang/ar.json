@@ -4170,5 +4170,8 @@
     "Service Unavailable": "الخدمة غير متاحة",
     "The storefront is temporarily unavailable.": "المتجر غير متاح مؤقتاً.",
     "The platform is likely under maintenance or handling a temporary capacity issue, so this page cannot be served right now.": "المنصة على الأرجح قيد الصيانة أو تواجه ضغطاً مؤقتاً، لذلك لا يمكن عرض هذه الصفحة الآن.",
-    "Your order is being placed. It will appear here in a moment.": "جارٍ تسجيل طلبك. سيظهر هنا خلال لحظات."
+    "Your order is being placed. It will appear here in a moment.": "جارٍ تسجيل طلبك. سيظهر هنا خلال لحظات.",
+    "This page is out of date. Reload it and place your order again.": "هذه الصفحة قديمة. أعد تحميلها ثم أرسل طلبك من جديد.",
+    "This form was already used for a different order. Reload the page to place a new one.": "استُخدم هذا النموذج من قبل لطلب آخر. أعد تحميل الصفحة لإرسال طلب جديد.",
+    "Stock changed to :current while this page was open (it showed :seen). Nothing was saved. Check the new count and save again.": "تغيّر المخزون إلى :current أثناء فتح هذه الصفحة (كانت تعرض :seen). لم يُحفظ شيء. راجع العدد الجديد ثم احفظ من جديد."
 }

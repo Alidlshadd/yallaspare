@@ -16,10 +16,10 @@ use App\Services\CouponService;
 use App\Services\Payments\PaymentService;
 use App\Services\Shipping\ShippingFeeResolver;
 use App\Services\WelcomeOfferService;
+use App\Support\CheckoutSubmission;
 use App\Support\UserCommunication;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -30,9 +30,6 @@ class CheckoutController extends Controller
     private const COUPON_SESSION_KEY = 'checkout.coupon_code';
 
     private const BUY_NOW_COUPON_SESSION_KEY = 'checkout.buy_now_coupon_code';
-
-    /** How long a placed form is remembered, so its copies find the order. */
-    private const SUBMISSION_MEMORY_MINUTES = 30;
 
     public function __construct(
         private readonly CheckoutService $checkoutService,
@@ -102,11 +99,22 @@ class CheckoutController extends Controller
             'notes' => ['nullable', 'string', 'max:1000'],
             'coupon_code' => ['nullable', 'string', 'max:80'],
             'payment_method' => ['nullable', Rule::in($this->paymentService->allowedCheckoutMethods())],
-            'submission_token' => ['nullable', 'string', 'max:64', 'regex:/^[A-Za-z0-9-]+$/'],
+            'submission_token' => ['required', 'string', 'max:120'],
+        ], [
+            'submission_token.required' => __('This page is out of date. Reload it and place your order again.'),
         ]);
 
         $user = $request->user();
         $quantity = (int) $data['quantity'];
+
+        // Only a token this server issued for this customer and this product
+        // is accepted; one made up, or lifted from another account or another
+        // product's form, is not.
+        if (! CheckoutSubmission::isValid($data['submission_token'], $user, $product)) {
+            return back()
+                ->withErrors(['submission_token' => __('This page is out of date. Reload it and place your order again.')])
+                ->withInput($request->except('submission_token'));
+        }
         $couponService = app(CouponService::class);
         $submittedCouponCode = $couponService->normalizeCode((string) ($data['coupon_code'] ?? ''));
         $couponCode = $submittedCouponCode !== ''
@@ -122,17 +130,31 @@ class CheckoutController extends Controller
             return back()->withErrors(['address_id' => __('Please select a valid saved address.')])->withInput();
         }
 
-        // Unlike the cart, which is emptied by the first order and so cannot
-        // be ordered twice, buy-now has nothing to run out: the same form
-        // posted twice placed two orders and took the stock twice. The form's
-        // token is claimed here, atomically, and only its first claim places
-        // an order.
-        $submissionKey = filled($data['submission_token'] ?? null)
-            ? 'buy-now-submission:'.$user->id.':'.sha1((string) $data['submission_token'])
-            : null;
+        // One order per showing of the form (see CheckoutSubmission). What is
+        // being ordered is part of the claim: the same token with another
+        // quantity, address or payment method is a different request wearing
+        // a used token, and is refused rather than quietly matched to the
+        // first order.
+        $token = (string) $data['submission_token'];
+        $contents = [
+            'product' => $product->id,
+            'quantity' => $quantity,
+            'address' => $address->id,
+            'payment_method' => $paymentMethod,
+            'coupon' => $couponCode,
+            'notes' => sha1((string) ($data['notes'] ?? '')),
+        ];
 
-        if ($submissionKey !== null && ! Cache::add($submissionKey, 'placing', now()->addMinutes(self::SUBMISSION_MEMORY_MINUTES))) {
-            return $this->alreadySubmitted($user, Cache::get($submissionKey));
+        [$outcome, $existingOrderId] = CheckoutSubmission::claim($token, $user, $contents);
+
+        if ($outcome === CheckoutSubmission::MISMATCH) {
+            return back()
+                ->withErrors(['submission_token' => __('This form was already used for a different order. Reload the page to place a new one.')])
+                ->withInput($request->except('submission_token'));
+        }
+
+        if ($outcome === CheckoutSubmission::DUPLICATE) {
+            return $this->alreadySubmitted($user, $existingOrderId);
         }
 
         try {
@@ -147,9 +169,7 @@ class CheckoutController extends Controller
             );
         } catch (\Throwable $exception) {
             // Nothing was placed, so the form may be sent again.
-            if ($submissionKey !== null) {
-                Cache::forget($submissionKey);
-            }
+            CheckoutSubmission::release($token, $user);
 
             if (! $exception instanceof \RuntimeException) {
                 throw $exception;
@@ -158,9 +178,7 @@ class CheckoutController extends Controller
             return back()->with('error', $exception->getMessage())->withInput();
         }
 
-        if ($submissionKey !== null) {
-            Cache::put($submissionKey, (int) $placedOrder->id, now()->addMinutes(self::SUBMISSION_MEMORY_MINUTES));
-        }
+        CheckoutSubmission::complete($token, $user, $contents, (int) $placedOrder->id);
 
         if ($this->paymentService->isOnlineMethod($paymentMethod)) {
             try {
@@ -192,10 +210,10 @@ class CheckoutController extends Controller
      * or, while that one is still being written, to the order list where it
      * is about to appear.
      */
-    private function alreadySubmitted(User $user, mixed $claimed): RedirectResponse
+    private function alreadySubmitted(User $user, ?int $orderId): RedirectResponse
     {
-        $order = is_int($claimed) || (is_string($claimed) && ctype_digit($claimed))
-            ? Order::query()->where('user_id', $user->id)->find((int) $claimed)
+        $order = $orderId !== null
+            ? Order::query()->where('user_id', $user->id)->find($orderId)
             : null;
 
         if ($order) {

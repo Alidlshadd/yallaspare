@@ -60,6 +60,13 @@ class Kernel extends ConsoleKernel
             ->hourly()
             ->withoutOverlapping();
 
+        // An order paid online holds its stock from the moment it is placed.
+        // This gives it back when the payment never comes. It finds nothing
+        // to do while online payment is switched off, and costs one query.
+        $schedule->command('orders:release-unpaid')
+            ->everyTenMinutes()
+            ->withoutOverlapping(30);
+
         // Uploads are stored at whatever resolution they arrived in, and the
         // storefront needs card-sized copies. This runs over the stored files
         // instead of hooking the upload path, so a newly added photo serves its

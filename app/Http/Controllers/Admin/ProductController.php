@@ -420,9 +420,24 @@ class ProductController extends Controller
      * The form always posts a stock figure, so saving a new name used to write
      * back the count the page was opened with — putting parts that had been
      * sold in the meantime back on the shelf. The form now also says what
-     * count it was showing. The difference between that and what was typed is
-     * the change the admin meant, and it is applied to the count as it stands
-     * now, read under a row lock so an order placed this instant is counted.
+     * count it was showing, and the two are compared with the count as it
+     * stands now, read under a row lock so an order placed this instant is
+     * counted:
+     *
+     *  - the field was left as shown: stock is not this save's business, and
+     *    the current count stays;
+     *  - it was changed and nothing else has moved the stock: the typed
+     *    number is saved, which is what a number typed in a field means;
+     *  - it was changed and the stock has moved since: there is no telling
+     *    whether "15" meant "five arrived" or "I counted fifteen", so nothing
+     *    is guessed. The save is refused and the admin is shown the current
+     *    count to decide against.
+     *
+     * The count the form reports is not trusted for anything but that choice.
+     * Whoever can post this form may set stock outright, so a false "seen"
+     * gains nothing; and because no difference is ever added, a form sent
+     * twice, or two admins saving at once, cannot raise stock twice — the
+     * second save finds either the number it wanted or a conflict.
      *
      * A request without that figure (an older page, another client) is taken
      * at its word, as before.
@@ -436,9 +451,23 @@ class ProductController extends Controller
             return $typed;
         }
 
+        $seen = (int) $seen;
         $current = (int) Product::query()->whereKey($product->id)->lockForUpdate()->value('stock_quantity');
 
-        return max(0, $current + ($typed - (int) $seen));
+        if ($typed === $seen || $typed === $current) {
+            return $current;
+        }
+
+        if ($current !== $seen) {
+            throw ValidationException::withMessages([
+                'stock_quantity' => __('Stock changed to :current while this page was open (it showed :seen). Nothing was saved. Check the new count and save again.', [
+                    'current' => number_format($current),
+                    'seen' => number_format($seen),
+                ]),
+            ]);
+        }
+
+        return $typed;
     }
 
     /**

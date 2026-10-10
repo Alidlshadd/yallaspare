@@ -102,10 +102,32 @@ class OtpiqWhatsAppWebhookController extends Controller
             : null;
         $processingEnabled = $inboundSettings->enabled();
 
+        // The event id is a header the signature does not cover: OTPiQ signs
+        // the timestamp and the body, nothing else. Left as the only identity,
+        // a captured request could be replayed under a fresh id and stored as
+        // a new event. The body is what was verified above, so its hash is
+        // the identity that cannot be forged, and it is checked alongside the
+        // id. OTPiQ's own retries (three at once, then hourly for two days)
+        // carry the same body and are answered as the duplicates they are.
+        //
+        // No timestamp window is applied. The provider documents none, and
+        // does not say whether a retry is re-stamped; a window tight enough
+        // to matter could turn away a legitimate delivery two days late.
+        // Events are kept, so this check has no expiry to outlast.
+        $bodyHash = hash('sha256', $rawBody);
+
+        if ($this->alreadyReceived($eventId, $bodyHash)) {
+            return response()->json([
+                'success' => true,
+                'duplicate' => true,
+            ]);
+        }
+
         try {
             $event = OtpiqWebhookEvent::query()->create(array_merge(
                 [
                     'event_id' => $eventId,
+                    'body_hash' => $bodyHash,
                     'event_type' => $this->limitedHeader($request, 'X-OTPIQ-Webhook-Event'),
                     'attempt_number' => $attemptNumber,
                     'webhook_timestamp' => $timestamp,
@@ -119,7 +141,9 @@ class OtpiqWhatsAppWebhookController extends Controller
                 $payloadMapper->map($payload),
             ));
         } catch (QueryException) {
-            if (OtpiqWebhookEvent::query()->where('event_id', $eventId)->exists()) {
+            // Two copies arriving together both pass the check above; the
+            // unique indexes let one insert through and send the other here.
+            if ($this->alreadyReceived($eventId, $bodyHash)) {
                 return response()->json([
                     'success' => true,
                     'duplicate' => true,
@@ -170,6 +194,14 @@ class OtpiqWhatsAppWebhookController extends Controller
             'success' => true,
             'duplicate' => false,
         ]);
+    }
+
+    private function alreadyReceived(string $eventId, string $bodyHash): bool
+    {
+        return OtpiqWebhookEvent::query()
+            ->where('event_id', $eventId)
+            ->orWhere('body_hash', $bodyHash)
+            ->exists();
     }
 
     private function limitedHeader(Request $request, string $name): ?string

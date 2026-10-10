@@ -152,6 +152,7 @@ class ZainCashPaymentServiceTest extends TestCase
                 'status' => 'success',
                 'transactionId' => 'zc-inner-9',
                 'orderId' => '4242',
+                'amount' => 25000,
             ]),
         ]);
 
@@ -193,9 +194,84 @@ class ZainCashPaymentServiceTest extends TestCase
         $this->assertSame(Payment::STATUS_FAILED, $this->verifyWith(['success' => true, 'status' => 'failed'])->status);
     }
 
-    public function test_verify_payment_reads_the_success_flag_when_there_is_no_status(): void
+    /**
+     * With no status word at all, the flag is all the reply says — and "the
+     * call worked" is not "the customer paid". It is not read.
+     */
+    public function test_verify_payment_does_not_take_the_success_flag_alone_as_payment(): void
     {
-        $this->assertSame(Payment::STATUS_PAID, $this->verifyWith(['success' => true])->status);
+        $this->assertSame(Payment::STATUS_PENDING, $this->verifyWith(['success' => true])->status);
+    }
+
+    /**
+     * @return array<string, array{0: string, 1: string}>
+     */
+    public static function missingProofs(): array
+    {
+        return [
+            'no transaction id' => ['id', 'zaincash_reply_without_transaction_id'],
+            'no order id' => ['orderId', 'zaincash_reply_without_order_id'],
+            'no amount' => ['amount', 'zaincash_reply_without_amount'],
+        ];
+    }
+
+    /**
+     * "Paid" with part of the proof left out proves nothing: the payment
+     * waits, and says what was missing.
+     */
+    #[DataProvider('missingProofs')]
+    public function test_verify_payment_keeps_a_paid_reply_pending_when_it_cannot_be_tied_to_the_payment(string $field, string $reason): void
+    {
+        $result = $this->verifyWith(['status' => 'success'], omit: [$field]);
+
+        $this->assertSame(Payment::STATUS_PENDING, $result->status);
+        $this->assertFalse($result->isPaid());
+        $this->assertSame($reason, $result->failureReason);
+    }
+
+    /**
+     * @return array<string, array{0: array<string, mixed>, 1: string}>
+     */
+    public static function mismatchedProofs(): array
+    {
+        return [
+            'another transaction' => [['id' => 'zc-txn-999'], 'different transaction'],
+            'another order' => [['orderId' => '9999'], 'different order'],
+            'another amount' => [['amount' => 1000], 'mismatched payment amount'],
+            'another currency' => [['currency' => 'USD'], 'mismatched payment currency'],
+        ];
+    }
+
+    /**
+     * "Paid", but for something else, is not this payment at all.
+     *
+     * @param  array<string, mixed>  $override
+     */
+    #[DataProvider('mismatchedProofs')]
+    public function test_verify_payment_refuses_a_paid_reply_about_something_else(array $override, string $message): void
+    {
+        $this->expectException(\RuntimeException::class);
+        $this->expectExceptionMessage($message);
+
+        $this->verifyWith(['status' => 'success'] + $override);
+    }
+
+    public function test_verify_payment_accepts_the_lowercase_order_field_and_a_stated_dinar_currency(): void
+    {
+        $result = $this->verifyWith(['status' => 'completed', 'orderid' => '4242', 'currency' => 'iqd', 'amount' => '25000'], omit: ['orderId']);
+
+        $this->assertSame(Payment::STATUS_PAID, $result->status);
+    }
+
+    /**
+     * A failed transaction is failed whatever else the reply leaves out:
+     * only "paid" has to be proven.
+     */
+    public function test_verify_payment_does_not_ask_a_failed_reply_for_proof(): void
+    {
+        $result = $this->verifyWith(['status' => 'failed'], omit: ['orderId', 'amount']);
+
+        $this->assertSame(Payment::STATUS_FAILED, $result->status);
     }
 
     public function test_verify_payment_is_pending_without_a_status_or_a_success_flag(): void
@@ -303,11 +379,16 @@ class ZainCashPaymentServiceTest extends TestCase
 
     /**
      * @param  array<string, mixed>  $body
+     * @param  list<string>  $omit
      */
-    private function verifyWith(array $body): PaymentVerificationResult
+    private function verifyWith(array $body, array $omit = []): PaymentVerificationResult
     {
+        // What a reply about this very payment carries, unless a test says
+        // otherwise or leaves a field out.
+        $reply = array_diff_key($body + ['id' => 'zc-txn-123', 'orderId' => '4242', 'amount' => 25000], array_flip($omit));
+
         Http::fake([
-            'https://zaincash.test/transaction/get' => Http::response($body + ['id' => 'zc-txn-123']),
+            'https://zaincash.test/transaction/get' => Http::response($reply),
         ]);
 
         return $this->service()->verifyPayment($this->payment(['provider_payment_id' => 'zc-txn-123']));
@@ -335,6 +416,7 @@ class ZainCashPaymentServiceTest extends TestCase
         $payment->amount = $attributes['amount'] ?? 25000.0;
         $payment->return_url = $attributes['return_url'] ?? 'https://shop.test/payments/1/return';
         $payment->provider_payment_id = $attributes['provider_payment_id'] ?? null;
+        $payment->order_id = $attributes['order_id'] ?? 4242;
 
         return $payment;
     }

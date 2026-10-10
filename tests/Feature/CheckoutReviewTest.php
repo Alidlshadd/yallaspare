@@ -12,6 +12,7 @@ use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\UserAddress;
+use App\Support\CheckoutSubmission;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -254,6 +255,7 @@ class CheckoutReviewTest extends TestCase
                 'quantity' => 2,
                 'address_id' => $address->id,
                 'notes' => 'Buy now note',
+                'submission_token' => CheckoutSubmission::issue($user, $buyNowProduct),
             ]);
 
         $order = Order::query()->first();

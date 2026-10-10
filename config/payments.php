@@ -7,6 +7,12 @@ return [
     // remain available while online methods are hidden and rejected at checkout.
     'customer_online_payments_enabled' => (bool) env('CUSTOMER_ONLINE_PAYMENTS_ENABLED', false),
 
+    // How long an order placed with an online method keeps its stock while
+    // unpaid, in minutes. After this, orders:release-unpaid cancels it and
+    // returns the stock. Never treated as less than 60, the life of a
+    // provider's payment link.
+    'unpaid_order_release_minutes' => (int) env('UNPAID_ORDER_RELEASE_MINUTES', 90),
+
     'methods' => [
         'cash_on_delivery' => [
             'label' => 'Cash on Delivery',

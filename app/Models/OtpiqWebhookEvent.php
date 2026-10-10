@@ -22,6 +22,7 @@ class OtpiqWebhookEvent extends Model
 
     protected $fillable = [
         'event_id',
+        'body_hash',
         'event_type',
         'attempt_number',
         'webhook_timestamp',

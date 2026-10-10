@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\MobileController;
 use App\Http\Controllers\PaymentWebhookController;
 use App\Http\Controllers\Webhooks\OtpiqWhatsAppWebhookController;
+use App\Http\Resources\AccountResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -17,8 +18,10 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// The account's own details, as a chosen list of fields (AccountResource).
+// Returning the model itself published every column the users table has.
 Route::middleware(['auth:sanctum', 'verified', 'not.banned'])->get('/user', function (Request $request) {
-    return $request->user();
+    return response()->json(AccountResource::make($request->user())->resolve($request));
 });
 
 Route::post('/payments/{provider}/webhook', PaymentWebhookController::class)

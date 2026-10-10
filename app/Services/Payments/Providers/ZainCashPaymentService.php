@@ -76,26 +76,96 @@ class ZainCashPaymentService implements PaymentProviderInterface
             ->throw()
             ->json();
 
-        $rawStatus = strtolower((string) ($response['status'] ?? $response['transactionStatus'] ?? ''));
-        // A named status always decides. The bare "success" flag is only
-        // consulted when the gateway sent no status at all: read first, it
-        // would have marked a transaction paid on a reply that merely said
-        // the lookup itself succeeded while the status said pending or failed.
-        $success = $rawStatus === '' && (bool) ($response['success'] ?? false);
+        $response = is_array($response) ? $response : [];
+        $rawStatus = strtolower(trim((string) ($response['status'] ?? $response['transactionStatus'] ?? '')));
+
+        // Only a status word can say the money arrived. A "success" flag is
+        // not read at all: it may mean no more than "the lookup worked", and
+        // a reply this code cannot read for certain must never ship an order.
         $mappedStatus = match (true) {
-            $success || in_array($rawStatus, ['success', 'paid', 'completed', 'complete'], true) => Payment::STATUS_PAID,
+            in_array($rawStatus, ['success', 'paid', 'completed', 'complete'], true) => Payment::STATUS_PAID,
             in_array($rawStatus, ['failed', 'failure', 'cancelled', 'canceled', 'expired', 'declined'], true) => Payment::STATUS_FAILED,
             default => Payment::STATUS_PENDING,
         };
+
+        $failureReason = (string) ($response['msg'] ?? $response['message'] ?? '');
+
+        // "Paid" is believed only for the transaction that was asked about:
+        // the same id, for this order, for the amount charged. A paid reply
+        // about something else is refused outright; one that leaves any of
+        // the three out proves nothing and stays pending.
+        if ($mappedStatus === Payment::STATUS_PAID) {
+            $unproven = $this->unprovenIdentity($response, $payment);
+
+            if ($unproven !== null) {
+                $mappedStatus = Payment::STATUS_PENDING;
+                $failureReason = $unproven;
+            }
+        }
 
         return new PaymentVerificationResult(
             status: $mappedStatus,
             providerPaymentId: (string) ($response['id'] ?? $payment->provider_payment_id),
             providerTransactionId: (string) ($response['transactionId'] ?? $response['id'] ?? $payment->provider_transaction_id ?? ''),
-            providerReference: (string) ($response['orderId'] ?? $payment->provider_reference ?? ''),
-            failureReason: (string) ($response['msg'] ?? $response['message'] ?? ''),
-            rawResponse: is_array($response) ? $response : [],
+            providerReference: (string) ($response['orderId'] ?? $response['orderid'] ?? $payment->provider_reference ?? ''),
+            failureReason: $failureReason,
+            rawResponse: $response,
         );
+    }
+
+    /**
+     * Why a reply that says "paid" cannot be taken as payment for this
+     * payment, or null when it can.
+     *
+     * A value that is present and wrong is a different transaction, and
+     * throws: that is not something to wait out. A value that is missing
+     * returns a reason, and the payment waits.
+     *
+     * The currency is checked when it is sent. ZainCash settles in dinars
+     * and the amount was sent in dinars, so its absence is not held against
+     * the reply; a reply naming another currency is.
+     *
+     * @param  array<string, mixed>  $response
+     */
+    private function unprovenIdentity(array $response, Payment $payment): ?string
+    {
+        $id = $this->scalar($response['id'] ?? null);
+        if ($id !== null && ! hash_equals((string) $payment->provider_payment_id, $id)) {
+            throw new \RuntimeException('ZainCash returned a different transaction.');
+        }
+
+        $orderId = $this->scalar($response['orderId'] ?? $response['orderid'] ?? null);
+        if ($orderId !== null && ! hash_equals((string) $payment->order_id, $orderId)) {
+            throw new \RuntimeException('ZainCash returned a transaction for a different order.');
+        }
+
+        $amount = $response['amount'] ?? null;
+        if (is_numeric($amount) && abs((float) $amount - round((float) $payment->amount)) > 0.0001) {
+            throw new \RuntimeException('ZainCash returned a mismatched payment amount.');
+        }
+
+        $currency = $this->scalar($response['currency'] ?? null);
+        if ($currency !== null && strtoupper($currency) !== 'IQD') {
+            throw new \RuntimeException('ZainCash returned a mismatched payment currency.');
+        }
+
+        return match (true) {
+            $id === null => 'zaincash_reply_without_transaction_id',
+            $orderId === null => 'zaincash_reply_without_order_id',
+            ! is_numeric($amount) => 'zaincash_reply_without_amount',
+            default => null,
+        };
+    }
+
+    private function scalar(mixed $value): ?string
+    {
+        if (! is_scalar($value)) {
+            return null;
+        }
+
+        $value = trim((string) $value);
+
+        return $value !== '' ? $value : null;
     }
 
     public function paymentIdFromWebhook(Request $request): ?string

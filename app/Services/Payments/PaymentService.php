@@ -217,9 +217,19 @@ class PaymentService
     private function applyVerification(Payment $payment, PaymentVerificationResult $result, string $source): bool
     {
         return DB::transaction(function () use ($payment, $result, $source): bool {
+            // The order row is locked first, then the payment. Releasing an
+            // unpaid order's stock (orders:release-unpaid) takes the order
+            // row too, so the two cannot both act on one order: whichever
+            // arrives second sees what the first did. Locking the payment
+            // first would let a payment be confirmed and its order cancelled
+            // in the same instant.
+            $orderId = Payment::query()->whereKey($payment->id)->value('order_id');
+            $order = $orderId !== null
+                ? Order::query()->whereKey($orderId)->lockForUpdate()->first()
+                : null;
+
             $lockedPayment = Payment::query()
                 ->whereKey($payment->id)
-                ->with('order')
                 ->lockForUpdate()
                 ->firstOrFail();
 
@@ -245,9 +255,38 @@ class PaymentService
 
             $lockedPayment->save();
 
-            $order = $lockedPayment->order;
             if (! $order) {
                 return $result->isPaid();
+            }
+
+            // The money arrived for an order that is no longer open — its
+            // payment window ran out and its stock went back on the shelf, or
+            // it was cancelled by hand. The payment is recorded as the fact it
+            // is, but the order is not reopened behind anyone's back: the
+            // parts may be sold. Staff are told, and decide between a refund
+            // and placing it again.
+            if ($result->isPaid() && Order::normalizedStatus((string) $order->status) === Order::STATUS_CANCELLED) {
+                $order->forceFill([
+                    'payment_status' => Order::PAYMENT_PAID,
+                    'payment_reference' => $lockedPayment->provider_transaction_id
+                        ?: $lockedPayment->provider_payment_id
+                        ?: $lockedPayment->provider_reference,
+                ])->save();
+
+                $order->statusHistory()->create([
+                    'from_status' => Order::STATUS_CANCELLED,
+                    'to_status' => Order::STATUS_CANCELLED,
+                    'changed_by' => null,
+                    'note' => 'Payment received after the order was cancelled (via '.$source.'). Refund it or place the order again.',
+                    'created_at' => now(),
+                ]);
+
+                $orderNumber = (string) $order->order_number;
+                DB::afterCommit(fn () => report(new \RuntimeException(
+                    "Payment received for cancelled order {$orderNumber}. Refund it or place the order again."
+                )));
+
+                return false;
             }
 
             if ($result->isPaid()) {

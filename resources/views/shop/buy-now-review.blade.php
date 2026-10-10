@@ -137,10 +137,14 @@
                     @endif
                 </div>
 
-                {{-- One token per showing of this form. The server places one
-                     order per token, so a double click or a resubmitted page
-                     leads to the order already placed, not to a second one. --}}
-                <input type="hidden" name="submission_token" value="{{ old('submission_token', (string) \Illuminate\Support\Str::uuid()) }}">
+                {{-- One token per showing of this form, issued by the server
+                     for this customer and this product. One order is placed
+                     per token, so a double click or a resubmitted page leads
+                     to the order already placed, not to a second one. --}}
+                <input type="hidden" name="submission_token" value="{{ \App\Support\CheckoutSubmission::issue(auth()->user(), $product) }}">
+                @error('submission_token')
+                    <p class="mt-4 rounded-xl bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700 dark:bg-rose-900/20 dark:text-rose-300" role="alert">{{ $message }}</p>
+                @enderror
 
                 <div class="mt-5 flex flex-wrap gap-3">
                     <button

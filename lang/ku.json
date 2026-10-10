@@ -4170,5 +4170,8 @@
     "Service Unavailable": "خزمەتگوزاری بەردەست نییە",
     "The storefront is temporarily unavailable.": "فرۆشگاکە بۆ ماوەیەکی کاتی بەردەست نییە.",
     "The platform is likely under maintenance or handling a temporary capacity issue, so this page cannot be served right now.": "پلاتفۆڕمەکە لەوانەیە لە ژێر چاککردنەوەدا بێت یان فشارێکی کاتیی لەسەر بێت، بۆیە ئێستا ناتوانرێت ئەم پەڕەیە پیشان بدرێت.",
-    "Your order is being placed. It will appear here in a moment.": "داواکارییەکەت تۆمار دەکرێت. لە چەند ساتێکدا لێرە دەردەکەوێت."
+    "Your order is being placed. It will appear here in a moment.": "داواکارییەکەت تۆمار دەکرێت. لە چەند ساتێکدا لێرە دەردەکەوێت.",
+    "This page is out of date. Reload it and place your order again.": "ئەم پەڕەیە کۆن بووە. دووبارە بارێ بکەرەوە و داواکارییەکەت دووبارە بنێرە.",
+    "This form was already used for a different order. Reload the page to place a new one.": "ئەم فۆڕمە پێشتر بۆ داواکارییەکی تر بەکارهاتووە. پەڕەکە دووبارە بار بکەرەوە بۆ ناردنی داواکارییەکی نوێ.",
+    "Stock changed to :current while this page was open (it showed :seen). Nothing was saved. Check the new count and save again.": "کۆگا گۆڕا بۆ :current لە کاتێکدا ئەم پەڕەیە کرابووەوە (:seen ی پیشان دەدا). هیچ شتێک پاشەکەوت نەکرا. ژمارە نوێیەکە بپشکنە و دووبارە پاشەکەوتی بکە."
 }

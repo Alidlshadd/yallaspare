@@ -12,9 +12,16 @@ use Illuminate\Support\Facades\DB;
 
 class OrderStatusService
 {
-    public function changeStatus(Order $order, string $status, ?User $actor = null, ?string $note = null): ?Order
+    /**
+     * @param  (\Closure(Order): bool)|null  $onlyIf  asked about the order once
+     *                                                its row is locked; false leaves it untouched. For a caller whose
+     *                                                decision rests on something that can change until that moment — a
+     *                                                payment arriving — so that it is made on the locked row, not on one
+     *                                                read a moment earlier.
+     */
+    public function changeStatus(Order $order, string $status, ?User $actor = null, ?string $note = null, ?\Closure $onlyIf = null): ?Order
     {
-        $updatedOrder = DB::transaction(function () use ($order, $status, $actor, $note): ?Order {
+        $updatedOrder = DB::transaction(function () use ($order, $status, $actor, $note, $onlyIf): ?Order {
             $lockedOrder = Order::query()
                 ->whereKey($order->id)
                 ->with([
@@ -26,6 +33,10 @@ class OrderStatusService
 
             $previousStatus = (string) $lockedOrder->status;
             if ($previousStatus === $status) {
+                return null;
+            }
+
+            if ($onlyIf !== null && ! $onlyIf($lockedOrder)) {
                 return null;
             }
 
@@ -65,7 +76,12 @@ class OrderStatusService
 
                     InventoryMovement::query()->create([
                         'product_id' => $product->id,
-                        'user_id' => $actor?->id,
+                        // A movement must name someone. When the system does
+                        // the cancelling (an unpaid order timing out) there is
+                        // no staff member, and it is recorded against the
+                        // order's own customer, as a cancellation they make
+                        // themselves already is.
+                        'user_id' => $actor?->id ?? $lockedOrder->user_id,
                         'type' => InventoryMovement::TYPE_IN,
                         'quantity' => $quantity,
                         'stock_before' => $stockBefore,
