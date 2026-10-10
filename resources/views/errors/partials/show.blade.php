@@ -41,10 +41,13 @@
                             <x-brand-mark
                                 :logo-url="$logoUrl"
                                 :brand="$siteName"
-                                wrapper-class="inline-flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg border border-slate-200 dark:border-slate-700"
+                                {{-- The logo is drawn for the navy header: light strokes
+                                     that vanish on this page's white pill. It gets the
+                                     same navy tile the app icons put behind it. --}}
+                                wrapper-class="inline-flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[#070740] p-1"
                                 img-class="h-full w-full object-contain"
-                                fallback-class="inline-flex h-full w-full items-center justify-center bg-slate-100 dark:bg-slate-800"
-                                fallback-text-class="text-[10px] font-semibold text-slate-700 dark:text-slate-200"
+                                fallback-class="inline-flex h-full w-full items-center justify-center"
+                                fallback-text-class="text-[10px] font-semibold text-white"
                             />
                             <span>{{ $siteName }}</span>
                         </a>
