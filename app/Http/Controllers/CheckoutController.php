@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Setting;
+use App\Models\User;
 use App\Models\UserAddress;
 use App\Services\Analytics\CheckoutStartTracker;
 use App\Services\Analytics\ClientAnalytics;
@@ -18,6 +19,7 @@ use App\Services\WelcomeOfferService;
 use App\Support\UserCommunication;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Validation\Rule;
 use Illuminate\View\View;
 
@@ -28,6 +30,9 @@ class CheckoutController extends Controller
     private const COUPON_SESSION_KEY = 'checkout.coupon_code';
 
     private const BUY_NOW_COUPON_SESSION_KEY = 'checkout.buy_now_coupon_code';
+
+    /** How long a placed form is remembered, so its copies find the order. */
+    private const SUBMISSION_MEMORY_MINUTES = 30;
 
     public function __construct(
         private readonly CheckoutService $checkoutService,
@@ -97,6 +102,7 @@ class CheckoutController extends Controller
             'notes' => ['nullable', 'string', 'max:1000'],
             'coupon_code' => ['nullable', 'string', 'max:80'],
             'payment_method' => ['nullable', Rule::in($this->paymentService->allowedCheckoutMethods())],
+            'submission_token' => ['nullable', 'string', 'max:64', 'regex:/^[A-Za-z0-9-]+$/'],
         ]);
 
         $user = $request->user();
@@ -116,6 +122,19 @@ class CheckoutController extends Controller
             return back()->withErrors(['address_id' => __('Please select a valid saved address.')])->withInput();
         }
 
+        // Unlike the cart, which is emptied by the first order and so cannot
+        // be ordered twice, buy-now has nothing to run out: the same form
+        // posted twice placed two orders and took the stock twice. The form's
+        // token is claimed here, atomically, and only its first claim places
+        // an order.
+        $submissionKey = filled($data['submission_token'] ?? null)
+            ? 'buy-now-submission:'.$user->id.':'.sha1((string) $data['submission_token'])
+            : null;
+
+        if ($submissionKey !== null && ! Cache::add($submissionKey, 'placing', now()->addMinutes(self::SUBMISSION_MEMORY_MINUTES))) {
+            return $this->alreadySubmitted($user, Cache::get($submissionKey));
+        }
+
         try {
             $placedOrder = $this->checkoutService->placeBuyNowOrder(
                 $product,
@@ -126,8 +145,21 @@ class CheckoutController extends Controller
                 $couponCode,
                 $paymentMethod
             );
-        } catch (\RuntimeException $exception) {
+        } catch (\Throwable $exception) {
+            // Nothing was placed, so the form may be sent again.
+            if ($submissionKey !== null) {
+                Cache::forget($submissionKey);
+            }
+
+            if (! $exception instanceof \RuntimeException) {
+                throw $exception;
+            }
+
             return back()->with('error', $exception->getMessage())->withInput();
+        }
+
+        if ($submissionKey !== null) {
+            Cache::put($submissionKey, (int) $placedOrder->id, now()->addMinutes(self::SUBMISSION_MEMORY_MINUTES));
         }
 
         if ($this->paymentService->isOnlineMethod($paymentMethod)) {
@@ -153,6 +185,28 @@ class CheckoutController extends Controller
         $request->session()->forget(self::BUY_NOW_COUPON_SESSION_KEY);
 
         return redirect()->route('checkout.success', $placedOrder)->with('success', $successMessage);
+    }
+
+    /**
+     * Where a repeated submission goes: to the order its first copy placed,
+     * or, while that one is still being written, to the order list where it
+     * is about to appear.
+     */
+    private function alreadySubmitted(User $user, mixed $claimed): RedirectResponse
+    {
+        $order = is_int($claimed) || (is_string($claimed) && ctype_digit($claimed))
+            ? Order::query()->where('user_id', $user->id)->find((int) $claimed)
+            : null;
+
+        if ($order) {
+            return redirect()
+                ->route('checkout.success', $order)
+                ->with('success', __('Order placed successfully.'));
+        }
+
+        return redirect()
+            ->route('account.orders.index')
+            ->with('status', __('Your order is being placed. It will appear here in a moment.'));
     }
 
     public function delivery(Request $request): View|RedirectResponse

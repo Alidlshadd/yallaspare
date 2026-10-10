@@ -4169,5 +4169,6 @@
     "An internal application error interrupted the page before it could finish rendering properly.": "An internal application error interrupted the page before it could finish rendering properly.",
     "Service Unavailable": "Service Unavailable",
     "The storefront is temporarily unavailable.": "The storefront is temporarily unavailable.",
-    "The platform is likely under maintenance or handling a temporary capacity issue, so this page cannot be served right now.": "The platform is likely under maintenance or handling a temporary capacity issue, so this page cannot be served right now."
+    "The platform is likely under maintenance or handling a temporary capacity issue, so this page cannot be served right now.": "The platform is likely under maintenance or handling a temporary capacity issue, so this page cannot be served right now.",
+    "Your order is being placed. It will appear here in a moment.": "Your order is being placed. It will appear here in a moment."
 }

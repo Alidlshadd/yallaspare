@@ -137,6 +137,11 @@
                     @endif
                 </div>
 
+                {{-- One token per showing of this form. The server places one
+                     order per token, so a double click or a resubmitted page
+                     leads to the order already placed, not to a second one. --}}
+                <input type="hidden" name="submission_token" value="{{ old('submission_token', (string) \Illuminate\Support\Str::uuid()) }}">
+
                 <div class="mt-5 flex flex-wrap gap-3">
                     <button
                         type="submit"

@@ -194,6 +194,10 @@
                             <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label class="block text-sm font-medium text-slate-700">{{ __('Stock Quantity') }} <span class="text-rose-500">*</span></label>
+                                    {{-- The count this page was opened with. On save, only the
+                                         difference from it is applied, so a sale made while the
+                                         form was open is not undone. --}}
+                                    <input type="hidden" name="stock_quantity_seen" value="{{ old('stock_quantity_seen', $product->stock_quantity) }}">
                                     <input id="stock_quantity" aria-label="{{ __('Stock Quantity') }}" type="number" name="stock_quantity" value="{{ old('stock_quantity', $product->stock_quantity) }}" class="{{ $inputBase }} @error('stock_quantity') {{ $inputError }} @enderror" required @error('stock_quantity') aria-invalid="true" @enderror>
                                     @error('stock_quantity')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>

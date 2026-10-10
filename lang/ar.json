@@ -4169,5 +4169,6 @@
     "An internal application error interrupted the page before it could finish rendering properly.": "حدث خطأ داخلي في التطبيق قبل اكتمال عرض الصفحة.",
     "Service Unavailable": "الخدمة غير متاحة",
     "The storefront is temporarily unavailable.": "المتجر غير متاح مؤقتاً.",
-    "The platform is likely under maintenance or handling a temporary capacity issue, so this page cannot be served right now.": "المنصة على الأرجح قيد الصيانة أو تواجه ضغطاً مؤقتاً، لذلك لا يمكن عرض هذه الصفحة الآن."
+    "The platform is likely under maintenance or handling a temporary capacity issue, so this page cannot be served right now.": "المنصة على الأرجح قيد الصيانة أو تواجه ضغطاً مؤقتاً، لذلك لا يمكن عرض هذه الصفحة الآن.",
+    "Your order is being placed. It will appear here in a moment.": "جارٍ تسجيل طلبك. سيظهر هنا خلال لحظات."
 }

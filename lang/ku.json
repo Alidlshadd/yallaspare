@@ -4169,5 +4169,6 @@
     "An internal application error interrupted the page before it could finish rendering properly.": "هەڵەیەکی ناوخۆیی لە بەرنامەکەدا ڕوویدا پێش ئەوەی پەڕەکە بە تەواوی پیشان بدرێت.",
     "Service Unavailable": "خزمەتگوزاری بەردەست نییە",
     "The storefront is temporarily unavailable.": "فرۆشگاکە بۆ ماوەیەکی کاتی بەردەست نییە.",
-    "The platform is likely under maintenance or handling a temporary capacity issue, so this page cannot be served right now.": "پلاتفۆڕمەکە لەوانەیە لە ژێر چاککردنەوەدا بێت یان فشارێکی کاتیی لەسەر بێت، بۆیە ئێستا ناتوانرێت ئەم پەڕەیە پیشان بدرێت."
+    "The platform is likely under maintenance or handling a temporary capacity issue, so this page cannot be served right now.": "پلاتفۆڕمەکە لەوانەیە لە ژێر چاککردنەوەدا بێت یان فشارێکی کاتیی لەسەر بێت، بۆیە ئێستا ناتوانرێت ئەم پەڕەیە پیشان بدرێت.",
+    "Your order is being placed. It will appear here in a moment.": "داواکارییەکەت تۆمار دەکرێت. لە چەند ساتێکدا لێرە دەردەکەوێت."
 }

@@ -24,6 +24,14 @@ class UserPrivilegeService
             throw new AuthorizationException(__('Only super admins can assign admin roles.'));
         }
 
+        // A customer or dealer account can still hold admin permissions a
+        // super admin granted it. Saving such an account as anyone else would
+        // write its permissions back as empty and let its sign-in email be
+        // changed, so it is treated like any other privileged account.
+        if ((int) $actor->id !== (int) $target->id && $target->isAdminPanelUser()) {
+            throw new AuthorizationException(__('Only super admins can modify privileged accounts.'));
+        }
+
         if ((int) $actor->id === (int) $target->id && $role !== $target->role) {
             throw new AuthorizationException(__('You cannot change your own role.'));
         }

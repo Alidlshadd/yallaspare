@@ -19,6 +19,8 @@ class UpdateProductRequest extends StoreProductRequest
                     'max:64',
                     Rule::unique('products', 'sku')->ignore($productId),
                 ],
+                // The stock count the form was showing when it was opened.
+                'stock_quantity_seen' => ['nullable', 'integer', 'min:0'],
                 'remove_image' => ['sometimes', 'boolean'],
                 'remove_gallery_image_ids' => ['nullable', 'array'],
                 'remove_gallery_image_ids.*' => ['integer', 'exists:product_images,id'],

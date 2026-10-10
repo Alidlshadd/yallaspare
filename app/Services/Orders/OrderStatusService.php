@@ -35,11 +35,14 @@ class OrderStatusService
 
             // Cancelling an order is a financial and inventory event. Restore
             // stock while holding row locks so concurrent checkout cannot race
-            // against the cancellation flow.
+            // against the cancellation flow. The stored status is compared in
+            // its normalised form: an older row spelled "canceled" or
+            // "completed" must not have its stock handed back a second time.
+            $settledStatus = Order::normalizedStatus($previousStatus);
             if (
                 $status === Order::STATUS_CANCELLED
-                && $previousStatus !== Order::STATUS_CANCELLED
-                && $previousStatus !== Order::STATUS_DELIVERED
+                && $settledStatus !== Order::STATUS_CANCELLED
+                && $settledStatus !== Order::STATUS_DELIVERED
             ) {
                 foreach ($lockedOrder->items as $item) {
                     if (! $item->product_id) {

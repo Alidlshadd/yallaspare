@@ -77,7 +77,11 @@ class ZainCashPaymentService implements PaymentProviderInterface
             ->json();
 
         $rawStatus = strtolower((string) ($response['status'] ?? $response['transactionStatus'] ?? ''));
-        $success = (bool) ($response['success'] ?? false);
+        // A named status always decides. The bare "success" flag is only
+        // consulted when the gateway sent no status at all: read first, it
+        // would have marked a transaction paid on a reply that merely said
+        // the lookup itself succeeded while the status said pending or failed.
+        $success = $rawStatus === '' && (bool) ($response['success'] ?? false);
         $mappedStatus = match (true) {
             $success || in_array($rawStatus, ['success', 'paid', 'completed', 'complete'], true) => Payment::STATUS_PAID,
             in_array($rawStatus, ['failed', 'failure', 'cancelled', 'canceled', 'expired', 'declined'], true) => Payment::STATUS_FAILED,

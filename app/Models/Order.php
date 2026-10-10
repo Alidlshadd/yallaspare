@@ -161,6 +161,9 @@ class Order extends Model
 
         return match ($status) {
             'complete', 'completed' => self::STATUS_DELIVERED,
+            // The one-L spelling in older rows. Without this it fell through
+            // to "pending" below, and a cancelled order read as cancellable.
+            'canceled' => self::STATUS_CANCELLED,
             default => in_array($status, self::allowedStatuses(), true)
                 ? $status
                 : self::STATUS_PENDING,

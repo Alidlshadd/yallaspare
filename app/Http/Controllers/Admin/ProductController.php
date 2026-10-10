@@ -350,7 +350,7 @@ class ProductController extends Controller
                     'description_ar' => $request->description_ar,
                     'description_ku' => $request->description_ku,
                     ...$priceAttributes,
-                    'stock_quantity' => $request->stock_quantity,
+                    'stock_quantity' => $this->stockAfterEdit($request, $product),
                     'sku' => $request->filled('sku') ? $request->sku : $product->sku,
                     'oem_number' => $request->filled('oem_number') ? $request->oem_number : null,
                     'part_number' => $request->filled('part_number') ? $request->part_number : null,
@@ -411,6 +411,34 @@ class ProductController extends Controller
         }
 
         return $redirect;
+    }
+
+    /**
+     * The stock to save from the edit form, without undoing sales made while
+     * the form was open.
+     *
+     * The form always posts a stock figure, so saving a new name used to write
+     * back the count the page was opened with — putting parts that had been
+     * sold in the meantime back on the shelf. The form now also says what
+     * count it was showing. The difference between that and what was typed is
+     * the change the admin meant, and it is applied to the count as it stands
+     * now, read under a row lock so an order placed this instant is counted.
+     *
+     * A request without that figure (an older page, another client) is taken
+     * at its word, as before.
+     */
+    private function stockAfterEdit(Request $request, Product $product): int
+    {
+        $typed = (int) $request->input('stock_quantity');
+        $seen = $request->input('stock_quantity_seen');
+
+        if ($seen === null || $seen === '') {
+            return $typed;
+        }
+
+        $current = (int) Product::query()->whereKey($product->id)->lockForUpdate()->value('stock_quantity');
+
+        return max(0, $current + ($typed - (int) $seen));
     }
 
     /**

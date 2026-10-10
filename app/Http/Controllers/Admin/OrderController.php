@@ -447,10 +447,13 @@ class OrderController extends Controller
                     return ['outcome' => 'skipped', 'reason' => "Order #{$order->order_number} cannot go {$previousStatus}->{$targetStatus}"];
                 }
 
+                // Compared normalised, as in OrderStatusService: an older row
+                // spelled "canceled" must not be restocked a second time.
+                $settledStatus = Order::normalizedStatus($previousStatus);
                 if (
                     $targetStatus === Order::STATUS_CANCELLED
-                    && $previousStatus !== Order::STATUS_CANCELLED
-                    && $previousStatus !== Order::STATUS_DELIVERED
+                    && $settledStatus !== Order::STATUS_CANCELLED
+                    && $settledStatus !== Order::STATUS_DELIVERED
                 ) {
                     foreach ($order->items as $item) {
                         if (! $item->product_id) {
