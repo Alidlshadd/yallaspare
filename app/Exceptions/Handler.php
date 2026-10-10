@@ -5,6 +5,7 @@ namespace App\Exceptions;
 use App\Services\Email\AdminEmailAlertService;
 use App\Support\VerificationRateLimit;
 use Illuminate\Auth\Access\AuthorizationException;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Exceptions\PostTooLargeException;
 use Illuminate\Http\Exceptions\ThrottleRequestsException;
@@ -77,13 +78,22 @@ class Handler extends ExceptionHandler
 
         // Scoped 404 logging: `routeIs()` is unreliable when routing itself
         // failed, so we match against the request path prefixes instead.
-        $this->renderable(function (NotFoundHttpException $e, Request $request): void {
+        $this->renderable(function (NotFoundHttpException $e, Request $request): ?Response {
             // i/* is the shared-invoice link: a miss there is a revoked link
             // at best and someone guessing tokens at worst. The event carries
             // the route name, not the token that was tried.
             if ($request->is('account/*', 'user/*', 'admin/*', 'i/*')) {
                 $this->logSecurityEvent($request, 'authz.not_found', 'notice');
             }
+
+            // Laravel's own message for a missing record is "No query results
+            // for model [App\Models\Product]", which tells an API caller how
+            // the code is laid out. They only need to know it is not there.
+            if ($e->getPrevious() instanceof ModelNotFoundException && $this->shouldReturnJson($request, $e)) {
+                return response()->json(['message' => __('Not found.')], 404);
+            }
+
+            return null;
         });
 
         $this->renderable(function (AuthorizationException $e, Request $request): void {

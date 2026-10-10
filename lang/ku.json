@@ -4121,5 +4121,6 @@
     "The price would be too large to store.": "نرخەکە زۆر گەورە دەبێت بۆ پاشەکەوتکردن.",
     "Enter the change as a number other than zero. Use a minus sign for a decrease.": "گۆڕانکارییەکە وەک ژمارەیەک جگە لە سفر بنووسە. بۆ کەمکردنەوە نیشانەی کەم بەکاربهێنە.",
     "A percentage must be between -99.99 and 1000.": "ڕێژەی سەدی دەبێت لە نێوان -99.99 و 1000 بێت.",
-    "Enter an IQD price greater than zero.": "نرخێکی دیناری گەورەتر لە سفر بنووسە."
+    "Enter an IQD price greater than zero.": "نرخێکی دیناری گەورەتر لە سفر بنووسە.",
+    "Not found.": "نەدۆزرایەوە."
 }

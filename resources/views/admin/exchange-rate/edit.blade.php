@@ -8,7 +8,7 @@
 <x-app-layout>
     <x-slot name="header">{{ __('Exchange Rate & Prices') }}</x-slot>
     @vite('resources/js/admin-pricing.js')
-    <div class="pricing-workspace" data-pricing-workspace data-rate="{{ $ratePer100 ?? '' }}" data-default-currency="{{ $defaultCurrency }}" data-messages="{{ json_encode(__('pricing')) }}">
+    <div class="pricing-workspace" data-pricing-workspace data-rate="{{ $ratePer100 ?? '' }}" data-default-currency="{{ $defaultCurrency }}" data-messages="{{ json_encode(trans('pricing')) }}">
         <header class="pm-heading">
             <div><p class="pm-kicker"><span></span>{{ __('pricing.workspace') }}</p><h1>{{ __('Exchange Rate & Price Management') }}</h1><p>{{ __('pricing.intro') }}</p></div>
             <a href="{{ route('admin.products.index') }}" class="pm-button pm-button-quiet"><x-ph-icon name="cube" :size="18" />{{ __('Products') }} <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M6 18 18 6M6 6h12v12"/></svg></a>
