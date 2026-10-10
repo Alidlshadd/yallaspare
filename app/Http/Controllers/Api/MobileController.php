@@ -1787,7 +1787,13 @@ class MobileController extends Controller
     {
         $this->requireDealer($request);
         $product = $this->findProduct($idOrSlug);
-        if (! $request->user()->isAdminPanelUser()) {
+        if ($request->user()->isAdminPanelUser()) {
+            // Staff are not limited to their own products here, so this is
+            // the admin stock endpoint by another name and asks for what that
+            // one asks: the product permission and a stepped-up token. Being
+            // on the admin panel at all used to be enough.
+            $this->requirePermission($request, User::PERMISSION_PRODUCTS_MANAGE);
+        } else {
             abort_unless(Schema::hasColumn('products', 'created_by') && (int) $product->created_by === (int) $request->user()->id, 403);
         }
 
@@ -2531,7 +2537,10 @@ class MobileController extends Controller
     private function dealerOrdersQuery(User $user)
     {
         $query = Order::query();
-        if ($user->isAdminPanelUser()) {
+        // Every order, for staff who may see orders. Other staff get the
+        // dealer's view below — the orders for products they created — rather
+        // than the whole shop's sales by way of the dealer screens.
+        if ($user->isAdminPanelUser() && $user->hasPermission(User::PERMISSION_ORDERS_MANAGE)) {
             return $query;
         }
 

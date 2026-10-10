@@ -15,6 +15,7 @@ use App\Services\Payments\Providers\ZainCashPaymentService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 /**
@@ -238,6 +239,55 @@ class SecurityAudit202610Test extends TestCase
             ->assertSessionHas('success');
 
         $this->assertSame('Renamed Customer', $customer->fresh()->name);
+    }
+
+    // ── Any staff account could set any product's stock through the dealer endpoint ──
+
+    public function test_staff_without_the_product_permission_cannot_set_stock_through_the_dealer_endpoint(): void
+    {
+        [, , $product] = $this->shopper();
+        $viewer = User::factory()->create(['role' => User::ROLE_USER, 'permissions' => [User::PERMISSION_DASHBOARD_VIEW], 'email_verified_at' => now()]);
+
+        Sanctum::actingAs($viewer, ['admin:mobile']);
+        $this->patchJson('/api/mobile/dealer/products/'.$product->id.'/stock', ['stock_quantity' => 999])->assertForbidden();
+
+        $this->assertSame(5, (int) $product->fresh()->stock_quantity);
+    }
+
+    public function test_staff_with_the_permission_still_need_a_stepped_up_token_to_set_stock(): void
+    {
+        [, , $product] = $this->shopper();
+        $manager = User::factory()->create(['role' => User::ROLE_ADMIN, 'email_verified_at' => now()]);
+
+        // Signed in on the phone, but the second factor has not been given.
+        Sanctum::actingAs($manager, ['mobile']);
+        $this->patchJson('/api/mobile/dealer/products/'.$product->id.'/stock', ['stock_quantity' => 999])
+            ->assertForbidden();
+        $this->assertSame(5, (int) $product->fresh()->stock_quantity);
+
+        Sanctum::actingAs($manager, ['admin:mobile']);
+        $this->patchJson('/api/mobile/dealer/products/'.$product->id.'/stock', ['stock_quantity' => 12])->assertOk();
+        $this->assertSame(12, (int) $product->fresh()->stock_quantity);
+    }
+
+    public function test_staff_without_the_orders_permission_do_not_get_every_order_from_the_dealer_screens(): void
+    {
+        [$customer, , $product] = $this->shopper();
+        $order = new Order;
+        $order->forceFill([
+            'user_id' => $customer->id, 'order_number' => 'ORD-SOMEONE-1', 'status' => Order::STATUS_PENDING,
+            'total_amount' => 25000, 'grand_total' => 25000, 'subtotal_amount' => 25000,
+            'delivery_address' => 'Street 10', 'delivery_city' => 'Baghdad', 'delivery_phone' => '123456789',
+        ])->save();
+        OrderItem::query()->create(['order_id' => $order->id, 'product_id' => $product->id, 'quantity' => 1, 'unit_price' => 25000, 'subtotal' => 25000]);
+
+        $viewer = User::factory()->create(['role' => User::ROLE_USER, 'permissions' => [User::PERMISSION_DASHBOARD_VIEW], 'email_verified_at' => now()]);
+        Sanctum::actingAs($viewer, ['admin:mobile']);
+        $this->getJson('/api/mobile/dealer/orders')->assertOk()->assertJsonCount(0, 'data');
+
+        $orders = User::factory()->create(['role' => User::ROLE_USER, 'permissions' => [User::PERMISSION_ORDERS_MANAGE], 'email_verified_at' => now()]);
+        Sanctum::actingAs($orders, ['admin:mobile']);
+        $this->getJson('/api/mobile/dealer/orders')->assertOk()->assertJsonCount(1, 'data');
     }
 
     /**
