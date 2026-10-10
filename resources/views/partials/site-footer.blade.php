@@ -142,7 +142,7 @@
         </div>
 
         <div class="mt-8 border-t border-slate-200/70 pt-4 text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400">
-            &copy; {{ date('Y') }} {{ $systemSettings['site_name'] ?? 'Yalla Spare' }}. All rights reserved.
+            &copy; {{ date('Y') }} {{ $systemSettings['site_name'] ?? 'Yalla Spare' }}. {{ __('All rights reserved.') }}
         </div>
     </div>
 </footer>

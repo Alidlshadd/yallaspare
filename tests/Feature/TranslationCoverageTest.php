@@ -20,10 +20,14 @@ class TranslationCoverageTest extends TestCase
 
         foreach ($this->translatableFiles() as $file) {
             $contents = file_get_contents($file);
-            preg_match_all('/__\(\s*([\'"])(.+?)\1/s', $contents, $matches, PREG_SET_ORDER);
+            // The string runs to its closing quote, stepping over escaped
+            // ones. Stopping at the first quote cut "the customer\'s ..." off
+            // at the apostrophe, so the cut-off key was what got translated
+            // and the real sentence stayed in English.
+            preg_match_all('/__\(\s*([\'"])((?:\\\\.|(?!\1).)+?)\1/s', $contents, $matches, PREG_SET_ORDER);
 
             foreach ($matches as $match) {
-                $string = $match[2];
+                $string = str_replace(['\\\'', '\\"', '\\\\'], ['\'', '"', '\\'], $match[2]);
 
                 // Interpolated or package-namespaced keys resolve elsewhere.
                 if (str_starts_with($string, ':') || str_contains($string, '::')) {
@@ -70,6 +74,42 @@ class TranslationCoverageTest extends TestCase
                 array_keys(array_diff_key($translated, $english)),
                 "lang/{$locale}.json has keys that lang/en.json does not."
             );
+        }
+    }
+
+    /**
+     * Category descriptions live in the database and reach __() as a
+     * variable (Category::localizedDescription), so no scan of the code can
+     * see them. They were dropped from the language files once as unused,
+     * and every page then showed them in English. They are named here so
+     * that cannot happen quietly again.
+     */
+    public function test_category_descriptions_stay_translated(): void
+    {
+        $descriptions = [
+            'Practical vehicle accessories and care items.',
+            'Timing kits, belts, pulleys, and tensioners.',
+            'Exterior lighting, mirrors, and body service items.',
+            'Brake pads, discs, hydraulics, and service parts.',
+            'Radiators, hoses, fans, thermostats, and coolant parts.',
+            'Sensors, switches, relays, and electrical service parts.',
+            'Engine service parts, gaskets, mounts, and repair components.',
+            'Exhaust, oxygen sensor, and emissions related parts.',
+            'Oil, air, cabin, and fuel filtration.',
+            'Lubricants, coolants, cleaners, and additives.',
+            'Fuel pumps, injectors, lines, and delivery components.',
+            'Shocks, control arms, bushings, and steering components.',
+            'Shocks, control arms, tie rods, and steering parts.',
+            'Transmission service parts and driveline support.',
+        ];
+
+        foreach (['ar', 'ku'] as $locale) {
+            $translated = $this->jsonKeys($locale);
+
+            foreach ($descriptions as $description) {
+                $this->assertArrayHasKey($description, $translated, "lang/{$locale}.json: {$description}");
+                $this->assertNotSame($description, $translated[$description], "lang/{$locale}.json still has the English for: {$description}");
+            }
         }
     }
 
