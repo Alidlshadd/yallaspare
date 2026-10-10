@@ -116,7 +116,8 @@
 @section('meta_description', $seoDescription)
 
 @push('head')
-    <link rel="canonical" href="{{ $canonicalUrl }}">
+    {{-- No canonical here: the layout's seo-locale partial already prints
+         it for every page, and a second copy is one tag too many. --}}
     <meta property="og:type" content="product">
     <meta property="og:site_name" content="{{ $siteName }}">
     <meta property="og:title" content="{{ $seoTitle }}">
