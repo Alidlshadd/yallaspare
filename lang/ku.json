@@ -4122,5 +4122,8 @@
     "Enter the change as a number other than zero. Use a minus sign for a decrease.": "گۆڕانکارییەکە وەک ژمارەیەک جگە لە سفر بنووسە. بۆ کەمکردنەوە نیشانەی کەم بەکاربهێنە.",
     "A percentage must be between -99.99 and 1000.": "ڕێژەی سەدی دەبێت لە نێوان -99.99 و 1000 بێت.",
     "Enter an IQD price greater than zero.": "نرخێکی دیناری گەورەتر لە سفر بنووسە.",
-    "Not found.": "نەدۆزرایەوە."
+    "Not found.": "نەدۆزرایەوە.",
+    "Guest checkout": "داواکاری بەبێ هەژمار",
+    "Order without an account": "بەبێ هەژمار داوا بکە",
+    "Add parts to your cart and check out with your phone number. Already have an account? Log in to see your orders and saved addresses.": "پارچەکان بخە سەبەتەکەت و بە ژمارەی مۆبایلەکەت داواکارییەکە تەواو بکە. هەژمارت هەیە؟ بچۆ ژوورەوە بۆ بینینی داواکاری و ناونیشانە پاشەکەوتکراوەکانت."
 }

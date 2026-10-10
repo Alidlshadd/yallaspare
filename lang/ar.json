@@ -4122,5 +4122,8 @@
     "Enter the change as a number other than zero. Use a minus sign for a decrease.": "أدخل التغيير كرقم غير الصفر. استخدم إشارة السالب للتخفيض.",
     "A percentage must be between -99.99 and 1000.": "يجب أن تكون النسبة المئوية بين -99.99 و1000.",
     "Enter an IQD price greater than zero.": "أدخل سعراً بالدينار أكبر من صفر.",
-    "Not found.": "غير موجود."
+    "Not found.": "غير موجود.",
+    "Guest checkout": "الطلب بدون حساب",
+    "Order without an account": "اطلب بدون حساب",
+    "Add parts to your cart and check out with your phone number. Already have an account? Log in to see your orders and saved addresses.": "أضف القطع إلى سلتك وأتمم الطلب برقم هاتفك. لديك حساب؟ سجّل الدخول لعرض طلباتك وعناوينك المحفوظة."
 }

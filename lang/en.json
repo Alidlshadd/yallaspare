@@ -4122,5 +4122,8 @@
     "Enter the change as a number other than zero. Use a minus sign for a decrease.": "Enter the change as a number other than zero. Use a minus sign for a decrease.",
     "A percentage must be between -99.99 and 1000.": "A percentage must be between -99.99 and 1000.",
     "Enter an IQD price greater than zero.": "Enter an IQD price greater than zero.",
-    "Not found.": "Not found."
+    "Not found.": "Not found.",
+    "Guest checkout": "Guest checkout",
+    "Order without an account": "Order without an account",
+    "Add parts to your cart and check out with your phone number. Already have an account? Log in to see your orders and saved addresses.": "Add parts to your cart and check out with your phone number. Already have an account? Log in to see your orders and saved addresses."
 }

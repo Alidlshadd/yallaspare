@@ -57,6 +57,17 @@ class StorefrontPageTitleTest extends TestCase
         $this->assertSame(1, substr_count($html, '<h1'));
     }
 
+    public function test_the_shop_heading_names_the_catalogue_not_a_login_demand(): void
+    {
+        $html = (string) $this->get(route('shop.index'))->assertOk()->getContent();
+
+        $this->assertSame(1, substr_count($html, '<h1'));
+        $this->assertMatchesRegularExpression('/<h1[^>]*>\s*Spare parts\s*<\/h1>/', $html);
+        // A guest can order without an account, so the page must not say otherwise.
+        $this->assertStringNotContainsString('Login or create an account to order', $html);
+        $this->assertStringContainsString('Order without an account', $html);
+    }
+
     public function test_opening_checkout_directly_leads_to_the_cart(): void
     {
         $this->get('/checkout')->assertRedirect(route('cart.index'));

@@ -20,14 +20,18 @@
 
 @section('content')
     <div class="space-y-4 sm:space-y-5">
+        {{-- The page's own heading: what is listed here, for a search result
+             and a screen reader alike. The guest card below is an aside. --}}
+        <h1 class="sr-only">{{ $categories->firstWhere('id', (int) $activeCategory)?->name ?: __('Spare parts') }}</h1>
+
         @guest
             <section class="overflow-hidden rounded-2xl border border-primary/10 bg-white shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/10 sm:rounded-3xl">
                 <div class="grid gap-4 p-4 sm:gap-5 sm:p-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center">
                     <div>
-                        <p class="text-xs font-semibold uppercase tracking-[0.16em] text-orange-600 dark:text-orange-300">{{ __('Account checkout') }}</p>
-                        <h1 class="mt-2 text-xl font-semibold tracking-[-0.03em] text-slate-950 sm:text-2xl">{{ __('Login or create an account to order') }}</h1>
+                        <p class="text-xs font-semibold uppercase tracking-[0.16em] text-orange-600 dark:text-orange-300">{{ __('Guest checkout') }}</p>
+                        <h2 class="mt-2 text-xl font-semibold tracking-[-0.03em] text-slate-950 sm:text-2xl">{{ __('Order without an account') }}</h2>
                         <p class="mt-2 max-w-2xl text-sm leading-6 text-slate-600">
-                            {{ __('Pick a product, then sign in or create an account to place a cash-on-delivery order.') }}
+                            {{ __('Add parts to your cart and check out with your phone number. Already have an account? Log in to see your orders and saved addresses.') }}
                         </p>
                     </div>
                     <div class="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap lg:justify-end">
