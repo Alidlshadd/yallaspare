@@ -50,6 +50,63 @@ class SiteLogoRenderingTest extends TestCase
         );
     }
 
+    public function test_brand_logo_is_cached_for_a_year_only_when_the_url_is_stamped(): void
+    {
+        Storage::disk('public')->put($this->logoPath, $this->pngBytes());
+        Setting::setValue('site_logo', $this->logoPath);
+
+        $stamped = (string) $this->get('/brand/logo?v=123')->assertOk()->headers->get('Cache-Control');
+        $this->assertStringContainsString('max-age=31536000', $stamped);
+        $this->assertStringContainsString('immutable', $stamped);
+        $this->assertStringNotContainsString('no-store', $stamped);
+
+        $bare = (string) $this->get('/brand/logo')->assertOk()->headers->get('Cache-Control');
+        $this->assertStringContainsString('max-age=300', $bare);
+        $this->assertStringNotContainsString('immutable', $bare);
+    }
+
+    public function test_an_oversized_logo_is_served_scaled_down_with_its_transparency(): void
+    {
+        if (! function_exists('imagecreatetruecolor')) {
+            $this->markTestSkipped('GD is not available.');
+        }
+
+        // Noise, so the source is heavy the way a real upload is and the
+        // smaller copy is unmistakably the lighter of the two.
+        $image = imagecreatetruecolor(1200, 600);
+        imagealphablending($image, false);
+        imagesavealpha($image, true);
+        imagefilledrectangle($image, 0, 0, 1200, 600, imagecolorallocatealpha($image, 0, 0, 0, 127));
+        for ($i = 0; $i < 4000; $i++) {
+            imagefilledrectangle(
+                $image,
+                $x = random_int(300, 880), $y = random_int(150, 430), $x + 20, $y + 20,
+                imagecolorallocate($image, random_int(0, 255), random_int(0, 255), random_int(0, 255))
+            );
+        }
+        ob_start();
+        imagepng($image);
+        $original = (string) ob_get_clean();
+        imagedestroy($image);
+
+        Storage::disk('public')->put($this->logoPath, $original);
+        Setting::setValue('site_logo', $this->logoPath);
+
+        $response = $this->get('/brand/logo?v=1')->assertOk();
+        $response->assertHeader('content-type', 'image/png');
+
+        $servedPath = $response->baseResponse->getFile()->getPathname();
+        $served = (string) file_get_contents($servedPath);
+        @unlink($servedPath);
+
+        [$width, $height] = getimagesizefromstring($served);
+        $this->assertSame([400, 200], [$width, $height]);
+        $this->assertLessThan(strlen($original), strlen($served));
+
+        $corner = imagecolorat(imagecreatefromstring($served), 0, 0);
+        $this->assertSame(127, ($corner >> 24) & 0x7F, 'The empty corner must stay transparent.');
+    }
+
     public function test_brand_mark_renders_uploaded_logo_image_and_keeps_fallback_hidden(): void
     {
         $logoUrl = '/brand/logo?v=test';

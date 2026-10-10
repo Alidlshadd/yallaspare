@@ -68,6 +68,7 @@ use App\Models\Setting;
 use App\Models\User;
 use App\Support\BrandIcon;
 use App\Support\Branding;
+use App\Support\BrandLogo;
 use Illuminate\Http\Request;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\Session\Middleware\StartSession;
@@ -196,13 +197,16 @@ Route::get('/brand/logo', function () {
     }
 
     return response()->file(
-        storage_path('app/public/'.$logoPath),
+        BrandLogo::displayPath(storage_path('app/public/'.$logoPath)),
         [
             'Content-Type' => $mimeType,
             'Content-Disposition' => 'inline; filename="'.basename($logoPath).'"',
-            'Cache-Control' => 'no-store, no-cache, must-revalidate, max-age=0',
-            'Pragma' => 'no-cache',
-            'Expires' => '0',
+            // Every page links this with ?v=<file time>, and a new upload is a
+            // new URL, so a stamped request can be held for a year. A bare one
+            // has nothing to bust it and only gets a few minutes.
+            'Cache-Control' => request()->has('v')
+                ? 'public, max-age=31536000, immutable'
+                : 'public, max-age=300',
         ]
     );
 })->name('brand.logo');
@@ -283,6 +287,10 @@ Route::post('/cart/{product}', [CartController::class, 'add'])->middleware('thro
 Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
 Route::patch('/cart/items/{item}', [CartController::class, 'update'])->middleware('throttle:commerce-write')->name('cart.update');
 Route::delete('/cart/items/{item}', [CartController::class, 'remove'])->middleware('throttle:commerce-write')->name('cart.remove');
+
+// Checkout is only ever posted to. Someone who types the address, or lands on
+// it with the back button, gets their cart instead of a bare 405 page.
+Route::get('/checkout', fn () => redirect()->route('cart.index'));
 
 // Checkout without an account. The visitor gives their details once and
 // proves the phone with a code; ExpressCheckoutController explains what that

@@ -1,7 +1,10 @@
 @extends('layouts.user')
 
+@section('title', __('Your cart'))
+
 @section('content')
     <div class="space-y-5 pb-16">
+        <h1 class="sr-only">{{ __('Your cart') }}</h1>
         @include('shop.partials.welcome-offer')
         @if (session('success'))
             <x-ui.alert variant="success" :title="__('Success')">

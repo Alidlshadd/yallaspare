@@ -1,5 +1,7 @@
 @extends('layouts.user')
 
+@section('title', $categories->firstWhere('id', (int) $activeCategory)?->name ?: __('Shop'))
+
 @push('head')
     @include('partials.structured-data', [
         'schemas' => [
