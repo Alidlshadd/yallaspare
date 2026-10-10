@@ -12,6 +12,8 @@ class EncryptCookies extends Middleware
      * @var array<int, string>
      */
     protected $except = [
-        //
+        // Two letters naming a language. Left readable so a 404 for an
+        // address with no route can be shown in it without a session.
+        SetLocale::COOKIE,
     ];
 }

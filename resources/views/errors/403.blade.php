@@ -6,9 +6,9 @@
 
 @include('errors.partials.show', [
     'errorCode' => '403',
-    'errorBadge' => 'Access Restricted',
-    'errorTitle' => 'You do not have permission to open this page.',
-    'errorDescription' => 'The request reached the server, but this destination is restricted for the current account or session.',
+    'errorBadge' => __('Access Restricted'),
+    'errorTitle' => __('You do not have permission to open this page.'),
+    'errorDescription' => __('The request reached the server, but this destination is restricted for the current account or session.'),
     'primaryAction' => ['label' => __('Return Home'), 'url' => $homeUrl],
     'secondaryAction' => ['label' => __('Browse Shop'), 'url' => $shopUrl],
     'tertiaryAction' => ['label' => __('Contact Support'), 'url' => $contactUrl],

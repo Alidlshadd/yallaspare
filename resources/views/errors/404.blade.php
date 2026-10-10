@@ -6,9 +6,9 @@
 
 @include('errors.partials.show', [
     'errorCode' => '404',
-    'errorBadge' => 'Page Not Found',
-    'errorTitle' => 'This route does not exist in the storefront.',
-    'errorDescription' => 'The page may have been moved, removed, or the link may be incorrect. Use the shortcuts below to get back to the catalog or contact support.',
+    'errorBadge' => __('Page Not Found'),
+    'errorTitle' => __('This route does not exist in the storefront.'),
+    'errorDescription' => __('The page may have been moved, removed, or the link may be incorrect. Use the shortcuts below to get back to the catalog or contact support.'),
     'primaryAction' => ['label' => __('Return Home'), 'url' => $homeUrl],
     'secondaryAction' => ['label' => __('Browse Shop'), 'url' => $shopUrl],
     'tertiaryAction' => ['label' => __('Contact Support'), 'url' => $contactUrl],

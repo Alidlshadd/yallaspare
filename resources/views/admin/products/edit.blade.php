@@ -103,7 +103,18 @@
                                 </div>
                                 <div>
                                     <label for="warranty" class="block text-sm font-medium text-slate-700">{{ __('Warranty') }}</label>
-                                    <input id="warranty" type="text" name="warranty" value="{{ old('warranty', $product->warranty) }}" class="{{ $inputBase }} @error('warranty') {{ $inputError }} @enderror" placeholder="{{ __('e.g., 6 months') }}" @error('warranty') aria-invalid="true" @enderror>
+                                    @php $selectedWarranty = (string) old('warranty', $product->warranty); @endphp
+                                    <select id="warranty" name="warranty" class="{{ $inputBase }} @error('warranty') {{ $inputError }} @enderror" @error('warranty') aria-invalid="true" @enderror>
+                                        <option value="">{{ __('Not specified') }}</option>
+                                        @foreach (\App\Support\ProductWarranty::options() as $warrantyCode => $warrantyLabel)
+                                            <option value="{{ $warrantyCode }}" @selected($selectedWarranty === $warrantyCode)>{{ $warrantyLabel }}</option>
+                                        @endforeach
+                                        {{-- Text typed before the list existed stays selectable
+                                             so saving the product does not silently drop it. --}}
+                                        @if (filled($product->warranty) && ! \App\Support\ProductWarranty::isCode($product->warranty))
+                                            <option value="{{ $product->warranty }}" @selected($selectedWarranty === (string) $product->warranty)>{{ $product->warranty }}</option>
+                                        @endif
+                                    </select>
                                     @error('warranty')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror

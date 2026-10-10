@@ -6,9 +6,9 @@
 
 @include('errors.partials.show', [
     'errorCode' => '419',
-    'errorBadge' => 'Session Expired',
-    'errorTitle' => 'Your session token is no longer valid.',
-    'errorDescription' => 'This usually happens after a long idle period, a stale tab, or a form submission from an expired session.',
+    'errorBadge' => __('Session Expired'),
+    'errorTitle' => __('Your session token is no longer valid.'),
+    'errorDescription' => __('This usually happens after a long idle period, a stale tab, or a form submission from an expired session.'),
     'primaryAction' => ['label' => __('Return Home'), 'url' => $homeUrl],
     'secondaryAction' => ['label' => __('Open Shop'), 'url' => $shopUrl],
     'tertiaryAction' => ['label' => __('Contact Support'), 'url' => $contactUrl],

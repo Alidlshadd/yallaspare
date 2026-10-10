@@ -4,6 +4,7 @@ namespace App\Http\Requests\Admin;
 
 use App\Support\Pricing\ExchangeRate;
 use App\Support\ProductImageUpload;
+use App\Support\ProductWarranty;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\UploadedFile;
@@ -83,7 +84,12 @@ class StoreProductRequest extends FormRequest
             'stock_quantity' => ['required', 'integer', 'min:0'],
             'oem_number' => ['nullable', 'string', 'max:120'],
             'part_number' => ['nullable', 'string', 'max:120'],
-            'warranty' => ['nullable', 'string', 'max:160'],
+            // One of the fixed periods. A product edited with older, typed
+            // text on file may keep that text; nothing new can be typed.
+            'warranty' => ['nullable', 'string', Rule::in([
+                ...ProductWarranty::codes(),
+                ...array_filter([(string) $this->route('product')?->warranty]),
+            ])],
             'brand' => ['nullable', 'string', 'max:100'],
             'product_brand_id' => ['nullable', 'integer', 'exists:product_brands,id'],
             'compatible_models' => ['nullable', 'string'],

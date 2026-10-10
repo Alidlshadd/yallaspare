@@ -14,6 +14,7 @@ use App\Models\ProductImage;
 use App\Models\Setting;
 use App\Support\AdminLogger;
 use App\Support\Pricing\ExchangeRate;
+use App\Support\ProductWarranty;
 use App\Support\SecureImageStorage;
 use App\Support\SqlSafe;
 use Illuminate\Database\QueryException;
@@ -772,7 +773,11 @@ class ProductController extends Controller
                     'sku' => $sku,
                     'oem_number' => ($rowData['oem_number'] ?? '') !== '' ? (string) $rowData['oem_number'] : null,
                     'part_number' => ($rowData['part_number'] ?? '') !== '' ? (string) $rowData['part_number'] : null,
-                    'warranty' => ($rowData['warranty'] ?? '') !== '' ? (string) $rowData['warranty'] : null,
+                    // A file may say "6 months" or carry the code; either way
+                    // it is stored as the code when it names a known period.
+                    'warranty' => ($rowData['warranty'] ?? '') !== ''
+                        ? (ProductWarranty::normalize((string) $rowData['warranty']) ?? (string) $rowData['warranty'])
+                        : null,
                     'brand' => ($rowData['brand'] ?? '') !== '' ? (string) $rowData['brand'] : null,
                     'is_active' => array_key_exists('is_active', $rowData)
                         ? $this->toBoolean($rowData['is_active'])

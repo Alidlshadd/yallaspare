@@ -6,9 +6,9 @@
 
 @include('errors.partials.show', [
     'errorCode' => '500',
-    'errorBadge' => 'Server Error',
-    'errorTitle' => 'The server could not complete this request.',
-    'errorDescription' => 'An internal application error interrupted the page before it could finish rendering properly.',
+    'errorBadge' => __('Server Error'),
+    'errorTitle' => __('The server could not complete this request.'),
+    'errorDescription' => __('An internal application error interrupted the page before it could finish rendering properly.'),
     'primaryAction' => ['label' => __('Return Home'), 'url' => $homeUrl],
     'secondaryAction' => ['label' => __('Browse Shop'), 'url' => $shopUrl],
     'tertiaryAction' => ['label' => __('Contact Support'), 'url' => $contactUrl],

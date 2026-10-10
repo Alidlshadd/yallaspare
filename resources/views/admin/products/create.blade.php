@@ -90,7 +90,12 @@
                                 </div>
                                 <div>
                                     <label for="warranty" class="block text-sm font-medium text-slate-700">{{ __('Warranty') }}</label>
-                                    <input id="warranty" type="text" name="warranty" value="{{ old('warranty') }}" class="{{ $inputBase }} @error('warranty') {{ $inputError }} @enderror" placeholder="{{ __('e.g., 6 months') }}" @error('warranty') aria-invalid="true" @enderror>
+                                    <select id="warranty" name="warranty" class="{{ $inputBase }} @error('warranty') {{ $inputError }} @enderror" @error('warranty') aria-invalid="true" @enderror>
+                                        <option value="">{{ __('Not specified') }}</option>
+                                        @foreach (\App\Support\ProductWarranty::options() as $warrantyCode => $warrantyLabel)
+                                            <option value="{{ $warrantyCode }}" @selected(old('warranty') === $warrantyCode)>{{ $warrantyLabel }}</option>
+                                        @endforeach
+                                    </select>
                                     @error('warranty')
                                         <p class="text-xs text-rose-600 mt-1">{{ $message }}</p>
                                     @enderror

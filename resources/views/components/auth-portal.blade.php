@@ -60,7 +60,9 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <meta name="theme-color" content="#070740">
 
-    <title>{{ $heading }} | {{ $siteName }}</title>
+    {{-- __(): the store's name has an Arabic and a Kurdish spelling, and the
+         tab should carry the one the rest of the page is written in. --}}
+    <title>{{ $heading }} | {{ __($siteName) }}</title>
     @include('partials.brand-head')
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])

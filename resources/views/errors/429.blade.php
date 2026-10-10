@@ -6,9 +6,9 @@
 
 @include('errors.partials.show', [
     'errorCode' => '429',
-    'errorBadge' => 'Too Many Requests',
-    'errorTitle' => 'Request traffic is temporarily throttled.',
-    'errorDescription' => 'Too many actions were sent in a short time window, so the platform paused additional requests for a moment.',
+    'errorBadge' => __('Too Many Requests'),
+    'errorTitle' => __('Request traffic is temporarily throttled.'),
+    'errorDescription' => __('Too many actions were sent in a short time window, so the platform paused additional requests for a moment.'),
     'primaryAction' => ['label' => __('Return Home'), 'url' => $homeUrl],
     'secondaryAction' => ['label' => __('Browse Shop'), 'url' => $shopUrl],
     'tertiaryAction' => ['label' => __('Contact Support'), 'url' => $contactUrl],

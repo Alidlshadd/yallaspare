@@ -6,9 +6,9 @@
 
 @include('errors.partials.show', [
     'errorCode' => '401',
-    'errorBadge' => 'Authentication Required',
-    'errorTitle' => 'You need to sign in before opening this page.',
-    'errorDescription' => 'The requested destination requires an authenticated session and the current request could not be verified as signed in.',
+    'errorBadge' => __('Authentication Required'),
+    'errorTitle' => __('You need to sign in before opening this page.'),
+    'errorDescription' => __('The requested destination requires an authenticated session and the current request could not be verified as signed in.'),
     'primaryAction' => ['label' => __('Return Home'), 'url' => $homeUrl],
     'secondaryAction' => ['label' => __('Browse Shop'), 'url' => $shopUrl],
     'tertiaryAction' => ['label' => __('Contact Support'), 'url' => $contactUrl],

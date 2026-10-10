@@ -6,9 +6,9 @@
 
 @include('errors.partials.show', [
     'errorCode' => '503',
-    'errorBadge' => 'Service Unavailable',
-    'errorTitle' => 'The storefront is temporarily unavailable.',
-    'errorDescription' => 'The platform is likely under maintenance or handling a temporary capacity issue, so this page cannot be served right now.',
+    'errorBadge' => __('Service Unavailable'),
+    'errorTitle' => __('The storefront is temporarily unavailable.'),
+    'errorDescription' => __('The platform is likely under maintenance or handling a temporary capacity issue, so this page cannot be served right now.'),
     'primaryAction' => ['label' => __('Return Home'), 'url' => $homeUrl],
     'secondaryAction' => ['label' => __('Try Shop Again'), 'url' => $shopUrl],
     'tertiaryAction' => ['label' => __('Contact Support'), 'url' => $contactUrl],

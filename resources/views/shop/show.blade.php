@@ -76,11 +76,11 @@
     $sku = (string) ($product->sku ?: __('N/A'));
     $oem = (string) ($product->oem_number ?: __('N/A'));
     $partNumber = (string) ($product->part_number ?: __('N/A'));
-    $warranty = (string) ($product->warranty ?: __('Available on request'));
+    $warranty = \App\Support\ProductWarranty::label($product->warranty) ?? __('Available on request');
     $brand = (string) ($product->brand ?: __('Generic'));
     $categoryName = (string) ($product->category?->name ?? __('Auto Parts'));
     $canonicalUrl = route('shop.show', $product);
-    $seoTitle = trim($name . ' | ' . $brand . ' | ' . $siteName);
+    $seoTitle = trim($name . ' | ' . $brand . ' | ' . __($siteName));
     $seoDescriptionSource = trim((string) ($description ?: "{$brand} {$name} {$categoryName} spare part with price, stock, SKU, warranty, and delivery details from {$siteName}."));
     $seoDescription = \Illuminate\Support\Str::limit(preg_replace('/\s+/', ' ', strip_tags($seoDescriptionSource)), 158, '');
     // What this page says about itself, built by the one place that knows the
@@ -192,7 +192,17 @@
                 <article class="space-y-5">
                     <div class="space-y-2">
                         <p class="break-mobile text-xs font-semibold uppercase tracking-[0.08em] text-slate-500 sm:tracking-[0.12em]">
-                            {{ $brand }} | {{ __('SKU:') }} {{ $sku }} | {{ __('OEM:') }} {{ $oem }} | {{ __('Part:') }} {{ $partNumber }}
+                            {{-- Each label travels with its own code. Left as one run of
+                                 text, the bidi algorithm sorted the Latin codes to one
+                                 side of an Arabic or Kurdish line and the labels to the
+                                 other, with the separators stranded between them. --}}
+                            <bdi class="inline-block">{{ $brand }}</bdi>
+                            <span aria-hidden="true">|</span>
+                            <span class="inline-block">{{ __('SKU:') }} <bdi dir="ltr">{{ $sku }}</bdi></span>
+                            <span aria-hidden="true">|</span>
+                            <span class="inline-block">{{ __('OEM:') }} <bdi dir="ltr">{{ $oem }}</bdi></span>
+                            <span aria-hidden="true">|</span>
+                            <span class="inline-block">{{ __('Part:') }} <bdi dir="ltr">{{ $partNumber }}</bdi></span>
                         </p>
                         <h1 class="break-mobile text-2xl font-semibold tracking-[-0.03em] text-slate-950 sm:text-4xl">{{ $name }}</h1>
                         <p class="text-sm leading-7 text-slate-600">

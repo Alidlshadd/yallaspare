@@ -7,7 +7,7 @@
     $homeUrl = \Illuminate\Support\Facades\Route::has('user.shop.home') ? route('user.shop.home') : url('/');
     $shopUrl = \Illuminate\Support\Facades\Route::has('shop.index') ? route('shop.index') : $homeUrl;
     $contactUrl = \Illuminate\Support\Facades\Route::has('legal.contact') ? route('legal.contact') : url('/contact');
-    $pageTitle = $pageTitle ?? (($errorCode ?? 'Error') . ' | ' . $siteName);
+    $pageTitle = $pageTitle ?? (($errorCode ?? 'Error') . ' | ' . __($siteName));
     $errorCode = $errorCode ?? 'Error';
     $errorBadge = $errorBadge ?? 'System Notice';
     $errorTitle = $errorTitle ?? 'Something went wrong.';

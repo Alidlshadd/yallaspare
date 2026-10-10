@@ -2,6 +2,7 @@
 
 namespace App\Exceptions;
 
+use App\Http\Middleware\SetLocale;
 use App\Services\Email\AdminEmailAlertService;
 use App\Support\VerificationRateLimit;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -79,6 +80,12 @@ class Handler extends ExceptionHandler
         // Scoped 404 logging: `routeIs()` is unreliable when routing itself
         // failed, so we match against the request path prefixes instead.
         $this->renderable(function (NotFoundHttpException $e, Request $request): ?Response {
+            // No route means no middleware ran, the language one included, so
+            // the page would come out in English whatever the visitor reads.
+            if ($request->route() === null && ($locale = SetLocale::forUnroutedRequest($request)) !== null) {
+                app()->setLocale($locale);
+            }
+
             // i/* is the shared-invoice link: a miss there is a revoked link
             // at best and someone guessing tokens at worst. The event carries
             // the route name, not the token that was tried.
