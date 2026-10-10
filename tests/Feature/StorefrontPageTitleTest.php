@@ -4,6 +4,7 @@ namespace Tests\Feature;
 
 use App\Models\Setting;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Blade;
 use Tests\TestCase;
 
 class StorefrontPageTitleTest extends TestCase
@@ -33,6 +34,20 @@ class StorefrontPageTitleTest extends TestCase
     public function test_a_page_without_a_title_is_just_the_store_name(): void
     {
         $this->assertSame('Yalla Spare', $this->titleOf(route('user.shop.home')));
+    }
+
+    public function test_markup_in_a_title_is_printed_as_text(): void
+    {
+        // The block form of a section is not escaped by Blade, so this is the
+        // one way raw markup could have reached the head.
+        $html = Blade::render(<<<'BLADE'
+            @extends('layouts.user')
+            @section('title')</title><script>alert(1)</script>@endsection
+            @section('content')@endsection
+        BLADE, ['cspNonce' => 'test']);
+
+        $this->assertStringNotContainsString('<script>alert(1)</script>', $html);
+        $this->assertStringContainsString('&lt;script&gt;alert(1)&lt;/script&gt; | Yalla Spare</title>', $html);
     }
 
     public function test_the_cart_page_has_one_heading(): void

@@ -72,15 +72,15 @@
     // Every tab and search result names the store. A page that already put the
     // name in its own title keeps it as written; the rest get it appended, and
     // a page with no title at all is just the store. The section arrives
-    // escaped, so it is compared decoded and printed as it came.
-    $pageTitle = trim($__env->yieldContent('title'));
+    // escaped; it is decoded here and escaped once more where it is printed,
+    // so nothing a page puts in its title reaches the head as markup.
+    $pageTitle = html_entity_decode(trim($__env->yieldContent('title')), ENT_QUOTES);
     $storeTitle = __('Yalla Spare');
-    $pageTitlePlain = html_entity_decode($pageTitle, ENT_QUOTES);
     $pageTitleNamesStore = collect([$storeTitle, 'Yalla Spare', $brand])
-        ->contains(fn ($name) => $name !== '' && mb_stripos($pageTitlePlain, (string) $name) !== false);
+        ->contains(fn ($name) => $name !== '' && mb_stripos($pageTitle, (string) $name) !== false);
     $documentTitle = $pageTitle === ''
-        ? e($storeTitle)
-        : ($pageTitleNamesStore ? $pageTitle : $pageTitle.' | '.e($storeTitle));
+        ? $storeTitle
+        : ($pageTitleNamesStore ? $pageTitle : $pageTitle.' | '.$storeTitle);
 @endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', $locale) }}" dir="{{ $dir }}" class="{{ $htmlClasses }}">
@@ -88,7 +88,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
-        <title>{!! $documentTitle !!}</title>
+        <title>{{ $documentTitle }}</title>
         <meta name="description" content="@yield('meta_description', __('YallaSpare is an auto spare parts platform built for Iraq, helping customers find trusted parts, check vehicle compatibility, order easily, and get reliable support.'))">
         @include('partials.brand-head')
         @include('partials.seo-locale')
