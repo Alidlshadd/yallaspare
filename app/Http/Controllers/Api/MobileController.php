@@ -41,6 +41,7 @@ use App\Services\Shipping\ShippingQuote;
 use App\Services\WelcomeOfferService;
 use App\Support\IraqiPhoneNumber;
 use App\Support\LoginFailureThrottle;
+use App\Support\ProductWarranty;
 use App\Support\SqlSafe;
 use App\Support\VehicleLocalization;
 use App\Support\VehicleModelOrder;
@@ -2194,7 +2195,7 @@ class MobileController extends Controller
             'images' => $images,
             'rating' => round((float) $product->reviews->avg('rating'), 1),
             'review_count' => $product->reviews->count(),
-            'warranty' => \App\Support\ProductWarranty::label($product->warranty) ?? __('Warranty on request'),
+            'warranty' => ProductWarranty::label($product->warranty) ?? __('Warranty on request'),
             'is_active' => (bool) $product->is_active,
         ];
     }
