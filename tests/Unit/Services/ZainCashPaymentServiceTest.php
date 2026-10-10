@@ -177,20 +177,30 @@ class ZainCashPaymentServiceTest extends TestCase
     }
 
     /**
-     * The success flag is read before the status word, so a response that sets
-     * one and not the other still resolves to paid.
-     *
-     * This records what the service does today; it is not an endorsement. If
-     * ZainCash sets `success` to mean "the API call worked" rather than "the
-     * money arrived", then a pending transaction reaches applyVerification as
-     * paid and the order ships. Confirm the meaning against the provider's
-     * documentation before relying on this line.
+     * A status word, when there is one, decides. The success flag used to be
+     * read first, so "success: true, status: pending" — a reply that may only
+     * mean the lookup itself worked — reached applyVerification as paid and
+     * the order shipped. The flag is now consulted only when the reply carries
+     * no status at all.
      */
-    public function test_verify_payment_treats_the_success_flag_as_paid_on_its_own(): void
+    public function test_verify_payment_does_not_let_the_success_flag_override_an_unknown_status(): void
     {
-        $result = $this->verifyWith(['success' => true, 'status' => 'something-else']);
+        $this->assertSame(Payment::STATUS_PENDING, $this->verifyWith(['success' => true, 'status' => 'something-else'])->status);
+    }
 
-        $this->assertSame(Payment::STATUS_PAID, $result->status);
+    public function test_verify_payment_does_not_let_the_success_flag_override_a_failed_status(): void
+    {
+        $this->assertSame(Payment::STATUS_FAILED, $this->verifyWith(['success' => true, 'status' => 'failed'])->status);
+    }
+
+    public function test_verify_payment_reads_the_success_flag_when_there_is_no_status(): void
+    {
+        $this->assertSame(Payment::STATUS_PAID, $this->verifyWith(['success' => true])->status);
+    }
+
+    public function test_verify_payment_is_pending_without_a_status_or_a_success_flag(): void
+    {
+        $this->assertSame(Payment::STATUS_PENDING, $this->verifyWith(['success' => false])->status);
     }
 
     /**
