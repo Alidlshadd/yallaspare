@@ -50,7 +50,7 @@
                 @endphp
                 <tbody data-price-row data-id="{{ $product->id }}" data-currency="{{ $isUsd ? 'USD' : 'IQD' }}" data-saved-usd="{{ $plainUsd($product->price_usd) }}" data-saved-iqd="{{ $product->price }}">
                     <tr class="pm-product-row">
-                        <td class="pm-check-cell"><input type="checkbox" name="ids[]" value="{{ $product->id }}" form="bulkForm" data-check="bulk" @checked(in_array((string) $product->id, array_map('strval', (array) old('ids', $bulk['ids'] ?? [])), true)) aria-label="{{ __('Select :product', ['product' => $product->localizedName()]) }}"></td>
+                        <td class="pm-check-cell"><input type="checkbox" name="ids[]" value="{{ $product->id }}" form="bulkForm" data-check="bulk" aria-label="{{ __('Select :product', ['product' => $product->localizedName()]) }}" @checked(in_array((string) $product->id, array_map('strval', (array) old('ids', $bulk['ids'] ?? [])), true))></td>
                         <td class="pm-product-cell"><div class="pm-product-identity"><span class="pm-product-icon" aria-hidden="true"><x-ph-icon name="cube" :size="21" /></span><div><a href="{{ route('admin.products.edit', $product) }}" class="pm-product-name">{{ $product->localizedName() }}</a><div class="pm-product-meta"><bdi>{{ $product->sku ?: $product->part_number }}</bdi><span class="pm-row-state" data-row-state>{{ __('pricing.ready') }}</span></div></div></div></td>
                         <td class="pm-basis-cell" data-label="{{ __('Priced in') }}"><span class="pm-currency {{ $isUsd ? 'pm-currency-usd' : '' }}">{{ $isUsd ? 'USD' : 'IQD' }}</span></td>
                         <td class="pm-usd-cell" data-label="{{ __('USD price') }}">
