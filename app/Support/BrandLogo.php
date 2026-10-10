@@ -33,7 +33,11 @@ class BrandLogo
         }
 
         $extension = strtolower(pathinfo($absolute, PATHINFO_EXTENSION));
-        $cacheKey = 'brand-logo/'.md5($absolute.'|'.(@filemtime($absolute) ?: '0').'|'.self::MAX_EDGE).'.'.$extension;
+        // Size as well as time: a file replaced within the same second keeps
+        // its timestamp, and must not be answered with the old file's copy.
+        clearstatcache(true, $absolute);
+        $stamp = (@filemtime($absolute) ?: '0').'|'.(@filesize($absolute) ?: '0');
+        $cacheKey = 'brand-logo/'.md5($absolute.'|'.$stamp.'|'.self::MAX_EDGE).'.'.$extension;
         $cache = Storage::disk('local');
 
         if (! $cache->exists($cacheKey)) {
